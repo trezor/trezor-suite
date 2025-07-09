@@ -23,6 +23,7 @@ export enum RootStackRoutes {
     DeviceCompromisedModal = 'DeviceCompromisedModal',
     BackupFailedModal = 'BackupFailedModal',
     TradingWebView = 'TradingWebView',
+    BootloaderMode = 'BootloaderMode',
 }
 
 export enum AppTabsRoutes {
@@ -94,6 +95,7 @@ export enum DeviceCheckBackupStackRoutes {
     CheckBackup = 'CheckBackup',
     CheckBackupSuccess = 'CheckBackupSuccess',
     CheckBackupRecap = 'CheckBackupRecap',
+    UnsupportedModel = 'UnsupportedModel',
 }
 
 export enum DeviceAuthenticityStackRoutes {
@@ -105,6 +107,7 @@ export enum WipeDeviceStackRoutes {
     WipeDevice = 'WipeDevice',
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
+    FactoryReset = 'FactoryReset',
 }
 
 export enum DeviceNameStackRoutes {
@@ -155,6 +158,7 @@ export enum SendStackRoutes {
     SendAccounts = 'SendAccounts',
     SendOutputs = 'SendOutputs',
     SendFees = 'SendFees',
+    SendUtxo = 'SendUtxo',
     SendDestinationTagReview = 'SendDestinationTagReview',
     SendAddressReview = 'SendAddressReview',
     SendOutputsReview = 'SendOutputsReview',

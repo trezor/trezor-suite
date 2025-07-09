@@ -10,9 +10,11 @@ import {
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
     TROUBLESHOOTING_TIP_UDEV,
     TROUBLESHOOTING_TIP_USB,
 } from 'src/components/suite/troubleshooting/tips';
+import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 
 import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from '../../../hooks/suite';
@@ -31,20 +33,24 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const autoConnectingDeviceIds = useSelector(selectConnectingDevices);
 
+    const commonCableTips = [
+        TROUBLESHOOTING_TIP_UDEV,
+        TROUBLESHOOTING_TIP_CABLE,
+        TROUBLESHOOTING_TIP_USB,
+    ];
     const cableItem: TroubleshootingTipsItem[] = isWebUsbTransport
-        ? [
-              TROUBLESHOOTING_TIP_UDEV,
-              TROUBLESHOOTING_TIP_CABLE,
-              TROUBLESHOOTING_TIP_USB,
-              TROUBLESHOOTING_TIP_SUITE_DESKTOP,
-          ]
+        ? [...commonCableTips, TROUBLESHOOTING_TIP_SUITE_DESKTOP]
         : [
               TROUBLESHOOTING_TIP_BRIDGE_STATUS,
-              TROUBLESHOOTING_TIP_UDEV,
-              TROUBLESHOOTING_TIP_CABLE,
-              TROUBLESHOOTING_TIP_USB,
+              ...commonCableTips,
               TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
           ];
+
+    if (useBridgeDesktopApi()?.bridgeProcess?.process) {
+        cableItem.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE);
+    } else {
+        // todo: here we are going to put instruction to uninstall standalone bridge
+    }
 
     const getCallToActionButton = (): ReactNode => {
         if (isWebUsbTransport) {

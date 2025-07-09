@@ -22,7 +22,7 @@ const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '
 const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
     const { watch } = useBuyFormContext();
     const { translate } = useTranslate();
-    const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
 
     const [asset, quote, amountInCrypto, value] = watch([
@@ -55,10 +55,10 @@ const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
             isBalance: true,
         });
     } else if (!amountInCrypto && fieldName === 'fiatValue' && fiatStringAmount && fiatCurrency) {
-        requestedAmount = FiatAmountFormatter.format(asNonEmptyStringValue(value), {
+        requestedAmount = BaseCurrencyAmountFormatter.format(asNonEmptyStringValue(value), {
             currency: fiatCurrency,
         });
-        quoteAmount = FiatAmountFormatter.format(
+        quoteAmount = BaseCurrencyAmountFormatter.format(
             truncateDecimals(fiatStringAmount, MAX_FIAT_DECIMALS),
             {
                 currency: fiatCurrency,

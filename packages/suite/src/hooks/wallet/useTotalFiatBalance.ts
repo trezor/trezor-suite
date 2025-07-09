@@ -1,13 +1,13 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config/src/fiat';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 export const useTotalFiatBalance = (
     accounts: Account[],
-    localCurrency: FiatCurrencyCode,
+    localCurrency: BaseCurrencyCode,
     rates?: RatesByKey,
 ) => {
     const tokenDefinitions = useSelector(state => state.tokenDefinitions);

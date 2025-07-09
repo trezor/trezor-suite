@@ -8,6 +8,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { WalletBackupType, reportCheckFail } from '@suite-native/device';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -97,22 +98,39 @@ export const createAndBackupWalletThunk = createThunk(
                       }
                     : {};
 
-            return await TrezorConnect.backupDevice({
-                ...backupParams,
-                device: {
-                    path: device.path,
-                },
+            const deviceResponse = await requestPrioritizedDeviceAccess({
+                deviceCallback: () =>
+                    TrezorConnect.backupDevice({
+                        ...backupParams,
+                        device: {
+                            path: device.path,
+                        },
+                    }),
             });
+
+            if (!deviceResponse.success) {
+                throw new Error(deviceResponse.error);
+            }
+
+            return deviceResponse.payload;
         }
 
-        const result = await TrezorConnect.resetDevice({
-            device: { path: devicePath },
-            skip_backup: false,
-            ...getResetDeviceConfig(walletBackupType),
-            //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
-            entropy_check: isEntropyCheckEnabled,
+        const deviceResponse = await requestPrioritizedDeviceAccess({
+            deviceCallback: () =>
+                TrezorConnect.resetDevice({
+                    device: { path: devicePath },
+                    skip_backup: false,
+                    ...getResetDeviceConfig(walletBackupType),
+                    //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
+                    entropy_check: isEntropyCheckEnabled,
+                }),
         });
 
+        if (!deviceResponse.success) {
+            throw new Error(deviceResponse.error);
+        }
+
+        const result = deviceResponse.payload;
         if (!result.success && result.payload.code === 'Failure_EntropyCheck') {
             const contextData = {
                 model: device?.features?.internal_model,
@@ -133,9 +151,17 @@ export const createAndBackupWalletThunk = createThunk(
 
 export const recoverWalletThunk = createThunk(
     `${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`,
-    (_, { getState }) => {
+    async (_, { getState }) => {
         const devicePath = selectDevicePath(getState());
 
-        return TrezorConnect.recoveryDevice({ device: { path: devicePath } });
+        const deviceResponse = await requestPrioritizedDeviceAccess({
+            deviceCallback: () => TrezorConnect.recoveryDevice({ device: { path: devicePath } }),
+        });
+
+        if (!deviceResponse.success) {
+            throw new Error(deviceResponse.error);
+        }
+
+        return deviceResponse.payload;
     },
 );

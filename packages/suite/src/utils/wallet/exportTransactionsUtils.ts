@@ -2,7 +2,6 @@ import { format } from 'date-fns';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TokenDefinitions, getIsPhishingTransaction } from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -14,7 +13,7 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    formatAmount,
+    convertAmountSubunitsToUnits,
     formatNetworkAmount,
     getFiatRateKey,
     getNftTokenId,
@@ -22,6 +21,7 @@ import {
     localizeNumber,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TransactionTarget } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -34,7 +34,7 @@ type Data = {
     accountName: string;
     type: ExportFileType;
     transactions: AccountTransactionForExports[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
 };
 
 type Fields = {
@@ -82,7 +82,7 @@ const formatAmounts =
             ...token,
             amount: isNftTokenTransfer(token)
                 ? `ID ${getNftTokenId(token)}`
-                : formatAmount(token.amount, token.decimals),
+                : convertAmountSubunitsToUnits(token.amount, token.decimals),
         })),
         internalTransfers: tx.internalTransfers.map(internal => ({
             ...internal,

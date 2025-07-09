@@ -7,7 +7,7 @@ import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
@@ -85,7 +85,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                             symbol={tx.symbol}
                         />
                         <Text variant="tertiary" typographyStyle="label">
-                            <FiatValue
+                            <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={fee}
                                 symbol={tx.symbol}

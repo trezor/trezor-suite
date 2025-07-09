@@ -3,19 +3,15 @@ import { useCallback } from 'react';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
-    determinePassphraseFlowState,
-    runDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectIsDiscoveryAuthConfirmationRequired,
     submitPassphrase,
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import { CONTEXT_DEVICE } from 'src/actions/suite/constants/modalConstants';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
 import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow';
 import { DiscoveryLoader } from '../../ModalSwitcher/DiscoveryLoader';
@@ -24,20 +20,11 @@ import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchM
 
 export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
-    const modal = useSelector(state => state.modal);
-
     const dispatch = useDispatch();
-
-    const passphraseState = discovery
-        ? determinePassphraseFlowState(discovery, {
-              ...modal,
-              modalContextDevice: CONTEXT_DEVICE,
-          })
-        : null;
 
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
-            if (!passphraseState?.discovery) return;
+            if (!discovery) return;
 
             dispatch(
                 submitPassphrase({
@@ -47,7 +34,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 }),
             );
         },
-        [passphraseState?.discovery, dispatch, device],
+        [discovery, dispatch, device],
     );
 
     const authConfirmation = useSelector(state =>
@@ -57,28 +44,26 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch({ type: UI.CLOSE_UI_WINDOW });
-        if (passphraseState?.isAddingHiddenWalletWithRespectToSettings) {
-            dispatch(
-                goto('suite-switch-device', {
-                    params: {
-                        cancelable: false,
-                        isAddingHiddenWalletWithRespectToSettings: true,
-                    },
-                }),
-            );
-        }
+        dispatch(
+            goto('suite-switch-device', {
+                params: {
+                    cancelable: discovery?.isAddingHiddenWalletWithRespectToSettings !== true,
+                },
+            }),
+        );
     };
 
-    const onCancel = () => {
-        if (!passphraseState?.isAddingHiddenWalletWithRespectToSettings) {
-            dispatch(cancelDiscoveryThunk(device));
-        }
-    };
+    const onCancel =
+        discovery?.isAddingHiddenWalletWithRespectToSettings === true
+            ? undefined
+            : () => {
+                  dispatch(cancelDiscoveryThunk(device));
+                  dispatch({ type: UI.CLOSE_UI_WINDOW });
+              };
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
-            if (!device) return;
-            if (!passphraseState?.discovery) return;
+            if (!device || !discovery) return;
 
             if (authConfirmation) {
                 onPassphraseConfirm(value, passphraseOnDevice);
@@ -94,10 +79,10 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 }),
             );
         },
-        [device, authConfirmation, dispatch, passphraseState?.discovery, onPassphraseConfirm],
+        [device, authConfirmation, dispatch, discovery, onPassphraseConfirm],
     );
 
-    if (!device || !passphraseState) return null;
+    if (!device || !discovery || !discovery.isAddingHiddenWallet) return null;
 
     const deviceOffer = !!(
         device.features &&
@@ -105,50 +90,32 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         device.features.capabilities.includes('Capability_PassphraseEntry')
     );
 
-    switch (passphraseState?.screen) {
-        case 'discovery-loader':
+    switch (discovery.status) {
+        case 'progress':
             return <DiscoveryLoader />;
 
         case 'passphrase-duplicate':
             return (
                 <PassphraseDuplicateModal
-                    isExistingWallet={passphraseState.isExisting}
+                    isExistingWallet={discovery?.isAddingExistingWallet ?? false}
                     device={device}
-                    discovery={passphraseState.discovery}
+                    discovery={discovery}
                 />
             );
 
-        case 'exists-passphrase-mismatch-warning':
-        case 'not-exist-passphrase-mismatch-warning':
-            return (
-                <PassphraseMismatchModal device={device} discovery={passphraseState.discovery} />
-            );
-
-        case 'not-exist-best-practices':
-            return (
-                <PassphraseWalletBestPractices
-                    cancelDisabled={passphraseState.isAddingHiddenWalletWithRespectToSettings}
-                    device={device}
-                    onBack={onBackToInitial}
-                    onCancel={onCancel}
-                    onNext={() => dispatch(runDiscoveryThunk(device))}
-                />
-            );
+        case 'passphrase-mismatch':
+            return <PassphraseMismatchModal device={device} discovery={discovery} />;
     }
 
-    if (passphraseState.isExisting) {
+    if (discovery.isAddingExistingWallet) {
         return (
             <PassphraseWalletExistsFlow
-                discovery={passphraseState.discovery}
+                discovery={discovery}
                 device={device}
-                passphraseState={passphraseState.screen}
-                isAddingHiddenWalletWithRespectToSettings={
-                    passphraseState.isAddingHiddenWalletWithRespectToSettings
-                }
-                loading={Boolean(passphraseState.loading)}
+                passphraseState={discovery.status}
                 deviceOffer={deviceOffer}
                 authConfirmation={authConfirmation}
-                submittingPassphrase={Boolean(passphraseState.isSubmitting)}
+                submittingPassphrase={Boolean(discovery.passphraseSubmitted ?? false)}
                 onBackToInitial={onBackToInitial}
                 onCancel={onCancel}
                 onSubmit={onSubmit}
@@ -160,12 +127,12 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         <PassphraseWalletIsNotExistFlow
             device={device}
             isAddingHiddenWalletWithRespectToSettings={
-                passphraseState.isAddingHiddenWalletWithRespectToSettings
+                discovery.isAddingHiddenWalletWithRespectToSettings
             }
-            passphraseState={passphraseState.screen}
-            loading={Boolean(passphraseState.loading)}
+            onBackToInitial={onBackToInitial}
+            passphraseState={discovery.status}
             deviceOffer={deviceOffer}
-            submittingPassphrase={Boolean(passphraseState.isSubmitting)}
+            submittingPassphrase={Boolean(discovery.passphraseSubmitted ?? false)}
             onCancel={onCancel}
             onSubmit={onSubmit}
         />

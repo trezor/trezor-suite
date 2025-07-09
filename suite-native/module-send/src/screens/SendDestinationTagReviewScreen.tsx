@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
@@ -28,7 +28,6 @@ export const SendDestinationTagReviewScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendDestinationTagReview>) => {
     const { accountKey, tokenContract, destinationTag, transaction } = route.params;
     const [hasReviewAlreadyStarted, setHasReviewAlreadyStarted] = useState(false);
-    const { translate } = useTranslate();
 
     const isTransactionReviewInProgress = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
@@ -72,7 +71,7 @@ export const SendDestinationTagReviewScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    content={translate('moduleSend.review.outputs.title')}
+                    title={<Translation id="moduleSend.review.outputs.title" />}
                     closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
                 />
             }

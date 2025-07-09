@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Card,
     Column,
@@ -20,7 +20,12 @@ import { TokenInfo } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { Address, FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import {
+    Address,
+    BaseCurrencyValue,
+    FormattedCryptoAmount,
+    Translation,
+} from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
 const getCardanoFingerprint = (
@@ -80,7 +85,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
         case 'amount': {
             const isTokenAmount = !isFee && token;
             const formattedValue = isTokenAmount
-                ? formatAmount(value, token.decimals)
+                ? convertAmountSubunitsToUnits(value, token.decimals)
                 : formatNetworkAmount(value, symbol);
 
             return (
@@ -98,7 +103,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
                     />
                     {symbol && isFiatVisible && (
                         <Text variant="tertiary" data-testid="@modal/fiat-amount">
-                            <FiatValue
+                            <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={formattedValue}
                                 tokenAddress={

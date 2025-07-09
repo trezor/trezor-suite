@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
+import { BootloaderModeScreen } from '@suite-native/device';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     AccountDetailScreen,
@@ -118,6 +119,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.BackupFailedModal}
                 component={BackupFailedModalScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.BootloaderMode}
+                component={BootloaderModeScreen}
             />
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>

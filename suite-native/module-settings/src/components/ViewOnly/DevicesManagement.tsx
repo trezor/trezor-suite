@@ -5,38 +5,21 @@ import { Box, Card, Divider, HStack, Text } from '@suite-native/atoms';
 import { ConnectionDot } from '@suite-native/device-manager';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { About, AboutProps } from './About';
 import { WalletRow } from './WalletRow';
 
-const cardStyle = prepareNativeStyle(utils => ({
-    padding: 0,
-    marginTop: utils.spacings.sp24,
-}));
-
-const deviceStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.sp16,
-    alignItems: 'center',
-    gap: utils.spacings.sp12,
-}));
-
-export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
+export const DevicesManagement = () => {
     const deviceGroups = useSelector(selectPhysicalDevicesGrouppedById);
-    const { applyStyle } = useNativeStyles();
 
     return (
         <>
-            <Box paddingHorizontal="sp24">
-                <About onPressAbout={onPressAbout} />
-            </Box>
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
                 const deviceModel = firstDevice.features?.internal_model;
 
                 return (
-                    <Card key={firstDevice.id} style={applyStyle(cardStyle)}>
-                        <HStack style={applyStyle(deviceStyle)}>
+                    <Card key={firstDevice.id} noPadding>
+                        <HStack padding="sp16" alignItems="center" spacing="sp12">
                             {deviceModel && (
                                 <DeviceModelIcon deviceModel={deviceModel} size="extraLarge" />
                             )}

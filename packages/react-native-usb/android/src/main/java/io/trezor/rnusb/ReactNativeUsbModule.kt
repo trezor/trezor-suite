@@ -192,6 +192,7 @@ class ReactNativeUsbModule : Module() {
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(null)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(null)
 
+            cancelAllPendingRequests()
             closeAllOpenedDevices()
 
             try {
@@ -264,10 +265,14 @@ class ReactNativeUsbModule : Module() {
 
     private fun closeAllOpenedDevices() {
         Log.d(LOG_TAG, "Closing all devices")
-        pendingRequests.values.forEach { it.cancel() }
-        pendingRequests.clear()
+
         openedConnections.values.forEach { it.close() }
         openedConnections.clear()
+    }
+
+    private fun cancelAllPendingRequests() {
+        pendingRequests.values.forEach { it.cancel() }
+        pendingRequests.clear()
     }
 
     private fun claimInterface(deviceName: String, interfaceNumber: Int) {

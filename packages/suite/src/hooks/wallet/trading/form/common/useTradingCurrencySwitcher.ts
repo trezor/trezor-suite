@@ -9,7 +9,10 @@ import {
 } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { amountToSmallestUnit, formatAmount } from '@suite-common/wallet-utils';
+import {
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -60,7 +63,7 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
 
         if (!amountInCrypto) {
             const amount = shouldSendInSats
-                ? amountToSmallestUnit(quoteCryptoAmount ?? '', networkDecimals)
+                ? convertAmountUnitsToSubunits(quoteCryptoAmount ?? '', networkDecimals)
                 : quoteCryptoAmount;
 
             setValue(inputNames.cryptoInput, amount === '-1' ? '' : amount);
@@ -77,7 +80,9 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
     };
 
     useDidUpdate(() => {
-        const conversion = shouldSendInSats ? amountToSmallestUnit : formatAmount;
+        const conversion = shouldSendInSats
+            ? convertAmountUnitsToSubunits
+            : convertAmountSubunitsToUnits;
 
         if (!cryptoInputValue) {
             return;

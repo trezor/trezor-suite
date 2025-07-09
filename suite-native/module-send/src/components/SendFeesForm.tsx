@@ -10,9 +10,12 @@ import {
     FeesRootState,
     SendRootState,
     selectAccountByKey,
+    selectAreFeesLoading,
     selectNetworkFeeInfo,
     selectNetworkFeeLevelFeePerUnit,
     selectSendFormDraftByKey,
+    useFetchFeesOnce,
+    useRefetchFees,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
@@ -39,6 +42,7 @@ import { FeeOptionsList } from './FeeOptionsList';
 import { FeesFooter } from './FeesFooter';
 import { RecipientsSummary } from './RecipientsSummary';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
+import { useRequestDelayedNavigationToOutputsReview } from '../hooks/useRequestDelayedNavigationToOutputsReview';
 import {
     NativeSendRootState,
     selectDestinationTagFromDraft,
@@ -63,6 +67,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const areFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, account?.symbol),
+    );
+
     const feeLevels = useSelector(selectFeeLevels);
 
     const networkFeeInfo = useSelector((state: FeesRootState) =>
@@ -81,6 +90,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const destinationTag = useSelector((state: NativeSendRootState) =>
         selectDestinationTagFromDraft(state, accountKey, tokenContract),
     );
+
     const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
 
     const form = useForm<SendFeesFormValues>({
@@ -98,6 +108,8 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     });
     const { handleSubmit, control } = form;
 
+    useFetchFeesOnce({ networkSymbol: account?.symbol });
+
     const selectedFeeLevel = useWatch({ control, name: 'feeLevel' });
     const selectedFeeLevelTransaction = feeLevels[
         selectedFeeLevel
@@ -106,6 +118,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const feePerUnit = useSelector((state: FeesRootState) =>
         selectNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
     );
+
+    useRefetchFees({
+        networkSymbol: account?.symbol,
+        isDisabled: selectedFeeLevel === 'custom' || formDraft?.setMaxOutputId !== undefined,
+    });
 
     const transactionBytes = normalFee.bytes as number;
 
@@ -129,6 +146,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         transaction: selectedFeeLevelTransaction,
     });
 
+    const requestDelayedNavigationToOutputsReview = useRequestDelayedNavigationToOutputsReview({
+        accountKey,
+        tokenContract,
+    });
+
     if (!account) return;
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
@@ -141,12 +163,9 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
             });
         } else if (networkType === 'stellar') {
             // The first review entry of Stellar is neither a destination address nor a destination tag.
+            // We need to wait for device button requests before navigating to the review screen.
             handleOnDeviceTransactionReview();
-
-            navigation.navigate(SendStackRoutes.SendOutputsReview, {
-                accountKey,
-                tokenContract,
-            });
+            requestDelayedNavigationToOutputsReview();
         } else {
             navigation.navigate(SendStackRoutes.SendAddressReview, {
                 accountKey,
@@ -198,6 +217,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                                     symbol={account.symbol}
                                     accountKey={accountKey}
                                     tokenContract={tokenContract}
+                                    isLoading={areFeesLoading}
                                 />
                             )}
                             <CustomFee symbol={account.symbol} />

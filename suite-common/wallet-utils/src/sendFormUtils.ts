@@ -9,7 +9,6 @@ import {
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { fiatCurrencies } from '@suite-common/suite-config';
 import { Network, NetworkType } from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
@@ -32,6 +31,7 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { baseCurrencies } from '@trezor/blockchain-link-types';
 import {
     ComposeOutput,
     EthereumTransaction,
@@ -42,7 +42,7 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getUtxoOutpoint,
     networkAmountToSmallestUnit,
@@ -120,7 +120,7 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     // 32 bytes address parameter, remove '0x' prefix
     const erc20recipient = padLeft(to, 64).substring(2);
     // convert amount to satoshi
-    const tokenAmount = amountToSmallestUnit(amount, token.decimals);
+    const tokenAmount = convertAmountUnitsToSubunits(amount, token.decimals);
     // 32 bytes amount paramter, remove '0x' prefix
     const erc20amount = padLeft(numberToHex(tokenAmount), 64).substring(2);
 
@@ -407,7 +407,7 @@ export const getExternalComposeOutput = (
 
     const tokenInfo = findToken(account.tokens, token);
     const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
-    const formattedAmount = amountToSmallestUnit(amount, decimals);
+    const formattedAmount = convertAmountUnitsToSubunits(amount, decimals);
 
     let output: ExternalOutput;
     if (isMaxActive) {
@@ -488,7 +488,7 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
 export const buildCurrencyOptions = (selected: CurrencyOption) => {
     const result: CurrencyOption[] = [];
 
-    Object.keys(fiatCurrencies).forEach(currency => {
+    Object.keys(baseCurrencies).forEach(currency => {
         if (selected.value === currency) {
             return;
         }

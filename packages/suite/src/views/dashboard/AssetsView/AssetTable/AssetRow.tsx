@@ -3,12 +3,12 @@ import { memo } from 'react';
 import { useTheme } from 'styled-components';
 
 import { AssetFiatBalance } from '@suite-common/assets';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -17,8 +17,8 @@ import { spacings } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
+    BaseCurrencyValue,
     CoinBalance,
-    FiatValue,
     PriceTicker,
     Translation,
     TrendTicker,
@@ -43,7 +43,7 @@ export interface AssetTableRowProps {
     isStakeNetwork?: boolean;
     assetsFiatBalances: AssetFiatBalance[];
     accounts: Account[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     currentFiatRates?: RatesByKey;
 }
 
@@ -150,7 +150,10 @@ export const AssetRow = memo(
                                 gap={spacings.xxxs}
                                 data-testid={`@dashboard/asset/${symbol}/fiat-amount`}
                             >
-                                <FiatValue amount={assetNativeCryptoBalance} symbol={symbol} />
+                                <BaseCurrencyValue
+                                    amount={assetNativeCryptoBalance}
+                                    symbol={symbol}
+                                />
 
                                 <Text typographyStyle="hint" color={theme.textSubdued}>
                                     <AmountUnitSwitchWrapper symbol={symbol}>

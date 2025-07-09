@@ -24,3 +24,6 @@ export * from './stakingUtils';
 export * from './tokenUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
+export * from './filterAndCategorizeUtxosUtils';
+export * from './hooks/useExcludedUtxos';
+export * from './hooks/useFilteredUtxos';

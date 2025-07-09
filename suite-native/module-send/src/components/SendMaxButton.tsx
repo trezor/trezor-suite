@@ -15,6 +15,7 @@ import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 
+import { useUtxoSelection } from '../hooks/useUtxoSelection';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { constructFormDraft, getOutputFieldName } from '../utils';
@@ -28,6 +29,7 @@ type SendMaxButtonProps = {
 export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMaxButtonProps) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
+    const { selectedUtxos } = useUtxoSelection();
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -58,7 +60,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         const response = await debounce(() =>
             dispatch(
                 calculateFeeLevelsMaxAmountThunk({
-                    formState: constructFormDraft({ formValues }),
+                    formState: constructFormDraft({ formValues, selectedUtxos }),
                     accountKey,
                 }),
             ),
@@ -69,7 +71,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
             const value = payload.normal ?? payload.low; // If not enough balance for normal fee level, use low.
             setMaxAmountValue(value);
         }
-    }, [dispatch, accountKey, debounce, formValues]);
+    }, [dispatch, accountKey, debounce, formValues, selectedUtxos]);
 
     useEffect(() => {
         if (tokenBalance) setMaxAmountValue(tokenBalance);

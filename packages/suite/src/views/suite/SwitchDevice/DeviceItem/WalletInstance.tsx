@@ -22,18 +22,16 @@ import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { EjectConfirmation } from './EjectConfirmation';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 
-interface WalletInstanceProps {
+type WalletInstanceProps = {
     instance: AcquiredDevice;
-    enabled: boolean;
-    selected: boolean;
+    isSelected: boolean;
     index: number; // used only in data-test
-    onCancel: ForegroundAppProps['onCancel'];
-}
+    onCancel?: ForegroundAppProps['onCancel'];
+};
 
 export const WalletInstance = ({
     instance,
-    enabled,
-    selected,
+    isSelected,
     index,
     onCancel,
     ...rest
@@ -53,7 +51,6 @@ export const WalletInstance = ({
 
     const walletBalance = useTotalFiatBalance(deviceAccounts, localCurrency, currentFiatRates);
 
-    const isSelected = enabled && selected;
     const { walletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),
     );
@@ -91,7 +88,7 @@ export const WalletInstance = ({
 
             dispatch(selectDeviceThunk({ device: instance }));
             dispatch(redirectAfterWalletSelectedThunk({ forceDeviceDashboard: !nextAccount }));
-            onCancel(false);
+            onCancel?.(false);
         }
     };
 

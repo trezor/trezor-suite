@@ -3,7 +3,7 @@ import { getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-con
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
-import history from 'src/support/history';
+import { getLocation } from 'src/support/suite/navigationService';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
@@ -77,7 +77,6 @@ const parseParamValue = <T>(value: string, defaultValue?: T) => {
 
 export type ModalAppParams = {
     cancelable: boolean;
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
     variant?: string;
 };
 
@@ -138,9 +137,7 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
 };
 
 export type WalletParams = CommonWalletParams;
-export type RouteParams = (WalletParams | ModalAppParams) & {
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
-};
+export type RouteParams = WalletParams | ModalAppParams;
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);
@@ -183,5 +180,8 @@ export const getTopLevelRoute = (url: string) => {
  * Used only in application modal.
  * Returns Route of application beneath the application modal. (real Router value)
  */
-export const getBackgroundRoute = () =>
-    findRoute(history.location.pathname + history.location.hash);
+export const getBackgroundRoute = () => {
+    const location = getLocation();
+
+    return findRoute(location.pathname + location.hash);
+};

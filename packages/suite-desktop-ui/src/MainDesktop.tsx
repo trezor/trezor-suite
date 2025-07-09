@@ -1,9 +1,8 @@
 /* eslint-disable import/order */
 import { Provider as ReduxProvider } from 'react-redux';
-import { Router as RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-
 import { createRoot } from 'react-dom/client';
+import { MemoryRouter } from 'react-router';
 import { init as initSentry } from '@sentry/electron/renderer';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
@@ -15,7 +14,12 @@ import TrezorConnect from '@trezor/connect';
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { Metadata } from 'src/components/suite/Metadata';
-import { Preloader, ToastContainer, TrafficLightDraggableWindowHeader } from 'src/components/suite';
+import {
+    AppRouter,
+    Preloader,
+    ToastContainer,
+    TrafficLightDraggableWindowHeader,
+} from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
 import Autodetect from 'src/support/suite/Autodetect';
@@ -25,21 +29,20 @@ import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop
 import { useConnectPopupModals } from 'src/support/suite/useConnectPopupModals';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
 import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
-import RouterHandler from 'src/support/suite/Router';
+import { RouterHandler } from 'src/support/suite/RouterHandler';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
-import history from 'src/support/history';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
-import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
+import { desktopComponents } from './support/desktopComponents';
 
 const MainDesktop = () => {
     useTor();
@@ -54,7 +57,7 @@ const MainDesktop = () => {
         <HelmetProvider>
             <TrafficLightDraggableWindowHeader />
             <ConnectedThemeProvider>
-                <RouterProvider history={history}>
+                <MemoryRouter>
                     <ResponsiveContextProvider>
                         <ErrorBoundary>
                             <Autodetect />
@@ -69,7 +72,7 @@ const MainDesktop = () => {
                                         <ToastContainer />
                                         <BioAuthGuard>
                                             <Preloader>
-                                                <AppRouter />
+                                                <AppRouter components={desktopComponents} />
                                             </Preloader>
                                         </BioAuthGuard>
                                     </DesktopUpdater>
@@ -77,7 +80,7 @@ const MainDesktop = () => {
                             </ConnectedIntlProvider>
                         </ErrorBoundary>
                     </ResponsiveContextProvider>
-                </RouterProvider>
+                </MemoryRouter>
             </ConnectedThemeProvider>
         </HelmetProvider>
         // </StrictMode>

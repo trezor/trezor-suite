@@ -51,7 +51,6 @@ export const Select = <TItemValue extends SelectItemValue>({
             </BottomSheet>
             <SelectTrigger
                 value={selectedItem?.label ?? null}
-                label={selectLabel}
                 handlePress={() => setIsOpen(true)}
                 testID={testID}
             />

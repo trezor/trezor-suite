@@ -1,5 +1,4 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRateKey,
@@ -10,12 +9,13 @@ import {
     TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
 export const getFiatRateKey = (
     symbol: NetworkSymbol,
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     tokenAddress?: TokenAddress,
 ): FiatRateKey => {
     if (tokenAddress) {
@@ -27,7 +27,7 @@ export const getFiatRateKey = (
 
 export const getFiatRateKeyFromTicker = (
     ticker: TickerId,
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
 ): FiatRateKey => {
     const { symbol, tokenAddress } = ticker;
 
@@ -118,7 +118,7 @@ export const selectHistoricRatesByTransactions = (
 export const fetchTransactionsRates = async (
     tickerId: TickerId,
     timestamps: Timestamp[],
-    localCurrency: FiatCurrencyCode,
+    localCurrency: BaseCurrencyCode,
     isElectrumBackend: boolean,
     rates: TickerResult[],
 ) => {

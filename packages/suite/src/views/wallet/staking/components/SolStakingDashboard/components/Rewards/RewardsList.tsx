@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import {
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     FormattedDate,
     HiddenPlaceholder,
@@ -130,7 +130,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
                                             </HiddenPlaceholder>
                                             <HiddenPlaceholder>
                                                 <Text typographyStyle="hint" variant="tertiary">
-                                                    <FiatValue
+                                                    <BaseCurrencyValue
                                                         amount={formatNetworkAmount(
                                                             reward?.amount,
                                                             account.symbol,

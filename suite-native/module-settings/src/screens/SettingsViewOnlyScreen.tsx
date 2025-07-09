@@ -4,15 +4,15 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 
 import { selectPhysicalDevices } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { Translation } from '@suite-native/intl';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
+import { AboutTitle } from '../components/ViewOnly/About';
 import { AboutViewOnlyBottomSheet } from '../components/ViewOnly/AboutViewOnlyBottomSheet';
 import { DevicesEmpty } from '../components/ViewOnly/DevicesEmpty';
 import { DevicesManagement } from '../components/ViewOnly/DevicesManagement';
 
 export const SettingsViewOnlyScreen = () => {
-    const { translate } = useTranslate();
     const [isVisibleAboutViewOnly, setIsVisibleAboutViewOnly] = useState(false);
 
     const devices = useSelector(selectPhysicalDevices);
@@ -20,11 +20,21 @@ export const SettingsViewOnlyScreen = () => {
     const showAboutViewOnly = () => setIsVisibleAboutViewOnly(true);
 
     return (
-        <Screen header={<ScreenHeader content={translate('moduleSettings.viewOnly.title')} />}>
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    title={<Translation id="moduleSettings.viewOnly.title" />}
+                    isCompactOnly={A.isEmpty(devices)}
+                    subtitle={
+                        A.isNotEmpty(devices) && <AboutTitle onPressAbout={showAboutViewOnly} />
+                    }
+                />
+            }
+        >
             {A.isEmpty(devices) ? (
                 <DevicesEmpty onPressAbout={showAboutViewOnly} />
             ) : (
-                <DevicesManagement onPressAbout={showAboutViewOnly} />
+                <DevicesManagement />
             )}
             <AboutViewOnlyBottomSheet
                 isVisible={isVisibleAboutViewOnly}

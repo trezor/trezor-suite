@@ -6,7 +6,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { cryptoIdToNetwork, getTradingNetworkDecimals } from '@suite-common/trading/src/utils';
 import { Network, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import {
     Button,
     Column,
@@ -153,7 +153,7 @@ const AddressSelect = ({
             }
             formatOptionLabel={(accountAddress: AccountAddress) => {
                 const balance = accountAddress.balance
-                    ? formatAmount(accountAddress.balance, networkDecimals)
+                    ? convertAmountSubunitsToUnits(accountAddress.balance, networkDecimals)
                     : accountAddress.balance;
 
                 return (

@@ -1,8 +1,6 @@
-import { useCallback } from 'react';
-
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
-import { Button, Column, Icon, Row, Text } from '@trezor/components';
+import { Button, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -15,11 +13,7 @@ import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBlu
 import { BluetoothConnect } from '../../../components/suite/bluetooth/BluetoothConnect';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
-export const SwitchDevice = ({
-    cancelable,
-    isAddingHiddenWalletWithRespectToSettings,
-    onCancel,
-}: ForegroundAppProps) => {
+export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const isBluetoothMode = useSelector(selectIsBluetoothListOpen);
     const dispatch = useDispatch();
@@ -36,37 +30,28 @@ export const SwitchDevice = ({
         dispatch(setBluetoothListOpen({ isOpen: true }));
     };
 
-    const handleCancel = useCallback(() => {
-        if (cancelable) {
-            onCancel();
-        }
-    }, [cancelable, onCancel]);
-
     return (
-        <SwitchDeviceModal isAnimationEnabled onCancel={handleCancel}>
+        <SwitchDeviceModal isAnimationEnabled onCancel={cancelable ? onCancel : undefined}>
             {isBluetoothMode ? (
                 <BluetoothConnect uiMode="card" />
             ) : (
                 <Column gap={spacings.md}>
-                    {sortedDevices.map((device, index) => (
+                    {sortedDevices.map(device => (
                         <DeviceItem
                             key={`${device.id}-${device.instance}`}
-                            cancelable={cancelable}
                             device={device}
-                            isAddingHiddenWalletWithRespectToSettings={
-                                isAddingHiddenWalletWithRespectToSettings
-                            }
                             instances={deviceUtils.getDeviceInstances(device, devices)}
-                            onCancel={handleCancel}
-                            isFullHeaderVisible={index === 0}
+                            onCancel={cancelable ? onCancel : undefined}
                         />
                     ))}
                     {isBluetoothEnabled && (
-                        <Button variant="tertiary" isFullWidth onClick={openBluetoothList}>
-                            <Row justifyContent="center" alignItems="center" gap={spacings.xs}>
-                                <Icon name="bluetooth" size="mediumLarge" />
-                                <Text typographyStyle="body">Pair Trezor Safe 7</Text>
-                            </Row>
+                        <Button
+                            variant="tertiary"
+                            icon="bluetooth"
+                            isFullWidth
+                            onClick={openBluetoothList}
+                        >
+                            Pair Trezor Safe 7
                         </Button>
                     )}
                 </Column>

@@ -8,6 +8,7 @@ import Animated, {
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
@@ -51,7 +52,13 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
 }));
 
-const MainnetSummary = ({ amount, symbol }: { amount: string; symbol: NetworkSymbol }) => (
+type MainnetSummaryProps = {
+    amount: string;
+    symbol: NetworkSymbol;
+    isLoading?: boolean;
+};
+
+const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
     <HStack justifyContent="space-between" alignItems="center">
         <Text variant="callout">
             <Translation id="moduleSend.fees.totalAmount" />
@@ -62,6 +69,7 @@ const MainnetSummary = ({ amount, symbol }: { amount: string; symbol: NetworkSym
                 color="textDefault"
                 value={amount}
                 symbol={symbol}
+                isLoading={isLoading}
             />
             <CryptoAmountFormatter
                 variant="hint"
@@ -69,6 +77,7 @@ const MainnetSummary = ({ amount, symbol }: { amount: string; symbol: NetworkSym
                 value={amount}
                 symbol={symbol}
                 isBalance={false}
+                isLoading={isLoading}
             />
         </VStack>
     </HStack>
@@ -80,12 +89,14 @@ const TokenSummary = ({
     mainnetFee,
     symbol,
     tokenContract,
+    isLoading = false,
 }: {
     accountKey: AccountKey;
     tokenAmount: string;
     mainnetFee: string;
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
+    isLoading?: boolean;
 }) => {
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
@@ -119,6 +130,7 @@ const TokenSummary = ({
                     value={mainnetFee}
                     symbol={symbol}
                     isBalance={false}
+                    isLoading={isLoading}
                 />
             </VStack>
         </HStack>
@@ -141,6 +153,10 @@ export const FeesFooter = ({
         formState: { isSubmitting },
     } = form;
 
+    const areFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, symbol),
+    );
+
     const animatedFooterStyle = useAnimatedStyle(
         () => ({
             paddingBottom: withTiming(isSubmittable ? CARD_BOTTOM_PADDING : 0),
@@ -159,9 +175,14 @@ export const FeesFooter = ({
                             mainnetFee={fee}
                             symbol={symbol}
                             tokenContract={tokenContract}
+                            isLoading={areFeesLoading}
                         />
                     ) : (
-                        <MainnetSummary amount={totalAmount} symbol={symbol} />
+                        <MainnetSummary
+                            amount={totalAmount}
+                            symbol={symbol}
+                            isLoading={areFeesLoading}
+                        />
                     )}
                 </Animated.View>
             </Card>
@@ -176,7 +197,7 @@ export const FeesFooter = ({
                         accessibilityLabel="validate send form"
                         testID="@send/fees-submit-button"
                         onPress={onSubmit}
-                        disabled={isSubmitting}
+                        isDisabled={isSubmitting || areFeesLoading}
                     >
                         <Translation id="moduleSend.fees.submitButton" />
                     </Button>

@@ -1,4 +1,8 @@
-import { formatAmount, getTxOperation, isNftTokenTransfer } from '@suite-common/wallet-utils';
+import {
+    convertAmountSubunitsToUnits,
+    getTxOperation,
+    isNftTokenTransfer,
+} from '@suite-common/wallet-utils';
 import { TokenTransfer } from '@trezor/connect';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -37,7 +41,7 @@ export const AmountComponent = ({
     if (withSign) {
         return (
             <FormattedCryptoAmount
-                value={formatAmount(transfer.amount, transfer.decimals)}
+                value={convertAmountSubunitsToUnits(transfer.amount, transfer.decimals)}
                 symbol={transfer.symbol}
                 contractAddress={transfer.contract}
                 signValue={operation}
@@ -45,5 +49,5 @@ export const AmountComponent = ({
         );
     }
 
-    return formatAmount(transfer.amount, transfer.decimals);
+    return convertAmountSubunitsToUnits(transfer.amount, transfer.decimals);
 };

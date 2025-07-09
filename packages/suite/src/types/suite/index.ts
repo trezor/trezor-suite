@@ -132,7 +132,6 @@ export type ForegroundAppRoute = Extract<
 export type ForegroundAppProps = {
     cancelable: boolean;
     onCancel: (preserveParams?: boolean) => void;
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';

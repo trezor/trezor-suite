@@ -43,33 +43,35 @@ export const ConnectionSettings = () => {
                         noShadow
                     />
                 )}
-                <CardDivider />
                 {isWalletConnectEnabled && (
-                    <Box paddingHorizontal="sp16" paddingVertical="sp12">
-                        <WalletConnectPairBottomSheet
-                            pairingOpened={pairingOpened}
-                            setPairingOpened={setPairingOpened}
-                        />
-                        <TouchableOpacity
-                            onPress={() => setPairingOpened('qr')}
-                            testID="@settings/wallet-connect-add"
-                        >
-                            <HStack justifyContent="space-between" alignItems="center">
-                                <HStack spacing="sp16" alignItems="center">
-                                    <RoundedIcon
-                                        name="qrCode"
-                                        color="iconPrimaryDefault"
-                                        backgroundColor="backgroundPrimarySubtleOnElevation0"
-                                        iconSize="mediumLarge"
-                                    />
-                                    <Text color="textPrimaryDefault">
-                                        <Translation id="moduleSettings.items.connections.walletConnect.add" />
-                                    </Text>
+                    <>
+                        <CardDivider />
+                        <Box paddingHorizontal="sp16" paddingVertical="sp12">
+                            <WalletConnectPairBottomSheet
+                                pairingOpened={pairingOpened}
+                                setPairingOpened={setPairingOpened}
+                            />
+                            <TouchableOpacity
+                                onPress={() => setPairingOpened('qr')}
+                                testID="@settings/wallet-connect-add"
+                            >
+                                <HStack justifyContent="space-between" alignItems="center">
+                                    <HStack spacing="sp16" alignItems="center">
+                                        <RoundedIcon
+                                            name="qrCode"
+                                            color="iconPrimaryDefault"
+                                            backgroundColor="backgroundPrimarySubtleOnElevation0"
+                                            iconSize="mediumLarge"
+                                        />
+                                        <Text color="textPrimaryDefault">
+                                            <Translation id="moduleSettings.items.connections.walletConnect.add" />
+                                        </Text>
+                                    </HStack>
+                                    <Icon name="plus" color="textSecondaryHighlight" />
                                 </HStack>
-                                <Icon name="plus" color="textSecondaryHighlight" />
-                            </HStack>
-                        </TouchableOpacity>
-                    </Box>
+                            </TouchableOpacity>
+                        </Box>
+                    </>
                 )}
             </Card>
             {isConnectPopupEnabled && (

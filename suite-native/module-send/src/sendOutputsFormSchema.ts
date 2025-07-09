@@ -26,6 +26,7 @@ export type SendFormFormContext = {
     decimals?: number;
     accountDescriptor?: string;
     isTaprootAvailable?: boolean;
+    accountNativeAvailableBalance?: string;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -83,6 +84,25 @@ const isAmountHigherThanBalance = (
     }
 
     return !normalMaxAmount || amountBigNumber.gt(normalMaxAmount);
+};
+
+const hasEnoughBalanceForFees = (context?: SendFormFormContext) => {
+    if (!context) {
+        return false;
+    }
+
+    const { symbol, networkFeeInfo, accountNativeAvailableBalance, isTokenFlow } = context;
+
+    if (!isTokenFlow) {
+        return true;
+    }
+    if (!symbol || !networkFeeInfo || !accountNativeAvailableBalance) {
+        return false;
+    }
+
+    const amountBigNumber = new BigNumber(accountNativeAvailableBalance);
+
+    return amountBigNumber.gt(networkFeeInfo.minFee);
 };
 
 export const sendOutputsFormValidationSchema = yup.object({
@@ -164,6 +184,16 @@ export const sendOutputsFormValidationSchema = yup.object({
                             }
 
                             return true;
+                        },
+                    )
+                    .test(
+                        'has-enough-balance-for-fees',
+                        `Insufficient balance to cover the transaction fees.`,
+                        function (
+                            _,
+                            { options: { context } }: yup.TestContext<SendFormFormContext>,
+                        ) {
+                            return hasEnoughBalanceForFees(context);
                         },
                     )
                     .test(

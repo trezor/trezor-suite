@@ -1,4 +1,4 @@
-import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -57,7 +57,10 @@ export const UnecoCoinjoinModal = () => {
                         values={{
                             crypto: (
                                 <FormattedCryptoAmount
-                                    value={formatAmount(UNECONOMICAL_COINJOIN_THRESHOLD, decimals)}
+                                    value={convertAmountSubunitsToUnits(
+                                        UNECONOMICAL_COINJOIN_THRESHOLD,
+                                        decimals,
+                                    )}
                                     symbol={symbol}
                                     isRawString
                                 />

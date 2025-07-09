@@ -7,7 +7,7 @@ import { Column, FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -133,7 +133,7 @@ export const UnstakeInputs = () => {
                     ),
                 }}
                 fiatValue={
-                    <FiatValue amount={amount} symbol={symbol} showApproximationIndicator>
+                    <BaseCurrencyValue amount={amount} symbol={symbol} showApproximationIndicator>
                         {({ value }) =>
                             value ? (
                                 <Text typographyStyle="label" variant="tertiary">
@@ -141,7 +141,7 @@ export const UnstakeInputs = () => {
                                 </Text>
                             ) : null
                         }
-                    </FiatValue>
+                    </BaseCurrencyValue>
                 }
                 options={[
                     {
@@ -169,14 +169,14 @@ export const UnstakeInputs = () => {
                                     symbol={symbol}
                                 />
                                 <Text typographyStyle="hint">
-                                    <FiatValue amount={depositedBalance} symbol={symbol}>
+                                    <BaseCurrencyValue amount={depositedBalance} symbol={symbol}>
                                         {({ value }) => value && <span>{value}</span>}
-                                    </FiatValue>
+                                    </BaseCurrencyValue>
                                     {isRewardsVisible && (
                                         <>
                                             {' + '}
                                             <Text variant="primary">
-                                                <FiatValue
+                                                <BaseCurrencyValue
                                                     amount={restakedReward}
                                                     symbol={symbol}
                                                 />
@@ -202,7 +202,10 @@ export const UnstakeInputs = () => {
                                               symbol={symbol}
                                           />
                                           <Text variant="primary">
-                                              <FiatValue amount={restakedReward} symbol={symbol} />
+                                              <BaseCurrencyValue
+                                                  amount={restakedReward}
+                                                  symbol={symbol}
+                                              />
                                           </Text>
                                       </Column>
                                   ),

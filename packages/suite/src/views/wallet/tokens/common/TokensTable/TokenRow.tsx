@@ -44,7 +44,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import {
     Address,
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     PriceTicker,
     Translation,
@@ -214,7 +214,7 @@ export const TokenRow = ({
             <Table.Cell>
                 <Column alignItems="flex-start">
                     {!hideRates && (
-                        <FiatValue
+                        <BaseCurrencyValue
                             amount={token.balance || ''}
                             symbol={network.symbol}
                             tokenAddress={token.contract as TokenAddress}

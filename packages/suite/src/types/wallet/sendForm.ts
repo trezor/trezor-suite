@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Network } from '@suite-common/wallet-config';
 import {
     Account,
@@ -17,6 +16,7 @@ import {
     UtxoSorting,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
 import {
@@ -29,7 +29,7 @@ import { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
 export type UseSendFormState = {
     account: Account;
     network: Network;
-    localCurrencyOption: { value: FiatCurrencyCode; label: Uppercase<FiatCurrencyCode> };
+    localCurrencyOption: { value: BaseCurrencyCode; label: Uppercase<BaseCurrencyCode> };
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     online: boolean;
     metadataEnabled: boolean;

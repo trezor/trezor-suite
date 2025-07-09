@@ -13,7 +13,7 @@ export const DiscoveryLoader = () => {
 
     return (
         <SwitchDeviceModal data-testid="@discovery/loader">
-            <CardWithDevice device={device} isFullHeaderVisible={false}>
+            <CardWithDevice device={device}>
                 <Column
                     justifyContent="center"
                     alignItems="center"

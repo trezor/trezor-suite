@@ -1,21 +1,21 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     findToken,
     formatNetworkAmount,
     getInputState,
     hasNetworkFeatures,
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -27,7 +27,7 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 
-import { FiatInput } from './FiatInput';
+import { BaseCurrencyInput } from './BaseCurrencyInput';
 import { SendMaxSwitch } from './SendMaxSwitch';
 
 interface AmountProps {
@@ -70,7 +70,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
     const currentRate = getCurrentFiatRate({
         tokenAddress: (token?.contract ?? '') as TokenAddress,
-        currencyCode: (output.currency?.value ?? '') as FiatCurrencyCode,
+        currencyCode: (output.currency?.value ?? '') as BaseCurrencyCode,
     });
 
     const isWithRate = !!currentRate?.rate || !!currentRate?.isLoading;
@@ -110,7 +110,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
                 if (dust && amountBig.lt(dust)) {
                     if (shouldSendInSats) {
-                        dust = amountToSmallestUnit(dust, decimals);
+                        dust = convertAmountUnitsToSubunits(dust, decimals);
                     }
 
                     return translationString('AMOUNT_IS_BELOW_DUST', {
@@ -174,7 +174,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 />
 
                 {isWithRate && (
-                    <FiatValue amount="1" symbol={symbol}>
+                    <BaseCurrencyValue amount="1" symbol={symbol}>
                         {({ rate }) =>
                             rate && (
                                 <>
@@ -184,7 +184,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                         variant="tertiary"
                                         margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
                                     />
-                                    <FiatInput
+                                    <BaseCurrencyInput
                                         output={output}
                                         outputId={outputId}
                                         // To fix alignment with the other input
@@ -194,7 +194,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                 </>
                             )
                         }
-                    </FiatValue>
+                    </BaseCurrencyValue>
                 )}
             </Flex>
 

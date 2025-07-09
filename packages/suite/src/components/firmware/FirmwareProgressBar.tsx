@@ -23,7 +23,6 @@ export const FirmwareProgressBar = () => {
         TranslationKey
     > = {
         installing: 'TR_INSTALLING',
-        validating: 'TR_VALIDATION',
         restarting: isActiveOnboarding
             ? 'TR_RESTARTING_TREZOR'
             : 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',

@@ -4,12 +4,12 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -306,7 +306,7 @@ export const getFiatRatesForNetworkInTimeFrame = async ({
     timestamps: number[];
     symbol: NetworkSymbol;
     contractId?: TokenAddress;
-    fiatCurrency: FiatCurrencyCode;
+    fiatCurrency: BaseCurrencyCode;
     forceRefetch?: boolean;
     isElectrumBackend: boolean;
 }) => {
@@ -348,7 +348,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
     numberOfPoints?: number;
-    fiatCurrency: FiatCurrencyCode;
+    fiatCurrency: BaseCurrencyCode;
     forceRefetch?: boolean;
     isElectrumBackend: boolean;
     dispatch: ReturnType<typeof useDispatch>;

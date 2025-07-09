@@ -4,7 +4,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PriceChangeBadge, Text } from '@suite-native/atoms';
-import { FiatAmountFormatter } from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -80,7 +80,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                             values={{ coinName }}
                         />
                     </Text>
-                    <FiatAmountFormatter
+                    <BaseCurrencyAmountFormatter
                         symbol={symbol}
                         value={currentValue ? `${currentValue}` : null}
                         variant="titleSmall"

@@ -13,10 +13,9 @@ import { Translation } from '../../../Translation';
 type PassphraseWalletConfirmationProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     onDeviceOffer: boolean;
-    onCancel: () => void;
+    onCancel?: () => void;
     onBack?: () => void;
     device: TrezorDevice;
-    deviceLoading?: boolean;
     isExistingWallet?: boolean;
 };
 
@@ -26,19 +25,13 @@ export const PassphraseWalletConfirmation = ({
     onSubmit,
     onDeviceOffer,
     device,
-    deviceLoading,
     isExistingWallet,
 }: PassphraseWalletConfirmationProps) => {
     const deviceModel = useSelector(selectDeviceModel);
 
     return (
         <SwitchDeviceModal onCancel={onCancel}>
-            <CardWithDevice
-                onCancel={onCancel}
-                device={device}
-                onBackButtonClick={onBack}
-                isFullHeaderVisible
-            >
+            <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
                 <Column gap={spacings.sm}>
                     <H3>
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
@@ -48,7 +41,6 @@ export const PassphraseWalletConfirmation = ({
                     </Banner>
                     <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
-                        deviceLoading={deviceLoading}
                         onSubmit={onSubmit}
                         offerPassphraseOnDevice={onDeviceOffer}
                         allowNonAsciiCharacters={isExistingWallet}

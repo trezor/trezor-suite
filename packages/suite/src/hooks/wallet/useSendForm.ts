@@ -9,16 +9,17 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     getDefaultValues,
     getFeeInfo,
+    useExcludedUtxos,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { fillSendForm } from 'src/actions/suite/protocolActions';
@@ -33,7 +34,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
-import { useExcludedUtxos } from './form/useExcludedUtxos';
 import { useFees } from './form/useFees';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
@@ -49,7 +49,7 @@ SendContext.displayName = 'SendContext';
 // Props of @wallet-views/send/index
 export interface SendFormProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     fees: AppState['wallet']['fees'];
     online: boolean;
     sendRaw?: boolean;
@@ -296,7 +296,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 const protocolAmount = protocol.sendForm.amount.toString();
 
                 const formattedAmount = shouldSendInSats
-                    ? amountToSmallestUnit(protocolAmount, state.network.decimals)
+                    ? convertAmountUnitsToSubunits(protocolAmount, state.network.decimals)
                     : protocolAmount;
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
@@ -373,7 +373,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useDidUpdate(() => {
         const { outputs } = getValues();
 
-        const conversionToUse = shouldSendInSats ? amountToSmallestUnit : formatAmount;
+        const conversionToUse = shouldSendInSats
+            ? convertAmountUnitsToSubunits
+            : convertAmountSubunitsToUnits;
 
         outputs.forEach((output, index) => {
             if (!output.amount) {

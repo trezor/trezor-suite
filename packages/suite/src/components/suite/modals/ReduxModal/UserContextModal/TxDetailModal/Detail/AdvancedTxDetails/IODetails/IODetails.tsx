@@ -6,7 +6,11 @@ import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/walle
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
+import {
+    convertAmountSubunitsToUnits,
+    formatNetworkAmount,
+    isNftTokenTransfer,
+} from '@suite-common/wallet-utils';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
 import {
     CollapsibleBox,
@@ -250,7 +254,7 @@ const TokenSpecificBalanceDetailsRow = ({
                                 linkTypographyStyle="label"
                             />
                         ) : (
-                            formatAmount(transfer.amount, transfer.decimals)
+                            convertAmountSubunitsToUnits(transfer.amount, transfer.decimals)
                         );
 
                         return (

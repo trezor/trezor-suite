@@ -8,7 +8,7 @@ import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';
 import { Loading } from './Loading';
 import { BundleLoader } from './BundleLoader';
-import { FiatValue } from './FiatValue';
+import { BaseCurrencyValue } from './BaseCurrencyValue';
 import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
@@ -52,6 +52,7 @@ import { PinMatrix } from './PinMatrix/PinMatrix';
 import { StakingFeature } from './StakingFeature';
 import { StakeAmountWrapper } from './StakeAmountWrapper';
 import { MarkdownWithComponents } from './MarkdownWithComponents';
+import { AppRouter } from './AppRouter';
 
 export {
     Address,
@@ -59,7 +60,7 @@ export {
     DeviceConfirmImage,
     CheckItem,
     PrerequisitesGuide,
-    FiatValue,
+    BaseCurrencyValue,
     Translation,
     WordInput,
     WordInputAdvanced,
@@ -105,6 +106,7 @@ export {
     StakingFeature,
     StakeAmountWrapper,
     MarkdownWithComponents,
+    AppRouter,
 };
 export * from './graph';
 export * from './notifications';

@@ -13,7 +13,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -207,7 +207,10 @@ const useBuyQuoteChangeEffect = ({ getValues, setValue, watch }: BuyFormType) =>
         if (!amountInCrypto && cryptoValue !== truncatedCryptoAmount) {
             const value =
                 isAmountInSats && truncatedCryptoAmount && symbol
-                    ? amountToSmallestUnit(truncatedCryptoAmount, getNetwork(symbol).decimals)
+                    ? convertAmountUnitsToSubunits(
+                          truncatedCryptoAmount,
+                          getNetwork(symbol).decimals,
+                      )
                     : truncatedCryptoAmount;
             setValue('cryptoValue', value);
         }
@@ -238,7 +241,7 @@ const useValidations = (
 
 export const useBuyForm = (): BuyFormType => {
     const { translate } = useTranslate();
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const defaultValues = useSelector(selectBuyFormDefaultValues);
     const limits = useSelector(selectBuyAmountLimits);
     const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
@@ -249,7 +252,7 @@ export const useBuyForm = (): BuyFormType => {
         context: {
             ...limits,
             translate,
-            FiatAmountFormatter,
+            FiatAmountFormatter: BaseCurrencyAmountFormatter,
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
         },

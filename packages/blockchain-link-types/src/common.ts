@@ -1,5 +1,7 @@
 import type tls from 'tls';
 
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type {
     AddressAlias,
@@ -116,9 +118,9 @@ export type TransactionDetail = {
     totalOutput: string;
 };
 
-export interface FiatRatesBySymbol {
-    [symbol: string]: number | undefined;
-}
+export type FiatRatesBySymbol = {
+    [K in BaseCurrencyCode]?: number | undefined;
+};
 
 export interface AccountBalanceHistory {
     time: number;

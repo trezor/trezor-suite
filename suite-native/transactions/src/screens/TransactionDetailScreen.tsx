@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Button, Text, VStack } from '@suite-native/atoms';
+import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -69,20 +69,18 @@ export const TransactionDetailScreen = ({
             header={
                 <ScreenHeader
                     closeActionType={closeActionType}
-                    content={
-                        <Text>
-                            <Translation
-                                id="transactions.detail.header"
-                                values={{
-                                    transactionType: _ => (
-                                        <TransactionName
-                                            transaction={transaction}
-                                            isPending={isPending}
-                                        />
-                                    ),
-                                }}
-                            />
-                        </Text>
+                    title={
+                        <Translation
+                            id="transactions.detail.header"
+                            values={{
+                                transactionType: _ => (
+                                    <TransactionName
+                                        transaction={transaction}
+                                        isPending={isPending}
+                                    />
+                                ),
+                            }}
+                        />
                     }
                 />
             }

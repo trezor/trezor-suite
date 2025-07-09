@@ -25,6 +25,7 @@ import { getFeeUnits } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { EmptyAmountSkeleton } from '@suite-native/formatters/src/components/EmptyAmountSkeleton';
 import { FormContext } from '@suite-native/forms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -43,6 +44,7 @@ type FeeOptionProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     isInteractive?: boolean;
+    isLoading?: boolean;
 };
 
 const feeLabelsMap = {
@@ -93,6 +95,7 @@ export const FeeOption = ({
     accountKey,
     tokenContract,
     isInteractive = true,
+    isLoading = false,
 }: FeeOptionProps) => {
     const { utils, applyStyle } = useNativeStyles();
     const { watch, setValue } = useContext(FormContext);
@@ -188,11 +191,19 @@ export const FeeOption = ({
                                     {' • '}
                                 </Text>
                                 <Text variant="hint" color="textSubdued">
-                                    {formattedFeePerUnit}
+                                    {isLoading ? (
+                                        <EmptyAmountSkeleton variant="hint" />
+                                    ) : (
+                                        formattedFeePerUnit
+                                    )}
                                 </Text>
                             </Box>
                             <Text variant="hint" color="textSubdued">
-                                {`~ ${feeTimeEstimate}`}
+                                {isLoading ? (
+                                    <EmptyAmountSkeleton variant="hint" />
+                                ) : (
+                                    `~ ${feeTimeEstimate}`
+                                )}
                             </Text>
                         </VStack>
                         <VStack flex={1} alignItems="flex-end" spacing="sp4">
@@ -201,6 +212,7 @@ export const FeeOption = ({
                                 color="textDefault"
                                 value={fee}
                                 symbol={symbol}
+                                isLoading={isLoading}
                             />
                             <CryptoAmountFormatter
                                 variant="hint"
@@ -210,6 +222,7 @@ export const FeeOption = ({
                                 isBalance={false}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
+                                isLoading={isLoading}
                             />
                         </VStack>
                         {isInteractive && (

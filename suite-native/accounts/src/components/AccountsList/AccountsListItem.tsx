@@ -5,9 +5,9 @@ import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wal
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import {
+    BaseCurrencyAmountFormatter,
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
-    FiatAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
@@ -127,7 +127,7 @@ export const AccountsListItem = ({
             }
             mainValue={
                 shouldShowTokenBadge && fiatBalance !== undefined ? (
-                    <FiatAmountFormatter
+                    <BaseCurrencyAmountFormatter
                         numberOfLines={1}
                         adjustsFontSizeToFit
                         value={fiatBalance}

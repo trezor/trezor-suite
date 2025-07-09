@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -52,7 +52,7 @@ export const CustomRow = ({
             }
             fiatAmount={
                 useFiatValues ? (
-                    <FiatValue
+                    <BaseCurrencyValue
                         amount={amount}
                         symbol={transaction.symbol}
                         historicRate={historicRate}
@@ -146,7 +146,7 @@ export const CoinjoinRow = ({
         <TransactionTargetLayout
             fiatAmount={
                 useFiatValues ? (
-                    <FiatValue
+                    <BaseCurrencyValue
                         amount={formatNetworkAmount(
                             new BigNumber(transaction.amount).abs().toString(),
                             transaction.symbol,

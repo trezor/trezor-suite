@@ -233,8 +233,8 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);
 
-        // non-blockbook + networks using external nodes will not be updated when app window is not active
-        const shouldSync = isWindowVisible || isTrezorInfraBasedNetwork(symbol);
+        // Only Trezor infra networks sync, and only when app window is active
+        const shouldSync = isWindowVisible;
 
         if (shouldSync) {
             // non-blockbook + networks using external nodes will not update periodically if not visible in UI (sidebar)

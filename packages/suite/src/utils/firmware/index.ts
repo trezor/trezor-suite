@@ -88,7 +88,7 @@ export const getSuiteFirmwareTypeString = (firmwareType?: FirmwareType) => {
     switch (firmwareType) {
         case FirmwareType.BitcoinOnly:
             return 'TR_FIRMWARE_TYPE_BITCOIN_ONLY';
-        case FirmwareType.Regular:
+        case FirmwareType.Universal:
             return 'TR_FIRMWARE_TYPE_REGULAR';
         default:
             return undefined;

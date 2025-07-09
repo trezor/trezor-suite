@@ -1,9 +1,9 @@
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
-import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
@@ -40,7 +40,7 @@ export const TradingBalance = ({
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
         stringBalance && shouldSendInSats
-            ? amountToSmallestUnit(stringBalance, networkDecimals)
+            ? convertAmountUnitsToSubunits(stringBalance, networkDecimals)
             : stringBalance;
 
     const { fiatAmount } = useFiatFromCryptoValue({
@@ -63,7 +63,7 @@ export const TradingBalance = ({
                     stringBalance &&
                     fiatAmount &&
                     symbol && (
-                        <FiatValue
+                        <BaseCurrencyValue
                             amount={stringBalance}
                             symbol={symbol}
                             tokenAddress={tokenAddress}
@@ -84,9 +84,11 @@ export const TradingBalance = ({
             {stringBalance && fiatAmount && symbol && stringBalance !== '0' && (
                 <>
                     {' '}
-                    (
-                    <FiatValue amount={stringBalance} symbol={symbol} tokenAddress={tokenAddress} />
-                    )
+                    <BaseCurrencyValue
+                        amount={stringBalance}
+                        symbol={symbol}
+                        tokenAddress={tokenAddress}
+                    />
                 </>
             )}
         </Text>

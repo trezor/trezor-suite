@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { Fees } from './fees';
 import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
@@ -50,7 +50,7 @@ export class TradingPage {
     readonly buyBestOfferButton: Locator;
     readonly youPayFiatInput: Locator;
     readonly youPayCurrencyDropdown: Locator;
-    readonly youPayCurrencyOption = (currency: FiatCurrencyCode) =>
+    readonly youPayCurrencyOption = (currency: BaseCurrencyCode) =>
         this.page.getByTestId(`@trading/form/fiat-currency-select/option/${currency}`);
     readonly youPayFiatCryptoSwitchButton: Locator;
     readonly youPayCryptoInput: Locator;
@@ -229,7 +229,7 @@ export class TradingPage {
     }
 
     @step()
-    async selectFiatCurrency(currencyCode: FiatCurrencyCode) {
+    async selectFiatCurrency(currencyCode: BaseCurrencyCode) {
         const currentCurrency = await this.youPayCurrencyDropdown.textContent();
         if (currentCurrency === currencyCode.toUpperCase()) {
             return;
@@ -259,7 +259,7 @@ export class TradingPage {
         amount: string,
         cryptoCurrency: string = 'bitcoin',
         wantCrypto: boolean = false,
-        fiatCurrencyCode: FiatCurrencyCode = 'czk',
+        fiatCurrencyCode: BaseCurrencyCode = 'czk',
         country: string = 'CZ',
     ) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
@@ -285,7 +285,7 @@ export class TradingPage {
     async fillSellForm(
         amount: string,
         cryptoCurrency: string = 'bitcoin',
-        fiatCurrencyCode: FiatCurrencyCode = 'eur',
+        fiatCurrencyCode: BaseCurrencyCode = 'eur',
         country: string = 'CZ',
     ) {
         await this.selectCountryOfResidence(country);
@@ -458,6 +458,16 @@ export class TradingPage {
     async waitForRedirectCompletion() {
         await expect(this.page.getByText('Buy & sell')).toBeHidden();
         await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 });
+    }
+
+    @step()
+    async waitForSellRedirectCompletion() {
+        await expect(this.page.getByText('Buy & sell')).toBeHidden();
+        //TODO: Workaround because of bug #19743, device switcher should not be opened
+        await Promise.all([
+            expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 }),
+            this.page.getByTestId('@switch-device/cancel-button').click({ timeout: 30_000 }),
+        ]);
     }
 
     @step()

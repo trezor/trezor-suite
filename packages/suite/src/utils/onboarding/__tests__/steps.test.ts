@@ -28,7 +28,7 @@ const backupStep: Step = {
 
 const coinsStep: Step = {
     id: STEP.ID_COINS_STEP,
-    supportedFirmwareTypes: [FirmwareType.Regular],
+    supportedFirmwareTypes: [FirmwareType.Universal],
 };
 
 const stepCategory: StepCategory = {
@@ -39,7 +39,7 @@ const stepCategory: StepCategory = {
 
 const defaultDevice = {
     features: { internal_model: DeviceModelInternal.T1B1 },
-    firmwareType: FirmwareType.Regular,
+    firmwareType: FirmwareType.Universal,
 } as AcquiredDevice;
 
 const propsMock: IsStepUsedProps = {

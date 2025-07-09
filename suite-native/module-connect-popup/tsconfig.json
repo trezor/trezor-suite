@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
@@ -15,6 +18,7 @@
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-mobile"
         },

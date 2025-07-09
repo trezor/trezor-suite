@@ -34,6 +34,7 @@ export const TRANSPORT = {
     DEVICE_DISCONNECTED: 'transport-device_disconnected',
     DEVICE_SESSION_CHANGED: 'transport-device_session_changed',
     DEVICE_REQUEST_RELEASE: 'transport-device_request_release',
+    SEND_MESSAGE_PROGRESS: 'transport-send_message_progress',
     /* messages */
     DISABLE_WEBUSB: 'transport-disable_webusb',
     REQUEST_DEVICE: 'transport-request_device',

@@ -90,6 +90,10 @@ export type SendStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
     };
+    [SendStackRoutes.SendUtxo]: {
+        accountKey: AccountKey;
+        amount?: string;
+    };
     [SendStackRoutes.SendFees]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
@@ -219,6 +223,7 @@ export type WipeDeviceStackParamList = {
     [WipeDeviceStackRoutes.WipeDevice]: undefined;
     [WipeDeviceStackRoutes.ContinueOnTrezor]: undefined;
     [WipeDeviceStackRoutes.WipeDeviceLoadingScreen]: undefined;
+    [WipeDeviceStackRoutes.FactoryReset]: undefined;
 };
 
 export type DeviceNameStackParamList = {
@@ -232,6 +237,9 @@ export type DeviceCheckBackupStackParamList = {
     [DeviceCheckBackupStackRoutes.CheckBackup]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupSuccess]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupRecap]: undefined;
+    [DeviceCheckBackupStackRoutes.UnsupportedModel]: {
+        deviceModel: string;
+    };
 };
 
 export type DeviceAuthenticityStackParamList = {
@@ -299,6 +307,7 @@ export type RootStackParamList = {
         source?: { uri?: string; html?: string };
         orderId?: string;
     };
+    [RootStackRoutes.BootloaderMode]: undefined;
 };
 
 export type TradingStackParamList = {

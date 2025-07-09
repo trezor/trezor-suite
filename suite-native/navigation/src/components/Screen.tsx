@@ -13,9 +13,13 @@ import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
+import { DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
+import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
+import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
+import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 
 export type ScreenProps = {
     children: ReactNode;
@@ -104,41 +108,59 @@ export const Screen = ({
 
     const { name } = useRoute();
 
+    // We have to extract dynamic header props from header prop. While not ideal, this allows us to only send one header prop to the screen.
+    const dynamicHeaderProps = ((): DynamicScreenHeaderProps | null => {
+        if (isScreenHeaderPropDynamic(header)) {
+            return header.props as DynamicScreenHeaderProps;
+        }
+
+        return null;
+    })();
+
+    const shouldRenderDynamicScrollableHeader =
+        isScreenHeaderPropDynamic(header) && !dynamicHeaderProps?.isCompactOnly;
+
     return (
-        <View
-            style={applyStyle(screenContainerStyle, {
-                backgroundColor,
-                insets,
-                isMessageBannerDisplayed,
-            })}
-            testID={`@screen/${name}`}
-        >
-            <SystemBars style={systemBarsStyle} />
-            {header}
-            <ScreenContentWrapper
-                isScrollable={isScrollable}
-                hasHeader={!!header}
-                focusedInputBottomOffset={focusedInputBottomOffset}
-                refreshControl={refreshControl}
+        <DynamicHeaderProvider>
+            <View
+                style={applyStyle(screenContainerStyle, {
+                    backgroundColor,
+                    insets,
+                    isMessageBannerDisplayed,
+                })}
+                testID={`@screen/${name}`}
             >
-                <Box
-                    style={applyStyle(screenContentStyle, {
-                        insets,
-                        applyBottomInset: applyBottomInset && !footer,
-                        horizontalPadding,
-                        bottomPadding,
-                    })}
+                <SystemBars style={systemBarsStyle} />
+                {header}
+                <ScreenContentWrapper
+                    isScrollable={isScrollable}
+                    hasHeader={!!header}
+                    focusedInputBottomOffset={focusedInputBottomOffset}
+                    refreshControl={refreshControl}
+                    isDynamicHeader={isScreenHeaderPropDynamic(header)}
                 >
-                    {children}
-                </Box>
-            </ScreenContentWrapper>
-            {footer && (
-                <KeyboardStickyView
-                    style={applyStyle(screenFooterStyle, { insets, applyBottomInset })}
-                >
-                    {footer}
-                </KeyboardStickyView>
-            )}
-        </View>
+                    {shouldRenderDynamicScrollableHeader && (
+                        <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />
+                    )}
+                    <Box
+                        style={applyStyle(screenContentStyle, {
+                            insets,
+                            applyBottomInset: applyBottomInset && !footer,
+                            horizontalPadding,
+                            bottomPadding,
+                        })}
+                    >
+                        {children}
+                    </Box>
+                </ScreenContentWrapper>
+                {footer && (
+                    <KeyboardStickyView
+                        style={applyStyle(screenFooterStyle, { insets, applyBottomInset })}
+                    >
+                        {footer}
+                    </KeyboardStickyView>
+                )}
+            </View>
+        </DynamicHeaderProvider>
     );
 };

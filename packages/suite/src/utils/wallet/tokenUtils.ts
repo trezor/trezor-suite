@@ -1,4 +1,3 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
     EnhancedTokenInfo,
     TokenDefinition,
@@ -13,6 +12,7 @@ import {
     isNftToken,
     isTokenMatchesSearch,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -38,7 +38,7 @@ export const sortTokensWithRates = (a: TokensWithRates, b: TokensWithRates) => {
 
 export const enhanceTokensWithRates = (
     tokens: Account['tokens'],
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     symbol: NetworkSymbol,
     rates?: RatesByKey,
 ) => {

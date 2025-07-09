@@ -20,6 +20,7 @@ import { Analytics } from './Analytics';
 import { AutoEject } from './AutoEject';
 import { AutoStart } from './AutoStart';
 import { AutomaticUpdate } from './AutomaticUpdate';
+import { BaseCurrency } from './BaseCurrency';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { ClearStorage } from './ClearStorage';
 import { ConnectLabelingProvider } from './ConnectLabelingProvider';
@@ -27,7 +28,6 @@ import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
 import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
-import { Fiat } from './Fiat';
 import { Labeling } from './Labeling';
 import { Language } from './Language';
 import { ShowApplicationLog } from './ShowApplicationLog';
@@ -75,7 +75,7 @@ export const SettingsGeneral = () => {
 
                 <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="flag">
                     <Language />
-                    <Fiat />
+                    <BaseCurrency />
                     {hasBitcoinNetworks && <BitcoinAmountUnit />}
                 </SettingsSection>
             </div>

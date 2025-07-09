@@ -1,5 +1,7 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
     deviceActions,
@@ -83,36 +85,38 @@ export const useShowViewOnlyAlert = () => {
         });
     }, [showAlert, handleEnable, handleCancel]);
 
-    useEffect(() => {
-        let isMounted = true;
-        let timerId: TimerId;
+    useFocusEffect(
+        useCallback(() => {
+            let isMounted = true;
+            let timerId: TimerId;
 
-        const canBeShowed =
-            !isDeviceRemembered &&
-            isDeviceReadyToUseAndAuthorized &&
-            !isPortfolioTrackerDevice &&
-            !hasDiscovery &&
-            !viewOnlyCancelationTimestamp;
+            const canBeShowed =
+                !isDeviceRemembered &&
+                isDeviceReadyToUseAndAuthorized &&
+                !isPortfolioTrackerDevice &&
+                !hasDiscovery &&
+                !viewOnlyCancelationTimestamp;
 
-        //show after a delay
-        if (canBeShowed) {
-            timerId = setTimeout(() => {
-                if (isMounted) {
-                    showViewOnlyAlert();
-                }
-            }, SHOW_TIMEOUT);
-        }
+            //show after a delay
+            if (canBeShowed) {
+                timerId = setTimeout(() => {
+                    if (isMounted) {
+                        showViewOnlyAlert();
+                    }
+                }, SHOW_TIMEOUT);
+            }
 
-        return () => {
-            clearTimeout(timerId);
-            isMounted = false;
-        };
-    }, [
-        hasDiscovery,
-        isDeviceReadyToUseAndAuthorized,
-        isDeviceRemembered,
-        isPortfolioTrackerDevice,
-        showViewOnlyAlert,
-        viewOnlyCancelationTimestamp,
-    ]);
+            return () => {
+                clearTimeout(timerId);
+                isMounted = false;
+            };
+        }, [
+            hasDiscovery,
+            isDeviceReadyToUseAndAuthorized,
+            isDeviceRemembered,
+            isPortfolioTrackerDevice,
+            showViewOnlyAlert,
+            viewOnlyCancelationTimestamp,
+        ]),
+    );
 };

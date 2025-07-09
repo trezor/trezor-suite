@@ -17,7 +17,6 @@
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
@@ -38,6 +37,7 @@
         "date-fns": "^4.1.0",
         "react": "18.2.0",
         "react-hook-form": "^7.59.0",
+        "react-redux": "^9.2.0",
         "web3-utils": "^4.3.1"
     }
 }

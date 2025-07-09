@@ -273,7 +273,7 @@ export const saveAccountHistoricRates =
     async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return Promise.resolve();
         const allTxs = getState().wallet.transactions.transactions;
-        const accTxs = allTxs[accountKey] || [];
+        const accTxs = (allTxs[accountKey] || []).filter(tx => !!tx);
 
         const accHistoricRates = selectHistoricRatesByTransactions(historicRates, accTxs);
 
@@ -287,7 +287,7 @@ export const saveAccountTransactions =
         const accTxs = allTxs[account.key] || [];
 
         // wrap txs and add its order inside the array
-        const orderedTxs = accTxs.map((tx, order) => ({ tx, order }));
+        const orderedTxs = accTxs.map((tx, order) => ({ tx, order })).filter(({ tx }) => !!tx);
 
         return db.addItems('txs', orderedTxs, true);
     };

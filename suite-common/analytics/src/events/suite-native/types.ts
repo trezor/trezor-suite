@@ -1,8 +1,8 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { DeviceMode, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -21,7 +21,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               appLanguage: string;
               deviceLanguage?: string;
-              localCurrency: FiatCurrencyCode;
+              localCurrency: BaseCurrencyCode;
               bitcoinUnit: UNIT_ABBREVIATION;
               screenWidth: number;
               screenHeight: number;
@@ -117,7 +117,7 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.SettingsChangeCurrency;
           payload: {
-              localCurrency: FiatCurrencyCode;
+              localCurrency: BaseCurrencyCode;
           };
       }
     | {
@@ -510,6 +510,8 @@ export type SuiteNativeAnalyticsEvent =
               firmware: 'install' | 'update' | 'skip' | 'up-to-date';
               seedType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
               recoveryStepBack: boolean;
+              wasBackupSkipped: boolean;
+              wasPinSkipped: boolean;
           }>;
       }
     | {

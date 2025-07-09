@@ -4,7 +4,7 @@ import { ToastPayload, notificationsActions } from '@suite-common/toast-notifica
 import { selectHistoricFiatRatesByTimestamp, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
-    formatAmount,
+    convertAmountSubunitsToUnits,
     formatNetworkAmount,
     getFiatRateKey,
     getTargetAmount,
@@ -15,7 +15,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 
 import {
     AddressLabeling,
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     MetadataLabeling,
     Translation,
@@ -77,7 +77,7 @@ export const TransactionTarget = ({
             case 'internal':
                 return payload.amount && formatNetworkAmount(payload.amount, transaction.symbol);
             case 'token':
-                return formatAmount(payload.amount, payload.decimals);
+                return convertAmountSubunitsToUnits(payload.amount, payload.decimals);
         }
     }, [type, payload, transaction, isSolanaUnstakeTx]);
 
@@ -108,7 +108,7 @@ export const TransactionTarget = ({
     const fiatAmountComponent = useMemo(
         () =>
             !isTestnet(transaction.symbol) && amount ? (
-                <FiatValue
+                <BaseCurrencyValue
                     amount={amount}
                     symbol={transaction.symbol}
                     historicRate={historicRate}

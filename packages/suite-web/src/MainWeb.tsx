@@ -1,9 +1,8 @@
 /* eslint-disable import/order */
 import { Provider as ReduxProvider } from 'react-redux';
-import { Router as RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
 import { init as initSentry } from '@sentry/browser';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
@@ -11,7 +10,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
-import { Metadata, Preloader, ToastContainer } from 'src/components/suite';
+import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
 import Protocol from 'src/support/suite/Protocol';
@@ -20,15 +19,15 @@ import { useTor } from 'src/support/suite/useTor';
 import { useConnectPopupModals } from 'src/support/suite/useConnectPopupModals';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
 import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
-import RouterHandler from 'src/support/suite/Router';
+import { RouterHandler } from 'src/support/suite/RouterHandler';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
-import history from 'src/support/history';
 
-import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
+import { Suspense } from 'react';
+import { webComponents } from './support/webComponents';
 
 const MainWeb = () => {
     usePlaywright();
@@ -42,7 +41,7 @@ const MainWeb = () => {
         // <StrictMode>
         <HelmetProvider>
             <ConnectedThemeProvider>
-                <RouterProvider history={history}>
+                <BrowserRouter>
                     <ResponsiveContextProvider>
                         <ErrorBoundary>
                             <Autodetect />
@@ -55,13 +54,15 @@ const MainWeb = () => {
                                     <Metadata />
                                     <ToastContainer />
                                     <Preloader>
-                                        <AppRouter />
+                                        <Suspense fallback={<BundleLoader />}>
+                                            <AppRouter components={webComponents} />
+                                        </Suspense>
                                     </Preloader>
                                 </FormatterProvider>
                             </ConnectedIntlProvider>
                         </ErrorBoundary>
                     </ResponsiveContextProvider>
-                </RouterProvider>
+                </BrowserRouter>
             </ConnectedThemeProvider>
         </HelmetProvider>
         // </StrictMode>

@@ -20,20 +20,16 @@ import { Translation, TranslationKey } from '../../../Translation';
 
 type EnterPassphraseProps = {
     onDeviceOffer: boolean;
-    cancelDisabled?: boolean;
     device: TrezorDevice;
-    deviceLoading?: boolean;
     submitting?: boolean;
     isExistingWallet?: boolean;
     onBack: () => void;
-    onCancel: () => void;
+    onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
 };
 
 export const EnterPassphrase = ({
     device,
-    cancelDisabled,
-    deviceLoading,
     onDeviceOffer,
     isExistingWallet = false,
     submitting,
@@ -47,14 +43,8 @@ export const EnterPassphrase = ({
     const isUsingNonAsciiCharacters = getNonAsciiChars(value) !== null;
 
     return (
-        <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>
-            <CardWithDevice
-                cancelDisabled={cancelDisabled}
-                onCancel={onCancel}
-                device={device}
-                onBackButtonClick={onBack}
-                isFullHeaderVisible
-            >
+        <SwitchDeviceModal onCancel={onCancel}>
+            <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
                 <Column gap={spacings.xl}>
                     <Column gap={spacings.md} padding={{ horizontal: spacings.xs }}>
                         <H3>
@@ -200,7 +190,6 @@ export const EnterPassphrase = ({
                     </Column>
                     <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
-                        deviceLoading={deviceLoading}
                         isLoading={submitting}
                         onSubmit={onSubmit}
                         offerPassphraseOnDevice={onDeviceOffer}

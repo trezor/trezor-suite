@@ -31,11 +31,10 @@ import {
 } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
-import { SendConfirmOnDeviceImage } from './SendConfirmOnDeviceImage';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
-import { selectIsTransactionAlreadySigned } from '../selectors';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 import { SignSuccessMessage } from './SignSuccessMessage';
+import { useUtxoSelection } from '../hooks/useUtxoSelection';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -100,6 +99,7 @@ export const OutputsReviewFooter = ({
     const { showAlert } = useAlert();
     const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
+    const { setSelectedUtxos } = useUtxoSelection();
 
     const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
@@ -112,8 +112,6 @@ export const OutputsReviewFooter = ({
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
-
-    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const formValues = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
@@ -134,8 +132,9 @@ export const OutputsReviewFooter = ({
         }
     }, [isTransactionProcessedByBackend, accountKey, tokenContract, txid, navigation, dispatch]);
 
-    /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
-    if (!isTransactionAlreadySigned || !account) return <SendConfirmOnDeviceImage />;
+    if (!account) {
+        return null;
+    }
 
     const isSolanaAccount = account.networkType === 'solana';
 
@@ -147,6 +146,7 @@ export const OutputsReviewFooter = ({
                 selectedAccount: account,
             }),
         );
+
         if (isFulfilled(sendResponse)) {
             const { txid: sentTxid } = sendResponse.payload.payload;
 
@@ -166,6 +166,7 @@ export const OutputsReviewFooter = ({
             }
 
             setTxid(sentTxid);
+            if (account.networkType === 'bitcoin') setSelectedUtxos([]); // clear selected UTXOs after sending the transaction
 
             return;
         }

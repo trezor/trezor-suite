@@ -136,12 +136,6 @@ export const NotificationRenderer = ({
             return success(render, notification, 'TR_DEVICE_AUTHENTICITY_SUCCESS');
         case 'device-authenticity-error':
             return error(render, notification, 'TR_DEVICE_AUTHENTICITY_ERROR');
-        case 'bridge-dev-restart':
-            return info(
-                render,
-                notification,
-                notification.devMode ? 'TR_BRIDGE_DEV_MODE_START' : 'TR_BRIDGE_DEV_MODE_STOP',
-            );
         case 'metadata-not-found-error':
             return error(render, notification, 'METADATA_PROVIDER_NOT_FOUND_ERROR');
         case 'metadata-auth-error':

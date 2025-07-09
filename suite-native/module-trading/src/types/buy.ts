@@ -18,7 +18,7 @@ export type BuyFormValues = BaseFormValues<'fiatValue' | 'cryptoValue', BuyTrade
 
 export type BuyFormContext = Partial<TradingAmountLimitProps> & {
     translate: ReturnType<typeof useTranslate>['translate'];
-    FiatAmountFormatter: Formatters['FiatAmountFormatter'];
+    FiatAmountFormatter: Formatters['BaseCurrencyAmountFormatter'];
     CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
     convertNumberToBaseUnit: ReturnType<
         typeof useConvertFormValueToBaseUnit

@@ -6,7 +6,7 @@ import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';
 import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
 
-import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
@@ -75,7 +75,7 @@ export const EstimatedGains = () => {
                             <FormattedCryptoAmount value={value} symbol={account.symbol} />
                         </Text>
                         <Paragraph align="end">
-                            <FiatValue amount={value} symbol={account.symbol} />
+                            <BaseCurrencyValue amount={value} symbol={account.symbol} />
                         </Paragraph>
                     </Grid>
                 ))}

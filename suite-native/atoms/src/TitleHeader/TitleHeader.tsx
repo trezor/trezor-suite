@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { NativeSpacing, NativeTypographyStyle } from '@trezor/theme';
 
 import { VStack } from '../Stack';
-import { Text } from '../Text';
+import { Text, TextProps } from '../Text';
 
 export type TitleHeaderProps = {
     title?: ReactNode;
@@ -11,7 +11,7 @@ export type TitleHeaderProps = {
     subtitle?: ReactNode;
     textAlign?: 'left' | 'center';
     titleSpacing?: NativeSpacing;
-};
+} & TextProps;
 
 export const TitleHeader = ({
     title,
@@ -19,10 +19,11 @@ export const TitleHeader = ({
     titleVariant = 'titleSmall',
     textAlign = 'left',
     titleSpacing = 'sp8',
+    ...textProps
 }: TitleHeaderProps) => (
     <VStack spacing={titleSpacing} alignItems={textAlign === 'center' ? 'center' : 'flex-start'}>
         {title && (
-            <Text variant={titleVariant} textAlign={textAlign}>
+            <Text {...textProps} variant={titleVariant} textAlign={textAlign}>
                 {title}
             </Text>
         )}

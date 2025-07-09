@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 
-import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRates, FiatRatesResult, Output, Rate, Timestamp } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     fromFiatCurrency,
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 
 import { importSendFormRequestThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch } from 'src/hooks/suite';
@@ -53,7 +53,7 @@ export const useSendFormImport = ({
         const uniqueCurrencies = [...new Set(currencies)];
 
         for (const currency of uniqueCurrencies) {
-            const fiatRateKey = getFiatRateKey(network.symbol, currency as FiatCurrencyCode);
+            const fiatRateKey = getFiatRateKey(network.symbol, currency as BaseCurrencyCode);
             const fiatRate = currentRates?.[fiatRateKey];
 
             if (fiatRate) {
@@ -67,7 +67,7 @@ export const useSendFormImport = ({
                                 symbol: network.symbol,
                             },
                         ],
-                        localCurrency: currency as FiatCurrencyCode,
+                        localCurrency: currency as BaseCurrencyCode,
                         rateType: 'current',
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
@@ -105,26 +105,29 @@ export const useSendFormImport = ({
                     const cryptoAmount = item.amount || '';
                     if (shouldSendInSats) {
                         // try to convert to satoshis
-                        output.amount = amountToSmallestUnit(cryptoAmount, network.decimals);
+                        output.amount = convertAmountUnitsToSubunits(
+                            cryptoAmount,
+                            network.decimals,
+                        );
                     } else {
                         output.amount = cryptoAmount;
                     }
 
                     const fiatRateKey = getFiatRateKey(
                         network.symbol,
-                        itemCurrency as FiatCurrencyCode,
+                        itemCurrency as BaseCurrencyCode,
                     );
                     const fiatRate = currentRates?.[fiatRateKey];
 
                     // calculate Fiat from Amount
                     if (fiatRate?.rate) {
                         const cryptoValue = shouldSendInSats
-                            ? formatAmount(output.amount, network.decimals)
+                            ? convertAmountSubunitsToUnits(output.amount, network.decimals)
                             : output.amount;
                         output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
                     }
                 } else if (
-                    Object.keys(fiatCurrencies).find(currency => currency === itemCurrency) &&
+                    Object.keys(baseCurrencies).find(currency => currency === itemCurrency) &&
                     itemRate
                 ) {
                     // csv amount in fiat currency
@@ -134,7 +137,7 @@ export const useSendFormImport = ({
                     const cryptoValue = fromFiatCurrency(output.fiat, network.decimals, itemRate);
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats
-                            ? amountToSmallestUnit(cryptoValue, network.decimals)
+                            ? convertAmountUnitsToSubunits(cryptoValue, network.decimals)
                             : (cryptoValue ?? '');
 
                     output.amount = cryptoAmount;

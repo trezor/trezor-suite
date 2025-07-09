@@ -31,6 +31,7 @@ export const WipeDeviceCard = () => {
             subtitle={<Translation id="moduleDeviceSettings.wipeDevice.subtitle" />}
             onPress={handleRedirect}
             variant="danger"
+            testID="@wipeDevice/redirectToWipeDeviceScreen"
         />
     );
 };

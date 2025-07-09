@@ -7,7 +7,7 @@ import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
-import { FiatValue } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
@@ -63,7 +63,7 @@ export const TrendTicker = ({
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
     return (
-        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton={showLoadingSkeleton}>
+        <BaseCurrencyValue amount="1" symbol={symbol} showLoadingSkeleton={showLoadingSkeleton}>
             {({ rate, timestamp }) =>
                 rate && timestamp && percentageChange ? (
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
@@ -78,6 +78,6 @@ export const TrendTicker = ({
                     emptyStateComponent
                 )
             }
-        </FiatValue>
+        </BaseCurrencyValue>
     );
 };

@@ -1,7 +1,7 @@
 import { CompactCardWithIconLayout, VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
 import { AppCommitHash } from '../components/AppCommitHash';
@@ -10,8 +10,6 @@ import { SettingsSection } from '../components/SettingsSection';
 import { SupportCard } from '../components/SupportCard';
 
 export const SettingsSupportScreen = () => {
-    const { translate } = useTranslate();
-
     const openLink = useOpenLink();
 
     const handleOpenTermsAndConditions = () => {
@@ -23,7 +21,9 @@ export const SettingsSupportScreen = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader content={translate('moduleSettings.faq.title')} />}>
+        <Screen
+            header={<DynamicScreenHeader title={<Translation id="moduleSettings.faq.title" />} />}
+        >
             <VStack spacing="sp40">
                 <VStack spacing="sp32">
                     <FAQInfoPanel />

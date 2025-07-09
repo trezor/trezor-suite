@@ -1,19 +1,22 @@
-import { ReactNode } from 'react';
+import { ComponentProps, ReactElement, ReactNode } from 'react';
 
 import { RequireOneOrNone } from 'type-fest';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
+import { ScreenHeaderContent } from './ScreenHeaderContent';
 
-export type ScreenSubHeaderProps = RequireOneOrNone<
+export type ScreenHeaderProps = RequireOneOrNone<
     {
-        content?: ReactNode;
-        rightIcon?: ReactNode;
+        title?: ReactElement<ComponentProps<typeof Translation>> | string;
+        customContent?: ReactNode;
         leftIcon?: ReactNode;
         closeActionType?: CloseActionType;
+        rightIcon?: ReactNode;
         closeAction?: () => void;
     },
     'leftIcon' | 'closeActionType'
@@ -38,12 +41,13 @@ const iconWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 export const ScreenHeader = ({
-    content,
+    customContent,
     rightIcon,
     leftIcon,
+    title,
     closeActionType,
     closeAction,
-}: ScreenSubHeaderProps) => {
+}: ScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -55,20 +59,8 @@ export const ScreenHeader = ({
                     <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
                 )}
             </Box>
-            <Box alignItems="center">
-                {typeof content === 'string' ? (
-                    <Text
-                        variant="highlight"
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                        testID="@screen/sub-header/title"
-                    >
-                        {content}
-                    </Text>
-                ) : (
-                    content
-                )}
-            </Box>
+            <ScreenHeaderContent title={title} customContent={customContent} />
+
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
                 {rightIcon}
             </Box>

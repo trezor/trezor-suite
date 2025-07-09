@@ -1,6 +1,5 @@
 import { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import type { Network } from '@suite-common/wallet-config';
 import {
     Account,
@@ -9,6 +8,7 @@ import {
     Rate,
     StakeFormState,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { FeeLevel } from '@trezor/connect';
 
 export enum EverstakeEndpointType {
@@ -54,7 +54,7 @@ export interface AmountLimitsString {
 export interface BaseStakeContextValues {
     account: Account;
     network: Network;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     composedLevels?: PrecomposedLevels;
     isComposing: boolean;
     clearForm: () => void;

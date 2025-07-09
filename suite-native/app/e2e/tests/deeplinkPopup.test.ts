@@ -87,7 +87,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
     });
 
     beforeEach(async () => {
-        await prepareTrezorEmulator(MNEMONICS.mnemonic_12);
+        await prepareTrezorEmulator({ seed: MNEMONICS.mnemonic_12 });
         await restartApp();
 
         await appIsFullyLoaded();

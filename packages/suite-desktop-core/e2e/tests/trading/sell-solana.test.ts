@@ -60,7 +60,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
         },
     );
 
-    test('Sell Solana', async ({ page, dashboardPage, tradingPage, tradingMock, devicePrompt }) => {
+    test('Sell Solana', async ({ page, tradingPage, tradingMock, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
             const solanaFeePromise = tradingPage.fees.promiseForResponseSolanaFeeCalls();
             await tradingPage.fillSellForm(cryptoAmount, 'solana');
@@ -76,9 +76,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
             await tradingPage.termsConfirmButton.click();
         });
 
-        await tradingPage.waitForRedirectCompletion();
-        //TODO: Workaround because of bug #19743, device switcher should not be opened
-        await dashboardPage.deviceSwitchingCloseButton.click();
+        await tradingPage.waitForSellRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);

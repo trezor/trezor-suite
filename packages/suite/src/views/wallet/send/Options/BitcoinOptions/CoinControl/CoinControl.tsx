@@ -5,7 +5,11 @@ import styled, { useTheme } from 'styled-components';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { amountToSmallestUnit, formatNetworkAmount } from '@suite-common/wallet-utils';
+import {
+    convertAmountUnitsToSubunits,
+    filterAndCategorizeUtxos,
+    formatNetworkAmount,
+} from '@suite-common/wallet-utils';
 import { Card, Checkbox, Column, Icon, Row, Switch, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -16,7 +20,6 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
-import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUtxosUtils';
 
 import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
@@ -90,7 +93,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     );
     const totalOutputsInSats = shouldSendInSats
         ? totalOutputs
-        : Number(amountToSmallestUnit(totalOutputs.toString(), network.decimals));
+        : Number(convertAmountUnitsToSubunits(totalOutputs.toString(), network.decimals));
     const missingToInput = totalOutputsInSats - totalInputs;
     const isMissingToAmount = missingToInput > 0; // relevant when the amount field is not validated, e.g. there is an error in the address
     const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;

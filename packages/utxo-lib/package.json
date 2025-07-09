@@ -1,6 +1,6 @@
 {
     "name": "@trezor/utxo-lib",
-    "version": "2.4.1",
+    "version": "2.4.2-beta.2",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib",
     "description": "Client-side Bitcoin-like JavaScript library",
@@ -51,7 +51,7 @@
         "create-hmac": "^1.1.7",
         "int64-buffer": "^1.1.0",
         "pushdata-bitcoin": "^1.0.1",
-        "tiny-secp256k1": "^1.1.6",
+        "tiny-secp256k1": "^1.1.7",
         "typeforce": "^1.18.0",
         "varuint-bitcoin": "2.0.0",
         "wif": "^5.0.0"

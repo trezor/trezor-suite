@@ -2,7 +2,6 @@ import { ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
@@ -14,6 +13,7 @@ import {
     sumTransactions,
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -38,7 +38,7 @@ interface TransactionsGroupProps {
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
     symbol: NetworkSymbol;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     index: number;
     isPending: boolean;
 }

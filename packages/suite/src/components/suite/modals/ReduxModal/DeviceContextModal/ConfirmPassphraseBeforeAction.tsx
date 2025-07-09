@@ -47,12 +47,8 @@ export const ConfirmPassphraseBeforeAction = () => {
     const onDeviceOffer = !!device?.features?.capabilities?.includes('Capability_PassphraseEntry');
 
     return (
-        <SwitchDeviceModal isAnimationEnabled onCancel={onEnterPassphraseDialogCancel}>
-            <CardWithDevice
-                onCancel={onEnterPassphraseDialogCancel}
-                device={device}
-                isFullHeaderVisible
-            >
+        <SwitchDeviceModal onCancel={onEnterPassphraseDialogCancel}>
+            <CardWithDevice onCancel={onEnterPassphraseDialogCancel} device={device}>
                 <Column gap={spacings.sm}>
                     <H3>
                         <Translation id="TR_CONFIRM_PASSPHRASE" />

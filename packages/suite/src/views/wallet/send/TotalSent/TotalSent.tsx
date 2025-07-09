@@ -3,11 +3,11 @@ import { PropsWithChildren, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
-import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -66,7 +66,7 @@ export const TotalSent = () => {
                                     disableHiddenPlaceholder
                                     value={
                                         tokenInfo
-                                            ? formatAmount(
+                                            ? convertAmountSubunitsToUnits(
                                                   transactionInfo.totalSpent,
                                                   tokenInfo.decimals,
                                               )
@@ -93,7 +93,7 @@ export const TotalSent = () => {
                                         contractAddress={tokenInfo.contract}
                                     />
                                 ) : (
-                                    <FiatValue
+                                    <BaseCurrencyValue
                                         disableHiddenPlaceholder
                                         amount={formatNetworkAmount(
                                             transactionInfo.totalSpent,

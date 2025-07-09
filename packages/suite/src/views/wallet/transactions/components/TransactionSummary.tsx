@@ -6,7 +6,7 @@ import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-defini
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row, variables } from '@trezor/components';
 
-import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
+import { updateGraphData } from 'src/actions/wallet/graphActions';
 import {
     GraphRangeSelector,
     HiddenPlaceholder,
@@ -15,7 +15,11 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
+import {
+    aggregateBalanceHistory,
+    getGraphDataForInterval,
+    getMinMaxValueFromData,
+} from 'src/utils/wallet/graph';
 
 import { SummaryCards } from './SummaryCards';
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';

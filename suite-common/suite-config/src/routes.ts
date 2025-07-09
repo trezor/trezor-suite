@@ -5,11 +5,7 @@
 // 4. add params types to RouteParamsTypes (@suite-constants/routes)
 
 const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
-const modalAppParams = [
-    'isAddingHiddenWalletWithRespectToSettings',
-    'cancelable',
-    'variant',
-] as const;
+const modalAppParams = ['cancelable', 'variant'] as const;
 
 export const routes = [
     {
@@ -24,7 +20,6 @@ export const routes = [
         name: 'suite-index',
         pattern: '/',
         app: 'dashboard',
-        exact: true,
     },
     {
         name: 'suite-version',
@@ -85,7 +80,6 @@ export const routes = [
         pattern: '/settings',
         app: 'settings',
         params: undefined,
-        exact: true,
     },
     {
         name: 'settings-debug',
@@ -154,7 +148,6 @@ export const routes = [
         pattern: '/accounts',
         app: 'wallet',
         params: walletParams,
-        exact: true,
     },
     {
         name: 'wallet-send',
@@ -185,21 +178,18 @@ export const routes = [
         pattern: '/accounts/coinmarket/buy',
         app: 'wallet',
         params: walletParams,
-        exact: true,
     },
     {
         name: 'wallet-trading-exchange',
         pattern: '/accounts/coinmarket/exchange',
         app: 'wallet',
         params: walletParams,
-        exact: true,
     },
     {
         name: 'wallet-trading-sell',
         pattern: '/accounts/coinmarket/sell',
         app: 'wallet',
         params: walletParams,
-        exact: true,
     },
     {
         name: 'wallet-trading-buy-offers',
@@ -242,7 +232,6 @@ export const routes = [
         pattern: '/accounts/coinmarket/buy/confirm',
         app: 'wallet',
         params: walletParams,
-        exact: true,
     },
     {
         name: 'wallet-trading-sell-confirm',
@@ -285,6 +274,7 @@ export const routes = [
         pattern: '/accounts/tokens',
         app: 'wallet',
         params: walletParams,
+        hasNestedRoutes: true,
     },
     {
         name: 'wallet-tokens-hidden',
@@ -298,6 +288,7 @@ export const routes = [
         pattern: '/accounts/nfts',
         app: 'wallet',
         params: walletParams,
+        hasNestedRoutes: true,
     },
     {
         name: 'wallet-nfts-hidden',

@@ -1,14 +1,15 @@
-import { differenceInMonths } from 'date-fns';
+import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { resetTime } from '@suite-common/suite-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { State as GraphState } from 'src/reducers/wallet/graphReducer';
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
@@ -22,7 +23,7 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSession
 export const ensureHistoryRates = async (
     symbol: NetworkSymbol,
     data: BlockchainAccountBalanceHistory[],
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     isElectrumBackend: boolean,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
     if (!getNetwork(symbol).coingeckoId) return data;
@@ -336,4 +337,45 @@ export const calcFakeGraphDataForTimestamps = (
     const sortedData = balanceData.sort((a, b) => Number(a.time) - Number(b.time));
 
     return sortedData;
+};
+
+type GetGraphDataForIntervalProps = {
+    account?: Account;
+    deviceState?: StaticSessionId;
+    graph: GraphState;
+};
+
+export const getGraphDataForInterval = ({
+    account,
+    deviceState,
+    graph,
+}: GetGraphDataForIntervalProps) => {
+    const { selectedRange } = graph;
+
+    const data: GraphData[] = [];
+    graph.data.forEach(accountGraph => {
+        const accountFilter = account ? accountGraphDataFilterFn(accountGraph, account) : true;
+        const deviceFilter = deviceState
+            ? deviceGraphDataFilterFn(accountGraph, deviceState)
+            : true;
+
+        if (accountFilter && deviceFilter) {
+            if (selectedRange.startDate && selectedRange.endDate) {
+                data.push({
+                    ...accountGraph,
+                    data:
+                        accountGraph.data?.filter(d =>
+                            isWithinInterval(fromUnixTime(d.time), {
+                                start: selectedRange.startDate,
+                                end: selectedRange.endDate,
+                            }),
+                        ) ?? [],
+                });
+            } else {
+                data.push(accountGraph);
+            }
+        }
+    });
+
+    return data;
 };

@@ -3160,9 +3160,9 @@ export default defineMessages({
         defaultMessage: 'Enable the passphrase feature to continue with the verification process.',
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
     },
-    TR_PRIMARY_FIAT: {
-        defaultMessage: 'Fiat currency',
-        id: 'TR_PRIMARY_FIAT',
+    TR_BASE_CURRENCY: {
+        defaultMessage: 'Currency',
+        id: 'TR_BASE_CURRENCY',
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
@@ -3688,11 +3688,6 @@ export default defineMessages({
         defaultMessage: 'Restarting Trezor. Enter PIN if prompted.',
         description: 'Info what is happening with users device.',
         id: 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',
-    },
-    TR_VALIDATION: {
-        defaultMessage: 'Validating firmware',
-        description: 'Info what is happening with users device.',
-        id: 'TR_VALIDATION',
     },
     TR_WALLET_DUPLICATE_DESC: {
         defaultMessage: "The Passphrase wallet you're accessing has already been discovered.",
@@ -5657,14 +5652,6 @@ export default defineMessages({
     TR_ADD_TOKEN_TOAST_ERROR: {
         id: 'TR_ADD_TOKEN_TOAST_ERROR',
         defaultMessage: 'Action failed: {error}',
-    },
-    TR_BRIDGE_DEV_MODE_START: {
-        id: 'TR_BRIDGE_DEV_MODE_START',
-        defaultMessage: 'Starting Trezor Bridge on port 21324',
-    },
-    TR_BRIDGE_DEV_MODE_STOP: {
-        id: 'TR_BRIDGE_DEV_MODE_STOP',
-        defaultMessage: 'Starting Trezor Bridge on default port',
     },
     TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',
@@ -7688,13 +7675,14 @@ export default defineMessages({
         defaultMessage: 'Try these steps to solve this issue.',
         id: 'TR_TROUBLESHOOTING_DEVICE_NOT_DETECTED',
     },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE: {
-        defaultMessage: 'Ensure the Trezor Bridge process is running',
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE',
+    TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_TITLE: {
+        defaultMessage: 'Check connection status',
+        id: 'TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_TITLE',
     },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION: {
-        defaultMessage: 'Visit <a>Trezor Bridge status page</a>',
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION',
+    TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION: {
+        defaultMessage:
+            'You may visit <a>connection status page</a> where you can find useful information to solve your problem with Trezor Support.',
+        id: 'TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE: {
         defaultMessage: 'Use a Chromium-based browser',
@@ -7722,14 +7710,14 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION',
         defaultMessage: 'Run the  <a>Trezor Suite</a> desktop app',
     },
-    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE: {
-        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE',
-        defaultMessage: 'Use another version of Trezor Bridge',
+    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE',
+        defaultMessage: 'Use alternative transport',
     },
-    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_DESCRIPTION: {
-        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_DESCRIPTION',
+    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION',
         defaultMessage:
-            '<a>Click to toggle</a> an alternative bridge implementation. Current version: ({currentVersion})',
+            '<a>Click to toggle</a> an alternative connection implementation. Current version: ({currentVersion})',
     },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
@@ -10378,6 +10366,10 @@ export default defineMessages({
     TR_CONNECT_ERROR_GENERIC_DESCRIPTION: {
         id: 'TR_CONNECT_ERROR_GENERIC_DESCRIPTION',
         defaultMessage: 'There was an error during the Trezor Connect request.',
+    },
+    TR_CONNECT_ERROR_CANCELED: {
+        id: 'TR_CONNECT_ERROR_CANCELED',
+        defaultMessage: 'Request was canceled by the user',
     },
     TR_NO_CONNECTED_APPS_DESCRIPTION: {
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',

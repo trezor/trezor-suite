@@ -37,6 +37,7 @@ const allowedCallsBeforeInitialize: Messages.MessageKey[] = [
     'ChangeLanguage',
     'DataChunkAck',
     // During firmware update, we can call these messages
+    'RebootToBootloader',
     'FirmwareErase',
     'FirmwareUpload',
     // There are other, which are allowed by firmware (ApplySettings,...) but we do not use them this way in connect.

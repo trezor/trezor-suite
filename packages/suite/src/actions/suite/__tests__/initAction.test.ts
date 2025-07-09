@@ -34,6 +34,7 @@ import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import walletReducers from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { setLocation, setNavigate } from 'src/support/suite/navigationService';
 import { configureStore } from 'src/support/tests/configureStore';
 import type { AppState } from 'src/types/suite';
 
@@ -256,7 +257,14 @@ describe('Suite init action', () => {
             const store = initStore(getInitialState(options.initialRun));
 
             if (options?.initialPath) {
-                require('src/support/history').default.location.pathname = options.initialPath;
+                setLocation({
+                    pathname: options.initialPath,
+                    state: undefined,
+                    key: '',
+                    hash: '',
+                    search: '',
+                });
+                setNavigate(() => {});
             }
 
             if (options?.trezorConnectError) {

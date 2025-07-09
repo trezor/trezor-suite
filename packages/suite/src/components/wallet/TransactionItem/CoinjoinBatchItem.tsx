@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
@@ -12,6 +11,7 @@ import {
     sumTransactions,
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Box, CollapsibleBox, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -98,7 +98,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
 
 type CoinjoinBatchItemProps = {
     transactions: WalletAccountTransaction[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     isPending: boolean;
 };
 
@@ -108,7 +108,7 @@ export const CoinjoinBatchItem = ({
     isPending,
 }: CoinjoinBatchItemProps) => {
     const lastTx = transactions[0];
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const historicFiatRates = useSelector(selectHistoricFiatRates);
     const amount = sumTransactions(transactions);
     const fiatAmount = sumTransactionsFiat(transactions, localCurrency, historicFiatRates);
@@ -152,7 +152,7 @@ export const CoinjoinBatchItem = ({
                                     fiatAmount={
                                         !isTestnet(lastTx.symbol) && !isMissingFiatRates ? (
                                             <HiddenPlaceholder>
-                                                <FiatAmountFormatter
+                                                <BaseCurrencyAmountFormatter
                                                     currency={localCurrency}
                                                     value={fiatAmount.absoluteValue().toFixed()}
                                                 />

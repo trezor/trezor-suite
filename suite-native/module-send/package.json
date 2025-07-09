@@ -8,13 +8,14 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest --coverage"
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
         "@reduxjs/toolkit": "2.8.2",
+        "@shopify/flash-list": "1.7.6",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",

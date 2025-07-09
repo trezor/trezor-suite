@@ -1,51 +1,40 @@
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    DeviceRootState,
-    selectDeviceByState,
-    selectHasOnlyEmptyPortfolioTracker,
-} from '@suite-common/wallet-core';
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-core';
+import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
 
-import { ConnectionDot } from './ConnectionDot';
+import { DeviceConnectionStatus } from './DeviceConnectionStatus';
 
 export type SimpleDeviceItemContentProps = {
-    deviceState: TrezorDevice['state'] | undefined;
+    isConnected: boolean;
     headerTextVariant?: NativeTypographyStyle;
     header: ReactNode;
+    isDeviceInBootloader: boolean;
     isPortfolioTrackerDevice: boolean;
     isSubHeaderForceHidden: boolean;
 };
 
-const headerStyle = prepareNativeStyle(_ => ({
+export const headerStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
     overflow: 'visible',
 }));
 
 export const SimpleDeviceItemContent = React.memo(
     ({
-        deviceState,
+        isConnected,
+        isDeviceInBootloader,
         headerTextVariant,
         header,
         isPortfolioTrackerDevice,
         isSubHeaderForceHidden,
     }: SimpleDeviceItemContentProps) => {
         const { applyStyle } = useNativeStyles();
-        const deviceIsConnected = useSelector(
-            // selecting only connected device property prevents unnecessary rerenders
-            (state: DeviceRootState) => selectDeviceByState(state, deviceState)?.connected,
-        );
-        const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
 
-        // device not found, should not happen
-        if (deviceIsConnected === undefined) {
-            return null;
-        }
+        const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
 
         const isPortfolioTrackerSubHeaderVisible =
             isPortfolioTrackerDevice && !hasOnlyEmptyPortfolioTracker && !isSubHeaderForceHidden;
@@ -73,21 +62,10 @@ export const SimpleDeviceItemContent = React.memo(
                         </Text>
                     )}
                     {isConnectionStateVisible && (
-                        <HStack alignItems="center" spacing="sp8">
-                            <ConnectionDot isConnected={deviceIsConnected} />
-                            <Text
-                                variant="hint"
-                                color={deviceIsConnected ? 'textSecondaryHighlight' : 'textSubdued'}
-                            >
-                                <Translation
-                                    id={
-                                        deviceIsConnected
-                                            ? 'deviceManager.status.connected'
-                                            : 'deviceManager.status.disconnected'
-                                    }
-                                />
-                            </Text>
-                        </HStack>
+                        <DeviceConnectionStatus
+                            isConnected={isConnected}
+                            isDeviceInBootloaderMode={isDeviceInBootloader}
+                        />
                     )}
                 </Box>
             </>

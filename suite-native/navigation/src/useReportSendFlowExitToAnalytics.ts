@@ -19,6 +19,7 @@ const screenNameToAnalyticsLabelMap = {
     [SendStackRoutes.SendAddressReview]: 'address_review',
     [SendStackRoutes.SendOutputsReview]: 'outputs_review',
     [SendStackRoutes.SendDestinationTagReview]: 'destination_tag_review',
+    [SendStackRoutes.SendUtxo]: 'utxo_selection',
 } as const satisfies Record<AnalyticsRelevantSendRoute, AnalyticsSendFlowStep>;
 
 const isAnalyticsRelevantSendRoute = (

@@ -206,8 +206,16 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 });
                 const [, chunkHeader] = protocol.getHeaders(bytes);
                 const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
-                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
-                    this.api.write(path, chunk, attemptSignal || signal);
+                let progress = 0;
+                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) => {
+                    if (chunks.length > 1) {
+                        progress++;
+                        this.emit(TRANSPORT.SEND_MESSAGE_PROGRESS, progress / chunks.length);
+                    }
+
+                    return this.api.write(path, chunk, attemptSignal || signal);
+                };
+
                 const apiRead = (attemptSignal?: AbortSignal) =>
                     this.api.read(path, attemptSignal || signal);
 
@@ -288,7 +296,15 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const [_, chunkHeader] = protocol.getHeaders(bytes);
 
                 const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
-                const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
+                let progress = 0;
+                const apiWrite = (chunk: Buffer) => {
+                    if (chunks.length > 1) {
+                        progress++;
+                        this.emit(TRANSPORT.SEND_MESSAGE_PROGRESS, progress / chunks.length);
+                    }
+
+                    return this.api.write(path, chunk, signal);
+                };
                 let sendResult;
                 if (protocol.name === 'v2') {
                     sendResult = await sendThpMessage({

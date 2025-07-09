@@ -10,7 +10,11 @@ import {
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { amountToSmallestUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    convertAmountUnitsToSubunits,
+    getFiatRateKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -101,7 +105,9 @@ export const useTradingFiatValues = ({
         sendCryptoSelect,
         network,
     });
-    const formattedBalance = shouldSendInSats ? amountToSmallestUnit(balance, decimals) : balance;
+    const formattedBalance = shouldSendInSats
+        ? convertAmountUnitsToSubunits(balance, decimals)
+        : balance;
     const fiatValue = toFiatCurrency(balance, fiatRate?.rate, 2);
 
     return {

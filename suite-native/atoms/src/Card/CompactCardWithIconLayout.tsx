@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import { Pressable, PressableProps } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, NativeSpacing } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 
 import { Card } from './Card';
 import { Box } from '../Box';
@@ -23,9 +23,8 @@ export type CompactCardWithIconLayoutProps = {
     onPress?: () => void;
     variant?: CardVariant;
     noShadow?: boolean;
-    paddingVertical?: NativeSpacing;
     borderColor?: Color | null;
-} & PressableProps;
+} & TouchableOpacityProps;
 
 type CardColorScheme = {
     iconWrapperBackgroundColor: Color;
@@ -54,6 +53,10 @@ const contentStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
 }));
 
+const touchableOpacityStyle = prepareNativeStyle(utils => ({
+    ...utils.boxShadows.small,
+}));
+
 export const CompactCardWithIconLayout = ({
     icon,
     title,
@@ -62,7 +65,6 @@ export const CompactCardWithIconLayout = ({
     onPress,
     isDisabled = false,
     variant = 'normal',
-    paddingVertical = 'sp16',
     noShadow = false,
     borderColor = 'borderElevation1',
     ...pressableProps
@@ -70,11 +72,16 @@ export const CompactCardWithIconLayout = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable onPress={onPress} disabled={isDisabled} {...pressableProps}>
+        <TouchableOpacity
+            style={applyStyle(touchableOpacityStyle)}
+            disabled={isDisabled}
+            onPress={onPress}
+            {...pressableProps}
+        >
             <Card noPadding noShadow borderColor={borderColor ?? undefined}>
                 <HStack
                     paddingHorizontal="sp16"
-                    paddingVertical={paddingVertical}
+                    paddingVertical="sp12"
                     spacing="sp12"
                     alignItems="center"
                 >
@@ -106,6 +113,6 @@ export const CompactCardWithIconLayout = ({
                     </Box>
                 )}
             </Card>
-        </Pressable>
+        </TouchableOpacity>
     );
 };

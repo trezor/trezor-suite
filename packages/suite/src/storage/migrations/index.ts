@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-config';
 import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     formatNetworkAmount,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
@@ -411,7 +411,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                     totalSpent: unformat(origTx.totalSpent),
                     tokens: origTx.tokens.map(tok => ({
                         ...tok,
-                        amount: amountToSmallestUnit(tok.amount, tok.decimals),
+                        amount: convertAmountUnitsToSubunits(tok.amount, tok.decimals),
                     })),
                     targets: origTx.targets.map(target => ({
                         ...target,
@@ -457,7 +457,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                 features.capabilities &&
                 !features.capabilities.includes('Capability_Bitcoin_like')
                     ? FirmwareType.BitcoinOnly
-                    : FirmwareType.Regular;
+                    : FirmwareType.Universal;
 
             return device;
         });

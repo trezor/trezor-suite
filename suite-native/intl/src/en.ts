@@ -13,6 +13,7 @@ export const en = {
             cancel: 'Cancel',
             close: 'Close',
             confirm: 'Confirm',
+            confirmSelection: 'Confirm selection',
             continue: 'Continue',
             disable: 'Disable',
             dismiss: 'Dismiss',
@@ -354,6 +355,16 @@ export const en = {
             title: 'Make sure to return your wallet backup to a secure, private place',
             description: 'No one can recover your backup if you lose it—not even Trezor Support.',
         },
+        checkBackupUnsupportedModelScreen: {
+            title: 'To check your backup, use the web application.',
+            subtitle:
+                'Check backup for {deviceModel} is unfortunately not supported in the mobile app.',
+            redirectButton: 'Continue to Trezor Suite Web',
+            laterButton: 'I’ll do it later',
+            step1: 'Go to Trezor Suite for Web using the button below.',
+            step2: 'Complete check backup in your browser.',
+            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
+        },
     },
     moduleConnectDevice: {
         connectAndUnlockScreen: {
@@ -430,6 +441,22 @@ export const en = {
             management: 'Modify device settings',
             push_tx: 'Broadcast transactions to the blockchain',
         },
+        simulation: {
+            reviewTransaction: 'Review transaction',
+            simulation: 'Simulation',
+            simulationPoweredBy: 'Simulation powered by {provider}',
+            simulationStatusError: 'Unable to simulate transaction. Proceed at your own risk.',
+            simulationStatusWarning:
+                'This transaction is potentially risky! Please make sure you trust the source.',
+            simulationStatusMalicious:
+                'This transaction is likely malicious! We recommend not to engage with this app.',
+            disclaimerOverride: 'I want to ignore the warning and proceed anyways',
+            contractInfo: 'Contract info',
+            feeInfo: 'Fee info',
+            protocol: 'Protocol',
+            address: 'Address',
+            contractFunction: 'Contract function',
+        },
         optional: 'Optional',
         alwaysAllow: 'Always allow for this app',
         confirmAddress: {
@@ -446,6 +473,8 @@ export const en = {
             invalidParams: 'Invalid parameters from calling app',
             versionUnsupported: 'Unsupported version. Please update your Trezor Suite app.',
             methodNotAllowed: 'Method not allowed for security reasons.',
+            methodCanceled: 'Call canceled by user.',
+            unknownError: 'Unknown error occurred.',
         },
         bottomSheets: {
             confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
@@ -542,25 +571,17 @@ export const en = {
             description:
                 'To continue using your Trezor with this app, update it with Trezor Suite for desktop or web.',
         },
-        bootloaderModal: {
-            title: 'The connected Trezor device is in bootloader mode',
-            description: 'To continue using your Trezor with this app, exit bootloader mode.',
-            appendix: {
-                exit: {
-                    title: 'Exit bootloader mode',
-                    lines: {
-                        1: '1. Disconnect your Trezor',
-                        2: '2. Reconnect your Trezor to your mobile device',
-                    },
-                },
-                continue: {
-                    title: 'Continue in bootloader mode',
-                    lines: {
-                        1: '1. Disconnect your Trezor',
-                        2: '2. Connect your Trezor to Trezor Suite for desktop or web',
-                        3: '3. Enter bootloader mode',
-                    },
-                },
+        bootloaderScreen: {
+            factoryResetCard: {
+                title: 'Forgot your PIN or just want to reset your Trezor?',
+                description:
+                    'This will reset all stored data on your Trezor. Proceed with caution.',
+                buttonTitle: 'Factory reset',
+            },
+            reconnectCard: {
+                title: 'Want to see your dashboard?',
+                description:
+                    'If you want to see your dashboard, simply reconnect & unlock your Trezor.',
             },
         },
         noBackupModal: {
@@ -671,7 +692,12 @@ export const en = {
                 },
             },
             loadingSuccessScreen: {
-                title: 'Device wiped',
+                wipedTitle: 'Device wiped',
+                factoryResetTitle: 'Trezor reset',
+            },
+            factoryResetScreen: {
+                title: 'Factory reset',
+                description: 'This will reset all of your device’s data. Proceed with caution.',
             },
         },
         bluetooth: {
@@ -778,7 +804,8 @@ export const en = {
                 },
                 coinEnabling: {
                     title: 'Coins',
-                    subtitle: 'Enable coins that you want to use',
+                    subtitle:
+                        'Only choosing coins that you use will shorten loading times when connecting your Trezor.',
                 },
                 advanced: {
                     title: 'Advanced',
@@ -793,7 +820,7 @@ export const en = {
                 },
                 walletConnect: {
                     title: 'WalletConnect',
-                    add: 'Add WalletConnect connection',
+                    add: 'Add WalletConnect',
                 },
             },
         },
@@ -909,7 +936,6 @@ export const en = {
                 title: 'Choose coins you want to use with your Trezor.',
                 subtitle:
                     'The more coins are enabled, the longer it takes to load the app. You can always add more later.',
-                button: 'Confirm selection',
             },
             settings: {
                 title: 'Enabled coins',
@@ -934,7 +960,7 @@ export const en = {
             title: 'View-only',
             emptyTitle: 'Connect your device to enable view-only',
             subtitle:
-                'Check balances without connecting your Trezor. <about>See how it works</about>',
+                'Check balances without connecting your Trezor.\n<about>See how it works</about>',
             button: { enable: 'Enable', disable: 'Disable' },
             about: {
                 title: 'View-only',
@@ -1523,6 +1549,7 @@ export const en = {
             portfolioTracker: 'Track your coins without Trezor',
             connected: 'Connected',
             disconnected: 'Disconnected',
+            bootloader: 'Bootloader mode',
         },
         syncCoinsButton: {
             syncMyCoins: 'Sync my coins',
@@ -1717,6 +1744,8 @@ export const en = {
                         feeRate: 'Fee rate',
                         gasLimit: 'Gas limit',
                         gasPrice: 'Gas price',
+                        maxFeePerGas: 'Max fee per gas',
+                        maxPriorityFeePerGas: 'Max priority fee per gas',
                     },
                     total: 'Total fee',
                     confirmButton: 'Confirm custom fee',
@@ -1730,6 +1759,28 @@ export const en = {
             totalAmount: 'Total amount',
             submitButton: 'Review and sign',
             total: 'Total fee',
+        },
+        coinControl: {
+            cta: 'Select coins',
+            title: 'Coin control',
+            search: {
+                placeholder: 'Search for address or transaction ID',
+                noCoins: 'No coins',
+                message: 'Check the spelling or try again',
+            },
+            notEnoughCoins: 'Select additional coins to match amount or turn off coin control',
+            utxos: {
+                selected: 'Selected',
+                remaining: 'Remaining to select',
+                showDetails: 'Show details',
+            },
+            disable: {
+                title: 'Turn off Coin Control?',
+                description:
+                    'Trezor Suite will automatically select coins that match the amount you want to send.',
+                primaryButton: 'Turn off',
+                secondaryButton: 'Cancel',
+            },
         },
         review: {
             confirmOnDeviceMessage: 'Go to your Trezor and confirm the amounts & recipients.',
@@ -2117,7 +2168,6 @@ export const en = {
                 title: 'Installing firmware',
             },
             restarting: { title: 'Restarting Trezor.' },
-            validating: { title: 'Validating firmware.' },
             completed: {
                 title: 'Firmware installed',
                 subtitle: 'You’re all set.',

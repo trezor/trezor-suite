@@ -1,6 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { selectCountryCode } from '@suite-common/geolocation';
+import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
 import {
     categorizeMessages,
     getValidExperimentIds,
@@ -17,6 +17,7 @@ const isAnyOfMessageSystemAffectingActions = isAnyOf(
     deviceActions.selectDevice,
     deviceActions.connectDevice,
     changeNetworks,
+    geolocationActions.setCountryCode,
 );
 
 export const messageSystemMiddleware = createMiddleware(

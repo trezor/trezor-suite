@@ -2,7 +2,7 @@ import { SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Timer } from '@trezor/react-utils';
 
 import { TRADING_DEFAULT_SELL_FLOWS, TRADING_SELL_THUNK_PREFIX } from '../../constants';
@@ -46,7 +46,7 @@ const getQuoteRequestData = ({
     const unformattedOutputAmount = outputs[0].amount;
     const cryptoStringAmount =
         unformattedOutputAmount && shouldSendInSats
-            ? formatAmount(unformattedOutputAmount, decimals)
+            ? convertAmountSubunitsToUnits(unformattedOutputAmount, decimals)
             : unformattedOutputAmount;
     const currencySelect = outputs[0].currency;
 

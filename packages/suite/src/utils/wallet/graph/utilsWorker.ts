@@ -1,7 +1,9 @@
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
 import { toFiatCurrency } from '@suite-common/wallet-utils';
-import type { FiatRatesBySymbol } from '@trezor/connect';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
+import { typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -10,19 +12,20 @@ import {
     GraphData,
 } from 'src/types/wallet/graph';
 
+import { getGraphDataForInterval } from './utils';
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
+import type { State as GraphState } from '../../../reducers/wallet/graphReducer';
 
 const calcFiatValueMap = (
     amount: string,
     rates: FiatRatesBySymbol,
-): { [k: string]: string | undefined } => {
-    const fiatValueMap: { [k: string]: string | undefined } = {};
-    Object.keys(rates).forEach(fiatSymbol => {
-        fiatValueMap[fiatSymbol] = toFiatCurrency(amount, rates?.[fiatSymbol]) ?? '0';
-    });
-
-    return fiatValueMap;
-};
+): { [K in BaseCurrencyCode]?: string | undefined } =>
+    typedObjectFromEntries(
+        typedObjectKeys(rates).map(fiatSymbol => [
+            fiatSymbol,
+            toFiatCurrency(amount, rates[fiatSymbol]) ?? '0',
+        ]),
+    );
 
 const isAccountAggregatedHistory = (
     history: AggregatedAccountHistory | AggregatedDashboardHistory,
@@ -122,3 +125,28 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
 
     return aggregatedData;
 };
+
+type PrepareGraphDataAsyncProps = {
+    graph: GraphState;
+    deviceState: StaticSessionId | undefined;
+};
+
+/**
+ * Poor man's substitute for web worker, but it does the job perfectly - does expensive calculations async without
+ * lagging the renderer thread.
+ */
+export const prepareGraphDataAsync = ({
+    graph,
+    deviceState,
+}: PrepareGraphDataAsyncProps): Promise<ObjectType<'dashboard'>[]> =>
+    new Promise(resolve => {
+        console.time('prepareGraphDataAsync');
+        window.setTimeout(() => {
+            const history = getGraphDataForInterval({ deviceState, graph });
+            const { groupBy } = graph.selectedRange;
+            const type = 'dashboard';
+            const aggregatedData = aggregateBalanceHistory(history, groupBy, type);
+            resolve(aggregatedData);
+            console.timeEnd('prepareGraphDataAsync');
+        }, 0);
+    });

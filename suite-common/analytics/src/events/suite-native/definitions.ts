@@ -6,6 +6,7 @@ export type AnalyticsSendFlowStep =
     | 'fee_settings'
     | 'address_review'
     | 'outputs_review'
+    | 'utxo_selection'
     | 'destination_tag_review';
 
 export type DeviceAuthenticityCheckResult =

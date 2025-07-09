@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
 import { TREZOR_E2E_DEVICE_LABEL, scrollUntilVisible } from '../utils';
@@ -39,7 +39,7 @@ class SettingsActions {
         await discreetModeToggleElement.tap();
     }
 
-    async changeLocalizationCurrency(currencyCode: FiatCurrencyCode) {
+    async changeLocalizationCurrency(currencyCode: BaseCurrencyCode) {
         const currencySelectorTriggerElement = element(
             by.id('@settings/localization/currency-selector'),
         );

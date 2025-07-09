@@ -22,7 +22,7 @@ export const DeviceSettingsSection = ({ title, children }: DeviceSettingsSection
             <Text variant="titleSmall" color="textOnTertiary">
                 {title}
             </Text>
-            {children}
+            <VStack spacing="sp12">{children}</VStack>
         </VStack>
     );
 };

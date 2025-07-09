@@ -60,7 +60,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
             !wasAddressChecksummed;
 
         const shouldCheckContractAddress =
-            wasTokenAlertDisplayed &&
+            (wasTokenAlertDisplayed || !shouldShowTokenAlert) &&
             ['eth', 'tsep', 'thol'].includes(symbol) &&
             !wasContractAlertDisplayed;
 

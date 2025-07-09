@@ -19,8 +19,6 @@ export const DeviceCheckBackupCard = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const handleOnPress = () => {
-        //TODO: if model one show unsupported screen (https://github.com/trezor/trezor-suite/issues/19841)
-
         navigation.navigate(DeviceSettingsStackRoutes.DeviceCheckBackupStack, {
             screen: DeviceCheckBackupStackRoutes.CheckBackupTutorial,
         });
