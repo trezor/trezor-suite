@@ -11,7 +11,6 @@ import {
     DeviceCheckBackupStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -39,7 +38,6 @@ export const CheckBackupTutorialStep2 = ({
     const deviceModel = useSelector(selectDeviceModel);
 
     const { applyStyle } = useNativeStyles();
-    const { showToast } = useToast();
 
     const navigateToCheckBackup = () => {
         if (deviceModel && checkBackupUnsupportedDeviceModels.includes(deviceModel)) {
@@ -53,11 +51,7 @@ export const CheckBackupTutorialStep2 = ({
     };
 
     const navigateToSupportScreen = () => {
-        //TODO: https://github.com/trezor/trezor-suite/issues/19841
-        showToast({
-            message: 'TODO: not implemented yet, handle redirect to support page',
-            variant: 'warning',
-        });
+        navigation.navigate(DeviceCheckBackupStackRoutes.CheckBackupSupport);
     };
 
     return (

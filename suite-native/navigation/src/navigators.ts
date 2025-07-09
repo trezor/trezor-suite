@@ -240,6 +240,8 @@ export type DeviceCheckBackupStackParamList = {
     [DeviceCheckBackupStackRoutes.UnsupportedModel]: {
         deviceModel: string;
     };
+    [DeviceCheckBackupStackRoutes.CheckBackupSupport]: undefined;
+    [DeviceCheckBackupStackRoutes.CheckBackupFail]: undefined;
 };
 
 export type DeviceAuthenticityStackParamList = {
