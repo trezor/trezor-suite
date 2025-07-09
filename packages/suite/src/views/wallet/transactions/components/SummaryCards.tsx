@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     DISCREET_PLACEHOLDER,
     asBaseCurrencyAmount,
     useShouldRedactNumbers,
 } from '@suite-common/wallet-utils';
+import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { variables } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

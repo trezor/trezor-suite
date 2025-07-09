@@ -2,6 +2,7 @@ import { createIntl } from 'react-intl';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { FormatterConfig } from '../../types';
 import { prepareBaseCurrencyAmountFormatter } from '../prepareBaseCurrencyAmountFormatter';
@@ -26,27 +27,40 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
         displaySymbolFormatter = prepareBaseCurrencyAmountFormatter(formatterConfig);
     });
 
-    it('formats basic numbers', () => {
-        expect(displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(123)), {})).toBe(
-            'XAU 123',
-        );
-        expect(displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(0)), {})).toBe(
-            'XAU 0',
-        );
-        expect(
-            displaySymbolFormatter.format(
-                asBaseCurrencyAmount(new BigNumber('123456789123456789123456789')),
-                {},
-            ),
-        ).toBe('XAU 123,456,789,123,456,790,000,000,000.00');
-    });
+    const dataProvider: Array<{ it?: string; input: string; expected: string }> = [
+        { input: '123', expected: 'XAU 123' },
+        { input: '0', expected: 'XAU 0' },
+        {
+            input: '123456789123456789123456789',
+            expected: 'XAU 123,456,789,123,456,790,000,000,000',
+        },
+        {
+            it: 'uses significant digits: small number and keeps precision',
+            input: '0.00000000001',
+            expected: 'XAU 0.00000000001',
+        },
+        {
+            it: 'uses significant digits: but the bigger number gets rounded',
+            input: '0.10000000001',
+            expected: 'XAU 0.1',
+        },
+        {
+            it: 'do not show .00 for whole number < 1000',
+            input: '923',
+            expected: 'XAU 923',
+        },
+        {
+            it: 'uses significant digits for < 1000',
+            input: '923.1234',
+            expected: 'XAU 923.12',
+        },
+    ];
 
-    it('uses significant digits: small number and keeps precision, but the bigger number gets rounded', () => {
-        expect(
-            displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(0.00000000001)), {}),
-        ).toBe('XAU 0.00000000001');
-        expect(
-            displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(0.10000000001)), {}),
-        ).toBe('XAU 0.1');
-    });
+    dataProvider.forEach(item =>
+        it(item.it ?? `format ${item.input}`, () => {
+            expect(
+                displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(item.input)), {}),
+            ).toBe(item.expected.replace(' ', ' '));
+        }),
+    );
 });
