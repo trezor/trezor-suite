@@ -12064,7 +12064,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-ui@workspace:packages/connect-ui"
   dependencies:
-    "@suite-common/validators": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"

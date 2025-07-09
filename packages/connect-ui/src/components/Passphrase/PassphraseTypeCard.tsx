@@ -4,7 +4,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css, useTheme } from 'styled-components';
 
-import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Button,
     Checkbox,
@@ -27,6 +26,8 @@ type WrapperProps = {
     $type: WalletType;
     $singleColModal?: boolean;
 };
+
+const PASSPHRASE_MAX_LENGTH = 50;
 
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
@@ -194,7 +195,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
 
-    const isTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
+    const isTooLong = countBytesInString(value) > PASSPHRASE_MAX_LENGTH;
 
     const { onSubmit } = props;
     const submit = useCallback(
