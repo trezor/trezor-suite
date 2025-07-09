@@ -20,7 +20,12 @@ type ScreenContentProps = {
     refreshControl?: ScrollViewProps['refreshControl'];
 };
 
-const screenContentWrapperStyle = prepareNativeStyle(() => ({ flexGrow: 1 }));
+const screenContentWrapperStyle = prepareNativeStyle(utils => ({
+    flexGrow: 1,
+
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    borderRadius: utils.borders.radii.r16,
+}));
 
 export const ScreenContentWrapper = ({
     children,

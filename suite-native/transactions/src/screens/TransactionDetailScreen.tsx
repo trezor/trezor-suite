@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import {
@@ -14,17 +15,16 @@ import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
+    DeviceInteractionScreenHeader,
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
-import { TransactionName } from '../components/TransactionName';
 
 export const TransactionDetailScreen = ({
     route,
@@ -36,9 +36,6 @@ export const TransactionDetailScreen = ({
     ) as WalletAccountTransaction;
     const blockchainExplorer = useSelector((state: BlockchainRootState) =>
         selectBlockchainExplorerBySymbol(state, transaction?.symbol),
-    );
-    const isPending = useSelector((state: TransactionsRootState) =>
-        selectIsTransactionPending(state, txid, accountKey),
     );
 
     const tokenTransfer = transaction?.tokens.find(token => token.contract === tokenContract);
@@ -65,26 +62,7 @@ export const TransactionDetailScreen = ({
     };
 
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    closeActionType={closeActionType}
-                    title={
-                        <Translation
-                            id="transactions.detail.header"
-                            values={{
-                                transactionType: _ => (
-                                    <TransactionName
-                                        transaction={transaction}
-                                        isPending={isPending}
-                                    />
-                                ),
-                            }}
-                        />
-                    }
-                />
-            }
-        >
+        <Screen backgroundColor="textDefault" header={<DeviceInteractionScreenHeader />}>
             <VStack spacing="sp24">
                 <VStack spacing="sp32">
                     <TransactionDetailHeader
