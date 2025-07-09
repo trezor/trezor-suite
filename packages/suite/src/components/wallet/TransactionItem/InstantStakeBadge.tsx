@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
+import { getInstantStakeType } from '@suite-common/staking';
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -12,7 +13,6 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { calculateGains } from '@suite-common/staking';
 import { StakeRootState, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';
@@ -10,7 +11,6 @@ import { BaseCurrencyValue, FormattedCryptoAmount, TrezorLink } from 'src/compon
 import { Translation } from 'src/components/suite/Translation';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { calculateGains } from 'src/utils/suite/staking';
 
 export const EstimatedGains = () => {
     const { account, getValues, formState } = useStakeFormContext();

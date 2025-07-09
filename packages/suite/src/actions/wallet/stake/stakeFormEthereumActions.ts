@@ -1,5 +1,15 @@
 import { toWei } from 'web3-utils';
 
+import {
+    getStakeTxGasLimit,
+    prepareClaimEthTx,
+    prepareStakeEthTx,
+    prepareUnstakeEthTx,
+} from '@suite-common/staking';
+import {
+    calculate,
+    composeStakingTransaction,
+} from '@suite-common/staking/src/actions/stakeFormActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -23,14 +33,6 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
-import {
-    getStakeTxGasLimit,
-    prepareClaimEthTx,
-    prepareStakeEthTx,
-    prepareUnstakeEthTx,
-} from 'src/utils/suite/ethereumStaking';
-
-import { calculate, composeStakingTransaction } from './stakeFormActions';
 
 const calculateStakingTransaction = (
     availableBalance: string,

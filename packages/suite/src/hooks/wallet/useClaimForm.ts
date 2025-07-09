@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import { selectLocalCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
@@ -9,8 +10,6 @@ import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT, UseStakeFormsProps } from 'src/types/wallet/stakeForms';
-import { getStakeFormsDefaultValues } from 'src/utils/suite/ethereumStaking';
-import { getStakingContractAddress } from 'src/utils/suite/staking';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';

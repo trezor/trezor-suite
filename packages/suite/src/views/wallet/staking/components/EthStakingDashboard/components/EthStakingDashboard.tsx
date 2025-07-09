@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
+import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     fetchAllTransactionsForAccountThunk,
@@ -19,7 +20,6 @@ import { spacings } from '@trezor/theme';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { InstantStakeBanner } from './InstantStakeBanner';

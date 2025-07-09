@@ -2,6 +2,7 @@ import { memo, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import {
@@ -25,7 +26,6 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
 
 import { Content, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
 import { TransactionHeading } from './TransactionHeading';

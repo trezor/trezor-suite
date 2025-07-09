@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
@@ -12,7 +13,6 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getDaysToAddToPoolInitial } from 'src/utils/suite/ethereumStaking';
 
 const getStakeEnteringMessage = (networkType?: NetworkType) => {
     if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
