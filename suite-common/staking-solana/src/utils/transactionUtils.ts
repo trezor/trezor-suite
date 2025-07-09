@@ -48,7 +48,7 @@ import {
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { serializeError } from '@trezor/utils';
 
-import { selectSolanaWalletSdkNetwork } from './connection';
+import { selectSolanaWalletSdkNetwork } from '../connection';
 import {
     ADDRESS_DEFAULT,
     MAX_CLAIM_ACCOUNTS,
@@ -57,7 +57,7 @@ import {
     MIN_AMOUNT,
     STAKE_CONFIG_ACCOUNT,
     STAKE_HISTORY_ACCOUNT,
-} from './constants';
+} from '../constants';
 import {
     ClaimParams,
     ClaimResponse,
@@ -67,7 +67,7 @@ import {
     StakeParams,
     StakeResponse,
     UnstakeResponse,
-} from './types';
+} from '../types';
 
 const formatEverstakeSource = (source: string): string => {
     const timestamp = new Date().getTime();
