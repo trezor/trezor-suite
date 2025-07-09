@@ -15,6 +15,20 @@ export default [
                 { additionalTestBlockFunctions: ['conditionalTest'] },
             ],
             'import/no-default-export': 'off', // Todo: shall be solved one day, but now its heavily used
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
+                    patterns: [
+                        '@trezor/*/lib',
+                        '@trezor/*/lib/**',
+                        '@trezor/*/libDev',
+                        '@trezor/*/libDev/**',
+                        '@suite-common/**',
+                        '@suite-native/**',
+                    ],
+                },
+            ],
         },
     },
 ];

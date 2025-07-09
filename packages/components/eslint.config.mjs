@@ -24,4 +24,22 @@ export default [
             ],
         },
     },
+    {
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
+                    patterns: [
+                        '@trezor/*/lib',
+                        '@trezor/*/lib/**',
+                        '@trezor/*/libDev',
+                        '@trezor/*/libDev/**',
+                        '@suite-common/**',
+                        '@suite-native/**',
+                    ],
+                },
+            ],
+        },
+    },
 ];
