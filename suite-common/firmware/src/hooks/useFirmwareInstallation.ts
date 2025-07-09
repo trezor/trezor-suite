@@ -52,7 +52,7 @@ export type UseFirmwareInstallationParams =
     | undefined;
 
 export type FirmwareOperationStatus = {
-    operation: 'installing' | 'validating' | 'restarting' | 'completed' | null;
+    operation: 'installing' | 'restarting' | 'completed' | null;
     progress: number;
 };
 
@@ -136,19 +136,14 @@ export const useFirmwareInstallation = (
             };
         }
 
-        if (firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS) {
-            switch (firmware.uiEvent.payload.operation) {
-                case 'flashing':
-                    return {
-                        operation: 'installing',
-                        progress: firmware.uiEvent.payload.progress,
-                    };
-                case 'validating':
-                    return {
-                        operation: 'validating',
-                        progress: 100,
-                    };
-            }
+        if (
+            firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
+            firmware.uiEvent.payload.operation === 'flashing'
+        ) {
+            return {
+                operation: 'installing',
+                progress: firmware.uiEvent.payload.progress,
+            };
         }
 
         // Automatically restarting from bootloader to normal mode at the end of non-intermediary installation:

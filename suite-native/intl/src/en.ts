@@ -2168,7 +2168,6 @@ export const en = {
                 title: 'Installing firmware',
             },
             restarting: { title: 'Restarting Trezor.' },
-            validating: { title: 'Validating firmware.' },
             completed: {
                 title: 'Firmware installed',
                 subtitle: 'You’re all set.',

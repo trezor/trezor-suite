@@ -121,11 +121,6 @@ export const useFirmware = (
                 title: 'firmware.firmwareUpdateProgress.confirming.title',
                 subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
-        } else if (operation === 'validating') {
-            text = {
-                title: 'firmware.firmwareUpdateProgress.validating.title',
-                subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
-            };
         } else if (operation === 'restarting') {
             text = {
                 title: 'firmware.firmwareUpdateProgress.restarting.title',

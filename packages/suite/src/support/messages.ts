@@ -3689,11 +3689,6 @@ export default defineMessages({
         description: 'Info what is happening with users device.',
         id: 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',
     },
-    TR_VALIDATION: {
-        defaultMessage: 'Validating firmware',
-        description: 'Info what is happening with users device.',
-        id: 'TR_VALIDATION',
-    },
     TR_WALLET_DUPLICATE_DESC: {
         defaultMessage: "The Passphrase wallet you're accessing has already been discovered.",
         id: 'TR_WALLET_DUPLICATE_DESC',
