@@ -5,6 +5,7 @@ export * from './config';
 export * from './useHandleHardwareBackNavigation';
 export * from './useNavigateToInitialScreen';
 export * from './useScrollDivider';
+export * from './checkIsRouteAccessAllowed';
 export * from './hooks/useNavigationRoute';
 export * from './hooks/useOverrideBackNavigation';
 export * from './components/TabBar';

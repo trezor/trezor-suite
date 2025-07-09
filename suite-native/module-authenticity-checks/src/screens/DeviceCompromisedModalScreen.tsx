@@ -1,4 +1,6 @@
-import { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
+import { useSelector } from 'react-redux';
+
+import { selectCompromisedDeviceFailedCheck } from '@suite-native/device';
 import { exhaustive } from '@trezor/type-utils';
 
 import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';
@@ -11,10 +13,8 @@ import { FirmwareAuthenticityCheckFailModalContent } from '../components/Firmwar
  * - FW authenticity check failure
  * - device authenticity check failure
  */
-export const DeviceCompromisedModalScreen = ({
-    route,
-}: StackProps<RootStackParamList, RootStackRoutes.DeviceCompromisedModal>) => {
-    const { failedCheck } = route.params;
+export const DeviceCompromisedModalScreen = () => {
+    const failedCheck = useSelector(selectCompromisedDeviceFailedCheck);
 
     switch (failedCheck) {
         case 'device-authenticity':

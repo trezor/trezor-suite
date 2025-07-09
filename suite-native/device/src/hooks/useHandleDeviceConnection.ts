@@ -7,11 +7,9 @@ import { useAtom, useAtomValue } from 'jotai';
 import { selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
 import {
     selectIsDeviceConnected,
-    selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInitialized,
     selectIsDeviceRemembered,
     selectIsDeviceThpRequired,
-    selectIsDeviceUsingPassphrase,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -29,16 +27,13 @@ import {
     useNavigateToInitialScreen,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
-import {
-    selectIsCoinEnablingInitFinished,
-    selectIsOnboardingFinished,
-} from '@suite-native/settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 import {
     isOnboardingDeviceDisconnectedAlertDisplayedAtom,
     wasDeviceOnboardingCancelledAtom,
 } from '../deviceAtoms';
-import { selectIsDeviceSetupSupported } from '../selectors';
+import { selectIsDeviceCompromised, selectIsDeviceSetupSupported } from '../selectors';
 import { useDeviceChecks } from './useDeviceChecks';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes>;
@@ -55,17 +50,15 @@ export const useHandleDeviceConnection = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
-    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
     const isThpInProgress = useSelector(selectIsThpInProgress);
     const thpStep = useSelector(selectThpStep);
-    const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
-    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
+    const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
@@ -101,11 +94,7 @@ export const useHandleDeviceConnection = () => {
         lastRoute as RootStackRoutes,
     );
 
-    const {
-        failedCheck,
-        shouldNavigateToDeviceCompromisedModal,
-        shouldKeepDeviceCompromisedModal,
-    } = useDeviceChecks(isDeviceCompromisedModalFocused);
+    const { shouldKeepDeviceCompromisedModal } = useDeviceChecks(isDeviceCompromisedModalFocused);
 
     // Nothing can be accomplished before a THP connection is established.
     useEffect(() => {
@@ -134,7 +123,8 @@ export const useHandleDeviceConnection = () => {
             !isOnboardingDeviceDisconnectedAlertDisplayed &&
             !isFirmwareInstallationRunning &&
             (!isDeviceOnboardingStackFocused || isDeviceOnboardingConnectAndUnlockScreenFocused) &&
-            !shouldNavigateToDeviceCompromisedModal
+            !wasDeviceOnboardingCancelled &&
+            !isDeviceCompromised
         ) {
             if (!wasDeviceOnboardingCancelled) {
                 navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
@@ -167,58 +157,9 @@ export const useHandleDeviceConnection = () => {
         isOnboardingDeviceDisconnectedAlertDisplayed,
         isDeviceOnboardingConnectAndUnlockScreenFocused,
         wasDeviceOnboardingCancelled,
-        shouldNavigateToDeviceCompromisedModal,
+        isDeviceCompromised,
         isAuthorizeDeviceStackFocused,
         navigateToInitialScreen,
-    ]);
-
-    // At the moment when unauthorized physical device is selected,
-    // redirect to the Connecting screen where is handled the connection logic.
-    useEffect(() => {
-        if (isThpInProgress || isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused) {
-            return;
-        }
-
-        if (
-            isDeviceInitialized &&
-            isDeviceConnected &&
-            isOnboardingFinished &&
-            !isPortfolioTrackerDevice &&
-            !isDeviceConnectedAndAuthorized &&
-            !isBiometricsOverlayVisible &&
-            !shouldNavigateToDeviceCompromisedModal &&
-            !isDeviceOnboardingStackFocused &&
-            !isDeviceUsingPassphrase &&
-            !shouldBlockSendReviewRedirect
-        ) {
-            if (isCoinEnablingInitFinished) {
-                navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                    screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
-                });
-            } else {
-                navigation.navigate(RootStackRoutes.CoinEnablingInit);
-            }
-        }
-        if (shouldNavigateToDeviceCompromisedModal) {
-            navigation.navigate(RootStackRoutes.DeviceCompromisedModal, { failedCheck });
-        }
-    }, [
-        isThpInProgress,
-        failedCheck,
-        isCoinEnablingInitFinished,
-        isDeviceConnected,
-        isDeviceOnboardingStackFocused,
-        isOnboardingFinished,
-        isPortfolioTrackerDevice,
-        isDeviceConnectedAndAuthorized,
-        isBiometricsOverlayVisible,
-        navigation,
-        isDeviceUsingPassphrase,
-        shouldBlockSendReviewRedirect,
-        isFirmwareInstallationRunning,
-        isDeviceInitialized,
-        shouldNavigateToDeviceCompromisedModal,
-        isSuspiciousDeviceScreenFocused,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and

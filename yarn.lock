@@ -10783,7 +10783,7 @@ __metadata:
   resolution: "@suite-native/module-authenticity-checks@workspace:suite-native/module-authenticity-checks"
   dependencies:
     "@react-navigation/core": "npm:7.12.4"
-    "@react-navigation/native": "npm:7.1.17"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"

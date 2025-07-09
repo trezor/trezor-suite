@@ -1,4 +1,5 @@
 export * from './middlewares/deviceMiddleware';
+export * from './middlewares/deviceConnectionMiddleware';
 export * from './hooks/useConnectDeviceHandler';
 export * from './hooks/useHandleDeviceConnection';
 export * from './hooks/useDetectDeviceError';
