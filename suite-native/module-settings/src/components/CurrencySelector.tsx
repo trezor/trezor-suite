@@ -5,6 +5,7 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { BaseCurrency, BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
+import { typedObjectValues } from '@trezor/utils';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 
@@ -13,7 +14,7 @@ export const transformFiatCurrencyToSelectItem = ({ code, label }: BaseCurrency)
     label: `${code.toUpperCase()} · ${label}`,
 });
 
-const fiatCurrencyItems = Object.values(baseCurrencies).map(transformFiatCurrencyToSelectItem);
+const fiatCurrencyItems = typedObjectValues(baseCurrencies).map(transformFiatCurrencyToSelectItem);
 
 export const CurrencySelector = () => {
     const selectedFiatCurrencyCode = useSelector(selectLocalCurrency);

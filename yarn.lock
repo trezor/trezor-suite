@@ -11040,6 +11040,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jotai: "npm:^2.12.5"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
