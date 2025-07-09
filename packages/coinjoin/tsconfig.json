@@ -11,6 +11,7 @@
         { "path": "../eslint" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
+        { "path": "../node-utils" },
         { "path": "../type-utils" }
     ]
 }

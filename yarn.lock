@@ -11788,6 +11788,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -12251,6 +12252,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
+    "@trezor/node-utils": "workspace:*"
     express: "npm:^5.1.0"
     uuid: "npm:^11.1.0"
     ws: "npm:^8.18.0"

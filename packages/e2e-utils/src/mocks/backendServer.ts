@@ -1,5 +1,6 @@
-import * as net from 'net';
 import WebSocket, { WebSocketServer } from 'ws';
+
+import { getFreePort } from '@trezor/node-utils';
 
 import { blockbook } from '../fixtures/blockbook';
 import { blockfrost } from '../fixtures/blockfrost';
@@ -23,20 +24,6 @@ export interface Fixture {
 export interface PushNotification {
     delay?: number;
 }
-
-// enables parallelization using a free port
-const getFreePort = () =>
-    new Promise<number>((resolve, reject) => {
-        const server = net.createServer();
-        server.unref();
-        server.on('error', reject);
-        server.listen(0, () => {
-            const { port } = server.address() as net.AddressInfo;
-            server.close(() => {
-                resolve(port);
-            });
-        });
-    });
 
 export class BackendWebsocketServerMock extends WebSocketServer {
     backendType: BackendType;
