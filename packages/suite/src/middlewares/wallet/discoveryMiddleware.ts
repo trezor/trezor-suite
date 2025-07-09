@@ -76,7 +76,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                         device.state.staticSessionId,
                     );
 
-                    if (networksToDiscover.length) {
+                    if (networksToDiscover.undiscovered.length) {
                         dispatch(runAdditionalDiscoveryThunk(device.state.staticSessionId));
                     }
                 }

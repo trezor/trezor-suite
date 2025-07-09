@@ -78,19 +78,19 @@ export const selectNetworksToDiscover = (
     const enabledNetworks = selectEnabledNetworks(state);
     const device = selectSelectedDevice(state);
     const deviceNetworks = selectSupportedNetworkByDevice(device);
-    const enabledSupportedNetworks = enabledNetworks.filter(network =>
-        deviceNetworks.includes(network),
-    );
-
+    const networks = enabledNetworks.filter(network => deviceNetworks.includes(network));
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
     const okAccounts = selectAccountsByDeviceState(state, staticSessionId);
     const failedAccounts = getFailedAccounts(staticSessionId, discovery);
 
-    const discoveredNetworks = [
-        ...new Set([...okAccounts, ...failedAccounts].map(account => account.symbol)),
-    ];
+    const networkSet = new Set(networks);
+    const allSet = new Set([...okAccounts, ...failedAccounts].map(a => a.symbol));
+    const failedSet = new Set(failedAccounts.map(a => a.symbol));
 
-    return enabledSupportedNetworks.filter(network => !discoveredNetworks.includes(network));
+    return {
+        failed: [...failedSet].filter(s => networkSet.has(s)),
+        undiscovered: [...networkSet].filter(s => !allSet.has(s)),
+    };
 };
 
 export const selectShowRediscoverButton = (
@@ -98,7 +98,7 @@ export const selectShowRediscoverButton = (
     staticSessionId?: StaticSessionId,
 ) =>
     staticSessionId &&
-    selectNetworksToDiscover(state, staticSessionId).length > 0 &&
+    selectNetworksToDiscover(state, staticSessionId).undiscovered.length > 0 &&
     !selectHasRunningDiscovery(state);
 
 export const selectAccountsToBeForgotten = (

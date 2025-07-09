@@ -744,7 +744,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const networksToDiscover = selectNetworksToDiscover(getState(), staticSessionId);
 
-        if (!networksToDiscover.length) {
+        if (!networksToDiscover.undiscovered.length && !networksToDiscover.failed.length) {
             console.warn('no networks to discover');
 
             return;
@@ -755,7 +755,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
         const result = await TrezorConnect.discoverAccounts({
             device,
             useEmptyPassphrase: device.useEmptyPassphrase,
-            accounts: networksToDiscover.map(n => ({
+            accounts: [...networksToDiscover.undiscovered, ...networksToDiscover.failed].map(n => ({
                 symbol: n,
             })),
         });
