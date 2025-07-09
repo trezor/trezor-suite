@@ -3,7 +3,7 @@ import type { NavigationState } from '@react-navigation/routers';
 
 import { AppTabsParamList } from '../navigators';
 
-type AppNavigationState = NavigationState<AppTabsParamList>;
+export type AppNavigationState = NavigationState<AppTabsParamList>;
 /**
  * Recursively get the most specific active route name from the hierarchy of navigation states.
  */

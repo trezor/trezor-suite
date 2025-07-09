@@ -4,20 +4,22 @@ import {
     DarkTheme,
     DefaultTheme,
     NavigationContainer,
-    useNavigationContainerRef,
+    createNavigationContainerRef,
 } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useNativeStyles } from '@trezor/styles';
 
+import { RootStackParamList } from '../navigators';
 import { useReportSendFlowExitToAnalytics } from '../useReportSendFlowExitToAnalytics';
 
 export const IsNavigationReadyContext = createContext(false);
 
+export const navigationContainerRef = createNavigationContainerRef<RootStackParamList>();
+
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const [isNavigationReady, setIsNavigationReady] = useState(false);
-    const navigationContainerRef = useNavigationContainerRef();
     const routeNameRef = useRef<string | undefined>(undefined);
     const {
         utils: { colors, isDarkColor },
