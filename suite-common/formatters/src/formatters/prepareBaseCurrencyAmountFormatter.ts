@@ -37,10 +37,11 @@ const handleBigNumberFormatting = (
         ...(useSignificantDigits
             ? {
                   minimumSignificantDigits: 1,
-                  maximumSignificantDigits: MAX_NO_SIGNIFICANT_DIGITS,
+                  maximumSignificantDigits:
+                      MAX_NO_SIGNIFICANT_DIGITS + (maximumFractionDigits ?? 2),
               }
             : {
-                  minimumFractionDigits: minimumFractionDigits ?? 2,
+                  minimumFractionDigits: minimumFractionDigits ?? 0,
                   maximumFractionDigits: maximumFractionDigits ?? 2,
               }),
     });
