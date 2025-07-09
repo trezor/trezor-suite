@@ -47,6 +47,7 @@ import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { AmountSubunit, AmountUnit } from './AmountTypes';
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -290,7 +291,7 @@ export const getAccountTypeUrl = (path: string) => {
 export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
 
 /**
- * BTC -> Sats, etc...
+ * Sats -> BTC, etc...
  *
  * @deprecated Use `subunitsToUnits` instead!
  */
@@ -308,7 +309,7 @@ export const convertAmountSubunitsToUnits = (amount: BigNumberValue, decimals: n
 };
 
 /**
- * Sats -> BTC, etc...
+ * BTC -> Sats, etc...
  *
  * @deprecated Use `unitsToSubunits` instead!
  */
@@ -383,6 +384,9 @@ export const subunitsToUnits = <T extends NetworkSymbol, K extends T>(
     return value.div(factor) as AmountUnit<T>;
 };
 
+/**
+ * @deprecated use `subunitsToUnits` if you don't need formatting. If you need formating, use function that does ONLY formatting.
+ */
 export const formatNetworkAmount = (
     amount: string,
     symbol: NetworkSymbol,
@@ -644,9 +648,9 @@ export const getAccountTokensFiatBalance = (
     localCurrency: string,
     rates?: RatesByKey,
     tokens?: Account['tokens'],
-) =>
-    (tokens ?? [])
-        .reduce((total, token) => {
+): BaseCurrencyAmount =>
+    asBaseCurrencyAmount(
+        (tokens ?? []).reduce((total, token) => {
             const tokenFiatRateKey = getFiatRateKey(
                 account.symbol,
                 localCurrency as BaseCurrencyCode,
@@ -656,15 +660,17 @@ export const getAccountTokensFiatBalance = (
             const tokenFiatRate = rates?.[tokenFiatRateKey];
 
             return tokenFiatRate?.rate && token.balance
-                ? total.plus(toFiatCurrency(token.balance, tokenFiatRate.rate, 2) ?? 0)
+                ? total.plus(
+                      toFiatCurrency({ amount: token.balance, rate: tokenFiatRate.rate }) ?? 0,
+                  )
                 : total;
-        }, new BigNumber(0))
-        .toFixed();
+        }, new BigNumber(0)),
+    );
 
 export const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
     const balance = getAccountTotalStakingBalance(account) ?? '0';
 
-    return toFiatCurrency(balance, rate, 2);
+    return toFiatCurrency({ amount: balance, rate });
 };
 
 type GetAccountFiatBalanceParams = {
@@ -690,7 +696,10 @@ export const getAccountFiatBalance = ({
     let totalBalance = new BigNumber(0);
 
     // account fiat balance
-    const accountBalance = toFiatCurrency(account.formattedBalance, coinFiatRate.rate, 2);
+    const accountBalance = toFiatCurrency({
+        amount: account.formattedBalance,
+        rate: coinFiatRate.rate,
+    });
     totalBalance = totalBalance.plus(accountBalance ?? 0);
 
     // sum fiat value of all tokens
@@ -710,7 +719,7 @@ export const getAccountFiatBalance = ({
         totalBalance = totalBalance.plus(stakingBalance ?? 0);
     }
 
-    return totalBalance.toFixed();
+    return asBaseCurrencyAmount(totalBalance);
 };
 
 type GetTotalFiatBalanceParams = {
