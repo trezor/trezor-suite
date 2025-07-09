@@ -22,6 +22,7 @@ export type InputWithOptionsProps<TFieldValues extends FieldValues> = {
         crypto: React.ReactNode;
     };
     onCurrencyChange?: (currency: 'crypto' | 'fiat') => void;
+    'data-testid'?: string;
 };
 
 export const InputWithOptions = <TFieldValues extends FieldValues>({
@@ -31,6 +32,7 @@ export const InputWithOptions = <TFieldValues extends FieldValues>({
     options,
     switchTranslation,
     onCurrencyChange,
+    'data-testid': dataTest,
 }: InputWithOptionsProps<TFieldValues>) => {
     const [amountInCrypto, setAmountInCrypto] = React.useState(true);
 
@@ -53,11 +55,21 @@ export const InputWithOptions = <TFieldValues extends FieldValues>({
         ) : null;
 
     const cryptoNumberInput = (
-        <NumberInput key={cryptoInputProps.name} labelRight={labelRight} {...cryptoInputProps} />
+        <NumberInput
+            data-testid={`${dataTest}/crypto-input`}
+            key={cryptoInputProps.name}
+            labelRight={labelRight}
+            {...cryptoInputProps}
+        />
     );
 
     const fiatNumberInput = canSwitchInputs ? (
-        <NumberInput key={fiatInputProps.name} labelRight={labelRight} {...fiatInputProps} />
+        <NumberInput
+            data-testid={`${dataTest}/fiat-input`}
+            key={fiatInputProps.name}
+            labelRight={labelRight}
+            {...fiatInputProps}
+        />
     ) : null;
 
     const numberInputs = canSwitchInputs && !amountInCrypto ? fiatNumberInput : cryptoNumberInput;

@@ -1,4 +1,170 @@
-const ETH_ACC = {
+export const ETH_PENDING_UNSTAKE_TX = {
+    txid: '0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c',
+    vin: [
+        {
+            n: 0,
+            addresses: ['0xcb6139253d4fa49712C08BF0Cb4F6ea6c2007bF5'],
+            isAddress: true,
+            isOwn: true,
+        },
+    ],
+    vout: [
+        {
+            value: '0',
+            n: 0,
+            addresses: ['0xD523794C879D9eC028960a231F866758e405bE34'],
+            isAddress: true,
+        },
+    ],
+    blockHeight: -1,
+    confirmations: 0,
+    blockTime: 1751723496,
+    value: '0',
+    fees: '2497514931',
+    ethereumSpecific: {
+        status: -1,
+        nonce: 1,
+        gasLimit: 238696,
+        gasPrice: '2497514931',
+        maxPriorityFeePerGas: '2000000000',
+        maxFeePerGas: '2497514931',
+        data: '0x76ec871c00000000000000000000000000000000000000000000017b7883c069166000000000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000001',
+        parsedData: {
+            methodId: '0x76ec871c',
+            name: 'Unstake',
+            function: 'unstake(uint256, uint16, uint64)',
+            params: [
+                {
+                    type: 'uint256',
+                    values: ['1707683570697248000'],
+                },
+                {
+                    type: 'uint16',
+                    values: ['5'],
+                },
+                {
+                    type: 'uint64',
+                    values: ['1'],
+                },
+            ],
+        },
+    },
+};
+
+export const ETH_CONFIRMED_UNSTAKE_TX = {
+    txid: '0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c',
+    vin: [
+        {
+            n: 0,
+            addresses: ['0xcb6139253d4fa49712C08BF0Cb4F6ea6c2007bF5'],
+            isAddress: true,
+            isOwn: true,
+        },
+    ],
+    vout: [
+        {
+            value: '0',
+            n: 0,
+            addresses: ['0xD523794C879D9eC028960a231F866758e405bE34'],
+            isAddress: true,
+        },
+    ],
+    blockHash: '0x2cedd247ad2d0b22b6601523726b0cee145127b64ab3f829357f4d6a1657640b',
+    blockHeight: 22853435,
+    confirmations: 1,
+    blockTime: 1751723496,
+    value: '0',
+    fees: '2497514931',
+    ethereumSpecific: {
+        status: 1,
+        nonce: 149,
+        gasLimit: 238696,
+        gasPrice: '2497514931',
+        maxPriorityFeePerGas: '2000000000',
+        maxFeePerGas: '2497514931',
+        data: '0x76ec871c00000000000000000000000000000000000000000000017b7883c069166000000000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000001',
+        parsedData: {
+            methodId: '0x76ec871c',
+            name: 'Unstake',
+            function: 'unstake(uint256, uint16, uint64)',
+            params: [
+                {
+                    type: 'uint256',
+                    values: ['1707683570697248000'],
+                },
+                {
+                    type: 'uint16',
+                    values: ['5'],
+                },
+                {
+                    type: 'uint64',
+                    values: ['1'],
+                },
+            ],
+        },
+    },
+};
+
+export const ETH_BASE_TX = {
+    txid: '0xec38a68a61d7aebe95c0fdf122cef651a7084301e65ebc94d8ae40498bc84958',
+    vin: [
+        {
+            n: 0,
+            addresses: ['0x7de62F23453E9230cC038390901A9A0130105A3c'],
+            isAddress: true,
+            isOwn: true,
+        },
+    ],
+    vout: [
+        {
+            value: '100000000000000000',
+            n: 0,
+            addresses: ['0xAFA848357154a6a624686b348303EF9a13F63264'],
+            isAddress: true,
+        },
+    ],
+    blockHash: '0x10d4e0b9db8cf40055154760238f7470ae3f3ccc6b8c6139b454464a2c768e54',
+    blockHeight: 1469357,
+    confirmations: 152124,
+    blockTime: 1714736076,
+    value: '100000000000000000',
+    fees: '347242000000000',
+    ethereumSpecific: {
+        status: 1,
+        nonce: 9,
+        gasLimit: 416102,
+        gasUsed: 173621,
+        gasPrice: '2000000000',
+        data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
+        parsedData: {
+            methodId: '0x3a29dbae',
+            name: 'Stake',
+            function: 'stake(uint64)',
+            params: [
+                {
+                    type: 'uint64',
+                    values: ['1'],
+                },
+            ],
+        },
+        internalTransfers: [
+            {
+                type: 0,
+                from: '0x02a9d3637126923De9369557CD9673aae46666Fd',
+                to: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+                value: '55324575000000000',
+            },
+            {
+                type: 0,
+                from: '0xAFA848357154a6a624686b348303EF9a13F63264',
+                to: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+                value: '100000000000000000',
+            },
+        ],
+    },
+};
+
+export const ETH_ACC = {
     page: 1,
     totalPages: 1,
     itemsOnPage: 25,
@@ -9,66 +175,7 @@ const ETH_ACC = {
     txs: 1,
     nonTokenTxs: 1,
     internalTxs: 0,
-    transactions: [
-        {
-            txid: '0xec38a68a61d7aebe95c0fdf122cef651a7084301e65ebc94d8ae40498bc84958',
-            vin: [
-                {
-                    n: 0,
-                    addresses: ['0x7de62F23453E9230cC038390901A9A0130105A3c'],
-                    isAddress: true,
-                    isOwn: true,
-                },
-            ],
-            vout: [
-                {
-                    value: '100000000000000000',
-                    n: 0,
-                    addresses: ['0xAFA848357154a6a624686b348303EF9a13F63264'],
-                    isAddress: true,
-                },
-            ],
-            blockHash: '0x10d4e0b9db8cf40055154760238f7470ae3f3ccc6b8c6139b454464a2c768e54',
-            blockHeight: 1469357,
-            confirmations: 152124,
-            blockTime: 1714736076,
-            value: '100000000000000000',
-            fees: '347242000000000',
-            ethereumSpecific: {
-                status: 1,
-                nonce: 9,
-                gasLimit: 416102,
-                gasUsed: 173621,
-                gasPrice: '2000000000',
-                data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
-                parsedData: {
-                    methodId: '0x3a29dbae',
-                    name: 'Stake',
-                    function: 'stake(uint64)',
-                    params: [
-                        {
-                            type: 'uint64',
-                            values: ['1'],
-                        },
-                    ],
-                },
-                internalTransfers: [
-                    {
-                        type: 0,
-                        from: '0x02a9d3637126923De9369557CD9673aae46666Fd',
-                        to: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
-                        value: '55324575000000000',
-                    },
-                    {
-                        type: 0,
-                        from: '0xAFA848357154a6a624686b348303EF9a13F63264',
-                        to: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
-                        value: '100000000000000000',
-                    },
-                ],
-            },
-        },
-    ],
+    transactions: [ETH_BASE_TX],
     stakingPools: [
         {
             contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
@@ -133,5 +240,10 @@ export const fixtures = [
                 },
             ],
         },
+    },
+    {
+        method: 'sendTransaction',
+        default: true,
+        response: { result: '0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c' },
     },
 ];
