@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+// TODO: suite-common imports in non-suite packages should not be allowed
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { icons } from '@suite-common/icons/src/icons';
 
 import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
