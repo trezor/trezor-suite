@@ -1,4 +1,4 @@
 export * from './connection';
-export * from './transactionStakingUtils';
+export * from './utils';
 export * from './types';
 export * from './constants';
