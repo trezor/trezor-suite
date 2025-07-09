@@ -1,8 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
-import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { FailedAccount } from '@suite-common/wallet-types';
+import { Bip43Path, TrezorConnectBackendType, networks } from '@suite-common/wallet-config';
+import { substituteBip43Path } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     BundleProgress,
     DeviceState,
@@ -12,6 +12,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import {
     DiscoverAccountsProgress,
+    DiscoverAccountsProgressError,
     DiscoverAccountsProgressOk,
 } from '@trezor/connect/src/types/api/discoverAccounts';
 import { isNative } from '@trezor/env-utils';
@@ -159,23 +160,44 @@ const applyDeviceStatesThunk = createThunk(
 
 const progressEventToCreateAccountPayload =
     (deviceState: StaticSessionId) =>
-    (response: DiscoverAccountsProgressOk): CreateAccountActionProps => {
-        const backendType = response.backendType as TrezorConnectBackendType | undefined;
+    (response: DiscoverAccountsProgressOk): CreateAccountActionProps => ({
+        deviceState,
+        discoveryItem: {
+            path: response.path as Bip43Path,
+            coin: response.symbol,
+            index: response.index,
+            accountType: response.type,
+            backendType: response.backendType as TrezorConnectBackendType | undefined,
+        },
+        accountInfo: response,
+        // first normal account is always visible on web & desktop
+        visible: (response.type === 'normal' && response.index === 0) || !response.empty,
+    });
 
-        return {
-            deviceState,
-            discoveryItem: {
-                path: response.path as Bip43Path,
-                coin: response.symbol,
-                index: response.index,
-                accountType: response.type,
-                backendType,
-            },
-            accountInfo: response,
-            // first normal account is always visible on web & desktop
-            visible: (response.type === 'normal' && response.index === 0) || !response.empty,
-        };
-    };
+const getFailedAccountPayload = (
+    { symbol, index, error, type }: DiscoverAccountsProgressError,
+    deviceState: StaticSessionId,
+): CreateAccountActionProps => ({
+    deviceState,
+    discoveryItem: {
+        path: substituteBip43Path(networks[symbol].bip43Path),
+        coin: symbol,
+        index,
+        accountType: type,
+    },
+    accountInfo: {
+        descriptor: `failed:${index}:${symbol}:${type}`,
+        balance: '0',
+        availableBalance: '0',
+        empty: true,
+        history: {
+            total: 0,
+            unconfirmed: 0,
+        },
+    },
+    visible: true,
+    error,
+});
 
 const createOnBundleProgressHandler = (
     devicePath: DeviceUniquePath,
@@ -233,15 +255,9 @@ const createOnBundleProgressHandler = (
                 ),
             );
         } else {
-            const currentFailedAccounts = discovery.failed ?? [];
-            const newFailedAccount: FailedAccount = { accountType: response.type, ...response };
+            const payload = getFailedAccountPayload(response, deviceStaticSessionId);
 
-            const { symbol, accountType, index } = newFailedAccount;
-
-            const isDuplicate = currentFailedAccounts.some(
-                f => f.symbol === symbol && f.accountType === accountType && f.index === index,
-            );
-            if (isDuplicate) return; // only defensive programming
+            dispatch(accountsActions.createAccount(payload));
 
             dispatch(
                 discoveryActions.updateDiscovery(
@@ -249,7 +265,6 @@ const createOnBundleProgressHandler = (
                         status: 'progress',
                         total: event.total,
                         progress: event.progress,
-                        failed: [...currentFailedAccounts, newFailedAccount],
                     },
                     devicePath,
                 ),
@@ -310,7 +325,6 @@ export const applyDeviceStateErrorThunk = createThunk(
             discoveryActions.updateDiscovery(
                 {
                     status: 'failed',
-                    failed: [], // no failed accounts yet,
                     error,
                     errorCode: code,
                 },

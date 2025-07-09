@@ -1,23 +1,15 @@
-import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
+import { Bip43Path } from '@suite-common/wallet-config';
 import type { DeviceUniquePath } from '@trezor/connect';
 import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
-export type FailedAccount = {
-    symbol: NetworkSymbol;
-    index: number;
-    accountType: NonNullable<AccountType>;
-    error: string;
-    fwException?: string;
-};
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
     isAddingHiddenWalletWithRespectToSettings?: boolean;
     hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the disocovery started loading actual accounts
     emptyWallet?: boolean;
-    failed?: FailedAccount[];
     passphraseOnDevice?: boolean;
     startTimestamp?: number;
     passphraseSubmitted?: boolean;

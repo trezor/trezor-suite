@@ -37,6 +37,7 @@ export type CreateAccountActionProps = {
     accountInfo: AccountInfo;
     imported?: boolean;
     accountLabel?: string;
+    error?: string;
     visible: boolean;
 };
 
@@ -47,6 +48,7 @@ const composeCreateAccountActionPayload = ({
     imported,
     accountLabel,
     visible,
+    error,
 }: CreateAccountActionProps): Account => {
     try {
         const { chainId } = getNetwork(discoveryItem.coin);
@@ -61,6 +63,7 @@ const composeCreateAccountActionPayload = ({
             deviceState,
             accountLabel,
             imported,
+            ...(error !== undefined ? { error, failed: true } : { failed: undefined }),
             index: discoveryItem.index,
             path: discoveryItem.path,
             unlockPath: discoveryItem.unlockPath,
@@ -119,6 +122,7 @@ const createAccount = createAction(
         imported,
         accountLabel,
         visible,
+        error,
     }: CreateAccountActionProps): { payload: Account } => ({
         payload: composeCreateAccountActionPayload({
             deviceState,
@@ -127,6 +131,7 @@ const createAccount = createAction(
             imported,
             accountLabel,
             visible,
+            error,
         }),
     }),
 );

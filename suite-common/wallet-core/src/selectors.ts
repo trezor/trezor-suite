@@ -1,7 +1,7 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import { ReviewOutput } from '@suite-common/wallet-types';
-import { findAccountsByAddress, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { findAccountsByAddress, sortByCoin } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 import { AccountsRootState } from './accounts/accountsReducer';
@@ -19,11 +19,7 @@ import {
     selectSupportedNetworkByDevice,
 } from './device/deviceSelectors';
 import { DiscoveryRootState } from './discovery/discoveryReducer';
-import {
-    selectDiscoveryByDevicePath,
-    selectDiscoveryForSelectedDevice,
-    selectHasRunningDiscovery,
-} from './discovery/discoverySelectors';
+import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
 import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
 
 /*
@@ -38,31 +34,15 @@ type CompoundRootState = AccountsRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<CompoundRootState>();
 
 /**
- * This means "all potentially visible accounts", because for accounts that failed to be discovered
- * we don't know if they would have been visible or not (depends on discovery account.empty result).
- */
-export const selectVisibleAccountsWithFailed = createMemoizedSelector(
-    [selectVisibleDeviceAccounts, selectSelectedDevice, selectDiscoveryForSelectedDevice],
-    (okAccounts, device, discovery) => {
-        const staticSessionId = device?.state?.staticSessionId;
-        const failedAccounts = getFailedAccounts(staticSessionId, discovery);
-
-        const allAccounts = [...okAccounts, ...failedAccounts];
-
-        return returnStableArrayIfEmpty(allAccounts);
-    },
-);
-
-/**
  * Listable accounts are visible, enabled in settings, supported by the device and conventionally sorted.
  * Edge cases: accounts failed to be discovered, or remembered accounts no longer supported by the device.
  */
 export const selectAllAccountsToList = createMemoizedSelector(
-    [selectVisibleAccountsWithFailed, selectSelectedDevice, selectEnabledNetworks],
-    (allAccounts, device, enabledNetworks) => {
+    [selectVisibleDeviceAccounts, selectSelectedDevice, selectEnabledNetworks],
+    (accounts, device, enabledNetworks) => {
         const deviceNetworks = selectSupportedNetworkByDevice(device);
 
-        const filteredAccounts = allAccounts.filter(
+        const filteredAccounts = accounts.filter(
             ({ symbol }) => enabledNetworks.includes(symbol) && deviceNetworks.includes(symbol),
         );
         const sortedAccounts = sortByCoin(filteredAccounts);
@@ -79,13 +59,11 @@ export const selectNetworksToDiscover = (
     const device = selectSelectedDevice(state);
     const deviceNetworks = selectSupportedNetworkByDevice(device);
     const networks = enabledNetworks.filter(network => deviceNetworks.includes(network));
-    const discovery = selectDiscoveryByDevicePath(state, device?.path);
-    const okAccounts = selectAccountsByDeviceState(state, staticSessionId);
-    const failedAccounts = getFailedAccounts(staticSessionId, discovery);
+    const accounts = selectAccountsByDeviceState(state, staticSessionId);
 
     const networkSet = new Set(networks);
-    const allSet = new Set([...okAccounts, ...failedAccounts].map(a => a.symbol));
-    const failedSet = new Set(failedAccounts.map(a => a.symbol));
+    const allSet = new Set(accounts.map(a => a.symbol));
+    const failedSet = new Set(accounts.filter(a => a.failed).map(a => a.symbol));
 
     return {
         failed: [...failedSet].filter(s => networkSet.has(s)),

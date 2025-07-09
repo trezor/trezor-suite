@@ -5,6 +5,7 @@ import {
     selectCurrentFiatRates,
     selectLocalCurrency,
 } from '@suite-common/wallet-core';
+import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Card, Column, Dropdown, Switch, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -33,6 +34,7 @@ export const PortfolioCard = memo(() => {
     const { device } = useDevice();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
+    const failedAccounts = useMemo(() => accounts.filter(isAccountFailed), [accounts]);
     const walletBalance = useTotalFiatBalance(accounts, localCurrency, currentFiatRates);
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)
@@ -42,7 +44,13 @@ export const PortfolioCard = memo(() => {
 
     let body = null;
     if (discoveryStatus && discoveryStatus.status === 'exception') {
-        body = <PortfolioCardException exception={discoveryStatus} discovery={discovery} />;
+        body = (
+            <PortfolioCardException
+                exception={discoveryStatus}
+                discovery={discovery}
+                failed={failedAccounts}
+            />
+        );
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
         body = dashboardGraphHidden ? null : (
             <Column height={320}>

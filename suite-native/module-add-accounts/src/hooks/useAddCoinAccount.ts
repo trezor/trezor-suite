@@ -16,7 +16,6 @@ import {
     DeviceRootState,
     accountsActions,
     selectDeviceAccounts,
-    selectDiscoveryForSelectedDevice,
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -92,7 +91,6 @@ export const useAddCoinAccount = () => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const enabledDiscoveryNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
-    const discovery = useSelector(selectDiscoveryForSelectedDevice);
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
 
@@ -325,7 +323,7 @@ export const useAddCoinAccount = () => {
         }
 
         // the account should already exist, but be invisible, so make it visible
-        if (firstHiddenEmptyAccount) {
+        if (firstHiddenEmptyAccount && !firstHiddenEmptyAccount.failed) {
             dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
             navigateToSuccessorScreen({
                 flowType,
@@ -338,15 +336,8 @@ export const useAddCoinAccount = () => {
         }
 
         // or the account discovery might have failed
-        const nextAccountIndex = accounts.length;
-        const failedAccount = discovery?.failed?.find(
-            f =>
-                f.symbol === symbol &&
-                f.accountType === accountType &&
-                f.index === nextAccountIndex,
-        );
-        if (failedAccount !== undefined) {
-            navigateToFailureScreen({ flowType, errorString: failedAccount.error });
+        if (firstHiddenEmptyAccount?.failed) {
+            navigateToFailureScreen({ flowType, errorString: firstHiddenEmptyAccount.error });
         }
     };
 
