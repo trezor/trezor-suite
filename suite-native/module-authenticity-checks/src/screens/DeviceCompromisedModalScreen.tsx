@@ -14,7 +14,7 @@ import { FirmwareAuthenticityCheckFailModalContent } from '../components/Firmwar
 export const DeviceCompromisedModalScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.DeviceCompromisedModal>) => {
-    const { failedCheck } = route.params;
+    const { failedCheck, onCloseRedirect } = route.params;
 
     switch (failedCheck) {
         case 'device-authenticity':
@@ -22,7 +22,7 @@ export const DeviceCompromisedModalScreen = ({
         case 'entropy':
             return <EntropyCheckFailModalContent />;
         case 'firmware-authenticity':
-            return <FirmwareAuthenticityCheckFailModalContent />;
+            return <FirmwareAuthenticityCheckFailModalContent onCloseRedirect={onCloseRedirect} />;
         default:
             return exhaustive(failedCheck);
     }

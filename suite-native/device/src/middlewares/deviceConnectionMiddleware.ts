@@ -16,10 +16,7 @@ import {
     RootStackRoutes,
     navigationContainerRef,
 } from '@suite-native/navigation';
-import {
-    selectIsCoinEnablingInitFinished,
-    selectIsOnboardingFinished,
-} from '@suite-native/settings';
+import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 import {
     NativeDeviceRootState,
@@ -34,10 +31,17 @@ export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceR
 export const deviceConnectionPredicate = (
     action: UnknownAction,
     currentState: NativeDeviceRootState,
-) =>
-    deviceConnectThunks.fulfilled.match(action) &&
-    selectIsOnboardingFinished(currentState) &&
-    selectIsDeviceInitialized(currentState);
+) => deviceConnectThunks.fulfilled.match(action) && selectIsDeviceInitialized(currentState);
+
+const connectDevice = (isCoinEnablingInitFinished: boolean) => {
+    if (isCoinEnablingInitFinished) {
+        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
+        });
+    } else {
+        navigationContainerRef.navigate(RootStackRoutes.CoinEnablingInit);
+    }
+};
 
 export const deviceConnectionEffect = (
     _: UnknownAction,
@@ -56,23 +60,34 @@ export const deviceConnectionEffect = (
     if (isDeviceConnectedAndAuthorized) return;
 
     const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
+    const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
+
     if (shouldNavigateToDeviceCompromisedModal) {
         const compromisedDeviceFailedCheck = selectCompromisedDeviceFailedCheck(getState());
         navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal, {
             failedCheck: compromisedDeviceFailedCheck,
+            // When the compromised modal is closed on first connection and no coins would be selected, we will need to redirect user
+            // to coin enabling so he can continue to the app with running discovery.
+            onCloseRedirect: () => {
+                if (!isCoinEnablingInitFinished) {
+                    connectDevice(false);
+                } else {
+                    if (navigationContainerRef.canGoBack()) navigationContainerRef.goBack();
+                }
+            },
         });
 
         return;
     }
 
-    const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
-    if (isCoinEnablingInitFinished) {
-        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
-        });
-    } else {
-        navigationContainerRef.navigate(RootStackRoutes.CoinEnablingInit);
-    }
+    connectDevice(isCoinEnablingInitFinished);
+};
+
+export const startDeviceConnectionListening = () => {
+    deviceConnectionMiddleware.startListening({
+        predicate: deviceConnectionPredicate,
+        effect: deviceConnectionEffect,
+    });
 };
 
 export const stopDeviceConnectionListening = () => {
@@ -83,14 +98,4 @@ export const stopDeviceConnectionListening = () => {
     });
 };
 
-export const restartDeviceConnectionListening = () => {
-    deviceConnectionMiddleware.startListening({
-        predicate: deviceConnectionPredicate,
-        effect: deviceConnectionEffect,
-    });
-};
-
-deviceConnectionMiddleware.startListening({
-    predicate: deviceConnectionPredicate,
-    effect: deviceConnectionEffect,
-});
+startDeviceConnectionListening();

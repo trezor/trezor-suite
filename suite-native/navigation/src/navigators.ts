@@ -308,6 +308,7 @@ export type RootStackParamList = {
     [RootStackRoutes.BackupFailedModal]: undefined;
     [RootStackRoutes.DeviceCompromisedModal]: {
         failedCheck: 'device-authenticity' | 'entropy' | 'firmware-authenticity';
+        onCloseRedirect: () => void;
     };
     [RootStackRoutes.TradingWebView]: {
         closeCallbackUrl: string;

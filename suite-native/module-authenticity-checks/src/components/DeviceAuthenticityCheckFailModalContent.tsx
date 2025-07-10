@@ -13,6 +13,7 @@ export const DeviceAuthenticityCheckFailModalContent = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
+
     const handleClose = () => {
         if (selectedDevice) {
             dispatch(deviceActions.deviceDisconnect(selectedDevice));

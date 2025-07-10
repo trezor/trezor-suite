@@ -7,7 +7,7 @@ import {
     useFirmwareInstallation,
 } from '@suite-common/firmware';
 import {
-    restartDeviceConnectionListening,
+    startDeviceConnectionListening,
     stopDeviceConnectionListening,
 } from '@suite-native/device';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
@@ -49,7 +49,7 @@ export const useFirmware = (
             if (isRunning) {
                 stopDeviceConnectionListening();
             } else {
-                restartDeviceConnectionListening();
+                startDeviceConnectionListening();
             }
             dispatch(nativeFirmwareActions.setIsFirmwareInstallationRunning(isRunning));
         },
