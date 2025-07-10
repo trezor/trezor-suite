@@ -1,3 +1,11 @@
+# 2.5.2
+
+- npm-prerelease: @trezor/blockchain-link 2.5.2-beta.2 (070f16af4a)
+- npm-prerelease: @trezor/blockchain-link 2.5.2-beta.1 (f82fa9ad31)
+- fix(suite): solana token discovery error (0eff5fccaa)
+- feat(blockchain-link): solana basic detail now returns owner of account (ac38387deb)
+- refactor(blockchain-link): subscribed to Stellar block updates using a timer instead of event streaming. (8cb0c8aa7b)
+
 # 2.5.1
 
 - npm-prerelease: @trezor/blockchain-link 2.5.1-beta.1 (b569ce862f)
