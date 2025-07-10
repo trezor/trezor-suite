@@ -28,26 +28,26 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
     });
 
     const dataProvider: Array<{ it?: string; input: string; expected: string }> = [
-        { input: '123', expected: 'XAU 123' },
-        { input: '0', expected: 'XAU 0' },
+        { input: '123', expected: 'XAU 123.00' },
+        { input: '0', expected: 'XAU 0.00' },
         {
             input: '123456789123456789123456789',
-            expected: 'XAU 123,456,789,123,456,790,000,000,000',
+            expected: 'XAU 123,456,789,123,456,790,000,000,000.00',
         },
         {
-            it: 'uses significant digits: small number and keeps precision',
+            it: 'rounds to zero',
             input: '0.00000000001',
-            expected: 'XAU 0.00000000001',
+            expected: 'XAU 0.00',
         },
         {
-            it: 'uses significant digits: but the bigger number gets rounded',
+            it: 'rounds to non zero',
             input: '0.10000000001',
-            expected: 'XAU 0.1',
+            expected: 'XAU 0.10',
         },
         {
             it: 'do not show .00 for whole number < 1000',
             input: '923',
-            expected: 'XAU 923',
+            expected: 'XAU 923.00',
         },
         {
             it: 'uses significant digits for < 1000',
