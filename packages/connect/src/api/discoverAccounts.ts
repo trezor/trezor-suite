@@ -51,6 +51,9 @@ const isEvmLedger = (account: AccountTypeItem, coinInfo: CoinInfo) =>
 
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
 
+// TODO use substituteBip43Path from wallet-utils somehow
+const substituteBip43Path = (path: string, index: number) => path.replace('i', String(index));
+
 export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts', Request[]> {
     disposed = false;
 
@@ -63,7 +66,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         const { payload } = this;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'accounts', type: 'array' }]);
+        validateParams(payload, [{ name: 'accounts', type: 'array', allowEmpty: true }]);
 
         this.params = payload.accounts.flatMap(item => {
             // validate incoming parameters
@@ -112,26 +115,26 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         this.progress[key] = progress;
     }
 
-    private sendProgress(account: DiscoverAccountsProgress) {
+    private sendProgress(response: DiscoverAccountsProgress) {
         const progress =
             Object.values(this.progress).reduce((sum, typeProgress) => sum + typeProgress, 0) /
             // if no items in progress, divide by 1 instead of 0 as the numerator will be 0 anyway
             (Object.keys(this.progress).length || 1);
 
         this.postMessage(
-            createUiMessage(UI.BUNDLE_PROGRESS, {
-                total: 100,
-                progress: 100 * progress,
-                response: account,
-            }),
+            createUiMessage(UI.BUNDLE_PROGRESS, { total: 100, progress: 100 * progress, response }),
         );
     }
 
     async run() {
         const [unsupported, supported] = this.filterUnsupportedAccounts(this.params);
 
-        unsupported.forEach(({ account: { path, ...rest }, error }) =>
-            this.sendProgress({ ...rest, index: 0, error }),
+        unsupported.forEach(
+            ({ account: { path: bip43, ...rest }, error, coinInfo, skip, offset }) => {
+                const path = substituteBip43Path(bip43, skip + offset);
+                const backendType = coinInfo.blockchainLink?.type;
+                this.sendProgress({ ...rest, index: skip, failed: true, error, path, backendType });
+            },
         );
 
         const [cardanoAccounts, otherAccounts] = arrayPartition(supported, isCardanoRequest);
@@ -206,7 +209,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         derivationType: CardanoDerivation | undefined,
         index: number,
     ) {
-        const path = bip43PathTemplate.replace('i', String(index)); // TODO use substituteBip43Path from wallet-utils somehow
+        const path = substituteBip43Path(bip43PathTemplate, index);
 
         const { address_n: _, ...descriptorRest } = await this.descriptorLock(async () => {
             const key = `${path}-${derivationType}`;
@@ -228,25 +231,28 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
 
     private async discoverAccount(request: Request): Promise<{ nonempty: number; error?: string }> {
         const { details, identity, pageSize, coinInfo, derivation, offset, skip } = request;
-        const { path, ...accountKey } = request.account;
+        const { path: bip43, ...accountKey } = request.account;
+        const backendType = coinInfo.blockchainLink?.type;
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
         let index = skip;
 
         let blockchain;
         try {
             blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
-        } catch (error) {
+        } catch (err) {
+            const path = substituteBip43Path(bip43, offset + index);
             this.updateProgress(accountKey, index + 1, true);
-            this.sendProgress({ ...accountKey, index, error: error.message });
+            const error = err.message;
+            this.sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
 
-            return { nonempty: 0, error: error.message };
+            return { nonempty: 0, error };
         }
 
-        let descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index);
+        let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index);
         while (true) {
             try {
                 const { descriptor, ...descRest } = await descPromise;
-                descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index + 1);
+                descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
 
                 const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
 
@@ -265,7 +271,8 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                     utxo,
                     ...accountKey,
                     index,
-                    backendType: request.coinInfo.blockchainLink?.type,
+                    backendType,
+                    failed: false,
                 });
 
                 if (info.empty) {
@@ -273,10 +280,13 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
 
                     return { nonempty: index - skip };
                 }
-            } catch (error) {
+            } catch (err) {
                 descPromise.catch(() => {});
+                const path = substituteBip43Path(bip43, offset + index);
+                const { message: error, code } = err;
+                const failed = true;
                 this.updateProgress(accountKey, index + 1, true);
-                this.sendProgress({ ...accountKey, index, error: error.message, code: error.code });
+                this.sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
 
                 return { nonempty: index - skip, error };
             }

@@ -88,10 +88,10 @@ type DiscoverAccountsParams = {
     accounts: (TypedAccountParam | UntypedAccountParam)[];
 };
 
-type ProgressBaseType = AccountTypeKey & { index: number };
-export type DiscoverAccountsProgressOk = ProgressBaseType &
-    AccountInfo & { path: string; backendType?: string };
-export type DiscoverAccountsProgressError = ProgressBaseType & { error: string; code?: string };
+type ProgressBaseType = AccountTypeKey & { index: number; path: string; backendType?: string };
+type DiscoveryError = { failed: true; error: string; code?: string };
+export type DiscoverAccountsProgressOk = ProgressBaseType & AccountInfo & { failed: false };
+export type DiscoverAccountsProgressError = ProgressBaseType & DiscoveryError;
 export type DiscoverAccountsProgress = DiscoverAccountsProgressOk | DiscoverAccountsProgressError;
 
 type DiscoverAccountsResult = {
