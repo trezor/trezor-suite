@@ -314,7 +314,7 @@ export const buildTokenTransferTransaction = async (
         setTransactionMessageLifetimeUsingBlockhash,
     } = await loadSolanaLib();
 
-    let message = await pipe(
+    let message: CompilableTransactionMessage = await pipe(
         createTransactionMessage({ version: 'legacy' }),
         m => setTransactionMessageFeePayer(address(fromAddress), m),
         m =>

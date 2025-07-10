@@ -3,7 +3,7 @@ import {
     Address,
     Blockhash,
     CompilableTransactionMessage,
-    IInstruction,
+    Instruction,
     SignatureBytes,
     Transaction,
     TransactionMessageWithBlockhashLifetime,
@@ -80,7 +80,7 @@ const createAccountWithSeedTx = async (
     authorityPublicKey: Address,
     lamports: bigint,
     source: string,
-): Promise<[IInstruction, IInstruction, Address]> => {
+): Promise<[Instruction, Instruction, Address]> => {
     // Format source to
     const seed = formatEverstakeSource(source || '');
 
@@ -128,7 +128,7 @@ const baseTx = async (
     const finalLatestBlockhash =
         params?.finalLatestBlockhash || (await connection.getLatestBlockhash().send()).value;
 
-    let transactionMessage = pipe(
+    let transactionMessage: CompilableTransactionMessage = pipe(
         createTransactionMessage({ version: 0 }),
         tx => setTransactionMessageFeePayer(address(sender), tx),
         tx => setTransactionMessageLifetimeUsingBlockhash(finalLatestBlockhash, tx),
@@ -182,7 +182,7 @@ const split = async (
     oldStakeAccountPubkey: Address,
     source: string,
     rentExemptReserve?: bigint,
-): Promise<[Array<IInstruction>, Address]> => {
+): Promise<[Array<Instruction>, Address]> => {
     // Format source to
     const seed = formatEverstakeSource(source);
 
@@ -192,7 +192,7 @@ const split = async (
         seed,
     });
 
-    const instructions: Array<IInstruction> = [];
+    const instructions: Array<Instruction> = [];
 
     const allocateWithSeedInstruction = getAllocateWithSeedInstruction({
         newAccount: newStakeAccountPubkey,
