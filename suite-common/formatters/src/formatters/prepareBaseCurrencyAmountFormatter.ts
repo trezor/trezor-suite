@@ -6,6 +6,9 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
 
+const USE_SIGNIFICANT_DIGITS_BELOW = 1000;
+const MAX_NO_SIGNIFICANT_DIGITS = Math.log10(USE_SIGNIFICANT_DIGITS_BELOW);
+
 export type BaseCurrencyAmountFormatterDataContext<T> = {
     [K in keyof T]: T[K];
 };
@@ -16,7 +19,12 @@ const handleBigNumberFormatting = (
     config: FormatterConfig,
 ) => {
     const { intl, baseCurrency } = config;
-    const { style, currency, minimumFractionDigits, maximumFractionDigits } = dataContext;
+    const {
+        style,
+        currency,
+        minimumFractionDigits: minimumFractionDigitsFromContext,
+        maximumFractionDigits: maximumFractionDigitsFromContext,
+    } = dataContext;
     const baseCurrencyValue = new BigNumber(value);
     const currencyForDisplay = currency ?? baseCurrency;
 
@@ -25,12 +33,30 @@ const handleBigNumberFormatting = (
         return `${value} ${currencyForDisplay}`;
     }
 
+    const minimumFractionDigits = minimumFractionDigitsFromContext ?? 0;
+    const maximumFractionDigits = maximumFractionDigitsFromContext ?? 2;
+
+    const fractionDigits = baseCurrencyValue.decimalPlaces();
+
+    const useSignificantDigits =
+        baseCurrencyValue.isLessThan(USE_SIGNIFICANT_DIGITS_BELOW) &&
+        fractionDigits !== null &&
+        fractionDigits > maximumFractionDigits;
+
     return intl.formatNumber(baseCurrencyValue.toNumber(), {
         ...dataContext,
         style: style || 'currency',
         currency: currencyForDisplay,
-        minimumFractionDigits: minimumFractionDigits ?? 2,
-        maximumFractionDigits: maximumFractionDigits ?? 2,
+        ...(useSignificantDigits
+            ? {
+                  minimumSignificantDigits: 1,
+                  maximumSignificantDigits:
+                      MAX_NO_SIGNIFICANT_DIGITS + (maximumFractionDigits ?? 2),
+              }
+            : {
+                  minimumFractionDigits,
+                  maximumFractionDigits,
+              }),
     });
 };
 
