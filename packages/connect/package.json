@@ -78,7 +78,7 @@
         "@solana-program/system": "^0.7.0",
         "@solana-program/token": "^0.5.1",
         "@solana-program/token-2022": "^0.4.2",
-        "@solana/kit": "^2.1.1",
+        "@solana/kit": "^2.3.0",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
