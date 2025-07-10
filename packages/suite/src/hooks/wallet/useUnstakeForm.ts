@@ -222,7 +222,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
             if (!currentRate) return;
 
             const cryptoValue = fromFiatCurrency({
-                localAmount: amount,
+                fiatAmount: amount,
                 rate: currentRate?.rate,
             })?.toFixed(network.decimals);
 
