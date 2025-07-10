@@ -17,9 +17,10 @@ export const WalletItem = ({ onPress, deviceState, isSelectable = true }: Wallet
     const selectedDevice = useSelector(selectSelectedDevice);
     const fiatBalance = useSelector((state: any) =>
         device?.state?.staticSessionId
-            ? String(
-                  selectDeviceTotalFiatBalanceByDeviceState(state, device?.state?.staticSessionId),
-              )
+            ? selectDeviceTotalFiatBalanceByDeviceState(
+                  state,
+                  device?.state?.staticSessionId,
+              ).toFixed(2)
             : undefined,
     );
 
