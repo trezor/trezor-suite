@@ -8889,9 +8889,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/codecs-data-structures@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@solana/codecs-data-structures@npm:2.1.1"
+"@solana/codecs-data-structures@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/codecs-data-structures@npm:2.3.0"
   dependencies:
     "@solana/codecs-core": "npm:2.3.0"
     "@solana/codecs-numbers": "npm:2.3.0"
@@ -8914,9 +8914,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/codecs-strings@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@solana/codecs-strings@npm:2.1.1"
+"@solana/codecs-strings@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/codecs-strings@npm:2.3.0"
   dependencies:
     "@solana/codecs-core": "npm:2.3.0"
     "@solana/codecs-numbers": "npm:2.3.0"
@@ -8928,9 +8928,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/codecs@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@solana/codecs@npm:2.1.1"
+"@solana/codecs@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/codecs@npm:2.3.0"
   dependencies:
     "@solana/codecs-core": "npm:2.3.0"
     "@solana/codecs-data-structures": "npm:2.3.0"
@@ -8957,9 +8957,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/fast-stable-stringify@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@solana/fast-stable-stringify@npm:2.1.1"
+"@solana/fast-stable-stringify@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/fast-stable-stringify@npm:2.3.0"
   peerDependencies:
     typescript: ">=5.3.3"
   checksum: 10/9f8301ba48218a6f1cc669378b3d8821bc9dbf939242fb99c8fe700ad55f8393a926ead4de155daf8eafcf4781626c614ad5803de76349dd263361317524b7cf
@@ -9039,9 +9039,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/options@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@solana/options@npm:2.1.1"
+"@solana/options@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/options@npm:2.3.0"
   dependencies:
     "@solana/codecs-core": "npm:2.3.0"
     "@solana/codecs-data-structures": "npm:2.3.0"
@@ -18790,13 +18790,6 @@ __metadata:
   version: 12.1.0
   resolution: "commander@npm:12.1.0"
   checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
-  languageName: node
-  linkType: hard
-
-"commander@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "commander@npm:14.0.0"
-  checksum: 10/c05418bfc35a3e8b5c67bd9f75f5b773f386f9b85f83e70e7c926047f270929cb06cf13cd68f387dd6e7e23c6157de8171b28ba606abd3e6256028f1f789becf
   languageName: node
   linkType: hard
 
