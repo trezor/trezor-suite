@@ -32,13 +32,13 @@ import {
     Translation,
     TrendTicker,
 } from 'src/components/suite';
+import { BigAmountValue } from 'src/components/wallet/BigAmountValue';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
-import { BigAmountValue } from '../../../../components/wallet/BigAmountValue';
-import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 import { TradingButton } from '../TradingButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
@@ -85,7 +85,7 @@ type AmountComponentProps = {
     cryptoValue: string;
     symbol: NetworkSymbol;
     localCurrency: BaseCurrencyCode;
-    shouldDisplayFiat: boolean;
+    shallDisplayBaseCurrency: boolean;
 };
 
 const AmountComponent = ({
@@ -93,12 +93,11 @@ const AmountComponent = ({
     cryptoValue,
     symbol,
     localCurrency,
-    shouldDisplayFiat,
+    shallDisplayBaseCurrency,
 }: AmountComponentProps) => {
     const theme = useTheme();
 
-    // For example, Testnet or BTC when the BaseCurrency is also BTC
-    if (!shouldDisplayFiat) {
+    if (!shallDisplayBaseCurrency) {
         return (
             <HiddenPlaceholder enforceIntensity={10}>
                 <BigAmountValue
@@ -238,7 +237,7 @@ export const AssetCard = ({
                         failed={failed}
                         localCurrency={localCurrency}
                         cryptoValue={cryptoValue}
-                        shouldDisplayFiat={shallDisplayBaseCurrency}
+                        shallDisplayBaseCurrency={shallDisplayBaseCurrency}
                     />
                 </Column>
                 {(shouldRenderStakingRow || shouldRenderTokenRow) && (

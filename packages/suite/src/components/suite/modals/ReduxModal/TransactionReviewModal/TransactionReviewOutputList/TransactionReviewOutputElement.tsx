@@ -28,9 +28,9 @@ import {
     Translation,
 } from 'src/components/suite';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { Account } from 'src/types/wallet';
 
-import { useDisplayBaseCurrency } from '../../../../../../hooks/suite/useDisplayBaseCurrency';
 
 const getCardanoFingerprint = (
     tokens: Account['tokens'],

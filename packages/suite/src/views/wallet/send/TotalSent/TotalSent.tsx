@@ -9,10 +9,10 @@ import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { ReviewButton } from './ReviewButton';
-import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 
 type ChildOrSkeletonProps = PropsWithChildren<{ isLoading?: boolean }>;
 

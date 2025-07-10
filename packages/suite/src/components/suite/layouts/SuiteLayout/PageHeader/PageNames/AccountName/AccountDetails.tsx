@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
-import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -16,6 +15,7 @@ import {
     MetadataLabeling,
 } from 'src/components/suite';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 const LOGO_SIZE = 36;
@@ -95,8 +95,8 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const [hasMounted, setHasMounted] = useState(false);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const localCurrency = useSelector(selectLocalCurrency);
     const { symbol, key, path, index, accountType, formattedBalance } = selectedAccount;
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     useEffect(() => {
         setHasMounted(true);
@@ -108,8 +108,6 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
         setShouldAnimate(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isBalanceShown]);
-
-    const showBaseCurrency = symbol !== localCurrency;
 
     return (
         <DetailsContainer $isBalanceShown={isBalanceShown} $shouldAnimate={shouldAnimate}>
@@ -150,7 +148,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                                 <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                             </AmountUnitSwitchWrapper>
                         </CryptoBalance>
-                        {showBaseCurrency && (
+                        {shallDisplayBaseCurrency && (
                             <ForegroundWrapper>
                                 <BaseCurrencyValue
                                     amount={formattedBalance}
