@@ -1,3 +1,8 @@
+# 1.4.2
+
+- npm-prerelease: @trezor/env-utils 1.4.2-beta.1 (e76b75189d)
+- chore(suite): Update minor components (9da32d5045)
+
 # 1.4.1
 
 - npm-prerelease: @trezor/env-utils 1.4.1-beta.1 (c3ecd94812)
