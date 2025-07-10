@@ -132,12 +132,14 @@ const applyDeviceStatesThunk = createThunk(
                     }),
                 );
             } else {
+                const instance =
+                    device.instance ?? getNewInstanceNumber(selectDevices(getState()), device);
                 dispatch(
                     deviceActions.addAuthorizedDevice({
                         device: {
                             ...device,
                             metadata: {},
-                            instance: getNewInstanceNumber(selectDevices(getState()), device),
+                            instance,
                             useEmptyPassphrase: !isAddingHiddenWallet,
                             // TODO: On mobile, we don't want to remember the device by default, because it's not supported yet
                             remember: isNative() ? false : true,
