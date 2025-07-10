@@ -8,7 +8,16 @@ import { cryptoIdToNetwork, isCryptoIdForNativeToken, parseCryptoId } from '../u
 export const getTradingCoinInfoByCryptoId = (
     coins: Coins,
     cryptoId: CryptoId,
-): CoinInfo | undefined => coins[cryptoId];
+): CoinInfo | undefined => {
+    if (coins[cryptoId]) {
+        return coins[cryptoId];
+    }
+
+    const lowerCryptoId = cryptoId.toLowerCase();
+    const matchingKey = Object.keys(coins).find(key => key.toLowerCase() === lowerCryptoId);
+
+    return matchingKey ? coins[matchingKey] : undefined;
+};
 
 export const getTradingCoinSymbolByCryptoId = (
     coins: Coins,

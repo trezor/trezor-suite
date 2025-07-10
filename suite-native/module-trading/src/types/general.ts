@@ -1,8 +1,9 @@
 import { CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { TradingTradeType } from '@suite-common/trading';
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Address } from '@trezor/blockchain-link-types';
 
 export type TradeableAsset = {
@@ -11,6 +12,16 @@ export type TradeableAsset = {
     cryptoId: CryptoId;
     networkId: string;
 } & Omit<CoinInfo, 'symbol' | 'services'>;
+
+export type MyAsset = {
+    symbol: NetworkSymbol;
+    name: string;
+    balance: string;
+    fiatBalance: BaseCurrencyAmount | null;
+    tokenSymbol?: TokenSymbol | null;
+    contract?: TokenAddress;
+    cryptoId?: CryptoId;
+};
 
 export type Country = { label: string; value: string };
 

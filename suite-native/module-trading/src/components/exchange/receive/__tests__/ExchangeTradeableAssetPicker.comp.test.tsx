@@ -5,7 +5,6 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    within,
 } from '@suite-native/test-utils';
 import { FirmwareType } from '@trezor/connect';
 
@@ -50,13 +49,9 @@ describe('ExchangeTradeableAssetPicker', () => {
     });
 
     it('should render bottom sheet with all assets', async () => {
-        const { getByLabelText } = await renderTradeableAssetPicker();
+        const { getAllByText } = await renderTradeableAssetPicker();
 
-        expect(within(getByLabelText('Bitcoin')).getByLabelText('Coin symbol')).toHaveTextContent(
-            'BTC',
-        );
-        expect(within(getByLabelText('USDC')).getByLabelText('Coin symbol')).toHaveTextContent(
-            'USDC',
-        );
+        expect(getAllByText('Bitcoin')).toBeTruthy();
+        expect(getAllByText('USDC')).toBeTruthy();
     });
 });

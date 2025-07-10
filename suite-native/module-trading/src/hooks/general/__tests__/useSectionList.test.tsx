@@ -37,10 +37,10 @@ describe('useSectionList', () => {
             const { result } = renderUseSectionListHook(mockData);
 
             const expectedTransformedData = [
-                ['sectionHeader', 'Section 1', 'section1'],
+                ['sectionHeader', 'Section 1', 'section1', { id: 's1' }],
                 ['item', 'item1', { isFirst: true, isLast: false, sectionData: { id: 's1' } }],
                 ['item', 'item2', { isFirst: false, isLast: true, sectionData: { id: 's1' } }],
-                ['sectionHeader', 'Section 2', 'section2'],
+                ['sectionHeader', 'Section 2', 'section2', { id: 's2' }],
                 ['item', 'item3', { isFirst: true, isLast: false, sectionData: { id: 's2' } }],
                 ['item', 'item4', { isFirst: false, isLast: false, sectionData: { id: 's2' } }],
                 ['item', 'item5', { isFirst: false, isLast: true, sectionData: { id: 's2' } }],

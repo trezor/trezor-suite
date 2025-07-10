@@ -9,6 +9,7 @@ import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingRootState, TradingState, tradingSlice } from '../../reducers';
 import {
+    selectExchangeAccountsWithTokensSectionList,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeTradeableAssetsSorted,
@@ -203,6 +204,85 @@ describe('exchangeSelectors', () => {
             expect(selectGroupedExchangeQuotes(rootState)).toBe(
                 selectGroupedExchangeQuotes(rootState),
             );
+        });
+    });
+
+    describe('selectExchangeAccountsWithTokensSectionList', () => {
+        it('should return empty array when no accounts', () => {
+            const cleanState = getInitializedTradingState('exchange');
+
+            const state = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [],
+                    settings: { localCurrency: 'usd', enabledNetworks: [] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: null },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            expect(selectExchangeAccountsWithTokensSectionList(state)).toEqual([]);
+        });
+
+        it('should return sections for accounts with positive balance', () => {
+            const testDeviceState = 'test-device';
+            const btcAccount = {
+                ...getBtcAccount(),
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const state = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [btcAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectExchangeAccountsWithTokensSectionList(state);
+
+            expect(result.length).toBeGreaterThan(0);
+            expect(result[0]).toEqual(
+                expect.objectContaining({
+                    key: expect.stringContaining('section_'),
+                    label: expect.any(String),
+                    sectionData: expect.any(Object),
+                    data: expect.any(Array),
+                }),
+            );
+        });
+
+        it('should filter out accounts with zero balance', () => {
+            const testDeviceState = 'test-device';
+            const zeroBalanceAccount = {
+                ...getBtcAccount(),
+                balance: '0',
+                formattedBalance: '0',
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const state = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [zeroBalanceAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            expect(selectExchangeAccountsWithTokensSectionList(state)).toEqual([]);
         });
     });
 });

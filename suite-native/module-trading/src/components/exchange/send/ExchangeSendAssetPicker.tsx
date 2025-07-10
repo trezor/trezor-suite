@@ -6,44 +6,52 @@ import { HStack } from '@suite-native/atoms';
 import { ExchangeSendAmountInput } from './ExchangeSendAmountInput';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
+import { TradeableAsset } from '../../../types/general';
+import { MyAssetSheet } from '../../general/MyAssetSheet/MyAssetSheet';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 export const ExchangeSendAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);
     const form = useExchangeFormContext();
-    const [_shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
-    const { showSheet, selectedValue } = useSheetControls(form, 'sendAsset');
+    const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
+    const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
+        useSheetControls(form, 'sendAsset');
 
-    // TODO use in sheet
-    // const onAssetSelect = useCallback(
-    //     (asset: Asset) => {
-    //         setSelectedValue(asset);
-    //         if (shouldFocusInput) {
-    //             setShouldFocusInput(false);
-    //             // CryptoAmountInput is rendered disabled allow changes to propagate.
-    //             setTimeout(() => {
-    //                 inputRef.current?.focus();
-    //             }, 0);
-    //         }
-    //     },
-    //     [shouldFocusInput, setSelectedValue],
-    // );
+    const onAssetSelect = useCallback(
+        (asset: TradeableAsset) => {
+            setSelectedValue(asset);
+            if (shouldFocusInput) {
+                setShouldFocusInput(false);
+                // CryptoAmountInput is rendered disabled allow changes to propagate.
+                setTimeout(() => {
+                    inputRef.current?.focus();
+                }, 0);
+            }
+        },
+        [shouldFocusInput, setSelectedValue],
+    );
 
     const showAssetsSheet = useCallback(() => {
         setShouldFocusInput(true);
         showSheet();
     }, [showSheet]);
 
-    // TODO account picker sheet
     return (
-        <HStack justifyContent="space-between" alignItems="center">
-            <SelectTradeableAssetButton
-                onPress={showSheet}
-                selectedAsset={selectedValue}
-                colorScheme="tertiaryElevation0"
-                caret
+        <>
+            <HStack justifyContent="space-between" alignItems="center">
+                <SelectTradeableAssetButton
+                    onPress={showSheet}
+                    selectedAsset={selectedValue}
+                    colorScheme="tertiaryElevation0"
+                    caret
+                />
+                <ExchangeSendAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
+            </HStack>
+            <MyAssetSheet
+                isVisible={isSheetVisible}
+                onClose={hideSheet}
+                onAssetSelect={onAssetSelect}
             />
-            <ExchangeSendAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
-        </HStack>
+        </>
     );
 };
