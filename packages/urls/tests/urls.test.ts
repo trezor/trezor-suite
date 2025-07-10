@@ -14,8 +14,8 @@ const excluded = [
     URLS.HELP_CENTER_DRY_RUN_T3W1_URL,
     URLS.HELP_CENTER_PACKAGING_T3W1_URL,
     URLS.HELP_CENTER_FW_DOWNGRADE_T3W1_URL,
-    URLS.HELP_CENTER_XLM_URL,
     URLS.HELP_CENTER_SOLANA_HELP_URL,
+    URLS.IMAGE_PROXY_API_URL, // returns 'unauthorized'
 ];
 
 describe('Test that all external links are alive', () => {
