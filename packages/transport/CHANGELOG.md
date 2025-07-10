@@ -1,3 +1,11 @@
+# 1.5.2
+
+- npm-prerelease: @trezor/transport 1.5.2-beta.2 (9cd10b17a9)
+- feat(transport): send message progress (1f9c944825)
+- chore(connect): use Branded type util (ac3c50875f)
+- feat(suite): troubleshooting tips now include bridge toggling (d500afdcb6)
+- npm-prerelease: @trezor/transport 1.5.2-beta.1 (2c70ed0b92)
+
 # 1.5.1
 
 - npm-prerelease: @trezor/transport 1.5.1-beta.1 (98a275e65c)
