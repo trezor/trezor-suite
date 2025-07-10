@@ -1,3 +1,10 @@
+# 2.4.2
+
+- npm-prerelease: @trezor/utxo-lib 2.4.2-beta.2 (c89f7a536a)
+- chore(utxo-lib): bump tiny-secp256k1 (537477e655)
+- npm-prerelease: @trezor/utxo-lib 2.4.2-beta.1 (a8d201bb17)
+- chore: bump @types/bn.js (245f181344)
+
 # 2.4.1
 
 - npm-prerelease: @trezor/utxo-lib 2.4.1-beta.1 (7e78bd7016)
