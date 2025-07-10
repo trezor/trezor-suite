@@ -129,15 +129,14 @@ export const DepositRow = ({
     />
 );
 
-export const CoinjoinRow = ({
-    transaction,
-    useFiatValues,
-}: {
+type CoinjoinRowProps = {
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-}) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
+};
+
+export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) => {
+    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatRateKey = getFiatRateKey(transaction.symbol, baseCurrencyCode);
     const historicRate = useSelector(state =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
