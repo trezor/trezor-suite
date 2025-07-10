@@ -6,6 +6,7 @@ import { FeeRate } from '@trezor/product-components';
 import { Translation } from 'src/components/suite';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useLocales, useSelector } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
@@ -24,6 +25,7 @@ export const BitcoinFeeCards = ({
 }: StandardFeeProps) => {
     const locale = useLocales();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     if (!feeOptions.length) {
         return null;
@@ -55,14 +57,16 @@ export const BitcoinFeeCards = ({
                         }
                         topRightChild={getTimeEstimate(fee)}
                         bottomLeftChild={
-                            <span data-testid={`@fee-card/${fee.value}-fiat-amount`}>
-                                <BaseCurrencyValue
-                                    disableHiddenPlaceholder
-                                    amount={fee?.networkAmount ?? ''}
-                                    symbol={symbol}
-                                    showApproximationIndicator
-                                />
-                            </span>
+                            shallDisplayBaseCurrency && (
+                                <span data-testid={`@fee-card/${fee.value}-fiat-amount`}>
+                                    <BaseCurrencyValue
+                                        disableHiddenPlaceholder
+                                        amount={fee?.networkAmount ?? ''}
+                                        symbol={symbol}
+                                        showApproximationIndicator
+                                    />
+                                </span>
+                            )
                         }
                         bottomRightChild={
                             <span data-testid={`@fee-card/${fee.value}-rate`}>
