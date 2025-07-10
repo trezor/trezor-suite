@@ -1,3 +1,9 @@
+# 1.4.2
+
+- npm-prerelease: @trezor/protobuf 1.4.2-beta.1 (6a61f26191)
+- feat(protobuf): add build script for `THP` protobuf messages (b13115e870)
+- chore(protobuf): update protobuf messages (161663b6a2)
+
 # 1.4.1
 
 - npm-prerelease: @trezor/protobuf 1.4.1-beta.1 (d232ee31da)
