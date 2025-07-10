@@ -29,4 +29,12 @@ describe('FiatAmountBadge', () => {
 
         expect(getByText('$0.00')).toBeDefined();
     });
+
+    it('should display nothing for empty string value', () => {
+        const { toJSON } = renderFiatAmountBadge({
+            amount: asBaseCurrencyAmount(new BigNumber('')),
+        });
+
+        expect(toJSON()).toBeNull();
+    });
 });
