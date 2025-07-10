@@ -31,10 +31,11 @@ const getState = async ({ device, method }: WorkflowContext) => {
     if (device.features.session_id) {
         device.setState({ sessionId: device.features.session_id });
     }
-    if (expectedState && expectedState !== uniqueState) {
+    // Ignore instance ID, it doesn't necessarily need to match the current instance
+    if (expectedState && expectedState.split(':')[0] !== uniqueState.split(':')[0]) {
         return uniqueState;
     }
-    if (!expectedState) {
+    if (!expectedState || expectedState !== uniqueState) {
         device.setState({ staticSessionId: uniqueState });
     }
 };
