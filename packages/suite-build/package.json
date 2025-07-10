@@ -48,7 +48,7 @@
     },
     "devDependencies": {
         "@originjs/vite-plugin-commonjs": "^1.0.3",
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.6.0",
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
         "@sentry/webpack-plugin": "^2.22.7",
         "@trezor/eslint": "workspace:*",
         "@types/node-fetch": "^2.6.12",
