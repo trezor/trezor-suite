@@ -35,7 +35,6 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
         .when('hex', {
             is: true,
             then: schema => schema.isHex(),
-            otherwise: schema => schema.isAscii(),
         }),
     address: yup
         .string()
