@@ -1,3 +1,5 @@
+import { BigNumber } from '@trezor/utils';
+
 import { convertCryptoToFiatAmount, convertFiatToCryptoAmount } from '../convert';
 
 describe('convertCryptoToFiatAmount', () => {
@@ -5,18 +7,18 @@ describe('convertCryptoToFiatAmount', () => {
         [null, undefined, null],
         [null, true, null],
         [null, false, null],
-        ['0', undefined, '0.00'],
-        ['0', true, '0.00'],
-        ['0', false, '0.00'],
-        ['1', undefined, '0.00'],
-        ['1', true, '0.00'],
-        ['1', false, '22666.00'],
-        ['250', undefined, '0.06'],
-        ['250', true, '0.06'],
-        ['0.00000250', false, '0.06'],
-        ['100000000', undefined, '22666.00'],
-        ['100000000', true, '22666.00'],
-        ['1.00000000', false, '22666.00'],
+        ['0', undefined, new BigNumber('0.00')],
+        ['0', true, new BigNumber('0.00')],
+        ['0', false, new BigNumber('0.00')],
+        ['1', undefined, new BigNumber('0.00022666')],
+        ['1', true, new BigNumber('0.00022666')],
+        ['1', false, new BigNumber('22666.00')],
+        ['250', undefined, new BigNumber('0.056665')],
+        ['250', true, new BigNumber('0.056665')],
+        ['0.00000250', false, new BigNumber('0.056665')],
+        ['100000000', undefined, new BigNumber('22666.00')],
+        ['100000000', true, new BigNumber('22666.00')],
+        ['1.00000000', false, new BigNumber('22666.00')],
     ])('amount=%s isAmountInSats=%s', (amount, isAmountInSats, expectedAmount) => {
         expect(
             convertCryptoToFiatAmount({
@@ -25,7 +27,7 @@ describe('convertCryptoToFiatAmount', () => {
                 isAmountInSats,
                 rate: 22666,
             }),
-        ).toBe(expectedAmount);
+        ).toEqual(expectedAmount);
     });
 });
 
@@ -34,15 +36,15 @@ describe('convertFiatToCryptoAmount', () => {
         [null, undefined, null],
         [null, true, null],
         [null, false, null],
-        ['0.00', undefined, '0'],
-        ['0.00', true, '0'],
-        ['0.00', false, '0.00000000'],
-        ['0.06', undefined, '265'],
-        ['0.06', true, '265'],
-        ['0.06', false, '0.00000265'],
-        ['22666.00', undefined, '100000000'],
-        ['22666.00', true, '100000000'],
-        ['22666.00', false, '1.00000000'],
+        ['0.00', undefined, new BigNumber('0')],
+        ['0.00', true, new BigNumber('0')],
+        ['0.00', false, new BigNumber('0.00000000')],
+        ['0.06', undefined, new BigNumber('264.71366804906')],
+        ['0.06', true, new BigNumber('264.71366804906')],
+        ['0.06', false, new BigNumber('0.0000026471366804906')],
+        ['22666.00', undefined, new BigNumber('100000000')],
+        ['22666.00', true, new BigNumber('100000000')],
+        ['22666.00', false, new BigNumber('1.00000000')],
     ])('amount=%s isAmountInSats=%s', (amount, isAmountInSats, expectedAmount) => {
         expect(
             convertFiatToCryptoAmount({
@@ -51,6 +53,6 @@ describe('convertFiatToCryptoAmount', () => {
                 isAmountInSats,
                 rate: 22666,
             }),
-        ).toBe(expectedAmount);
+        ).toEqual(expectedAmount);
     });
 });
