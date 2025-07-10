@@ -171,6 +171,7 @@ export const signTransaction =
                 from: account.descriptor,
                 identity,
                 gasPrice: transactionInfo.feePerByte,
+                feeLimit: transactionInfo.feeLimit,
                 maxFeePerGas: transactionInfo.maxFeePerGas,
                 maxPriorityFeePerGas: transactionInfo.maxPriorityFeePerGas,
                 nonce,
