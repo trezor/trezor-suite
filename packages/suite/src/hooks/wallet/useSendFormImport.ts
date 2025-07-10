@@ -140,7 +140,7 @@ export const useSendFormImport = ({
 
                     // calculate Amount from Fiat
                     const cryptoValue = fromFiatCurrency({
-                        localAmount: output.fiat,
+                        fiatAmount: output.fiat,
                         rate: itemRate,
                     })?.toFixed(network.decimals);
 

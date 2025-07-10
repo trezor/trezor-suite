@@ -32,7 +32,7 @@ export const toFiatCurrency = ({
 };
 
 type FromFiatCurrencyParams = {
-    localAmount: string;
+    fiatAmount: string;
     rate: number | undefined;
 };
 
@@ -40,16 +40,16 @@ type FromFiatCurrencyParams = {
  * This function does only numerical operations, formatting is to be handled in formatters.
  */
 export const fromFiatCurrency = ({
-    localAmount,
+    fiatAmount,
     rate,
 }: FromFiatCurrencyParams): BigNumber | null => {
     if (!rate) {
         return null;
     }
 
-    let formattedLocalAmount = localAmount;
-    if (typeof localAmount === 'string') {
-        formattedLocalAmount = localAmount.replace(',', '.');
+    let formattedLocalAmount = fiatAmount;
+    if (typeof fiatAmount === 'string') {
+        formattedLocalAmount = fiatAmount.replace(',', '.');
     }
 
     const amount = new BigNumber(formattedLocalAmount).div(rate);
