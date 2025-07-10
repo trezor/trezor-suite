@@ -2,6 +2,7 @@ import url from 'url';
 
 import { Log } from '@trezor/utils';
 
+import { getFreePort } from '../getFreePort';
 import {
     HttpServer,
     ParamsValidatorHandler,
@@ -467,5 +468,27 @@ describe('HttpServer', () => {
         expect(res.status).toEqual(404);
         res = await fetch(`http://${address.address}:${address.port}/bar`);
         expect(res.status).toEqual(200);
+    });
+
+    test('port negotiation, first available port is occupied, second is free', async () => {
+        const [freePort1, freePort2] = await getFreePort(2);
+        // start server using 'ports' array. first port is empty and will be used
+        server = new HttpServer<Events>({ logger: muteLogger, port: freePort1 });
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({
+            port: freePort1,
+        });
+
+        const server2 = new HttpServer<Events>({
+            logger: muteLogger,
+            ports: [freePort1, freePort2],
+        });
+
+        await server2.start();
+        expect(server2.getServerAddress()).toMatchObject({
+            port: freePort2,
+        });
+
+        await Promise.all([server.stop(), server2.stop()]);
     });
 });

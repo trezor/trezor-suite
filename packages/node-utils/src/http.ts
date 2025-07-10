@@ -7,7 +7,6 @@ import type { RequiredKey } from '@trezor/type-utils';
 import { Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
-import { getFreePort } from './getFreePort';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 const isRequest = (request: http.IncomingMessage): request is Request => request.url !== undefined;
@@ -94,20 +93,28 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     public logger: Log;
     private routes: Route[] = [];
     private readonly emitter: TypedEmitter<BaseEvents> = this;
-    private port?: number;
+    private ports: number[] = [];
     private sockets: Record<number, net.Socket> = {};
 
-    constructor({ logger, port }: { logger: Log; port?: number }) {
+    constructor({ logger, port, ports }: { logger: Log; port?: number; ports?: number[] }) {
         super();
 
-        this.port = port;
+        // either try to take the first member of ports array
+
+        if (ports && ports.length > 0) {
+            this.ports = ports;
+        } else if (port) {
+            this.ports = [port];
+        } else {
+            this.ports = [0]; // this will pick a random free ports
+        }
 
         this.logger = logger;
         this.server = http.createServer(this.onRequest);
     }
 
     get logName() {
-        return `http: ${this.port || 'unknown port'}`;
+        return `http: ${this.ports[0] || 'unknown port'}`;
     }
 
     public getServerAddress() {
@@ -141,8 +148,13 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         };
     }
 
-    public async start() {
-        const port = this.port || (this.port = (await getFreePort())[0]);
+    public start() {
+        const port = this.ports.shift();
+
+        if (typeof port !== 'number') {
+            // this should not happen
+            throw new Error('There is no port available in ports array');
+        }
 
         return new Promise<
             | { success: true; payload: net.AddressInfo }
@@ -173,6 +185,10 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 // @ts-expect-error - type is missing
                 const errorCode: string = e.code;
                 const portOccupied = errorCode === 'EADDRINUSE' || errorCode === 'EACCES';
+
+                if (this.ports.length) {
+                    return this.stop().then(() => this.start());
+                }
 
                 if (portOccupied) {
                     const processInfo = await findProcessFromIncomingPort(port).catch(() => {});
