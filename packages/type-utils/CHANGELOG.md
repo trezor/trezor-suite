@@ -1,3 +1,9 @@
+# 1.1.8
+
+- npm-prerelease: @trezor/type-utils 1.1.8-beta.2 (1f6de86240)
+- chore: make-naming of Sats<->BTC conversion utils sane, add Branded for it (f25d5da9af)
+- npm-prerelease: @trezor/type-utils 1.1.8-beta.1 (4d38a22dc2)
+
 # 1.1.7
 
 - npm-prerelease: @trezor/type-utils 1.1.7-beta.1 (df073166ad)
