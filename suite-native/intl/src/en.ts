@@ -2190,6 +2190,11 @@ export const en = {
             anonymous: 'Anonymous',
             kycRequired: 'This provider requires to verify identity.',
         },
+        myAssetSheet: {
+            title: 'Your assets',
+            emptyTitle: 'No assets found',
+            emptyDescription: 'You do not have any assets available for this operation.',
+        },
     },
     firmware: {
         title: 'Firmware',

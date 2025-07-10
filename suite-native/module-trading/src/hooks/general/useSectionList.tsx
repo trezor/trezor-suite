@@ -18,15 +18,21 @@ export type SectionListData<T, U = undefined> = {
     data: T[];
 }[];
 
+export type SectionHeaderRenderConfig<U> = {
+    sectionData: U;
+    key: string;
+};
+
 export type ListInternalItemShape<T, U> =
-    // [type, text, key]
-    | ['sectionHeader', ReactNode, string]
+    // [type, text, key, sectionData]
+    | ['sectionHeader', ReactNode, string, U]
     // [type, data, config]
     | ['item', T, ItemRenderConfig<U>];
 
 type UseSectionListProps<T, U> = {
     data: SectionListData<T, U>;
     renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
+    renderSectionHeader?: (label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
     noSingletonSectionHeader: boolean | undefined;
     isLastItemRounded?: boolean;
@@ -75,7 +81,7 @@ const transformToInternalFlatListData = <T, U = undefined>(
             );
 
             if (!noSingletonSectionHeader || inputData.length > 1) {
-                acc.push(['sectionHeader', label, key]);
+                acc.push(['sectionHeader', label, key, sectionData]);
             }
 
             acc.push(...itemsData);
@@ -104,15 +110,25 @@ const internalKeyExtractor = <T, U>(
 const renderInternalItem = <T, U>(
     item: ListInternalItemShape<T, U>,
     renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement,
+    renderSectionHeader:
+        | ((label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement)
+        | undefined,
     applyStyle: ReturnType<typeof useNativeStyles>['applyStyle'],
 ): ReactElement => {
     switch (item[0]) {
         case 'sectionHeader':
             return (
                 <AnimatedBox paddingVertical="sp12" entering={FadeIn} exiting={FadeOut}>
-                    <Text variant="hint" color="textSubdued">
-                        {item[1]}
-                    </Text>
+                    {renderSectionHeader ? (
+                        renderSectionHeader(item[1], {
+                            sectionData: item[3],
+                            key: item[2],
+                        })
+                    ) : (
+                        <Text variant="hint" color="textSubdued">
+                            {item[1]}
+                        </Text>
+                    )}
                 </AnimatedBox>
             );
 
@@ -135,6 +151,7 @@ const renderInternalItem = <T, U>(
 export const useSectionList = <T, U = undefined>({
     data,
     renderItem,
+    renderSectionHeader,
     keyExtractor,
     noSingletonSectionHeader,
     isLastItemRounded = true,
@@ -169,6 +186,6 @@ export const useSectionList = <T, U = undefined>({
         keyExtractor: (item: ListInternalItemShape<T, U>) =>
             internalKeyExtractor(item, keyExtractor),
         renderItem: ({ item }: { item: ListInternalItemShape<T, U> }) =>
-            renderInternalItem(item, renderItem, applyStyle),
+            renderInternalItem(item, renderItem, renderSectionHeader, applyStyle),
     };
 };

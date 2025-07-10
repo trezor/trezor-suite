@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { Dimensions } from 'react-native';
 
 import { BottomSheetFlashList, BottomSheetFlashListProps } from '@suite-native/atoms';
@@ -6,6 +6,7 @@ import { BottomSheetFlashList, BottomSheetFlashListProps } from '@suite-native/a
 import {
     ItemRenderConfig,
     ListInternalItemShape,
+    SectionHeaderRenderConfig,
     SectionListData,
     useSectionList,
 } from '../../hooks/general/useSectionList';
@@ -24,6 +25,7 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
 > & {
     data: SectionListData<T, U>;
     renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
+    renderSectionHeader?: (label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
     estimatedItemSize: number;
     noSingletonSectionHeader?: boolean;
@@ -32,6 +34,7 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
 export const BottomSheetSectionList = <T, U = undefined>({
     keyExtractor,
     renderItem,
+    renderSectionHeader,
     estimatedItemSize,
     data,
     noSingletonSectionHeader,
@@ -45,6 +48,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
         data,
         keyExtractor,
         renderItem,
+        renderSectionHeader,
         noSingletonSectionHeader,
     });
 

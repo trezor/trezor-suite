@@ -1,0 +1,44 @@
+import { useSelector } from 'react-redux';
+
+import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { NativeAccountsRootState, selectAccountFiatBalance } from '@suite-native/accounts';
+import { Badge, HStack, Text } from '@suite-native/atoms';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
+
+export type MyAssetListSectionHeaderProps = {
+    account: Account;
+    isFirst?: boolean;
+};
+
+export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectionHeaderProps) => {
+    const formattedAccountType = useSelector((state: AccountsRootState) =>
+        selectFormattedAccountType(state, account.key),
+    );
+
+    const fiatBalance = useSelector((state: NativeAccountsRootState) =>
+        selectAccountFiatBalance(state, account.key, false),
+    );
+
+    return (
+        <HStack
+            justifyContent="space-between"
+            alignItems="center"
+            paddingTop={isFirst ? undefined : 'sp32'}
+        >
+            <HStack alignItems="center" spacing="sp8">
+                <Text variant="body" color="textDefault">
+                    {account.accountLabel}
+                </Text>
+                {formattedAccountType && (
+                    <Badge label={formattedAccountType} size="small" elevation="1" variant="blue" />
+                )}
+            </HStack>
+            <BaseCurrencyAmountFormatter
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                value={fiatBalance}
+            />
+        </HStack>
+    );
+};

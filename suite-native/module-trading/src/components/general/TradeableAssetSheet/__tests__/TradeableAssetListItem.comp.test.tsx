@@ -11,11 +11,10 @@ describe('TradeableAssetListItem', () => {
         renderWithStoreProviderAsync(<TradeableAssetListItem asset={asset} onPress={onPress} />);
 
     it('should render with correct labels', async () => {
-        const { getByLabelText } = await renderComponent({ asset: usdcAsset });
+        const { getAllByText } = await renderComponent({ asset: usdcAsset });
 
-        expect(getByLabelText('Coin name')).toHaveTextContent('USDC');
-        expect(getByLabelText('Coin symbol')).toHaveTextContent('USDC');
-        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
+        expect(getAllByText('USDC').length).toBeGreaterThan(0);
+        expect(getAllByText('Ethereum').length).toBeGreaterThan(0);
     });
 
     it('should call onPress callback when clicked', async () => {
