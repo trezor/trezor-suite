@@ -406,12 +406,11 @@ export interface Modal {
     image: string;
 }
 /**
- * Only used for 'feature' category. Feature flag can disable a feature for a specific version of a specific app.
+ * Only used for 'feature' category. Feature flag can disable a feature for a specific version of a specific app. Custom properties may be used to pass additional data to the feature flag.
  */
 export interface Feature {
     domain: string;
     flag: boolean;
-    isPublic?: boolean;
     [k: string]: unknown;
 }
 /**
