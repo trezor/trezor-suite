@@ -208,7 +208,7 @@ export interface MockedServer extends Exclude<http.Server, 'addListener'> {
 }
 
 export const createServer = async () => {
-    const port = await getFreePort();
+    const [port] = await getFreePort();
     const server = http.createServer((request, response) => {
         // 1. emit "readonly" event
         server.emit('test-handle-request', request);

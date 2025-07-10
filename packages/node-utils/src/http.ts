@@ -142,7 +142,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     }
 
     public async start() {
-        const port = this.port || (this.port = await getFreePort());
+        const port = this.port || (this.port = (await getFreePort())[0]);
 
         return new Promise<
             | { success: true; payload: net.AddressInfo }

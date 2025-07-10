@@ -44,7 +44,7 @@ export class BackendWebsocketServerMock extends WebSocketServer {
     }
 
     static async create(backendType: BackendType) {
-        const port = await getFreePort();
+        const [port] = await getFreePort();
 
         return new Promise<BackendWebsocketServerMock>((resolve, reject) => {
             const server = new BackendWebsocketServerMock({ backendType, port });
