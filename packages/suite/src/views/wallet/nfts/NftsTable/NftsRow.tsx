@@ -96,7 +96,12 @@ const NftsRow = ({
                                     <Column maxWidth={200} gap={spacings.md}>
                                         <InfoItem
                                             typographyStyle="label"
-                                            label={<Translation id="TR_CONTRACT_ADDRESS" />}
+                                            label={
+                                                <>
+                                                    <Translation id="TR_CONTRACT_ADDRESS" />
+                                                    {': '}
+                                                </>
+                                            }
                                             gap={spacings.zero}
                                         >
                                             <Row>

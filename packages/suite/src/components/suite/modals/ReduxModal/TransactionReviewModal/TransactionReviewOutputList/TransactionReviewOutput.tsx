@@ -73,7 +73,9 @@ const getOutputTitle = (
         case 'reduce-output':
             return <Translation id="AMOUNT" />;
         case 'contract':
-            return <Translation id={networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT'} />;
+            return (
+                <Translation id={networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT_ADDRESS'} />
+            );
         case 'address':
         case 'regular_legacy':
             return (
