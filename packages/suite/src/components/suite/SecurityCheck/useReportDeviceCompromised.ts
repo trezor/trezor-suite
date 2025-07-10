@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
+import { FirmwareCheckType } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -9,37 +10,35 @@ import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/consta
 import { useDevice } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 
+const reportCheck = (
+    level: 'error' | 'warning',
+    checkType: FirmwareCheckType,
+    contextData: Record<string, any>,
+    payload?: unknown,
+) => {
+    const action = level === 'error' ? 'failed' : 'warning';
+    const payloadLabel = `${checkType} check ${action}!`;
+    console.warn(payloadLabel, contextData, payload);
+
+    withSentryScope(scope => {
+        scope.setLevel(level);
+        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check ${action}`);
+        scope.setExtra(`${level}Payload`, payload);
+        captureSentryMessage(`${payloadLabel} ${JSON.stringify(contextData)}`, scope);
+    });
+};
+
 export const reportCheckFail = (
-    checkType: 'Entropy' | 'Firmware hash' | 'Firmware revision' | 'Firmware version',
+    checkType: FirmwareCheckType,
     contextData: Record<string, any>,
     errorPayload?: unknown,
-) => {
-    const payloadLabel = `${checkType} check failed!`;
-    console.warn(payloadLabel, contextData, errorPayload);
-
-    withSentryScope(scope => {
-        scope.setLevel('error');
-        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check failed`);
-        scope.setExtra('errorPayload', errorPayload);
-        captureSentryMessage(`${payloadLabel} ${JSON.stringify(contextData)}`, scope);
-    });
-};
+) => reportCheck('error', checkType, contextData, errorPayload);
 
 const reportCheckWarning = (
-    checkType: 'Firmware revision' | 'Firmware hash',
+    checkType: 'Firmware hash' | 'Firmware revision',
     contextData: Record<string, any>,
     warningPayload?: unknown,
-) => {
-    const payloadLabel = `${checkType} check warning!`;
-    console.warn(payloadLabel, contextData, warningPayload);
-
-    withSentryScope(scope => {
-        scope.setLevel('warning');
-        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check warning`);
-        scope.setExtra('warningPayload', warningPayload);
-        captureSentryMessage(`${payloadLabel} ${JSON.stringify(contextData)}`, scope);
-    });
-};
+) => reportCheck('warning', checkType, contextData, warningPayload);
 
 const useCommonData = () => {
     const { device } = useDevice();
