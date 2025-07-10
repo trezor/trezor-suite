@@ -5754,7 +5754,7 @@ export default defineMessages({
         id: 'AMOUNT_IS_LESS_THAN_RESERVE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
-        defaultMessage: 'Not enough {networkDisplaySymbol} to cover transaction fee',
+        defaultMessage: 'Not enough {networkDisplaySymbol} to cover the transaction fee',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT: {
