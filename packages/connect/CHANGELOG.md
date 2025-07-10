@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.6.2-beta.3
+# 9.6.2
 
 This release is important for smooth support of 2.9.0 trezor firmware, namely commits:
 
