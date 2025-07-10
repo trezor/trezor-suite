@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { FirmwareCheckType } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
@@ -9,7 +10,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { revisionCheckErrorScenarios } from '../config/firmware';
 
 export const reportCheckFail = (
-    checkType: 'Entropy' | 'Firmware revision' | 'Firmware version',
+    checkType: FirmwareCheckType,
     contextData: Record<string, any>,
     errorPayload?: unknown,
 ) => {

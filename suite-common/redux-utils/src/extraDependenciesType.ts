@@ -5,7 +5,12 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import {
+    FirmwareCheckType,
+    Route,
+    TrezorDevice,
+    UserContextPayload,
+} from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,
@@ -100,7 +105,7 @@ export type ExtraDependencies = {
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
         reportCheckFail: (
-            checkType: 'Entropy' | 'Firmware hash' | 'Firmware revision' | 'Firmware version',
+            checkType: FirmwareCheckType,
             contextData: Record<string, any>,
             errorPayload?: unknown,
         ) => void;
