@@ -9,7 +9,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { revisionCheckErrorScenarios } from '../config/firmware';
 
 export const reportCheckFail = (
-    checkType: 'Entropy' | 'Firmware revision',
+    checkType: 'Entropy' | 'Firmware revision' | 'Firmware version',
     contextData: Record<string, any>,
     errorPayload?: unknown,
 ) => {
