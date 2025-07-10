@@ -8,7 +8,6 @@ import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     Card,
@@ -39,6 +38,7 @@ import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 import { BigAmountValue } from '../../../../components/wallet/BigAmountValue';
+import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 import { TradingButton } from '../TradingButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
@@ -162,6 +162,7 @@ export const AssetCard = ({
 }: AssetCardProps) => {
     const { symbol } = network;
     const dispatch = useDispatch();
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const handleCardClick = () => {
         dispatch(
@@ -216,8 +217,6 @@ export const AssetCard = ({
         });
     };
 
-    const shouldDisplayFiat = !isTestnet(symbol) && symbol !== localCurrency;
-
     return (
         <Card
             paddingType="small"
@@ -239,7 +238,7 @@ export const AssetCard = ({
                         failed={failed}
                         localCurrency={localCurrency}
                         cryptoValue={cryptoValue}
-                        shouldDisplayFiat={shouldDisplayFiat}
+                        shouldDisplayFiat={shallDisplayBaseCurrency}
                     />
                 </Column>
                 {(shouldRenderStakingRow || shouldRenderTokenRow) && (
@@ -252,7 +251,7 @@ export const AssetCard = ({
                         accounts={accounts}
                     />
                 )}
-                {shouldDisplayFiat && (
+                {shallDisplayBaseCurrency && (
                     <Card data-testid="@dashboard/asset/bottom-info">
                         <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.md}>
                             <InfoItem
