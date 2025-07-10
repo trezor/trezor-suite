@@ -134,7 +134,7 @@ export const selectIsFeatureDisabled = (
 ) => {
     const featureFlag = selectFeatureConfig(state, domain)?.flag;
 
-    return typeof featureFlag === 'boolean' ? !featureFlag : (defaultValue ?? false);
+    return featureFlag !== undefined ? !featureFlag : (defaultValue ?? false);
 };
 
 const selectValidMessages = (state: MessageSystemRootState) => state.messageSystem.validMessages;
