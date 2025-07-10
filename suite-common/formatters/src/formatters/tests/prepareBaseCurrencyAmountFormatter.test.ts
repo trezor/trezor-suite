@@ -63,4 +63,10 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
             ).toBe(item.expected.replace(' ', ' '));
         }),
     );
+
+    it('formats the infinite fractions (1/3) uses significant digits', () => {
+        expect(
+            displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(1).div(3)), {}),
+        ).toBe('XAU 0.33'.replace(' ', ' '));
+    });
 });

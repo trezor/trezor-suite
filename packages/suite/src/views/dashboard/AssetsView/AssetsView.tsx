@@ -83,7 +83,7 @@ const useAssetsFiatBalances = (
         const fiatBalance = toFiatCurrency({ amount, rate: fiatRate?.rate })?.toFixed(2) ?? '0';
 
         return [...acc, { fiatBalance, symbol: asset.network.symbol }];
-    }, [] as AssetFiatBalance[]);
+    }, []);
 
 export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
