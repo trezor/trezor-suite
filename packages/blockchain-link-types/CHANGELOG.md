@@ -1,3 +1,11 @@
+# 1.4.2
+
+- npm-prerelease: @trezor/blockchain-link-types 1.4.2-beta.3 (2e111bc027)
+- fix: BaseCurrency moved to Blockchain-link (f2ef89b758)
+- npm-prerelease: @trezor/blockchain-link-types 1.4.2-beta.2 (730c207698)
+- fix: types for FiatRatesBySymbol, add typedObjectFromEntries util (61e33e5410)
+- npm-prerelease: @trezor/blockchain-link-types 1.4.2-beta.1 (570d0a4967)
+
 # 1.4.1
 
 - npm-prerelease: @trezor/blockchain-link-types 1.4.1-beta.1 (3de1dddc3f)
