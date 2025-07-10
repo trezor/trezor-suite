@@ -17,6 +17,7 @@ import {
 } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import {
@@ -26,7 +27,6 @@ import {
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { UtxoTag } from './UtxoTag';
-import { useDisplayBaseCurrency } from '../../../../../../../../hooks/suite/useDisplayBaseCurrency';
 
 const transitionSpeed = '0.16s';
 

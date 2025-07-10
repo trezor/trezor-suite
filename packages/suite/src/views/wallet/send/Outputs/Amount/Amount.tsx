@@ -17,6 +17,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -29,7 +30,6 @@ import {
 
 import { BaseCurrencyInput } from './BaseCurrencyInput';
 import { SendMaxSwitch } from './SendMaxSwitch';
-import { useDisplayBaseCurrency } from '../../../../../hooks/suite/useDisplayBaseCurrency';
 
 interface AmountProps {
     output: Partial<Output>;

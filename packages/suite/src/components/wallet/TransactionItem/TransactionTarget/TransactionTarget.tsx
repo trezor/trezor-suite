@@ -9,7 +9,6 @@ import {
     getFiatRateKey,
     getTargetAmount,
     getTxOperation,
-    isTestnet,
 } from '@suite-common/wallet-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -22,6 +21,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -62,6 +62,9 @@ export const TransactionTarget = ({
         baseCurrencyCode,
         type === 'token' ? (payload.contract as TokenAddress) : undefined,
     );
+
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
+
     const historicRate = useSelector(state =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
@@ -111,19 +114,14 @@ export const TransactionTarget = ({
         }
     }, [amount, baseLayoutProps.singleRowLayout, operation, transaction.symbol, type, payload]);
 
-    const fiatAmountComponent = useMemo(() => {
-        const shallDisplayBaseCurrency =
-            !isTestnet(transaction.symbol) && transaction.symbol !== baseCurrencyCode;
-
-        return shallDisplayBaseCurrency && amount ? (
+    const fiatAmountComponent = useMemo(() => shallDisplayBaseCurrency && amount ? (
             <BaseCurrencyValue
                 amount={amount}
                 symbol={transaction.symbol}
                 historicRate={historicRate}
                 useHistoricRate
             />
-        ) : undefined;
-    }, [amount, historicRate, transaction.symbol, baseCurrencyCode]);
+        ) : undefined, [amount, historicRate, transaction.symbol, shallDisplayBaseCurrency]);
 
     const metadataId = useMemo(() => {
         switch (type) {

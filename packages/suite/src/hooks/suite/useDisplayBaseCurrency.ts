@@ -4,10 +4,11 @@ import { isTestnet } from '@suite-common/wallet-utils';
 
 import { useSelector } from './useSelector';
 
-export const useDisplayBaseCurrency = (symbol: NetworkSymbol) => {
+export const useDisplayBaseCurrency = (symbol: NetworkSymbol | undefined) => {
     const baseCurrencyCode = useSelector(selectLocalCurrency);
 
     return {
-        shallDisplayBaseCurrency: !isTestnet(symbol) && baseCurrencyCode !== symbol,
+        shallDisplayBaseCurrency:
+            symbol !== undefined && !isTestnet(symbol) && baseCurrencyCode !== symbol,
     };
 };

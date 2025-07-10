@@ -12,9 +12,9 @@ import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
 import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { Account } from 'src/types/wallet';
 
-import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 
 type TradeBoxProps = {
     account: Account;

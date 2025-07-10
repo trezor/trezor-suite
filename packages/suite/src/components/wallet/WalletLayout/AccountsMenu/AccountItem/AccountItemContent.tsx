@@ -23,7 +23,9 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { AccountItemType } from 'src/types/wallet';
+
 
 const AccountLabelContainer = styled.div`
     flex: 1;
@@ -66,8 +68,9 @@ const BaseCurrency = ({
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const localCurrency = useSelector(selectLocalCurrency);
     const { shouldAnimate } = useLoadingSkeleton();
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
-    if (isTestnet(symbol) || localCurrency === symbol) {
+    if (!shallDisplayBaseCurrency) {
         return null;
     }
 
