@@ -1,3 +1,8 @@
+# 1.3.4
+
+- npm-prerelease: @trezor/schema-utils 1.3.4-beta.1 (db7e1e88c0)
+- chore(suite): Update tsx (1a1786a1ab)
+
 # 1.3.3
 
 - npm-prerelease: @trezor/schema-utils 1.3.3-beta.1 (446091065a)
