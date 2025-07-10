@@ -1,3 +1,15 @@
+# 0.4.2
+
+- npm-prerelease: @trezor/connect-common 0.4.2-beta.3 (8f288023b1)
+- chore(connect): use Branded type util (ac3c50875f)
+- npm-prerelease: @trezor/connect-common 0.4.2-beta.2 (b69fa60e62)
+- fix(connect-common): add releses.v1 to bundle files (d460a1d511)
+- npm-prerelease: @trezor/connect-common 0.4.2-beta.1 (61fffc00c0)
+- feat(suite-common): add 2.9.0 fw binaries (f8cc440df2)
+- feat(connect-common): add static relese files (282393137c)
+- fix(connect-common): reduce bsc block time (90e2b55b46)
+- feat(connect-common): temporarily add 1.13.0 FW (8d1425ab8c)
+
 # 0.4.1
 
 - npm-prerelease: @trezor/connect-common 0.4.1-beta.1 (b39ee7ea52)
