@@ -71,7 +71,7 @@ const createTrezordNode = (
 describe('http', () => {
     let port: number;
     beforeAll(async () => {
-        port = await getFreePort();
+        [port] = await getFreePort();
     });
 
     (['usb', 'udp'] as const).forEach(api => {
@@ -111,7 +111,7 @@ describe('http', () => {
 
         const setupTrezordNode = async (params?: Parameters<typeof createTrezordNode>[0]) => {
             const trezordNode = createTrezordNode({
-                port: await getFreePort(),
+                port: (await getFreePort())[0],
                 ...params,
             });
             await trezordNode.start();
@@ -531,7 +531,7 @@ describe('http', () => {
                     }),
             );
             const trezordNode = createTrezordNode(
-                { port: await getFreePort() },
+                { port: (await getFreePort())[0] },
                 { enumerate: enumerateSpy },
             );
             await trezordNode.start();
@@ -580,7 +580,7 @@ describe('http', () => {
             );
             const readSpy = jest.fn();
             const trezordNode = createTrezordNode(
-                { port: await getFreePort() },
+                { port: (await getFreePort())[0] },
                 { write: writeSpy, read: readSpy },
             );
             await trezordNode.start();
@@ -673,7 +673,7 @@ describe('http', () => {
 
                 const server = createTrezordNode(
                     {
-                        port: await getFreePort(),
+                        port: (await getFreePort())[0],
                         // @ts-expect-error
                         logger: {
                             ...muteLogger,

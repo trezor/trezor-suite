@@ -35,7 +35,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
 
     const getCoinjoinProcess = async () => {
         if (!coinjoinProcess) {
-            const port = await getFreePort();
+            const [port] = await getFreePort();
             coinjoinProcess = new CoinjoinProcess(port);
         }
 
