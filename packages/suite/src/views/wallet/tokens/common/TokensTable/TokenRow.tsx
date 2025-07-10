@@ -256,7 +256,12 @@ export const TokenRow = ({
                             <Card paddingType="small">
                                 <Column maxWidth={200} gap={spacings.md}>
                                     <TokenAddressItem
-                                        label={<Translation id="TR_CONTRACT_ADDRESS" />}
+                                        label={
+                                            <>
+                                                <Translation id="TR_CONTRACT_ADDRESS" />
+                                                {': '}
+                                            </>
+                                        }
                                         address={token.contract}
                                         type="contract"
                                     />

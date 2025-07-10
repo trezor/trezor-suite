@@ -7055,7 +7055,7 @@ export default defineMessages({
     },
     TR_CONTRACT_ADDRESS: {
         id: 'TR_CONTRACT_ADDRESS',
-        defaultMessage: 'Contract address:',
+        defaultMessage: 'Contract address',
     },
     TR_POLICY_ID_ADDRESS: {
         id: 'TR_POLICY_ID_ADDRESS',

@@ -370,7 +370,10 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             {account.networkType === 'cardano' ? (
                                                 <Translation id="TR_POLICY_ID_ADDRESS" />
                                             ) : (
-                                                <Translation id="TR_CONTRACT_ADDRESS" />
+                                                <>
+                                                    <Translation id="TR_CONTRACT_ADDRESS" />
+                                                    {': '}
+                                                </>
                                             )}
                                             <TokenAddressRow
                                                 typographyStyle="hint"
