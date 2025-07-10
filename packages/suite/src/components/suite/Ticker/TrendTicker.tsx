@@ -35,6 +35,7 @@ interface TickerProps {
     noEmptyStateTooltip?: boolean;
     showLoadingSkeleton?: boolean;
 }
+
 export const TrendTicker = ({
     symbol,
     contractAddress,
