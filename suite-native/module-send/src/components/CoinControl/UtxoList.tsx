@@ -9,7 +9,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { UtxoCard } from './UtxoCard';
 
-const UtxoListStyle = prepareNativeStyle(() => ({ paddingBottom: 16, gap: 16, display: 'flex' }));
+const UtxoListStyle = prepareNativeStyle(utils => ({ paddingBottom: utils.spacings.sp16 }));
 
 const spacerStyle = prepareNativeStyle(utils => ({
     height: utils.spacings.sp16,
@@ -63,6 +63,7 @@ export const UtxoList = ({
             renderItem={renderItem}
             contentContainerStyle={applyStyle(UtxoListStyle)}
             ItemSeparatorComponent={rowSeparator}
+            estimatedItemSize={120}
         />
     );
 };
