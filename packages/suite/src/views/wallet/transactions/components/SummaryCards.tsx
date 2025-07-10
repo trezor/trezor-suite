@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { variables } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedDate, HiddenPlaceholder, Translation } from 'src/components/suite';
@@ -41,7 +42,8 @@ const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
             return <Translation id="TR_DATE_WEEK_LONG" />;
         case 'day':
             return <Translation id="TR_DATE_DAY_LONG" />;
-        // no default
+        default:
+            return exhaustive(rangeLabel);
     }
 };
 
@@ -94,6 +96,8 @@ export const SummaryCards = ({
         {},
     );
 
+    const shouldDisplayBaseCurrency = localCurrency !== account.symbol;
+
     return (
         <InfoCardsWrapper className={className}>
             <InfoCard
@@ -123,7 +127,7 @@ export const SummaryCards = ({
                         title={<Translation id="TR_INCOMING" />}
                         value={totalReceivedAmount.toFixed()}
                         secondaryValue={
-                            totalReceivedFiatMap[localCurrency] ? (
+                            shouldDisplayBaseCurrency && totalReceivedFiatMap[localCurrency] ? (
                                 <BaseCurrencyAmountFormatter
                                     currency={localCurrency}
                                     value={totalReceivedFiatMap[localCurrency]!}
@@ -138,7 +142,7 @@ export const SummaryCards = ({
                         title={<Translation id="TR_OUTGOING" />}
                         value={totalSentAmount.negated().toFixed()}
                         secondaryValue={
-                            totalSentFiatMap[localCurrency] ? (
+                            shouldDisplayBaseCurrency && totalSentFiatMap[localCurrency] ? (
                                 <BaseCurrencyAmountFormatter
                                     currency={localCurrency}
                                     value={totalSentFiatMap[localCurrency]!}

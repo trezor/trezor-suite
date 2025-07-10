@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
-import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { selectIsPhishingTransaction, selectLocalCurrency } from '@suite-common/wallet-core';
 import {
     formatNetworkAmount,
     isStakeTypeTx,
@@ -89,6 +89,7 @@ export const TransactionItem = memo(
         const [limit, setLimit] = useState(0);
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
+        const baseCurrencyCode = useSelector(selectLocalCurrency);
 
         const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
 
@@ -118,7 +119,9 @@ export const TransactionItem = memo(
 
         const isStakingTx: boolean = useMemo(() => isStakeTypeTx(txSignature), [txSignature]);
 
-        const useFiatValues = !isTestnet(transaction.symbol);
+        const shallDisplayBaseCurrency =
+            !isTestnet(transaction.symbol) && transaction.symbol !== baseCurrencyCode;
+
         const useSingleRowLayout =
             !isUnknown &&
             !isStakingTx &&
@@ -290,14 +293,14 @@ export const TransactionItem = memo(
                                         {type === 'joint' && (
                                             <CoinjoinRow
                                                 transaction={transaction}
-                                                useFiatValues={useFiatValues}
+                                                useFiatValues={shallDisplayBaseCurrency}
                                             />
                                         )}
 
                                         {transaction.cardanoSpecific?.withdrawal && (
                                             <WithdrawalRow
                                                 transaction={transaction}
-                                                useFiatValues={useFiatValues}
+                                                useFiatValues={shallDisplayBaseCurrency}
                                                 isFirst
                                                 isLast
                                             />
@@ -306,7 +309,7 @@ export const TransactionItem = memo(
                                         {transaction.cardanoSpecific?.deposit && (
                                             <DepositRow
                                                 transaction={transaction}
-                                                useFiatValues={useFiatValues}
+                                                useFiatValues={shallDisplayBaseCurrency}
                                                 isFirst
                                                 isLast
                                             />
@@ -317,7 +320,7 @@ export const TransactionItem = memo(
                                                 <StyledFeeRow
                                                     fee={fee}
                                                     transaction={transaction}
-                                                    useFiatValues={useFiatValues}
+                                                    useFiatValues={shallDisplayBaseCurrency}
                                                     $noInputsOutputs={noInputsOutputs}
                                                     isFirst
                                                     isLast
