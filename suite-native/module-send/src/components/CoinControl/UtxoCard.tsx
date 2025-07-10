@@ -92,13 +92,17 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = fals
                                 isBalance={false}
                                 symbol={symbol}
                             />
-                            <Text color="textSubdued">≈</Text>
-                            <BaseCurrencyAmountFormatter
-                                color="textSubdued"
-                                variant="highlight"
-                                symbol={symbol}
-                                value={fiatAmount}
-                            />
+                            {fiatAmount && (
+                                <>
+                                    <Text color="textSubdued">≈</Text>
+                                    <BaseCurrencyAmountFormatter
+                                        color="textSubdued"
+                                        variant="highlight"
+                                        symbol={symbol}
+                                        value={fiatAmount}
+                                    />
+                                </>
+                            )}
                         </HStack>
 
                         <AccountAddressFormatter
