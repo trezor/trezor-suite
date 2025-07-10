@@ -234,7 +234,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
         if (lastPoint && referencePoint) {
             setSelectedPoint({
                 ...lastPoint,
-                valueLatestTotal: totalFiatBalance,
+                valueLatestTotal: totalFiatBalance.toFixed(2),
             });
             setReferencePoint(referencePoint);
         }
@@ -248,7 +248,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
         if (!isGestureActive && lastPoint) {
             setSelectedPoint({
                 ...lastPoint,
-                valueLatestTotal: totalFiatBalance,
+                valueLatestTotal: totalFiatBalance.toFixed(2),
             });
         }
     }, [isGestureActive, setInitialSelectedPoints, totalFiatBalance, lastPoint, setSelectedPoint]);
