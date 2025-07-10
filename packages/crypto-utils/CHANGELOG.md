@@ -1,3 +1,8 @@
+# 1.1.4
+
+- npm-prerelease: @trezor/crypto-utils 1.1.4-beta.1 (87ee557cea)
+- chore(suite): Update tsx (1a1786a1ab)
+
 # 1.1.3
 
 - npm-prerelease: @trezor/crypto-utils 1.1.3-beta.1 (7ff3c48359)
