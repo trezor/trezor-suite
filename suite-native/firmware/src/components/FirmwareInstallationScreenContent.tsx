@@ -12,7 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
 import { Badge, Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorImage, setTemporaryRememberedDeviceThunk } from '@suite-native/device';
+import {
+    ConfirmOnTrezorImage,
+    reportCheckFail,
+    setTemporaryRememberedDeviceThunk,
+} from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import TrezorConnect from '@trezor/connect';
@@ -89,6 +93,10 @@ export const FirmwareInstallationScreenContent = ({
     });
     const openLink = useOpenLink();
 
+    const deviceInternalModel = originalDevice?.features?.internal_model;
+    const deviceRevision = originalDevice?.features?.revision;
+    const deviceFirmwareVendor = originalDevice?.features?.fw_vendor;
+
     useEffect(() => {
         if (!isTemporaryRememeberAllowed) return;
 
@@ -141,13 +149,32 @@ export const FirmwareInstallationScreenContent = ({
             return;
         }
 
+        const { versionCheck, bootloaderVersion, binaryVersion, installedVersion, releaseVersion } =
+            result.payload;
+
+        if (versionCheck === false) {
+            reportCheckFail('Firmware version', {
+                model: deviceInternalModel,
+                revision: deviceRevision,
+                vendor: deviceFirmwareVendor,
+                bootloaderVersion,
+                binaryVersion,
+                installedVersion,
+                releaseVersion,
+                error: 'Unexpected firmware version change during firmware update.',
+            });
+        }
+
         handleAnalyticsReportFinished();
     }, [
         setIsFirmwareInstallationRunning,
-        onFirmwareInstallationFailure,
         firmwareUpdate,
         handleAnalyticsReportFinished,
         handleAnalyticsReportCancelled,
+        onFirmwareInstallationFailure,
+        deviceInternalModel,
+        deviceRevision,
+        deviceFirmwareVendor,
     ]);
 
     const handleRetry = useCallback(async () => {
