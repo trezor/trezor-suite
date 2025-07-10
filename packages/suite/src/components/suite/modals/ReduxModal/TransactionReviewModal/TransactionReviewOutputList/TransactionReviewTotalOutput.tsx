@@ -1,9 +1,16 @@
 import { NetworkType } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Account, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import {
+    Account,
+    FormState,
+    GeneralPrecomposedTransactionFinal,
+    StakeFormState,
+    StakeType,
+} from '@suite-common/wallet-types';
 import {
     getIsUpdatedEthereumSendFlow,
     getIsUpdatedSendFlow,
+    isEvmApprovalTx,
     isTestnet,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -22,6 +29,7 @@ const getLines = (
     device: TrezorDevice,
     networkType: NetworkType,
     precomposedTx: GeneralPrecomposedTransactionFinal,
+    precomposedForm: FormState | StakeFormState,
     isRbfAction?: boolean,
     stakeType?: StakeType,
 ): OutputElementLine[] => {
@@ -65,7 +73,9 @@ const getLines = (
             type: 'amount',
         };
 
-        return isUnknownStakingValue ? [feeLine] : [amountLine, feeLine];
+        return isUnknownStakingValue || isEvmApprovalTx(precomposedForm.ethereumDataHex)
+            ? [feeLine]
+            : [amountLine, feeLine];
     }
     if (isUpdatedSendFlow) {
         const amount = showAmountWithoutFee ? amountWithoutFee : precomposedTx.totalSpent;
@@ -99,6 +109,7 @@ const getLines = (
 export type TransactionReviewTotalOutputProps = {
     state: TransactionReviewOutputElementProps['state'];
     precomposedTx: GeneralPrecomposedTransactionFinal;
+    precomposedForm: FormState | StakeFormState;
     account: Account;
     isRbf: boolean;
     stakeType?: StakeType;
@@ -108,6 +119,7 @@ export const TransactionReviewTotalOutput = ({
     account,
     state,
     precomposedTx,
+    precomposedForm,
     stakeType,
     isRbf,
 }: TransactionReviewTotalOutputProps) => {
@@ -118,7 +130,7 @@ export const TransactionReviewTotalOutput = ({
     }
 
     const { networkType, symbol } = account;
-    const lines = getLines(device, networkType, precomposedTx, isRbf, stakeType);
+    const lines = getLines(device, networkType, precomposedTx, precomposedForm, isRbf, stakeType);
 
     return (
         <TransactionReviewOutputElement

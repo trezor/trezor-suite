@@ -47,7 +47,7 @@ import {
     getUtxoOutpoint,
     networkAmountToSmallestUnit,
 } from './accountUtils';
-import { isEip1559, sanitizeHex } from './ethUtils';
+import { getEvmTransactionTextSignature, isEip1559, sanitizeHex } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -155,6 +155,8 @@ export const prepareEthereumTransaction = (
 ): EthereumTransaction | EthereumTransactionEIP1559 => {
     let result: EthereumTransaction | EthereumTransactionEIP1559;
 
+    const txType = getEvmTransactionTextSignature(txInfo.data);
+
     const commonTxData = {
         to: txInfo.to,
         value: getSerializedAmount(txInfo.amount),
@@ -185,10 +187,13 @@ export const prepareEthereumTransaction = (
         result.data = sanitizeHex(txInfo.data);
     }
 
-    // Build erc20 'transfer' method
+    // Build erc20 'transfer' method or use provided data in case of approve/revoke transaction
     if (txInfo.token) {
         // join data
-        result.data = getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
+        result.data =
+            txType === 'transfer'
+                ? getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount)
+                : txInfo.data;
         // replace tx recipient to smart contract address
         result.to = txInfo.token.contract;
         // replace tx value

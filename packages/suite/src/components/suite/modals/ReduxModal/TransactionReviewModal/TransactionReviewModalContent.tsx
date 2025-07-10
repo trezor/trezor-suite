@@ -410,6 +410,7 @@ export const TransactionReviewModalContent = ({
                 <TransactionReviewOutputList
                     account={account}
                     precomposedTx={precomposedTx}
+                    precomposedForm={precomposedForm}
                     signedTx={serializedTx}
                     outputs={outputs}
                     buttonRequestsCount={buttonRequestsCount}

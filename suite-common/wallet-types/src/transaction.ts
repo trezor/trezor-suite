@@ -201,6 +201,8 @@ export interface RbfTransactionParamsBitcoin {
     locktime?: number;
 }
 
+export type EvmTransactionPurpose = 'transfer' | 'approval' | 'revoke';
+
 export interface RbfTransactionParamsEthereum {
     type: 'ethereum';
     txid: string;
@@ -305,6 +307,7 @@ export type ReviewOutput =
               | 'amount'
               | 'gas'
               | 'contract'
+              | 'approve_data'
               | 'regular_legacy';
           label?: string;
           value: string;
