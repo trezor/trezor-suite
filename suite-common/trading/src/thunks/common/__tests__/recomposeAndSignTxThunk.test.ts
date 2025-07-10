@@ -1,9 +1,12 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import {
+    composeSendFormTransactionFeeLevelsThunk,
+    prepareDeviceReducer,
+} from '@suite-common/wallet-core';
+import { Account, FeesState } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 
 import { tradingThunks } from '../../';
@@ -23,31 +26,34 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
+const deviceReducer = prepareDeviceReducer(extraDependenciesMock);
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
-const fees = {
+const fees: FeesState = {
     [accountBtc.symbol]: {
-        blockHeight: 890366,
-        blockTime: 10,
-        minFee: 1,
-        maxFee: 100,
-        dustLimit: 546,
-        levels: [
-            {
-                label: 'economy',
-                feePerUnit: '1',
-                blocks: 7,
-            },
-            {
-                label: 'normal',
-                feePerUnit: '2',
-                blocks: 2,
-            },
-            {
-                label: 'high',
-                feePerUnit: '3',
-                blocks: 1,
-            },
-        ],
+        data: {
+            blockHeight: 890366,
+            blockTime: 10,
+            minFee: 1,
+            maxFee: 100,
+            dustLimit: 546,
+            levels: [
+                {
+                    label: 'economy',
+                    feePerUnit: '1',
+                    blocks: 7,
+                },
+                {
+                    label: 'normal',
+                    feePerUnit: '2',
+                    blocks: 2,
+                },
+                {
+                    label: 'high',
+                    feePerUnit: '3',
+                    blocks: 1,
+                },
+            ],
+        },
     },
 };
 
@@ -77,6 +83,7 @@ describe('recomposeAndSignTxThunk', () => {
 
     const getMocks = (initialTradingState?: Partial<TradingState>) => {
         const account = accountBtc as Account;
+        const device = testMocks.getSuiteDevice();
 
         const store = configureMockStore({
             extra: {},
@@ -85,6 +92,7 @@ describe('recomposeAndSignTxThunk', () => {
                     tradingNew: tradingReducer,
                     fees: mockedSuiteReducer,
                 }),
+                device: deviceReducer,
             }),
             preloadedState: {
                 wallet: {
@@ -95,6 +103,10 @@ describe('recomposeAndSignTxThunk', () => {
                         },
                         ...initialTradingState,
                     },
+                },
+                device: {
+                    devices: [device],
+                    selectedDevice: device,
                 },
             },
         });

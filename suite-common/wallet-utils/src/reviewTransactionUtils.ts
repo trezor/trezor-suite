@@ -1,6 +1,8 @@
 import { fromWei, toWei } from 'web3-utils';
 
+import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { networks } from '@suite-common/wallet-config';
 import {
     Account,
     FormState,
@@ -15,6 +17,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
+import { getEvmApprovalTxData, getEvmTransactionTextSignature } from './ethUtils';
 import { getStakeType } from './ethereumStakingUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
@@ -247,7 +250,10 @@ const constructNewFlow = ({
 
     const isCardano = isCardanoTx(account, precomposedTx);
     const isSolana = account.networkType === 'solana';
-    const { networkType } = account;
+    const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.ethereumDataHex);
+    const evmTxType = getEvmTransactionTextSignature(precomposedForm.ethereumDataHex);
+    const isEvmApprovalTx = ['approve', 'revoke'].some(type => type === evmTxType);
+    const { networkType, symbol } = account;
 
     const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
     const hasDestinationTag = 'destinationTag' in precomposedForm;
@@ -283,7 +289,7 @@ const constructNewFlow = ({
         );
     }
 
-    if (precomposedForm.ethereumDataHex && !precomposedTx.token) {
+    if (precomposedForm.ethereumDataHex && !precomposedTx.token && !isEvmApprovalTx) {
         outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
@@ -353,7 +359,7 @@ const constructNewFlow = ({
                 if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana) {
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
-                } else if (precomposedForm.ethereumDataHex) {
+                } else if (precomposedForm.ethereumDataHex && !isEvmApprovalTx) {
                     // EVM contract call
                     outputs.push({ type: 'contract', value: o.address });
                 } else {
@@ -380,6 +386,22 @@ const constructNewFlow = ({
                 });
             }
         });
+    }
+
+    if (isEvmApprovalTx && evmApprovalTxData && networkType === 'ethereum') {
+        outputs.push({
+            type: 'contract',
+            value: EVM_SPENDER_LABELS[evmApprovalTxData.spender] || evmApprovalTxData.spender,
+        });
+
+        if (precomposedTx.token) {
+            outputs.push({
+                type: 'approve_data',
+                value: evmApprovalTxData.amount,
+                value2: networks[symbol].name,
+                token: precomposedTx.token,
+            });
+        }
     }
 
     if (networkType === 'ethereum' && !isUpdatedEthereumSendFlow) {

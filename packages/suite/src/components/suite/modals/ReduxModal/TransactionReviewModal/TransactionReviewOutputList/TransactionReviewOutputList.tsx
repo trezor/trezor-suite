@@ -2,9 +2,13 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type {
+    FormState,
+    GeneralPrecomposedTransactionFinal,
+    StakeFormState,
+} from '@suite-common/wallet-types';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
-import { findAccountsByAddress } from '@suite-common/wallet-utils';
+import { findAccountsByAddress, getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { BulletList, Card, Column, H3, H4 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -20,6 +24,7 @@ import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 export type TransactionReviewOutputListProps = {
     account: Account;
     precomposedTx: GeneralPrecomposedTransactionFinal;
+    precomposedForm: FormState | StakeFormState;
     signedTx?: { tx: string };
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
@@ -69,6 +74,7 @@ const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number
 export const TransactionReviewOutputList = ({
     account,
     precomposedTx,
+    precomposedForm,
     signedTx,
     outputs,
     buttonRequestsCount,
@@ -188,6 +194,9 @@ export const TransactionReviewOutputList = ({
                                 isRbf={isRbfAction}
                                 isTrading={isTradingAction}
                                 stakeType={stakeType}
+                                evmTxType={getEvmTransactionTextSignature(
+                                    precomposedForm.ethereumDataHex,
+                                )}
                             />
                         </Column>
                     </Wrapper>
@@ -205,6 +214,7 @@ export const TransactionReviewOutputList = ({
                             account={account}
                             state={getState(outputs.length, buttonRequestsCount, !!signedTx)}
                             precomposedTx={precomposedTx}
+                            precomposedForm={precomposedForm}
                             stakeType={stakeType}
                             isRbf={isRbfAction}
                         />

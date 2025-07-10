@@ -1,5 +1,6 @@
 import {
     decimalToHex,
+    getEvmApprovalTxData,
     getEvmTransactionTextSignature,
     hexToDecimal,
     padLeftEven,
@@ -43,15 +44,81 @@ describe('eth utils', () => {
         expect(strip('2540be3ff')).toBe('02540be3ff');
     });
 
-    describe('getEvmTransactionTextSignature', () => {
-        it('should return "default" when data is undefined or empty string', () => {
-            expect(getEvmTransactionTextSignature(undefined)).toBe('default');
-            expect(getEvmTransactionTextSignature('')).toBe('default');
+    describe('getEvmApprovalTxData', () => {
+        it('returns null if data is underfined or empty', () => {
+            expect(getEvmApprovalTxData(undefined)).toBeNull();
+            expect(getEvmApprovalTxData('')).toBeNull();
         });
 
-        it('should return "default" for non-approval transaction data', () => {
+        it('returns "approval" for approve transactions', () => {
+            const approveData =
+                '0x095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
+                '0000000000000000000000000000000000000000000000000de0b6b3a7640000'; // amount (32 bytes) - 1 ETH in wei
+
+            const result = getEvmApprovalTxData(approveData);
+
+            expect(result).toEqual({
+                type: 'approval',
+                spender: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
+                amount: '1000000000000000000',
+            });
+        });
+
+        it('returns "revoke" for approve transactions with zero amount', () => {
+            const revokeData =
+                '0x095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
+                '0000000000000000000000000000000000000000000000000000000000000000'; // amount (32 bytes) - 0
+            const result = getEvmApprovalTxData(revokeData);
+
+            expect(result).toEqual({
+                type: 'revoke',
+                spender: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
+                amount: '0',
+            });
+        });
+
+        it('returns "approval" for maximum uint256 approval', () => {
+            const maxApprovalData =
+                '0x095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
+                'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'; // max uint256
+
+            const result = getEvmApprovalTxData(maxApprovalData);
+            expect(result?.type).toBe('approval');
+        });
+
+        it('should handle data without 0x prefix', () => {
+            const dataWithoutPrefix =
+                '095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
+                '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+
+            const result = getEvmApprovalTxData(dataWithoutPrefix);
+
+            expect(result?.type).toEqual('approval');
+        });
+
+        it('should handle uppercase hex data', () => {
+            const uppercaseData =
+                '0X095EA7B3' +
+                '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
+                '0000000000000000000000000000000000000000000000000000000000000000';
+
+            expect(getEvmApprovalTxData(uppercaseData)?.type).toBe('revoke');
+        });
+    });
+
+    describe('getEvmTransactionTextSignature', () => {
+        it('should return "transfer" when data is undefined or empty string', () => {
+            expect(getEvmTransactionTextSignature(undefined)).toBe('transfer');
+            expect(getEvmTransactionTextSignature('')).toBe('transfer');
+        });
+
+        it('should return "transfer" for non-approval transaction data', () => {
             const randomData = '0xa9059cbb000000000000000000000000742d35cc6634c0532925a3b8d40e5';
-            expect(getEvmTransactionTextSignature(randomData)).toBe('default');
+            expect(getEvmTransactionTextSignature(randomData)).toBe('transfer');
         });
 
         it('should return "approval" for approve transaction with non-zero amount', () => {
@@ -81,14 +148,14 @@ describe('eth utils', () => {
             expect(getEvmTransactionTextSignature(maxApprovalData)).toBe('approval');
         });
 
-        it('should return "default" for data that starts with approve selector but is too short', () => {
+        it('should return "transfer" for data that starts with approve selector but is too short', () => {
             const shortData = '0x095ea7b3';
-            expect(getEvmTransactionTextSignature(shortData)).toBe('default');
+            expect(getEvmTransactionTextSignature(shortData)).toBe('transfer');
         });
 
-        it('should return "default" for data that starts with approve selector but has invalid parameters', () => {
+        it('should return "transfer" for data that starts with approve selector but has invalid parameters', () => {
             const invalidData = '0x095ea7b3' + '000000000000000000000000742d35cc';
-            expect(getEvmTransactionTextSignature(invalidData)).toBe('default');
+            expect(getEvmTransactionTextSignature(invalidData)).toBe('transfer');
         });
 
         it('should handle data without 0x prefix', () => {
@@ -109,13 +176,13 @@ describe('eth utils', () => {
             expect(getEvmTransactionTextSignature(uppercaseData)).toBe('revoke');
         });
 
-        it('should return "default" for similar but different function selectors', () => {
+        it('should return "transfer" for similar but different function selectors', () => {
             const similarData =
                 '0x095ea7b4' +
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
-            expect(getEvmTransactionTextSignature(similarData)).toBe('default');
+            expect(getEvmTransactionTextSignature(similarData)).toBe('transfer');
         });
     });
 });

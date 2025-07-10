@@ -6,9 +6,12 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import {
     composeSendFormTransactionFeeLevelsThunk,
     selectConvertedNetworkFeeInfo,
+    selectDeviceFirmwareVersion,
 } from '@suite-common/wallet-core';
 import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
+import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { Success, Unsuccessful } from '@trezor/connect';
+import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import {
@@ -76,9 +79,13 @@ export const recomposeAndSignTxThunk = createThunk<
         const options: FormOptions[] = ['broadcast'];
         const network = getNetwork(account.symbol);
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+        const firmwareVersion = selectDeviceFirmwareVersion(getState());
+        const isNewApproveFlowSupported =
+            firmwareVersion && isNewerOrEqual(firmwareVersion, '2.9.0');
         const activeTradingSection = selectTradingActiveSection(
             getState(),
         ) as TradingTradeSellExchangeType;
+        const isTransferEvmTxType = getEvmTransactionTextSignature(ethereumDataHex) === 'transfer';
 
         if (!composed || !feeInfo) {
             return rejectWithValue({
@@ -89,6 +96,12 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
+        // Token is being used for approval transactions unless on firmware < 2.9.0.
+        // Otherwise if ethereumDataHex is present, token is not used as details are in the ethereumDataHex.
+        const shouldIncludeToken =
+            !!(ethereumDataHex && isTransferEvmTxType) ||
+            !(ethereumDataHex && !isTransferEvmTxType && !isNewApproveFlowSupported);
+
         // prepare the fee levels, set custom values from composed
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
         const formState: FormState = {
@@ -98,8 +111,7 @@ export const recomposeAndSignTxThunk = createThunk<
                     ...DEFAULT_PAYMENT,
                     address,
                     amount,
-                    // if we pass ethereumDataHex, do not use the token, the details are in the ethereumDataHex
-                    token: ethereumDataHex ? null : (composed.token?.contract ?? null),
+                    token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
                 },
             ],
             setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,

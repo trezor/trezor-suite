@@ -4,3 +4,4 @@ export * from './protocol';
 export * from './desktopAppUpdateState';
 export * from './device';
 export * from './bitcoinOnlyNetworks';
+export * from './evm';

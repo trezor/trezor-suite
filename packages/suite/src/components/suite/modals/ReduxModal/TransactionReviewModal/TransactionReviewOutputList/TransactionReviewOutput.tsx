@@ -1,16 +1,21 @@
 import { ReactNode } from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
+import { UINT256_MAX } from '@suite-common/suite-constants';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { selectAccounts } from '@suite-common/wallet-core';
-import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { findAccountsByAddress, isTestnet } from '@suite-common/wallet-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
+import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 import type { Account } from 'src/types/wallet';
 
 import {
@@ -32,22 +37,80 @@ const getFeeLabel = (networkType: NetworkType) => {
     }
 };
 
-const getDisplayModeStringsMap = (
-    isEverstake: boolean,
-): Record<StakeType, { value: TranslationKey; label: TranslationKey }> => ({
-    stake: {
-        value: 'TR_STAKE_ON_EVERSTAKE',
-        label: 'TR_STAKE_STAKE',
+const getStakeTranslations = (
+    stakeType: StakeType,
+    networkType: NetworkType,
+): Record<'value' | 'label', TranslationKey> => {
+    const isEverStake = networkType === 'ethereum';
+
+    const translations: Record<StakeType, Record<'value' | 'label', TranslationKey>> = {
+        stake: {
+            value: 'TR_STAKE_ON_EVERSTAKE',
+            label: 'TR_STAKE_STAKE',
+        },
+        unstake: {
+            value: isEverStake ? 'TR_UNSTAKE_FROM_EVERSTAKE' : 'TR_UNSTAKE_FROM_STAKE_ACCOUNT',
+            label: 'TR_STAKE_UNSTAKE',
+        },
+        claim: {
+            value: isEverStake ? 'TR_CLAIM_FROM_EVERSTAKE' : 'TR_CLAIM_FROM_STAKE_ACCOUNT',
+            label: 'TR_STAKE_CLAIM',
+        },
+    };
+
+    return translations[stakeType];
+};
+
+const approvalStrings: Record<
+    Exclude<EvmTransactionPurpose, 'transfer'>,
+    Record<'value' | 'label', TranslationKey>
+> = {
+    approval: {
+        value: 'TR_APPROVE_DESCRIPTION',
+        label: 'TR_APPROVE_TITLE',
     },
-    unstake: {
-        value: isEverstake ? 'TR_UNSTAKE_FROM_EVERSTAKE' : 'TR_UNSTAKE_FROM_STAKE_ACCOUNT',
-        label: 'TR_STAKE_UNSTAKE',
+    revoke: {
+        value: 'TR_REVOKE_DESCRIPTION',
+        label: 'TR_REVOKE_TITLE',
     },
-    claim: {
-        value: isEverstake ? 'TR_CLAIM_FROM_EVERSTAKE' : 'TR_CLAIM_FROM_STAKE_ACCOUNT',
-        label: 'TR_STAKE_CLAIM',
-    },
-});
+};
+
+const getTranslationValues = (
+    networkType: NetworkType,
+    stakeType?: StakeType,
+    evmApprovalType?: Exclude<EvmTransactionPurpose, 'transfer'>,
+    device?: TrezorDevice,
+): Record<'value' | 'label', TranslationKey> | null => {
+    const firmwareVersion = getFirmwareVersion(device);
+    const isNewApproveFlowSupported = firmwareVersion && isNewerOrEqual(firmwareVersion, '2.9.0');
+
+    if (evmApprovalType && !isNewApproveFlowSupported) {
+        return null;
+    }
+
+    if (evmApprovalType) {
+        return approvalStrings[evmApprovalType];
+    }
+
+    if (stakeType) {
+        return getStakeTranslations(stakeType, networkType);
+    }
+
+    return null;
+};
+
+const getContractTitle = (
+    networkType: NetworkType,
+    evmApprovalType?: Exclude<EvmTransactionPurpose, 'transfer'>,
+): TranslationKey => {
+    if (evmApprovalType) {
+        return evmApprovalType === 'approval'
+            ? 'TR_CONTRACT_APPROVE_TITLE'
+            : 'TR_CONTRACT_REVOKE_TITLE';
+    }
+
+    return networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT_ADDRESS';
+};
 
 const getOutputTitle = (
     type: ReviewOutput['type'],
@@ -55,8 +118,11 @@ const getOutputTitle = (
     value: string,
     isRbf: boolean,
     stakeType: StakeType | undefined,
+    evmApprovalType: Exclude<EvmTransactionPurpose, 'transfer'> | undefined,
+    device?: TrezorDevice,
 ): ReactNode | undefined => {
-    const displayModeStringsMap = getDisplayModeStringsMap(networkType === 'ethereum');
+    const translation = getTranslationValues(networkType, stakeType, evmApprovalType, device);
+    const contractTitle = getContractTitle(networkType, evmApprovalType);
 
     switch (type) {
         case 'locktime': {
@@ -73,16 +139,10 @@ const getOutputTitle = (
         case 'reduce-output':
             return <Translation id="AMOUNT" />;
         case 'contract':
-            return (
-                <Translation id={networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT_ADDRESS'} />
-            );
+            return <Translation id={contractTitle} />;
         case 'address':
         case 'regular_legacy':
-            return (
-                <Translation
-                    id={stakeType ? displayModeStringsMap[stakeType].label : 'TR_RECIPIENT_ADDRESS'}
-                />
-            );
+            return <Translation id={translation ? translation.label : 'TR_RECIPIENT_ADDRESS'} />;
 
         case 'amount':
             return <Translation id="TR_AMOUNT_SENT" />;
@@ -97,30 +157,53 @@ const getOutputTitle = (
         case 'txid':
             return <Translation id={isRbf ? 'TR_TXID_RBF' : 'TR_TXID'} />;
         case 'data':
-            return (
-                <Translation id={stakeType ? displayModeStringsMap[stakeType].label : 'DATA_ETH'} />
-            );
+            return <Translation id={translation ? translation.label : 'DATA_ETH'} />;
         case 'opreturn':
             return <Translation id="OP_RETURN" />;
         case 'timebounds':
             return <Translation id="TIME_BOUNDS" />;
+        case 'approve_data':
+            return (
+                <Translation
+                    id={
+                        evmApprovalType === 'approval'
+                            ? 'TR_APPROVE_DATA_TITLE'
+                            : 'TR_REVOKE_DATA_TITLE'
+                    }
+                />
+            );
         default:
             return exhaustive(type);
     }
 };
 
-const getOutputLines = (
-    type: ReviewOutput['type'],
-    networkType: NetworkType,
-    value: string,
-    value2: string = '',
-    label: string = '',
-    symbol: NetworkSymbol,
-    stakeType: StakeType | undefined,
-    translationString: (key: TranslationKey, values: any) => string,
-): OutputElementLine[] => {
-    const displayModeStringsMap = getDisplayModeStringsMap(networkType === 'ethereum');
+interface GetOutputLinesParams {
+    type: ReviewOutput['type'];
+    networkType: NetworkType;
+    value: string;
+    value2?: string;
+    label?: string;
+    symbol: NetworkSymbol;
+    stakeType?: StakeType;
+    evmTxType?: Exclude<EvmTransactionPurpose, 'transfer'>;
+    device?: TrezorDevice;
+    token?: ReviewOutput['token'];
+    translationString: TranslationFunction;
+}
 
+const getOutputLines = ({
+    type,
+    networkType,
+    value,
+    value2 = '',
+    label = '',
+    symbol,
+    stakeType,
+    evmTxType,
+    device,
+    token,
+    translationString,
+}: GetOutputLinesParams): OutputElementLine[] => {
     switch (type) {
         case 'gas':
         case 'fee':
@@ -170,26 +253,49 @@ const getOutputLines = (
             ];
         case 'address':
         case 'data':
-        case 'regular_legacy':
-            if (stakeType) {
-                return [
-                    {
-                        id: 'data',
-                        type: 'default',
-                        value: translationString(displayModeStringsMap[stakeType].value, {
-                            symbol: getNetworkDisplaySymbol(symbol),
-                        }),
-                    },
-                ];
-            }
+        case 'regular_legacy': {
+            const translation = getTranslationValues(
+                networkType,
+                stakeType,
+                evmTxType,
+                device,
+            )?.value;
 
-            return [
+            const defaultOutput = [
                 {
                     id: type,
                     type: type === 'regular_legacy' ? 'address' : type,
                     value,
                 },
             ];
+
+            if (!translation) {
+                return defaultOutput;
+            }
+
+            if (evmTxType) {
+                return [
+                    {
+                        id: 'data',
+                        type: 'default',
+                        value: translationString(translation, {}),
+                    },
+                ];
+            }
+            if (stakeType) {
+                return [
+                    {
+                        id: 'data',
+                        type: 'default',
+                        value: translationString(translation, {
+                            symbol: getNetworkDisplaySymbol(symbol),
+                        }),
+                    },
+                ];
+            }
+
+            return defaultOutput;
+        }
         case 'txid':
         case 'contract':
         case 'opreturn':
@@ -214,6 +320,37 @@ const getOutputLines = (
                     type: 'amount',
                 },
             ];
+        case 'approve_data': {
+            const isMaxApproval = new BigNumber(value).eq(UINT256_MAX);
+            const isApprovalTx = evmTxType === 'approval';
+            const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
+            const getValue = () => {
+                if (!isApprovalTx && token?.symbol) {
+                    return token.symbol.toUpperCase();
+                }
+
+                return isMaxApproval ? translationString('TR_APPROVE_AMOUNT_UNLIMITED', {}) : value;
+            };
+
+            return [
+                {
+                    id: `${type}-amount`,
+                    label: (
+                        <Translation
+                            id={isApprovalTx ? 'TR_APPROVE_AMOUNT_TITLE' : 'TR_REVOKE_AMOUNT_TITLE'}
+                        />
+                    ),
+                    value: getValue(),
+                    type,
+                },
+                {
+                    id: `${type}-chain`,
+                    label: <Translation id="TR_APPROVE_CHAIN_TITLE" />,
+                    value: value2,
+                    type: 'data',
+                },
+            ];
+        }
         default:
             return exhaustive(type);
     }
@@ -225,6 +362,7 @@ export type TransactionReviewOutputProps = {
     isRbf: boolean;
     stakeType?: StakeType;
     isTrading?: boolean;
+    evmTxType?: EvmTransactionPurpose;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = ({
@@ -238,17 +376,28 @@ export const TransactionReviewOutput = ({
     stakeType,
     isRbf,
     isTrading,
+    evmTxType,
 }: TransactionReviewOutputProps) => {
     const { networkType, symbol } = account;
     const accounts = useSelector(selectAccounts);
+    const device = useSelector(selectSelectedDevice);
+
     const { translationString } = useTranslation();
     const isFiatVisible =
         ['fee', 'amount', 'gas', 'fee-replace', 'reduce-output'].includes(type) &&
         !isTestnet(symbol);
 
-    const outputTitle = getOutputTitle(type, networkType, value, isRbf, stakeType);
+    const outputTitle = getOutputTitle(
+        type,
+        networkType,
+        value,
+        isRbf,
+        stakeType,
+        evmTxType !== 'transfer' ? evmTxType : undefined,
+        device,
+    );
 
-    const outputLines = getOutputLines(
+    const outputLines = getOutputLines({
         type,
         networkType,
         value,
@@ -256,8 +405,11 @@ export const TransactionReviewOutput = ({
         label,
         symbol,
         stakeType,
+        evmTxType: evmTxType !== 'transfer' ? evmTxType : undefined,
+        device,
+        token,
         translationString,
-    ).map(line => {
+    }).map(line => {
         if (line.type === 'address') {
             const relevantAccounts = findAccountsByAddress(symbol, line.value, accounts);
 

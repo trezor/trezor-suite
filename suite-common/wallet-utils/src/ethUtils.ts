@@ -1,6 +1,7 @@
 import { decodeParameters } from 'web3-eth-abi';
 import { sha3 } from 'web3-utils';
 
+import { EvmTransactionPurpose } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const isEip1559 = (
@@ -36,31 +37,48 @@ export const strip = (str: string): string => {
     return padLeftEven(str);
 };
 
-type EvmTransactionPurpose = 'default' | 'approval' | 'revoke';
+interface EvmApprovalTxData {
+    type: Exclude<EvmTransactionPurpose, 'transfer'>;
+    spender: string;
+    amount: string;
+}
 
-export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
-    if (!data) return 'default';
+export const getEvmApprovalTxData = (data?: string): EvmApprovalTxData | null => {
+    if (!data) return null;
 
     const dataWithPrefix = data.toLowerCase().startsWith('0x') ? data : `0x${data}`;
     const dataLowercase = dataWithPrefix.toLowerCase();
-    const approvalPrefix = sha3('approve(address,uint256)')?.slice(0, 10);
-    const hasApprovalPrefix = !!approvalPrefix && dataLowercase.startsWith(approvalPrefix);
+    try {
+        const approvalPrefix = sha3('approve(address,uint256)')?.slice(0, 10);
+        const hasApprovalPrefix = !!approvalPrefix && dataLowercase.startsWith(approvalPrefix);
 
-    if (hasApprovalPrefix) {
-        try {
-            const decodedData = decodeParameters(['address', 'uint256'], dataLowercase.slice(10)); // [spender, approval_amount]
+        if (!hasApprovalPrefix) return null;
 
-            // when approval amount is 0 -> revoke
-            if (decodedData[1] === 0n) {
-                return 'revoke';
-            }
+        const decodedData = decodeParameters(['address', 'uint256'], dataLowercase.slice(10)); // [spender, approval_amount]
 
-            return 'approval';
-        } catch {
-            // If decoding fails, treat as default transaction
-            return 'default';
-        }
+        if (typeof decodedData[0] !== 'string' || typeof decodedData[1] !== 'bigint') return null;
+
+        return {
+            type: decodedData[1] === 0n ? 'revoke' : 'approval',
+            spender: decodedData[0].toLowerCase(),
+            amount: decodedData[1].toString(),
+        };
+    } catch {
+        return null;
     }
+};
 
-    return 'default';
+export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
+    if (!data) return 'transfer';
+
+    const result = getEvmApprovalTxData(data);
+    if (result === null) return 'transfer';
+
+    return result.type;
+};
+
+export const isEvmApprovalTx = (data?: string): boolean => {
+    const result = getEvmApprovalTxData(data);
+
+    return result !== null;
 };

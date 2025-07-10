@@ -10551,4 +10551,52 @@ export default defineMessages({
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_DESCRIPTION',
         defaultMessage: 'We value your feedback.',
     },
+    TR_APPROVE_TITLE: {
+        id: 'TR_APPROVE_TITLE',
+        defaultMessage: 'Token approval',
+    },
+    TR_APPROVE_DESCRIPTION: {
+        id: 'TR_APPROVE_DESCRIPTION',
+        defaultMessage: 'Review details to approve token spending.',
+    },
+    TR_REVOKE_TITLE: {
+        id: 'TR_REVOKE_TITLE',
+        defaultMessage: 'Token revocation',
+    },
+    TR_REVOKE_DESCRIPTION: {
+        id: 'TR_REVOKE_DESCRIPTION',
+        defaultMessage: 'Review details to revoke token approval.',
+    },
+    TR_REVOKE_DATA_TITLE: {
+        id: 'TR_REVOKE_DATA_TITLE',
+        defaultMessage: 'Revoke',
+    },
+    TR_APPROVE_DATA_TITLE: {
+        id: 'TR_APPROVE_DATA_TITLE',
+        defaultMessage: 'Approve',
+    },
+    TR_APPROVE_AMOUNT_UNLIMITED: {
+        id: 'TR_APPROVE_AMOUNT_UNLIMITED',
+        defaultMessage: 'Unlimited',
+    },
+    TR_APPROVE_AMOUNT_TITLE: {
+        id: 'TR_APPROVE_AMOUNT_TITLE',
+        defaultMessage: 'Amount allowance',
+    },
+    TR_REVOKE_AMOUNT_TITLE: {
+        id: 'TR_REVOKE_AMOUNT_TITLE',
+        defaultMessage: 'Token',
+    },
+    TR_APPROVE_CHAIN_TITLE: {
+        id: 'TR_APPROVE_CHAIN_TITLE',
+        defaultMessage: 'Chain',
+    },
+    TR_CONTRACT_REVOKE_TITLE: {
+        id: 'TR_CONTRACT_REVOKE_TITLE',
+        defaultMessage: 'Revoke from',
+    },
+    TR_CONTRACT_APPROVE_TITLE: {
+        id: 'TR_CONTRACT_APPROVE_TITLE',
+        defaultMessage: 'Approve to',
+    },
 } as const);
