@@ -26,7 +26,6 @@ const middlewares: Middleware[] = [
     prepareDeviceMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
     sendFormMiddleware,
-    deviceConnectionMiddleware.middleware,
 ];
 
 const enhancers: Array<StoreEnhancer<any, any>> = [];
@@ -49,6 +48,8 @@ export const initStore = async (preloadedState?: PreloadedState) =>
                 },
                 serializableCheck: false,
                 immutableCheck: false,
-            }).concat(middlewares),
+            })
+                .prepend(deviceConnectionMiddleware.middleware)
+                .concat(middlewares),
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });

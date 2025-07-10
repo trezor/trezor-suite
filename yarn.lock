@@ -10215,6 +10215,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/biometrics@workspace:suite-native/biometrics"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -10757,7 +10758,6 @@ __metadata:
   resolution: "@suite-native/module-authenticity-checks@workspace:suite-native/module-authenticity-checks"
   dependencies:
     "@react-navigation/core": "npm:^6.4.10"
-    "@react-navigation/native": "npm:6.1.18"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
