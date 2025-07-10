@@ -21,28 +21,28 @@ describe('fiatConverter utils: toFiatCurrency', () => {
 
 describe('fiatConverter utils: fromFiatCurrency', () => {
     it('from existing fiat currency', () => {
-        expect(fromFiatCurrency({ localAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
-        expect(fromFiatCurrency({ localAmount: '0', rate })?.toFixed(2)).toBe('0.00');
-        expect(fromFiatCurrency({ localAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
+        expect(fromFiatCurrency({ fiatAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
+        expect(fromFiatCurrency({ fiatAmount: '0', rate })?.toFixed(2)).toBe('0.00');
+        expect(fromFiatCurrency({ fiatAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
     });
 
     it('non-numeric amount to fiat currency', () => {
-        expect(fromFiatCurrency({ localAmount: '12133.3131.3141.4', rate })).toBe(null);
+        expect(fromFiatCurrency({ fiatAmount: '12133.3131.3141.4', rate })).toBe(null);
     });
 
     it('different decimals', () => {
-        expect(fromFiatCurrency({ localAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
-        expect(fromFiatCurrency({ localAmount: '0', rate })?.toFixed(2)).toBe('0.00');
-        expect(fromFiatCurrency({ localAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
+        expect(fromFiatCurrency({ fiatAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
+        expect(fromFiatCurrency({ fiatAmount: '0', rate })?.toFixed(2)).toBe('0.00');
+        expect(fromFiatCurrency({ fiatAmount: rateString, rate })?.toFixed(2)).toBe('1.00');
     });
 
     it('from fiat currency with comma decimal separator', () => {
-        expect(fromFiatCurrency({ localAmount: '3007,1079886708517', rate })?.toFixed(2)).toBe(
+        expect(fromFiatCurrency({ fiatAmount: '3007,1079886708517', rate })?.toFixed(2)).toBe(
             '1.00',
         );
     });
 
     it('missing fiat rates', () => {
-        expect(fromFiatCurrency({ localAmount: '1', rate: undefined })).toBe(null);
+        expect(fromFiatCurrency({ fiatAmount: '1', rate: undefined })).toBe(null);
     });
 });

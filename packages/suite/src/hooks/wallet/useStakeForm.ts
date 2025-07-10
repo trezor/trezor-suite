@@ -251,7 +251,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
             if (!currentRate) return;
 
             const cryptoValue =
-                fromFiatCurrency({ localAmount: amount, rate: currentRate?.rate })?.toFixed(
+                fromFiatCurrency({ fiatAmount: amount, rate: currentRate?.rate })?.toFixed(
                     network.decimals,
                 ) || '';
 

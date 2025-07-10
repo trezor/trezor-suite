@@ -128,7 +128,7 @@ export const useSendFormFields = ({
                 const decimals = token ? token.decimals : network.decimals;
 
                 const amount =
-                    fromFiatCurrency({ localAmount: fiat, rate: fiatRate })?.toFixed(decimals) ??
+                    fromFiatCurrency({ fiatAmount: fiat, rate: fiatRate })?.toFixed(decimals) ??
                     null;
 
                 return shouldSendInSats

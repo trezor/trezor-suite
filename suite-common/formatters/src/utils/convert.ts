@@ -41,7 +41,7 @@ export const convertFiatToCryptoAmount = ({
     }
 
     const { decimals } = getNetwork(symbol);
-    const cryptoAmount = fromFiatCurrency({ localAmount: amount, rate });
+    const cryptoAmount = fromFiatCurrency({ fiatAmount: amount, rate });
 
     if (!cryptoAmount || !isAmountInSats) {
         return cryptoAmount;
