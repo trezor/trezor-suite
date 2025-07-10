@@ -15,7 +15,7 @@
         "@solana-program/compute-budget": "^0.8.0",
         "@solana-program/stake": "^0.2.1",
         "@solana-program/system": "^0.7.0",
-        "@solana/kit": "^2.1.1",
+        "@solana/kit": "^2.3.0",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",

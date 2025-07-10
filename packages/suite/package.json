@@ -26,7 +26,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.8.2",
         "@sentry/core": "8.55.0",
-        "@solana/kit": "^2.1.1",
+        "@solana/kit": "^2.3.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/assets": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
