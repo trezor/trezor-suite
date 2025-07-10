@@ -33,6 +33,6 @@
     },
     "devDependencies": {
         "html-webpack-plugin": "^5.6.3",
-        "webpack": "5.99.9"
+        "webpack": "5.100.0"
     }
 }
