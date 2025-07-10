@@ -12,6 +12,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { ReviewButton } from './ReviewButton';
+import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 
 type ChildOrSkeletonProps = PropsWithChildren<{ isLoading?: boolean }>;
 
@@ -30,6 +31,7 @@ export const TotalSent = () => {
         getValues,
     } = useSendFormContext();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
@@ -92,14 +94,16 @@ export const TotalSent = () => {
                                         symbol={symbol}
                                     />
                                 ) : (
-                                    <BaseCurrencyValue
-                                        disableHiddenPlaceholder
-                                        amount={formatNetworkAmount(
-                                            transactionInfo.totalSpent,
-                                            symbol,
-                                        )}
-                                        symbol={symbol}
-                                    />
+                                    shallDisplayBaseCurrency && (
+                                        <BaseCurrencyValue
+                                            disableHiddenPlaceholder
+                                            amount={formatNetworkAmount(
+                                                transactionInfo.totalSpent,
+                                                symbol,
+                                            )}
+                                            symbol={symbol}
+                                        />
+                                    )
                                 ))}
                         </ChildOrSkeleton>
                     </InfoItem>

@@ -2,11 +2,12 @@ import { FormattedDate } from 'react-intl';
 
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount, isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount, parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 
 import { ColAmount, ColDate, ColFiat, HeaderWrapper } from './CommonComponents';
 
@@ -33,7 +34,7 @@ export const DayHeader = ({
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const parsedDate = parseTransactionDateKey(dateKey);
-    const showFiatValue = !isTestnet(symbol);
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     // blockTime can be undefined according to types, although I don't know when that happens.
     const isDateValid = !isNaN(parsedDate.getTime());
@@ -56,7 +57,7 @@ export const DayHeader = ({
                     <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
                 </Row>
             </ColAmount>
-            {showFiatValue && !isMissingFiatRates && (
+            {shallDisplayBaseCurrency && !isMissingFiatRates && (
                 <ColFiat>
                     <HiddenPlaceholder>
                         {totalFiatAmountPerDay.gt(0) && <span>+</span>}

@@ -1,7 +1,6 @@
 import { Route } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
-import { hasNetworkFeatures, isTestnet } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { CoinLogo } from '@trezor/product-components';
@@ -12,8 +11,10 @@ import { exhaustive } from '@trezor/type-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
-import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
+
+import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 
 type TradeBoxProps = {
     account: Account;
@@ -23,10 +24,8 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
 
-    const shallDisplayBaseCurrencyInfo =
-        !isTestnet(account.symbol) && baseCurrencyCode !== account.symbol;
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
     const isStakeNetwork = hasNetworkFeatures(account, 'staking');
 
@@ -117,7 +116,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 </Text>
                             </InfoItem>
                         </Row>
-                        {shallDisplayBaseCurrencyInfo ? (
+                        {shallDisplayBaseCurrency ? (
                             <>
                                 <InfoItem
                                     label={<Translation id="TR_EXCHANGE_RATE" />}
