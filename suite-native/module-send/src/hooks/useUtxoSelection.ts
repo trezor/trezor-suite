@@ -15,8 +15,13 @@ type UseUtxoSelectionReturn = {
     setSelectedUtxos: (utxos: Utxo[]) => void;
 };
 
-export const useUtxoSelection = (): UseUtxoSelectionReturn => {
-    const [selectedUtxos, setSelectedUtxos] = useAtom(selectedUtxosAtom);
+export const useUtxoSelection = (accountKey: string): UseUtxoSelectionReturn => {
+    const [selectedUtxosMap, setSelectedUtxosMap] = useAtom(selectedUtxosAtom);
+
+    const selectedUtxos = useMemo(
+        () => selectedUtxosMap[accountKey] || [],
+        [selectedUtxosMap, accountKey],
+    );
 
     const isCoinControlEnabled = useMemo(() => selectedUtxos.length > 0, [selectedUtxos]);
     const totalSelectedAmount = useMemo(
@@ -25,11 +30,27 @@ export const useUtxoSelection = (): UseUtxoSelectionReturn => {
     );
 
     const handleUtxoSelection = (utxo: Utxo) => {
-        setSelectedUtxos(prev =>
-            prev.some(selected => selected.address === utxo.address)
-                ? prev.filter(selected => selected.address !== utxo.address)
-                : [...prev, utxo],
-        );
+        setSelectedUtxosMap(prev => {
+            const isSelected = selectedUtxos.some(
+                selected => selected.txid === utxo.txid && selected.vout === utxo.vout,
+            );
+
+            return {
+                ...prev,
+                [accountKey]: isSelected
+                    ? selectedUtxos.filter(
+                          selected => !(selected.txid === utxo.txid && selected.vout === utxo.vout),
+                      )
+                    : [...selectedUtxos, utxo],
+            };
+        });
+    };
+
+    const setSelectedUtxos = (utxos: Utxo[]) => {
+        setSelectedUtxosMap(prev => ({
+            ...prev,
+            [accountKey]: utxos,
+        }));
     };
 
     return {

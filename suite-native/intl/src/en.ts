@@ -1761,7 +1761,7 @@ export const en = {
             total: 'Total fee',
         },
         coinControl: {
-            cta: 'Select coins',
+            cta: 'Coin control',
             title: 'Coin control',
             search: {
                 placeholder: 'Search for address or transaction ID',

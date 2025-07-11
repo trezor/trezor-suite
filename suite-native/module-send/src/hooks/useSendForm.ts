@@ -66,7 +66,7 @@ export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) =>
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
 
-    const { selectedUtxos } = useUtxoSelection();
+    const { selectedUtxos } = useUtxoSelection(accountKey);
 
     const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
 
