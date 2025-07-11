@@ -257,7 +257,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             // calculateCryptoAmountFromFiat will update crypto amount - avoiding double request
             if (cryptoChanged) {
                 handleSubmit(() => {
-                    dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
                     handleChange();
                 })();
 
