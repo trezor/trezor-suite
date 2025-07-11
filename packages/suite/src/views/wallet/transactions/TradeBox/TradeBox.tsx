@@ -15,7 +15,6 @@ import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { Account } from 'src/types/wallet';
 
-
 type TradeBoxProps = {
     account: Account;
 };

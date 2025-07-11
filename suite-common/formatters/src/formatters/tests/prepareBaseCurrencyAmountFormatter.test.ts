@@ -20,13 +20,17 @@ const formatterConfig: FormatterConfig = {
     is24HourFormat: false,
 };
 
+const xauFormatter = prepareBaseCurrencyAmountFormatter(formatterConfig);
+
+const btcSatsFormatter = prepareBaseCurrencyAmountFormatter({
+    locale: 'en',
+    bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
+    intl,
+    baseCurrency: 'btc',
+    is24HourFormat: false,
+});
+
 describe(prepareBaseCurrencyAmountFormatter.name, () => {
-    let displaySymbolFormatter: ReturnType<typeof prepareBaseCurrencyAmountFormatter>;
-
-    beforeEach(() => {
-        displaySymbolFormatter = prepareBaseCurrencyAmountFormatter(formatterConfig);
-    });
-
     const dataProvider: Array<{ it?: string; input: string; expected: string }> = [
         { input: '123', expected: 'XAU 123.00' },
         { input: '0', expected: 'XAU 0.00' },
@@ -58,15 +62,21 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
 
     dataProvider.forEach(item =>
         it(item.it ?? `format ${item.input}`, () => {
-            expect(
-                displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(item.input)), {}),
-            ).toBe(item.expected.replace(' ', ' '));
+            expect(xauFormatter.format(asBaseCurrencyAmount(new BigNumber(item.input)), {})).toBe(
+                item.expected.replace(' ', ' '),
+            );
         }),
     );
 
     it('formats the infinite fractions (1/3) uses significant digits', () => {
-        expect(
-            displaySymbolFormatter.format(asBaseCurrencyAmount(new BigNumber(1).div(3)), {}),
-        ).toBe('XAU 0.33'.replace(' ', ' '));
+        expect(xauFormatter.format(asBaseCurrencyAmount(new BigNumber(1).div(3)), {})).toBe(
+            'XAU 0.33'.replace(' ', ' '),
+        );
+    });
+
+    it('formats value into sats', () => {
+        expect(btcSatsFormatter.format(asBaseCurrencyAmount(new BigNumber('0.0001234')), {})).toBe(
+            'Sats 12,340'.replace(' ', ' '),
+        );
     });
 });

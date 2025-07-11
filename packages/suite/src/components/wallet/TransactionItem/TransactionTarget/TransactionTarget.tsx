@@ -114,14 +114,18 @@ export const TransactionTarget = ({
         }
     }, [amount, baseLayoutProps.singleRowLayout, operation, transaction.symbol, type, payload]);
 
-    const fiatAmountComponent = useMemo(() => shallDisplayBaseCurrency && amount ? (
-            <BaseCurrencyValue
-                amount={amount}
-                symbol={transaction.symbol}
-                historicRate={historicRate}
-                useHistoricRate
-            />
-        ) : undefined, [amount, historicRate, transaction.symbol, shallDisplayBaseCurrency]);
+    const fiatAmountComponent = useMemo(
+        () =>
+            shallDisplayBaseCurrency && amount ? (
+                <BaseCurrencyValue
+                    amount={amount}
+                    symbol={transaction.symbol}
+                    historicRate={historicRate}
+                    useHistoricRate
+                />
+            ) : undefined,
+        [amount, historicRate, transaction.symbol, shallDisplayBaseCurrency],
+    );
 
     const metadataId = useMemo(() => {
         switch (type) {

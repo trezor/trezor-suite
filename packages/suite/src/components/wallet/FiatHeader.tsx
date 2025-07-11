@@ -41,6 +41,7 @@ export const FiatHeader = ({
 }: FiatHeaderProps) => {
     const fiatAmount = useFiatAmount({ amount, symbol });
     const { BaseCurrencyAmountFormatter } = useFormatters();
+
     const formattedAmount = BaseCurrencyAmountFormatter({
         value: fiatAmount ?? BASE_CURRENCY_ZERO,
         currency: localCurrency,
@@ -50,7 +51,11 @@ export const FiatHeader = ({
 
     return (
         <HiddenPlaceholder enforceIntensity={10}>
-            <BigAmountValue formattedStringAmount={formattedFiatAmount} data-testid={dataTestId} size={size}/>
+            <BigAmountValue
+                formattedStringAmount={formattedFiatAmount}
+                data-testid={dataTestId}
+                size={size}
+            />
         </HiddenPlaceholder>
     );
 };

@@ -31,7 +31,6 @@ import { TransactionReviewOutputStatus } from 'src/components/suite/modals/Redux
 import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { Account } from 'src/types/wallet';
 
-
 const getCardanoFingerprint = (
     tokens: Account['tokens'],
     symbol: string | undefined,
