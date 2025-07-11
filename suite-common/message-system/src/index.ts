@@ -6,5 +6,6 @@ export * from './messageSystemThunks';
 export * from './messageSystemTypes';
 export * from './messageSystemUtils';
 
+export * from './cachedEnvData';
 export * from './experimentUtils';
 export * from './useExperiment';

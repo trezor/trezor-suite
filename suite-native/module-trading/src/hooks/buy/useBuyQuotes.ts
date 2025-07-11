@@ -168,7 +168,7 @@ const useBuyQuotesThunk = (
                 quotesPromiseRef.current.abort('Request was replaced by another one.');
             }
 
-            debounce(() => {
+            debounce(async () => {
                 const selectedAsset = form.getValues('asset');
                 invariant(selectedAsset, 'Asset is not defined');
                 const network = cryptoIdToNetwork(selectedAsset.cryptoId);
@@ -181,18 +181,16 @@ const useBuyQuotesThunk = (
                     timer,
                 };
                 const requestPromise = dispatch(buyThunks.handleRequestThunk(payload));
-                requestPromise.then(action => {
-                    if (isFulfilled(action) && (action.payload as BuyTrade[]).length > 0) {
-                        analytics.report({
-                            type: EventType.TradingQuoteReceived,
-                            payload: {
-                                type: 'buy',
-                            },
-                        });
-                    }
-                });
-
                 quotesPromiseRef.current = requestPromise;
+                const action = await requestPromise;
+                if (isFulfilled(action) && (action.payload as BuyTrade[]).length > 0) {
+                    analytics.report({
+                        type: EventType.TradingQuoteReceived,
+                        payload: {
+                            type: 'buy',
+                        },
+                    });
+                }
             });
         }
     }, [

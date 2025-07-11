@@ -75,7 +75,7 @@ const initStore = (preloadedState: State) => {
 };
 
 describe('Message system middleware', () => {
-    it('prepares valid messages for being displayed', async () => {
+    it('prepares valid messages for being displayed', () => {
         const message1 = {
             id: '22e6444d-a586-4593-bc8d-5d013f193eba',
             category: 'banner',
@@ -94,15 +94,16 @@ describe('Message system middleware', () => {
         };
 
         // @ts-expect-error: all properties except category and id are not required for testing
-        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() =>
-            Promise.resolve([message1, message2, message3, message4]),
-        );
-        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() =>
-            Promise.resolve([]),
-        );
+        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => [
+            message1,
+            message2,
+            message3,
+            message4,
+        ]);
+        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
-        await store.dispatch({
+        store.dispatch({
             type: messageSystemActions.fetchSuccessUpdate.type,
             payload: { config: { sequence: 1 }, timestamp: 0 },
         });
@@ -129,16 +130,12 @@ describe('Message system middleware', () => {
         ]);
     });
 
-    it('saves messages even if there are no valid messages', async () => {
-        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() =>
-            Promise.resolve([]),
-        );
-        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() =>
-            Promise.resolve([]),
-        );
+    it('saves messages even if there are no valid messages', () => {
+        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
+        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
-        await store.dispatch({
+        store.dispatch({
             type: messageSystemActions.fetchSuccessUpdate.type,
             payload: { config: { sequence: 1 }, timestamp: 0 },
         });
@@ -160,7 +157,7 @@ describe('Message system middleware', () => {
         ]);
     });
 
-    it('test of experiment action', async () => {
+    it('test of experiment action', () => {
         const experiment1 = {
             id: '3bed56a4-ecd8-4e0f-9e5f-014b484c2afa',
             groups: [
@@ -175,12 +172,12 @@ describe('Message system middleware', () => {
             ],
         };
 
-        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() =>
-            Promise.resolve([experiment1.id]),
-        );
+        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => [
+            experiment1.id,
+        ]);
 
         const store = initStore(getInitialState(undefined, undefined));
-        await store.dispatch({
+        store.dispatch({
             type: messageSystemActions.fetchSuccessUpdate.type,
             payload: { config: { sequence: 1 }, timestamp: 0 },
         });

@@ -1,6 +1,7 @@
 import * as envUtils from '@trezor/env-utils';
 
 import * as fixtures from '../__fixtures__/messageSystemUtils';
+import * as cachedEnvData from '../cachedEnvData';
 import * as messageSystem from '../messageSystemUtils';
 
 describe('Message system utils', () => {
@@ -116,26 +117,24 @@ describe('Message system utils', () => {
         });
 
         afterEach(() => {
+            jest.resetAllMocks();
             jest.resetModules();
             process.env = OLD_ENV;
         });
 
         fixtures.getValidMessages.forEach(f => {
-            it(f.description, async () => {
+            it(f.description, () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
                 jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
                 jest.spyOn(envUtils, 'getEnvironment').mockImplementation(() => f.environment);
                 process.env.VERSION = f.suiteVersion;
 
-                const { osVersion } = f;
-                if (osVersion) {
-                    jest.spyOn(envUtils, 'getOsVersion').mockImplementation(() =>
-                        Promise.resolve(osVersion),
-                    );
-                }
+                jest.spyOn(cachedEnvData, 'getCachedOsVersion').mockImplementation(
+                    () => f.osVersion,
+                );
 
-                expect(await messageSystem.getValidMessages(f.config, f.options)).toEqual(f.result);
+                expect(messageSystem.getValidMessages(f.config, f.options)).toEqual(f.result);
             });
         });
     });
@@ -149,21 +148,23 @@ describe('Message system utils', () => {
         });
 
         afterEach(() => {
+            jest.resetAllMocks();
             jest.resetModules();
             process.env = OLD_ENV;
         });
 
         fixtures.getValidExperimentIds.forEach(f => {
-            it(f.description, async () => {
+            it(f.description, () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
                 jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
+                jest.spyOn(cachedEnvData, 'getCachedOsVersion').mockImplementation(
+                    () => f.osVersion,
+                );
                 jest.spyOn(envUtils, 'getEnvironment').mockImplementation(() => f.environment);
                 process.env.VERSION = f.suiteVersion;
 
-                expect(await messageSystem.getValidExperimentIds(f.config, f.options)).toEqual(
-                    f.result,
-                );
+                expect(messageSystem.getValidExperimentIds(f.config, f.options)).toEqual(f.result);
             });
         });
     });

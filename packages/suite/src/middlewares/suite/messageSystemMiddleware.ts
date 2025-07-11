@@ -24,7 +24,7 @@ const actions = [
     geolocationActions.setCountryCode.type,
 ];
 
-const messageSystemMiddleware = createMiddleware(async (action, { next, dispatch, getState }) => {
+const messageSystemMiddleware = createMiddleware((action, { next, dispatch, getState }) => {
     next(action);
 
     if (actions.includes(action.type)) {
@@ -45,10 +45,8 @@ const messageSystemMiddleware = createMiddleware(async (action, { next, dispatch
             countryCode,
         };
 
-        const [validMessages, validExperimentIds] = await Promise.all([
-            getValidMessages(config, validationParams),
-            getValidExperimentIds(config, validationParams),
-        ]);
+        const validMessages = getValidMessages(config, validationParams);
+        const validExperimentIds = getValidExperimentIds(config, validationParams);
         const categorizedValidMessages = categorizeMessages(validMessages);
 
         dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
