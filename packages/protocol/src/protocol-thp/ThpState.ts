@@ -24,6 +24,8 @@ export class ThpState {
     private _pairingCredentials: ThpCredentials[] = [];
     private _phase: ThpPhase = 'handshake';
     private _isPaired: boolean = false;
+    private _pairingTagPromise: { abort: () => Promise<void> } | undefined;
+    private _cancelablePromise: boolean = false;
     private _handshakeCredentials?: ThpHandshakeCredentials;
     private _channel: Buffer = Buffer.alloc(0);
     private _sendBit: ThpMessageSyncBit = 0;
@@ -33,6 +35,22 @@ export class ThpState {
     private _expectedResponses: number[] = [];
     private _selectedMethod?: ThpPairingMethod;
     private _nfcSecret?: Buffer;
+
+    get pairingTagPromise() {
+        return this._pairingTagPromise;
+    }
+
+    setPairingTagPromise(p?: { abort: () => Promise<void> }) {
+        this._pairingTagPromise = p;
+    }
+
+    get cancelablePromise() {
+        return this._cancelablePromise;
+    }
+
+    setCancelablePromise(p: boolean) {
+        this._cancelablePromise = p;
+    }
 
     get properties() {
         return this._properties;
@@ -245,6 +263,9 @@ export class ThpState {
     resetState() {
         this._phase = 'handshake';
         this._isPaired = false;
+        this._properties = undefined;
+        this._pairingTagPromise = undefined;
+        this._cancelablePromise = false;
         this._handshakeCredentials = undefined;
         this._channel = Buffer.alloc(0);
         this._sendBit = 0;

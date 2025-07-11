@@ -61,7 +61,11 @@ export const thpCall = async <T extends MessageKey>(
         throw ERRORS.serializeError({ code: result.error, message: result.error.message });
     }
 
+    thpState.setCancelablePromise(false);
+
     if (result.payload.type === 'ButtonRequest') {
+        thpState.setCancelablePromise(true);
+
         if (result.payload.message.code === 'ButtonRequest_PassphraseEntry') {
             device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
         } else {
@@ -80,4 +84,26 @@ export const thpCall = async <T extends MessageKey>(
     }
 
     return result.payload as ThpCallResponse[T];
+};
+
+export const abortThpWorkflow = async (device: Device) => {
+    const thpState = device.getThpState();
+    if (!thpState || !device.currentRun) {
+        return Promise.resolve(); // not a THP device
+    }
+
+    // check that current workflow is awaiting for Cancel (see ./pairing waitForPairingCancel)
+    // - transport is in read state (read Cancel from the device)
+    // - @trezor/connect is waiting for UI response (pairing tag)
+    // in that case we don't need to update THP sync values because thpState is synchronized
+    // in any other case we need to update sync values before current transport.call process is resolved
+    if (thpState.pairingTagPromise) {
+        await thpState.pairingTagPromise.abort();
+        await device.getCurrentSession().cancelCall();
+        thpState.resetState();
+    } else if (thpState.cancelablePromise) {
+        thpState.sync('send', 'Cancel');
+        await device.getCurrentSession().send('Cancel', {});
+        await device.currentRun;
+    }
 };

@@ -207,6 +207,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         // ignore whatever happens
                     }
                 } else {
+                    this.device.getThpState()?.sync('send', 'Cancel');
                     await this.transport.send({
                         name: 'Cancel',
                         data: {},

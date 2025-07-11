@@ -141,7 +141,7 @@ const waitForPairingTag = async (device: Device) => {
 
     // start listening for the Cancel message from Trezor
     const { readAbort, readCancel } = waitForPairingCancel(device);
-    readCancel
+    const cancelResult = readCancel
         .then(readResult => {
             if (readResult.success) {
                 let error: string;
@@ -157,6 +157,13 @@ const waitForPairingTag = async (device: Device) => {
         .catch(() => {
             // silent
         });
+
+    thpState.setPairingTagPromise({
+        abort: async () => {
+            readAbort.abort();
+            await cancelResult;
+        },
+    });
 
     // start listening for the UI response
     const payload = {
@@ -179,6 +186,8 @@ const waitForPairingTag = async (device: Device) => {
     // wait for readCancel to finish reading
     readAbort.abort();
     await readCancel;
+
+    thpState.setPairingTagPromise(undefined);
 
     if ('error' in pairingResponse) {
         throw new Error(pairingResponse.error);
