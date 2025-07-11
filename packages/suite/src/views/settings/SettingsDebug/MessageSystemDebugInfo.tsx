@@ -11,6 +11,23 @@ import { useSelector } from 'src/hooks/suite';
 const serializeCategory = (category: Message['category']): string =>
     typeof category === 'string' ? category : category.join(', ');
 
+const MessageItemContent = ({ message }: { message: Message }) => {
+    if (message.category.includes('feature')) {
+        return <pre>{JSON.stringify(message.feature, null, 2)}</pre>;
+    }
+
+    return <Paragraph>{message.content.en}</Paragraph>;
+};
+
+const MessageItem = ({ message }: { message: Message }) => (
+    <div>
+        <Paragraph typographyStyle="highlight">
+            {message.id} ({serializeCategory(message.category)})
+        </Paragraph>
+        <MessageItemContent message={message} />
+    </div>
+);
+
 export const MessageSystemDebugInfo = () => {
     const config = useSelector(selectMessageSystemConfig);
     const allValidMessages = useSelector(selectAllValidMessages);
@@ -45,12 +62,7 @@ export const MessageSystemDebugInfo = () => {
                 <Modal onCancel={handleCloseValidMessages}>
                     <Column gap={spacings.sm}>
                         {allValidMessages.map(m => (
-                            <div key={m.id}>
-                                <Paragraph typographyStyle="highlight">
-                                    {m.id} ({serializeCategory(m.category)})
-                                </Paragraph>
-                                <Paragraph>{m.content.en}</Paragraph>
-                            </div>
+                            <MessageItem key={m.id} message={m} />
                         ))}
                     </Column>
                 </Modal>
