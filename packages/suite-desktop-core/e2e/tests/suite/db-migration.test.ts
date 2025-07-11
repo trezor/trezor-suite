@@ -138,7 +138,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
                 await onboardingPage.disableNecessaryFirmwareChecks({ skipSuiteLoadedCheck: true });
                 await dashboardPage.openDeviceSwitcher();
                 await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
-                await dashboardPage.deviceSwitchingCloseButton.click();
+                await dashboardPage.deviceSwitchingCloseButton.first().click();
                 await page.getByTestId('@account-subpage/back').last().click();
             });
 
