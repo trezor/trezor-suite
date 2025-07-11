@@ -1,3 +1,5 @@
+import { IntlShape } from 'react-intl';
+
 import { FormatNumberOptions } from '@formatjs/intl';
 
 import {
@@ -20,25 +22,16 @@ export type BaseCurrencyAmountFormatterDataContext<T> = {
 // `currency` param in intl.formatNumber works only wit 3 letter currencies
 const BITCOIN_SATS_PLACEHOLDER = 'sat';
 
-const handleBigNumberFormatting = (
-    value: BaseCurrencyAmount,
-    dataContext: BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>,
-    config: FormatterConfig,
-) => {
-    const { intl, baseCurrency, bitcoinAmountUnit } = config;
-    const {
-        style: styleFromContext,
-        currency: currencyFromContext,
-        minimumFractionDigits,
-        maximumFractionDigits,
-    } = dataContext;
-    const currency = currencyFromContext ?? baseCurrency;
+type FormatParams = {
+    value: BaseCurrencyAmount;
+    currency: string;
+    intl: IntlShape;
+    dataContext: Omit<BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>, 'currency'>;
+};
 
-    const isSats =
-        currency.toLowerCase() === 'btc' && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
-
-    const currencyForDisplay = isSats ? BITCOIN_SATS_PLACEHOLDER : currency;
-    const baseCurrencyValue = isSats ? unitsToSubunits(asAmountUnit(value, 'btc'), 'btc') : value;
+const formatSats = ({ intl, dataContext, value }: FormatParams) => {
+    const currencyForDisplay = BITCOIN_SATS_PLACEHOLDER;
+    const baseCurrencyValue = unitsToSubunits(asAmountUnit(value, 'btc'), 'btc');
 
     if (baseCurrencyValue.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies
@@ -47,17 +40,52 @@ const handleBigNumberFormatting = (
 
     const formatted = intl.formatNumber(baseCurrencyValue.toNumber(), {
         ...dataContext,
-        style: styleFromContext || 'currency',
+        style: 'currency',
         currency: currencyForDisplay,
-        minimumFractionDigits:
-            currencyForDisplay === BITCOIN_SATS_PLACEHOLDER ? 0 : (minimumFractionDigits ?? 2),
-        maximumFractionDigits:
-            currencyForDisplay === BITCOIN_SATS_PLACEHOLDER ? 0 : (maximumFractionDigits ?? 2),
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
     });
 
-    return currencyForDisplay === BITCOIN_SATS_PLACEHOLDER
-        ? formatted.replace(BITCOIN_SATS_PLACEHOLDER.toUpperCase(), 'Sats')
-        : formatted;
+    return `${formatted.replace(BITCOIN_SATS_PLACEHOLDER.toUpperCase(), '')} sat`;
+};
+
+const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) => {
+    if (value.gt(Number.MAX_VALUE)) {
+        // backup when number is too big, the formatting is different from what should be for currencies
+        return `${value} ${currency}`;
+    }
+
+    const { minimumFractionDigits, maximumFractionDigits, style } = dataContext;
+
+    return intl.formatNumber(value.toNumber(), {
+        ...dataContext,
+        style: style || 'currency',
+        currency,
+        minimumFractionDigits: minimumFractionDigits ?? 2,
+        maximumFractionDigits: maximumFractionDigits ?? 2,
+    });
+};
+
+const handleBigNumberFormatting = (
+    value: BaseCurrencyAmount,
+    dataContext: BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>,
+    config: FormatterConfig,
+) => {
+    const { intl, baseCurrency, bitcoinAmountUnit } = config;
+    const { currency: currencyFromContext } = dataContext;
+    const currency = currencyFromContext ?? baseCurrency;
+
+    const isSats =
+        currency.toLowerCase() === 'btc' && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+
+    const formatParams: FormatParams = {
+        intl,
+        value,
+        dataContext,
+        currency,
+    };
+
+    return isSats ? formatSats(formatParams) : formatStandard(formatParams);
 };
 
 export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
