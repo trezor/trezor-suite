@@ -343,6 +343,8 @@ const setDeviceState = (
     affectedDevice[0].state = state;
     affectedDevice[0].useEmptyPassphrase = useEmptyPassphrase;
     affectedDevice[0].walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
+    // TODO: On mobile, we don't want to remember the device by default, because it's not supported yet
+    affectedDevice[0].remember = isNative() ? false : true;
 };
 
 /**
