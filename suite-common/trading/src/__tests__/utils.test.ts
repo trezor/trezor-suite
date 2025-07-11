@@ -22,6 +22,7 @@ import {
     getTradingQuotesByPaymentMethod,
     getUnusedAddressFromAccount,
     isCryptoIdForNativeToken,
+    isFinalStatus,
     mapTestnetSymbol,
     testnetToProdCryptoId,
     toTokenCryptoId,
@@ -318,5 +319,33 @@ describe('getBestRatedQuote', () => {
         expect(getBestRatedQuote(EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK, 'exchange')).toStrictEqual(
             EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK[EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK.length - 1],
         );
+    });
+});
+
+describe('isFinalStatus', () => {
+    it.each([
+        ['buy', 'SUCCESS', true],
+        ['buy', 'ERROR', true],
+        ['buy', 'BLOCKED', true],
+        ['buy', 'SUBMITTED', false],
+        ['buy', 'WAITING_FOR_USER', false],
+        ['buy', 'APPROVAL_PENDING', false],
+        ['buy', undefined, false],
+        ['sell', 'SUCCESS', true],
+        ['sell', 'ERROR', true],
+        ['sell', 'BLOCKED', true],
+        ['sell', 'CANCELLED', true],
+        ['sell', 'REFUNDED', true],
+        ['sell', 'SEND_CRYPTO', false],
+        ['sell', 'SUBMITTED', false],
+        ['sell', undefined, false],
+        ['exchange', 'SUCCESS', true],
+        ['exchange', 'ERROR', true],
+        ['exchange', 'KYC', true],
+        ['exchange', 'CONVERTING', false],
+        ['exchange', 'APPROVAL_PENDING', false],
+        ['exchange', undefined, false],
+    ])('should return %s for %s trade with %s status', (tradeType, status, expectedResult) => {
+        expect(isFinalStatus(tradeType as any, status as any)).toBe(expectedResult);
     });
 });

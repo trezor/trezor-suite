@@ -28,6 +28,7 @@ import {
     cryptoIdToNetwork,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
+    isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
 import {
@@ -283,7 +284,7 @@ export const selectTradingProviderKycPolicy = (
     const provider = selectTradingProviderByNameAndTradeType(state, name, type);
 
     // Only ExchangeProviderInfo has kycPolicyType property
-    if (provider && 'kycPolicyType' in provider) {
+    if (provider && isExchangeProvider(provider)) {
         return provider.kycPolicyType;
     }
 

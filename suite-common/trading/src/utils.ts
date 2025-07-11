@@ -1,4 +1,12 @@
-import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import {
+    BuyTrade,
+    BuyTradeFinalStatus,
+    CryptoId,
+    ExchangeTrade,
+    ExchangeTradeFinalStatus,
+    SellFiatTrade,
+    SellTradeFinalStatus,
+} from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -19,9 +27,12 @@ import {
     TradingParsedCryptoIdProps,
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
+    TradingProviderInfo,
     TradingTradeBuySellMapProps,
     TradingTradeBuySellType,
     TradingTradeMapProps,
+    TradingTradeStatusType,
+    TradingTradeType,
     TradingType,
 } from './types';
 
@@ -247,3 +258,26 @@ export const getBestRatedQuote = <T extends TradingType>(
 
     return bestRatedQuotes[0];
 };
+
+export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
+    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
+    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
+    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
+};
+
+export const isFinalStatus = (
+    tradingType: TradingType,
+    tradeStatus: TradingTradeStatusType | undefined,
+) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
+
+export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
+    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
+
+export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
+    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
+
+export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
+    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
+
+export const isExchangeProvider = (provider: TradingProviderInfo) =>
+    provider && 'kycPolicyType' in provider;

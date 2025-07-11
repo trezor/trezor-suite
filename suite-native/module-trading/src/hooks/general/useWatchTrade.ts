@@ -7,13 +7,14 @@ import {
     TradingTransactionExchange,
     TradingTransactionSell,
     TradingType,
+    tradeFinalStatuses,
     tradingThunks,
 } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { useReloadTimer } from './useReloadTimer';
-import { getTradeStatusStep, tradeFinalStatuses } from '../../utils/general/utils';
+import { getTradeStatusStep } from '../../utils/general/utils';
 
 export type TradingTradeMapProps = {
     buy: TradingTransactionBuy;

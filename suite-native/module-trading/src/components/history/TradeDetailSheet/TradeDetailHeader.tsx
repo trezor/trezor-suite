@@ -1,13 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import {
+    TradingRootState,
+    isFinalStatus,
+    selectTradingTradeByOrderId,
+} from '@suite-common/trading';
 import { Box, CircularSpinner, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TradeDetailErrorAlert } from './TradeDetailErrorAlert';
 import { TradeDetailWaitingAlert } from './TradeDetailWaitingAlert';
-import { getTradeStatusStep, isFinalStatus } from '../../../utils/general/utils';
+import { getTradeStatusStep } from '../../../utils/general/utils';
 import { TradeStatusBadge } from '../TradeStatusBadge';
 
 type TradeDetailHeaderProps = {
