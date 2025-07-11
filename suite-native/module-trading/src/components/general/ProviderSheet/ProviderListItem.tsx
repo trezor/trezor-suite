@@ -1,14 +1,14 @@
 import { Pressable } from 'react-native';
 
-import { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
+import { TradingProviderInfo, TradingTradeType, isBuyTrade } from '@suite-common/trading';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { isBuyTrade } from '../../../utils/general/utils';
 import { ProviderLogo } from '../ProviderLogo';
 import { InfoLineItem } from './InfoLineItem';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { getKycPolicyWarningTranslation } from '../../../utils/general/kycUtils';
 
 export type ProviderListItemProps<T extends TradingTradeType> = {
     isSelected: boolean;
@@ -42,7 +42,7 @@ export const ProviderListItem = <T extends TradingTradeType>({
 
     let isDex = false;
     let isAnonymous = false;
-    let requiresKyc = false;
+    let kycWarning;
 
     if ('kycPolicyType' in provider) {
         const kycPolicy = provider.kycPolicyType;
@@ -50,9 +50,9 @@ export const ProviderListItem = <T extends TradingTradeType>({
         isDex = kycPolicy === 'DEX';
 
         isAnonymous = kycPolicy === 'noKYC' || isDex;
-        requiresKyc = ['KYC-required', 'KYC-norefund', 'KYC-yesrefund'].includes(kycPolicy);
+        kycWarning = getKycPolicyWarningTranslation(kycPolicy);
     } else if (isBuyTrade(quote)) {
-        requiresKyc = true;
+        kycWarning = <Translation id="moduleTrading.providerListItem.kycRequired" />;
     }
 
     return (
@@ -107,10 +107,10 @@ export const ProviderListItem = <T extends TradingTradeType>({
                             textColor="baseContentBrand"
                         />
                     )}
-                    {requiresKyc && (
+                    {kycWarning && (
                         <InfoLineItem
                             iconName="warning"
-                            text={<Translation id="moduleTrading.providerListItem.kycRequired" />}
+                            text={kycWarning}
                             iconColor="iconAlertRed"
                             textColor="textAlertRed"
                         />

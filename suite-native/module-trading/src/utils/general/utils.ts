@@ -1,47 +1,18 @@
-import {
-    BuyTrade,
-    BuyTradeFinalStatus,
-    BuyTradeStatus,
-    CryptoId,
-    ExchangeTrade,
-    ExchangeTradeFinalStatus,
-    ExchangeTradeStatus,
-    SellFiatTrade,
-    SellTradeFinalStatus,
-    SellTradeStatus,
-} from 'invity-api';
+import { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import {
-    TradingTradeStatusType,
     TradingTradeType,
     TradingTransaction,
-    TradingType,
+    isBuyTrade,
+    isExchangeTrade,
+    isSellFiatTrade,
+    tradeFinalStatuses,
 } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
 import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from './formUtils';
-
-export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
-    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
-    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
-    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
-};
-
-export const isFinalStatus = (
-    tradingType: TradingType,
-    tradeStatus: TradingTradeStatusType | undefined,
-) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
-
-export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
-    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
-
-export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
-    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
-
-export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
-    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
 
 type UndefinedTradeOperation = {
     fromValue: undefined;
