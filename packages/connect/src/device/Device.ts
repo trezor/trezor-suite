@@ -16,7 +16,7 @@ import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
-import { getThpChannel } from './thp';
+import { abortThpWorkflow, getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
 import { getFirmwareStatus, getRelease, getReleaseInfo } from '../data/firmwareInfo';
@@ -432,6 +432,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async interrupt(reason: Error) {
+        await abortThpWorkflow(this);
         await this.currentSession?.abort(reason);
 
         // reject inner defer

@@ -236,6 +236,7 @@ export class BridgeTransport extends AbstractTransport {
                     thpState,
                 });
 
+                const prevNonce = thpState?.sendNonce;
                 const response = await this.post(`/call`, {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
@@ -249,7 +250,10 @@ export class BridgeTransport extends AbstractTransport {
                 const respBytes = Buffer.from(response.payload.data, 'hex');
                 if (protocol.name === 'v2') {
                     // see callThpMessage in @trezor/transport-bridge
-                    thpState?.sync('send', name);
+                    // sync bit and nonce updated by Cancel
+                    if (prevNonce === thpState?.sendNonce) {
+                        thpState?.sync('send', name);
+                    }
                     const message = parseThpMessage({
                         decoded: protocol.decode(respBytes),
                         messages: this.messages,

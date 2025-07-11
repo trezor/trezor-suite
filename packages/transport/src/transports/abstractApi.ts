@@ -220,6 +220,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     this.api.read(path, attemptSignal || signal);
 
                 if (protocol.name === 'v2') {
+                    const prevNonce = thpState?.sendNonce;
                     const callResult = await callThpMessage({
                         thpState,
                         chunks,
@@ -234,7 +235,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         return callResult;
                     }
 
-                    thpState?.sync('send', name);
+                    // sync bit and nonce updated by Cancel
+                    if (prevNonce === thpState?.sendNonce) {
+                        thpState?.sync('send', name);
+                    }
                     const message = parseThpMessage({
                         messages: this.messages,
                         decoded: callResult.payload,
