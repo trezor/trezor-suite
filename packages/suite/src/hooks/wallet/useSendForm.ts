@@ -57,6 +57,7 @@ export interface SendFormProps {
     targetAnonymity?: number;
     prison?: Record<string, unknown>;
 }
+
 // Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
 export interface UseSendFormProps extends SendFormProps {
     selectedAccount: Extract<SendFormProps['selectedAccount'], { status: 'loaded' }>;
@@ -186,8 +187,10 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     });
 
     const changeHandlers = useSendFormChangeHandlers({
-        calculateAmountFromFiat: sendFormUtils.calculateAmountFromFiat,
-        calculateFiatFromAmount: sendFormUtils.calculateFiatFromAmount,
+        calculateCryptoAmountFromBaseCurrencyAmount:
+            sendFormUtils.calculateCryptoAmountFromBaseCurrencyAmount,
+        calculateBaseCurrencyAmountFromCryptoAmount:
+            sendFormUtils.calculateBaseCurrencyAmountFromCryptoAmount,
         composeRequest,
         setValue,
     });

@@ -1,9 +1,12 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { AmountUnit } from './AmountTypes';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 
 type ToFiatCurrencyParams = {
-    amount: string | BigNumber;
+    // Todo: remove `string`, its used only for backwards compatibility
+    amount: string | AmountUnit<NetworkSymbol>;
     rate: number | undefined;
 };
 

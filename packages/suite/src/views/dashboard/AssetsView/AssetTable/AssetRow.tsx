@@ -31,6 +31,7 @@ import { AssetCoinName } from '../AssetCoinName';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { AssetTokenRow } from './AssetTokenRow';
+import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 import { TradingButton } from '../TradingButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
@@ -63,6 +64,7 @@ export const AssetRow = memo(
         const { symbol } = network;
         const dispatch = useDispatch();
         const theme = useTheme();
+        const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
         const handleRowClick = () => {
             dispatch(
@@ -174,11 +176,11 @@ export const AssetRow = memo(
                         )}
                     </Table.Cell>
                     <Table.Cell align="end" data-testid="@dashboard/asset/exchange-rate">
-                        {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
+                        {shallDisplayBaseCurrency && <PriceTicker symbol={symbol} />}
                     </Table.Cell>
 
                     <Table.Cell data-testid="@dashboard/asset/week-change">
-                        {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
+                        {shallDisplayBaseCurrency && <TrendTicker symbol={symbol} />}
                     </Table.Cell>
                     <Table.Cell align="end" colSpan={2}>
                         <Row gap={spacings.md}>
