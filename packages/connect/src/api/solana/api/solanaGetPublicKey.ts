@@ -1,3 +1,5 @@
+import bs58 from 'bs58';
+
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
@@ -69,6 +71,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 publicKey: message.public_key,
+                publicKeyBase58: bs58.encode(Buffer.from(message.public_key, 'hex')),
             });
 
             if (this.hasBundle) {
