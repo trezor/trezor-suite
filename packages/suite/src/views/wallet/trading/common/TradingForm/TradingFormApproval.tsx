@@ -9,6 +9,7 @@ import {
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { getExplorerUrl } from '@suite-common/wallet-config';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Card, Column, Icon, IconVariant, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -123,6 +124,7 @@ export const TradingFormApproval = ({
 
     const currentQuoteStatus = selectedQuote?.status;
     const previousQuoteStatus = usePrevious(currentQuoteStatus);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const [isApproveButtonLoading, setIsApproveButtonLoading] = useState(false);
     const [isRevokeButtonLoading, setIsRevokeButtonLoading] = useState(false);
@@ -279,22 +281,25 @@ export const TradingFormApproval = ({
         isApproveButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'REVOKE') ||
         isFormLoading ||
-        isScheduledQuotesRefresh;
+        isScheduledQuotesRefresh ||
+        isDiscoveryRunning;
 
     const isSwapButtonDisabled =
         isSwapButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
         isFormLoading ||
-        isScheduledQuotesRefresh;
+        isScheduledQuotesRefresh ||
+        isDiscoveryRunning;
 
     const isRevokeButtonDisabled =
         isRevokeButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
         isFormLoading ||
-        isScheduledQuotesRefresh;
+        isScheduledQuotesRefresh ||
+        isDiscoveryRunning;
 
     const isRefreshButtonDisabled =
-        isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh;
+        isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh || isDiscoveryRunning;
 
     return (
         <Column gap={spacings.md} alignItems="center">

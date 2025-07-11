@@ -9,6 +9,7 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
 import { Button, Column, Divider, Input, Paragraph, Tooltip } from '@trezor/components';
@@ -18,7 +19,7 @@ import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingVerifyAccountReturnProps } from 'src/types/trading/tradingVerify';
@@ -41,6 +42,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
 
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
     const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const {
@@ -263,7 +265,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                             <Button
                                 data-testid="@trading/offer/confirm-on-trezor-button"
                                 isLoading={isFormLoading || disabled}
-                                isDisabled={disabled || isFormLoading}
+                                isDisabled={disabled || isDiscoveryRunning || isFormLoading}
                                 onClick={() => {
                                     handleClick(() => {
                                         if (selectedAccountOption.account && accountAddress) {

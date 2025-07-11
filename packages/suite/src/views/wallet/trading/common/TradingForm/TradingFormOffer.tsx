@@ -12,7 +12,7 @@ import {
     tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
-import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
@@ -91,6 +91,7 @@ export const TradingFormOffer = () => {
     const quote = preselectedQuote ?? getSelectedQuote(context, bestScoredQuote);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const selectedCrypto = getSelectedCrypto(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
@@ -181,7 +182,11 @@ export const TradingFormOffer = () => {
     });
 
     const isButtonDisabled =
-        tradingDeviceDisconnected || state.isLoadingOrInvalid || !quote || amountTooHigh;
+        isDiscoveryRunning ||
+        tradingDeviceDisconnected ||
+        state.isLoadingOrInvalid ||
+        !quote ||
+        amountTooHigh;
 
     const isLoading = requiresTokenApproval
         ? state.isFormLoading || isFetchingApprovalStatus || isQuoteOutdated
