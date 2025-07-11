@@ -3136,6 +3136,14 @@ export default defineMessages({
         defaultMessage: 'Currency',
         id: 'TR_BASE_CURRENCY',
     },
+    TR_BASE_CURRENCY_FIAT: {
+        defaultMessage: 'Fiat',
+        id: 'TR_BASE_CURRENCY_FIAT',
+    },
+    TR_BASE_CURRENCY_VALUABLES: {
+        defaultMessage: 'Valuables',
+        id: 'TR_BASE_CURRENCY_VALUABLES',
+    },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
             "You may be asked to type some words that aren't part of your wallet backup",
