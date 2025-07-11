@@ -39,7 +39,7 @@ export const BiometricOverlay = ({
 }: BiometricOverlayProps) => {
     const { applyStyle } = useNativeStyles();
 
-    // Ignore device connection in biometrics overlay (note: is this actually necessary?)
+    // Ignore device connection in biometrics overlay (note for code review: is this actually necessary?)
     useEffect(() => {
         stopDeviceConnectionListening();
 

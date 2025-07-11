@@ -9,7 +9,7 @@ import { RootStackRoutes } from '@suite-native/navigation';
 import {
     startDeviceConnectionListening,
     stopDeviceConnectionListening,
-} from '../middlewares/deviceConnectionMiddleware';
+} from '../middlewares/deviceConnectionNavigationMiddleware';
 
 const DEVICE_CONNECTION_BLACKLISTED_ROUTES: RootStackRoutes[] = [
     RootStackRoutes.DeviceCompromisedModal,

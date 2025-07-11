@@ -8,7 +8,7 @@ const initialState: NativeFirmwareState = {
     isFirmwareInstallationRunning: false,
 };
 
-export type NativeFirmwareRootState = {
+type NativeFirmwareRootState = {
     nativeFirmware: NativeFirmwareState;
 };
 

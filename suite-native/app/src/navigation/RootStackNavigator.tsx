@@ -3,10 +3,7 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
-import {
-    BootloaderModeScreen,
-    useDisableDeviceConnectionOnRouteBlacklist,
-} from '@suite-native/device';
+import { BootloaderModeScreen } from '@suite-native/device';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     AccountDetailScreen,
@@ -49,7 +46,6 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
     useGlobalHooks();
-    useDisableDeviceConnectionOnRouteBlacklist();
 
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 

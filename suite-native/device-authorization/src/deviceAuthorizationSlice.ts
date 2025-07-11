@@ -16,7 +16,7 @@ export type DeviceAuthorizationState = {
     inputPassphraseOnDevice: boolean;
 };
 
-export type DeviceAuthorizationRootState = {
+type DeviceAuthorizationRootState = {
     deviceAuthorization: DeviceAuthorizationState;
 };
 

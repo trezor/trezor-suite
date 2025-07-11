@@ -4,7 +4,10 @@ import { logger } from 'redux-logger';
 
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { blockchainMiddleware } from '@suite-native/blockchain';
-import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
+import {
+    deviceConnectionNavigationMiddleware,
+    prepareDeviceMiddleware,
+} from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
@@ -49,7 +52,7 @@ export const initStore = async (preloadedState?: PreloadedState) =>
                 serializableCheck: false,
                 immutableCheck: false,
             })
-                .prepend(deviceConnectionMiddleware.middleware)
+                .prepend(deviceConnectionNavigationMiddleware.middleware)
                 .concat(middlewares),
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });

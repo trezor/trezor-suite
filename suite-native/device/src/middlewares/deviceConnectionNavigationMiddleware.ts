@@ -24,7 +24,8 @@ import {
     selectIsDeviceCompromised,
 } from '../selectors';
 
-export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
+export const deviceConnectionNavigationMiddleware =
+    createListenerMiddleware<NativeDeviceRootState>();
 
 // At the moment when unauthorized physical device is selected,
 // redirect to the Connecting screen where is handled the connection logic.
@@ -38,9 +39,8 @@ const connectDevice = (isCoinEnablingInitFinished: boolean) => {
     }
 };
 
-// TODO remove `selectIsDeviceInitialized` and handle also uninitializedDevices here
 export const startDeviceConnectionListening = () => {
-    deviceConnectionMiddleware.startListening({
+    deviceConnectionNavigationMiddleware.startListening({
         predicate: (action, currentState) =>
             deviceConnectThunks.fulfilled.match(action) && selectIsDeviceInitialized(currentState),
         effect: (
@@ -48,7 +48,8 @@ export const startDeviceConnectionListening = () => {
             { getState }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
         ) => {
             const isDeviceUsingPassphrase = selectIsDeviceUsingPassphrase(getState());
-            // Passphrase protected devices are only connected through passphrase form (in app / in device)
+
+            // Passphrase protected devices are only connected through passphrase form
             // The passphrase flow handles connection differently and redirect to connecting screen is not wanted.
             if (isDeviceUsingPassphrase) return;
 
@@ -86,7 +87,7 @@ export const startDeviceConnectionListening = () => {
 };
 
 export const stopDeviceConnectionListening = () => {
-    deviceConnectionMiddleware.clearListeners();
+    deviceConnectionNavigationMiddleware.clearListeners();
 };
 
 startDeviceConnectionListening();
