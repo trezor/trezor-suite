@@ -1,4 +1,9 @@
-import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
+import {
+    FirmwareHashCheckError,
+    FirmwareHashCheckTimeouts,
+    FirmwareRevisionCheckError,
+} from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { FilterPropertiesByType } from '@trezor/type-utils';
 
 /*
@@ -53,3 +58,17 @@ export type SkippedHashCheckError = keyof FilterPropertiesByType<
 export const isSkippedHashCheckError = (
     error: FirmwareHashCheckError,
 ): error is SkippedHashCheckError => hashCheckErrorScenarios[error].type === 'skipped';
+
+// stricter type than required by @trezor/connect, which is very permissive, being a library
+type ExhaustiveFirmwareHashCheckTimeouts = FirmwareHashCheckTimeouts &
+    Record<DeviceModelInternal, number | undefined>;
+
+export const FW_HASH_CHECK_DEFAULT_TIMEOUTS: ExhaustiveFirmwareHashCheckTimeouts = {
+    [DeviceModelInternal.T1B1]: 1500,
+    [DeviceModelInternal.T2T1]: undefined,
+    [DeviceModelInternal.T2B1]: undefined,
+    [DeviceModelInternal.T3B1]: undefined,
+    [DeviceModelInternal.T3T1]: undefined,
+    [DeviceModelInternal.T3W1]: undefined,
+    [DeviceModelInternal.UNKNOWN]: undefined,
+};

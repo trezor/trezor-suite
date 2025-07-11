@@ -1,6 +1,7 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { connectInitThunk } from '@suite-common/connect-init';
+import { initialState as messageSystemInitialState } from '@suite-common/message-system';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState } from '@suite-common/wallet-core';
 
@@ -76,6 +77,7 @@ const rootReducer = combineReducers({
         },
         () => ({}),
     ),
+    messageSystem: createReducer(messageSystemInitialState, () => ({})),
 });
 
 interface StateOverrides {

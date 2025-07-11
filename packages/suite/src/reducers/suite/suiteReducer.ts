@@ -593,6 +593,13 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
         return null;
     }
 
+    if (
+        hashCheckError === 'takes-too-long' &&
+        selectIsFeatureDisabled(state, Feature.firmwareHashCheckTimeout)
+    ) {
+        return null;
+    }
+
     return hashCheckError;
 };
 

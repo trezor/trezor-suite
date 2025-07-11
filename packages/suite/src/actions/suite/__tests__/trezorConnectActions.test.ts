@@ -1,4 +1,5 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { initialState as messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
@@ -23,6 +24,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
             enabledNetworks: [],
         },
     },
+    messageSystem: messageSystemInitialState,
 });
 
 type State = ReturnType<typeof getInitialState>;

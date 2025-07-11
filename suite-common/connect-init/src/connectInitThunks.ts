@@ -1,3 +1,8 @@
+import {
+    Feature,
+    parseTimeoutThresholdsPerModel,
+    selectFeatureConfig,
+} from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -156,6 +161,14 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             ? extra.selectors.selectDesktopBinDir(getState())
             : DATA_URL;
 
+        const firmwareHashCheckTimeoutsOverride = parseTimeoutThresholdsPerModel(
+            selectFeatureConfig(getState(), Feature.firmwareHashCheckTimeout),
+        );
+        const firmwareHashCheckTimeouts = {
+            ...connectInitSettings.firmwareHashCheckTimeouts,
+            ...firmwareHashCheckTimeoutsOverride,
+        };
+
         const { transports, showConnectLogs } = selectDebugSettings(getState());
 
         try {
@@ -166,6 +179,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 transports,
                 thp: selectThpSettings(getState()),
                 debug: showConnectLogs,
+                firmwareHashCheckTimeouts,
             });
         } catch (error) {
             let formattedError: string;

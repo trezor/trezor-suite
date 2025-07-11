@@ -1,4 +1,5 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { initialState as messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { CommonParams } from '@trezor/connect';
@@ -33,6 +34,7 @@ const getInitialState = (override: any) => {
                 enabledNetworks: ['btc'],
             },
         },
+        messageSystem: messageSystemInitialState,
     };
     if (override) {
         return mergeDeepObject(defaults, override);
