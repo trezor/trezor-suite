@@ -164,6 +164,7 @@ const getPlugins = (): ExpoPlugins => {
                 iosPermissions: ['Bluetooth'],
             },
         ],
+        ['react-native-nfc-manager'],
     ];
 
     return [

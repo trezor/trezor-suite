@@ -13,6 +13,7 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useNfcManager } from '@suite-native/nfc-manager';
 import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
@@ -33,6 +34,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
+    const { startNfcScan } = useNfcManager();
 
     return (
         <Screen
@@ -91,6 +93,14 @@ export const DevUtilsScreen = () => {
                     </VStack>
                 </Card>
                 <MessageSystemInfo />
+                {isDevelopOrDebugEnv() && (
+                    <Card>
+                        <VStack spacing="sp16">
+                            <TitleHeader title="NFC Debug" />
+                            <Button onPress={startNfcScan}>Start NFC Scan</Button>
+                        </VStack>
+                    </Card>
+                )}
             </VStack>
         </Screen>
     );

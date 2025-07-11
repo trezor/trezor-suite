@@ -17,6 +17,7 @@
         { "path": "../icons" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../nfc-manager" },
         { "path": "../sentry" },
         { "path": "../storage" },
         { "path": "../toasts" },

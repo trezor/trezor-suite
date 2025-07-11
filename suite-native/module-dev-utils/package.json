@@ -25,6 +25,7 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/nfc-manager": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
