@@ -95,7 +95,7 @@
         "date-fns": "^4.1.0",
         "dropbox": "^10.34.0",
         "file-saver": "^2.0.5",
-        "framer-motion": "^12.19.1",
+        "framer-motion": "^12.23.3",
         "idb": "^8.0.3",
         "immer": "10.1.1",
         "pako": "^2.1.0",

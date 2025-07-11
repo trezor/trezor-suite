@@ -28,7 +28,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "framer-motion": "^12.19.1",
+        "framer-motion": "^12.23.3",
         "react": "19.0.0",
         "react-hook-form": "^7.59.0",
         "react-intl": "^7.1.11",

@@ -11830,7 +11830,7 @@ __metadata:
     "@types/react": "npm:^19.0.0"
     "@types/react-date-range": "npm:^1.4.10"
     date-fns: "npm:^4.1.0"
-    framer-motion: "npm:^12.19.1"
+    framer-motion: "npm:^12.23.3"
     lottie-react: "npm:2.4.1"
     polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.7.1"
@@ -12094,7 +12094,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:^19.0.0"
-    framer-motion: "npm:^12.19.1"
+    framer-motion: "npm:^12.23.3"
     react-intl: "npm:^7.1.11"
   peerDependencies:
     react: 19.0.0
@@ -12337,7 +12337,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:^19.0.0"
     "@types/zxcvbn": "npm:4.4.5"
-    framer-motion: "npm:^12.19.1"
+    framer-motion: "npm:^12.23.3"
     react: "npm:19.0.0"
     react-hook-form: "npm:^7.59.0"
     react-intl: "npm:^7.1.11"
@@ -12799,7 +12799,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     dropbox: "npm:^10.34.0"
     file-saver: "npm:^2.0.5"
-    framer-motion: "npm:^12.19.1"
+    framer-motion: "npm:^12.23.3"
     idb: "npm:^8.0.3"
     immer: "npm:10.1.1"
     jest-canvas-mock: "npm:^2.5.2"
@@ -24164,12 +24164,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^12.19.1":
-  version: 12.19.1
-  resolution: "framer-motion@npm:12.19.1"
+"framer-motion@npm:^12.23.3":
+  version: 12.23.3
+  resolution: "framer-motion@npm:12.23.3"
   dependencies:
-    motion-dom: "npm:^12.19.0"
-    motion-utils: "npm:^12.19.0"
+    motion-dom: "npm:^12.23.2"
+    motion-utils: "npm:^12.23.2"
     tslib: "npm:^2.4.0"
   peerDependencies:
     "@emotion/is-prop-valid": "*"
@@ -24182,7 +24182,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10/d47c304ffea064572d5c81a1b6150b896c177a6910e2ef22200a58ca48283436446228ca4710433c8f20110efced5908b1db64c7b0dc8f72249cfb20206e50da
+  checksum: 10/9173b6eadc6c6105939ce6500e0ff401de94b55506693123bfe455cb0f119a6c24d2e1ce8c721c201858a22ac6442c0da342cae5d8942ce3fa276c58bee8cfe5
   languageName: node
   linkType: hard
 
@@ -31625,19 +31625,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion-dom@npm:^12.19.0":
-  version: 12.19.0
-  resolution: "motion-dom@npm:12.19.0"
+"motion-dom@npm:^12.23.2":
+  version: 12.23.2
+  resolution: "motion-dom@npm:12.23.2"
   dependencies:
-    motion-utils: "npm:^12.19.0"
-  checksum: 10/52aa28dc43fd727bebdbea64717e4dec8e7cb5ab0e001b465ee25526378fdbbd8bdd2b35004069192469872cb55c7b63f435df71ac8315a32fada9d7885576c6
+    motion-utils: "npm:^12.23.2"
+  checksum: 10/2195031ce2172f3e98da6f10bf49cf1eb1cf3d68f92d5bd57fe4b717fb4d0a539ccd9c890c48b7eb8a5978cc568ae0023207eaa3c88f30d3c9603a692a9832e3
   languageName: node
   linkType: hard
 
-"motion-utils@npm:^12.19.0":
-  version: 12.19.0
-  resolution: "motion-utils@npm:12.19.0"
-  checksum: 10/a6fe6b329bf4e2070bb95788218f36f0d7ea6cc3098e6ea2646ed68d5be88d25fa30e55284463ace78d19a5e19714875a7b70055bd86ae6e52a5fdee08438470
+"motion-utils@npm:^12.23.2":
+  version: 12.23.2
+  resolution: "motion-utils@npm:12.23.2"
+  checksum: 10/775da6a08ac09baafe407446cf6d86fb9d2a26f3efc0be458b5fb120c25426c5bd029acd9606b0449894ddf83fcd0f75f7216bfc324f20437cb87ed04d0dacbb
   languageName: node
   linkType: hard
 
