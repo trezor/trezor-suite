@@ -13,7 +13,7 @@ export type TradeOverviewOptionProps = {
     noBottomBorder?: boolean;
     noCaret?: boolean;
     testID?: string;
-    warning?: string;
+    warning?: ReactNode;
 };
 
 const pressableStyle = prepareNativeStyle<{ noBottomBorder: boolean }>(

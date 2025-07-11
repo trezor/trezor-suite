@@ -1924,6 +1924,13 @@ export const en = {
         },
     },
     moduleTrading: {
+        kyc: {
+            dex: 'KYC never required. DEX swaps either succeed or fail.',
+            noKyc: 'KYC never required. Exceptional cases automatically refunded.',
+            noRefund: 'KYC is only requested in exceptional cases. KYC required for refunds.',
+            yesRefund: "KYC is only requested in exceptional cases. It's not required for refunds.",
+            kycRequired: 'This provider requires to verify identity.',
+        },
         tradingScreen: {
             buyTitle: 'Buy',
             receiveAccount: 'Receive account',

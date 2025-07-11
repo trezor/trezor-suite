@@ -3,12 +3,17 @@ import { useSelector } from 'react-redux';
 import { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import { selectTradingExchangeProviders } from '@suite-common/trading';
+import {
+    TradingRootState,
+    selectTradingProviderByNameAndTradeType,
+    selectTradingProviderKycPolicy,
+} from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { selectTradingExchangeIsLoading } from '../../selectors/exchangeSelectors';
+import { getKycPolicyWarningTranslation } from '../../utils/general/kycUtils';
 import { OverviewRow } from '../general/OverviewRow';
 import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
 import { ProviderLogo } from '../general/ProviderLogo';
@@ -24,16 +29,17 @@ const ExchangeProviderPickerRight = ({
     selectedValue,
 }: ExchangeProviderPickerRightProps) => {
     const { translate } = useTranslate();
-    const providers = useSelector(selectTradingExchangeProviders);
+    const { exchange } = selectedValue ?? {};
+    const provider = useSelector((state: TradingRootState) =>
+        selectTradingProviderByNameAndTradeType(state, exchange, 'exchange'),
+    );
 
     if (isLoading) {
         return <OverviewValueSkeleton />;
     }
 
-    const { exchange = '' } = selectedValue ?? {};
-    const selectedProvider = providers?.[exchange];
-    invariant(selectedProvider, 'Selected provider should be defined');
-    const { companyName, logo } = selectedProvider;
+    invariant(provider, 'Selected provider should be defined');
+    const { companyName, logo } = provider;
 
     return (
         <HStack>
@@ -55,6 +61,10 @@ export const ExchangeProviderPicker = () => {
     const isLoading = useSelector(selectTradingExchangeIsLoading);
 
     const selectedValue = watch('quote');
+    const kycPolicy = useSelector((state: TradingRootState) =>
+        selectTradingProviderKycPolicy(state, selectedValue?.exchange, 'exchange'),
+    );
+    const warning = isLoading ? undefined : getKycPolicyWarningTranslation(kycPolicy);
 
     if (!selectedValue && !isLoading) {
         return null;
@@ -66,6 +76,7 @@ export const ExchangeProviderPicker = () => {
             noBottomBorder
             onPress={noop}
             noCaret={isLoading}
+            warning={warning}
         >
             <ExchangeProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
         </OverviewRow>
