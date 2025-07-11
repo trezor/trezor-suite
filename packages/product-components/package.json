@@ -38,13 +38,13 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.27.1",
-        "@storybook/addon-links": "^9.0.13",
-        "@storybook/react": "^9.0.13",
-        "@storybook/react-webpack5": "^9.0.13",
+        "@storybook/addon-links": "^9.0.16",
+        "@storybook/react": "^9.0.16",
+        "@storybook/react-webpack5": "^9.0.16",
         "@trezor/eslint": "workspace:*",
         "@types/react": "^19.0.0",
         "@types/zxcvbn": "4.4.5",
-        "storybook": "^9.0.13",
+        "storybook": "^9.0.16",
         "stylelint": "^16.14.1",
         "typescript-styled-plugin": "^0.18.3"
     }
