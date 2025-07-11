@@ -1,5 +1,6 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     AccountAddress,
     AccountTransaction,
@@ -46,7 +47,7 @@ export type PrecomposedTransactionCardanoNonFinal =
         token?: TokenInfo;
     };
 
-export type CurrencyOption = { value: string; label: string };
+export type CurrencyOption = { value: BaseCurrencyCode; label: string };
 
 export type Output = {
     type: 'payment' | 'opreturn';

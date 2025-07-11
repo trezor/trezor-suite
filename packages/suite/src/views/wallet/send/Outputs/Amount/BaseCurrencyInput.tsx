@@ -2,6 +2,7 @@ import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { formInputsMaxLength } from '@suite-common/validators';
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     CurrencyOption,
@@ -27,6 +28,22 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { validateDecimals } from 'src/utils/suite/validation';
+
+type GetDecimalsForBaseCurrencyParams = {
+    value: BaseCurrencyCode;
+    areSatsDisplayed: boolean;
+};
+
+const getDecimalsForBaseCurrency = ({
+    value,
+    areSatsDisplayed,
+}: GetDecimalsForBaseCurrencyParams) => {
+    if (value === 'btc' && areSatsDisplayed) {
+        return 0;
+    }
+
+    return value in networks ? networks[value as NetworkSymbol].decimals : 2;
+};
 
 type FiatInputProps = {
     output: Partial<Output>;
@@ -55,7 +72,7 @@ export const BaseCurrencyInput = ({
         watch,
     } = useSendFormContext();
 
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats, areSatsDisplayed } = useBitcoinAmountUnit(account.symbol);
 
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
@@ -76,6 +93,11 @@ export const BaseCurrencyInput = ({
 
     const currencyValue = watch(currencyInputName);
 
+    const decimals = getDecimalsForBaseCurrency({
+        value: currencyValue.value,
+        areSatsDisplayed,
+    });
+
     const recalculateFiat = (rate: number) => {
         const formattedAmount = new BigNumber(
             shouldSendInSats
@@ -91,7 +113,7 @@ export const BaseCurrencyInput = ({
         ) {
             const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
 
-            setValue(baseCurrencyInputName, fiatValueBigNumber.toFixed(2), {
+            setValue(baseCurrencyInputName, fiatValueBigNumber.toFixed(decimals), {
                 shouldValidate: true,
             });
             // call compose to store draft, precomposedTx should be the same
@@ -115,7 +137,7 @@ export const BaseCurrencyInput = ({
     const rules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
-            decimals: validateDecimals(translationString, { decimals: 2 }),
+            decimals: validateDecimals(translationString, { decimals }),
         },
     };
 
@@ -130,7 +152,7 @@ export const BaseCurrencyInput = ({
         field: { onChange, value: selectedOption },
     }: CallbackParams) => (
         <Select
-            options={buildCurrencyOptions(selectedOption)}
+            options={buildCurrencyOptions({ selected: selectedOption, areSatsDisplayed })}
             value={{
                 label: selectedOption.label.toUpperCase(),
                 value: selectedOption.value,

@@ -27,12 +27,10 @@ import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
-    HiddenPlaceholder,
     PriceTicker,
     Translation,
     TrendTicker,
 } from 'src/components/suite';
-import { BigAmountValue } from 'src/components/wallet/BigAmountValue';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
@@ -88,25 +86,8 @@ type AmountComponentProps = {
     shallDisplayBaseCurrency: boolean;
 };
 
-const AmountComponent = ({
-    failed,
-    cryptoValue,
-    symbol,
-    localCurrency,
-    shallDisplayBaseCurrency,
-}: AmountComponentProps) => {
+const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountComponentProps) => {
     const theme = useTheme();
-
-    if (!shallDisplayBaseCurrency) {
-        return (
-            <HiddenPlaceholder enforceIntensity={10}>
-                <BigAmountValue
-                    formattedStringAmount={`${symbol.toUpperCase()} ${cryptoValue}`}
-                    size="medium"
-                />
-            </HiddenPlaceholder>
-        );
-    }
 
     return !failed ? (
         <Column>

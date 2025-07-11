@@ -10,15 +10,19 @@ export type HandleAmountChangeParams = {
 export type HandleFiatChangeParams = HandleAmountChangeParams & { token?: TokenInfo };
 
 type UseSendFormChangeHandlersParams = {
-    calculateAmountFromFiat: (outputId: number, value: string, token?: TokenInfo) => void;
-    calculateFiatFromAmount: (outputId: number, value: string) => void;
+    calculateCryptoAmountFromBaseCurrencyAmount: (
+        outputId: number,
+        value: string,
+        token?: TokenInfo,
+    ) => void;
+    calculateBaseCurrencyAmountFromCryptoAmount: (outputId: number, value: string) => void;
     composeRequest: SendContextValues['composeTransaction'];
     setValue: SendContextValues['setValue'];
 };
 
 export const useSendFormChangeHandlers = ({
-    calculateAmountFromFiat,
-    calculateFiatFromAmount,
+    calculateCryptoAmountFromBaseCurrencyAmount,
+    calculateBaseCurrencyAmountFromCryptoAmount,
     composeRequest,
     setValue,
 }: UseSendFormChangeHandlersParams) => {
@@ -28,12 +32,12 @@ export const useSendFormChangeHandlers = ({
     };
 
     const handleAmountChange = ({ outputId, value }: HandleAmountChangeParams) => {
-        calculateFiatFromAmount(outputId, value);
+        calculateBaseCurrencyAmountFromCryptoAmount(outputId, value);
         disableSetMaxAndRecomposeTransaction(outputId);
     };
 
     const handleFiatChange = ({ outputId, token, value }: HandleFiatChangeParams) => {
-        calculateAmountFromFiat(outputId, value, token);
+        calculateCryptoAmountFromBaseCurrencyAmount(outputId, value, token);
         disableSetMaxAndRecomposeTransaction(outputId);
     };
 

@@ -39,6 +39,7 @@ import {
     PROTO,
     TokenInfo,
 } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -520,15 +521,26 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
     selectedUtxos: [],
 });
 
-export const buildCurrencyOptions = (selected: CurrencyOption) => {
+type BuildCurrencyOptionsParams = {
+    selected: CurrencyOption;
+    areSatsDisplayed: boolean;
+};
+
+export const buildCurrencyOptions = ({
+    selected,
+    areSatsDisplayed,
+}: BuildCurrencyOptionsParams) => {
     const result: CurrencyOption[] = [];
 
-    Object.keys(baseCurrencies).forEach(currency => {
+    typedObjectKeys(baseCurrencies).forEach(currency => {
         if (selected.value === currency) {
             return;
         }
 
-        result.push({ value: currency, label: currency.toUpperCase() });
+        result.push({
+            value: currency,
+            label: currency === 'btc' && areSatsDisplayed ? 'Sats' : currency.toUpperCase(),
+        });
     });
 
     return result;

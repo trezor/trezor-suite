@@ -2,16 +2,21 @@ import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { FormOptions, FormState, Rate, TokenAddress } from '@suite-common/wallet-types';
+import { FormOptions, FormState, Output, Rate, TokenAddress } from '@suite-common/wallet-types';
 import {
+    asAmountSubunit,
+    asAmountUnit,
+    asBaseCurrencyAmount,
     convertAmountUnitsToSubunits,
-    formatNetworkAmount,
     fromFiatCurrency,
     getFiatRateKey,
+    subunitsToUnits,
     toFiatCurrency,
+    unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
+import { BigNumber } from '@trezor/utils';
 
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
@@ -36,7 +41,7 @@ export const useSendFormFields = ({
     network,
     formState: { errors },
 }: UseSendFormFieldsParams) => {
-    const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
+    const { shouldSendInSats, areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
     const currentRates = useSelector(selectCurrentFiatRates);
 
     const getCurrentFiatRate = useCallback(
@@ -50,7 +55,7 @@ export const useSendFormFields = ({
 
     type CalculateFiatFromAmountOrViceVersaParams = {
         outputId: number;
-        target: 'fiat' | 'amount';
+        target: Extract<keyof Output, 'fiat' | 'amount'>;
         formatTargetValue: (value: string, fiatRate: number) => string | null;
         value?: string;
     };
@@ -93,6 +98,7 @@ export const useSendFormFields = ({
                 return;
             }
             const formattedTargetValue = formatTargetValue(value, fiatRate.rate);
+            console.log('formattedTargetValue(', target, ') ', formattedTargetValue);
             if (formattedTargetValue) {
                 setValue(targetInputName, formattedTargetValue, { shouldValidate: true });
             }
@@ -100,36 +106,82 @@ export const useSendFormFields = ({
         [clearErrors, getCurrentFiatRate, getValues, setValue, errors],
     );
 
-    const calculateFiatFromAmount = useCallback(
+    const calculateBaseCurrencyAmountFromCryptoAmount = useCallback(
         (outputId: number, amount: string) => {
-            const calculateFormattedFiatValue = (amount: string, fiatRate: number) => {
-                const formattedAmount = shouldSendInSats // toFiatCurrency always works with BTC, not satoshis
-                    ? formatNetworkAmount(amount, network.symbol)
-                    : amount;
+            const convert = (amount: string, fiatRate: number) => {
+                const { outputs } = getValues();
+                const output = outputs[outputId];
+                const baseCurrency = output.currency.value as BaseCurrencyCode;
 
-                return (
-                    toFiatCurrency({ amount: formattedAmount, rate: fiatRate })?.toFixed(2) ?? null
-                );
+                const amountBigNumber = new BigNumber(amount);
+
+                const cryptoAmount = shouldSendInSats // toFiatCurrency always works with BTC, not satoshis
+                    ? subunitsToUnits(
+                          asAmountSubunit(amountBigNumber, network.symbol),
+                          network.symbol,
+                      )
+                    : asAmountUnit(amountBigNumber, network.symbol);
+
+                const baseCurrencyAmountUnit = toFiatCurrency({
+                    amount: cryptoAmount,
+                    rate: fiatRate,
+                });
+
+                if (baseCurrencyAmountUnit === null) {
+                    return null;
+                }
+
+                const baseCurrencyDisplay =
+                    baseCurrency === 'btc' && areSatsDisplayed
+                        ? asBaseCurrencyAmount(
+                              unitsToSubunits(asAmountUnit(baseCurrencyAmountUnit, 'btc'), 'btc'),
+                          )
+                        : baseCurrencyAmountUnit;
+
+                const baseCurrencyDecimals = baseCurrency === 'btc' && areSatsDisplayed ? 0 : 2;
+
+                return baseCurrencyDisplay?.toFixed(baseCurrencyDecimals) ?? null;
             };
 
             return calculateFiatFromAmountOrViceVersa({
-                formatTargetValue: calculateFormattedFiatValue,
+                formatTargetValue: convert,
                 outputId,
                 target: 'fiat',
                 value: amount,
             });
         },
-        [calculateFiatFromAmountOrViceVersa, shouldSendInSats, network.symbol],
+        [
+            calculateFiatFromAmountOrViceVersa,
+            getValues,
+            shouldSendInSats,
+            network.symbol,
+            areSatsDisplayed,
+        ],
     );
 
-    const calculateAmountFromFiat = useCallback(
+    const calculateCryptoAmountFromBaseCurrencyAmount = useCallback(
         (outputId: number, fiat: string, token?: TokenInfo) => {
-            const calculateFormattedAmountValue = (fiat: string, fiatRate: number) => {
-                const decimals = token ? token.decimals : network.decimals;
+            const convert = (fiat: string, fiatRate: number) => {
+                const cryptoDecimals = token ? token.decimals : network.decimals;
+                const fiatAmountBigNumber = new BigNumber(fiat);
+
+                // When BTC is used as BaseCurrency, and we display all in Sats, we have to perform
+                // the conversion from sats->btc, because crypto-amount here is expected to.
+                const { outputs } = getValues();
+                const output = outputs[outputId];
+                const baseCurrency = output.currency.value as BaseCurrencyCode;
+                const baseCurrencyUnitAmount =
+                    baseCurrency === 'btc' && areSatsDisplayed
+                        ? asBaseCurrencyAmount(
+                              subunitsToUnits(asAmountSubunit(fiatAmountBigNumber, 'btc'), 'btc'),
+                          )
+                        : asBaseCurrencyAmount(fiatAmountBigNumber);
 
                 const amount =
-                    fromFiatCurrency({ fiatAmount: fiat, rate: fiatRate })?.toFixed(decimals) ??
-                    null;
+                    fromFiatCurrency({
+                        fiatAmount: baseCurrencyUnitAmount.toFixed(),
+                        rate: fiatRate,
+                    })?.toFixed(cryptoDecimals) ?? null;
 
                 return shouldSendInSats
                     ? convertAmountUnitsToSubunits(amount || '0', network.decimals)
@@ -137,13 +189,19 @@ export const useSendFormFields = ({
             };
 
             return calculateFiatFromAmountOrViceVersa({
-                formatTargetValue: calculateFormattedAmountValue,
+                formatTargetValue: convert,
                 outputId,
                 target: 'amount',
                 value: fiat,
             });
         },
-        [calculateFiatFromAmountOrViceVersa, shouldSendInSats, network.decimals],
+        [
+            calculateFiatFromAmountOrViceVersa,
+            network.decimals,
+            getValues,
+            areSatsDisplayed,
+            shouldSendInSats,
+        ],
     );
 
     const setAmount = useCallback(
@@ -152,9 +210,9 @@ export const useSendFormFields = ({
                 shouldValidate: amount.length > 0,
                 shouldDirty: true,
             });
-            calculateFiatFromAmount(outputId, amount);
+            calculateBaseCurrencyAmountFromCryptoAmount(outputId, amount);
         },
-        [calculateFiatFromAmount, setValue],
+        [calculateBaseCurrencyAmountFromCryptoAmount, setValue],
     );
 
     const setMax = useCallback(
@@ -210,8 +268,8 @@ export const useSendFormFields = ({
 
     return {
         getCurrentFiatRate,
-        calculateAmountFromFiat,
-        calculateFiatFromAmount,
+        calculateCryptoAmountFromBaseCurrencyAmount,
+        calculateBaseCurrencyAmountFromCryptoAmount,
         setAmount,
         resetDefaultValue,
         setMax,
