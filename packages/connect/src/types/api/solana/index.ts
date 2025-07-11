@@ -9,6 +9,7 @@ export const SolanaPublicKey = Type.Intersect([
     PublicKey,
     Type.Object({
         publicKey: Type.String(),
+        publicKeyBase58: Type.String(),
     }),
 ]);
 
