@@ -41,6 +41,7 @@ export interface Formatter<TInput, TOutput, TDataContext extends DataContext = D
  * Creates a new formatter.
  *
  * @param format Function used to format the value.
+ * @param displayName
  */
 export const makeFormatter = <TInput, TOutput, TDataContext extends DataContext = DataContext>(
     format: FormatDefinition<TInput, TOutput, TDataContext>,

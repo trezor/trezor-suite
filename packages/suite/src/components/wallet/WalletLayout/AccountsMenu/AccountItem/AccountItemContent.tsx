@@ -26,7 +26,6 @@ import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { AccountItemType } from 'src/types/wallet';
 
-
 const AccountLabelContainer = styled.div`
     flex: 1;
     min-width: 60px;
