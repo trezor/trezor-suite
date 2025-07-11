@@ -1,9 +1,5 @@
-import { useSelector } from 'react-redux';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceRemembered } from '@suite-common/wallet-core';
-import { useDisableDeviceConnectionOnFocus } from '@suite-native/device';
 import {
     SendStackParamList,
     SendStackRoutes,
@@ -20,38 +16,32 @@ import { SendUtxoScreen } from '../screens/SendUtxoScreen';
 
 const SendStack = createNativeStackNavigator<SendStackParamList>();
 
-export const SendStackNavigator = () => {
-    const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
-
-    useDisableDeviceConnectionOnFocus(isDeviceRemembered);
-
-    return (
-        <SendStack.Navigator
-            initialRouteName={SendStackRoutes.SendAccounts}
-            screenOptions={stackNavigationOptionsConfig}
+export const SendStackNavigator = () => (
+    <SendStack.Navigator
+        initialRouteName={SendStackRoutes.SendAccounts}
+        screenOptions={stackNavigationOptionsConfig}
+    >
+        <SendStack.Screen name={SendStackRoutes.SendAccounts} component={SendAccountsScreen} />
+        <SendStack.Screen name={SendStackRoutes.SendOutputs} component={SendOutputsScreen} />
+        <SendStack.Screen name={SendStackRoutes.SendFees} component={SendFeesScreen} />
+        <SendStack.Screen name={SendStackRoutes.SendUtxo} component={SendUtxoScreen} />
+        <SendStack.Group
+            screenOptions={{
+                gestureEnabled: false, // To not interrupt send review by back navigation.
+            }}
         >
-            <SendStack.Screen name={SendStackRoutes.SendAccounts} component={SendAccountsScreen} />
-            <SendStack.Screen name={SendStackRoutes.SendOutputs} component={SendOutputsScreen} />
-            <SendStack.Screen name={SendStackRoutes.SendFees} component={SendFeesScreen} />
-            <SendStack.Screen name={SendStackRoutes.SendUtxo} component={SendUtxoScreen} />
-            <SendStack.Group
-                screenOptions={{
-                    gestureEnabled: false, // To not interrupt send review by back navigation.
-                }}
-            >
-                <SendStack.Screen
-                    name={SendStackRoutes.SendDestinationTagReview}
-                    component={SendDestinationTagReviewScreen}
-                />
-                <SendStack.Screen
-                    name={SendStackRoutes.SendAddressReview}
-                    component={SendAddressReviewScreen}
-                />
-                <SendStack.Screen
-                    name={SendStackRoutes.SendOutputsReview}
-                    component={SendOutputsReviewScreen}
-                />
-            </SendStack.Group>
-        </SendStack.Navigator>
-    );
-};
+            <SendStack.Screen
+                name={SendStackRoutes.SendDestinationTagReview}
+                component={SendDestinationTagReviewScreen}
+            />
+            <SendStack.Screen
+                name={SendStackRoutes.SendAddressReview}
+                component={SendAddressReviewScreen}
+            />
+            <SendStack.Screen
+                name={SendStackRoutes.SendOutputsReview}
+                component={SendOutputsReviewScreen}
+            />
+        </SendStack.Group>
+    </SendStack.Navigator>
+);

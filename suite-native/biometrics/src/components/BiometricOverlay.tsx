@@ -1,7 +1,11 @@
+import { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
-import { useDisableDeviceConnectionOnFocus } from '@suite-native/device';
+import {
+    startDeviceConnectionListening,
+    stopDeviceConnectionListening,
+} from '@suite-native/device';
 import { Icon, iconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -35,7 +39,12 @@ export const BiometricOverlay = ({
 }: BiometricOverlayProps) => {
     const { applyStyle } = useNativeStyles();
 
-    useDisableDeviceConnectionOnFocus();
+    // Ignore device connection in biometrics overlay (note: is this actually necessary?)
+    useEffect(() => {
+        stopDeviceConnectionListening();
+
+        return () => startDeviceConnectionListening();
+    }, []);
 
     return (
         <>

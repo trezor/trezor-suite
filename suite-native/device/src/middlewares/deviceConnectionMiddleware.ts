@@ -28,7 +28,6 @@ export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceR
 
 // At the moment when unauthorized physical device is selected,
 // redirect to the Connecting screen where is handled the connection logic.
-
 const connectDevice = (isCoinEnablingInitFinished: boolean) => {
     if (isCoinEnablingInitFinished) {
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
@@ -39,6 +38,7 @@ const connectDevice = (isCoinEnablingInitFinished: boolean) => {
     }
 };
 
+// TODO remove `selectIsDeviceInitialized` and handle also uninitializedDevices here
 export const startDeviceConnectionListening = () => {
     deviceConnectionMiddleware.startListening({
         predicate: (action, currentState) =>
