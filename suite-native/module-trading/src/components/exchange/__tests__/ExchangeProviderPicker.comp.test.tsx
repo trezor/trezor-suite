@@ -1,6 +1,7 @@
 import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
+    act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
@@ -48,7 +49,9 @@ describe('ExchangeProviderPicker', () => {
     });
 
     it('should render provider when quote is selected', async () => {
-        exchangeForm.setValue('quote', exchangeQuotes[0]);
+        act(() => {
+            exchangeForm.setValue('quote', exchangeQuotes[0]);
+        });
 
         const { getByText } = await renderExchangeProviderPicker();
 
