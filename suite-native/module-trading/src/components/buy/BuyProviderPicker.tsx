@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux';
 import { BuyTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import { selectTradingBuyIsLoading, selectTradingBuyProviders } from '@suite-common/trading';
+import {
+    TradingRootState as TradingRootStateCommon,
+    selectTradingBuyIsLoading,
+    selectTradingBuyProviders,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -20,26 +25,24 @@ import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 type BuyProviderPickerRightProps = {
     isLoading: boolean;
     selectedValue: BuyTrade | undefined;
-    providers: ReturnType<typeof selectTradingBuyProviders>;
 };
 
 const PROVIDER_PICKER_TEST_ID = '@trading/buy/provider-picker';
 
-const BuyProviderPickerRight = ({
-    isLoading,
-    selectedValue,
-    providers,
-}: BuyProviderPickerRightProps) => {
+const BuyProviderPickerRight = ({ isLoading, selectedValue }: BuyProviderPickerRightProps) => {
     const { translate } = useTranslate();
+    const { exchange } = selectedValue ?? {};
+
+    const provider = useSelector((state: TradingRootStateCommon) =>
+        selectTradingProviderByNameAndTradeType(state, exchange, 'buy'),
+    );
 
     if (isLoading) {
         return <OverviewValueSkeleton />;
     }
 
-    const { exchange } = selectedValue ?? {};
-    const selectedProvider = exchange ? providers?.[exchange] : undefined;
-    invariant(selectedProvider, 'Selected provider should be defined');
-    const { companyName, logo } = selectedProvider;
+    invariant(provider, 'Selected provider should be defined');
+    const { companyName, logo } = provider;
 
     return (
         <HStack>
@@ -114,11 +117,7 @@ export const BuyProviderPicker = () => {
                     isLoading ? undefined : translate('moduleTrading.tradingScreen.kycWarning')
                 }
             >
-                <BuyProviderPickerRight
-                    isLoading={isLoading}
-                    selectedValue={selectedValue}
-                    providers={providers}
-                />
+                <BuyProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
             </OverviewRow>
             <ProviderSheet
                 quotes={quotes}
