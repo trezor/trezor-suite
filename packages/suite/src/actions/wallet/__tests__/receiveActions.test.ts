@@ -1,4 +1,5 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { initialState as messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
@@ -114,6 +115,7 @@ const getInitialState = (state: Partial<InitialState> | undefined) => ({
         selectedDevice: getSuiteDevice({ available: true, connected: true }),
         ...state?.device,
     },
+    messageSystem: messageSystemInitialState,
 });
 
 type State = ReturnType<typeof getInitialState>;

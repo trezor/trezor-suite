@@ -9611,6 +9611,7 @@ __metadata:
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"

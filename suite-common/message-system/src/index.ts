@@ -8,4 +8,5 @@ export * from './messageSystemUtils';
 
 export * from './cachedEnvData';
 export * from './experimentUtils';
+export * from './featureFlagUtils';
 export * from './useExperiment';

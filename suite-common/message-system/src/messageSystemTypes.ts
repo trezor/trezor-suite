@@ -40,6 +40,9 @@ export const Feature = {
     firmwareHashCheck: 'security.firmware.hashCheck',
     // subset of `firmwareHashCheck`: can turn off specifically UI for other-error result
     firmwareHashCheckOtherError: 'security.firmware.hashCheck.otherError',
+    // subset of `firmwareHashCheck`: can turn off timeout result, and also may bear `timeoutThresholdsPerModel` payload, see connectInitThunks
+    firmwareHashCheckTimeout: 'security.firmware.hashCheck.timeout',
+
     entropyCheck: 'security.entropyCheck',
     entropyCheckMobile: 'security.entropyCheck.mobile',
     // FW update feature flag implemented only for mobile app

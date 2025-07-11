@@ -5,7 +5,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { messageSystemActions } from './messageSystemActions';
 import { MessageState, MessageSystemState } from './messageSystemTypes';
 
-const initialState: MessageSystemState = {
+export const initialState: MessageSystemState = {
     config: null,
     currentSequence: 0,
     timestamp: 0,
