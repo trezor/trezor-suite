@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
 import type { TradingSellType } from '@suite-common/trading';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Spinner, Text } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 
@@ -43,6 +45,7 @@ const Address = styled.div``;
 
 export const TradingSelectedOfferSellTransaction = () => {
     const { handleClick, disabled } = useAsyncClickHandler();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const {
         device,
         account,
@@ -129,7 +132,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                         <Button
                             minWidth={200}
                             isLoading={isFormLoading || disabled}
-                            isDisabled={!device?.connected || disabled}
+                            isDisabled={!device?.connected || isDiscoveryRunning || disabled}
                             onClick={() => handleClick(() => onConfirmAndSendClick())}
                             data-testid="@trading/offer/confirm-on-trezor-and-send"
                         >
