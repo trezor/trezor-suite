@@ -158,6 +158,8 @@ const waitForPairingTag = async (device: Device) => {
             // silent
         });
 
+    thpState.setPairingTagPromise({ abort: () => readAbort.abort() });
+
     // start listening for the UI response
     const payload = {
         availableMethods: thpState.handshakeCredentials.pairingMethods,
@@ -179,6 +181,8 @@ const waitForPairingTag = async (device: Device) => {
     // wait for readCancel to finish reading
     readAbort.abort();
     await readCancel;
+
+    thpState.setPairingTagPromise(undefined);
 
     if ('error' in pairingResponse) {
         throw new Error(pairingResponse.error);
