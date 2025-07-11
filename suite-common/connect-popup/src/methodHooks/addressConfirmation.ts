@@ -1,4 +1,4 @@
-import TrezorConnect, { Address } from '@trezor/connect';
+import TrezorConnect, { Address, SolanaPublicKey } from '@trezor/connect';
 import { HDNodeResponse } from '@trezor/connect/src/types/api/getPublicKey';
 
 import { connectPopupActions } from '../connectPopupActions';
@@ -70,6 +70,9 @@ export function postCallHook<M extends keyof typeof TrezorConnect>({
                 // NOTE: it's possible in some cases there will be a mismatch between the public key format on the device and the one in the app
                 // For BTC
                 if (method === 'getPublicKey') return item.xpubSegwit || item.xpub;
+                // For SOL
+                if (method === 'solanaGetPublicKey')
+                    return (item as any as SolanaPublicKey).publicKeyBase58;
 
                 // For other altcoins
                 return item.publicKey;
