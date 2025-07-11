@@ -1,5 +1,4 @@
-export const baseCurrencies = {
-    btc: { code: 'btc', label: 'Bitcoin' },
+export const fiatBaseCurrencies = {
     usd: { code: 'usd', label: 'United States Dollar' },
     eur: { code: 'eur', label: 'Euro' },
     gbp: { code: 'gbp', label: 'Pound Sterling' },
@@ -43,9 +42,17 @@ export const baseCurrencies = {
     vef: { code: 'vef', label: 'Venezuelan bolívar' },
     vnd: { code: 'vnd', label: 'Vietnamese dong' },
     zar: { code: 'zar', label: 'South African rand' },
+} as const;
+
+export const valuablesBaseCurrencies = {
+    btc: { code: 'btc', label: 'Bitcoin' },
     xag: { code: 'xag', label: 'Silver' },
     xau: { code: 'xau', label: 'Gold' },
-    xdr: { code: 'xdr', label: 'Special drawing rights' },
+} as const;
+
+export const baseCurrencies = {
+    ...fiatBaseCurrencies,
+    ...valuablesBaseCurrencies,
 } as const;
 
 export type BaseCurrencyCode = keyof typeof baseCurrencies;
