@@ -24,7 +24,9 @@ describe('SendUtxosScreenHeader', () => {
             setSelectedUtxos: jest.fn(),
         });
 
-        const { getByTestId } = renderWithBasicProvider(<SendUtxoScreenHeader />);
+        const { getByTestId } = renderWithBasicProvider(
+            <SendUtxoScreenHeader accountKey="testAccKey" />,
+        );
 
         expect(getByTestId('coin-control-delete-button')).toBeTruthy();
     });
@@ -35,7 +37,9 @@ describe('SendUtxosScreenHeader', () => {
             setSelectedUtxos: jest.fn(),
         });
 
-        const { queryByTestId } = renderWithBasicProvider(<SendUtxoScreenHeader />);
+        const { queryByTestId } = renderWithBasicProvider(
+            <SendUtxoScreenHeader accountKey="testAccKey" />,
+        );
 
         expect(queryByTestId('coin-control-delete-button')).toBeNull();
     });

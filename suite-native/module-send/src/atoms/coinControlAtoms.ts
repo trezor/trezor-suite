@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
 
-import { Utxo } from '@trezor/blockchain-link-types';
+import { SelectedUtxos } from '../types';
 
-export const selectedUtxosAtom = atom<Utxo[]>([]);
+export const selectedUtxosAtom = atom<SelectedUtxos>({});

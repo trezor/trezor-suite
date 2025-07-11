@@ -27,7 +27,7 @@ export const SendUtxoScreen = ({
 
     const searchInputRef = useRef<TextInput>(null);
 
-    const { selectedUtxos, setSelectedUtxos } = useUtxoSelection();
+    const { selectedUtxos, setSelectedUtxos } = useUtxoSelection(accountKey);
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     const [tempSelectedUtxos, setTempSelectedUtxos] = useState<Utxo[]>(selectedUtxos ?? []);
@@ -66,6 +66,7 @@ export const SendUtxoScreen = ({
             isScrollable={false}
             header={
                 <SendUtxoScreenHeader
+                    accountKey={accountKey}
                     onDelete={() => {
                         navigation.goBack();
                     }}

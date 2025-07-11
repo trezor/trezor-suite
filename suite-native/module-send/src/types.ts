@@ -10,6 +10,7 @@ import {
     ReviewOutputState,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { Utxo } from '@trezor/blockchain-link-types';
 
 export type StatefulReviewOutput = ReviewOutput & { state: ReviewOutputState };
 
@@ -29,3 +30,4 @@ export type SendAmountInputProps = {
 };
 
 export type FeeLevelsMaxAmount = Record<FeeLevelLabel, string | undefined>;
+export type SelectedUtxos = { [accountKey: AccountKey]: Utxo[] };

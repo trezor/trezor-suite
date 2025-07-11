@@ -18,7 +18,7 @@ export const SendOutputsScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
     const { accountKey, tokenContract } = params;
     const sendForm = useSendForm(accountKey, tokenContract);
-    const { totalSelectedAmount, selectedUtxos } = useUtxoSelection();
+    const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
 
     if (!sendForm) {
         return null;
