@@ -11,7 +11,11 @@ interface ProgressLabelsProps {
 export const ProgressLabels = ({ labels }: ProgressLabelsProps) => (
     <Row gap={spacings.xs} alignItems="stretch" flexWrap="wrap">
         {labels.map(label => (
-            <ProgressLabel key={label.id} progressState={label.progressState}>
+            <ProgressLabel
+                key={label.id}
+                data-testid={label['data-testid']}
+                progressState={label.progressState}
+            >
                 {label.children}
             </ProgressLabel>
         ))}

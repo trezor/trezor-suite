@@ -110,9 +110,14 @@ const ProgressLabelItem = styled.div<{
 interface ProgressLabelProps {
     children: ReactNode;
     progressState: ProgressLabelState;
+    'data-testid'?: string;
 }
 
-export const ProgressLabel = ({ children, progressState = 'stale' }: ProgressLabelProps) => {
+export const ProgressLabel = ({
+    children,
+    progressState = 'stale',
+    'data-testid': dataTestId,
+}: ProgressLabelProps) => {
     // Watch height to adjust element's edge shape sizes (triangle, flag tale)
     const ref = useRef<HTMLDivElement>(null);
     const [currentHeight, setCurrentHeight] = useState(DEFAULT_LABEL_HEIGHT);
@@ -134,8 +139,13 @@ export const ProgressLabel = ({ children, progressState = 'stale' }: ProgressLab
     }, [currentHeight]);
 
     return (
-        <ProgressLabelItem ref={ref} $progressState={progressState} $currentHeight={currentHeight}>
-            <Row gap={spacings.sm} height="100%">
+        <ProgressLabelItem
+            data-testid={`${dataTestId}/container`}
+            ref={ref}
+            $progressState={progressState}
+            $currentHeight={currentHeight}
+        >
+            <Row data-testid={dataTestId} gap={spacings.sm} height="100%">
                 {getProgressStateIcon(progressState)}
                 <Text
                     as="div"

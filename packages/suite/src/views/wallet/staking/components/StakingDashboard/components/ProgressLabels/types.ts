@@ -5,4 +5,5 @@ export interface ProgressLabelData {
     id: number;
     children: ReactNode;
     progressState: ProgressLabelState;
+    'data-testid'?: string;
 }
