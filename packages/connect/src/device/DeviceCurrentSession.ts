@@ -58,11 +58,11 @@ const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKe
 
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
-const fail = (msg: string) =>
+const fail = (resp: { error: string; message?: string }) =>
     error(
         new Error(
-            msg,
-            isErrorWithoutDeviceInteraction(msg) ? { cause: 'transport-error' } : undefined,
+            resp.message || resp.error,
+            isErrorWithoutDeviceInteraction(resp.error) ? { cause: 'transport-error' } : undefined,
         ),
     );
 
@@ -355,7 +355,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             logger.warn('Received transport error', result.error, result.message);
         }
 
-        return result.success ? success(result.payload) : fail(result.message || result.error);
+        return result.success ? success(result.payload) : fail(result);
     }
 
     async send(name: string, data: Record<string, unknown>, options: AbortableOptions = {}) {
@@ -370,7 +370,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             ...options,
         });
 
-        return result.success ? success(result.payload) : fail(result.message || result.error);
+        return result.success ? success(result.payload) : fail(result);
     }
 
     async receive(options: AbortableOptions = {}) {
@@ -383,7 +383,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             ...options,
         });
 
-        return result.success ? success(result.payload) : fail(result.message || result.error);
+        return result.success ? success(result.payload) : fail(result);
     }
 
     cancelCall() {
