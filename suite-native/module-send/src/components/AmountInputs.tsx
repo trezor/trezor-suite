@@ -136,6 +136,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                                 scaleValue={fiatScale}
                                 translateValue={fiatTranslateY}
                                 inputRef={fiatRef}
+                                accountKey={accountKey}
                                 isDisabled={isCryptoSelected}
                                 symbol={symbol}
                                 tokenContract={tokenContract}
