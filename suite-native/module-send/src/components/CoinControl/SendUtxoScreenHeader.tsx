@@ -6,11 +6,12 @@ import { ScreenHeader } from '@suite-native/navigation';
 import { useUtxoSelection } from '../../hooks/useUtxoSelection';
 
 type SendUtxoScreenHeaderProps = {
+    accountKey: string;
     onDelete?: () => void;
 };
 
-export const SendUtxoScreenHeader = ({ onDelete }: SendUtxoScreenHeaderProps) => {
-    const { selectedUtxos, setSelectedUtxos } = useUtxoSelection();
+export const SendUtxoScreenHeader = ({ onDelete, accountKey }: SendUtxoScreenHeaderProps) => {
+    const { selectedUtxos, setSelectedUtxos } = useUtxoSelection(accountKey);
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
 

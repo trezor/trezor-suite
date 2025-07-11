@@ -30,7 +30,7 @@ type SendMaxButtonProps = {
 export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMaxButtonProps) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
-    const { selectedUtxos } = useUtxoSelection();
+    const { selectedUtxos } = useUtxoSelection(accountKey);
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),

@@ -99,7 +99,7 @@ export const OutputsReviewFooter = ({
     const { showAlert } = useAlert();
     const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
-    const { setSelectedUtxos } = useUtxoSelection();
+    const { setSelectedUtxos } = useUtxoSelection(accountKey);
 
     const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),

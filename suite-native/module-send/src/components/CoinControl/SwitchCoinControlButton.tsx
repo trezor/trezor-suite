@@ -26,7 +26,8 @@ type SwitchCoinControlButtonProps = {
 };
 
 export const SwitchCoinControlButton = ({ accountKey, amount }: SwitchCoinControlButtonProps) => {
-    const { selectedUtxos, totalSelectedAmount, isCoinControlEnabled } = useUtxoSelection();
+    const { selectedUtxos, totalSelectedAmount, isCoinControlEnabled } =
+        useUtxoSelection(accountKey);
     const navigation = useNavigation<NavigationProps>();
 
     const isMissingUtxos = isCoinControlEnabled && amount && totalSelectedAmount.isLessThan(amount);
