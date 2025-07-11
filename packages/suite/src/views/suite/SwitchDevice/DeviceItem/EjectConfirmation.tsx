@@ -1,10 +1,8 @@
-import { MouseEventHandler, ReactNode } from 'react';
-
-import styled from 'styled-components';
+import { MouseEventHandler } from 'react';
 
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
-import { Button, H4, Paragraph, Row } from '@trezor/components';
+import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -13,30 +11,13 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
 
-const Container = styled.div`
-    cursor: auto;
-`;
-
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
     onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     instance: AcquiredDevice;
 };
 
-type EjectConfirmationContainerProps = EjectConfirmationProps & {
-    title: ReactNode;
-    description: ReactNode;
-    primaryButtonLabel: ReactNode;
-};
-
-const EjectConfirmationContainer = ({
-    onClick,
-    onCancel,
-    title,
-    description,
-    primaryButtonLabel,
-    instance,
-}: EjectConfirmationContainerProps) => {
+export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
     const dispatch = useDispatch();
 
     const settings = useSelector(selectSuiteSettings);
@@ -50,22 +31,23 @@ const EjectConfirmationContainer = ({
     };
 
     return (
-        <Container onClick={onClick}>
-            <H4>{title}</H4>
+        <Box onClick={onClick} cursor="default">
+            <H4>
+                <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE" />
+            </H4>
             <Paragraph variant="tertiary" typographyStyle="hint" margin={{ top: spacings.xxs }}>
-                {description}
+                <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />
             </Paragraph>
             <Row gap={spacings.xs} margin={{ top: spacings.md }}>
                 <Button
                     size="small"
                     icon="eject"
-                    iconSize={spacings.lg}
                     onClick={handleEject}
                     variant="primary"
                     data-testid="@switch-device/eject"
                     isFullWidth
                 >
-                    {primaryButtonLabel}
+                    <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON" />
                 </Button>
                 <Button
                     size="small"
@@ -77,17 +59,6 @@ const EjectConfirmationContainer = ({
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON" />
                 </Button>
             </Row>
-        </Container>
+        </Box>
     );
 };
-
-export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => (
-    <EjectConfirmationContainer
-        title={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE" />}
-        description={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />}
-        primaryButtonLabel={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON" />}
-        onClick={onClick}
-        onCancel={onCancel}
-        instance={instance}
-    />
-);

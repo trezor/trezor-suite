@@ -1,6 +1,8 @@
+import { ReactNode } from 'react';
+
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { Box, IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation, WebUsbButton } from 'src/components/suite';
@@ -16,6 +18,7 @@ type DeviceHeaderProps = {
     onBackButtonClick?: () => void;
     isFindTrezorVisible?: boolean;
     isDeviceStatusVisible?: boolean;
+    actions?: ReactNode | null;
 };
 
 export const DeviceHeader = ({
@@ -24,13 +27,21 @@ export const DeviceHeader = ({
     onBackButtonClick,
     isFindTrezorVisible = false,
     isDeviceStatusVisible = true,
+    actions,
 }: DeviceHeaderProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const isDeviceConnected = selectedDevice?.connected === true;
     const deviceModelInternal = getDeviceInternalModel(device);
 
-    if (!onBackButtonClick && !onCancel && !isDeviceStatusVisible) {
+    const isDefaultCancelVisible = !actions && actions !== null && onCancel;
+
+    if (
+        !onBackButtonClick &&
+        !actions &&
+        (actions === null || !onCancel) &&
+        !(isDeviceStatusVisible && device?.type === 'acquired')
+    ) {
         return null;
     }
 
@@ -47,11 +58,21 @@ export const DeviceHeader = ({
             )}
 
             {deviceModelInternal && isDeviceStatusVisible && (
-                <DeviceStatus
-                    deviceModel={deviceModelInternal}
-                    device={device}
-                    forceConnectionInfo={true}
-                />
+                // In case the cancel button is not visible (e.g. in device switcher),
+                // we need to have an alternative, mostly for testing purposes.
+                <Box
+                    data-testid={
+                        isDefaultCancelVisible ? undefined : '@switch-device/cancel-button'
+                    }
+                    onClick={isDefaultCancelVisible ? undefined : () => onCancel?.()}
+                    cursor={isDefaultCancelVisible ? 'default' : 'pointer'}
+                >
+                    <DeviceStatus
+                        deviceModel={deviceModelInternal}
+                        device={device}
+                        forceConnectionInfo={true}
+                    />
+                </Box>
             )}
 
             <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
@@ -62,17 +83,18 @@ export const DeviceHeader = ({
                     ) : (
                         <WebUsbButton variant="primary" size="tiny" />
                     ))}
-                {onCancel && (
+                {isDefaultCancelVisible && (
                     <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
                         <IconButton
                             icon="x"
                             size="small"
                             variant="tertiary"
-                            onClick={() => onCancel?.()}
+                            onClick={() => onCancel()}
                             data-testid="@switch-device/cancel-button"
                         />
                     </Tooltip>
                 )}
+                {actions}
             </Row>
         </Row>
     );

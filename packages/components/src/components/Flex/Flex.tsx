@@ -23,6 +23,7 @@ export const allowedFlexFrameProps = [
     'maxWidth',
     'overflow',
     'cursor',
+    'opacity',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
 
