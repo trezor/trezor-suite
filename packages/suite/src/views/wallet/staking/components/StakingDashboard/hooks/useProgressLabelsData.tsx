@@ -29,6 +29,7 @@ export const useProgressLabelsData = ({
         () => [
             {
                 id: 0,
+                'data-testid': '@staking/transaction-status',
                 progressState: (() => {
                     if (isStakeConfirming) return 'active';
 
@@ -42,6 +43,7 @@ export const useProgressLabelsData = ({
             },
             {
                 id: 1,
+                'data-testid': '@staking/adding-to-pool-status',
                 progressState: (() => {
                     if (!isStakeConfirming && isStakePending) return 'active';
                     if (!isStakeConfirming && !isStakePending) return 'done';
@@ -67,6 +69,7 @@ export const useProgressLabelsData = ({
             },
             {
                 id: 2,
+                'data-testid': '@staking/reward-status',
                 progressState: (() => {
                     if (!isStakeConfirming && !isStakePending) {
                         return 'active';

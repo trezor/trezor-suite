@@ -1,0 +1,61 @@
+{
+    "txid": "0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c",
+    "vin": [
+        {
+            "n": 0,
+            "addresses": ["0xcb6139253d4fa49712C08BF0Cb4F6ea6c2007bF5"],
+            "isAddress": true,
+            "isOwn": true
+        }
+    ],
+    "vout": [
+        {
+            "value": "100204158497493752",
+            "n": 0,
+            "addresses": ["0xD523794C879D9eC028960a231F866758e405bE34"],
+            "isAddress": true
+        }
+    ],
+    "blockHash": "0xc97a17910a679329029314dae2cdc4eb8cc53c4420db06d8dc43fccdb86f29b5",
+    "blockHeight": 22890276,
+    "confirmations": 159,
+    "blockTime": 1752168563,
+    "value": "100204158497493752",
+    "fees": "25293986739000",
+    "ethereumSpecific": {
+        "status": 1,
+        "nonce": 434,
+        "gasLimit": 453197,
+        "gasUsed": 210140,
+        "gasPrice": "1204475559",
+        "maxPriorityFeePerGas": "2000000000",
+        "maxFeePerGas": "22309926703",
+        "baseFeePerGas": "15179901273",
+        "data": "0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001",
+        "parsedData": {
+            "methodId": "0x3a29dbae",
+            "name": "Stake",
+            "function": "stake(uint64)",
+            "params": [
+                {
+                    "type": "uint64",
+                    "values": ["1"]
+                }
+            ]
+        },
+        "internalTransfers": [
+            {
+                "type": 0,
+                "from": "0x6bE457e04092B28865E0cBa84E3b2CFa0f871E67",
+                "to": "0x19449f0f696703Aa3b1485DfA2d855F33659397a",
+                "value": "397761944643911941"
+            },
+            {
+                "type": 0,
+                "from": "0xD523794C879D9eC028960a231F866758e405bE34",
+                "to": "0x19449f0f696703Aa3b1485DfA2d855F33659397a",
+                "value": "100204158497493752"
+            }
+        ]
+    }
+}

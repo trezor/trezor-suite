@@ -116,6 +116,7 @@ export const StakeInputs = () => {
     return (
         <Column gap={spacings.sm} alignItems="center">
             <InputWithOptions<StakeFormState>
+                data-testid="@staking/form"
                 onCurrencyChange={setCurrency}
                 cryptoInputProps={{
                     name: CRYPTO_INPUT,

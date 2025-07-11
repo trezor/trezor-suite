@@ -1,0 +1,52 @@
+{
+    "txid": "0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c",
+    "vin": [
+        {
+            "n": 0,
+            "addresses": ["0xcb6139253d4fa49712C08BF0Cb4F6ea6c2007bF5"],
+            "isAddress": true,
+            "isOwn": true
+        }
+    ],
+    "vout": [
+        {
+            "value": "0",
+            "n": 0,
+            "addresses": ["0xD523794C879D9eC028960a231F866758e405bE34"],
+            "isAddress": true
+        }
+    ],
+    "blockHeight": -1,
+    "confirmations": 0,
+    "blockTime": 1751723496,
+    "value": "0",
+    "fees": "25293986739000",
+    "ethereumSpecific": {
+        "status": -1,
+        "nonce": 1,
+        "gasLimit": 238696,
+        "gasPrice": "1204475559",
+        "maxPriorityFeePerGas": "2000000000",
+        "maxFeePerGas": "2497514931",
+        "data": "0x76ec871c00000000000000000000000000000000000000000000017b7883c069166000000000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000001",
+        "parsedData": {
+            "methodId": "0x76ec871c",
+            "name": "Unstake",
+            "function": "unstake(uint256, uint16, uint64)",
+            "params": [
+                {
+                    "type": "uint256",
+                    "values": ["1707683570697248000"]
+                },
+                {
+                    "type": "uint16",
+                    "values": ["5"]
+                },
+                {
+                    "type": "uint64",
+                    "values": ["1"]
+                }
+            ]
+        }
+    }
+}

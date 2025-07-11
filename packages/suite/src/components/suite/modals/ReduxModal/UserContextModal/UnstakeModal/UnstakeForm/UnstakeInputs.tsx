@@ -89,7 +89,7 @@ export const UnstakeInputs = () => {
     return (
         <Column gap={spacings.sm} alignItems="center">
             <InputWithOptions<UnstakeFormState>
-                data-testid="@staking/unstaking-form"
+                data-testid="@staking/form"
                 onCurrencyChange={setCurrency}
                 cryptoInputProps={{
                     name: OUTPUT_AMOUNT,
