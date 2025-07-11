@@ -104,6 +104,12 @@ const SignVerify = () => {
         }
     };
 
+    // Empty accountTypes means there is only 'normal' accountType and therefore the signatures are same.
+    const signFormatsDiffer =
+        selectedAccount.account!.networkType === 'bitcoin' &&
+        selectedAccount.account!.accountType !== 'legacy' &&
+        Object.keys(selectedAccount.network!.accountTypes).length >= 1;
+
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" isSubpage account={selectedAccount}>
             <WalletSubpageHeading title="TR_NAV_SIGN_VERIFY">
@@ -166,43 +172,45 @@ const SignVerify = () => {
                                         data-testid="@sign-verify/sign-address"
                                         {...pathField}
                                     />
-                                    <SelectBar
-                                        label={
-                                            <Tooltip
-                                                maxWidth={330}
-                                                content={
-                                                    <Translation
-                                                        id="TR_FORMAT_TOOLTIP"
-                                                        values={{
-                                                            FormatDescription: chunks => (
-                                                                <p>{chunks}</p>
-                                                            ),
-                                                            span: chunks => (
-                                                                <strong>{chunks}</strong>
-                                                            ),
-                                                        }}
-                                                    />
-                                                }
-                                                hasIcon
-                                            >
-                                                <Translation id="TR_FORMAT" />
-                                            </Tooltip>
-                                        }
-                                        options={[
-                                            {
-                                                value: false,
-                                                label: <Translation id="TR_BIP_SIG_FORMAT" />,
-                                            },
-                                            {
-                                                value: true,
-                                                label: (
-                                                    <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />
-                                                ),
-                                            },
-                                        ]}
-                                        data-testid="@sign-verify/format"
-                                        {...isElectrumField}
-                                    />
+                                    {signFormatsDiffer && (
+                                        <SelectBar
+                                            label={
+                                                <Tooltip
+                                                    maxWidth={330}
+                                                    content={
+                                                        <Translation
+                                                            id="TR_FORMAT_TOOLTIP"
+                                                            values={{
+                                                                FormatDescription: chunks => (
+                                                                    <p>{chunks}</p>
+                                                                ),
+                                                                span: chunks => (
+                                                                    <strong>{chunks}</strong>
+                                                                ),
+                                                            }}
+                                                        />
+                                                    }
+                                                    hasIcon
+                                                >
+                                                    <Translation id="TR_FORMAT" />
+                                                </Tooltip>
+                                            }
+                                            options={[
+                                                {
+                                                    value: false,
+                                                    label: <Translation id="TR_BIP_SIG_FORMAT" />,
+                                                },
+                                                {
+                                                    value: true,
+                                                    label: (
+                                                        <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />
+                                                    ),
+                                                },
+                                            ]}
+                                            data-testid="@sign-verify/format"
+                                            {...isElectrumField}
+                                        />
+                                    )}
                                 </Row>
                                 <Divider margin={{}} />
                                 <Input
