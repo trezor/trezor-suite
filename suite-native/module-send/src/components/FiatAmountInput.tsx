@@ -2,12 +2,18 @@ import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import {
+    DeviceRootState,
+    TransactionsRootState,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { Input } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
+import { selectAccountTokenDecimals } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
 
 import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
@@ -25,12 +31,17 @@ export const FiatAmountInput = ({
     onPress,
     onFocus,
     isDisabled = false,
+    accountKey,
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
     const { decimals } = getNetwork(symbol);
+    const tokenDecimals = useSelector(
+        (state: DeviceRootState & TokenDefinitionsRootState & TransactionsRootState) =>
+            selectAccountTokenDecimals(state, accountKey, tokenContract),
+    );
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
@@ -60,7 +71,10 @@ export const FiatAmountInput = ({
 
         const cryptoValue = converters?.convertFiatToCrypto?.(transformedValue);
         if (cryptoValue) {
-            setValue(cryptoFieldName, cryptoValue.toFixed(decimals), { shouldValidate: true });
+            const cryptoDecimals = tokenDecimals ?? decimals;
+            setValue(cryptoFieldName, cryptoValue.toFixed(cryptoDecimals), {
+                shouldValidate: true,
+            });
         }
 
         setValue('setMaxOutputId', undefined);
