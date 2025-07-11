@@ -1,7 +1,5 @@
 import { MouseEventHandler } from 'react';
 
-import styled from 'styled-components';
-
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
 import { Row, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -22,13 +20,6 @@ type DeviceStatusProps = {
     isDeviceDetailVisible?: boolean;
 };
 
-const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
-    display: flex;
-    justify-content: center;
-    opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
-    width: 24px;
-`;
-
 export const DeviceStatus = ({
     deviceModel,
     deviceNeedsRefresh = false,
@@ -40,13 +31,13 @@ export const DeviceStatus = ({
     const deviceLabel = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
 
     const image = (
-        <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
+        <Row justifyContent="center" width={24} opacity={deviceNeedsRefresh ? 0.4 : 1}>
             <RotateDeviceImage
                 deviceModel={deviceModel}
                 deviceColor={device?.features?.unit_color}
                 animationHeight="34px"
             />
-        </DeviceWrapper>
+        </Row>
     );
 
     const content = device && (
@@ -60,7 +51,7 @@ export const DeviceStatus = ({
     );
 
     return (
-        <Row flex="1" gap={spacings.md}>
+        <Row flex="1" gap={spacings.sm}>
             {isDeviceDetailVisible ? (
                 <>
                     {image}

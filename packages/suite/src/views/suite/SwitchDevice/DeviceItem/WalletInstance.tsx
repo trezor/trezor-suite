@@ -7,7 +7,17 @@ import {
     selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
-import { Box, Card, Column, Divider, Icon, Row, Text, Tooltip } from '@trezor/components';
+import {
+    Box,
+    Card,
+    Collapsible,
+    Column,
+    Divider,
+    Icon,
+    Row,
+    Text,
+    Tooltip,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { METADATA_LABELING } from 'src/actions/suite/constants';
@@ -105,91 +115,97 @@ export const WalletInstance = ({
                 onMouseLeave={() => setIsEjectVisible(false)}
                 {...rest}
             >
-                <Column>
-                    <Text
-                        as="div"
-                        variant={isSelected ? 'default' : 'tertiary'}
-                        typographyStyle={isSelected ? 'highlight' : 'body'}
-                        ellipsisLineCount={1}
-                    >
-                        <Row justifyContent="space-between">
-                            <Row gap={spacings.xxs}>
-                                {!instance.useEmptyPassphrase && (
-                                    <Tooltip
-                                        content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}
-                                    >
-                                        <Icon name="asterisk" size={12} />
-                                    </Tooltip>
-                                )}
-                                {instance.state?.staticSessionId ? (
-                                    <MetadataLabeling
-                                        defaultVisibleValue={
-                                            walletLabel === undefined || walletLabel.trim() === ''
-                                                ? defaultWalletLabel
-                                                : walletLabel
-                                        }
-                                        payload={{
-                                            type: 'walletLabel',
-                                            entityKey: instance.state.staticSessionId,
-                                            defaultValue: instance.state.staticSessionId,
-                                            value: instance?.metadata[
-                                                METADATA_LABELING.ENCRYPTION_VERSION
-                                            ]
-                                                ? walletLabel
-                                                : '',
+                <Collapsible isOpen={isEjecting}>
+                    <Column>
+                        <Text
+                            as="div"
+                            variant={isSelected ? 'default' : 'tertiary'}
+                            typographyStyle={isSelected ? 'highlight' : 'body'}
+                            ellipsisLineCount={1}
+                        >
+                            <Row justifyContent="space-between">
+                                <Row gap={spacings.xxs}>
+                                    {!instance.useEmptyPassphrase && (
+                                        <Tooltip
+                                            content={
+                                                <Translation id="TR_WALLET_PASSPHRASE_WALLET" />
+                                            }
+                                        >
+                                            <Icon name="asterisk" size={12} />
+                                        </Tooltip>
+                                    )}
+                                    {instance.state?.staticSessionId ? (
+                                        <MetadataLabeling
+                                            defaultVisibleValue={
+                                                walletLabel === undefined ||
+                                                walletLabel.trim() === ''
+                                                    ? defaultWalletLabel
+                                                    : walletLabel
+                                            }
+                                            payload={{
+                                                type: 'walletLabel',
+                                                entityKey: instance.state.staticSessionId,
+                                                defaultValue: instance.state.staticSessionId,
+                                                value: instance?.metadata[
+                                                    METADATA_LABELING.ENCRYPTION_VERSION
+                                                ]
+                                                    ? walletLabel
+                                                    : '',
+                                            }}
+                                            defaultEditableValue={defaultWalletLabel}
+                                        />
+                                    ) : (
+                                        <WalletLabeling device={instance} />
+                                    )}
+                                </Row>
+
+                                {isEjectVisible && !isEjecting && (
+                                    <Box
+                                        position={{
+                                            type: 'absolute',
+                                            right: spacings.sm,
+                                            top: spacings.sm,
                                         }}
-                                        defaultEditableValue={defaultWalletLabel}
-                                    />
-                                ) : (
-                                    <WalletLabeling device={instance} />
+                                    >
+                                        <Collapsible.Toggle>
+                                            <Tooltip
+                                                cursor="pointer"
+                                                content={<Translation id="TR_EJECT_HEADING" />}
+                                            >
+                                                <Icon
+                                                    data-testid={`${dataTestBase}/eject-button`}
+                                                    name="eject"
+                                                    size={18}
+                                                    variant="tertiary"
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        setIsEjecting(true);
+                                                    }}
+                                                />
+                                            </Tooltip>
+                                        </Collapsible.Toggle>
+                                    </Box>
                                 )}
                             </Row>
-                            {(isEjectVisible || isEjecting) && (
-                                <Box
-                                    position={{
-                                        type: 'absolute',
-                                        right: spacings.sm,
-                                        top: spacings.sm,
-                                    }}
-                                >
-                                    <Tooltip
-                                        cursor="pointer"
-                                        content={<Translation id="TR_EJECT_HEADING" />}
-                                    >
-                                        <Icon
-                                            data-testid={`${dataTestBase}/eject-button`}
-                                            name="eject"
-                                            size={22}
-                                            variant="tertiary"
-                                            onClick={e => {
-                                                e.stopPropagation();
-                                                setIsEjecting(true);
-                                            }}
-                                        />
-                                    </Tooltip>
-                                </Box>
-                            )}
-                        </Row>
-                    </Text>
+                        </Text>
 
-                    <FiatHeader
-                        amount={walletBalance}
-                        size="medium"
-                        localCurrency={localCurrency}
-                        data-testid={`${dataTestBase}/fiat-amount`}
-                    />
-                </Column>
+                        <FiatHeader
+                            amount={walletBalance}
+                            size="medium"
+                            localCurrency={localCurrency}
+                            data-testid={`${dataTestBase}/fiat-amount`}
+                        />
+                    </Column>
 
-                {isEjecting && (
-                    <>
-                        <Divider />
+                    <Collapsible.Content>
+                        <Divider margin={{ vertical: spacings.sm }} />
                         <EjectConfirmation
                             instance={instance}
                             onClick={stopPropagation}
                             onCancel={onEjectCancelClick}
                         />
-                    </>
-                )}
+                    </Collapsible.Content>
+                </Collapsible>
             </Card>
         </Box>
     );

@@ -93,7 +93,7 @@ export type BoxProps = AllowedFrameProps & {
     'data-testid'?: string;
     'aria-hidden'?: boolean;
     as?: React.ElementType;
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
 };

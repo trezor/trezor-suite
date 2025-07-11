@@ -13,6 +13,7 @@ import { NeedsAttentionBanner } from './NeedsAttentionBanner';
 
 type CardWithDeviceProps = {
     children: ReactNode;
+    actions?: ReactNode | null;
     onCancel?: ForegroundAppProps['onCancel'];
     device: TrezorDevice;
     isFindTrezorVisible?: boolean;
@@ -22,6 +23,7 @@ type CardWithDeviceProps = {
 
 export const CardWithDevice = ({
     children,
+    actions,
     onCancel,
     device,
     onBackButtonClick,
@@ -42,6 +44,7 @@ export const CardWithDevice = ({
                     device={device}
                     onBackButtonClick={onBackButtonClick}
                     isDeviceStatusVisible={isDeviceStatusVisible}
+                    actions={actions}
                 />
 
                 {needsAttention && (
