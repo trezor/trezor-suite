@@ -29,7 +29,7 @@ export const sessionAuthenticateThunk = createThunk<
     {
         event: WalletKitTypes.SessionAuthenticate;
     }
->(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState }) => {
+>(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
     // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
     try {
         const device = selectSelectedDevice(getState());
@@ -70,13 +70,25 @@ export const sessionAuthenticateThunk = createThunk<
             iss,
         );
 
-        await walletKit.approveSessionAuthenticate({
+        const { session } = await walletKit.approveSessionAuthenticate({
             id: event.id,
             auths: [auth],
         });
+        if (session) {
+            dispatch(
+                walletConnectActions.saveSession({
+                    ...session,
+                    validation: event.verifyContext.verified.validation,
+                }),
+            );
+        }
     } catch (error) {
-        console.error(error);
-
+        dispatch(
+            notificationsActions.addToast({
+                type: 'error',
+                error: `WalletConnect pairing failed - ${error.message}`,
+            }),
+        );
         await walletKit.rejectSessionAuthenticate({
             id: event.id,
             reason: getSdkError('USER_REJECTED'),
