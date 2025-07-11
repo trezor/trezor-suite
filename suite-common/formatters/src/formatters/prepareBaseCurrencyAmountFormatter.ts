@@ -8,7 +8,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils/libESM';
+import { BigNumber } from '@trezor/utils';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
@@ -17,7 +17,7 @@ export type BaseCurrencyAmountFormatterDataContext<T> = {
     [K in keyof T]: T[K];
 };
 
-// It seems that `currency` param in intl.formatNumber works only wit 3 letter currencies
+// `currency` param in intl.formatNumber works only wit 3 letter currencies
 const BITCOIN_SATS_PLACEHOLDER = 'sat';
 
 const handleBigNumberFormatting = (

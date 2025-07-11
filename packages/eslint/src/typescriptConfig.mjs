@@ -22,6 +22,8 @@ export const typescriptConfig = [
                         '@trezor/*/lib/**',
                         '@trezor/*/libDev',
                         '@trezor/*/libDev/**',
+                        '@trezor/*/libESM',
+                        '@trezor/*/libESM/**',
                     ],
                 },
             ],
