@@ -1,5 +1,5 @@
 import * as trezorConnectActions from '@suite-common/connect-init';
-import { initMessageSystemThunk } from '@suite-common/message-system';
+import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
     initBlockchainThunk,
@@ -40,7 +40,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     dispatch({ type: SUITE.INIT });
 
-    dispatch(initDevices());
+    await dispatch(initDevices());
 
     /**
      * ----------------------------------------------
@@ -56,7 +56,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(languageActions.setLanguage(language));
 
     // 3. fetch message system config
-    dispatch(initMessageSystemThunk());
+    await prepareCachedEnvData();
+    await dispatch(initMessageSystemThunk());
 
     // 4. turn on auto updates if needed
     if (isDesktop() && enableAutoupdateOnNextRun) {

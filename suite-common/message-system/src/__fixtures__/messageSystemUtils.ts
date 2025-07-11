@@ -1349,9 +1349,7 @@ type GetValidMessagesFixture = {
     description: string;
     currentDate: string;
     userAgent: string;
-    // For some systems, userAgent may not be sufficient to determine osVersion (see envUtils.ts).
-    // To simulate those cases, instead of mocking userAgent, getOsVersion will be mocked directly
-    osVersion?: string;
+    osVersion: string;
     osName: ReturnType<EnvUtils['getOsName']>;
     environment: ReturnType<EnvUtils['getEnvironment']>;
     suiteVersion: string;
@@ -1365,6 +1363,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         description: 'getValidMessages case 1',
         currentDate: '',
         userAgent: '',
+        osVersion: '',
         osName: '',
         environment: 'desktop',
         suiteVersion: '',
@@ -1377,6 +1376,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1389,6 +1389,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1405,6 +1406,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1421,6 +1423,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1437,6 +1440,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'web',
         suiteVersion: '1.4.5',
@@ -1460,6 +1464,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'web',
         suiteVersion: '2.4.5',
@@ -1483,6 +1488,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1508,6 +1514,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1533,6 +1540,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'web',
         suiteVersion: '',
@@ -1555,6 +1563,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1577,6 +1586,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'web',
         suiteVersion: '',
@@ -1599,6 +1609,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1617,6 +1628,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1635,6 +1647,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1660,6 +1673,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1685,6 +1699,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1724,6 +1739,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1755,6 +1771,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1790,6 +1807,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -1825,6 +1843,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'web',
         suiteVersion: '2.0.0',
@@ -1842,6 +1861,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         currentDate: '',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
@@ -2047,6 +2067,7 @@ type GetValidExperimentIdsFixture = {
     description: string;
     currentDate: string;
     userAgent: string;
+    osVersion: string;
     osName: ReturnType<EnvUtils['getOsName']>;
     environment: ReturnType<EnvUtils['getEnvironment']>;
     suiteVersion: string;
@@ -2061,6 +2082,7 @@ export const getValidExperimentIds: GetValidExperimentIdsFixture[] = [
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '11.1',
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',

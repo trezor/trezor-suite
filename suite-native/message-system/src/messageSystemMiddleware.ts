@@ -20,37 +20,33 @@ const isAnyOfMessageSystemAffectingActions = isAnyOf(
     geolocationActions.setCountryCode,
 );
 
-export const messageSystemMiddleware = createMiddleware(
-    async (action, { next, dispatch, getState }) => {
-        // The action has to be handled by the reducer first to apply its
-        // changes first, because this middleware expects already updated state.
-        next(action);
+export const messageSystemMiddleware = createMiddleware((action, { next, dispatch, getState }) => {
+    // The action has to be handled by the reducer first to apply its
+    // changes first, because this middleware expects already updated state.
+    next(action);
 
-        if (isAnyOfMessageSystemAffectingActions(action)) {
-            const config = selectMessageSystemConfig(getState());
-            const device = selectSelectedDevice(getState());
-            const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
-            const countryCode = selectCountryCode(getState());
+    if (isAnyOfMessageSystemAffectingActions(action)) {
+        const config = selectMessageSystemConfig(getState());
+        const device = selectSelectedDevice(getState());
+        const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
+        const countryCode = selectCountryCode(getState());
 
-            const validationParams = {
-                device,
-                settings: {
-                    tor: false, // not supported in suite-native
-                    enabledNetworks,
-                },
-                countryCode,
-            };
-            const [validMessages, validExperimentIds] = await Promise.all([
-                getValidMessages(config, validationParams),
-                getValidExperimentIds(config, validationParams),
-            ]);
+        const validationParams = {
+            device,
+            settings: {
+                tor: false, // not supported in suite-native
+                enabledNetworks,
+            },
+            countryCode,
+        };
+        const validMessages = getValidMessages(config, validationParams);
+        const validExperimentIds = getValidExperimentIds(config, validationParams);
 
-            const categorizedValidMessages = categorizeMessages(validMessages);
+        const categorizedValidMessages = categorizeMessages(validMessages);
 
-            dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
-            dispatch(messageSystemActions.updateValidExperiments(validExperimentIds));
-        }
+        dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
+        dispatch(messageSystemActions.updateValidExperiments(validExperimentIds));
+    }
 
-        return action;
-    },
-);
+    return action;
+});

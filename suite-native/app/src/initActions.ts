@@ -1,5 +1,5 @@
 import { connectInitThunk } from '@suite-common/connect-init';
-import { initMessageSystemThunk } from '@suite-common/message-system';
+import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
@@ -19,7 +19,8 @@ const ACTION_PREFIX = '@suite-native/app';
 
 export const applicationInit = createThunk(
     `${ACTION_PREFIX}/applicationInit`,
-    (_, { dispatch }) => {
+    async (_, { dispatch }) => {
+        await prepareCachedEnvData();
         dispatch(initAnalyticsThunk());
         dispatch(initMessageSystemThunk());
 
