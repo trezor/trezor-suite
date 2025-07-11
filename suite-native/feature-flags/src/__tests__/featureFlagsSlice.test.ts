@@ -26,6 +26,7 @@ describe('featureFlagsSlice', () => {
                 isTradingExchangeEnabled: false,
                 isTradingSellEnabled: false,
                 isCheckBackupsEnabled: false,
+                isCoinControlEnabled: false,
             });
         });
 
@@ -50,6 +51,7 @@ describe('featureFlagsSlice', () => {
                 isTradingExchangeEnabled: false,
                 isTradingSellEnabled: false,
                 isCheckBackupsEnabled: false,
+                isCoinControlEnabled: false,
             });
         });
     });

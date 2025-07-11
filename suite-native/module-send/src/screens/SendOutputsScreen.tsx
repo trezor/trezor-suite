@@ -2,6 +2,7 @@ import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, InlineAlertBox } from '@suite-native/atoms';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
@@ -16,6 +17,7 @@ import { useUtxoSelection } from '../hooks/useUtxoSelection';
 export const SendOutputsScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
+    const isCoinControlFFEnabled = useFeatureFlag(FeatureFlag.isCoinControlEnabled);
     const { accountKey, tokenContract } = params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection();
@@ -29,6 +31,7 @@ export const SendOutputsScreen = ({
         formState: { isValid, isSubmitting },
     } = form;
 
+    const isCoinControlEnabled = isCoinControlFFEnabled && network?.networkType === 'bitcoin';
     const isMissingUtxos =
         selectedUtxos.length > 0 && amount && totalSelectedAmount.isLessThan(amount);
 
@@ -64,7 +67,7 @@ export const SendOutputsScreen = ({
                 <Box marginTop="sp32">
                     <Form form={form}>
                         <SendOutputFields accountKey={accountKey} />
-                        {network?.networkType === 'bitcoin' && (
+                        {isCoinControlEnabled && (
                             <Box flexDirection="row" justifyContent="center" marginTop="sp24">
                                 <SwitchCoinControlButton amount={amount} accountKey={accountKey} />
                             </Box>

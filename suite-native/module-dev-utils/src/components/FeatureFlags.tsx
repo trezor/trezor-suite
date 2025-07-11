@@ -17,6 +17,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsTradingBuyEnabled]: '💰 Trading Buy',
     [FeatureFlagEnum.IsTradingExchangeEnabled]: '💰 Trading Swap',
     [FeatureFlagEnum.IsTradingSellEnabled]: '💰 Trading Sell',
+    [FeatureFlagEnum.isCoinControlEnabled]: 'Coin Control',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
