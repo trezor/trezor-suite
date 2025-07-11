@@ -9,7 +9,7 @@ test.describe.skip('Auto update', { tag: ['@group=manual'] }, () => {
             annotation: createTestAnnotation({
                 testCase: 'Verifies that a user can update application.',
                 prerequisites: [
-                    'Current producion version of Trezor Suite',
+                    'Current production version of Trezor Suite',
                     'Release candidate of Trezor Suite',
                     'Build of Trezor Suite that starts with 0x.x.x',
                     'Access to SatoshiLabs VPN',
