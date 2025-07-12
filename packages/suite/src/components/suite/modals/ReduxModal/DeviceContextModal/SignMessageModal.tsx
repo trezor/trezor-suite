@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -51,8 +51,6 @@ export const SignMessageModal = ({
 
     // Connect's coin shortcut (uppercase) <-> Suite's network symbol (lowercase)
     const networkSymbol = coin?.toLowerCase() as NetworkSymbol;
-    const network = networkSymbol ? getNetwork(networkSymbol) : undefined;
-    const account = accounts.find(a => a.symbol === networkSymbol && a.path === serializedPath);
     const eip712parsed = () => {
         try {
             return JSON.parse(message);
@@ -62,6 +60,11 @@ export const SignMessageModal = ({
     };
     const isEip712 =
         eip712parsed()?.primaryType && eip712parsed()?.domain && eip712parsed()?.message;
+    const eip712ChainId = eip712parsed()?.domain?.chainId;
+    const network = eip712ChainId
+        ? getNetworkByEvmChainId(eip712ChainId)
+        : getNetwork(networkSymbol ?? 'eth');
+    const account = accounts.find(a => a.symbol === network?.symbol && a.path === serializedPath);
 
     return (
         <Modal.Backdrop>
