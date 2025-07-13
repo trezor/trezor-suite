@@ -1,10 +1,14 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { TextInput } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    fetchAllTransactionsForAccountThunk,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { useFilteredUtxos } from '@suite-common/wallet-utils';
 import { BaseSearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -21,6 +25,7 @@ export const SendUtxoScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendUtxo>) => {
     const { accountKey, amount } = params;
+    const dispatch = useDispatch();
 
     const { translate } = useTranslate();
     const navigation = useNavigation();
@@ -36,6 +41,20 @@ export const SendUtxoScreen = ({
         selectAccountByKey(state, accountKey),
     );
     const filteredUtxos = useFilteredUtxos(account?.utxo ?? [], searchQuery);
+
+    // we need to fetch all transactions for the account to have the additional UTXOs data available
+    useEffect(() => {
+        const promise = dispatch(
+            fetchAllTransactionsForAccountThunk({
+                accountKey,
+                noLoading: true,
+            }),
+        );
+
+        return () => {
+            promise.abort();
+        };
+    }, [accountKey, dispatch]);
 
     const handleUtxoSelect = (utxo: Utxo) =>
         tempSelectedUtxos.includes(utxo)
@@ -59,7 +78,7 @@ export const SendUtxoScreen = ({
     const onSearchChange = useCallback((query: string) => {
         setSearchQuery(query);
     }, []);
-    if (!account) return null;
+    if (account === null) return null;
 
     return (
         <Screen
