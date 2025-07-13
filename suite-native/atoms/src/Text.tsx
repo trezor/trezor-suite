@@ -54,17 +54,6 @@ type TextStyleProps = {
 export const TITLE_MAX_FONT_MULTIPLIER = 1.5;
 export const TEXT_MAX_FONT_MULTIPLIER = 2;
 
-const getAccessibilityFontScale = () => {
-    const fontScale = PixelRatio.getFontScale();
-
-    return fontScale < TEXT_MAX_FONT_MULTIPLIER ? fontScale : TEXT_MAX_FONT_MULTIPLIER;
-};
-
-/**
- * Defines maximal layout scale multiplier based on device accessibility settings.
- */
-export const ACCESSIBILITY_FONTSIZE_MULTIPLIER = getAccessibilityFontScale();
-
 /**
  * Accessibility inducted enlarging of font sizes is limited to prevent layout overflows.
  * Our UI design is not prepared for unlimited up-scaling.
@@ -79,6 +68,21 @@ const variantToMaxFontSizeMultiplier = {
     hint: TEXT_MAX_FONT_MULTIPLIER,
     label: TEXT_MAX_FONT_MULTIPLIER,
 } as const satisfies Record<NativeTypographyStyle, number>;
+
+const getAccessibilityFontScale = (variant?: NativeTypographyStyle) => {
+    const fontScale = PixelRatio.getFontScale();
+
+    const maxFontScale = variant
+        ? variantToMaxFontSizeMultiplier[variant]
+        : TEXT_MAX_FONT_MULTIPLIER;
+
+    return fontScale < maxFontScale ? fontScale : maxFontScale;
+};
+
+/**
+ * Defines maximal layout scale multiplier based on device accessibility settings.
+ */
+export const ACCESSIBILITY_FONTSIZE_MULTIPLIER = getAccessibilityFontScale();
 
 const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, textAlign }) => ({
     ...utils.typography[variant],
@@ -99,7 +103,7 @@ export const Text = React.forwardRef<RNText, TextProps>(
         ref,
     ) => {
         const { applyStyle } = useNativeStyles();
-        const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
+        const maxFontSizeMultiplier = getAccessibilityFontScale(variant);
 
         return (
             <DefaultTextComponent
