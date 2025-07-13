@@ -197,6 +197,7 @@ export const TradingFormOffer = () => {
                     <TradingFormOfferCryptoAmount
                         amount={
                             !state.isLoadingOrInvalid &&
+                            !isFetchingApprovalStatus &&
                             bestScoredQuoteAmounts?.receiveAmount &&
                             !isQuoteOutdated
                                 ? bestScoredQuoteAmounts.receiveAmount

@@ -54,6 +54,11 @@ export const TradingFormInputCurrency = ({
         if (isTradingExchangeContext(context) || isTradingSellContext(context)) {
             context.form.helpers.onFiatCurrencyChange(option.value);
         }
+
+        if (isTradingExchangeContext(context)) {
+            context.resetSelectedOffer();
+            context.refreshQuotes();
+        }
     };
 
     return (

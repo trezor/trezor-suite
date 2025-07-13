@@ -15,6 +15,7 @@ import {
     parseCryptoId,
     selectTradingLoadingAndTimestamp,
     tradingActions,
+    tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { Network, NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
@@ -156,6 +157,8 @@ export const TradingFormInputCryptoSelect = <
             context.setValue(TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption, {
                 shouldDirty: true,
             });
+
+            dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         } else {
             context.setValue(TRADING_FORM_CRYPTO_CURRENCY_SELECT, findOption, {
                 shouldDirty: true,
