@@ -102,6 +102,7 @@ export const ApproveModal = ({
             return;
         }
 
+        setIsConfirmButtonLoading(true);
         setApprovalType(type);
 
         switch (type) {
@@ -125,6 +126,7 @@ export const ApproveModal = ({
             trade: updatedSelectedQuote,
             receiveAddress: selectedQuote.receiveAddress,
         });
+        setIsConfirmButtonLoading(false);
     };
 
     const confirmAndSend = async () => {
@@ -208,7 +210,7 @@ export const ApproveModal = ({
                                         isChecked={approvalType === 'MINIMAL'}
                                         onClick={() => selectApprovalValue('MINIMAL')}
                                         verticalAlignment="center"
-                                        isDisabled={isFormLoading}
+                                        isDisabled={isFormLoading || isConfirmButtonLoading}
                                     >
                                         <Column alignItems="flex-start">
                                             <Text typographyStyle="highlight">
@@ -229,7 +231,7 @@ export const ApproveModal = ({
                                         isChecked={approvalType === 'INFINITE'}
                                         onClick={() => selectApprovalValue('INFINITE')}
                                         verticalAlignment="center"
-                                        isDisabled={isFormLoading}
+                                        isDisabled={isFormLoading || isConfirmButtonLoading}
                                     >
                                         <Column alignItems="flex-start">
                                             <Text typographyStyle="highlight">
