@@ -10,6 +10,16 @@ import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
 
+// Export module state and use it trezor-connect module to override init + setTransports params
+// getTransport function is reassigned in onLoad, onQuit
+type BluetoothModuleState = {
+    getTransport: () => BluetoothTransport | undefined;
+};
+
+export const bluetoothModuleState: BluetoothModuleState = {
+    getTransport: () => undefined,
+};
+
 export const init: ModuleInit = () => {
     const { logger } = global;
 
@@ -49,6 +59,16 @@ export const init: ModuleInit = () => {
         });
     };
 
+    const getBluetoothTransport = () =>
+        bluetoothProcess
+            ? new BluetoothTransport({
+                  id: 'BluetoothTransport',
+                  url: bluetoothProcess.getUrl(),
+                  logger: desktopLogger,
+                  messages: {}, // will be added by @trezor/connect transport initialization
+              })
+            : undefined;
+
     const proxyOptions: IpcProxyHandlerOptions<BluetoothIpcApi> = {
         onCreateInstance() {
             let api: BluetoothIpc | undefined;
@@ -87,13 +107,14 @@ export const init: ModuleInit = () => {
 
     const unregisterProxy = createIpcProxyHandler(ipcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
-        // empty, binary starts after bluetoothIpc.init
+        bluetoothModuleState.getTransport = getBluetoothTransport;
     };
 
     const onQuit = () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
         unregisterProxy();
         killBluetoothProcess();
+        bluetoothModuleState.getTransport = () => undefined;
     };
 
     return { onLoad, onQuit };
