@@ -12,34 +12,63 @@ import {
 } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
+    DeviceOnboardingStackRoutes,
     RootStackRoutes,
     navigationContainerRef,
 } from '@suite-native/navigation';
-import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
+import {
+    selectIsCoinEnablingInitFinished,
+    selectIsDeviceOnboardingDeviceDisconnectedAlertDisplayed,
+} from '@suite-native/settings';
 
-import { NativeDeviceRootState, selectIsDeviceCompromised } from '../selectors';
+import {
+    NativeDeviceRootState,
+    selectIsDeviceCompromised,
+    selectIsDeviceSetupSupported,
+} from '../selectors';
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
 
-const connectDevice = ({ isCoinEnablingInitFinished }: { isCoinEnablingInitFinished: boolean }) => {
+const connectDevice = ({
+    isCoinEnablingInitFinished,
+    isDeviceInitialized,
+    isDeviceSetupSupported,
+    isOnboardingDeviceDisconnectedAlertDisplayed,
+}: {
+    isCoinEnablingInitFinished: boolean;
+    isDeviceInitialized: boolean;
+    isDeviceSetupSupported: boolean;
+    isOnboardingDeviceDisconnectedAlertDisplayed: boolean;
+}) => {
+    if (
+        !isDeviceInitialized &&
+        isDeviceSetupSupported &&
+        !isOnboardingDeviceDisconnectedAlertDisplayed
+    ) {
+        navigationContainerRef.navigate(RootStackRoutes.DeviceOnboardingStack, {
+            screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+        });
+
+        return;
+    }
+
     // If coin enabling is not finished, it takes priority over connecting screen
     if (isCoinEnablingInitFinished) {
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
         });
+
+        return;
     } else {
         navigationContainerRef.navigate(RootStackRoutes.CoinEnablingInit);
+
+        return;
     }
 };
 
 export const startDeviceConnectionListening = () => {
     deviceConnectionMiddleware.startListening({
-        predicate: (action, currentState) =>
-            deviceConnectThunks.fulfilled.match(action) &&
-            // TODO this should dissappear after we merge device onboarding redirect here as well
-            // https://github.com/trezor/trezor-suite/issues/20157
-            // If device is not initialized and is compromised, we display the modal (reason why this condition is here) and then want to redirect to uninitialized device landing.
-            (selectIsDeviceInitialized(currentState) || selectIsDeviceCompromised(currentState)),
+        predicate: action => deviceConnectThunks.fulfilled.match(action),
         effect: (
             _action,
             { getState }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
@@ -52,26 +81,35 @@ export const startDeviceConnectionListening = () => {
 
             const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
             const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
+            const isOnboardingDeviceDisconnectedAlertDisplayed =
+                selectIsDeviceOnboardingDeviceDisconnectedAlertDisplayed(getState());
+
+            const isDeviceInitialized = selectIsDeviceInitialized(getState());
+            const isDeviceSetupSupported = selectIsDeviceSetupSupported(getState());
 
             if (shouldNavigateToDeviceCompromisedModal) {
                 // When the compromised modal is closed on first connection and no coins would be selected, we will need to redirect user
                 // to coin enabling so he can continue to the app with running discovery.
                 navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal, {
                     onClose: () => {
-                        if (!isCoinEnablingInitFinished && selectIsDeviceInitialized(getState())) {
-                            connectDevice({
-                                isCoinEnablingInitFinished: false,
-                            });
-                        } else {
-                            if (navigationContainerRef.canGoBack()) navigationContainerRef.goBack();
-                        }
+                        connectDevice({
+                            isCoinEnablingInitFinished: false,
+                            isDeviceInitialized,
+                            isDeviceSetupSupported,
+                            isOnboardingDeviceDisconnectedAlertDisplayed,
+                        });
                     },
                 });
 
                 return;
             }
 
-            connectDevice({ isCoinEnablingInitFinished });
+            connectDevice({
+                isCoinEnablingInitFinished,
+                isDeviceInitialized,
+                isDeviceSetupSupported,
+                isOnboardingDeviceDisconnectedAlertDisplayed,
+            });
         },
     });
 };

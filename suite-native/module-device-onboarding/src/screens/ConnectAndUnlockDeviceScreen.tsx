@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 import { useSetAtom } from 'jotai';
@@ -6,7 +7,7 @@ import { useSetAtom } from 'jotai';
 import { useAlert } from '@suite-native/alerts';
 import {
     ConnectAndUnlockDeviceScreenContent,
-    isOnboardingDeviceDisconnectedAlertDisplayedAtom,
+    startDeviceConnectionListening,
     wasDeviceOnboardingCancelledAtom,
 } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
@@ -20,6 +21,7 @@ import {
     ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { setIsDeviceOnboardingDeviceDisconnectedAlertDisplayed } from '@suite-native/settings';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
@@ -29,14 +31,12 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const ConnectAndUnlockDeviceScreen = () => {
     const { showAlert } = useAlert();
+    const dispatch = useDispatch();
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProp>();
-    const setIsOnboardingDeviceDisconnectedAlertDisplayed = useSetAtom(
-        isOnboardingDeviceDisconnectedAlertDisplayedAtom,
-    );
 
     const hideDeviceDisconnectedAlert = () =>
-        setIsOnboardingDeviceDisconnectedAlertDisplayed(false);
+        dispatch(setIsDeviceOnboardingDeviceDisconnectedAlertDisplayed(false));
 
     const setWasDeviceOnboardingCancelled = useSetAtom(wasDeviceOnboardingCancelledAtom);
 
@@ -51,7 +51,8 @@ export const ConnectAndUnlockDeviceScreen = () => {
     useEffect(() => {
         // This alert should be shown only if the device was physically disconnected from the phone.
         // In case that user "disconnects" device by cancelling the onboarding flow via the app UI, the alert is not shown!
-        setIsOnboardingDeviceDisconnectedAlertDisplayed(true);
+        dispatch(setIsDeviceOnboardingDeviceDisconnectedAlertDisplayed(true));
+        startDeviceConnectionListening();
         setWasDeviceOnboardingCancelled(false);
 
         showAlert({

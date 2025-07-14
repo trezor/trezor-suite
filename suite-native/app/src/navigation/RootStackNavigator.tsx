@@ -113,10 +113,6 @@ export const RootStackNavigator = () => {
                 component={SettingsStackNavigator}
             />
             <RootStack.Screen
-                name={RootStackRoutes.DeviceCompromisedModal}
-                component={DeviceCompromisedModalScreen}
-            />
-            <RootStack.Screen
                 name={RootStackRoutes.BackupFailedModal}
                 component={BackupFailedModalScreen}
             />
@@ -130,6 +126,10 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.DeviceOnboardingStack}
                     component={DeviceOnboardingStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.DeviceCompromisedModal}
+                    component={DeviceCompromisedModalScreen}
                 />
                 <RootStack.Screen
                     name={RootStackRoutes.AccountsImport}

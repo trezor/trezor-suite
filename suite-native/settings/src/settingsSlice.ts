@@ -10,6 +10,7 @@ export interface AppSettingsState {
     isFirmwareRevisionCheckEnabled: boolean;
     isFirmwareHashCheckEnabled: boolean;
     areTestnetsEnabled: boolean;
+    isDeviceOnboardingDeviceDisconnectedAlertDisplayed: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -24,6 +25,7 @@ export const appSettingsInitialState: AppSettingsState = {
     isFirmwareRevisionCheckEnabled: true,
     isFirmwareHashCheckEnabled: true,
     areTestnetsEnabled: isDetoxTestBuild(),
+    isDeviceOnboardingDeviceDisconnectedAlertDisplayed: false,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -42,6 +44,12 @@ export const appSettingsSlice = createSlice({
     reducers: {
         setIsOnboardingFinished: state => {
             state.isOnboardingFinished = true;
+        },
+        setIsDeviceOnboardingDeviceDisconnectedAlertDisplayed: (
+            state,
+            { payload }: PayloadAction<boolean>,
+        ) => {
+            state.isDeviceOnboardingDeviceDisconnectedAlertDisplayed = payload;
         },
         setViewOnlyCancelationTimestamp: (state, { payload }: PayloadAction<number>) => {
             state.viewOnlyCancelationTimestamp = payload;
@@ -83,6 +91,10 @@ export const selectIsFirmwareAuthenticityCheckEnabled = (state: SettingsSliceRoo
     state.appSettings.isFirmwareRevisionCheckEnabled &&
     state.appSettings.isFirmwareHashCheckEnabled;
 
+export const selectIsDeviceOnboardingDeviceDisconnectedAlertDisplayed = (
+    state: SettingsSliceRootState,
+) => state.appSettings.isDeviceOnboardingDeviceDisconnectedAlertDisplayed;
+
 export const {
     setIsOnboardingFinished,
     setViewOnlyCancelationTimestamp,
@@ -90,5 +102,6 @@ export const {
     setCheckFirmwareAuthenticityEnabled,
     toggleAreTestnetsEnabled,
     setIsCoinEnablingInitFinished,
+    setIsDeviceOnboardingDeviceDisconnectedAlertDisplayed,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

@@ -13,7 +13,6 @@ import {
 
 const DEVICE_CONNECTION_BLACKLISTED_ROUTES: RootStackRoutes[] = [
     RootStackRoutes.DeviceCompromisedModal,
-    RootStackRoutes.DeviceOnboardingStack,
     RootStackRoutes.OnboardingStack,
 ];
 

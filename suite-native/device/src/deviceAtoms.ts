@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 
+// TODO I think we can remove this now.
 export const wasDeviceOnboardingCancelledAtom = atom<boolean>(false);
-export const isOnboardingDeviceDisconnectedAlertDisplayedAtom = atom<boolean>(false);
 
 export type DeviceDangerBannerCause = 'device-compromised' | 'backup-needed' | 'backup-failed';
 
