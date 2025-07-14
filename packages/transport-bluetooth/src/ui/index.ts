@@ -50,7 +50,7 @@ const createDevice = (api: TrezorBluetooth, d: BluetoothDevice) => {
 
     p = document.createElement('p');
     const timestamp = d.lastUpdatedTimestamp
-        ? new Date(d.lastUpdatedTimestamp * 1000).toLocaleTimeString('en-US', { hour12: false })
+        ? new Date(d.lastUpdatedTimestamp).toLocaleTimeString('en-US', { hour12: false })
         : 'Unknown';
     p.textContent = `Last seen: ${timestamp}`;
     details.appendChild(p);

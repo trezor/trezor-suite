@@ -27,7 +27,7 @@ import { closeModalApp } from '../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
 const SCAN_TIMEOUT = 30_000;
-const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS = 30;
+const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT = 30_000;
 
 type BluetoothConnectProps = {
     uiMode: BluetoothConnectUiMode;
@@ -48,8 +48,7 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
     const knownDevices = useSelector(selectKnownDevices);
     const nearbyDevices = useSelector(selectNearbyDevices);
 
-    const lastUpdatedBoundaryTimestamp =
-        Date.now() / 1000 - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS;
+    const lastUpdatedBoundaryTimestamp = Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
 
     const devices = allDevices.filter(it => {
         const isDeviceUnresponsiveForTooLong =
