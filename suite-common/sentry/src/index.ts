@@ -86,7 +86,7 @@ const ignoreErrors = [
     'ResizeObserver loop limit exceeded',
     // comes from bridge originally, we allowed user to init another connect call. should now be wrapped however and not thrown on transport layer
     'other call in progress',
-    'Action cancelled by user',
+    'Action canceled by user',
     'device disconnected during action', // the same as with 'other call in progress'
 ];
 

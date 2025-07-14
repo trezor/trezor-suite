@@ -38,7 +38,7 @@ export const createCoinjoinAccount = [
         connect: {
             success: false,
             payload: {
-                error: 'Cancelled',
+                error: 'Canceled',
             },
         },
         params: {
@@ -160,7 +160,7 @@ export const startCoinjoinSession = [
         connect: {
             success: false,
             payload: {
-                error: 'Cancelled',
+                error: 'Canceled',
             },
         },
         state: {
