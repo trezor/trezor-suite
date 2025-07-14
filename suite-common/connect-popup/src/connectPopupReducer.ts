@@ -3,6 +3,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
+import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
     AppRememberedPermission,
     CALL_SOURCE_WALLETCONNECT,
@@ -45,12 +46,11 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     state: 'ongoing',
                 };
             })
-            .addCase(connectPopupActions.requestPermissions, (state, { payload }) => {
+            .addCase(connectPopupActions.requestPermissions, state => {
                 if (state.activeCall?.state === 'ongoing')
                     state.activeCall = {
                         ...state.activeCall,
                         state: 'permission-request',
-                        ...payload,
                     };
             })
             .addCase(connectPopupActions.approvePermissions, state => {
@@ -58,10 +58,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     state.activeCall?.state === 'permission-request' ||
                     state.activeCall?.state === 'tx-simulation'
                 ) {
-                    state.activeCall.decision?.resolve();
+                    getPermissionDeferred()?.resolve();
                     state.activeCall = {
                         ...state.activeCall,
-                        decision: undefined,
                         state: 'ongoing',
                     };
                 }
@@ -71,10 +70,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     state.activeCall?.state === 'permission-request' ||
                     state.activeCall?.state === 'tx-simulation'
                 ) {
-                    state.activeCall.decision?.reject(payload);
+                    getPermissionDeferred()?.reject(payload);
                     state.activeCall = {
                         ...state.activeCall,
-                        decision: undefined,
                         state: 'finished',
                     };
                 }

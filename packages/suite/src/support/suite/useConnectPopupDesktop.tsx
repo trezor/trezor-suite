@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import {
     connectPopupCallThunk,
     connectPopupCancelThunk,
+    getPopupCallDeferred,
+    queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectPopupTypes';
@@ -24,7 +26,8 @@ export const useConnectPopupDesktop = () => {
         const init = async () => {
             if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
                 desktopApi.on('connect-popup/call', async params => {
-                    const response = await dispatch(
+                    await queuePopupCall();
+                    dispatch(
                         connectPopupCallThunk({
                             method: params.method as keyof typeof TrezorConnect,
                             payload: params.payload,
@@ -39,7 +42,8 @@ export const useConnectPopupDesktop = () => {
                                 manifest: params.manifest,
                             },
                         }),
-                    ).unwrap();
+                    );
+                    const response = await getPopupCallDeferred(true).promise;
                     desktopApi.connectPopupResponse({ ...response, id: params.id });
                 });
                 desktopApi.on('connect-popup/cancel', params => {

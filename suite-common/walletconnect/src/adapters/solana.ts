@@ -7,7 +7,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { CallMethodResponse } from '@trezor/connect';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
@@ -63,7 +63,7 @@ const solanaSignTransaction = createThunk<
             throw new Error('Account not found');
         }
 
-        const response = await dispatch(
+        dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 method: 'solanaSignTransaction',
                 payload: {
@@ -82,15 +82,17 @@ const solanaSignTransaction = createThunk<
                     },
                 },
             }),
-        ).unwrap();
-        if (!response.success || !response.payload.serializedTx) {
+        );
+        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+        const typedPayload = response.payload as CallMethodResponse<'solanaSignTransaction'>;
+        if (!response.success || !typedPayload.serializedTx) {
             console.error('solana_signTransaction error', response);
             throw new Error('solana_signTransaction error');
         }
 
         return {
-            signature: response.payload.signature,
-            transaction: response.payload.serializedTx,
+            signature: typedPayload.signature,
+            transaction: typedPayload.serializedTx,
         };
     },
 );

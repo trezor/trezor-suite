@@ -20,12 +20,7 @@ const initiateCall = createAction(
     }),
 );
 
-const requestPermissions = createAction(
-    `${ACTION_PREFIX}/requestPermissions`,
-    (payload: Pick<ConnectPopupCall & { state: 'permission-request' }, 'decision'>) => ({
-        payload,
-    }),
-);
+const requestPermissions = createAction(`${ACTION_PREFIX}/requestPermissions`);
 
 const approvePermissions = createAction(`${ACTION_PREFIX}/approvePermissions`);
 
@@ -76,7 +71,7 @@ const forgetAppPermissions = createAction(
 
 const txSimulation = createAction(
     `${ACTION_PREFIX}/txSimulation`,
-    (payload: Pick<ConnectPopupCall & { state: 'tx-simulation' }, 'decision' | 'fromAddress'>) => ({
+    (payload: Pick<ConnectPopupCall & { state: 'tx-simulation' }, 'fromAddress'>) => ({
         payload,
     }),
 );

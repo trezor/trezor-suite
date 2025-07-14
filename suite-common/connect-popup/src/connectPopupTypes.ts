@@ -1,6 +1,5 @@
 import { ErrorCode } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
-import { Deferred } from '@trezor/utils';
 
 export type ManifestPartial = {
     appName: string;
@@ -65,16 +64,13 @@ export type ConnectPopupCallLoaded = {
 } & (
     | {
           state: 'ongoing';
-          decision?: undefined;
           selectedAccountKey?: string;
       }
     | {
           state: 'finished';
-          decision?: undefined;
       }
     | {
           state: 'permission-request';
-          decision: Deferred<void>;
       }
     | {
           state: 'deeplink-callback';
@@ -95,7 +91,6 @@ export type ConnectPopupCallLoaded = {
       }
     | {
           state: 'tx-simulation';
-          decision: Deferred<void>;
           selectedAccountKey?: string;
           fromAddress: string;
       }
