@@ -254,7 +254,7 @@ export const ApproveModal = ({
                                             isChecked={approvalType === 'ZERO'}
                                             onClick={() => selectApprovalValue('ZERO')}
                                             verticalAlignment="center"
-                                            isDisabled={isFormLoading}
+                                            isDisabled={isFormLoading || isConfirmButtonLoading}
                                         >
                                             <Column alignItems="flex-start">
                                                 <Text typographyStyle="highlight">

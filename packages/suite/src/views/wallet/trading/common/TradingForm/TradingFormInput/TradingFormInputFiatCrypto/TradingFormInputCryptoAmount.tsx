@@ -6,7 +6,6 @@ import {
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
-    tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -16,7 +15,7 @@ import { getInputState } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -54,7 +53,6 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
     labelLeft,
     labelRight,
 }: TradingFormInputFiatCryptoProps<TFieldValues>) => {
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
@@ -134,7 +132,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
                 if (isTradingExchangeContext(context)) {
                     context.setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
                     context.form.helpers.setFractionButton(undefined);
-                    dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+                    context.resetSelectedOffer();
                 }
 
                 clearErrors(fiatInputName);

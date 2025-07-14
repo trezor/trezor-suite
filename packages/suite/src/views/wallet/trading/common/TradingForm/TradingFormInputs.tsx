@@ -9,7 +9,6 @@ import {
     type TradingBuyFormProps,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
-    tradingExchangeActions,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -19,7 +18,6 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 import {
@@ -64,7 +62,6 @@ const generateFractionButtons = (
 ];
 
 export const TradingFormInputs = () => {
-    const dispatch = useDispatch();
     const context = useTradingFormContext();
 
     if (isTradingSellContext(context)) {
@@ -203,11 +200,7 @@ export const TradingFormInputs = () => {
                                         {...button}
                                         onClick={() => {
                                             button.onClick();
-                                            dispatch(
-                                                tradingExchangeActions.savePreselectedQuote(
-                                                    undefined,
-                                                ),
-                                            );
+                                            context.resetSelectedOffer();
                                             context.refreshQuotes();
                                         }}
                                     />

@@ -14,6 +14,7 @@ type TradingExchangeUseHandleChangeProps = {
 
     composeRequestCallback: () => void;
     setApprovalInitiated?: (value: boolean) => void;
+    setIsScheduledQuotesRefresh?: (value: boolean) => void;
 };
 
 type PromiseType = {
@@ -31,6 +32,7 @@ export const useTradingExchangeHandleChange = ({
     shouldSendInSats,
     composeRequestCallback,
     setApprovalInitiated,
+    setIsScheduledQuotesRefresh,
 }: TradingExchangeUseHandleChangeProps) => {
     const dispatch = useDispatch();
     const previousPromise = useRef<PromiseType>(null);
@@ -59,6 +61,8 @@ export const useTradingExchangeHandleChange = ({
         } catch (error) {
             console.warn('Request was aborted:', error.message);
         }
+
+        setIsScheduledQuotesRefresh?.(false);
     }, [
         dispatch,
         formValues,
@@ -67,6 +71,7 @@ export const useTradingExchangeHandleChange = ({
         shouldSendInSats,
         composeRequestCallback,
         setApprovalInitiated,
+        setIsScheduledQuotesRefresh,
     ]);
 
     // cleanup signal
