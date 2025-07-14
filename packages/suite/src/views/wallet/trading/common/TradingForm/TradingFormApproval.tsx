@@ -113,6 +113,7 @@ export const TradingFormApproval = ({
         fetchApprovalStatus,
         watchApproval,
         refreshQuotes,
+        confirmApproval,
         selectedQuote,
         preselectedQuote,
         form: {
@@ -243,17 +244,26 @@ export const TradingFormApproval = ({
         setIsRevokeButtonLoading(false);
     };
 
-    const onProceedToSwapClick = () => {
-        if (!selectedQuote) {
+    const onProceedToSwapClick = async () => {
+        if (!selectedQuote || !selectedQuote.receiveAddress) {
             return;
         }
 
         setIsSwapButtonLoading(true);
 
-        dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
-        selectQuote(selectedQuote);
+        const newTrade = await confirmApproval({
+            trade: { ...selectedQuote, status: 'CONFIRM' },
+            receiveAddress: selectedQuote.receiveAddress,
+        });
 
         setIsSwapButtonLoading(false);
+
+        if (!newTrade || newTrade.status === 'ERROR') {
+            return;
+        }
+
+        dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+        selectQuote(selectedQuote);
     };
 
     const onRefreshApprovalClick = async () => {
