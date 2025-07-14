@@ -16,9 +16,8 @@ import { Translation } from 'src/components/suite';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeWatchApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchApproval';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
-
-import { useTradingExchangeWatchApproval } from '../../../../../hooks/wallet/trading/form/useTradingExchangeWatchApproval';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
     color: ${({ theme, $disabled }) =>
@@ -110,12 +109,13 @@ export const TradingFormApproval = ({
         selectQuote,
         approveTransaction,
         revokeApproval,
-        fetchApprovalStatus,
         watchApproval,
         refreshQuotes,
         confirmApproval,
+        resetSelectedOffer,
         selectedQuote,
         preselectedQuote,
+        isScheduledQuotesRefresh,
         form: {
             state: { isFormLoading },
         },
@@ -252,7 +252,7 @@ export const TradingFormApproval = ({
         setIsSwapButtonLoading(true);
 
         const newTrade = await confirmApproval({
-            trade: { ...selectedQuote, status: 'CONFIRM' },
+            trade: { ...selectedQuote, status: 'CONFIRM', approvalType: undefined },
             receiveAddress: selectedQuote.receiveAddress,
         });
 
@@ -266,10 +266,11 @@ export const TradingFormApproval = ({
         selectQuote(selectedQuote);
     };
 
-    const onRefreshApprovalClick = async () => {
+    const onRefreshClick = async () => {
         setIsRefreshButtonLoading(true);
 
-        await fetchApprovalStatus(selectedQuote);
+        resetSelectedOffer();
+        await refreshQuotes();
 
         setIsRefreshButtonLoading(false);
     };
@@ -277,19 +278,23 @@ export const TradingFormApproval = ({
     const isApproveButtonDisabled =
         isApproveButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'REVOKE') ||
-        isFormLoading;
+        isFormLoading ||
+        isScheduledQuotesRefresh;
 
     const isSwapButtonDisabled =
         isSwapButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
-        isFormLoading;
+        isFormLoading ||
+        isScheduledQuotesRefresh;
 
     const isRevokeButtonDisabled =
         isRevokeButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
-        isFormLoading;
+        isFormLoading ||
+        isScheduledQuotesRefresh;
 
-    const isRefreshButtonDisabled = isRefreshButtonLoading || isFormLoading;
+    const isRefreshButtonDisabled =
+        isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh;
 
     return (
         <Column gap={spacings.md} alignItems="center">
@@ -385,7 +390,7 @@ export const TradingFormApproval = ({
                                 </>
                             )}
 
-                            {approvalStep === 'ERROR' && (
+                            {(!approvalStep || approvalStep === 'ERROR') && (
                                 <ApprovalStep
                                     label={<Translation id="TR_EXCHANGE_APPROVAL_ERROR" />}
                                     icon={<IconError variant="destructive" />}
@@ -442,9 +447,9 @@ export const TradingFormApproval = ({
                 </>
             )}
 
-            {approvalStep === 'ERROR' && (
+            {(!approvalStep || approvalStep === 'ERROR') && (
                 <Button
-                    onClick={onRefreshApprovalClick}
+                    onClick={onRefreshClick}
                     variant="primary"
                     isFullWidth
                     isLoading={isRefreshButtonLoading}

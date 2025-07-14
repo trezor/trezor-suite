@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 import {
     TradingTradeBuyExchangeType,
@@ -51,7 +51,6 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
         verifyAddress,
         verifiedAddress,
         confirmTrade,
-        selectedQuote,
     } = context;
     const exchangeQuote = isTradingExchangeContext(context) ? context.selectedQuote : null;
     const {
@@ -151,11 +150,9 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
             });
         }
 
-        if (isTradingExchangeContext(context) && selectedQuote) {
-            const trade = selectedQuote as ExchangeTrade;
-
+        if (isTradingExchangeContext(context) && context.selectedQuote) {
             confirmTrade({
-                trade: { ...trade, status: 'CONFIRM' },
+                trade: { ...context.selectedQuote, status: 'CONFIRM' },
                 receiveAddress: address,
                 extraField,
             });

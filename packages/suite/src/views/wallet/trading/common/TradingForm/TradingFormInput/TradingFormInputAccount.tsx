@@ -7,14 +7,13 @@ import {
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     selectTradingLoadingAndTimestamp,
-    tradingExchangeActions,
 } from '@suite-common/trading';
 import { Row, Select, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -36,7 +35,6 @@ export const TradingFormInputAccount = <
     methods,
     'data-testid': dataTestId,
 }: TradingFormInputAccountProps<TFieldValues>) => {
-    const dispatch = useDispatch();
     const context = useTradingFormContext<TradingTradeSellExchangeType>();
 
     const {
@@ -73,7 +71,7 @@ export const TradingFormInputAccount = <
                         await onCryptoCurrencyChange(selected);
 
                         if (isTradingExchangeContext(context)) {
-                            dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+                            context.resetSelectedOffer();
                         }
                     }}
                     filterOption={createFilter<TradingCryptoListProps>({

@@ -9,10 +9,10 @@ interface TradingExchangeWatchApprovalProps {
     watchApproval: TradingExchangeFormContextProps['watchApproval'];
 }
 
-export function useTradingExchangeWatchApproval({
+export const useTradingExchangeWatchApproval = ({
     selectedQuote,
     watchApproval,
-}: TradingExchangeWatchApprovalProps) {
+}: TradingExchangeWatchApprovalProps) => {
     const POLLING_TIME = 5000;
 
     const timeoutRef = useRef<number | undefined>(undefined);
@@ -35,4 +35,4 @@ export function useTradingExchangeWatchApproval({
             timeoutRef.current = undefined;
         }
     }, [selectedQuote, watchApproval, isScheduled, refreshCount]);
-}
+};
