@@ -25,6 +25,7 @@ import {
     DeviceOnboardingStackRoutes,
     DevicePinProtectionStackRoutes,
     DeviceSettingsStackRoutes,
+    FirmwareUpdateStackRoutes,
     HomeStackRoutes,
     OnboardingStackRoutes,
     ReceiveStackRoutes,
@@ -202,9 +203,8 @@ export type DeviceSettingsStackParamList = {
         type: PinActionType;
     };
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
+    [DeviceSettingsStackRoutes.FirmwareUpdateStack]: NavigatorScreenParams<FirmwareUpdateStackParamList>;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
-    [DeviceSettingsStackRoutes.ConfirmFirmwareUpdate]: undefined;
-    [DeviceSettingsStackRoutes.FirmwareInstallation]: undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
@@ -217,6 +217,11 @@ export type DevicePinProtectionStackParamList = {
     [DevicePinProtectionStackRoutes.EnterCurrentPin]: undefined;
     [DevicePinProtectionStackRoutes.EnterNewPin]: undefined;
     [DevicePinProtectionStackRoutes.ConfirmNewPin]: undefined;
+};
+
+export type FirmwareUpdateStackParamList = {
+    [FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate]: undefined;
+    [FirmwareUpdateStackRoutes.FirmwareInstallation]: undefined;
 };
 
 export type WipeDeviceStackParamList = {

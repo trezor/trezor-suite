@@ -3,41 +3,31 @@ import { useNavigation } from '@react-navigation/native';
 import { Box } from '@suite-native/atoms';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
 import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
+    FirmwareUpdateStackParamList,
+    FirmwareUpdateStackRoutes,
     Screen,
     StackNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes.FirmwareInstallation
+    FirmwareUpdateStackParamList,
+    FirmwareUpdateStackRoutes.FirmwareInstallation
 >;
 
 export const FirmwareInstallationScreen = () => {
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const navigation = useNavigation<NavigationProp>();
 
-    const handleFirmwareInstallationSuccess = () => {
-        const initialRoute = navigation.getState().routes.at(0)
-            ?.name as DeviceSettingsStackRoutes.DeviceSettings;
-
-        if (initialRoute) {
-            navigation.navigate(initialRoute);
-        } else {
-            // This cause should not happen, but just to be safe
-            navigation.popToTop();
-        }
-    };
-
     const handleFirmwareInstallationFailure = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.ConfirmFirmwareUpdate);
+        navigation.navigate(FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate);
     };
 
     return (
         <Screen>
             <Box flex={1}>
                 <FirmwareInstallationScreenContent
-                    onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
+                    onFirmwareInstallationSuccess={navigateToInitialScreen}
                     onFirmwareInstallationFailure={handleFirmwareInstallationFailure}
                     navigationLocation="settings"
                 />

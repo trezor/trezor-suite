@@ -13,9 +13,9 @@ import {
 import { Translation } from '@suite-native/intl';
 import { useNavigateToCheckBackup } from '@suite-native/module-check-backup';
 import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
     DynamicScreenHeader,
+    FirmwareUpdateStackParamList,
+    FirmwareUpdateStackRoutes,
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
@@ -23,8 +23,8 @@ import {
 import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 
 type NavigationProp = StackNavigationProps<
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes.ConfirmFirmwareUpdate
+    FirmwareUpdateStackParamList,
+    FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate
 >;
 
 export const ConfirmFirmwareUpdateScreen = () => {
@@ -41,7 +41,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
     };
 
     const handleUpdateConfirmation = useCallback(() => {
-        navigation.navigate(DeviceSettingsStackRoutes.FirmwareInstallation);
+        navigation.navigate(FirmwareUpdateStackRoutes.FirmwareInstallation);
     }, [navigation]);
 
     if (!isDeviceConnected) return;

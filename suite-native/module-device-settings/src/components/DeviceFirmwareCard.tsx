@@ -17,6 +17,7 @@ import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
+    FirmwareUpdateStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
@@ -26,7 +27,7 @@ import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes.ConfirmFirmwareUpdate
+    DeviceSettingsStackRoutes.FirmwareUpdateStack
 >;
 
 export const DeviceFirmwareCard = () => {
@@ -58,7 +59,9 @@ export const DeviceFirmwareCard = () => {
             return;
         }
 
-        navigation.navigate(DeviceSettingsStackRoutes.ConfirmFirmwareUpdate);
+        navigation.navigate(DeviceSettingsStackRoutes.FirmwareUpdateStack, {
+            screen: FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate,
+        });
     };
 
     const firmwareUpdateProps = ((): InlineAlertBoxProps | undefined => {

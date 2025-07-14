@@ -15,7 +15,7 @@ const checkBackupUnsupportedDeviceModels: DeviceModelInternal[] = [DeviceModelIn
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes.DeviceSettings | DeviceSettingsStackRoutes.ConfirmFirmwareUpdate
+    DeviceSettingsStackRoutes.DeviceSettings
 >;
 
 export const useNavigateToCheckBackup = () => {

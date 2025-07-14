@@ -12,12 +12,11 @@ import {
 import { DeviceAuthenticityStackNavigator } from './DeviceAuthenticityStackNavigator';
 import { DeviceNameStackNavigator } from './DeviceNameStackNavigator';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
+import { FirmwareUpdateStackNavigator } from './FirmwareUpdateStackNavigator';
 import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
-import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
-import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
 
 const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
@@ -40,6 +39,10 @@ export const DeviceSettingsStackNavigator = () => (
             component={PinProtectionScreen}
         />
         <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.FirmwareUpdateStack}
+            component={FirmwareUpdateStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceAuthenticity}
             component={DeviceAuthenticityScreen}
         />
@@ -52,16 +55,8 @@ export const DeviceSettingsStackNavigator = () => (
             component={WipeDeviceStackNavigator}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.ConfirmFirmwareUpdate}
-            component={ConfirmFirmwareUpdateScreen}
-        />
-        <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.ContinueOnTrezor}
             component={ContinueOnTrezorScreen}
-        />
-        <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.FirmwareInstallation}
-            component={FirmwareInstallationScreen}
         />
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceNameStack}
