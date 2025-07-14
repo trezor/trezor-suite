@@ -88,7 +88,7 @@ describe(connectThpDeviceThunk.name, () => {
         expect(store.getState().thp.step).toEqual(null);
     });
 
-    it('wont updates the connection counter for credential during Firmware Installation', () => {
+    it("won't update the connection counter for credential during Firmware Installation", () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ thp: thpReduce, firmware: firmwareReduce }),
