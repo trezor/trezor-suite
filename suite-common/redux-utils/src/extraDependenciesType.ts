@@ -69,6 +69,7 @@ export type ExtraDependencies = {
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
         selectIsViewOnlyByDefaultEnabled: SuiteCompatibleSelector<boolean>;
+        selectThpSettings: SuiteCompatibleSelector<NonNullable<ConnectSettings['thp']>>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

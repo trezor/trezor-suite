@@ -5,6 +5,7 @@ import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { getStoredFirmwares } from './firmware';
+import { APP_NAME } from '../libs/constants';
 
 import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
 
@@ -59,11 +60,16 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 logger.debug(SERVICE_NAME, `call ${method}`);
                 if (method === 'init') {
                     logger.info(SERVICE_NAME, `Retrieving stored firmwares`);
+                    const [settings] = params;
                     const localFirmwares = await getStoredFirmwares();
-                    const settings = {
-                        ...params[0],
-                        localFirmwares: localFirmwares.success ? localFirmwares.payload : undefined,
-                    };
+                    if (settings.thp) {
+                        // upgrade THP hostName with codesign (dev/local) suffix
+                        settings.thp.hostName = APP_NAME;
+                    }
+                    if (localFirmwares.success) {
+                        settings.localFirmwares = localFirmwares.payload;
+                    }
+
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
 

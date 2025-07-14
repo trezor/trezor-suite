@@ -42,7 +42,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
     `${CONNECT_INIT_MODULE}/initThunk`,
     async (connectInitHooks, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectDebugSettings },
+            selectors: { selectDebugSettings, selectThpSettings },
             actions: { lockDevice },
             utils: { connectInitSettings },
         } = extra;
@@ -164,6 +164,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 binFilesBaseUrl,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports,
+                thp: selectThpSettings(getState()),
                 debug: showConnectLogs,
             });
         } catch (error) {
