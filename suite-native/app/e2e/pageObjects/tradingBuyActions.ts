@@ -131,8 +131,10 @@ class TradingBuyActions {
 
     async confirmBuyForm() {
         await element(by.id('@trading/buy/continue-button')).tap();
-        await waitForElementByIdToBeVisible('@trading/buy/confirm-button');
-        await element(by.id('@trading/buy/confirm-button')).tap();
+        const confirmButton = element(by.id('@trading/buy/confirm-button'));
+        const bottomSheetScrollView = element(by.id('@bottom-sheet/scroll-view'));
+        await bottomSheetScrollView.scrollTo('bottom');
+        await confirmButton.tap();
     }
 
     async closePaymentWebview() {
