@@ -1,7 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { thpActions } from '@suite-common/thp';
+import TrezorConnect from '@trezor/connect';
 
-import { useDispatch } from '../../hooks/suite';
 import { ConfirmActionModal } from '../suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
 
 type ThpConnectionModalProps = {
@@ -9,11 +8,7 @@ type ThpConnectionModalProps = {
 };
 
 export const ThpConnectionModal = ({ device }: ThpConnectionModalProps) => {
-    const dispatch = useDispatch();
-
-    const onCancel = () => {
-        dispatch(thpActions.resetThpFlow());
-    };
+    const onCancel = () => TrezorConnect.cancel();
 
     return (
         <ConfirmActionModal
