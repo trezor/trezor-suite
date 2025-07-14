@@ -4,23 +4,18 @@ import { EventType, analytics } from '@suite-common/analytics';
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import TrezorConnect, { CallMethodParams, CallMethodResponse } from '@trezor/connect';
+import TrezorConnect, { CallMethodParams } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
-import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
+import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
 import { ConnectCallSource } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
-
-type ConnectPopupCallThunkResponse<M extends keyof typeof TrezorConnect> = Promise<{
-    success: boolean;
-    payload: CallMethodResponse<M>;
-}>;
 
 type ConnectPopupCallThunkParams<M extends keyof typeof TrezorConnect> = {
     method: M;
@@ -29,7 +24,7 @@ type ConnectPopupCallThunkParams<M extends keyof typeof TrezorConnect> = {
 };
 
 export const connectPopupCallThunkInner = createThunk<
-    ConnectPopupCallThunkResponse<keyof typeof TrezorConnect>,
+    void,
     ConnectPopupCallThunkParams<keyof typeof TrezorConnect>
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
@@ -79,14 +74,9 @@ export const connectPopupCallThunkInner = createThunk<
             );
 
             if (!isRemembered) {
-                const decision = createDeferred();
                 dispatch(extra.actions.lockDevice(true));
-                dispatch(
-                    connectPopupActions.requestPermissions({
-                        decision,
-                    }),
-                );
-                await decision.promise;
+                dispatch(connectPopupActions.requestPermissions());
+                await getPermissionDeferred(true).promise;
             }
 
             const device = selectSelectedDevice(getState());
@@ -144,7 +134,7 @@ export const connectPopupCallThunkInner = createThunk<
                 },
             });
 
-            return response;
+            getPopupCallDeferred().resolve(response);
         } catch (error) {
             console.error('connectPopupCallThunk', error);
             if (error?.code === 'Method_Cancel') {
@@ -162,10 +152,10 @@ export const connectPopupCallThunkInner = createThunk<
                 },
             });
 
-            return {
+            getPopupCallDeferred().resolve({
                 success: false,
                 payload: serializeError(error),
-            };
+            });
         } finally {
             dispatch(extra.actions.lockDevice(false));
         }
@@ -176,11 +166,8 @@ export const connectPopupCallThunkInner = createThunk<
 // Original thunk is exposed as well for using .fulfilled, .rejected, etc.
 export const connectPopupCallThunk = <M extends keyof typeof TrezorConnect>(
     params: ConnectPopupCallThunkParams<M>,
-): AsyncThunkAction<
-    ConnectPopupCallThunkResponse<M>,
-    ConnectPopupCallThunkParams<M>,
-    CustomThunkAPI
-> => connectPopupCallThunkInner(params) as any;
+): AsyncThunkAction<void, ConnectPopupCallThunkParams<M>, CustomThunkAPI> =>
+    connectPopupCallThunkInner(params) as any;
 
 export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
     `${CONNECT_POPUP_MODULE}/deeplinkThunk`,
@@ -238,7 +225,7 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
             return;
         }
 
-        const response = await dispatch(
+        dispatch(
             connectPopupCallThunk({
                 source: {
                     type: 'deeplink',
@@ -251,7 +238,8 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
                 method: method as keyof typeof TrezorConnect,
                 payload,
             }),
-        ).unwrap();
+        );
+        const response = await getPopupCallDeferred(true).promise;
         callbackUrl.searchParams.set('response', JSON.stringify(response));
         dispatch(
             connectPopupActions.deeplinkCallback({
@@ -322,6 +310,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
 export const connectPopupCancelThunk = createThunk<void, { error?: string }>(
     `${CONNECT_POPUP_MODULE}/cancelThunk`,
     ({ error }, { dispatch }) => {
+        getPermissionDeferred().reject(TypedError('Method_Cancel'));
         TrezorConnect.cancel(error);
         // todo: probably not needed to call explicitly anymore
         dispatch(deviceActions.removeButtonRequests({}));

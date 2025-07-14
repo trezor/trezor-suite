@@ -9,7 +9,7 @@ import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core'
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, sanitizeHex } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { CallMethodResponse } from '@trezor/connect';
 import { isAscii } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -70,7 +70,7 @@ const ethereumRequestThunk = createThunk<
                 ? Buffer.from(message.slice(2), 'hex').toString('utf8')
                 : message;
             const isReadable = isAscii(messageDecoded);
-            const response = await dispatch(
+            dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
                     method: 'ethereumSignMessage',
@@ -80,18 +80,20 @@ const ethereumRequestThunk = createThunk<
                         hex: !isReadable,
                     },
                 }),
-            ).unwrap();
+            );
+            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
             if (!response.success) {
                 console.error('personal_sign error', response);
                 throw new Error('personal_sign error');
             }
+            const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
 
-            return sanitizeHex(response.payload.signature);
+            return sanitizeHex(typedPayload.signature);
         }
         case 'eth_signTypedData_v4': {
             const [address, data] = event.params.request.params;
             const account = getAccount(address);
-            const response = await dispatch(
+            dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
                     method: 'ethereumSignTypedData',
@@ -101,13 +103,15 @@ const ethereumRequestThunk = createThunk<
                         metamask_v4_compat: true,
                     },
                 }),
-            ).unwrap();
+            );
+            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
             if (!response.success) {
                 console.error('eth_signTypedData_v4 error', response);
                 throw new Error('eth_signTypedData_v4 error');
             }
+            const typedPayload = response.payload as CallMethodResponse<'ethereumSignTypedData'>;
 
-            return sanitizeHex(response.payload.signature);
+            return sanitizeHex(typedPayload.signature);
         }
         case 'eth_sendTransaction': {
             const chainId = Number(event.params.chainId.replace('eip155:', ''));
@@ -166,22 +170,25 @@ const ethereumRequestThunk = createThunk<
                 device,
                 useEmptyPassphrase: device?.useEmptyPassphrase,
             };
-            const signResponse = await dispatch(
+            dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
                     method: 'ethereumSignTransaction',
                     payload,
                 }),
-            ).unwrap();
+            );
+            const signResponse = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
             if (!signResponse.success) {
                 console.error('eth_sendTransaction error', signResponse);
                 throw new Error('eth_sendTransaction error');
             }
+            const typedSignPayload =
+                signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
             const pushResponse = await TrezorConnect.pushTransaction({
                 coin: account.symbol,
                 identity: getAccountIdentity(account),
-                tx: signResponse.payload.serializedTx,
+                tx: typedSignPayload.serializedTx,
             });
             if (!pushResponse.success) {
                 console.error('eth_sendTransaction push error', pushResponse);

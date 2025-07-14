@@ -9,10 +9,10 @@ import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types
 import TrezorConnect from '@trezor/connect';
 import type { EthereumSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
-import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { createPlaceholderAccount } from './utils';
+import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
 
 import { PostCallHookParams, PreCallHookParams } from './index';
@@ -105,14 +105,12 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                 showOnTrezor: false,
             });
             if (!accountAddress.success) throw new Error(accountAddress.payload.error);
-            const decision = createDeferred();
             dispatch(
                 connectPopupActions.txSimulation({
-                    decision,
                     fromAddress: accountAddress.payload.address,
                 }),
             );
-            await decision.promise;
+            await getPermissionDeferred(true).promise;
         }
 
         // Modify payload to include selected fee, if present
