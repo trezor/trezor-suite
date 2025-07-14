@@ -1,12 +1,11 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { AmountUnit } from './AmountTypes';
+import { AmountUnit, asAmountUnit } from './AmountTypes';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 
 type ToFiatCurrencyParams = {
     // Todo: remove `string`, its used only for backwards compatibility
-    amount: string | AmountUnit<NetworkSymbol>;
+    amount: string | AmountUnit;
     rate: number | undefined;
 };
 
@@ -35,17 +34,18 @@ export const toFiatCurrency = ({
 };
 
 type FromBaseCurrencyParams = {
-    fiatAmount: string;
+    // Todo: remove string
+    fiatAmount: string | BaseCurrencyAmount;
     rate: number | undefined;
 };
 
 /**
  * This function does only numerical operations, formatting is to be handled in formatters.
  */
-export const fromBaseCurrency = ({
+export const fromBaseCurrencyToCryptoUnit = ({
     fiatAmount,
     rate,
-}: FromBaseCurrencyParams): BigNumber | null => {
+}: FromBaseCurrencyParams): AmountUnit | null => {
     if (!rate) {
         return null;
     }
@@ -57,5 +57,5 @@ export const fromBaseCurrency = ({
 
     const amount = new BigNumber(formattedLocalAmount).div(rate);
 
-    return amount.isNaN() ? null : amount;
+    return amount.isNaN() ? null : asAmountUnit(amount);
 };

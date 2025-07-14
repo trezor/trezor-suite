@@ -4,11 +4,11 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FormOptions, FormState, Output, Rate, TokenAddress } from '@suite-common/wallet-types';
 import {
+    AMOUNT_UNIT_ZERO,
     asAmountSubunit,
     asAmountUnit,
     asBaseCurrencyAmount,
-    convertAmountUnitsToSubunits,
-    fromBaseCurrency,
+    fromBaseCurrencyToCryptoUnit,
     getDecimalsForBaseCurrency,
     getFiatRateKey,
     subunitsToUnits,
@@ -118,11 +118,11 @@ export const useSendFormFields = ({
 
                 // 1. Get the correct Crypto Amount (in units, as I could have been entered in Sats)
                 const cryptoAmount = shouldSendInSats
-                    ? subunitsToUnits(
-                          asAmountSubunit(amountBigNumber, network.symbol),
-                          network.symbol,
-                      )
-                    : asAmountUnit(amountBigNumber, network.symbol);
+                    ? subunitsToUnits({
+                          value: asAmountSubunit(amountBigNumber),
+                          symbol: network.symbol,
+                      })
+                    : asAmountUnit(amountBigNumber);
 
                 // 2. toFiatCurrency always works with Unit Amount (BTC, not Satoshis)
                 const baseCurrencyAmountUnit = toFiatCurrency({
@@ -138,7 +138,10 @@ export const useSendFormFields = ({
                 const baseCurrencyDisplay =
                     baseCurrencyCode === 'btc' && areSatsDisplayed
                         ? asBaseCurrencyAmount(
-                              unitsToSubunits(asAmountUnit(baseCurrencyAmountUnit, 'btc'), 'btc'),
+                              unitsToSubunits({
+                                  value: asAmountUnit(baseCurrencyAmountUnit),
+                                  symbol: 'btc',
+                              }),
                           )
                         : baseCurrencyAmountUnit;
 
@@ -171,7 +174,7 @@ export const useSendFormFields = ({
         (outputId: number, fiat: string, token?: TokenInfo) => {
             const convert = (fiat: string, fiatRate: number) => {
                 const cryptoDecimals = token ? token.decimals : network.decimals;
-                const fiatAmountBigNumber = new BigNumber(fiat);
+                const fiatAmountBigNumber = asBaseCurrencyAmount(new BigNumber(fiat));
 
                 // 1. When BTC is used as BaseCurrency, and we display all in Sats, we have to perform
                 // the conversion from sats->btc
@@ -181,22 +184,28 @@ export const useSendFormFields = ({
                 const baseCurrencyUnitAmount =
                     baseCurrency === 'btc' && areSatsDisplayed
                         ? asBaseCurrencyAmount(
-                              subunitsToUnits(asAmountSubunit(fiatAmountBigNumber, 'btc'), 'btc'),
+                              subunitsToUnits({
+                                  value: asAmountSubunit(fiatAmountBigNumber),
+                                  symbol: 'btc',
+                              }),
                           )
-                        : asBaseCurrencyAmount(fiatAmountBigNumber);
+                        : fiatAmountBigNumber;
 
                 // 2. `fromFiatCurrency` requires Amount in Unit (BTC, not Sats)
-                const cryptoAmount = fromBaseCurrency({
-                    fiatAmount: baseCurrencyUnitAmount.toFixed(),
+                const cryptoAmount = fromBaseCurrencyToCryptoUnit({
+                    fiatAmount: baseCurrencyUnitAmount,
                     rate: fiatRate,
                 });
 
+                // 3. If we display Crypto in Sats, we have to convert it to it.
                 const valueToDisplay = shouldSendInSats
-                    ? new BigNumber(
-                          convertAmountUnitsToSubunits(cryptoAmount || '0', network.decimals),
-                      )
+                    ? unitsToSubunits({
+                          value: cryptoAmount ?? AMOUNT_UNIT_ZERO,
+                          decimals: cryptoDecimals,
+                      })
                     : cryptoAmount;
 
+                // 4. We have to return this correctly rounded as this value is used in the NumberInput
                 return valueToDisplay?.toFixed(cryptoDecimals) ?? null;
             };
 

@@ -148,7 +148,7 @@ export const getSelectedCurrency = (
         return context.getValues(TRADING_FORM_OUTPUT_CURRENCY);
     }
 
-    return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
+    return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT) as CurrencyOption;
 };
 
 export const getPaymentMethod = (

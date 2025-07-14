@@ -20,6 +20,7 @@ import {
     sortByCoin,
     substituteBip43Path,
 } from '@suite-common/wallet-utils';
+import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -64,7 +65,7 @@ export const getTradingNetworkDecimals = ({
     return network?.decimals ?? 8;
 };
 
-export const buildFiatOption = (currency: string) => ({
+export const buildFiatOption = (currency: BaseCurrencyCode) => ({
     value: currency,
     label: currency.toUpperCase(),
 });
