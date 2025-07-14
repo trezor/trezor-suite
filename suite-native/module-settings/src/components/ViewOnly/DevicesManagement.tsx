@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectPhysicalDevicesGrouppedById } from '@suite-common/wallet-core';
-import { Box, Card, Divider, HStack, Text } from '@suite-native/atoms';
+import { Box, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { ConnectionDot } from '@suite-native/device-manager';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -12,7 +12,7 @@ export const DevicesManagement = () => {
     const deviceGroups = useSelector(selectPhysicalDevicesGrouppedById);
 
     return (
-        <>
+        <VStack spacing="sp12">
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
                 const deviceModel = firstDevice.features?.internal_model;
@@ -55,6 +55,6 @@ export const DevicesManagement = () => {
                     </Card>
                 );
             })}
-        </>
+        </VStack>
     );
 };
