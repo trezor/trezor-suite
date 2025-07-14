@@ -27,9 +27,8 @@ import {
 export const deviceConnectionNavigationMiddleware =
     createListenerMiddleware<NativeDeviceRootState>();
 
-// At the moment when unauthorized physical device is selected,
-// redirect to the Connecting screen where is handled the connection logic.
 const connectDevice = (isCoinEnablingInitFinished: boolean) => {
+    // If coin enabling is not finished, it takes priority over connecting screen
     if (isCoinEnablingInitFinished) {
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
@@ -42,7 +41,11 @@ const connectDevice = (isCoinEnablingInitFinished: boolean) => {
 export const startDeviceConnectionListening = () => {
     deviceConnectionNavigationMiddleware.startListening({
         predicate: (action, currentState) =>
-            deviceConnectThunks.fulfilled.match(action) && selectIsDeviceInitialized(currentState),
+            deviceConnectThunks.fulfilled.match(action) &&
+            // TODO this should dissappear after we merge device onboarding redirect here as well
+            // https://github.com/trezor/trezor-suite/issues/20157
+            // If device is not initialized and is compromised, we display the modal (reason why this condition is here) and then want to redirect to uninitialized device landing.
+            (selectIsDeviceInitialized(currentState) || selectIsDeviceCompromised(currentState)),
         effect: (
             _action,
             { getState }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
@@ -58,6 +61,8 @@ export const startDeviceConnectionListening = () => {
             // inside useHandleDeviceConnection. Now the device is authorized regardless and I think we can navigate
             // since it was because of biometrics and those are handled separately.
             // Reference https://github.com/trezor/trezor-suite/pull/11319/commits/a9152279fe6d70c57fa16ee0bf75dc9fd52bb930
+            // Double check this when device onboarding is refactored as well to make sure removing this will not break anything
+            // https://github.com/trezor/trezor-suite/issues/20157
             if (isDeviceConnectedAndAuthorized) return;
 
             const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());

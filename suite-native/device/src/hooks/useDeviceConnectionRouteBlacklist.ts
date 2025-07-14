@@ -13,8 +13,6 @@ import {
 
 const DEVICE_CONNECTION_BLACKLISTED_ROUTES: RootStackRoutes[] = [
     RootStackRoutes.DeviceCompromisedModal,
-    // TODO: this also blacklists suspicious device screen which should redirect to compromised device modal
-    // Possibly change this into a map with exception property (route name type) which will not be disabled.
     RootStackRoutes.DeviceOnboardingStack,
     RootStackRoutes.OnboardingStack,
 ];
