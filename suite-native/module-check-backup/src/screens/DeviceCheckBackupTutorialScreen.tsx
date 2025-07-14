@@ -1,5 +1,9 @@
+import { useCallback } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
+import { useFocusEffect } from '@react-navigation/native';
+
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     SwipeableWalkthrough,
     SwipeableWalkthroughCloseButton,
@@ -18,6 +22,14 @@ export const DeviceCheckBackupTutorialScreen = () => {
     useDeviceConnectionGuard();
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
     const currentStepIndex = useSharedValue(0);
+
+    useFocusEffect(
+        useCallback(() => {
+            analytics.report({
+                type: EventType.DeviceSettingsCheckBackupEntered,
+            });
+        }, []),
+    );
 
     return (
         <Screen
