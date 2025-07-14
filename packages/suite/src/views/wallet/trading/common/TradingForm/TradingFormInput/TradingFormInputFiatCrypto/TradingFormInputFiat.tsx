@@ -4,7 +4,6 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TradingBuyFormProps,
-    tradingExchangeActions,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState } from '@suite-common/wallet-utils';
@@ -12,7 +11,7 @@ import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import {
@@ -34,7 +33,6 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
     labelLeft,
     labelRight,
 }: TradingFormInputFiatCryptoProps<TFieldValues>) => {
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const locale = useSelector(selectLanguage);
 
@@ -118,7 +116,7 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
                 }
                 if (isTradingExchangeContext(context)) {
                     context.form.helpers.setFractionButton(undefined);
-                    dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+                    context.resetSelectedOffer();
                 }
 
                 clearErrors(cryptoInputName);

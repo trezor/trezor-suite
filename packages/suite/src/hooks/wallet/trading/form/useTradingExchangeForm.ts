@@ -93,6 +93,10 @@ export const useTradingExchangeForm = ({
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
 
+    // used for disabling approve/revoke controls when
+    // quotes are scheduled to refresh after changing swap form inputs
+    const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
+
     const { buildDefaultCryptoOption } = useTradingInfo();
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
     const [accountKey, setAccountKey] = useTradingAccountKey({
@@ -238,6 +242,7 @@ export const useTradingExchangeForm = ({
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
         setApprovalInitiated,
+        setIsScheduledQuotesRefresh,
     });
 
     const helpers = useTradingFormActions({
@@ -745,6 +750,11 @@ export const useTradingExchangeForm = ({
         setIsFetchingApprovalStatus(false);
     };
 
+    const resetSelectedOffer = () => {
+        dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        setIsScheduledQuotesRefresh(true);
+    };
+
     const refreshQuotes = async () => {
         await handleChange();
     };
@@ -885,5 +895,7 @@ export const useTradingExchangeForm = ({
         confirmApproval,
         watchApproval,
         refreshQuotes,
+        isScheduledQuotesRefresh,
+        resetSelectedOffer,
     };
 };

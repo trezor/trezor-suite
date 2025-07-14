@@ -232,6 +232,8 @@ export interface TradingExchangeFormContextProps
     }) => Promise<ExchangeTrade | undefined>;
     watchApproval: ({ refreshCount }: { refreshCount: number }) => Promise<void>;
     refreshQuotes: () => Promise<void>;
+    isScheduledQuotesRefresh: boolean;
+    resetSelectedOffer: () => void;
 }
 
 export type TradingExchangeApprovalType = 'APPROVE' | 'REVOKE';
