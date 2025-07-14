@@ -12793,7 +12793,6 @@ __metadata:
     "@types/pdfmake": "npm:^0.2.11"
     "@types/react": "npm:^19.0.0"
     "@types/react-dom": "npm:^19.0.0"
-    "@types/react-qr-reader": "npm:^2.1.7"
     "@types/redux-logger": "npm:^3.0.13"
     "@types/redux-mock-store": "npm:^1.5.0"
     "@types/semver": "npm:^7.7.0"
@@ -12817,13 +12816,13 @@ __metadata:
     react-helmet-async: "npm:^2.0.5"
     react-hook-form: "npm:^7.59.0"
     react-intl: "npm:^7.1.11"
-    react-qr-reader: "npm:^2.2.1"
     react-redux: "npm:9.2.0"
     react-router: "npm:^7.6.2"
     react-select: "npm:^5.10.2"
     react-svg: "npm:16.3.0"
     react-toastify: "npm:^10.0.4"
     react-use: "npm:^17.6.0"
+    react-zxing: "npm:^2.1.0"
     recharts: "npm:^2.15.3"
     redux: "npm:^5.0.1"
     redux-logger: "npm:^3.0.6"
@@ -14072,15 +14071,6 @@ __metadata:
   peerDependencies:
     "@types/react": ^19.0.0
   checksum: 10/b5b20b7f0797f34c5a11915b74dcf8b3b7a9da9fea90279975ce6f150ca5d31bb069dbb0838638a5e9e168098aa4bb4a6f61d078efa1bbb55d7f0bdfe47bb142
-  languageName: node
-  linkType: hard
-
-"@types/react-qr-reader@npm:^2.1.7":
-  version: 2.1.7
-  resolution: "@types/react-qr-reader@npm:2.1.7"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/fd008caeb7b4349e396985598c556460d8c9a00b4ba4ab382b9c43ade6a28db837aef87b5dfc0bb2ce453e587edfd7011f404dbcdd7280afce73d9968b2224f9
   languageName: node
   linkType: hard
 
@@ -15370,6 +15360,26 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10/1a079db8bc76dfd200f3d2334c96fd5df6ce072f40b5aa6fe4508e6fd5af0e57cab6fc879ea7f8c376e4c553febd73c4b46c924bd48b838b5b9522936b88517b
+  languageName: node
+  linkType: hard
+
+"@zxing/library@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "@zxing/library@npm:0.20.0"
+  dependencies:
+    "@zxing/text-encoding": "npm:~0.9.0"
+    ts-custom-error: "npm:^3.2.1"
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 10/866ec2adc9f59b5176046a6219951122bd075eac846aa739285b9b20372635c29ad13bc49a4a721e91d13b0d078c5f50fe81087a510920b0ea202dda41b0a5a4
+  languageName: node
+  linkType: hard
+
+"@zxing/text-encoding@npm:~0.9.0":
+  version: 0.9.0
+  resolution: "@zxing/text-encoding@npm:0.9.0"
+  checksum: 10/268e4ef64b8eaa32b990240bdfd1f7b3e2b501a6ed866a565f7c9747f04ac884fbe0537fe12bb05d9241b98fb111270c0fd0023ef0a02d23a6619b4589e98f6b
   languageName: node
   linkType: hard
 
@@ -28186,13 +28196,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsqr@npm:^1.2.0":
-  version: 1.4.0
-  resolution: "jsqr@npm:1.4.0"
-  checksum: 10/a959aed9e6f0af2616e0a9c29431bf4c8a617a316f6fdf3ac922c405f283224a5c77b8c8dfa5deda4e4848aeb87333dc70fe5d9cf9c116e76643c5cccc5c53f2
-  languageName: node
-  linkType: hard
-
 "jssha@npm:2.3.1":
   version: 2.3.1
   resolution: "jssha@npm:2.3.1"
@@ -35691,20 +35694,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-qr-reader@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "react-qr-reader@npm:2.2.1"
-  dependencies:
-    jsqr: "npm:^1.2.0"
-    prop-types: "npm:^15.7.2"
-    webrtc-adapter: "npm:^7.2.1"
-  peerDependencies:
-    react: ~16
-    react-dom: ~16
-  checksum: 10/c0825017c0c836936fed376c107c6d64e3a0795fd8e54bba5f14fa46f17d0b00c6f9cfd9a3c4216cd52509d2042860f3e4fea25687167e9585dbf87642c2cc2d
-  languageName: node
-  linkType: hard
-
 "react-reconciler@npm:0.31.0":
   version: 0.31.0
   resolution: "react-reconciler@npm:0.31.0"
@@ -35900,6 +35889,17 @@ __metadata:
     react: "*"
     react-dom: "*"
   checksum: 10/a817b74e82b481a39d3539bfe8d3b535c08d59d44a75ea91f65e56a7ccaedb0de185159e50b44ea4a635dda0c1c7159f07530e81a1d64b57130e0a715a107795
+  languageName: node
+  linkType: hard
+
+"react-zxing@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "react-zxing@npm:2.1.0"
+  dependencies:
+    "@zxing/library": "npm:^0.20.0"
+  peerDependencies:
+    react: ^16.8.0  || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/9ca9309d891b3f0bab9281584f9cc138f944a4c999ee1359a33e2714ecdbd3b57643771d33b66f303fcf3eb5d6178e1a67815709199d41dbfc7353f4381e73b1
   languageName: node
   linkType: hard
 
@@ -37067,15 +37067,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rtcpeerconnection-shim@npm:^1.2.15":
-  version: 1.2.15
-  resolution: "rtcpeerconnection-shim@npm:1.2.15"
-  dependencies:
-    sdp: "npm:^2.6.0"
-  checksum: 10/cfd57301dc67dfe22a191c3809bfa0d6e5cf7fdab4632a9787743f2ab83c3a8f6870cfc7785fe132aca5df912a6193edb807217dc978fab2cf4919ba408e725b
-  languageName: node
-  linkType: hard
-
 "rtl-css-js@npm:^1.16.1":
   version: 1.16.1
   resolution: "rtl-css-js@npm:1.16.1"
@@ -37300,13 +37291,6 @@ __metadata:
   version: 3.0.1
   resolution: "scrypt-js@npm:3.0.1"
   checksum: 10/2f8aa72b7f76a6f9c446bbec5670f80d47497bccce98474203d89b5667717223eeb04a50492ae685ed7adc5a060fc2d8f9fd988f8f7ebdaf3341967f3aeff116
-  languageName: node
-  linkType: hard
-
-"sdp@npm:^2.12.0, sdp@npm:^2.6.0":
-  version: 2.12.0
-  resolution: "sdp@npm:2.12.0"
-  checksum: 10/2433d52c018e762147800103fec4d45389953810a6fee616be9baf4d6cccad108aef69f6e8cefd4de97419059f6c0353b92e37ec677726d72928b7aba5b77476
   languageName: node
   linkType: hard
 
@@ -39975,6 +39959,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-custom-error@npm:^3.2.1":
+  version: 3.3.1
+  resolution: "ts-custom-error@npm:3.3.1"
+  checksum: 10/92e3a2c426bf6049579aeb889b6f9787e0cfb6bb715a1457e2571708be7fe739662ca9eb2a8c61b72a2d32189645f4fbcf1a370087e030d922e9e2a7b7c1c994
+  languageName: node
+  linkType: hard
+
 "ts-dedent@npm:^2.0.0, ts-dedent@npm:^2.2.0":
   version: 2.2.0
   resolution: "ts-dedent@npm:2.2.0"
@@ -42360,16 +42351,6 @@ __metadata:
   bin:
     webpack: bin/webpack.js
   checksum: 10/9b80c544dc2ebc84e679a3449f1a48235bb08e8cc8be98135f5694f997876e3ffe15241f12f0345f02004bef90a82af43675225d0d7980e0d4a867fdeaeca61b
-  languageName: node
-  linkType: hard
-
-"webrtc-adapter@npm:^7.2.1":
-  version: 7.7.1
-  resolution: "webrtc-adapter@npm:7.7.1"
-  dependencies:
-    rtcpeerconnection-shim: "npm:^1.2.15"
-    sdp: "npm:^2.12.0"
-  checksum: 10/2d971b559db47c3ea6ddc6ff268ca17703ce3928e1ead4715a688b0e03edb5ef52a17f60f1df96eb0bd5a5f69fe153e62e549f8dca86b67cb21c437222028c4b
   languageName: node
   linkType: hard
 
