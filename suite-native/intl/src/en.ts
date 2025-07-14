@@ -843,6 +843,7 @@ export const en = {
         },
         faq: {
             title: 'Get help',
+            legal: 'Legal',
             supportCard: {
                 title: 'Need more help?',
                 contact: 'Contact support',

@@ -3,7 +3,15 @@ import { TouchableOpacity } from 'react-native';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { Box, Card, CardDivider, HStack, RoundedIcon, Text } from '@suite-native/atoms';
+import {
+    Box,
+    Card,
+    CardDivider,
+    HStack,
+    RoundedIcon,
+    Text,
+    TitledSection,
+} from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -15,7 +23,6 @@ import {
 } from '@suite-native/navigation';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
-import { SettingsSection } from './SettingsSection';
 
 export const ConnectionSettings = () => {
     const isConnectPopupEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
@@ -29,7 +36,7 @@ export const ConnectionSettings = () => {
     }
 
     return (
-        <SettingsSection title={<Translation id="moduleSettings.items.connections.title" />}>
+        <TitledSection title={<Translation id="moduleSettings.items.connections.title" />}>
             <Card noPadding>
                 {isWalletConnectEnabled && (
                     <AppSettingsCardWithIconLayout
@@ -84,6 +91,6 @@ export const ConnectionSettings = () => {
                     testID="@settings/connect-permissions"
                 />
             )}
-        </SettingsSection>
+        </TitledSection>
     );
 };
