@@ -693,7 +693,11 @@ export const useTradingExchangeForm = ({
 
     const approveTransaction = async (trade: ExchangeTrade) => {
         setApprovalInitiated(true);
-        const newTrade = await confirmApproval({ trade, receiveAddress: account.descriptor });
+
+        const newTrade = await confirmApproval({
+            trade: { ...trade, status: 'CONFIRM' },
+            receiveAddress: account.descriptor,
+        });
 
         return !!newTrade;
     };
@@ -702,7 +706,12 @@ export const useTradingExchangeForm = ({
         if (!trade.receiveAddress) return false;
 
         const approvalType: DexApprovalType = 'ZERO';
-        const updatedTrade = { ...trade, approvalType };
+
+        const updatedTrade: ExchangeTrade = {
+            ...trade,
+            approvalType,
+            status: 'CONFIRM',
+        };
 
         setApprovalInitiated(true);
 
@@ -725,7 +734,10 @@ export const useTradingExchangeForm = ({
 
         setIsFetchingApprovalStatus(true);
 
-        await confirmApproval({ trade, receiveAddress: account.descriptor });
+        await confirmApproval({
+            trade: { ...trade, status: 'CONFIRM' },
+            receiveAddress: account.descriptor,
+        });
 
         setIsFetchingApprovalStatus(false);
     };
