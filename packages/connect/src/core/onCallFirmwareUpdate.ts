@@ -12,7 +12,7 @@ import { ERRORS, PROTO } from '../constants';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
-import { CoreEventMessage, UI, createUiMessage } from '../events';
+import { CoreEventMessage, UI, UiPromiseCreator, createUiMessage } from '../events';
 import { BinaryInfo, CommonParams, DeviceUniquePath, FirmwareType } from '../types';
 import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
@@ -32,11 +32,20 @@ type ReconnectContext = {
     postMessage: PostMessage;
     log: Log;
     abortSignal: AbortSignal;
+    uiPromises: { create: UiPromiseCreator };
 };
 
 const waitForReconnectedDevice = async (
     { bootloader, method, intermediary }: ReconnectParams,
-    { deviceList, device, registerEvents, postMessage, log, abortSignal }: ReconnectContext,
+    {
+        deviceList,
+        device,
+        registerEvents,
+        postMessage,
+        log,
+        abortSignal,
+        uiPromises,
+    }: ReconnectContext,
 ): Promise<Device> => {
     const target = intermediary || !bootloader ? 'normal' : 'bootloader';
 
@@ -65,6 +74,7 @@ const waitForReconnectedDevice = async (
     );
 
     let reconnectedDevice: Device | undefined;
+    let thpPairingError = false;
     do {
         postMessage(
             createUiMessage(UI.FIRMWARE_RECONNECT, {
@@ -96,15 +106,36 @@ const waitForReconnectedDevice = async (
                 'onCallFirmwareUpdate',
                 'we were unable to read device.features on the first interaction after seeing it, retrying...',
             );
+
+            let runFn;
+            if (reconnectedDevice.getThpState()?.properties) {
+                // stop and wait for UI decision
+                const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, reconnectedDevice);
+                postMessage(
+                    createUiMessage(UI.REQUEST_CONFIRMATION, {
+                        view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+                    }),
+                );
+                const uiResp = await uiPromise.promise;
+                if (!uiResp.payload) {
+                    throw ERRORS.TypedError('Method_PermissionsNotGranted');
+                }
+
+                runFn = () => Promise.resolve(); // enforce pairing UI interaction
+            }
+
             try {
                 registerEvents(reconnectedDevice);
                 // todo: it keeps printing warning "Previous call is still running" on reconnect from bl to normal
-                await reconnectedDevice.run(undefined, {
+                await reconnectedDevice.run(runFn, {
                     skipFirmwareChecks: true,
                     skipLanguageChecks: true,
                 });
-            } catch {
-                // empty
+            } catch (error) {
+                // error in THP pairing
+                if (error.code === 'Device_ThpPairingTagInvalid') {
+                    thpPairingError = true;
+                }
             }
         }
 
@@ -262,6 +293,7 @@ type Context = {
     initDevice: (path?: DeviceUniquePath) => Promise<Device>;
     log: Log;
     abortSignal: AbortSignal;
+    uiPromises: ReconnectContext['uiPromises'];
 };
 
 type OnCallFirmwareUpdateParams = {

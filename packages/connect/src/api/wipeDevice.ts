@@ -40,6 +40,13 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
         }
 
         const response = await cmd.typedCall('WipeDevice', 'Success');
+        const thpState = this.device.getThpState();
+        if (thpState) {
+            // device will require THP pairing in the next call
+            // reset state and do not call GetFeatures (finalReload)
+            thpState.resetState();
+            this.skipFinalReload = true;
+        }
 
         return response.message;
     }
