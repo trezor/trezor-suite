@@ -27,7 +27,7 @@ import {
 export const deviceConnectionNavigationMiddleware =
     createListenerMiddleware<NativeDeviceRootState>();
 
-const connectDevice = (isCoinEnablingInitFinished: boolean) => {
+const connectDevice = ({ isCoinEnablingInitFinished }: { isCoinEnablingInitFinished: boolean }) => {
     // If coin enabling is not finished, it takes priority over connecting screen
     if (isCoinEnablingInitFinished) {
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
@@ -75,8 +75,10 @@ export const startDeviceConnectionListening = () => {
                     // When the compromised modal is closed on first connection and no coins would be selected, we will need to redirect user
                     // to coin enabling so he can continue to the app with running discovery.
                     onCloseRedirect: () => {
-                        if (!isCoinEnablingInitFinished) {
-                            connectDevice(false);
+                        if (!isCoinEnablingInitFinished && selectIsDeviceInitialized(getState())) {
+                            connectDevice({
+                                isCoinEnablingInitFinished: false,
+                            });
                         } else {
                             if (navigationContainerRef.canGoBack()) navigationContainerRef.goBack();
                         }
@@ -86,7 +88,7 @@ export const startDeviceConnectionListening = () => {
                 return;
             }
 
-            connectDevice(isCoinEnablingInitFinished);
+            connectDevice({ isCoinEnablingInitFinished });
         },
     });
 };
