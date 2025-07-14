@@ -180,6 +180,7 @@ describe('useBuyQuotes', () => {
                 result.current.setValue('asset', usdcAsset);
                 result.current.setValue('fiatCurrency', 'usd');
             });
+            dispatchSpy.mockClear();
             act(() => {
                 result.current.setValue('fiatValue', '100');
             });
@@ -209,6 +210,7 @@ describe('useBuyQuotes', () => {
             result.current.setValue('asset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
         });
+
         act(() => {
             result.current.setValue('fiatValue', '100');
         });
@@ -234,6 +236,8 @@ describe('useBuyQuotes', () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result, rerender } = await renderUseBuyQuotes(store);
+
+        dispatchSpy.mockClear();
         act(() => {
             result.current.setValue('fiatCurrency', 'usd');
         });
