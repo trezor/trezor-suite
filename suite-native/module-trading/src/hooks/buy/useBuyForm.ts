@@ -9,8 +9,8 @@ import {
     TradingAmountLimitProps,
     getBestRatedQuote,
     selectTradingBuyQuotesRequest,
+    tradingThunks,
 } from '@suite-common/trading';
-import { loadInitialDataThunk } from '@suite-common/trading/src/thunks/common/loadInitialDataThunk';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
@@ -37,16 +37,6 @@ const useReceiveAccountChangeEffect = ({ getValues, setValue }: BuyFormType) => 
     const dispatch = useDispatch();
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
-    // make sure invityAPIKey is initialized with some unique string on form mount via loadInitialDataThunk
-    useEffect(() => {
-        dispatch(
-            loadInitialDataThunk({
-                activeSection: 'buy',
-                forcedApiKey: getRandomAccountDescriptor(),
-            }),
-        );
-    }, [dispatch]);
-
     useEffect(() => {
         const prevReceiveAccount = getValues('receiveAccount');
         const descriptor = selectedReceiveAccount?.account?.descriptor;
@@ -56,7 +46,7 @@ const useReceiveAccountChangeEffect = ({ getValues, setValue }: BuyFormType) => 
         // when user changes receive account set invityAPIKey accordingly
         if (descriptor !== prevReceiveAccount?.account?.descriptor) {
             dispatch(
-                loadInitialDataThunk({
+                tradingThunks.loadInitialDataThunk({
                     activeSection: 'buy',
                     forcedApiKey: !descriptor ? getRandomAccountDescriptor() : undefined,
                 }),
