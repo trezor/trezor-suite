@@ -31,7 +31,7 @@ type FormatParams = {
 
 const formatSats = ({ intl, dataContext, value }: FormatParams) => {
     const currencyForDisplay = BITCOIN_SATS_PLACEHOLDER;
-    const baseCurrencyValue = unitsToSubunits(asAmountUnit(value, 'btc'), 'btc');
+    const baseCurrencyValue = unitsToSubunits({ value: asAmountUnit(value), symbol: 'btc' });
 
     if (baseCurrencyValue.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies
@@ -46,7 +46,8 @@ const formatSats = ({ intl, dataContext, value }: FormatParams) => {
         maximumFractionDigits: 0,
     });
 
-    return `${formatted.replace(BITCOIN_SATS_PLACEHOLDER.toUpperCase(), '')} sat`;
+    // eslint-disable-next-line no-irregular-whitespace
+    return `${formatted.replace(BITCOIN_SATS_PLACEHOLDER.toUpperCase(), '')} sat`.trim();
 };
 
 const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) => {

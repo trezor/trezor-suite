@@ -76,7 +76,7 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
 
     it('formats value into sats', () => {
         expect(btcSatsFormatter.format(asBaseCurrencyAmount(new BigNumber('0.0001234')), {})).toBe(
-            'Sats 12,340'.replace(' ', ' '),
+            '12,340 sat'.replace(' ', ' '),
         );
     });
 });

@@ -47,7 +47,7 @@ import {
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
-import { AmountSubunit, AmountUnit } from './AmountTypes';
+import { AmountSubunit, AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
@@ -363,31 +363,32 @@ export const networkAmountToSmallestUnit = (amount: string | null, symbol: Netwo
     return convertAmountUnitsToSubunits(amount, decimals);
 };
 
+type SymbolOrDecimals = { symbol: NetworkSymbol } | { decimals: number };
+
+type UnitsToSubunitsParams = { value: AmountUnit } & SymbolOrDecimals;
+
 /**
  * Converts Bitcoins to Sats (and similarly for other coins)
  */
-export const unitsToSubunits = <T extends NetworkSymbol, K extends T>(
-    value: AmountUnit<T>,
-    symbol: K,
-): AmountSubunit<T> => {
-    const decimals = getAccountDecimals(symbol);
+export const unitsToSubunits = (params: UnitsToSubunitsParams): AmountSubunit => {
+    const decimals = 'decimals' in params ? params.decimals : getAccountDecimals(params.symbol);
 
     const factor = new BigNumber(10).exponentiatedBy(decimals);
 
-    return value.multipliedBy(factor) as AmountSubunit<T>;
+    return asAmountSubunit(params.value.multipliedBy(factor));
 };
+
+type SubunitsToUnitsParams = { value: AmountSubunit } & SymbolOrDecimals;
 
 /**
  * Converts Sats to Bitcoin (and similarly for other coins)
  */
-export const subunitsToUnits = <T extends NetworkSymbol, K extends T>(
-    value: AmountSubunit<T>,
-    symbol: K,
-): AmountUnit<T> => {
-    const decimals = getAccountDecimals(symbol);
+export const subunitsToUnits = (params: SubunitsToUnitsParams): AmountUnit => {
+    const decimals = 'decimals' in params ? params.decimals : getAccountDecimals(params.symbol);
+
     const factor = new BigNumber(10).exponentiatedBy(decimals);
 
-    return value.div(factor) as AmountUnit<T>;
+    return asAmountUnit(params.value.div(factor));
 };
 
 /**
