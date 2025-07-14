@@ -1,4 +1,4 @@
-import { CompactCardWithIconLayout, VStack } from '@suite-native/atoms';
+import { CompactCardWithIconLayout, TitledSection, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
@@ -6,7 +6,6 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { AboutUsBanners } from '../components/AboutUsBanners';
 import { AppCommitHash } from '../components/AppCommitHash';
 import { FAQInfoPanel } from '../components/FAQInfoPanel';
-import { SettingsSection } from '../components/SettingsSection';
 import { SupportCard } from '../components/SupportCard';
 
 export const SettingsSupportScreen = () => {
@@ -30,7 +29,7 @@ export const SettingsSupportScreen = () => {
                     <SupportCard />
                 </VStack>
                 <AboutUsBanners />
-                <SettingsSection title="Legal">
+                <TitledSection title={<Translation id="moduleSettings.faq.legal" />}>
                     <CompactCardWithIconLayout
                         title="Terms & conditions"
                         icon="filePdf"
@@ -41,7 +40,7 @@ export const SettingsSupportScreen = () => {
                         icon="filePdf"
                         onPress={handleOpenPrivacyPolicy}
                     />
-                </SettingsSection>
+                </TitledSection>
                 <AppCommitHash />
             </VStack>
         </Screen>

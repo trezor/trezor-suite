@@ -7,7 +7,7 @@ import {
     selectDeviceName,
     selectIsDeviceConnectedViaBluetooth,
 } from '@suite-common/wallet-core';
-import { VStack } from '@suite-native/atoms';
+import { TitledSection, VStack } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -18,7 +18,6 @@ import { DeviceCheckBackupCard } from '../components/DeviceCheckBackupCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DeviceInfo } from '../components/DeviceInfo';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
-import { DeviceSettingsSection } from '../components/DeviceSettingsSection';
 import { WipeDeviceCard } from '../components/WipeDeviceCard';
 import { useDeviceChangedCheck } from '../hooks/useDeviceChangedCheck';
 
@@ -39,24 +38,24 @@ export const DeviceSettingsModalScreen = () => {
         <Screen header={<ScreenHeader closeActionType="close" />}>
             <VStack spacing="sp40">
                 <DeviceInfo deviceName={deviceLabel || deviceName} deviceModel={deviceModel} />
-                <DeviceSettingsSection
+                <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.general" />}
                 >
                     <DevicePinProtectionCard />
                     <DeviceFirmwareCard />
-                </DeviceSettingsSection>
-                <DeviceSettingsSection
+                </TitledSection>
+                <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
                 >
                     {isCheckBackupsEnabled && <DeviceCheckBackupCard />}
                     {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
-                </DeviceSettingsSection>
+                </TitledSection>
                 {isDeviceConnectedViaBluetooth && <DeviceBluetoothCard />}
-                <DeviceSettingsSection
+                <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.dangerZone" />}
                 >
                     <WipeDeviceCard />
-                </DeviceSettingsSection>
+                </TitledSection>
             </VStack>
         </Screen>
     );

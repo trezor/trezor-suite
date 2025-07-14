@@ -4,12 +4,12 @@ import { A, G } from '@mobily/ts-belt';
 
 import { Text, VStack } from '@suite-native/atoms';
 
-type DeviceSettingsSectionProps = {
+type TitledSectionProps = {
     title: ReactNode;
     children: ReactNode;
 };
 
-export const DeviceSettingsSection = ({ title, children }: DeviceSettingsSectionProps) => {
+export const TitledSection = ({ title, children }: TitledSectionProps) => {
     // If children elements are conditionally rendered and section would end up being empty, avoid rendering the whole section.
     const validChildren = Children.toArray(children).filter(child => G.isNotNullable(child));
 
