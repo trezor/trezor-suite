@@ -93,7 +93,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
                             // TX fee is so far always paid in network native coin
                             isTokenAmount ? token.symbol : symbol
                         }
-                        contractAddress={token?.contract}
+                        contractAddress={isTokenAmount ? token?.contract : undefined}
                         isTabular={false}
                     />
                     {symbol && isFiatVisible && (
