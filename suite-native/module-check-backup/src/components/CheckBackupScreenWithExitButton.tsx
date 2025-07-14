@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     DeviceCheckBackupStackParamList,
@@ -31,6 +32,7 @@ export const useHandleCheckBackupExitButtonPress = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
+    const route = useRoute();
 
     const handleExitButtonPress = useCallback(() => {
         showAlert({
@@ -41,11 +43,17 @@ export const useHandleCheckBackupExitButtonPress = () => {
             secondaryButtonTitle: translate('moduleCheckBackup.cancelAlert.secondaryButton'),
             secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: () => {
+                analytics.report({
+                    type: EventType.DeviceSettingsCheckBackupExited,
+                    payload: {
+                        location: route.name,
+                    },
+                });
                 TrezorConnect.cancel();
                 navigation.navigate(DeviceSettingsStackRoutes.DeviceSettings);
             },
         });
-    }, [navigation, showAlert, translate]);
+    }, [navigation, showAlert, translate, route.name]);
 
     return handleExitButtonPress;
 };

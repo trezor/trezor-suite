@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
@@ -29,6 +30,12 @@ export const useCheckBackupOnMount = () => {
             const response = await dispatch(checkBackupThunk()).unwrap();
 
             if (response.success === true) {
+                analytics.report({
+                    type: EventType.DeviceSettingsCheckBackupFinished,
+                    payload: {
+                        success: true,
+                    },
+                });
                 navigation.navigate(DeviceCheckBackupStackRoutes.CheckBackupSuccess);
 
                 return;
@@ -38,6 +45,12 @@ export const useCheckBackupOnMount = () => {
                 response.success === false &&
                 response.payload.code === 'Failure_ProcessError'
             ) {
+                analytics.report({
+                    type: EventType.DeviceSettingsCheckBackupFinished,
+                    payload: {
+                        success: false,
+                    },
+                });
                 navigation.navigate(DeviceCheckBackupStackRoutes.CheckBackupFail);
 
                 return;

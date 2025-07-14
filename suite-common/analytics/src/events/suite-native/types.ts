@@ -346,6 +346,24 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
+          type: EventType.DeviceSettingsCheckBackupEntered;
+      }
+    | {
+          type: EventType.DeviceSettingsCheckBackupFinished;
+          payload: {
+              success: boolean;
+          };
+      }
+    | {
+          type: EventType.DeviceSettingsCheckBackupExited;
+          payload: {
+              location: string;
+          };
+      }
+    | {
+          type: EventType.DeviceSettingsCheckBackupSupport;
+      }
+    | {
           type: EventType.FirmwareUpdateStarted;
           payload: FirmwareUpdatePayload & {
               startType: FirmwareUpdateStartType;
