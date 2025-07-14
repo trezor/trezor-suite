@@ -10,7 +10,7 @@ const TimeAgo = ({ timestamp }: { timestamp: number }) => {
     const [secAgo, setSecAgo] = useState(0);
 
     useEffect(() => {
-        setSecAgo(Math.floor(Date.now() / 1000 - timestamp));
+        setSecAgo(Math.floor((Date.now() - timestamp) / 1000));
         const interval = setInterval(() => setSecAgo(t => t + 1), 1000);
 
         return () => clearInterval(interval);
