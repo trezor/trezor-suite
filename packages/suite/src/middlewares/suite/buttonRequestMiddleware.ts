@@ -83,18 +83,19 @@ const buttonRequest =
 
                 return action;
             }
+        }
+        if (
+            action.type === UI.REQUEST_BUTTON &&
+            action.payload.name === 'confirm_ethereum_approve' &&
+            (action.payload.code === 'ButtonRequest_Other' ||
+                action.payload.code === 'ButtonRequest_Warning')
+        ) {
+            api.dispatch({
+                ...action,
+                payload: { ...action.payload, code: 'ButtonRequest_SignTx' },
+            });
 
-            if (
-                action.type === UI.REQUEST_BUTTON &&
-                action.payload.name === 'confirm_ethereum_approve'
-            ) {
-                api.dispatch({
-                    ...action,
-                    payload: { ...action.payload, code: 'ButtonRequest_SignTx' },
-                });
-
-                return action;
-            }
+            return action;
         }
 
         if (action.type === UI.REQUEST_BUTTON && action.payload.code === 'ButtonRequest_Address') {
