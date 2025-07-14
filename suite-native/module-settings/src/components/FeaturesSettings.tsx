@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { TitledSection } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
@@ -15,7 +16,6 @@ import {
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
-import { SettingsSection } from './SettingsSection';
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const FeaturesSettings = () => {
@@ -27,7 +27,7 @@ export const FeaturesSettings = () => {
     const navigateTo = useSettingsNavigateTo();
 
     return (
-        <SettingsSection title={<Translation id="moduleSettings.items.features.title" />}>
+        <TitledSection title={<Translation id="moduleSettings.items.features.title" />}>
             {isDevButtonVisible && (
                 <AppSettingsCardWithIconLayout
                     icon="circleDashed"
@@ -70,6 +70,6 @@ export const FeaturesSettings = () => {
                     />
                 </>
             )}
-        </SettingsSection>
+        </TitledSection>
     );
 };

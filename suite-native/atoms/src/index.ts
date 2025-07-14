@@ -35,6 +35,7 @@ export * from './Stack';
 export * from './Badge';
 export * from './Divider';
 export * from './TextDivider';
+export * from './TitledSection';
 export * from './ProgressBar';
 export * from './Card/Card';
 export * from './Card/HeaderedCard';
