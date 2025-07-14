@@ -15,6 +15,8 @@ const MIN_T1B1_FW_VERSION = '1.12.1';
  */
 const getCheckSupport = (device?: TrezorDevice): boolean => {
     const isT1B1 = device?.features?.internal_model === DeviceModelInternal.T1B1;
+    const deviceFWVersion = getFirmwareVersion(device);
+    if (semver.valid(deviceFWVersion) === null) return false;
 
     return isT1B1 && semver.gte(getFirmwareVersion(device), MIN_T1B1_FW_VERSION);
 };
