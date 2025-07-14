@@ -45,6 +45,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             );
         }
 
+        // device becomesAcquired (device-change event) and is locked at the same time.
+        // device-change is emitted right before acquireDevice ends (and unlocks)
+        const isDeviceReady =
+            device?.connected && isDeviceAcquired(device) && (!isDeviceLocked || becomesAcquired);
+
         if (
             becomesAcquired ||
             becomesConnected ||
@@ -54,7 +59,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
-            if (device && device.connected && isDeviceAcquired(device) && !isDeviceLocked) {
+            if (isDeviceReady) {
                 if (!device?.state) {
                     // note: currently this is only used in Suite. If a Suite Lite implementation is needed,
                     // refactor this to a parameter because suiteSettings is a suite-only reducer.
