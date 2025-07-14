@@ -97,6 +97,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: mockSelector('selectTradingEnvironment', 'localhost'),
         selectIsViewOnlyByDefaultEnabled: mockSelector('selectIsViewOnlyByDefaultEnabled', true),
+        selectThpSettings: mockSelector('selectThpSettings', { pairingMethods: ['CodeEntry'] }),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
