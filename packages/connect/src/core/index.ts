@@ -1146,6 +1146,7 @@ export class Core extends EventEmitter {
                             log: _log,
                             abortSignal: this.abortController.signal,
                             registerEvents: registerDeviceEvents(coreContext),
+                            uiPromises: coreContext.uiPromises,
                         },
                     })
                         .then(payload => {

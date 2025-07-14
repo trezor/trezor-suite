@@ -205,6 +205,7 @@ const setupTest = () => {
         registerEvents: () => {},
         log: new Log('Test', false),
         abortSignal: new AbortController().signal,
+        uiPromises: { create: jest.fn() },
     };
 
     return {
