@@ -1,3 +1,5 @@
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Branded } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -8,3 +10,19 @@ export type BaseCurrencyAmount = BigNumber & Branded<`base-currency-amount`>;
 export const asBaseCurrencyAmount = (value: BigNumber) => value as BaseCurrencyAmount;
 
 export const BASE_CURRENCY_ZERO = asBaseCurrencyAmount(new BigNumber(0));
+
+type GetDecimalsForBaseCurrencyParams = {
+    code: BaseCurrencyCode;
+    areSatsDisplayed: boolean;
+};
+
+export const getDecimalsForBaseCurrency = ({
+    code,
+    areSatsDisplayed,
+}: GetDecimalsForBaseCurrencyParams) => {
+    if (code === 'btc' && areSatsDisplayed) {
+        return 0;
+    }
+
+    return code in networks ? networks[code as NetworkSymbol].decimals : 2;
+};

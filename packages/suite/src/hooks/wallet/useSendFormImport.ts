@@ -7,7 +7,7 @@ import { FiatRates, FiatRatesResult, Output, Rate, Timestamp } from '@suite-comm
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
-    fromFiatCurrency,
+    fromBaseCurrency,
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -136,7 +136,7 @@ export const useSendFormImport = ({
                     output.fiat = item.amount || '';
 
                     // calculate Amount from Fiat
-                    const cryptoValue = fromFiatCurrency({
+                    const cryptoValue = fromBaseCurrency({
                         fiatAmount: output.fiat,
                         rate: itemRate,
                     })?.toFixed(network.decimals);

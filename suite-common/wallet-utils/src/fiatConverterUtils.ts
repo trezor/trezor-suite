@@ -34,7 +34,7 @@ export const toFiatCurrency = ({
     return asBaseCurrencyAmount(localAmount);
 };
 
-type FromFiatCurrencyParams = {
+type FromBaseCurrencyParams = {
     fiatAmount: string;
     rate: number | undefined;
 };
@@ -42,10 +42,10 @@ type FromFiatCurrencyParams = {
 /**
  * This function does only numerical operations, formatting is to be handled in formatters.
  */
-export const fromFiatCurrency = ({
+export const fromBaseCurrency = ({
     fiatAmount,
     rate,
-}: FromFiatCurrencyParams): BigNumber | null => {
+}: FromBaseCurrencyParams): BigNumber | null => {
     if (!rate) {
         return null;
     }
