@@ -12,7 +12,6 @@
 @types/pdfmake
 @types/react-date-range
 @types/react-dom
-@types/react-qr-reader
 @types/zxcvbn
 autoprefixer
 babel-plugin-styled-components
@@ -38,7 +37,7 @@ react-helmet-async
 react-intl
 react-markdown
 react-medium-image-zoom
-react-qr-reader
+react-zxing
 react-select
 react-svg
 react-toastify

@@ -1,4 +1,5 @@
-import { JSX, Suspense, lazy, useState } from 'react';
+import { ReactNode, useState } from 'react';
+import { useZxing } from 'react-zxing';
 
 import styled from 'styled-components';
 
@@ -7,10 +8,8 @@ import { Card, Column, Icon, Modal, ModalProps, Paragraph, Row } from '@trezor/c
 import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 
-import { BundleLoader, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-
-const QrReader = lazy(() => import(/* webpackChunkName: "react-qr-reader" */ 'react-qr-reader'));
 
 const ContentWrapper = styled.div`
     height: 380px;
@@ -21,18 +20,14 @@ const ReaderWrapper = styled.div<{ $isVisible: boolean }>`
     height: 100%;
 `;
 
-const StyledQrReader = styled(QrReader)`
+const StyledVideo = styled.video`
     width: 100%;
     height: 100%;
     position: relative;
+    border-radius: ${borders.radii.md};
 
-    & > section {
-        position: initial !important;
-        padding-top: initial !important;
-
-        & > video {
-            border-radius: ${borders.radii.md};
-        }
+    @media (min-width: 768px) {
+        transform: scaleX(-1);
     }
 `;
 
@@ -41,11 +36,7 @@ type QrScannerModalProps = Pick<Extract<UserContextPayload, { type: 'qr-reader' 
 
 export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
     const [readerLoaded, setReaderLoaded] = useState(false);
-    const [error, setError] = useState<JSX.Element | null>(null);
-
-    const onLoad = () => {
-        setReaderLoaded(true);
-    };
+    const [error, setError] = useState<ReactNode | null>(null);
 
     const handleError = (err: any) => {
         if (
@@ -62,17 +53,21 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
         }
     };
 
-    const handleScan = (uri: string | null) => {
-        if (uri) {
+    const { ref } = useZxing({
+        onDecodeResult: result => {
             try {
-                decision.resolve(uri);
+                decision.resolve(result.getText());
                 setReaderLoaded(true);
                 onCancel();
-            } catch (error) {
-                handleError(error);
+            } catch (err) {
+                handleError(err);
             }
-        }
-    };
+        },
+        onError: err => {
+            handleError(err);
+        },
+        timeBetweenDecodingAttempts: 500,
+    });
 
     return (
         <Modal onCancel={onCancel} heading={<Translation id="TR_SCAN_QR_CODE" />}>
@@ -103,15 +98,13 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
                     )}
                     {!error && (
                         <ReaderWrapper $isVisible={readerLoaded}>
-                            <Suspense fallback={<BundleLoader />}>
-                                <StyledQrReader
-                                    delay={500}
-                                    onError={handleError}
-                                    onScan={handleScan}
-                                    onLoad={onLoad}
-                                    showViewFinder={false}
-                                />
-                            </Suspense>
+                            <StyledVideo
+                                ref={ref}
+                                onLoadedMetadata={() => setReaderLoaded(true)}
+                                autoPlay
+                                muted
+                                playsInline
+                            />
                         </ReaderWrapper>
                     )}
                 </ContentWrapper>
