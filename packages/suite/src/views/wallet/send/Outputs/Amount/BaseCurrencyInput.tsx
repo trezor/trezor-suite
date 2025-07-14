@@ -2,7 +2,6 @@ import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { formInputsMaxLength } from '@suite-common/validators';
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     CurrencyOption,
@@ -15,6 +14,7 @@ import {
     buildCurrencyOptions,
     convertAmountSubunitsToUnits,
     findToken,
+    getDecimalsForBaseCurrency,
     getInputState,
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
@@ -28,22 +28,6 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { validateDecimals } from 'src/utils/suite/validation';
-
-type GetDecimalsForBaseCurrencyParams = {
-    value: BaseCurrencyCode;
-    areSatsDisplayed: boolean;
-};
-
-const getDecimalsForBaseCurrency = ({
-    value,
-    areSatsDisplayed,
-}: GetDecimalsForBaseCurrencyParams) => {
-    if (value === 'btc' && areSatsDisplayed) {
-        return 0;
-    }
-
-    return value in networks ? networks[value as NetworkSymbol].decimals : 2;
-};
 
 type FiatInputProps = {
     output: Partial<Output>;
@@ -94,7 +78,7 @@ export const BaseCurrencyInput = ({
     const currencyValue = watch(currencyInputName);
 
     const decimals = getDecimalsForBaseCurrency({
-        value: currencyValue.value,
+        code: currencyValue.value,
         areSatsDisplayed,
     });
 

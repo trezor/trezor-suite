@@ -17,7 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
-    fromFiatCurrency,
+    fromBaseCurrency,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
     getStakingDataForNetwork,
@@ -226,7 +226,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
         async (amount: string) => {
             if (!currentRate) return;
 
-            const cryptoValue = fromFiatCurrency({
+            const cryptoValue = fromBaseCurrency({
                 fiatAmount: amount,
                 rate: currentRate?.rate,
             })?.toFixed(network.decimals);

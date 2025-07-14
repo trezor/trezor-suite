@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import {
-    fromFiatCurrency,
+    fromBaseCurrency,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
     getStakingLimitsByNetwork,
@@ -251,7 +251,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
             if (!currentRate) return;
 
             const cryptoValue =
-                fromFiatCurrency({ fiatAmount: amount, rate: currentRate?.rate })?.toFixed(
+                fromBaseCurrency({ fiatAmount: amount, rate: currentRate?.rate })?.toFixed(
                     network.decimals,
                 ) || '';
 

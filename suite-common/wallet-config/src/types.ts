@@ -59,7 +59,7 @@ export type NetworkFeature =
     | 'rbf'
     | 'nfts'
     | 'sign-verify'
-    | 'amount-unit' // Network as sub-units (sats, gwei, ...)
+    | 'amount-unit' // Network has sub-units (sats, gwei, ...)
     | 'tokens'
     | 'staking'
     | 'coin-definitions'

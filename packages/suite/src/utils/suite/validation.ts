@@ -2,7 +2,7 @@ import { Formatter } from '@suite-common/formatters';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
-    fromFiatCurrency,
+    fromBaseCurrency,
     getAmountValidationResult,
     isDecimalsValid,
     isInteger,
@@ -127,7 +127,7 @@ export const validateFiatLimits =
     (value: string) => {
         if (value && amountLimits) {
             const currency = amountLimits.currency.toLowerCase();
-            const cryptoAmount = fromFiatCurrency({ fiatAmount: value, rate })?.toFixed(decimals);
+            const cryptoAmount = fromBaseCurrency({ fiatAmount: value, rate })?.toFixed(decimals);
             if (!cryptoAmount) return translationString('TR_FIAT_RATES_NOT_AVAILABLE');
 
             if (amountLimits.minFiat && new BigNumber(value).lt(amountLimits.minFiat)) {
