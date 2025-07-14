@@ -16,7 +16,7 @@ export const ERROR_CODES = {
     Method_InvalidParameter: '', // replaced by generic text
     Method_NotAllowed: 'Method not allowed for this configuration', // example: device management in popup mode
     Method_PermissionsNotGranted: 'Permissions not granted', // permission/confirmation not granted in popup
-    Method_Cancel: 'Cancelled', // permission/confirmation not granted in popup OR .cancel() custom error
+    Method_Cancel: 'Canceled', // permission/confirmation not granted in popup OR .cancel() custom error
     Method_Interrupted: 'Popup closed', // interruption: popup closed
     Method_UnknownCoin: 'Coin not found', // coin definition not found
     Method_AddressNotMatch: 'Addresses do not match', // thrown by all getAddress methods with custom UI validation
@@ -46,10 +46,10 @@ export const ERROR_CODES = {
     Device_ThpPairingTagInvalid: 'Pairing tag mismatch', // thrown by RECEIVE_THP_PAIRING_TAG handler
     Device_ThpStateMissing: 'ThpState missing', // thrown by thp related actions
 
-    Failure_ActionCancelled: 'Action cancelled by user',
+    Failure_ActionCancelled: 'Action canceled by user',
     Failure_FirmwareError: 'Firmware installation failed',
     Failure_UnknownCode: 'Unknown error',
-    Failure_PinCancelled: 'PIN cancelled',
+    Failure_PinCancelled: 'PIN canceled',
     Failure_PinInvalid: 'PIN invalid',
     Failure_PinMismatch: 'PIN mismatch',
     Failure_WipeCodeMismatch: 'Wipe code mismatch',
