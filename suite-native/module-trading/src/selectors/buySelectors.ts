@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { BuyCryptoPaymentMethod, BuyTrade, FiatCurrencyCode } from 'invity-api';
+import { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
@@ -101,23 +101,12 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
 
 export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
     [selectBuySupportedFiatCurrencies],
-    currencies =>
-        [...new Set(currencies).values()]
-            .map(
-                currency =>
-                    supportedFiatCurrenciesMap[currency] ?? {
-                        code: currency,
-                        label: currency.toUpperCase(),
-                    },
-            )
-            .map(
-                ({ code, label }) =>
-                    ({
-                        value: code as FiatCurrencyCode,
-                        displayValue: code.toUpperCase(),
-                        label,
-                    }) as FiatCurrencyItem,
-            ),
+    (currencies): FiatCurrencyItem[] =>
+        [...new Set(currencies)].map(code => ({
+            value: code,
+            displayValue: code.toUpperCase(),
+            label: supportedFiatCurrenciesMap[code].label,
+        })),
 );
 
 export const selectBuyAmountLimits = (state: TradingRootState) =>
