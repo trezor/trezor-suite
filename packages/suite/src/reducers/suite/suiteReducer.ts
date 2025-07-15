@@ -86,6 +86,7 @@ export interface Flags {
     isBluetoothEnabled: boolean;
     showBluetoothDebugInfo: boolean;
     stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
+    hasSeenDisconnectTooltip: boolean; // tooltip shown when device disconnects - show only once ever
 }
 
 export interface EvmSettings {
@@ -139,6 +140,7 @@ export interface SuiteState {
     countryCode: CountryCode | null;
     prefillFields: PrefillFields;
     settings: SuiteSettings;
+    recentlyDisconnectedDevice: string | null;
 }
 
 const initialState: SuiteState = {
@@ -171,6 +173,7 @@ const initialState: SuiteState = {
         isBluetoothEnabled: false,
         showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
+        hasSeenDisconnectTooltip: false,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},
@@ -213,6 +216,7 @@ const initialState: SuiteState = {
         isCoinsFilterVisible: false,
         autoEject: false,
     },
+    recentlyDisconnectedDevice: null,
 };
 
 const changeLock = (
@@ -276,6 +280,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_FLAG:
                 setFlag(draft, action.key, action.value);
+                break;
+
+            case SUITE.SET_RECENTLY_DISCONNECTED_DEVICE:
+                draft.recentlyDisconnectedDevice = action.payload;
                 break;
 
             case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:

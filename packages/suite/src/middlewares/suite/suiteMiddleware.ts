@@ -17,7 +17,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
-import { appChanged, setFlag } from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { appChanged, setFlag, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
@@ -62,6 +63,21 @@ const suite =
                     forceForget: state.suite.settings.autoEject,
                 }),
             );
+
+            if (!state.suite.settings.autoEject) {
+                if (action.payload.id) {
+                    api.dispatch(setRecentlyDisconnectedDevice(action.payload.id));
+                }
+
+                setTimeout(() => {
+                    if (
+                        !state.suite.flags.hasSeenDisconnectTooltip &&
+                        state.wallet.accounts.length > 0
+                    ) {
+                        api.dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+                    }
+                }, 1000);
+            }
         }
 
         // pass action to reducers

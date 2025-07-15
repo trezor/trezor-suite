@@ -1,12 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Column, IconButton, Tooltip } from '@trezor/components';
+import {
+    Button,
+    Column,
+    Icon,
+    IconButton,
+    IconName,
+    List,
+    Paragraph,
+    Row,
+    Tooltip,
+} from '@trezor/components';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
+import { setFlag, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { AddWalletButton } from './AddWalletButton';
@@ -20,11 +35,51 @@ type DeviceItemProps = {
     onCancel?: ForegroundAppProps['onCancel'];
 };
 
+const ListItem = ({ children, iconName }: { children: React.ReactNode; iconName: IconName }) => (
+    <List.Item bulletComponent={<Icon name={iconName} variant="tertiary" size="mediumLarge" />}>
+        <Paragraph typographyStyle="body" variant="tertiary" textWrap="pretty">
+            {children}
+        </Paragraph>
+    </List.Item>
+);
+
 export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => {
+    const dispatch = useDispatch();
     const [isEjecting, setIsEjecting] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
+    const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
+    const hasSeenDisconnectTooltip = useSelector(
+        state => state.suite.flags.hasSeenDisconnectTooltip,
+    );
+    const [showTooltip, setShowTooltip] = useState(false);
 
+    const deviceModelInternal = device.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const instancesWithState = instances.filter(i => i.state);
+
+    useEffect(() => {
+        if (recentlyDisconnectedDevice === device.id) {
+            if (!device.connected && !hasSeenDisconnectTooltip) {
+                setShowTooltip(true);
+            } else {
+                dispatch(setRecentlyDisconnectedDevice(null));
+                setShowTooltip(false);
+            }
+        } else {
+            setShowTooltip(false);
+        }
+    }, [
+        recentlyDisconnectedDevice,
+        device.id,
+        device.connected,
+        hasSeenDisconnectTooltip,
+        dispatch,
+    ]);
+
+    const onTooltipClose = () => {
+        setShowTooltip(false);
+        dispatch(setRecentlyDisconnectedDevice(null));
+        dispatch(setFlag('hasSeenDisconnectTooltip', true));
+    };
 
     return (
         <CardWithDevice
@@ -51,16 +106,77 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                     {instancesWithState.length > 0 && (
                         <Column gap={spacings.xs}>
                             {instancesWithState.map((instance, index) => (
-                                <WalletInstance
+                                <Tooltip
+                                    content={
+                                        <Column
+                                            padding={{
+                                                horizontal: spacings.sm,
+                                                vertical: spacings.xs,
+                                            }}
+                                            gap={spacings.md}
+                                        >
+                                            <Paragraph
+                                                typographyStyle="highlight"
+                                                textWrap="balance"
+                                            >
+                                                <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE" />
+                                            </Paragraph>
+                                            <List bulletGap={spacings.sm}>
+                                                <ListItem iconName="eject">
+                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1" />
+                                                </ListItem>
+                                                <ListItem
+                                                    iconName={
+                                                        mapTrezorModelToIcon[deviceModelInternal]
+                                                    }
+                                                >
+                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2" />
+                                                </ListItem>
+                                            </List>
+                                            <Row gap={spacings.sm} margin={{ top: spacings.xs }}>
+                                                <Button
+                                                    size="small"
+                                                    onClick={() => {
+                                                        onTooltipClose();
+                                                        onCancel?.();
+                                                    }}
+                                                >
+                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY" />
+                                                </Button>
+                                                <Button
+                                                    size="small"
+                                                    variant="tertiary"
+                                                    onClick={() => {
+                                                        onTooltipClose();
+                                                        dispatch(
+                                                            goto('settings-index', {
+                                                                anchor: SettingsAnchor.AutoEject,
+                                                            }),
+                                                        );
+                                                    }}
+                                                >
+                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY" />
+                                                </Button>
+                                            </Row>
+                                        </Column>
+                                    }
                                     key={`${instance.id}-${instance.instance}-${instance.state}`}
-                                    instance={instance}
-                                    isSelected={deviceUtils.isSelectedInstance(
-                                        selectedDevice,
-                                        instance,
-                                    )}
-                                    index={index}
-                                    onCancel={onCancel}
-                                />
+                                    isOpen={showTooltip && index === 0}
+                                    isFullWidth
+                                    placement="right-start"
+                                    hasArrow
+                                    offset={30}
+                                >
+                                    <WalletInstance
+                                        instance={instance}
+                                        isSelected={deviceUtils.isSelectedInstance(
+                                            selectedDevice,
+                                            instance,
+                                        )}
+                                        index={index}
+                                        onCancel={onCancel}
+                                    />
+                                </Tooltip>
                             ))}
                         </Column>
                     )}

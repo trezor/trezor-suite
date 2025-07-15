@@ -167,6 +167,18 @@ export class OnboardingPage {
     }
 
     @step()
+    async disableDisconnectPrompt() {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        await this.page.evaluate(SuiteActions => {
+            window.store.dispatch({
+                type: SuiteActions.SET_FLAG,
+                key: 'hasSeenDisconnectTooltip',
+                value: true,
+            });
+        }, SuiteActions);
+    }
+
+    @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
         if (process.env.CANARY_FIRMWARE) {

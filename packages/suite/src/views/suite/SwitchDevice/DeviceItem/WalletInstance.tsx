@@ -103,7 +103,7 @@ export const WalletInstance = ({
     };
 
     return (
-        <Box position={{ type: 'relative' }}>
+        <Box position={{ type: 'relative' }} width="100%">
             <Card
                 key={`${instance.instance}${instance.state}`}
                 paddingType="small"

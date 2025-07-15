@@ -52,6 +52,10 @@ export type SuiteAction =
           value: boolean;
       }
     | {
+          type: typeof SUITE.SET_RECENTLY_DISCONNECTED_DEVICE;
+          payload: string | null;
+      }
+    | {
           type: typeof SUITE.EVM_CONFIRM_EXPLANATION_MODAL;
           symbol: keyof EvmSettings['confirmExplanationModalClosed'];
           route: string;
@@ -141,6 +145,11 @@ export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): 
     type: SUITE.SET_FLAG,
     key,
     value,
+});
+
+export const setRecentlyDisconnectedDevice = (payload: string | null): SuiteAction => ({
+    type: SUITE.SET_RECENTLY_DISCONNECTED_DEVICE,
+    payload,
 });
 
 export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState) => {
