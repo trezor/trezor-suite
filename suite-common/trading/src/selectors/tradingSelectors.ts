@@ -131,10 +131,8 @@ export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.tradingNew?.info;
 
 export const selectTradingBuyInfo = createMemoizedSelector(
-    [state => state.wallet.tradingNew.buy],
-    (buy): TradingBuyInfoSelector | undefined => {
-        const { buyInfo } = buy;
-
+    [state => state.wallet.tradingNew.buy.buyInfo],
+    (buyInfo): TradingBuyInfoSelector | undefined => {
         if (!buyInfo) return;
 
         const defaultAmountsOfFiatCurrencies: TradingFiatCurrenciesProps = new Map();
@@ -160,10 +158,8 @@ export const selectTradingBuyInfo = createMemoizedSelector(
 );
 
 export const selectTradingExchangeInfo = createMemoizedSelector(
-    [state => state.wallet.tradingNew.exchange],
-    (exchange): TradingExchangeInfoSelector | undefined => {
-        const { exchangeInfo } = exchange;
-
+    [state => state.wallet.tradingNew.exchange.exchangeInfo],
+    (exchangeInfo): TradingExchangeInfoSelector | undefined => {
         if (!exchangeInfo) return;
 
         return {
@@ -175,10 +171,8 @@ export const selectTradingExchangeInfo = createMemoizedSelector(
 );
 
 export const selectTradingSellInfo = createMemoizedSelector(
-    [state => state.wallet.tradingNew.sell],
-    (sell): TradingSellInfoSelector | undefined => {
-        const { sellInfo } = sell;
-
+    [state => state.wallet.tradingNew.sell.sellInfo],
+    (sellInfo): TradingSellInfoSelector | undefined => {
         if (!sellInfo) return;
 
         return {
@@ -239,20 +233,14 @@ export const selectTradingExchangeLoadingTimestampAndStatus = createMemoizedSele
     }),
 );
 
-export const selectTradingBuyProviders = createMemoizedSelector(
-    [selectTradingBuyInfo],
-    buyInfo => buyInfo?.providerInfos,
-);
+export const selectTradingBuyProviders = (state: TradingRootState) =>
+    selectTradingBuyInfo(state)?.providerInfos;
 
-export const selectTradingExchangeProviders = createMemoizedSelector(
-    [selectTradingExchangeInfo],
-    exchangeInfo => exchangeInfo?.providerInfos,
-);
+export const selectTradingExchangeProviders = (state: TradingRootState) =>
+    selectTradingExchangeInfo(state)?.providerInfos;
 
-export const selectTradingSellProviders = createMemoizedSelector(
-    [selectTradingSellInfo],
-    sellInfo => sellInfo?.providerInfos,
-);
+export const selectTradingSellProviders = (state: TradingRootState) =>
+    selectTradingSellInfo(state)?.providerInfos;
 
 export const selectTradingProviderByNameAndTradeType = (
     state: TradingRootState,
