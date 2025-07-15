@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
@@ -20,7 +20,6 @@ import {
     sortByCoin,
     substituteBip43Path,
 } from '@suite-common/wallet-utils';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -65,7 +64,7 @@ export const getTradingNetworkDecimals = ({
     return network?.decimals ?? 8;
 };
 
-export const buildFiatOption = (currency: BaseCurrencyCode) => ({
+export const buildTradingFiatOption = (currency: FiatCurrencyCode) => ({
     value: currency,
     label: currency.toUpperCase(),
 });

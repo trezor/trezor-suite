@@ -1,7 +1,7 @@
 import { Control, Controller } from 'react-hook-form';
 
-import { TRADING_FORM_COUNTRY_SELECT, regional } from '@suite-common/trading';
-import { Flag, Row, Select } from '@trezor/components';
+import { TRADING_FORM_COUNTRY_SELECT, TradingCountryOption, regional } from '@suite-common/trading';
+import { Flag, FlagType, Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -11,7 +11,6 @@ import {
     TradingBuySellFormProps,
     TradingFormInputDefaultProps,
 } from 'src/types/trading/tradingForm';
-import { CountryOption } from 'src/types/wallet/tradingCommonTypes';
 import { getCountryLabelParts } from 'src/utils/wallet/trading/tradingUtils';
 
 export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps) => {
@@ -32,13 +31,13 @@ export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps)
                         onChange(selected);
                         setAmountLimits(undefined);
                     }}
-                    formatOptionLabel={(option: CountryOption) => {
+                    formatOptionLabel={(option: TradingCountryOption) => {
                         const labelParts = getCountryLabelParts(option.label);
                         if (!labelParts) return null;
 
                         return (
                             <Row gap={spacings.xs}>
-                                <Flag country={option.value} />
+                                <Flag country={option.value as FlagType} />
 
                                 {labelParts.text}
                             </Row>

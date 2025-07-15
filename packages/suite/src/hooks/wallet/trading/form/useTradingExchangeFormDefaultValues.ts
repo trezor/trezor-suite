@@ -27,7 +27,7 @@ import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/comm
 import { TradingExchangeFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import {
-    buildFiatOption,
+    buildTradingFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
 } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -37,7 +37,7 @@ export const useTradingExchangeFormDefaultValues = (
     const { buildDefaultCryptoOption } = useTradingInfo();
     const localCurrency = useSelector(selectLocalCurrency);
     const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
-    const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
+    const defaultCurrency = useMemo(() => buildTradingFiatOption(localCurrency), [localCurrency]);
     const cryptoGroups = useTradingBuildAccountGroups('exchange');
     const cryptoOptions = useMemo(
         () => cryptoGroups.flatMap(group => group.options),

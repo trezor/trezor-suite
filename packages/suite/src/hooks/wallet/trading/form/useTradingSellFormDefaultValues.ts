@@ -19,7 +19,7 @@ import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import {
-    buildFiatOption,
+    buildTradingFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
 } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -58,7 +58,10 @@ export const useTradingSellFormDefaultValues = (
         }),
         [],
     );
-    const defaultCurrency = useMemo(() => buildFiatOption(TRADING_DEFAULT_FIAT_CURRENCY), []);
+    const defaultCurrency = useMemo(
+        () => buildTradingFiatOption(TRADING_DEFAULT_FIAT_CURRENCY),
+        [],
+    );
     const defaultPayment: Output = useMemo(
         () => ({
             ...DEFAULT_PAYMENT,

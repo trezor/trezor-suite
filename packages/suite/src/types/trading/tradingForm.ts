@@ -17,9 +17,11 @@ import type {
     TradingBuyFormProps,
     TradingBuyInfoSelector,
     TradingBuyType,
+    TradingCountryOption,
     TradingExchangeFormProps,
     TradingExchangeInfoSelector,
     TradingExchangeType,
+    TradingFiatCurrencyOption,
     TradingPaymentMethodListProps,
     TradingPaymentMethodType,
     TradingSellFormProps,
@@ -50,13 +52,12 @@ import {
 } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
 import { SendContextValues } from 'src/types/wallet/sendForm';
-import { Option } from 'src/types/wallet/tradingCommonTypes';
 import { AmountLimitProps, CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 export interface TradingBuyFormDefaultValuesProps {
     defaultValues: TradingBuyFormProps;
-    defaultCountry: Option;
-    defaultCurrency: Option;
+    defaultCountry: TradingCountryOption;
+    defaultCurrency: TradingFiatCurrencyOption;
     defaultPaymentMethod: TradingPaymentMethodListProps;
     suggestedFiatCurrency: FiatCurrencyCode;
 }
@@ -70,14 +71,14 @@ export type TradingAllFormProps =
 
 export interface TradingSellFormDefaultValuesProps {
     defaultValues: TradingSellFormProps;
-    defaultCountry: Option;
-    defaultCurrency: Option;
+    defaultCountry: TradingCountryOption;
+    defaultCurrency: TradingFiatCurrencyOption;
     defaultPaymentMethod: TradingPaymentMethodListProps;
 }
 
 export interface TradingExchangeFormDefaultValuesProps {
     defaultValues: TradingExchangeFormProps;
-    defaultCurrency: Option;
+    defaultCurrency: TradingFiatCurrencyOption;
 }
 
 interface TradingFormStateProps {
@@ -98,8 +99,8 @@ interface TradingCommonFormProps {
 }
 
 interface TradingCommonFormBuySellProps {
-    defaultCountry: Option;
-    defaultCurrency: Option;
+    defaultCountry: TradingCountryOption;
+    defaultCurrency: TradingFiatCurrencyOption;
     defaultPaymentMethod: TradingPaymentMethodListProps;
     paymentMethods: TradingPaymentMethodListProps[];
     amountLimits?: AmountLimitProps;
@@ -194,7 +195,7 @@ export interface TradingExchangeFormContextProps
     feeInfo: FeeInfo;
 
     exchangeInfo?: TradingExchangeInfoSelector;
-    defaultCurrency: Option;
+    defaultCurrency: TradingFiatCurrencyOption;
     amountLimits?: CryptoAmountLimitProps;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     quotes: ExchangeTrade[];

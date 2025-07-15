@@ -6,6 +6,7 @@ import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { SellInfo } from '../../reducers/sellReducer';
 import { regional } from '../../regional';
+import { TradingCountryCode } from '../../types';
 
 export const loadSellInfoThunk = createThunk<SellInfo>(
     `${TRADING_SELL_THUNK_PREFIX}/loadInfo`,
@@ -39,7 +40,7 @@ export const loadSellInfoThunk = createThunk<SellInfo>(
             providerInfos,
             supportedFiatCurrencies: [...new Set(supportedFiatCurrencies)],
             supportedCryptoCurrencies: [...new Set(supportedCryptoCurrencies)],
-            country: sellList.country,
+            country: sellList.country as TradingCountryCode,
         });
     },
 );

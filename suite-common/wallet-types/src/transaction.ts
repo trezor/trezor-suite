@@ -47,7 +47,7 @@ export type PrecomposedTransactionCardanoNonFinal =
         token?: TokenInfo;
     };
 
-export type CurrencyOption = { value: BaseCurrencyCode | ''; label: string };
+export type CurrencyOption = { value: BaseCurrencyCode; label: string };
 
 export type Output = {
     type: 'payment' | 'opreturn';

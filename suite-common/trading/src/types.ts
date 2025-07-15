@@ -19,6 +19,7 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
+import { CountryCode } from '@suite-common/geolocation';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AccountType, Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import type {
@@ -151,14 +152,25 @@ export interface TradingInfoProps {
     buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => TradingCryptoSelectItemProps;
 }
 
-export type TradingOption = { value: string; label: string };
+export type TradingFiatCurrencyOption = {
+    value: FiatCurrencyCode;
+    label: string;
+};
+
+// Todo: Hopefully the same as FlagProps['country'] from `@trezor/components` -> shall be unified
+export type TradingCountryCode = CountryCode | 'unknown';
+
+export type TradingCountryOption = {
+    value: TradingCountryCode;
+    label: string;
+};
 
 export type TradingBuyFormProps = {
     [constants.TRADING_FORM_FIAT_INPUT]?: string;
     [constants.TRADING_FORM_CRYPTO_INPUT]?: string;
-    [constants.TRADING_FORM_FIAT_CURRENCY_SELECT]: TradingOption;
+    [constants.TRADING_FORM_FIAT_CURRENCY_SELECT]: TradingFiatCurrencyOption;
     [constants.TRADING_FORM_CRYPTO_CURRENCY_SELECT]: TradingCryptoSelectItemProps;
-    [constants.TRADING_FORM_COUNTRY_SELECT]: TradingOption;
+    [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
 };
@@ -269,7 +281,7 @@ export interface TradingSellFormProps extends FormState {
         | TradingAccountOptionsGroupOptionProps
         | undefined;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
-    [constants.TRADING_FORM_COUNTRY_SELECT]: TradingOption;
+    [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
 }
 

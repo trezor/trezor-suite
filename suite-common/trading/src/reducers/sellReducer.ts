@@ -4,13 +4,13 @@ import { CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest, SellProviderInfo } 
 import { AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_PREFIX } from '../constants';
-import { TradingAmountLimitProps, TradingSellStepType } from '../types';
+import { TradingAmountLimitProps, TradingCountryCode, TradingSellStepType } from '../types';
 
 export interface SellInfo {
     providerInfos: { [name: string]: SellProviderInfo };
     supportedFiatCurrencies: string[];
     supportedCryptoCurrencies: CryptoId[];
-    country: string;
+    country: TradingCountryCode;
 }
 
 export type TradingSellState = {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { SellFiatTradeQuoteRequest } from 'invity-api';
+import { FiatCurrencyCode, SellFiatTradeQuoteRequest } from 'invity-api';
 
 import {
     type TradingSellFormProps,
@@ -12,7 +12,7 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import {
-    buildFiatOption,
+    buildTradingFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
 } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -59,7 +59,9 @@ export const useTradingSellFormRedirectValues = (
                   {
                       ...DEFAULT_PAYMENT,
                       fiat: quotesRequest.fiatStringAmount as string,
-                      currency: buildFiatOption(quotesRequest.fiatCurrency),
+                      currency: buildTradingFiatOption(
+                          quotesRequest.fiatCurrency as FiatCurrencyCode,
+                      ),
                       amount: quotesRequest.cryptoStringAmount as string,
                       address,
                       token,
