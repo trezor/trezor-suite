@@ -69,7 +69,7 @@ export interface TransactionOptions {
 export interface SignTransaction {
     inputs: ProtoWithDerivationPath<PROTO.TxInputType>[];
     outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[];
-    paymentRequests?: PROTO.TxAckPaymentRequest[];
+    paymentRequests?: PROTO.PaymentRequest[];
     refTxs?: RefTransaction[];
     account?: {
         addresses: AccountAddresses;

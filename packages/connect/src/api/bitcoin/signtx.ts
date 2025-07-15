@@ -15,7 +15,7 @@ export interface SignTxHelperProps {
     refTxs: Record<string, RefTransaction>;
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
-    paymentRequests: PROTO.TxAckPaymentRequest[];
+    paymentRequests: PROTO.PaymentRequest[];
     serializedTx: string[];
     signatures: string[];
 }
@@ -24,7 +24,7 @@ export interface SignTxHelperParams {
     typedCall: TypedCall;
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
-    paymentRequests?: PROTO.TxAckPaymentRequest[];
+    paymentRequests?: PROTO.PaymentRequest[];
     refTxs: RefTransaction[];
     options: TransactionOptions;
     coinInfo: BitcoinNetworkInfo;
@@ -156,7 +156,7 @@ const requestSignedTxInfo = ({
             );
         }
 
-        return typedCall('TxAckPaymentRequest', 'TxRequest', {
+        return typedCall('PaymentRequest', 'TxRequest', {
             nonce: req.nonce,
             recipient_name: req.recipient_name,
             memos: req.memos,

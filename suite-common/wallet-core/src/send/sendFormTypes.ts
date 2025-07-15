@@ -44,7 +44,7 @@ export type SignTransactionThunkArguments = {
     precomposedTransaction: PrecomposedTransactionFinal;
     selectedAccount: Account;
     device: TrezorDevice;
-    paymentRequests?: PROTO.TxAckPaymentRequest[];
+    paymentRequests?: PROTO.PaymentRequest[];
 };
 
 export type ComposeFeeLevelsError = {

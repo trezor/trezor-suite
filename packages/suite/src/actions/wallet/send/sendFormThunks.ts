@@ -188,7 +188,7 @@ type SignAndPushSendFormTransactionThunkParams = {
     formState: FormState;
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     selectedAccount?: Account;
-    paymentRequests?: PROTO.TxAckPaymentRequest[];
+    paymentRequests?: PROTO.PaymentRequest[];
 };
 
 export const signAndPushSendFormTransactionThunk = createThunk(

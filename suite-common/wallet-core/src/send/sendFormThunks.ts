@@ -407,7 +407,7 @@ type SignTransactionThunkParams = {
     formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
     selectedAccount: Account;
-    paymentRequests?: PROTO.TxAckPaymentRequest[];
+    paymentRequests?: PROTO.PaymentRequest[];
 };
 
 export const signTransactionThunk = createThunk<
