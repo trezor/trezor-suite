@@ -522,7 +522,7 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
 });
 
 type BuildCurrencyOptionParams = {
-    currency: BaseCurrencyCode;
+    currency: BaseCurrencyCode | '';
     areSatsDisplayed: boolean;
 };
 
