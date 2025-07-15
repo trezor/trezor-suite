@@ -444,56 +444,6 @@ export const PrevOutput = Type.Object(
     { $id: 'PrevOutput' },
 );
 
-export type TextMemo = Static<typeof TextMemo>;
-export const TextMemo = Type.Object(
-    {
-        text: Type.String(),
-    },
-    { $id: 'TextMemo' },
-);
-
-export type RefundMemo = Static<typeof RefundMemo>;
-export const RefundMemo = Type.Object(
-    {
-        address: Type.String(),
-        mac: Type.String(),
-    },
-    { $id: 'RefundMemo' },
-);
-
-export type CoinPurchaseMemo = Static<typeof CoinPurchaseMemo>;
-export const CoinPurchaseMemo = Type.Object(
-    {
-        coin_type: Type.Number(),
-        amount: Type.Uint(),
-        address: Type.String(),
-        mac: Type.String(),
-    },
-    { $id: 'CoinPurchaseMemo' },
-);
-
-export type PaymentRequestMemo = Static<typeof PaymentRequestMemo>;
-export const PaymentRequestMemo = Type.Object(
-    {
-        text_memo: Type.Optional(TextMemo),
-        refund_memo: Type.Optional(RefundMemo),
-        coin_purchase_memo: Type.Optional(CoinPurchaseMemo),
-    },
-    { $id: 'PaymentRequestMemo' },
-);
-
-export type TxAckPaymentRequest = Static<typeof TxAckPaymentRequest>;
-export const TxAckPaymentRequest = Type.Object(
-    {
-        nonce: Type.Optional(Type.String()),
-        recipient_name: Type.String(),
-        memos: Type.Optional(Type.Array(PaymentRequestMemo)),
-        amount: Type.Optional(Type.Uint()),
-        signature: Type.String(),
-    },
-    { $id: 'TxAckPaymentRequest' },
-);
-
 export type TxAckResponse = Static<typeof TxAckResponse>;
 export const TxAckResponse = Type.Union(
     [
@@ -906,6 +856,7 @@ export type CardanoAddress = Static<typeof CardanoAddress>;
 export const CardanoAddress = Type.Object(
     {
         address: Type.String(),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'CardanoAddress' },
 );
@@ -1370,6 +1321,68 @@ export const Deprecated_PassphraseStateAck = Type.Object(
     { $id: 'Deprecated_PassphraseStateAck' },
 );
 
+export type TextMemo = Static<typeof TextMemo>;
+export const TextMemo = Type.Object(
+    {
+        text: Type.String(),
+    },
+    { $id: 'TextMemo' },
+);
+
+export type TextDetailsMemo = Static<typeof TextDetailsMemo>;
+export const TextDetailsMemo = Type.Object(
+    {
+        title: Type.Optional(Type.String()),
+        text: Type.Optional(Type.String()),
+    },
+    { $id: 'TextDetailsMemo' },
+);
+
+export type RefundMemo = Static<typeof RefundMemo>;
+export const RefundMemo = Type.Object(
+    {
+        address: Type.String(),
+        address_n: Type.Array(Type.Number()),
+        mac: Type.String(),
+    },
+    { $id: 'RefundMemo' },
+);
+
+export type CoinPurchaseMemo = Static<typeof CoinPurchaseMemo>;
+export const CoinPurchaseMemo = Type.Object(
+    {
+        coin_type: Type.Number(),
+        amount: Type.Uint(),
+        address: Type.String(),
+        address_n: Type.Array(Type.Number()),
+        mac: Type.String(),
+    },
+    { $id: 'CoinPurchaseMemo' },
+);
+
+export type PaymentRequestMemo = Static<typeof PaymentRequestMemo>;
+export const PaymentRequestMemo = Type.Object(
+    {
+        text_memo: Type.Optional(TextMemo),
+        refund_memo: Type.Optional(RefundMemo),
+        coin_purchase_memo: Type.Optional(CoinPurchaseMemo),
+        text_details_memo: Type.Optional(TextDetailsMemo),
+    },
+    { $id: 'PaymentRequestMemo' },
+);
+
+export type PaymentRequest = Static<typeof PaymentRequest>;
+export const PaymentRequest = Type.Object(
+    {
+        nonce: Type.Optional(Type.String()),
+        recipient_name: Type.String(),
+        memos: Type.Optional(Type.Array(PaymentRequestMemo)),
+        amount: Type.Optional(Type.Uint()),
+        signature: Type.String(),
+    },
+    { $id: 'PaymentRequest' },
+);
+
 export type CipherKeyValue = Static<typeof CipherKeyValue>;
 export const CipherKeyValue = Type.Object(
     {
@@ -1445,6 +1458,14 @@ export const ECDHSessionKey = Type.Object(
     { $id: 'ECDHSessionKey' },
 );
 
+export type PaymentNotification = Static<typeof PaymentNotification>;
+export const PaymentNotification = Type.Object(
+    {
+        payment_req: Type.Optional(PaymentRequest),
+    },
+    { $id: 'PaymentNotification' },
+);
+
 export enum DebugButton {
     NO = 0,
     YES = 1,
@@ -1492,15 +1513,6 @@ export const DebugLinkPairingInfo = Type.Object(
         nfc_secret_trezor: Type.Optional(Type.String()),
     },
     { $id: 'DebugLinkPairingInfo' },
-);
-
-export type DebugLinkToggleThpPairingDialog = Static<typeof DebugLinkToggleThpPairingDialog>;
-export const DebugLinkToggleThpPairingDialog = Type.Object(
-    {
-        channel_id: Type.Optional(Type.String()),
-        show_dialog: Type.Optional(Type.Boolean()),
-    },
-    { $id: 'DebugLinkToggleThpPairingDialog' },
 );
 
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
@@ -1984,6 +1996,7 @@ export const EthereumAddress = Type.Object(
     {
         _old_address: Type.Optional(Type.String()),
         address: Type.String(),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'EthereumAddress' },
 );
@@ -2003,6 +2016,7 @@ export const EthereumSignTx = Type.Object(
         tx_type: Type.Optional(Type.Number()),
         definitions: Type.Optional(EthereumDefinitions),
         chunkify: Type.Optional(Type.Boolean()),
+        payment_req: Type.Optional(PaymentRequest),
     },
     { $id: 'EthereumSignTx' },
 );
@@ -2032,6 +2046,7 @@ export const EthereumSignTxEIP1559 = Type.Object(
         access_list: Type.Array(EthereumAccessList),
         definitions: Type.Optional(EthereumDefinitions),
         chunkify: Type.Optional(Type.Boolean()),
+        payment_req: Type.Optional(PaymentRequest),
     },
     { $id: 'EthereumSignTxEIP1559' },
 );
@@ -2910,6 +2925,7 @@ export type RippleAddress = Static<typeof RippleAddress>;
 export const RippleAddress = Type.Object(
     {
         address: Type.String(),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'RippleAddress' },
 );
@@ -2934,6 +2950,7 @@ export const RippleSignTx = Type.Object(
         last_ledger_sequence: Type.Optional(Type.Number()),
         payment: RipplePayment,
         chunkify: Type.Optional(Type.Boolean()),
+        payment_req: Type.Optional(PaymentRequest),
     },
     { $id: 'RippleSignTx' },
 );
@@ -2978,6 +2995,7 @@ export type SolanaAddress = Static<typeof SolanaAddress>;
 export const SolanaAddress = Type.Object(
     {
         address: Type.String(),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'SolanaAddress' },
 );
@@ -3060,6 +3078,7 @@ export type StellarAddress = Static<typeof StellarAddress>;
 export const StellarAddress = Type.Object(
     {
         address: Type.String(),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'StellarAddress' },
 );
@@ -3297,6 +3316,7 @@ export type TezosAddress = Static<typeof TezosAddress>;
 export const TezosAddress = Type.Object(
     {
         address: Type.String(),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'TezosAddress' },
 );
@@ -3497,11 +3517,6 @@ export const MessageType = Type.Object(
         PrevTx,
         PrevInput,
         PrevOutput,
-        TextMemo,
-        RefundMemo,
-        CoinPurchaseMemo,
-        PaymentRequestMemo,
-        TxAckPaymentRequest,
         TxAck,
         TxAckInputWrapper,
         TxAckInput,
@@ -3569,6 +3584,12 @@ export const MessageType = Type.Object(
         PassphraseAck,
         Deprecated_PassphraseStateRequest,
         Deprecated_PassphraseStateAck,
+        TextMemo,
+        TextDetailsMemo,
+        RefundMemo,
+        CoinPurchaseMemo,
+        PaymentRequestMemo,
+        PaymentRequest,
         CipherKeyValue,
         CipheredKeyValue,
         IdentityType,
@@ -3576,9 +3597,9 @@ export const MessageType = Type.Object(
         SignedIdentity,
         GetECDHSessionKey,
         ECDHSessionKey,
+        PaymentNotification,
         DebugLinkGetPairingInfo,
         DebugLinkPairingInfo,
-        DebugLinkToggleThpPairingDialog,
         DebugLinkResetDebugEvents,
         DebugLinkOptigaSetSecMax,
         DebugLinkGetGcInfo,

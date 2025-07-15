@@ -972,98 +972,6 @@
                 }
             }
         },
-        "TxAckPaymentRequest": {
-            "fields": {
-                "nonce": {
-                    "type": "bytes",
-                    "id": 1
-                },
-                "recipient_name": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 2
-                },
-                "memos": {
-                    "rule": "repeated",
-                    "type": "PaymentRequestMemo",
-                    "id": 3
-                },
-                "amount": {
-                    "type": "uint64",
-                    "id": 4
-                },
-                "signature": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 5
-                }
-            },
-            "nested": {
-                "PaymentRequestMemo": {
-                    "fields": {
-                        "text_memo": {
-                            "type": "TextMemo",
-                            "id": 1
-                        },
-                        "refund_memo": {
-                            "type": "RefundMemo",
-                            "id": 2
-                        },
-                        "coin_purchase_memo": {
-                            "type": "CoinPurchaseMemo",
-                            "id": 3
-                        }
-                    }
-                },
-                "TextMemo": {
-                    "fields": {
-                        "text": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 1
-                        }
-                    }
-                },
-                "RefundMemo": {
-                    "fields": {
-                        "address": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 1
-                        },
-                        "mac": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 2
-                        }
-                    }
-                },
-                "CoinPurchaseMemo": {
-                    "fields": {
-                        "coin_type": {
-                            "rule": "required",
-                            "type": "uint32",
-                            "id": 1
-                        },
-                        "amount": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 2
-                        },
-                        "address": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 3
-                        },
-                        "mac": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 4
-                        }
-                    }
-                }
-            }
-        },
         "TxAckInput": {
             "options": {
                 "(wire_type)": 22
@@ -1622,6 +1530,10 @@
                     "rule": "required",
                     "type": "string",
                     "id": 1
+                },
+                "mac": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -2466,6 +2378,136 @@
                 }
             }
         },
+        "PaymentRequest": {
+            "fields": {
+                "nonce": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "recipient_name": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "memos": {
+                    "rule": "repeated",
+                    "type": "PaymentRequestMemo",
+                    "id": 3
+                },
+                "amount": {
+                    "type": "uint64",
+                    "id": 4
+                },
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 5
+                }
+            },
+            "nested": {
+                "PaymentRequestMemo": {
+                    "fields": {
+                        "text_memo": {
+                            "type": "TextMemo",
+                            "id": 1
+                        },
+                        "refund_memo": {
+                            "type": "RefundMemo",
+                            "id": 2
+                        },
+                        "coin_purchase_memo": {
+                            "type": "CoinPurchaseMemo",
+                            "id": 3
+                        },
+                        "text_details_memo": {
+                            "type": "TextDetailsMemo",
+                            "id": 4
+                        }
+                    }
+                },
+                "TextMemo": {
+                    "fields": {
+                        "text": {
+                            "rule": "required",
+                            "type": "string",
+                            "id": 1
+                        }
+                    }
+                },
+                "TextDetailsMemo": {
+                    "fields": {
+                        "title": {
+                            "type": "string",
+                            "id": 1,
+                            "options": {
+                                "default": ""
+                            }
+                        },
+                        "text": {
+                            "type": "string",
+                            "id": 2,
+                            "options": {
+                                "default": ""
+                            }
+                        }
+                    }
+                },
+                "RefundMemo": {
+                    "fields": {
+                        "address": {
+                            "rule": "required",
+                            "type": "string",
+                            "id": 1
+                        },
+                        "address_n": {
+                            "rule": "repeated",
+                            "type": "uint32",
+                            "id": 2,
+                            "options": {
+                                "packed": false
+                            }
+                        },
+                        "mac": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 3
+                        }
+                    }
+                },
+                "CoinPurchaseMemo": {
+                    "fields": {
+                        "coin_type": {
+                            "rule": "required",
+                            "type": "uint32",
+                            "id": 1
+                        },
+                        "amount": {
+                            "rule": "required",
+                            "type": "string",
+                            "id": 2
+                        },
+                        "address": {
+                            "rule": "required",
+                            "type": "string",
+                            "id": 3
+                        },
+                        "address_n": {
+                            "rule": "repeated",
+                            "type": "uint32",
+                            "id": 4,
+                            "options": {
+                                "packed": false
+                            }
+                        },
+                        "mac": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 5
+                        }
+                    }
+                }
+            }
+        },
         "CipherKeyValue": {
             "fields": {
                 "address_n": {
@@ -2617,6 +2659,14 @@
                 "public_key": {
                     "type": "bytes",
                     "id": 2
+                }
+            }
+        },
+        "PaymentNotification": {
+            "fields": {
+                "payment_req": {
+                    "type": "PaymentRequest",
+                    "id": 1
                 }
             }
         },
@@ -2841,21 +2891,6 @@
                 "nfc_secret_trezor": {
                     "type": "bytes",
                     "id": 5
-                }
-            }
-        },
-        "DebugLinkToggleThpPairingDialog": {
-            "fields": {
-                "channel_id": {
-                    "type": "bytes",
-                    "id": 1
-                },
-                "show_dialog": {
-                    "type": "bool",
-                    "id": 2,
-                    "options": {
-                        "default": false
-                    }
                 }
             }
         },
@@ -3819,6 +3854,10 @@
                 "address": {
                     "type": "string",
                     "id": 2
+                },
+                "mac": {
+                    "type": "bytes",
+                    "id": 3
                 }
             }
         },
@@ -3893,6 +3932,10 @@
                 "chunkify": {
                     "type": "bool",
                     "id": 13
+                },
+                "payment_req": {
+                    "type": "PaymentRequest",
+                    "id": 14
                 }
             }
         },
@@ -3967,6 +4010,10 @@
                 "chunkify": {
                     "type": "bool",
                     "id": 13
+                },
+                "payment_req": {
+                    "type": "PaymentRequest",
+                    "id": 14
                 }
             },
             "nested": {
@@ -5479,6 +5526,10 @@
                     "rule": "required",
                     "type": "string",
                     "id": 1
+                },
+                "mac": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -5521,6 +5572,10 @@
                 "chunkify": {
                     "type": "bool",
                     "id": 7
+                },
+                "payment_req": {
+                    "type": "PaymentRequest",
+                    "id": 8
                 }
             },
             "nested": {
@@ -5609,6 +5664,10 @@
                     "rule": "required",
                     "type": "string",
                     "id": 1
+                },
+                "mac": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -5729,6 +5788,10 @@
                     "rule": "required",
                     "type": "string",
                     "id": 1
+                },
+                "mac": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -6238,6 +6301,10 @@
                     "rule": "required",
                     "type": "string",
                     "id": 1
+                },
+                "mac": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -6615,6 +6682,10 @@
             }
         },
         "MessageType": {
+            "options": {
+                "(has_bitcoin_only_values)": true,
+                "(wire_enum)": true
+            },
             "values": {
                 "Initialize": 0,
                 "Ping": 1,
@@ -6641,6 +6712,7 @@
                 "BackupDevice": 34,
                 "EntropyRequest": 35,
                 "EntropyAck": 36,
+                "PaymentRequest": 37,
                 "EntropyCheckReady": 994,
                 "EntropyCheckContinue": 995,
                 "PassphraseRequest": 41,
@@ -6685,7 +6757,6 @@
                 "TxAck": 22,
                 "GetAddress": 29,
                 "Address": 30,
-                "TxAckPaymentRequest": 37,
                 "SignMessage": 38,
                 "VerifyMessage": 39,
                 "MessageSignature": 40,
@@ -6700,6 +6771,7 @@
                 "SignedIdentity": 54,
                 "GetECDHSessionKey": 61,
                 "ECDHSessionKey": 62,
+                "PaymentNotification": 52,
                 "DebugLinkDecision": 100,
                 "DebugLinkGetState": 101,
                 "DebugLinkState": 102,

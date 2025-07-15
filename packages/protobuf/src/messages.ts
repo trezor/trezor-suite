@@ -326,36 +326,6 @@ export type PrevOutput = {
     decred_script_version?: number;
 };
 
-export type TextMemo = {
-    text: string;
-};
-
-export type RefundMemo = {
-    address: string;
-    mac: string;
-};
-
-export type CoinPurchaseMemo = {
-    coin_type: number;
-    amount: UintType;
-    address: string;
-    mac: string;
-};
-
-export type PaymentRequestMemo = {
-    text_memo?: TextMemo;
-    refund_memo?: RefundMemo;
-    coin_purchase_memo?: CoinPurchaseMemo;
-};
-
-export type TxAckPaymentRequest = {
-    nonce?: string;
-    recipient_name: string;
-    memos?: PaymentRequestMemo[];
-    amount?: UintType;
-    signature: string;
-};
-
 // TxAck replacement
 // TxAck needs more exact types
 // PrevInput and TxInputType requires exact responses in TxAckResponse
@@ -616,6 +586,7 @@ export type CardanoGetAddress = {
 
 export type CardanoAddress = {
     address: string;
+    mac?: string;
 };
 
 export type CardanoGetPublicKey = {
@@ -912,6 +883,44 @@ export type Deprecated_PassphraseStateRequest = {
 
 export type Deprecated_PassphraseStateAck = {};
 
+export type TextMemo = {
+    text: string;
+};
+
+export type TextDetailsMemo = {
+    title?: string;
+    text?: string;
+};
+
+export type RefundMemo = {
+    address: string;
+    address_n: number[];
+    mac: string;
+};
+
+export type CoinPurchaseMemo = {
+    coin_type: number;
+    amount: UintType;
+    address: string;
+    address_n: number[];
+    mac: string;
+};
+
+export type PaymentRequestMemo = {
+    text_memo?: TextMemo;
+    refund_memo?: RefundMemo;
+    coin_purchase_memo?: CoinPurchaseMemo;
+    text_details_memo?: TextDetailsMemo;
+};
+
+export type PaymentRequest = {
+    nonce?: string;
+    recipient_name: string;
+    memos?: PaymentRequestMemo[];
+    amount?: UintType;
+    signature: string;
+};
+
 export type CipherKeyValue = {
     address_n: number[];
     key: string;
@@ -959,6 +968,10 @@ export type ECDHSessionKey = {
     public_key?: string;
 };
 
+export type PaymentNotification = {
+    payment_req?: PaymentRequest;
+};
+
 export enum DebugButton {
     NO = 0,
     YES = 1,
@@ -989,11 +1002,6 @@ export type DebugLinkPairingInfo = {
     code_entry_code?: number;
     code_qr_code?: string;
     nfc_secret_trezor?: string;
-};
-
-export type DebugLinkToggleThpPairingDialog = {
-    channel_id?: string;
-    show_dialog?: boolean;
 };
 
 export type DebugLinkResetDebugEvents = {};
@@ -1289,6 +1297,7 @@ export type EthereumGetAddress = {
 export type EthereumAddress = {
     _old_address?: string;
     address: string;
+    mac?: string;
 };
 
 export type EthereumSignTx = {
@@ -1304,6 +1313,7 @@ export type EthereumSignTx = {
     tx_type?: number;
     definitions?: EthereumDefinitions;
     chunkify?: boolean;
+    payment_req?: PaymentRequest;
 };
 
 export type EthereumAccessList = {
@@ -1325,6 +1335,7 @@ export type EthereumSignTxEIP1559 = {
     access_list: EthereumAccessList[];
     definitions?: EthereumDefinitions;
     chunkify?: boolean;
+    payment_req?: PaymentRequest;
 };
 
 export type EthereumTxRequest = {
@@ -1891,6 +1902,7 @@ export type RippleGetAddress = {
 
 export type RippleAddress = {
     address: string;
+    mac?: string;
 };
 
 export type RipplePayment = {
@@ -1907,6 +1919,7 @@ export type RippleSignTx = {
     last_ledger_sequence?: number;
     payment: RipplePayment;
     chunkify?: boolean;
+    payment_req?: PaymentRequest;
 };
 
 export type RippleSignedTx = {
@@ -1931,6 +1944,7 @@ export type SolanaGetAddress = {
 
 export type SolanaAddress = {
     address: string;
+    mac?: string;
 };
 
 export type SolanaTxTokenAccountInfo = {
@@ -1975,6 +1989,7 @@ export type StellarGetAddress = {
 
 export type StellarAddress = {
     address: string;
+    mac?: string;
 };
 
 export enum StellarMemoType {
@@ -2133,6 +2148,7 @@ export type TezosGetAddress = {
 
 export type TezosAddress = {
     address: string;
+    mac?: string;
 };
 
 export type TezosGetPublicKey = {
@@ -2272,11 +2288,6 @@ export type MessageType = {
     PrevTx: PrevTx;
     PrevInput: PrevInput;
     PrevOutput: PrevOutput;
-    TextMemo: TextMemo;
-    RefundMemo: RefundMemo;
-    CoinPurchaseMemo: CoinPurchaseMemo;
-    PaymentRequestMemo: PaymentRequestMemo;
-    TxAckPaymentRequest: TxAckPaymentRequest;
     TxAck: TxAck;
     TxAckInputWrapper: TxAckInputWrapper;
     TxAckInput: TxAckInput;
@@ -2344,6 +2355,12 @@ export type MessageType = {
     PassphraseAck: PassphraseAck;
     Deprecated_PassphraseStateRequest: Deprecated_PassphraseStateRequest;
     Deprecated_PassphraseStateAck: Deprecated_PassphraseStateAck;
+    TextMemo: TextMemo;
+    TextDetailsMemo: TextDetailsMemo;
+    RefundMemo: RefundMemo;
+    CoinPurchaseMemo: CoinPurchaseMemo;
+    PaymentRequestMemo: PaymentRequestMemo;
+    PaymentRequest: PaymentRequest;
     CipherKeyValue: CipherKeyValue;
     CipheredKeyValue: CipheredKeyValue;
     IdentityType: IdentityType;
@@ -2351,9 +2368,9 @@ export type MessageType = {
     SignedIdentity: SignedIdentity;
     GetECDHSessionKey: GetECDHSessionKey;
     ECDHSessionKey: ECDHSessionKey;
+    PaymentNotification: PaymentNotification;
     DebugLinkGetPairingInfo: DebugLinkGetPairingInfo;
     DebugLinkPairingInfo: DebugLinkPairingInfo;
-    DebugLinkToggleThpPairingDialog: DebugLinkToggleThpPairingDialog;
     DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
     DebugLinkOptigaSetSecMax: DebugLinkOptigaSetSecMax;
     DebugLinkGetGcInfo: DebugLinkGetGcInfo;
