@@ -103,6 +103,7 @@ describe('MyAssetListItem', () => {
                 name: 'Bitcoin',
                 cryptoId: 'bitcoin',
             }),
+            getBtcAccount(),
         );
     });
 
@@ -194,6 +195,9 @@ describe('MyAssetListItem', () => {
                     symbol: 'btc',
                     name: 'Bitcoin',
                     cryptoId: 'bitcoin',
+                }),
+                expect.objectContaining({
+                    key: 'btc-account-1',
                 }),
             );
         });

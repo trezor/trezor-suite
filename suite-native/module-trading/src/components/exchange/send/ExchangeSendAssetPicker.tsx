@@ -1,6 +1,9 @@
 import { useCallback, useRef, useState } from 'react';
 import { TextInput } from 'react-native';
+import { useDispatch } from 'react-redux';
 
+import { tradingExchangeActions } from '@suite-common/trading';
+import { Account } from '@suite-common/wallet-types';
 import { HStack } from '@suite-native/atoms';
 
 import { ExchangeSendAmountInput } from './ExchangeSendAmountInput';
@@ -11,6 +14,7 @@ import { MyAssetSheet } from '../../general/MyAssetSheet/MyAssetSheet';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 export const ExchangeSendAssetPicker = () => {
+    const dispatch = useDispatch();
     const inputRef = useRef<TextInput>(null);
     const form = useExchangeFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
@@ -18,8 +22,9 @@ export const ExchangeSendAssetPicker = () => {
         useSheetControls(form, 'sendAsset');
 
     const onAssetSelect = useCallback(
-        (asset: TradeableAsset) => {
+        (asset: TradeableAsset, account: Account) => {
             setSelectedValue(asset);
+            dispatch(tradingExchangeActions.setTradingAccountKey(account.key));
             if (shouldFocusInput) {
                 setShouldFocusInput(false);
                 // CryptoAmountInput is rendered disabled allow changes to propagate.
@@ -28,7 +33,7 @@ export const ExchangeSendAssetPicker = () => {
                 }, 0);
             }
         },
-        [shouldFocusInput, setSelectedValue],
+        [shouldFocusInput, setSelectedValue, dispatch],
     );
 
     const showAssetsSheet = useCallback(() => {

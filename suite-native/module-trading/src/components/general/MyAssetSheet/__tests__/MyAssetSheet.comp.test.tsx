@@ -2,10 +2,11 @@ import { CryptoId } from 'invity-api';
 
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
+import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { selectExchangeAccountsWithTokensSectionList } from '../../../../selectors/exchangeSelectors';
 import { MyAsset } from '../../../../types/general';
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
@@ -51,9 +52,17 @@ describe('MyAssetSheet', () => {
         },
     ];
 
+    const getPreloadedState = () => ({
+        wallet: {
+            tradingNew: getInitializedTradingState(),
+            accounts: [btcAccount, ethAccount],
+        },
+    });
+
     const renderMyAssetsSheet = (props?: Partial<MyAssetSheetProps>) =>
         renderWithStoreProviderAsync(
             <MyAssetSheet onAssetSelect={jest.fn} onClose={jest.fn} isVisible={true} {...props} />,
+            { preloadedState: getPreloadedState() },
         );
 
     beforeEach(() => {
@@ -77,6 +86,25 @@ describe('MyAssetSheet', () => {
 
         expect(getByText('No assets found')).toBeTruthy();
         expect(getByText('You do not have any assets available for this operation.')).toBeTruthy();
+    });
+
+    it('should select asset and close on asset item press', async () => {
+        mockedSelectExchangeAccountsWithTokensSectionList.mockReturnValue(defaultAccounts);
+        const onAssetSelect = jest.fn();
+        const onClose = jest.fn();
+
+        const { getByText } = await renderMyAssetsSheet({ onAssetSelect, onClose });
+
+        fireEvent.press(getByText('BTC'));
+
+        expect(onAssetSelect).toHaveBeenCalledTimes(1);
+        expect(onAssetSelect).toHaveBeenCalledWith(
+            expect.objectContaining({ cryptoId: 'bitcoin' }),
+            btcAccount,
+        );
+
+        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(onClose).toHaveBeenCalledWith();
     });
 
     it('should render formatted account type badge when defined', async () => {

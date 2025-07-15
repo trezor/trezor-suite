@@ -113,6 +113,26 @@ describe('useExchangeForm', () => {
         });
     });
 
+    describe('sendAccount', () => {
+        it('should be undefined by default', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseExchangeForm(store);
+
+            expect(result.current.getValues('sendAccount')).toBeUndefined();
+        });
+
+        it('should update sendAccount value when account in redux store is changed', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+            });
+
+            expect(result.current.getValues('sendAccount')).toEqual(getBtcAccount('btc-account-1'));
+        });
+    });
+
     describe('receiveAccount', () => {
         it('should be undefined by default', async () => {
             const store = await getInitializedStore();
