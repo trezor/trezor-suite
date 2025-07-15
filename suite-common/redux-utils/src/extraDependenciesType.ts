@@ -68,6 +68,7 @@ export type ExtraDependencies = {
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
+        selectIsViewOnlyByDefaultEnabled: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

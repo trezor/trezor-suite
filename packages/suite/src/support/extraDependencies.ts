@@ -77,6 +77,7 @@ export const extraDependencies: ExtraDependencies = {
         selectIsWindowVisible,
         selectTradingEnvironment: (state: AppState) =>
             state.suite.settings.debug.invityServerEnvironment,
+        selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

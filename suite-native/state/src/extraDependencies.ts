@@ -6,6 +6,7 @@ import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
+import { selectIsViewOnlyByDefaultEnabled } from '@suite-native/feature-flags';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
@@ -31,6 +32,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             transports,
         }),
         selectTradingEnvironment,
+        selectIsViewOnlyByDefaultEnabled,
         // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
         //  and without defining the selector, it would use extraDependenciesMock value there
         selectSelectedAccount: () => ({

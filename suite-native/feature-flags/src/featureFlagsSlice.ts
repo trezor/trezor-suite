@@ -73,5 +73,8 @@ export const featureFlagsSlice = createSlice({
 export const selectIsFeatureFlagEnabled = (state: FeatureFlagsRootState, key: FeatureFlag) =>
     state.featureFlags[key];
 
+export const selectIsViewOnlyByDefaultEnabled = (state: FeatureFlagsRootState) =>
+    state.featureFlags[FeatureFlag.IsViewOnlyByDefaultEnabled];
+
 export const { toggleFeatureFlag } = featureFlagsSlice.actions;
 export const featureFlagsReducer = featureFlagsSlice.reducer;
