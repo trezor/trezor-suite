@@ -41,34 +41,6 @@ jest.mock('@suite-common/trading', () => ({
             payload,
         }),
     },
-
-    selectTradingCoinInfoByCryptoId: (state: any, cryptoId: string) => {
-        // Mock coinInfo for test assets
-        const mockCoinInfo = {
-            'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
-                symbol: 'usdc',
-                name: 'USDC',
-                coingeckoId: 'usd-coin',
-                services: {
-                    buy: true,
-                    sell: true,
-                    exchange: true,
-                },
-            },
-            binancecoin: {
-                symbol: 'bnb',
-                name: 'BNB',
-                coingeckoId: 'binancecoin',
-                services: {
-                    buy: true,
-                    sell: true,
-                    exchange: true,
-                },
-            },
-        };
-
-        return mockCoinInfo[cryptoId as keyof typeof mockCoinInfo];
-    },
 }));
 
 describe('useBuyQuotes', () => {
@@ -221,9 +193,7 @@ describe('useBuyQuotes', () => {
             // 2nd call - buyActions/fiatCurrencyChanged
             // 3rd call - initial handleRequestThunkMock
             // 4th call - re-fetch of handleRequestThunkMock
-            // 5th call - re-fetch of handleRequestThunkMock
-            // 6th call - re-fetch of handleRequestThunkMock
-            expect(dispatchSpy).toHaveBeenCalledTimes(2);
+            expect(dispatchSpy).toHaveBeenCalledTimes(4);
             expect(dispatchSpy).toHaveBeenLastCalledWith(
                 expect.objectContaining({
                     type: 'handleRequestThunkMock',
@@ -245,7 +215,7 @@ describe('useBuyQuotes', () => {
             result.current.setValue('fiatValue', '100');
         });
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(5);
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
 
         mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
         rerender({});
@@ -254,9 +224,7 @@ describe('useBuyQuotes', () => {
         // 2nd call - tradingBuy/fiatCurrencyChanged
         // 3rd call - initial handleRequestThunkMock
         // 4th call - re-fetch of handleRequestThunkMock
-        // 5th call - re-fetch of handleRequestThunkMock
-        // 6th call - re-fetch of handleRequestThunkMock
-        expect(dispatchSpy).toHaveBeenCalledTimes(6);
+        expect(dispatchSpy).toHaveBeenCalledTimes(4);
         expect(dispatchSpy).toHaveBeenLastCalledWith(
             expect.objectContaining({
                 type: 'handleRequestThunkMock',
