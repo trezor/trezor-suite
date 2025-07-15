@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
-    CurrencyOption,
+    BaseCurrencyOption,
     FiatRatesResult,
     Output,
     Timestamp,
     TokenAddress,
 } from '@suite-common/wallet-types';
 import {
+    buildCurrencyOption,
     buildCurrencyOptions,
     convertAmountSubunitsToUnits,
     findToken,
@@ -128,7 +129,7 @@ export const BaseCurrencyInput = ({
     interface CallbackParams {
         field: {
             onChange: (...event: any[]) => void;
-            value: any;
+            value: BaseCurrencyOption;
         };
     }
 
@@ -137,16 +138,16 @@ export const BaseCurrencyInput = ({
     }: CallbackParams) => (
         <Select
             options={buildCurrencyOptions({ selected: selectedOption, areSatsDisplayed })}
-            value={{
-                label: selectedOption.label.toUpperCase(),
-                value: selectedOption.value,
-            }}
+            value={buildCurrencyOption({
+                currency: selectedOption.value,
+                areSatsDisplayed,
+            })}
             isClearable={false}
             isSearchable
             minValueWidth="58px"
             isClean
             data-testid={currencyInputName}
-            onChange={async (selected: CurrencyOption) => {
+            onChange={async (selected: BaseCurrencyOption) => {
                 // propagate changes to FormState
                 onChange(selected);
 

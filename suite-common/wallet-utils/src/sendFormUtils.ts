@@ -19,7 +19,7 @@ import {
 import type {
     Account,
     AccountKey,
-    CurrencyOption,
+    BaseCurrencyOption,
     EthTransactionData,
     ExcludedUtxos,
     ExternalOutput,
@@ -31,7 +31,7 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { baseCurrencies } from '@trezor/blockchain-link-types';
+import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import {
     ComposeOutput,
     EthereumTransaction,
@@ -521,26 +521,36 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
     selectedUtxos: [],
 });
 
+type BuildCurrencyOptionParams = {
+    currency: BaseCurrencyCode;
+    areSatsDisplayed: boolean;
+};
+
+export const buildCurrencyOption = ({
+    currency,
+    areSatsDisplayed,
+}: BuildCurrencyOptionParams): BaseCurrencyOption => ({
+    value: currency,
+    label: currency === 'btc' && areSatsDisplayed ? 'Sats' : currency.toUpperCase(),
+});
+
 type BuildCurrencyOptionsParams = {
-    selected: CurrencyOption;
+    selected: BaseCurrencyOption;
     areSatsDisplayed: boolean;
 };
 
 export const buildCurrencyOptions = ({
     selected,
     areSatsDisplayed,
-}: BuildCurrencyOptionsParams) => {
-    const result: CurrencyOption[] = [];
+}: BuildCurrencyOptionsParams): BaseCurrencyOption[] => {
+    const result: BaseCurrencyOption[] = [];
 
     typedObjectKeys(baseCurrencies).forEach(currency => {
         if (selected.value === currency) {
             return;
         }
 
-        result.push({
-            value: currency,
-            label: currency === 'btc' && areSatsDisplayed ? 'Sats' : currency.toUpperCase(),
-        });
+        result.push(buildCurrencyOption({ currency, areSatsDisplayed }));
     });
 
     return result;
