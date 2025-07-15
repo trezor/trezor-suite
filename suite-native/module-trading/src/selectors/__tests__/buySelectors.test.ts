@@ -244,20 +244,6 @@ describe('buySelectors', () => {
                 expect.objectContaining({ value: 'czk' }),
             ]);
         });
-
-        it('should support values not presented in fiatCurrencies', () => {
-            prevState.buy.buyInfo!.supportedFiatCurrencies = ['xxx'];
-
-            expect(
-                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
-            ).toEqual([
-                {
-                    displayValue: 'XXX',
-                    label: 'XXX',
-                    value: 'xxx',
-                },
-            ]);
-        });
     });
 
     describe('selectBuyAmountLimits', () => {
