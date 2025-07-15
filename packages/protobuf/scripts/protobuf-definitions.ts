@@ -8,6 +8,7 @@ type Definition = {
     reserved?: unknown[];
     options?: Record<string, unknown>;
     valuesOptions?: Record<string, unknown>;
+    values?: Record<string, unknown>;
     rule?: string;
     type?: string;
     extend?: string;
