@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { FiatCurrencyCode } from 'invity-api';
 import type {
     BuyListResponse,
     BuyProviderInfo,
@@ -15,7 +16,7 @@ import { TradingAmountLimitProps } from '../types';
 export interface BuyInfo {
     buyInfo: BuyListResponse;
     providerInfos: { [name: string]: BuyProviderInfo };
-    supportedFiatCurrencies: string[];
+    supportedFiatCurrencies: FiatCurrencyCode[];
     supportedCryptoCurrencies: CryptoId[];
 }
 

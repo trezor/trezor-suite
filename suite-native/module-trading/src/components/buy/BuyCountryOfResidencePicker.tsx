@@ -1,10 +1,10 @@
+import { TradingCountryOption } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { Country } from '../../types/general';
 import { CountrySheet } from '../general/CountrySheet/CountrySheet';
 import { OverviewRow } from '../general/OverviewRow';
 
@@ -16,7 +16,7 @@ export const BuyCountryOfResidencePicker = () => {
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'country');
 
-    const handleCountrySelect = (country: Country) => {
+    const handleCountrySelect = (country: TradingCountryOption) => {
         setSelectedValue(country);
 
         if (selectedValue === country) return;

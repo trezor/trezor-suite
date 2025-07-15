@@ -5,6 +5,7 @@ import {
     BuyTradeResponse,
     CryptoId,
     FiatCurrenciesProps,
+    FiatCurrencyCode,
 } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
@@ -14,6 +15,7 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { BuyInfo, TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { TradingCountryCode } from '../../../types';
 import { SelectBuyQuoteThunkProps } from '../selectBuyQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
@@ -32,8 +34,8 @@ describe('selectBuyQuoteThunk', () => {
         const quote = MIN_MAX_QUOTES_OK[0];
         const quoteExchange = quote.exchange as string;
         const tradedCoin = quote.receiveCurrency as CryptoId;
-        const fiat = quote.fiatCurrency as string;
-        const country = quote.country as string;
+        const fiat = quote.fiatCurrency as FiatCurrencyCode;
+        const country = quote.country as TradingCountryCode;
         const cryptoStringAmount = quote.receiveStringAmount as string;
 
         const buyInfo: BuyInfo = {

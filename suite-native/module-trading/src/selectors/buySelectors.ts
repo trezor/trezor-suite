@@ -5,6 +5,7 @@ import { BuyCryptoPaymentMethod, BuyTrade, FiatCurrencyCode } from 'invity-api';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
+    TradingCountryCode,
     TradingPaymentMethodProps,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
@@ -22,7 +23,7 @@ import {
     createMemoizedSelectorWithAccounts,
 } from '../reducers';
 import { BuyFormValues } from '../types/buy';
-import { Country, FiatCurrencyItem, ReceiveAccount } from '../types/general';
+import { FiatCurrencyItem, ReceiveAccount } from '../types/general';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -79,14 +80,15 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
             return {} as Partial<BuyFormValues>;
         }
 
-        const { country, suggestedFiatCurrency } = buyInfo.buyInfo;
+        const { suggestedFiatCurrency } = buyInfo.buyInfo;
+        const country = buyInfo.buyInfo.country as TradingCountryCode;
 
         const fiatCurrency = suggestedFiatCurrency || DEFAULT_FIAT_CURRENCY_FALLBACK;
         const countryDefaultValue = regional.countriesMap.has(country)
-            ? ({
+            ? {
                   value: country,
-                  label: regional.countriesMap.get(country) as string,
-              } as Country)
+                  label: regional.countriesMap.get(country),
+              }
             : undefined;
 
         return {
@@ -103,7 +105,7 @@ export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
         [...new Set(currencies).values()]
             .map(
                 currency =>
-                    supportedFiatCurrenciesMap.get(currency) ?? {
+                    supportedFiatCurrenciesMap[currency] ?? {
                         code: currency,
                         label: currency.toUpperCase(),
                     },

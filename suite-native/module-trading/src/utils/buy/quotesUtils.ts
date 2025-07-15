@@ -3,6 +3,7 @@ import { CoinInfo } from 'invity-api';
 import { invariant } from '@suite-common/suite-utils';
 import {
     TradingBuyFormProps,
+    TradingCountryOption,
     TradingPaymentMethodListProps,
     toCryptoOption,
 } from '@suite-common/trading';
@@ -37,7 +38,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
         'amountInCrypto',
         'country',
     ]);
-    const currencyName = supportedFiatCurrenciesMap.get(fiatCurrency)?.label;
+    const currencyName = supportedFiatCurrenciesMap[fiatCurrency]?.label;
 
     invariant(currencyName, 'Currency is required');
     invariant(asset, 'Asset is required');
@@ -51,7 +52,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
             label: currencyName,
         },
         cryptoSelect: toCryptoOption(asset.cryptoId, coinInfo),
-        countrySelect: country,
+        countrySelect: country as TradingCountryOption,
         paymentMethod: getPaymentMethodFromBuyForm(form),
         amountInCrypto,
     };

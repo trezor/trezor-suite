@@ -3,19 +3,21 @@ import {
     EEACountryCodes,
     countries as countriesRecord,
 } from '@suite-common/geolocation';
-import { isArrayMember } from '@trezor/utils';
+import { isArrayMember, typedObjectValues } from '@trezor/utils';
+
+import { TradingCountryCode } from './types';
 
 class Regional {
     readonly UNKNOWN_COUNTRY = 'unknown' as const;
 
-    countries: [string, string][] = [
+    countries: [TradingCountryCode, string][] = [
         [this.UNKNOWN_COUNTRY, '🌍 Worldwide'],
-        ...Object.values(countriesRecord).map(
-            ({ code, flag, name }) => [code, `${flag} ${name}`] as [string, string],
+        ...typedObjectValues(countriesRecord).map(
+            ({ code, flag, name }) => [code, `${flag} ${name}`] as [TradingCountryCode, string],
         ),
     ];
 
-    countriesMap = new Map<string, string>(this.countries);
+    countriesMap = new Map<TradingCountryCode, string>(this.countries);
 
     countriesOptions = this.countries
         .map(([code, name]) => ({

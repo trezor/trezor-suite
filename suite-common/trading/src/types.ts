@@ -157,7 +157,6 @@ export type TradingFiatCurrencyOption = {
     label: string;
 };
 
-// Todo: Hopefully the same as FlagProps['country'] from `@trezor/components` -> shall be unified
 export type TradingCountryCode = CountryCode | 'unknown';
 
 export type TradingCountryOption = {

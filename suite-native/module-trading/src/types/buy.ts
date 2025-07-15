@@ -1,11 +1,11 @@
 import { BuyTrade, FiatCurrencyCode } from 'invity-api';
 
 import { Formatters } from '@suite-common/formatters';
-import { TradingAmountLimitProps } from '@suite-common/trading';
+import { TradingAmountLimitProps, TradingCountryOption } from '@suite-common/trading';
 import type { UseFormReturn } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
-import { BaseFormValues, Country, ReceiveAccount, TradeableAsset } from './general';
+import { BaseFormValues, ReceiveAccount, TradeableAsset } from './general';
 import { useConvertFormValueToBaseUnit } from '../hooks/general/useConvertFormValueToBaseUnit';
 
 export type BuyFormValues = BaseFormValues<'fiatValue' | 'cryptoValue', BuyTrade> & {
@@ -13,7 +13,7 @@ export type BuyFormValues = BaseFormValues<'fiatValue' | 'cryptoValue', BuyTrade
     receiveAccount: ReceiveAccount | undefined;
     fiatCurrency: FiatCurrencyCode;
     amountInCrypto: boolean;
-    country: Country;
+    country: TradingCountryOption;
 };
 
 export type BuyFormContext = Partial<TradingAmountLimitProps> & {
