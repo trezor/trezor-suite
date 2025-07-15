@@ -112,4 +112,28 @@ describe('useExchangeForm', () => {
             expect(result.current.getValues('receiveCryptoAmount')).toBe('89537');
         });
     });
+
+    describe('receiveAccount', () => {
+        it('should be undefined by default', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseExchangeForm(store);
+
+            expect(result.current.getValues('receiveAccount')).toBeUndefined();
+        });
+
+        it('should update receiveAccount value when account in redux store is changed', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setReceiveAccountKey('btc-account-1'));
+            });
+
+            expect(result.current.getValues('receiveAccount')).toEqual(
+                expect.objectContaining({
+                    account: getBtcAccount('btc-account-1'),
+                }),
+            );
+        });
+    });
 });

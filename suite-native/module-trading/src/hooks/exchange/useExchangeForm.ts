@@ -9,7 +9,10 @@ import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wal
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 
-import { selectGroupedExchangeQuotes } from '../../selectors/exchangeSelectors';
+import {
+    selectExchangeSelectedReceiveAccount,
+    selectGroupedExchangeQuotes,
+} from '../../selectors/exchangeSelectors';
 import { ExchangeFormType, ExchangeFormValues } from '../../types/exchange';
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
@@ -67,6 +70,14 @@ const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => 
     }, [selectedQuote, isAmountInSats, symbol, setValue]);
 };
 
+const useReceiveAccountChangeEffect = ({ setValue }: ExchangeFormType) => {
+    const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
+
+    useEffect(() => {
+        setValue('receiveAccount', receiveAccount);
+    }, [receiveAccount, setValue]);
+};
+
 export const useExchangeForm = () => {
     const form = useForm<ExchangeFormValues>({
         validation: exchangeFormValidationSchema,
@@ -74,6 +85,7 @@ export const useExchangeForm = () => {
 
     useExchangeQuotesChangeEffect(form);
     useExchangeQuoteChangeEffect(form);
+    useReceiveAccountChangeEffect(form);
 
     return form;
 };
