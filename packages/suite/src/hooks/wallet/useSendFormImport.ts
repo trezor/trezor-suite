@@ -113,10 +113,7 @@ export const useSendFormImport = ({
                         output.amount = cryptoAmount;
                     }
 
-                    const fiatRateKey = getFiatRateKey(
-                        network.symbol,
-                        itemCurrency as BaseCurrencyCode,
-                    );
+                    const fiatRateKey = getFiatRateKey(network.symbol, localCurrencyOption.value);
                     const fiatRate = currentRates?.[fiatRateKey];
 
                     // calculate Fiat from Amount
