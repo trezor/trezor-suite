@@ -28,6 +28,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { PROTO, Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
 import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
 import { exhaustive } from '@trezor/type-utils';
 import { cloneObject } from '@trezor/utils';
@@ -601,6 +602,17 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             )
                 .then(response => response.ok)
                 .catch(() => false);
+        }
+
+        if (
+            selectedAccount.networkType === 'solana' &&
+            enhancedPrecomposedTransaction.token?.contract
+        ) {
+            const tokenDefinition = await getSolanaTokenDefinition({
+                mintAddress: enhancedPrecomposedTransaction.token.contract,
+            });
+
+            isTokenKnown = !!tokenDefinition;
         }
 
         dispatch(
