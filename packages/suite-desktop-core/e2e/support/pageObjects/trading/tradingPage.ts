@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
+import { TradingCountryCode } from '@suite-common/trading/libDev/src';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
@@ -217,7 +218,7 @@ export class TradingPage {
     }
 
     @step()
-    async selectCountryOfResidence(countryCode: string) {
+    async selectCountryOfResidence(countryCode: TradingCountryCode) {
         const countryLabel = getCountryLabel(countryCode);
         const currentCountry = await this.countryOfResidenceDropdown.textContent();
         if (currentCountry === countryLabel) {
@@ -260,7 +261,7 @@ export class TradingPage {
         cryptoCurrency: string = 'bitcoin',
         wantCrypto: boolean = false,
         fiatCurrencyCode: BaseCurrencyCode = 'czk',
-        country: string = 'CZ',
+        country: TradingCountryCode = 'CZ',
     ) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
         await expect(inputField).not.toHaveValue('');
@@ -286,7 +287,7 @@ export class TradingPage {
         amount: string,
         cryptoCurrency: string = 'bitcoin',
         fiatCurrencyCode: BaseCurrencyCode = 'eur',
-        country: string = 'CZ',
+        country: TradingCountryCode = 'CZ',
     ) {
         await this.selectCountryOfResidence(country);
         const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
@@ -308,7 +309,10 @@ export class TradingPage {
     }
 
     @step()
-    async fillSellFormMinimumQuoteError(amount: string = '0.00000001', country: string = 'CZ') {
+    async fillSellFormMinimumQuoteError(
+        amount: string = '0.00000001',
+        country: TradingCountryCode = 'CZ',
+    ) {
         await this.selectCountryOfResidence(country);
         await this.youPayCryptoInput.fill(amount);
         await this.page.waitForRequest(invityEndpoint.sellQuotes);
