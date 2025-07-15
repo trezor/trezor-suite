@@ -1,0 +1,47 @@
+import { FiatCurrencyCode } from 'invity-api';
+
+type MirrorRecord<T extends FiatCurrencyCode> = { [K in T]: K };
+
+// This is a solution to handle difference between BaseCurrency and Invity FiatCurrency,
+// and this forces the values to be the same as type. With this trick, we can extract a runtime values
+// from API type
+export const enabledTradingCurrencies: MirrorRecord<FiatCurrencyCode> = {
+    aed: 'aed',
+    usd: 'usd',
+    eur: 'eur',
+    gbp: 'gbp',
+    ars: 'ars',
+    aud: 'aud',
+    bdt: 'bdt',
+    brl: 'brl',
+    cad: 'cad',
+    chf: 'chf',
+    clp: 'clp',
+    cny: 'cny',
+    czk: 'czk',
+    dkk: 'dkk',
+    hkd: 'hkd',
+    huf: 'huf',
+    idr: 'idr',
+    ils: 'ils',
+    inr: 'inr',
+    jpy: 'jpy',
+    krw: 'krw',
+    kwd: 'kwd',
+    lkr: 'lkr',
+    mxn: 'mxn',
+    myr: 'myr',
+    nok: 'nok',
+    nzd: 'nzd',
+    php: 'php',
+    pln: 'pln',
+    rub: 'rub',
+    sar: 'sar',
+    sek: 'sek',
+    sgd: 'sgd',
+    thb: 'thb',
+    try: 'try',
+    twd: 'twd',
+    vnd: 'vnd',
+    zar: 'zar',
+};

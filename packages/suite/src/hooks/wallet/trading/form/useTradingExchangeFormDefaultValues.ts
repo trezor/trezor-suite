@@ -14,6 +14,7 @@ import {
     TradingExchangeRateFilter,
     TradingExchangeRateType,
     cryptoIdToSymbol,
+    enabledTradingCurrencies,
     exchangeUtils,
     selectTradingPrefilledFromAccount,
     useTradingInfo,
@@ -21,6 +22,7 @@ import {
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { FormState, Output } from '@suite-common/wallet-types';
+import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
@@ -37,7 +39,18 @@ export const useTradingExchangeFormDefaultValues = (
     const { buildDefaultCryptoOption } = useTradingInfo();
     const localCurrency = useSelector(selectLocalCurrency);
     const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
-    const defaultCurrency = useMemo(() => buildTradingFiatOption(localCurrency), [localCurrency]);
+
+    const defaultCurrency = useMemo(
+        () =>
+            // Here, we are using BaseCurrency as a way how to determine the users preferred Sell/Buy currency,
+            // however, they may not be available (or it is 'btc'). In that case, we fall back to 'usd'
+            buildTradingFiatOption(
+                isArrayMember(localCurrency, typedObjectValues(enabledTradingCurrencies))
+                    ? localCurrency
+                    : 'usd',
+            ),
+        [localCurrency],
+    );
     const cryptoGroups = useTradingBuildAccountGroups('exchange');
     const cryptoOptions = useMemo(
         () => cryptoGroups.flatMap(group => group.options),
