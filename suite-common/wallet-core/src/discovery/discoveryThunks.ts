@@ -80,8 +80,11 @@ const applyDeviceStatesThunk = createThunk(
             newDeviceState: DeviceState;
             devicePath: DeviceUniquePath;
         },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
+        const { selectIsViewOnlyByDefaultEnabled } = extra.selectors;
+        const isNativeViewOnlyByDefaultEnabled = selectIsViewOnlyByDefaultEnabled(getState());
+
         try {
             const devices = selectDevices(getState());
             const devicesByPath = devices.filter(d => d.path === devicePath);
@@ -130,8 +133,9 @@ const applyDeviceStatesThunk = createThunk(
                             metadata: {},
                             instance: getNewInstanceNumber(selectDevices(getState()), device),
                             useEmptyPassphrase: !isAddingHiddenWallet,
-                            // TODO: On mobile, we don't want to remember the device by default, because it's not supported yet
-                            remember: isNative() ? false : true,
+                            // TODO: On mobile, we only support view only by default with a FF, until it's released. Remove the condition when removing the FF.
+                            remember:
+                                isNative() && !isNativeViewOnlyByDefaultEnabled ? false : true,
                             state: newDeviceState,
                         },
                     }),

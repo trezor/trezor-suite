@@ -10,7 +10,12 @@ export type ConnectDeviceSettings = {
     defaultWalletLoading: WalletType;
 };
 
-export type DeviceConnectActionPayload = { device: Device; settings: ConnectDeviceSettings };
+export type DeviceConnectActionPayload = {
+    device: Device;
+    settings: ConnectDeviceSettings;
+    // Note: temporary condition until view only by default is not controlled by feature flag on native
+    isViewOnlyByDefaultEnabled: boolean;
+};
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
     payload,
@@ -18,7 +23,7 @@ const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectAction
 
 const createDeviceInstance = createAction(
     `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
-    (payload: { device: TrezorDevice }) => ({ payload }),
+    (payload: { device: TrezorDevice; isViewOnlyByDefaultEnabled: boolean }) => ({ payload }),
 );
 
 const connectUnacquiredDevice = createAction(

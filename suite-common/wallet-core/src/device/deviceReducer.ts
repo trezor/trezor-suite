@@ -119,6 +119,7 @@ const connectDevice = (
     draft: DeviceReducerState,
     device: Device,
     settings: ConnectDeviceSettings,
+    isViewOnlyByDefaultEnabled: boolean,
 ) => {
     const currentTime = new Date().getTime();
 
@@ -183,7 +184,7 @@ const connectDevice = (
         ...deviceCommonFields,
         state: device._state,
         useEmptyPassphrase,
-        remember: isNative() ? false : true,
+        remember: isNative() && !isViewOnlyByDefaultEnabled ? false : true,
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
@@ -446,7 +447,11 @@ const resetAuthFailed = (draft: DeviceReducerState) => {
  * @returns
  */
 // TODO: this now can only be used for imported device!
-const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
+const createInstance = (
+    draft: DeviceReducerState,
+    device: TrezorDevice,
+    isViewOnlyByDefaultEnabled: boolean,
+) => {
     // only acquired devices
     if (!device || !device.features) return;
 
@@ -456,8 +461,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
-        // TODO: On mobile, we don't want to remember the device by default, because it's not supported yet
-        remember: isNative() ? isPortfolioTrackerDevice : true,
+        remember: isViewOnlyByDefaultEnabled,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
         state: isPortfolioTrackerDevice ? device.state : undefined,
@@ -687,12 +691,12 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             state.devicesWithFailedEntropyCheck.push(payload);
         })
         .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
-            createInstance(state, payload.device);
+            createInstance(state, payload.device, payload.isViewOnlyByDefaultEnabled);
         })
         .addMatcher(
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
-            (state, { payload: { device, settings } }) => {
-                connectDevice(state, device, settings);
+            (state, { payload: { device, settings, isViewOnlyByDefaultEnabled } }) => {
+                connectDevice(state, device, settings, isViewOnlyByDefaultEnabled);
             },
         );
 });
