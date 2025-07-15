@@ -47,14 +47,14 @@ export type PrecomposedTransactionCardanoNonFinal =
         token?: TokenInfo;
     };
 
-export type CurrencyOption = { value: BaseCurrencyCode; label: string };
+export type BaseCurrencyOption = { value: BaseCurrencyCode; label: string };
 
 export type Output = {
     type: 'payment' | 'opreturn';
     address: string;
     amount: string;
     fiat: string;
-    currency: CurrencyOption;
+    currency: BaseCurrencyOption;
     label?: string;
     token: string | null;
     dataHex?: string; // bitcoin opreturn/ethereum data

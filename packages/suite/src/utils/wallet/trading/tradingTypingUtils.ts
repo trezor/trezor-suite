@@ -11,7 +11,7 @@ import {
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
-import { CurrencyOption } from '@suite-common/wallet-types';
+import { BaseCurrencyOption } from '@suite-common/wallet-types';
 
 import {
     TradingCryptoListProps,
@@ -140,7 +140,7 @@ export const getSelectedCrypto = (
 
 export const getSelectedTradingCurrency = (
     context: TradingFormContextValues<TradingType>,
-): TradingFiatCurrencyOption | CurrencyOption => {
+): TradingFiatCurrencyOption | BaseCurrencyOption => {
     if (isTradingExchangeContext(context)) {
         return context.getValues(TRADING_FORM_OUTPUT_CURRENCY);
     }
