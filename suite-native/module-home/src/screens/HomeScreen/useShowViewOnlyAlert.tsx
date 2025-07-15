@@ -14,6 +14,7 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     selectViewOnlyCancelationTimestamp,
@@ -30,6 +31,8 @@ export const useShowViewOnlyAlert = () => {
     const dispatch = useDispatch();
     const { showAlert } = useAlert();
     const { showToast } = useToast();
+
+    const isViewOnlyByDefaultEnabled = useFeatureFlag(FeatureFlag.IsViewOnlyByDefaultEnabled);
 
     const device = useSelector(selectSelectedDevice);
     const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
@@ -95,7 +98,8 @@ export const useShowViewOnlyAlert = () => {
                 isDeviceReadyToUseAndAuthorized &&
                 !isPortfolioTrackerDevice &&
                 !hasDiscovery &&
-                !viewOnlyCancelationTimestamp;
+                !viewOnlyCancelationTimestamp &&
+                !isViewOnlyByDefaultEnabled;
 
             //show after a delay
             if (canBeShowed) {
@@ -115,6 +119,7 @@ export const useShowViewOnlyAlert = () => {
             isDeviceReadyToUseAndAuthorized,
             isDeviceRemembered,
             isPortfolioTrackerDevice,
+            isViewOnlyByDefaultEnabled,
             showViewOnlyAlert,
             viewOnlyCancelationTimestamp,
         ]),
