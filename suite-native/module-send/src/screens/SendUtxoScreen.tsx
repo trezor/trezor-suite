@@ -9,7 +9,7 @@ import {
     fetchAllTransactionsForAccountThunk,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { useFilteredUtxos } from '@suite-common/wallet-utils';
+import { isSameUtxo, useFilteredUtxos } from '@suite-common/wallet-utils';
 import { BaseSearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
@@ -56,10 +56,18 @@ export const SendUtxoScreen = ({
         };
     }, [accountKey, dispatch]);
 
-    const handleUtxoSelect = (utxo: Utxo) =>
-        tempSelectedUtxos.includes(utxo)
-            ? setTempSelectedUtxos(tempSelectedUtxos.filter(txid => txid !== utxo))
-            : setTempSelectedUtxos([...tempSelectedUtxos, utxo]);
+    const handleUtxoSelect = (utxo: Utxo) => {
+        const exists = tempSelectedUtxos.some(selected => isSameUtxo(selected, utxo));
+        if (exists) {
+            setTempSelectedUtxos(
+                tempSelectedUtxos.filter(
+                    selected => !(isSameUtxo(selected, utxo) ? selected : null),
+                ),
+            );
+        } else {
+            setTempSelectedUtxos([...tempSelectedUtxos, utxo]);
+        }
+    };
 
     const totalTempSelectedUtxos = useMemo(
         () =>
@@ -70,7 +78,11 @@ export const SendUtxoScreen = ({
     );
 
     const onSelectionSubmit = () => {
-        setSelectedUtxos(account?.utxo?.filter(u => tempSelectedUtxos.includes(u)) ?? []);
+        setSelectedUtxos(
+            account?.utxo?.filter(u =>
+                tempSelectedUtxos.some(tempUtxo => isSameUtxo(u, tempUtxo)),
+            ) ?? [],
+        );
         setTempSelectedUtxos([]);
         navigation.goBack();
     };

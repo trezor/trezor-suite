@@ -37,3 +37,6 @@ export const constructFormDraft = ({
     feeLimit: feeLevel.feeLimit ?? '',
     ...restFormValues,
 });
+
+export const isSameUtxo = (utxo1: Utxo, utxo2: Utxo): boolean =>
+    utxo1.txid === utxo2.txid && utxo1.vout === utxo2.vout;

@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { FlashList } from '@shopify/flash-list';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { Utxo } from '@trezor/blockchain-link-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -26,18 +27,15 @@ type UtxoListProps = {
 export const UtxoList = ({
     utxos,
     accountKey,
-    selectedUtxos: tempSelectedUtxos,
+    selectedUtxos,
     onUtxoToggle,
     symbol,
 }: UtxoListProps) => {
     const { applyStyle } = useNativeStyles();
 
     const isSelected = useCallback(
-        (utxo: Utxo) =>
-            tempSelectedUtxos.some(
-                selected => selected.txid === utxo.txid && selected.vout === utxo.vout,
-            ),
-        [tempSelectedUtxos],
+        (utxo: Utxo) => selectedUtxos.some(selected => isSameUtxo(selected, utxo)),
+        [selectedUtxos],
     );
 
     const renderItem = useCallback(
@@ -58,7 +56,7 @@ export const UtxoList = ({
     return (
         <FlashList
             data={utxos}
-            extraData={tempSelectedUtxos}
+            extraData={selectedUtxos}
             keyExtractor={utxo => `${utxo.txid}-${utxo.vout}`}
             renderItem={renderItem}
             contentContainerStyle={applyStyle(UtxoListStyle)}

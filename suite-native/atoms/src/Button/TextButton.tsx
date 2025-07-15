@@ -18,6 +18,7 @@ export type TextButtonVariant = 'primary' | 'tertiary';
 type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
     isUnderlined?: boolean;
     variant?: TextButtonVariant;
+    isBold?: boolean;
 };
 
 const variantToColorsMap = {
@@ -36,14 +37,29 @@ const buttonContainerStyle = prepareNativeStyle(() => ({
 }));
 
 const textStyle = prepareNativeStyle(
-    (utils, { buttonSize, isUnderlined }: { buttonSize: ButtonSize; isUnderlined: boolean }) => ({
+    (
+        utils,
+        {
+            buttonSize,
+            isUnderlined,
+            isBold,
+        }: { buttonSize: ButtonSize; isUnderlined: boolean; isBold: boolean },
+    ) => ({
         ...utils.typography[buttonToTextSizeMap[buttonSize]],
-        extend: {
-            condition: isUnderlined,
-            style: {
-                textDecorationLine: 'underline',
+        extend: [
+            {
+                condition: isUnderlined,
+                style: {
+                    textDecorationLine: 'underline',
+                },
             },
-        },
+            {
+                condition: isBold,
+                style: {
+                    fontWeight: utils.fontWeights.bold,
+                },
+            },
+        ],
     }),
 );
 
@@ -56,6 +72,7 @@ export const TextButton = ({
     size = 'medium',
     isDisabled = false,
     isUnderlined = false,
+    isBold = false,
     ...pressableProps
 }: TextButtonProps) => {
     const { applyStyle, utils } = useNativeStyles();
@@ -105,7 +122,7 @@ export const TextButton = ({
                 )}
                 <Animated.Text
                     style={[
-                        applyStyle(textStyle, { buttonSize: size, isUnderlined }),
+                        applyStyle(textStyle, { buttonSize: size, isUnderlined, isBold }),
                         animatedTextStyle,
                     ]}
                 >
