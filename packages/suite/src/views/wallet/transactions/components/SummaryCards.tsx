@@ -17,6 +17,7 @@ import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
 import { FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';
 
 import { InfoCard } from './InfoCard';
+import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 
 const InfoCardsWrapper = styled.div`
     display: grid;
@@ -79,6 +80,9 @@ export const SummaryCards = ({
 }: SummaryCardProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const [fromTimestamp, toTimestamp] = dataInterval;
+
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
+
     // aggregate values from shown graph data
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
     const totalSentAmount = asBaseCurrencyAmount(
@@ -95,8 +99,6 @@ export const SummaryCards = ({
         (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
         {},
     );
-
-    const shouldDisplayBaseCurrency = localCurrency !== account.symbol;
 
     return (
         <InfoCardsWrapper className={className}>
@@ -127,7 +129,7 @@ export const SummaryCards = ({
                         title={<Translation id="TR_INCOMING" />}
                         value={totalReceivedAmount.toFixed()}
                         secondaryValue={
-                            shouldDisplayBaseCurrency && totalReceivedFiatMap[localCurrency] ? (
+                            shallDisplayBaseCurrency && totalReceivedFiatMap[localCurrency] ? (
                                 <BaseCurrencyAmountFormatter
                                     currency={localCurrency}
                                     value={totalReceivedFiatMap[localCurrency]!}
@@ -142,7 +144,7 @@ export const SummaryCards = ({
                         title={<Translation id="TR_OUTGOING" />}
                         value={totalSentAmount.negated().toFixed()}
                         secondaryValue={
-                            shouldDisplayBaseCurrency && totalSentFiatMap[localCurrency] ? (
+                            shallDisplayBaseCurrency && totalSentFiatMap[localCurrency] ? (
                                 <BaseCurrencyAmountFormatter
                                     currency={localCurrency}
                                     value={totalSentFiatMap[localCurrency]!}
