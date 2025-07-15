@@ -1,5 +1,7 @@
+import { TranslationKey } from '@suite-common/intl-types';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
+import { FirmwareHashCheckError } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -15,7 +17,17 @@ import {
     EntropyCheckSupportButton,
     FwAuthencityChecksCtas,
 } from './deviceCompromisedCtas';
+import { SkippedHashCheckError } from '../../../constants/suite/firmware';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
+
+const hashCheckSubtitleMap: Record<
+    // map only for active cases, and except 'other-error' because it has complex handling
+    Exclude<FirmwareHashCheckError, SkippedHashCheckError | 'other-error'>,
+    TranslationKey
+> = {
+    'hash-mismatch': 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
+    'takes-too-long': 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT',
+};
 
 const DeviceCompromisedContent = () => {
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
@@ -73,11 +85,7 @@ const DeviceCompromisedContent = () => {
             <SecurityCheckFail
                 ctaSection={<FwAuthencityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
-                text={
-                    hashCheckError === 'takes-too-long'
-                        ? 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT'
-                        : 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT'
-                }
+                text={hashCheckSubtitleMap[hashCheckError]}
                 checklistItems={hardFailureChecklistItems}
             />
         );

@@ -21,11 +21,11 @@ const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> 
 };
 
 const hashCheckMessages: Record<
-    Exclude<FirmwareHashCheckError, SkippedHashCheckError>,
+    // map only for active cases, and except 'other-error' because it has complex handling
+    Exclude<FirmwareHashCheckError, SkippedHashCheckError | 'other-error'>,
     TranslationKey
 > = {
     'hash-mismatch': 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
-    'other-error': 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
     'takes-too-long': 'TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG',
 };
 
@@ -34,14 +34,15 @@ const useAuthenticityCheckMessage = (): TranslationKey | null => {
     const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
 
-    if (firmwareRevisionError) {
+    if (firmwareRevisionError !== null) {
         return revisionCheckMessages[firmwareRevisionError];
     }
-    if (firmwareHashError) {
-        if (firmwareHashError === 'other-error' && wasHashCheckOtherErrorLastTime) {
-            return 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN';
-        }
-
+    if (firmwareHashError === 'other-error') {
+        return wasHashCheckOtherErrorLastTime
+            ? 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN'
+            : 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR';
+    }
+    if (firmwareHashError !== null) {
         return hashCheckMessages[firmwareHashError];
     }
 
