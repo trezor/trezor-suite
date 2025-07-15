@@ -12,7 +12,7 @@ export const asBaseCurrencyAmount = (value: BigNumber) => value as BaseCurrencyA
 export const BASE_CURRENCY_ZERO = asBaseCurrencyAmount(new BigNumber(0));
 
 type GetDecimalsForBaseCurrencyParams = {
-    code: BaseCurrencyCode;
+    code: BaseCurrencyCode | '';
     areSatsDisplayed: boolean;
 };
 
