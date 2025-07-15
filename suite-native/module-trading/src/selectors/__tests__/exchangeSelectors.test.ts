@@ -13,6 +13,7 @@ import {
     selectExchangeBuyTradeableAssetsSorted,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
+    selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
     selectTradingExchange,
     selectTradingExchangeIsLoading,
@@ -31,6 +32,51 @@ describe('exchangeSelectors', () => {
         expect(selectTradingExchange({ wallet: { tradingNew: prevState } })).toEqual(
             prevState.exchange,
         );
+    });
+
+    describe('selectExchangeSelectedSendAccount', () => {
+        let account: Account;
+
+        beforeEach(() => {
+            account = getBtcAccount();
+            prevState.exchange.tradingAccountKey = account.key;
+        });
+
+        it('should be undefined when no tradingAccountKey is defined', () => {
+            prevState.exchange.tradingAccountKey = undefined;
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+
+            expect(selectExchangeSelectedSendAccount(state)).toBeUndefined();
+        });
+
+        it('should select receiveAccount and receiveAddress', () => {
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+            expect(selectExchangeSelectedSendAccount(state)).toEqual(account);
+        });
+
+        it('should be stable', () => {
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+            expect(selectExchangeSelectedSendAccount(state)).toBe(
+                selectExchangeSelectedSendAccount(state),
+            );
+        });
+
+        it('should throw when no account with given key exists', () => {
+            prevState.exchange.tradingAccountKey = 'unknown_account_key';
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+
+            expect(() => selectExchangeSelectedSendAccount(state)).toThrow(
+                'Unknown tradingAccountKey: [unknown_account_key]',
+            );
+        });
     });
 
     describe('selectExchangeSelectedReceiveAccount', () => {

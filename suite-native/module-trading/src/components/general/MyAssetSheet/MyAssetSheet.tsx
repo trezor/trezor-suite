@@ -5,7 +5,7 @@ import { Translation } from '@suite-native/intl';
 
 import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { MyAssetListEmptyComponent } from './MyAssetListEmptyComponent';
-import { ASSET_ITEM_HEIGHT, MyAssetListItem } from './MyAssetListItem';
+import { ASSET_ITEM_HEIGHT, MyAssetListItem, MyAssetListItemProps } from './MyAssetListItem';
 import { MyAssetListSectionHeader } from './MyAssetListSectionHeader';
 import { selectExchangeAccountsWithTokensSectionList } from '../../../selectors/exchangeSelectors';
 import { MyAsset, TradeableAsset } from '../../../types/general';
@@ -14,7 +14,7 @@ import { SimpleSheetHeader } from '../SimpleSheetHeader';
 export type MyAssetSheetProps = {
     isVisible: boolean;
     onClose: () => void;
-    onAssetSelect: (asset: TradeableAsset) => void;
+    onAssetSelect: MyAssetListItemProps['onPress'];
 };
 
 const keyExtractor = (asset: MyAsset, sectionData: Account) => `${sectionData.key}_${asset.name}`;
@@ -22,12 +22,12 @@ const keyExtractor = (asset: MyAsset, sectionData: Account) => `${sectionData.ke
 const renderItem = (
     asset: MyAsset,
     { sectionData }: { sectionData: Account },
-    onAssetSelect: (asset: TradeableAsset) => void,
+    onAssetSelect: MyAssetListItemProps['onPress'],
 ) => <MyAssetListItem asset={asset} account={sectionData} onPress={onAssetSelect} />;
 
 export const MyAssetSheet = ({ isVisible, onClose, onAssetSelect }: MyAssetSheetProps) => {
-    const onAssetSelectCallback = (asset: TradeableAsset) => {
-        onAssetSelect(asset);
+    const onAssetSelectCallback = (asset: TradeableAsset, account: Account) => {
+        onAssetSelect(asset, account);
         onClose();
     };
 

@@ -56,6 +56,21 @@ const createExchangeMemoizedSelector =
 
 export const selectTradingExchange = (state: TradingRootState) => state.wallet.tradingNew.exchange;
 
+export const selectExchangeSelectedSendAccount = createMemoizedSelectorWithAccounts(
+    [state => state, selectTradingExchange],
+    (state, { tradingAccountKey }) => {
+        if (!tradingAccountKey) {
+            return undefined;
+        }
+
+        const account = selectAccountByKey(state, tradingAccountKey);
+
+        invariant(account, `Unknown tradingAccountKey: [${tradingAccountKey}]`);
+
+        return account;
+    },
+);
+
 export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingExchange],
     (state, { receiveAddress: address, receiveAccountKey }) => {

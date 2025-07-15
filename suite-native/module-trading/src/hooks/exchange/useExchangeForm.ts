@@ -11,6 +11,7 @@ import { useForm } from '@suite-native/forms';
 
 import {
     selectExchangeSelectedReceiveAccount,
+    selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
 } from '../../selectors/exchangeSelectors';
 import { ExchangeFormType, ExchangeFormValues } from '../../types/exchange';
@@ -70,6 +71,14 @@ const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => 
     }, [selectedQuote, isAmountInSats, symbol, setValue]);
 };
 
+const useSendAccountChangeEffect = ({ setValue }: ExchangeFormType) => {
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+
+    useEffect(() => {
+        setValue('sendAccount', sendAccount);
+    }, [sendAccount, setValue]);
+};
+
 const useReceiveAccountChangeEffect = ({ setValue }: ExchangeFormType) => {
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
 
@@ -85,6 +94,7 @@ export const useExchangeForm = () => {
 
     useExchangeQuotesChangeEffect(form);
     useExchangeQuoteChangeEffect(form);
+    useSendAccountChangeEffect(form);
     useReceiveAccountChangeEffect(form);
 
     return form;

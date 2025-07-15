@@ -18,12 +18,12 @@ import { ASSET_ITEM_HEIGHT, AssetListItem } from '../AssetListItem';
 export type MyAssetListItemProps = {
     account: Account;
     asset: MyAsset;
-    onPress: (asset: TradeableAsset) => void;
+    onPress: (asset: TradeableAsset, account: Account) => void;
 };
 
 export { ASSET_ITEM_HEIGHT };
 
-export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
+export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProps) => {
     const { showToast } = useToast();
 
     const { symbol, name, balance, fiatBalance, tokenSymbol, contract, cryptoId, isEnabled } =
@@ -37,7 +37,7 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
 
     const handlePress = () => {
         if (tradeableAsset && isEnabled) {
-            onPress(tradeableAsset);
+            onPress(tradeableAsset, account);
         } else {
             showToast({
                 variant: 'default',
