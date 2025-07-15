@@ -57,13 +57,13 @@ export const useSendFormFields = ({
     type CalculateFiatFromAmountOrViceVersaParams = {
         outputId: number;
         target: Extract<keyof Output, 'fiat' | 'amount'>;
-        formatTargetValue: (value: string, fiatRate: number) => string | null;
+        convertAndFormatTargetValue: (value: string, fiatRate: number) => string | null;
         value?: string;
     };
 
     const calculateFiatFromAmountOrViceVersa = useCallback(
         ({
-            formatTargetValue,
+            convertAndFormatTargetValue,
             outputId,
             target,
             value,
@@ -98,7 +98,7 @@ export const useSendFormFields = ({
             if (!fiatRate?.rate) {
                 return;
             }
-            const formattedTargetValue = formatTargetValue(value, fiatRate.rate);
+            const formattedTargetValue = convertAndFormatTargetValue(value, fiatRate.rate);
             if (formattedTargetValue) {
                 setValue(targetInputName, formattedTargetValue, { shouldValidate: true });
             }
@@ -111,7 +111,11 @@ export const useSendFormFields = ({
             const convert = (amount: string, fiatRate: number) => {
                 const { outputs } = getValues();
                 const output = outputs[outputId];
-                const baseCurrencyCode: BaseCurrencyCode = output.currency.value;
+                const baseCurrencyCode = output.currency.value;
+
+                if (baseCurrencyCode === '') {
+                    return null;
+                }
 
                 const amountBigNumber = new BigNumber(amount);
 
@@ -154,7 +158,7 @@ export const useSendFormFields = ({
             };
 
             return calculateFiatFromAmountOrViceVersa({
-                formatTargetValue: convert,
+                convertAndFormatTargetValue: convert,
                 outputId,
                 target: 'fiat',
                 value: amount,
@@ -179,9 +183,15 @@ export const useSendFormFields = ({
                 // the conversion from sats->btc
                 const { outputs } = getValues();
                 const output = outputs[outputId];
-                const baseCurrency: BaseCurrencyCode = output.currency.value;
+
+                const baseCurrencyCode = output.currency.value;
+
+                if (baseCurrencyCode === '') {
+                    return null;
+                }
+
                 const baseCurrencyUnitAmount =
-                    baseCurrency === 'btc' && areSatsDisplayed
+                    baseCurrencyCode === 'btc' && areSatsDisplayed
                         ? asBaseCurrencyAmount(
                               subunitsToUnits({
                                   value: asAmountSubunit(fiatAmountBigNumber),
@@ -209,7 +219,7 @@ export const useSendFormFields = ({
             };
 
             return calculateFiatFromAmountOrViceVersa({
-                formatTargetValue: convert,
+                convertAndFormatTargetValue: convert,
                 outputId,
                 target: 'amount',
                 value: fiat,
