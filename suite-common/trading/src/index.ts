@@ -15,3 +15,4 @@ export * from './reducers/sellReducer';
 export * from './selectors/tradingSelectors';
 export * from './thunks';
 export * from './hooks/useTradingInfo';
+export * from './currency';
