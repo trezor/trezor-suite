@@ -9,7 +9,6 @@ import {
     TradingAmountLimitProps,
     getBestRatedQuote,
     selectTradingBuyQuotesRequest,
-    tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
@@ -30,30 +29,7 @@ import { BuyFormType, BuyFormValues } from '../../types/buy';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
-import { getRandomAccountDescriptor } from '../../utils/general/utils';
 import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
-
-const useReceiveAccountChangeEffect = ({ getValues, setValue }: BuyFormType) => {
-    const dispatch = useDispatch();
-    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
-
-    useEffect(() => {
-        const prevReceiveAccount = getValues('receiveAccount');
-        const descriptor = selectedReceiveAccount?.account?.descriptor;
-
-        setValue('receiveAccount', selectedReceiveAccount);
-
-        // when user changes receive account set invityAPIKey accordingly
-        if (descriptor !== prevReceiveAccount?.account?.descriptor) {
-            dispatch(
-                tradingThunks.loadInitialDataThunk({
-                    activeSection: 'buy',
-                    forcedApiKey: !descriptor ? getRandomAccountDescriptor() : undefined,
-                }),
-            );
-        }
-    }, [selectedReceiveAccount, getValues, setValue, dispatch]);
-};
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
     const dispatch = useDispatch();
@@ -123,6 +99,14 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
         return unsubscribe;
     }, [dispatch, setValue, watch]);
+};
+
+const useReceiveAccountChangeEffect = ({ setValue }: BuyFormType) => {
+    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
+
+    useEffect(() => {
+        setValue('receiveAccount', selectedReceiveAccount);
+    }, [setValue, selectedReceiveAccount]);
 };
 
 const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {

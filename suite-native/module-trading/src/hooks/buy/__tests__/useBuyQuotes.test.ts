@@ -180,20 +180,16 @@ describe('useBuyQuotes', () => {
                 result.current.setValue('asset', usdcAsset);
                 result.current.setValue('fiatCurrency', 'usd');
             });
-            dispatchSpy.mockClear();
             act(() => {
                 result.current.setValue('fiatValue', '100');
             });
 
+            dispatchSpy.mockClear();
             act(() => {
                 result.current.setValue(field, value);
             });
 
-            // 1st call - buyActions/assetChanged
-            // 2nd call - buyActions/fiatCurrencyChanged
-            // 3rd call - initial handleRequestThunkMock
-            // 4th call - re-fetch of handleRequestThunkMock
-            expect(dispatchSpy).toHaveBeenCalledTimes(4);
+            expect(dispatchSpy).toHaveBeenCalledTimes(1);
             expect(dispatchSpy).toHaveBeenLastCalledWith(
                 expect.objectContaining({
                     type: 'handleRequestThunkMock',
@@ -217,14 +213,11 @@ describe('useBuyQuotes', () => {
 
         expect(dispatchSpy).toHaveBeenCalledTimes(3);
 
+        dispatchSpy.mockClear();
         mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
         rerender({});
 
-        // 1st call - tradingBuy/assetChanged
-        // 2nd call - tradingBuy/fiatCurrencyChanged
-        // 3rd call - initial handleRequestThunkMock
-        // 4th call - re-fetch of handleRequestThunkMock
-        expect(dispatchSpy).toHaveBeenCalledTimes(4);
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenLastCalledWith(
             expect.objectContaining({
                 type: 'handleRequestThunkMock',
