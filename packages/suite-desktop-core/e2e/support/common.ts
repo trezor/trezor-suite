@@ -3,7 +3,7 @@ import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
-import { regional } from '@suite-common/trading';
+import { TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
@@ -109,7 +109,7 @@ export const findLatestVersionForModel = (
     throw new Error(`No firmware version found for model ${model}`);
 };
 
-export const getCountryLabel = (country: string) => {
+export const getCountryLabel = (country: TradingCountryCode) => {
     const labelWithFlag = regional.countriesMap.get(country);
     if (!labelWithFlag) {
         throw new Error(`Country ${country} not found in the countries map`);
