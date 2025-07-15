@@ -152,6 +152,7 @@ describe('bluetoothReducer', () => {
             deviceActions.connectDevice({
                 device: trezorDevice as Device,
                 settings: { defaultWalletLoading: 'passphrase' },
+                isViewOnlyByDefaultEnabled: true,
             }),
         );
         expect(store.getState().bluetooth.knownDevices).toEqual([nearbyDevice]);

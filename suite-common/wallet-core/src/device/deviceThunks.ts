@@ -30,7 +30,7 @@ import TrezorConnect, {
     StaticSessionId,
     UI,
 } from '@trezor/connect';
-import { getEnvironment } from '@trezor/env-utils';
+import { getEnvironment, isNative } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
@@ -40,6 +40,7 @@ import {
     selectDeviceByBaseStaticSessionId,
     selectDeviceById,
     selectDevices,
+    selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -340,12 +341,25 @@ export const createImportedDeviceThunk = createThunk<
     { rejectValue: { error: 'already-created' } }
 >(
     `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
-    (_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+    (_, { dispatch, getState, rejectWithValue, fulfillWithValue, extra }) => {
         const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
         if (device) return rejectWithValue({ error: 'already-created' });
 
-        dispatch(deviceActions.createDeviceInstance({ device: portfolioTrackerDevice }));
+        const isNativeViewOnlyByDefaultEnabled =
+            extra.selectors.selectIsViewOnlyByDefaultEnabled(getState());
+        const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(getState());
+
+        dispatch(
+            deviceActions.createDeviceInstance({
+                device: portfolioTrackerDevice,
+                isViewOnlyByDefaultEnabled:
+                    // Note: temporary condition until view only by default is not controlled by feature flag on native
+                    isNative() && !isNativeViewOnlyByDefaultEnabled && !isPortfolioTrackerDevice
+                        ? false
+                        : true,
+            }),
+        );
 
         return fulfillWithValue({ device: portfolioTrackerDevice });
     },
@@ -470,14 +484,24 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
     ({ type, device }, { dispatch, getState, extra }) => {
         const settings = extra.selectors.selectSuiteSettings(getState());
+        const isViewOnlyByDefaultEnabled =
+            extra.selectors.selectIsViewOnlyByDefaultEnabled(getState());
 
         switch (type) {
             case DEVICE.CONNECT:
-                dispatch(deviceActions.connectDevice({ device, settings }));
+                dispatch(
+                    deviceActions.connectDevice({ device, settings, isViewOnlyByDefaultEnabled }),
+                );
                 dispatch(connectThpDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
-                dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
+                dispatch(
+                    deviceActions.connectUnacquiredDevice({
+                        device,
+                        settings,
+                        isViewOnlyByDefaultEnabled,
+                    }),
+                );
                 dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
                 break;
             default:
