@@ -13,6 +13,7 @@ export const FeatureFlag = {
     IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
     IsTradingSellEnabled: 'isTradingSellEnabled',
     IsCheckBackupsEnabled: 'isCheckBackupsEnabled',
+    IsViewOnlyByDefaultEnabled: 'isViewOnlyByDefaultEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -42,6 +43,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SELL_ENABLED === 'true',
     [FeatureFlag.IsCheckBackupsEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CHECK_BACKUPS_ENABLED === 'true',
+    [FeatureFlag.IsViewOnlyByDefaultEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_VIEW_ONLY_BY_DEFAULT_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -54,6 +57,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingExchangeEnabled,
     FeatureFlag.IsTradingSellEnabled,
     FeatureFlag.IsCheckBackupsEnabled,
+    FeatureFlag.IsViewOnlyByDefaultEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
