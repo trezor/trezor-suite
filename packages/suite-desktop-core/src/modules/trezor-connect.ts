@@ -1,9 +1,10 @@
 import { ipcMain } from 'electron';
 
-import TrezorConnect, { LocalFirmwares, UI, UI_EVENT } from '@trezor/connect';
+import TrezorConnect, { ConnectSettings, LocalFirmwares, UI, UI_EVENT } from '@trezor/connect';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
+import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
 import { APP_NAME } from '../libs/constants';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
@@ -41,6 +42,22 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
     }
 };
 
+// override TrezorConnect.init and TrezorConnect.setTransports params
+// add BluetoothTransport if bluetooth module is enabled
+const getTransportsParam = (
+    transports?: ConnectSettings['transports'],
+): ConnectSettings['transports'] => {
+    const bluetooth = bluetoothModuleState.getTransport();
+    if (!bluetooth) return transports;
+
+    if (transports && transports.length > 0) {
+        return [...transports, bluetooth];
+    }
+
+    // we don't want to break fallback in https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/device/TransportList.ts#L70
+    return [bluetooth, 'BridgeTransport'];
+};
+
 export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store }) => {
     const { logger } = global;
     logger.info(SERVICE_NAME, `Starting service`);
@@ -70,6 +87,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     if (localFirmwares.success) {
                         settings.localFirmwares = localFirmwares.payload;
                     }
+                    settings.transports = getTransportsParam(settings.transports);
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
@@ -88,6 +106,10 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     powerSaveBlocker.stopBlockingPowerSave();
 
                     return response;
+                }
+
+                if (method === 'setTransports') {
+                    params[0].transports = getTransportsParam(params[0].transports);
                 }
 
                 return (TrezorConnect[method] as any)(...params);
