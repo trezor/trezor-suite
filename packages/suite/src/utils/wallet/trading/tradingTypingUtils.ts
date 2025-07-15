@@ -5,6 +5,7 @@ import {
     TRADING_FORM_OUTPUT_CURRENCY,
     type TradingBuyType,
     type TradingExchangeType,
+    TradingFiatCurrencyOption,
     type TradingSellType,
     type TradingTradeMapProps,
     type TradingTradeType,
@@ -137,9 +138,9 @@ export const getSelectedCrypto = (
     return context.getValues().cryptoSelect;
 };
 
-export const getSelectedCurrency = (
+export const getSelectedTradingCurrency = (
     context: TradingFormContextValues<TradingType>,
-): CurrencyOption => {
+): TradingFiatCurrencyOption | CurrencyOption => {
     if (isTradingExchangeContext(context)) {
         return context.getValues(TRADING_FORM_OUTPUT_CURRENCY);
     }
@@ -148,7 +149,7 @@ export const getSelectedCurrency = (
         return context.getValues(TRADING_FORM_OUTPUT_CURRENCY);
     }
 
-    return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT) as CurrencyOption;
+    return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
 };
 
 export const getPaymentMethod = (

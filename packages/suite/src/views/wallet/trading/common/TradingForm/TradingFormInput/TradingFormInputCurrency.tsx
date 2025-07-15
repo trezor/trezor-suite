@@ -5,21 +5,23 @@ import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_OUTPUT_CURRENCY,
+    TradingFiatCurrencyOption,
 } from '@suite-common/trading';
 import { buildCurrencyOptions } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingAllFormProps, TradingFormInputCurrencyProps } from 'src/types/trading/tradingForm';
-import { FiatCurrencyOption } from 'src/types/wallet/tradingCommonTypes';
 import {
     getFiatCurrenciesProps,
-    getSelectedCurrency,
+    getSelectedTradingCurrency,
     isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { buildFiatOption } from 'src/utils/wallet/trading/tradingUtils';
+import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
+
+import { useBitcoinAmountUnit } from '../../../../../../hooks/wallet/useBitcoinAmountUnit';
 
 export const TradingFormInputCurrency = ({
     isClean = true,
@@ -30,20 +32,22 @@ export const TradingFormInputCurrency = ({
     const name = isTradingBuyContext(context)
         ? TRADING_FORM_FIAT_CURRENCY_SELECT
         : TRADING_FORM_OUTPUT_CURRENCY;
-    const currentCurrency = getSelectedCurrency(context);
+    const currentCurrency = getSelectedTradingCurrency(context);
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
+    const { areSatsDisplayed } = useBitcoinAmountUnit(context.network.symbol);
+
     const options = useMemo(
         () =>
             currencies
                 ? [...currencies]
-                      .map(currency => buildFiatOption(currency))
+                      .map(currency => buildTradingFiatOption(currency))
                       .filter(currency => currency.value !== currentCurrency.value)
-                : buildCurrencyOptions(currentCurrency),
-        [currencies, currentCurrency],
+                : buildCurrencyOptions({ selected: currentCurrency, areSatsDisplayed }),
+        [currencies, currentCurrency, areSatsDisplayed],
     );
 
-    const onChangeAdditional = (option: FiatCurrencyOption) => {
+    const onChangeAdditional = (option: TradingFiatCurrencyOption) => {
         if (isTradingBuyContext(context)) {
             context.setValue(
                 TRADING_FORM_FIAT_INPUT,
@@ -69,7 +73,7 @@ export const TradingFormInputCurrency = ({
             render={({ field: { onChange, value } }) => (
                 <Select
                     value={value}
-                    onChange={(selected: FiatCurrencyOption) => {
+                    onChange={(selected: TradingFiatCurrencyOption) => {
                         onChange(selected);
                         setAmountLimits(undefined);
 

@@ -94,7 +94,7 @@ export const useSendFormImport = ({
             }
 
             // sanitize csv data
-            const itemCurrency = item.currency.toLowerCase();
+            const itemCurrency = item.currency.toLowerCase() as BaseCurrencyCode;
 
             // currency is specified in csv
             if (itemCurrency) {

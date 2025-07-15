@@ -6,6 +6,7 @@ import {
     TRADING_DEFAULT_FIAT_CURRENCY,
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
+    TradingCountryCode,
     type TradingPaymentMethodListProps,
     getDefaultCountry,
     regional,
@@ -18,7 +19,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
-import { buildFiatOption } from 'src/utils/wallet/trading/tradingUtils';
+import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
@@ -29,7 +30,9 @@ export const useTradingBuyFormDefaultValues = (
     const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
     const cryptoId = prefilledFromAccount.cryptoId ?? networks[accountSymbol]?.tradeCryptoId;
 
-    const country = !isTorEnabled ? buyInfo?.buyInfo?.country : regional.UNKNOWN_COUNTRY;
+    const country = !isTorEnabled
+        ? (buyInfo?.buyInfo?.country as TradingCountryCode | undefined)
+        : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultCrypto = useMemo(
         () => buildDefaultCryptoOption(cryptoId as CryptoId | undefined),
@@ -45,7 +48,7 @@ export const useTradingBuyFormDefaultValues = (
     const suggestedFiatCurrency = (buyInfo?.buyInfo?.suggestedFiatCurrency?.toLowerCase() ??
         TRADING_DEFAULT_FIAT_CURRENCY) as FiatCurrencyCode;
     const defaultCurrency = useMemo(
-        () => buildFiatOption(suggestedFiatCurrency),
+        () => buildTradingFiatOption(suggestedFiatCurrency),
         [suggestedFiatCurrency],
     );
     const defaultValues = useMemo(

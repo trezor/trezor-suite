@@ -13,7 +13,7 @@ import {
     coinDefinitions,
 } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
-    buildFiatOption,
+    buildTradingFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
     getCountryLabelParts,
     getTradeTypeByRoute,
@@ -32,7 +32,7 @@ jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
 
 describe('trading utils', () => {
     it('buildFiatOption', () => {
-        expect(buildFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
+        expect(buildTradingFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
     });
 
     it('getCountryLabelParts', () => {
