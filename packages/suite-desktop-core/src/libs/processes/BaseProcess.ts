@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess, IOType, spawn } from 'child_process';
 import { app } from 'electron';
 import path from 'path';
 
@@ -20,6 +20,7 @@ export type Options = {
     startupCooldown?: number;
     stopKillWait?: number;
     autoRestart?: number;
+    stdio?: IOType;
 };
 
 const defaultOptions: Options = {
@@ -146,7 +147,9 @@ export abstract class BaseProcess {
             this.process = spawn(processPath, params, {
                 cwd: processDir,
                 env: processEnv,
-                stdio: ['ignore', 'ignore', 'ignore'],
+                // stdio causes problems on windows. see https://github.com/trezor/trezor-suite/pull/7429 and related issue
+                // use it with caution only with dev builds
+                stdio: this.options.stdio || ['ignore', 'ignore', 'ignore'],
             });
             this.process.on('error', err => this.onError(err));
             this.process.on('close', code => this.onExit(code));
