@@ -47,6 +47,29 @@ const buildThpTypes = (json: ReturnType<typeof buildDefinitions>) => {
     fs.writeFileSync(`${DIST}/protobufTypes.ts`, content);
 };
 
+// merge ThpMessageType into MessageType
+// ThpMessageType is defined in thp.proto file
+// MessageType is defined in common messages.proto file
+const modifyMessageType = (proto: ReturnType<typeof buildDefinitions>) => {
+    const messageTypeEnum = proto.nested?.['MessageType'];
+    const messageTypeDuplicates = ['ButtonRequest', 'Cancel']; // exclude defined in both messages.proto and thp.proto
+    const thpMessageTypeEnum = proto.nested?.['ThpMessageType'];
+    const thpMessageType = thpMessageTypeEnum?.values;
+    if (messageTypeEnum && thpMessageType) {
+        Object.keys(thpMessageType).forEach(key => {
+            // replace key `ThpMessageType_XXX` > `XXX`
+            const newKey = key.replace('ThpMessageType_', '');
+            const value = thpMessageType[key];
+            // add new key to MessageType
+            if (!messageTypeDuplicates.includes(newKey)) {
+                messageTypeEnum.values![newKey] = value;
+            }
+        });
+    }
+    // remove ThpMessageType enum
+    delete proto.nested?.['ThpMessageType'];
+};
+
 const run = () => {
     const [protoDir] = process.argv.slice(2);
     const defs = buildDefinitions(protoDir, {
@@ -54,6 +77,7 @@ const run = () => {
         onlyPackages: ['', 'thp'], // empty package == messages.proto file (MessageType definitions), see buildDefinitions function
     });
 
+    modifyMessageType(defs);
     buildThpDefinitions(defs);
     buildThpTypes(defs);
 
