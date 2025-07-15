@@ -12,19 +12,23 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-jest.mock('@suite-common/trading', () => ({
-    ...jest.requireActual('@suite-common/trading'),
-    useTradingInfo: () => ({
-        cryptoIdToSymbolAndContractAddress: (cryptoId: string) => ({
-            coinSymbol: cryptoId === 'btc' ? 'btc' : 'eth',
-            contractAddress: undefined,
-        }),
-    }),
-    selectTradingExchangeProviders: () => ({
+jest.mock('@suite-common/trading', () => {
+    const exchangeProviders = {
         invity: { companyName: 'Invity Finance' },
         changelly: { companyName: 'Changelly' },
-    }),
-}));
+    };
+
+    return {
+        ...jest.requireActual('@suite-common/trading'),
+        useTradingInfo: () => ({
+            cryptoIdToSymbolAndContractAddress: (cryptoId: string) => ({
+                coinSymbol: cryptoId === 'btc' ? 'btc' : 'eth',
+                contractAddress: undefined,
+            }),
+        }),
+        selectTradingExchangeProviders: () => exchangeProviders,
+    };
+});
 
 describe('ExchangeLegalSheet', () => {
     const renderLegalSheet = (props?: Partial<ExchangeLegalSheetProps>) =>
