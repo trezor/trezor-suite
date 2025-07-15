@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 
+import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Utxo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -31,16 +32,12 @@ export const useUtxoSelection = (accountKey: string): UseUtxoSelectionReturn => 
 
     const handleUtxoSelection = (utxo: Utxo) => {
         setSelectedUtxosMap(prev => {
-            const isSelected = selectedUtxos.some(
-                selected => selected.txid === utxo.txid && selected.vout === utxo.vout,
-            );
+            const isSelected = selectedUtxos.some(selected => isSameUtxo(selected, utxo));
 
             return {
                 ...prev,
                 [accountKey]: isSelected
-                    ? selectedUtxos.filter(
-                          selected => !(selected.txid === utxo.txid && selected.vout === utxo.vout),
-                      )
+                    ? selectedUtxos.filter(selected => !isSameUtxo(selected, utxo))
                     : [...selectedUtxos, utxo],
             };
         });

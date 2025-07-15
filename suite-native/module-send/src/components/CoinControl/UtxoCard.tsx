@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -28,8 +30,12 @@ import {
 import { Utxo } from '@trezor/blockchain-link-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-const AccountAddressFormatterStyle = prepareNativeStyle(() => ({
+const accountAddressFormatterStyle = prepareNativeStyle(() => ({
     maxWidth: '80%',
+}));
+
+const cardStyle = prepareNativeStyle(utils => ({
+    borderWidth: utils.borders.widths.large,
 }));
 
 export type Props = {
@@ -74,46 +80,55 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = fals
         rate: currentRates?.rate,
     });
 
-    return (
-        <Card noPadding borderColor={isSelected ? 'backgroundSecondaryDefault' : 'transparent'}>
-            <VStack>
-                <HStack
-                    paddingTop="sp16"
-                    paddingHorizontal="sp12"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    <VStack>
-                        <HStack alignItems="center">
-                            <CryptoAmountFormatter
-                                color="textDefault"
-                                variant="highlight"
-                                value={utxo.amount}
-                                isBalance={false}
-                                symbol={symbol}
-                            />
-                            {fiatAmount && (
-                                <>
-                                    <Text color="textSubdued">≈</Text>
-                                    <BaseCurrencyAmountFormatter
-                                        color="textSubdued"
-                                        variant="highlight"
-                                        symbol={symbol}
-                                        value={fiatAmount}
-                                    />
-                                </>
-                            )}
-                        </HStack>
+    const handleToggle = useCallback(() => {
+        onToggle(utxo);
+    }, [onToggle, utxo]);
 
-                        <AccountAddressFormatter
-                            style={applyStyle(AccountAddressFormatterStyle)}
-                            value={utxo.address}
-                            variant="hint"
-                            color="textSubdued"
-                        />
-                    </VStack>
-                    <CheckBox isChecked={isSelected} onChange={() => onToggle(utxo)} />
-                </HStack>
+    return (
+        <Card
+            noPadding
+            borderColor={isSelected ? 'backgroundSecondaryDefault' : 'transparent'}
+            style={applyStyle(cardStyle)}
+        >
+            <VStack spacing="sp12">
+                <TouchableOpacity onPress={handleToggle}>
+                    <HStack
+                        paddingTop="sp16"
+                        paddingHorizontal="sp12"
+                        justifyContent="space-between"
+                        alignItems="center"
+                    >
+                        <VStack>
+                            <HStack alignItems="center">
+                                <CryptoAmountFormatter
+                                    color="textDefault"
+                                    variant="highlight"
+                                    value={utxo.amount}
+                                    isBalance={false}
+                                    symbol={symbol}
+                                />
+                                {fiatAmount && (
+                                    <>
+                                        <Text color="textSubdued">≈</Text>
+                                        <BaseCurrencyAmountFormatter
+                                            color="textSubdued"
+                                            symbol={symbol}
+                                            value={fiatAmount}
+                                        />
+                                    </>
+                                )}
+                            </HStack>
+
+                            <AccountAddressFormatter
+                                style={applyStyle(accountAddressFormatterStyle)}
+                                value={utxo.address}
+                                variant="hint"
+                                color="textSubdued"
+                            />
+                        </VStack>
+                        <CheckBox isChecked={isSelected} onChange={handleToggle} />
+                    </HStack>
+                </TouchableOpacity>
                 <Divider />
                 <HStack
                     justifyContent="space-between"
@@ -121,11 +136,11 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = fals
                     paddingHorizontal="sp12"
                 >
                     {transactionBlockTime && (
-                        <Text variant="hint">
+                        <Text color="textSubdued" variant="hint">
                             <DateFormatter value={transactionBlockTime} />
                         </Text>
                     )}
-                    <TextButton variant="tertiary" onPress={handleShowDetails} size="small">
+                    <TextButton variant="primary" onPress={handleShowDetails} isBold size="small">
                         <Translation id="moduleSend.coinControl.utxos.showDetails" />
                     </TextButton>
                 </HStack>
