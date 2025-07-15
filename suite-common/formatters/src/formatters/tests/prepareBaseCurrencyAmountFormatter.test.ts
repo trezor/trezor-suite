@@ -4,7 +4,6 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { FormatterConfig } from '../../types';
 import { prepareBaseCurrencyAmountFormatter } from '../prepareBaseCurrencyAmountFormatter';
 
 const intl = createIntl({
@@ -12,15 +11,13 @@ const intl = createIntl({
     messages: {},
 });
 
-const formatterConfig: FormatterConfig = {
+const xauFormatter = prepareBaseCurrencyAmountFormatter({
     locale: 'en',
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     intl,
     baseCurrency: 'xau',
     is24HourFormat: false,
-};
-
-const xauFormatter = prepareBaseCurrencyAmountFormatter(formatterConfig);
+});
 
 const btcSatsFormatter = prepareBaseCurrencyAmountFormatter({
     locale: 'en',

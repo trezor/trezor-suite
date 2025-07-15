@@ -25,6 +25,8 @@ import {
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
 
+import { useDisplayBaseCurrency } from '../../../../../hooks/suite/useDisplayBaseCurrency';
+
 const AccountLabelContainer = styled.div`
     flex: 1;
     min-width: 60px;
@@ -66,8 +68,9 @@ const BaseCurrency = ({
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const localCurrency = useSelector(selectLocalCurrency);
     const { shouldAnimate } = useLoadingSkeleton();
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
-    return customFiatValue ? (
+    return shallDisplayBaseCurrency && customFiatValue !== undefined ? (
         <HiddenPlaceholder>
             {isLoading ? (
                 <SkeletonRectangle animate={shouldAnimate} />

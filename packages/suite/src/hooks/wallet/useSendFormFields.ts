@@ -99,7 +99,6 @@ export const useSendFormFields = ({
                 return;
             }
             const formattedTargetValue = formatTargetValue(value, fiatRate.rate);
-            console.log('formattedTargetValue(', target, ') ', formattedTargetValue);
             if (formattedTargetValue) {
                 setValue(targetInputName, formattedTargetValue, { shouldValidate: true });
             }
@@ -112,7 +111,7 @@ export const useSendFormFields = ({
             const convert = (amount: string, fiatRate: number) => {
                 const { outputs } = getValues();
                 const output = outputs[outputId];
-                const baseCurrencyCode = output.currency.value as BaseCurrencyCode;
+                const baseCurrencyCode: BaseCurrencyCode = output.currency.value;
 
                 const amountBigNumber = new BigNumber(amount);
 
@@ -180,7 +179,7 @@ export const useSendFormFields = ({
                 // the conversion from sats->btc
                 const { outputs } = getValues();
                 const output = outputs[outputId];
-                const baseCurrency = output.currency.value as BaseCurrencyCode;
+                const baseCurrency: BaseCurrencyCode = output.currency.value;
                 const baseCurrencyUnitAmount =
                     baseCurrency === 'btc' && areSatsDisplayed
                         ? asBaseCurrencyAmount(

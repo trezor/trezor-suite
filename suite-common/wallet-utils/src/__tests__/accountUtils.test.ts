@@ -350,9 +350,17 @@ describe(convertAmountUnitsToSubunits.name, () => {
 
 describe(unitsToSubunits.name, () => {
     it('converts BTC->Sats', () => {
-        expect(
-            unitsToSubunits({ value: asAmountUnit(new BigNumber(1)), symbol: 'btc' }).toString(),
-        ).toEqual(String(100_000_000));
+        const btcSymbolResult = unitsToSubunits({
+            value: asAmountUnit(new BigNumber(1)),
+            symbol: 'btc',
+        });
+        expect(btcSymbolResult.toString()).toEqual(String(100_000_000));
+
+        const decimalsResult = unitsToSubunits({
+            value: asAmountUnit(new BigNumber(1)),
+            decimals: 2,
+        });
+        expect(decimalsResult.toString()).toEqual('100');
     });
 });
 

@@ -59,7 +59,10 @@ export type NetworkFeature =
     | 'rbf'
     | 'nfts'
     | 'sign-verify'
-    | 'amount-unit' // Network has sub-units (sats, gwei, ...)
+
+    // Network has sub-units (sats, ...) but it is currently used only for sats in case of BTC and testnets,
+    // and not used for gwei in case of ETH. It would make sense, but it's not implemented.
+    | 'amount-unit'
     | 'tokens'
     | 'staking'
     | 'coin-definitions'
