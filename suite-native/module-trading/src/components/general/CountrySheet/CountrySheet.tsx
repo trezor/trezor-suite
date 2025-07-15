@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { Dimensions } from 'react-native';
 
+import { TradingCountryOption } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useCountryFilteredData } from '../../../hooks/general/useCountryFilteredData';
-import { Country } from '../../../types/general';
 import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
@@ -13,11 +13,11 @@ import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
 export type CountrySheetProps = {
     isVisible: boolean;
     onClose: () => void;
-    onCountrySelect: (symbol: Country) => void;
+    onCountrySelect: (symbol: TradingCountryOption) => void;
     selectedCountryId?: string;
 };
 
-const keyExtractor = (item: Country) => item.value;
+const keyExtractor = (item: TradingCountryOption) => item.value;
 
 export const CountrySheet = ({
     isVisible,
@@ -43,7 +43,7 @@ export const CountrySheet = ({
         [onClose, setFilterValue, translate],
     );
 
-    const onCountrySelectCallback = (country: Country) => {
+    const onCountrySelectCallback = (country: TradingCountryOption) => {
         onCountrySelect(country);
         onClose();
     };
@@ -53,7 +53,7 @@ export const CountrySheet = ({
     const flashListKey = 'countries_list-' + filterValue;
 
     return (
-        <BottomSheetFlashList<Country>
+        <BottomSheetFlashList<TradingCountryOption>
             isVisible={isVisible}
             onClose={onClose}
             ListEmptyComponent={<CountryListEmptyComponent />}

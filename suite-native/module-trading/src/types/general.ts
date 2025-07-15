@@ -24,8 +24,6 @@ export type MyAsset = {
     isEnabled: boolean;
 };
 
-export type Country = { label: string; value: string };
-
 export type ReceiveAccount = {
     account: Account;
     address?: Address;

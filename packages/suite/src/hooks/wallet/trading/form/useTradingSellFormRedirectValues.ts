@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { FiatCurrencyCode, SellFiatTradeQuoteRequest } from 'invity-api';
 
 import {
+    TradingCountryCode,
     type TradingSellFormProps,
     getDefaultCountry,
     selectTradingComposedTransactionInfo,
@@ -43,7 +44,7 @@ export const useTradingSellFormRedirectValues = (
               ...DEFAULT_VALUES,
               amountInCrypto: quotesRequest.amountInCrypto,
               sendCryptoSelect,
-              countrySelect: getDefaultCountry(quotesRequest.country),
+              countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
               paymentMethod: quotesRequest.paymentMethod && {
                   value: quotesRequest.paymentMethod,
                   label: quotesRequest.paymentMethod,
