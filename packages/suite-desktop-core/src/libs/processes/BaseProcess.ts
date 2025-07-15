@@ -1,5 +1,4 @@
-import { ChildProcess, spawn } from 'child_process';
-import { app } from 'electron';
+import { UtilityProcess, app, utilityProcess } from 'electron';
 import path from 'path';
 
 import { TimerId } from '@trezor/type-utils';
@@ -29,7 +28,7 @@ const defaultOptions: Options = {
 } as const;
 
 export abstract class BaseProcess {
-    protected process: ChildProcess | null;
+    protected process: UtilityProcess | null;
     private resourceName: string;
     private processName: string;
     private options: Options;
@@ -142,20 +141,26 @@ export abstract class BaseProcess {
             `- CWD: ${processDir}`,
         ]);
 
+        const utility = utilityProcess.fork(processPath, params, {
+            cwd: processDir,
+            env: processEnv,
+            stdio: ['ignore', 'ignore', 'ignore'],
+        });
+        await new Promise<void>((resolve, reject) => {
+            utility.once('spawn', resolve);
+            utility.once('exit', reject);
+        });
+        utility.removeAllListeners('exit');
+        utility.once('exit', code => this.onExit(code));
+
+        this.process = utility;
+
+        if (this.options.autoRestart) {
+            // When process runs with `autoRestart`, restarting the process is managed by BaseProcess.
+            return;
+        }
+
         return new Promise<void>((resolve, reject) => {
-            this.process = spawn(processPath, params, {
-                cwd: processDir,
-                env: processEnv,
-                stdio: ['ignore', 'ignore', 'ignore'],
-            });
-            this.process.on('error', err => this.onError(err));
-            this.process.on('close', code => this.onExit(code));
-
-            if (this.options.autoRestart && this.options.autoRestart > 0) {
-                // When process runs with `autoRestart`, restarting the process is managed by BaseProcess.
-                return resolve();
-            }
-
             // When running without `autoRestart` the responsibility of restarting it is in the module
             // that started the process, so if it fails an error is thrown to let the module knows something
             // went wrong.
@@ -169,16 +174,14 @@ export abstract class BaseProcess {
                 reject(new Error(`Process ${this.processName} not started. ${message}`));
             };
 
-            // `close` event should handle both `exit` and `error` cases
-            // https://nodejs.org/api/child_process.html#event-close
-            this.process.once('close', spawnErrorHandler);
+            this.process?.once('exit', spawnErrorHandler);
 
             resolveTimeout = setInterval(async () => {
                 const currentStatus = await this.status();
                 // We make sure that the service is available and then stop listening for initial error.
                 if (currentStatus.service && this.process) {
                     clearTimeout(resolveTimeout);
-                    this.process.removeListener('close', spawnErrorHandler);
+                    this.process.removeListener('exit', spawnErrorHandler);
                     resolve();
                 }
             }, 200);
@@ -204,7 +207,7 @@ export abstract class BaseProcess {
 
             let timeout = 0;
             const interval = setInterval(() => {
-                if (!this.process || this.process.killed) {
+                if (!this.process || this.process.pid) {
                     this.logger.info(this.logTopic, 'Killed successfully');
                     clearInterval(interval);
                     this.process = null;
@@ -218,7 +221,7 @@ export abstract class BaseProcess {
                     timeout++;
                 } else {
                     this.logger.info(this.logTopic, 'Still alive, going for the SIGKILL');
-                    this.process.kill('SIGKILL');
+                    this.process.kill();
                 }
             }, 1000);
         });
@@ -232,10 +235,6 @@ export abstract class BaseProcess {
         this.logger.info(this.logTopic, 'Restarting');
         await this.stop();
         await this.start();
-    }
-
-    private onError(err: Error) {
-        this.logger.error(this.logTopic, err.message);
     }
 
     private onExit(code: number | null) {
