@@ -139,6 +139,7 @@ const getInitialState = ({
             isBluetoothEnabled: false,
             showBluetoothDebugInfo: false,
             stellarLimitedHistoryBannerClosed: false,
+            hasSeenDisconnectTooltip: false,
         },
         torStatus: 'Disabled' as TorStatus.Disabled,
         torBootstrap: null,
@@ -149,6 +150,7 @@ const getInitialState = ({
         dismissedTradingTerms: {},
         countryCode: null,
         prefillFields: {},
+        recentlyDisconnectedDevice: null,
         ...suite,
     },
     device: {

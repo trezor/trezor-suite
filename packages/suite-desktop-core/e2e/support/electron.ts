@@ -12,6 +12,7 @@ const disableHashChecksPatch = '--state.suite.settings.enabledSecurityChecks.fir
 const disableFirmwareRevisionChecksPatch =
     '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
 const showDebugMenuStatePatch = '--state.suite.settings.debug.showDebugMenu=true';
+const disableDisconnectPromptPatch = '--state.suite.flags.hasSeenDisconnectTooltip=true';
 // #15670 Bug in desktop app that loglevel is ignored
 const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
 const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error GetVSyncParametersIfAvailable()
@@ -51,6 +52,7 @@ const buildArgs = (params: LaunchSuiteParams) => {
         disableHWAccelerationArgument,
         disableHashChecksPatch,
         showDebugMenuStatePatch,
+        disableDisconnectPromptPatch,
         '--state.suite.settings.debug.showConnectLogs=true',
     ];
 

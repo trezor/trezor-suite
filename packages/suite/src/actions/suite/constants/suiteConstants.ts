@@ -12,6 +12,7 @@ export const TOGGLE_BIO_AUTH_VALIDATION_REQUESTED = '@suite/toggle-bio-auth-vali
 export const SET_LANGUAGE = '@suite/set-language';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';
 export const SET_FLAG = '@suite/set-flag';
+export const SET_RECENTLY_DISCONNECTED_DEVICE = '@suite/set-recently-disconnected-device';
 export const ONLINE_STATUS = '@suite/online-status';
 export const TOR_STATUS = '@suite/tor-status';
 export const TOR_BOOTSTRAP = '@suite/tor-bootstrap';

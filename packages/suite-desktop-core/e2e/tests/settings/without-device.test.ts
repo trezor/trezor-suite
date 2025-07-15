@@ -13,7 +13,7 @@ test.describe(
                 await walletPage.openAccount();
                 await page.getByTestId('@wallet/menu/wallet-send').click();
                 await trezorUserEnvLink.stopEmu();
-                await expect(page.getByTestId('@warning/trezorNotConnected')).toBeVisible();
+                await await expect(page.getByTestId('@warning/trezorNotConnected')).toBeVisible();
             });
 
             await test.step('Go to settings and verify Trezor disconnected warning', async () => {
