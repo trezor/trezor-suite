@@ -72,7 +72,6 @@ const getPreloadedState = ({
                             variant: 'info',
                             category: ['feature'],
                             content: {
-                                'en-GB': contentText,
                                 en: contentText,
                                 es: contentText,
                                 cs: contentText,

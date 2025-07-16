@@ -29,7 +29,6 @@
                 "variant": "info",
                 "category": "feature",
                 "content": {
-                    "en-GB": "Trading is not available in your country yet.",
                     "en": "Trading is not available in your country yet.",
                     "es": "El comercio aún no está disponible en tu país.",
                     "cs": "Obchodování zatím není ve vaší zemi dostupné.",
@@ -68,7 +67,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
                     "en": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
                     "es": "ADVERTENCIA: Actualmente estás utilizando una versión falsa de Trezor Suite. CIERRA EL PROGRAMA INMEDIATAMENTE.",
                     "cs": "VAROVÁNÍ: Momentálně používáte falešnou verzi Trezor Suite. OKAMŽITĚ UKONČETE TENTO PROGRAM!",
@@ -328,7 +326,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
                     "en": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
                     "es": "ATENCIÓN: Se ha detectado un firmware no oficial. Tu Trezor puede ser una falsificación. Ponte en contacto con help@trezor.io inmediatamente.",
                     "cs": "UPOZORNĚNÍ: Byl detekován neoficiální firmware! Váš Trezor může být padělaný. Okamžitě kontaktujte help@trezor.io.",
@@ -361,7 +358,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "You’re using an outdated version of Trezor Suite that doesn’t support automatic updates. To keep receiving new features and security fixes, update to the latest version.",
                     "en": "You’re using an outdated version of Trezor Suite that doesn’t support automatic updates. To keep receiving new features and security fixes, update to the latest version.",
                     "es": "Estás usando una versión obsoleta de Trezor Suite que no admite actualizaciones automáticas. Para seguir recibiendo nuevas funciones y mejoras de seguridad, actualiza a la última versión.",
                     "cs": "Používáte zastaralou verzi Trezor Suite, která nepodporuje automatické aktualizace. Chcete-li nadále dostávat nové funkce a bezpečnostní opravy, aktualizujte na nejnovější verzi.",
@@ -379,7 +375,6 @@
                     "action": "external-link",
                     "link": "https://trezor.io/trezor-suite",
                     "label": {
-                        "en-GB": "Go to trezor.io/trezor-suite",
                         "en": "Go to trezor.io/trezor-suite",
                         "es": "Visita trezor.io/trezor-suite",
                         "cs": "Přejít na trezor.io/trezor-suite",
@@ -423,7 +418,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
                     "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
                     "es": "Es necesaria una actualización. Esta versión de Trezor Suite no es compatible con tu dispositivo. Instala la actualización para continuar.",
                     "cs": "Nutná aktualizace! Tato verze Trezor Suite není kompatibilní s vaším zařízením. Chcete-li pokračovat, proveďte aktualizaci.",
@@ -442,7 +436,6 @@
                     "link": "settings-index",
                     "anchor": "@general-settings/version-with-update",
                     "label": {
-                        "en-GB": "Update Suite",
                         "en": "Update Suite",
                         "es": "Actualizar Suite",
                         "cs": "Aktualizovat Suite",
@@ -486,7 +479,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "An update is required! This version of Trezor Suite isn't compatible with your device. Please update to continue.",
                     "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Please update to continue.",
                     "es": "¡Actualización necesaria! Esta versión de Trezor Suite no es compatible con tu dispositivo. Por favor, actualiza para continuar.",
                     "cs": "Je vyžadována aktualizace! Tato verze Trezor Suite není kompatibilní s vaším zařízením. Pro pokračování prosím aktualizujte.",
@@ -505,7 +497,6 @@
                     "link": "settings-index",
                     "anchor": "@general-settings/version-with-update",
                     "label": {
-                        "en-GB": "Update Suite",
                         "en": "Update Suite",
                         "es": "Actualizar Suite",
                         "cs": "Aktualizovat Suite",
@@ -549,7 +540,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
                     "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
                     "es": "Es necesaria una actualización. Esta versión de Trezor Suite no es compatible con tu dispositivo. Instala la actualización para continuar.",
                     "cs": "Nutná aktualizace! Tato verze Trezor Suite není kompatibilní s vaším zařízením. Chcete-li pokračovat, proveďte aktualizaci.",
@@ -568,7 +558,6 @@
                     "link": "settings-index",
                     "anchor": "@general-settings/version-with-update",
                     "label": {
-                        "en-GB": "Update Suite",
                         "en": "Update Suite",
                         "es": "Actualizar Suite",
                         "cs": "Aktualizovat Suite",
@@ -620,7 +609,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
                     "en": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
                     "es": "La actualización del firmware podría borrar su Trezor. Verifique su copia de seguridad ahora para asegurarse de que puede recuperar sus activos.",
                     "cs": "Aktualizace firmwaru může vymazat váš Trezor. Zkontrolujte nyní svou zálohu, abyste se ujistili, že můžete obnovit své prostředky.",
@@ -638,7 +626,6 @@
                     "action": "internal-link",
                     "link": "recovery-index",
                     "label": {
-                        "en-GB": "Check wallet backup",
                         "en": "Check wallet backup",
                         "es": "Verificar copia de seguridad de la cartera",
                         "cs": "Zkontrolovat zálohu peněženky",
@@ -690,7 +677,6 @@
                 "variant": "info",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "New Trezor firmware is available! Please update your device.",
                     "en": "New Trezor firmware is available! Please update your device.",
                     "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
                     "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
@@ -708,7 +694,6 @@
                     "action": "internal-link",
                     "link": "firmware-index",
                     "label": {
-                        "en-GB": "Update now",
                         "en": "Update now",
                         "es": "Actualizar ahora",
                         "cs": "Aktualizovat teď",
@@ -760,7 +745,6 @@
                 "variant": "info",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "New Trezor firmware is available! Please update your device.",
                     "en": "New Trezor firmware is available! Please update your device.",
                     "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
                     "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
@@ -811,7 +795,6 @@
                 "variant": "warning",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
                     "en": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
                     "es": "Actualice ahora el firmware del dispositivo: Su Trezor no será reconocido ni utilizable en las nuevas versiones de Trezor Suite.",
                     "cs": "Aktualizujte firmware zařízení: Váš Trezor nebude v nových verzích Trezor Suite rozpoznán ani použitelný.",
@@ -829,7 +812,6 @@
                     "action": "internal-link",
                     "link": "firmware-index",
                     "label": {
-                        "en-GB": "Update Firmware",
                         "en": "Update Firmware",
                         "es": "Actualizar firmware",
                         "cs": "Aktualizovat Firmware",
@@ -880,7 +862,6 @@
                 "variant": "warning",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Important: Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be deactivated on August 1, 2025. Please transfer your funds before this change takes effect.",
                     "en": "Important: Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be deactivated on August 1, 2025. Please transfer your funds before this change takes effect.",
                     "es": "Importante: Los backends de Dash, Bitcoin Gold, Namecoin, Vertcoin y DigiByte se desactivarán el 1 de agosto de 2025. Por favor, transfiera sus fondos antes de que este cambio entre en vigor.",
                     "cs": "Důležité: Backend služby pro Dash, Bitcoin Gold, Namecoin, Vertcoin a DigiByte budou deaktivovány 1. srpna 2025. Přeneste prosím své prostředky před tímto datem.",
@@ -898,7 +879,6 @@
                     "action": "external-link",
                     "link": "https://trezor.io/learn/a/deprecated-coins",
                     "label": {
-                        "en-GB": "Learn More",
                         "en": "Learn More",
                         "es": "Más Información",
                         "cs": "Více Informací",
@@ -932,7 +912,6 @@
                 "variant": "warning",
                 "category": ["context"],
                 "content": {
-                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
                     "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
                     "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Sus fondos seguirán siendo accesibles y no es necesario realizar ninguna acción.",
                     "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Vaše finanční prostředky zůstanou přístupné bez nutnosti dalších kroků.",
@@ -950,7 +929,6 @@
                     "action": "external-link",
                     "link": "https://blog.trezor.io/important-update-transitioning-from-coinjoin-in-trezor-suite-9dfc63d2662f",
                     "label": {
-                        "en-GB": "Learn More",
                         "en": "Learn More",
                         "es": "Más Información",
                         "cs": "Více Informací",
@@ -1024,7 +1002,6 @@
                 "variant": "info",
                 "category": ["context"],
                 "content": {
-                    "en-GB": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
                     "en": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
                     "es": "Para la mejor experiencia de staking en Solana, actualiza el firmware de tu Trezor a la última versión.",
                     "cs": "Aby byl váš staking na Solaně co nejefektivnější, aktualizujte firmware vašeho Trezoru na nejnovější verzi.",
@@ -1042,7 +1019,6 @@
                     "action": "internal-link",
                     "link": "firmware-index",
                     "label": {
-                        "en-GB": "Update now",
                         "en": "Update now",
                         "es": "Actualizar ahora",
                         "cs": "Aktualizujte nyní",
@@ -1077,7 +1053,6 @@
                 "variant": "warning",
                 "category": ["context"],
                 "content": {
-                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
                     "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
                     "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Por favor, actualice a la última versión de Trezor Suite para asegurarse de que sus fondos siguen siendo accesibles.",
                     "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Prosíme, aktualizujte Trezor Suite na nejnovější verzi pro zachování přístupu k vašim finančním prostředkům.",
@@ -1095,7 +1070,6 @@
                     "action": "external-link",
                     "link": "https://blog.trezor.io/important-update-transitioning-from-coinjoin-in-trezor-suite-9dfc63d2662f",
                     "label": {
-                        "en-GB": "Learn More",
                         "en": "Learn More",
                         "es": "Más Información",
                         "cs": "Více Informací",
@@ -1140,7 +1114,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
                     "en": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
                     "es": "Hay una actualización disponible para tu dispositivo Trezor. Asegúrate de que la semilla de recuperación está lista, ya que la necesitarás para recuperar el acceso a tus monedas.",
                     "cs": "Pro zařízení Trezor je k dispozici aktualizace. Ujistěte se, že máte připravený recovery seed, protože jej budete potřebovat k obnovení přístupu k mincím.",
@@ -1158,7 +1131,6 @@
                     "action": "internal-link",
                     "link": "firmware-index",
                     "label": {
-                        "en-GB": "Update now",
                         "en": "Update now",
                         "es": "Actualizar ahora",
                         "cs": "Aktualizovat teď",
@@ -1197,7 +1169,6 @@
                 "variant": "warning",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "We are experiencing syncing issues with the BNB Smart Chain network. This may temporarily result in errors or slow response times on BNB Smart Chain. This issue does not affect the safety of your BNB Smart Chain funds in any way. We apologise for the inconvenience.",
                     "en": "We are experiencing syncing issues with the BNB Smart Chain network. This may temporarily result in errors or slow response times on BNB Smart Chain. This issue does not affect the safety of your BNB Smart Chain funds in any way. We apologize for the inconvenience.",
                     "es": "Estamos experimentando problemas de sincronización con la red de BNB Smart Chain. Esto puede resultar temporalmente en errores o tiempos de respuesta lentos en BNB Smart Chain. Este problema no afecta en absoluto la seguridad de sus fondos en BNB Smart Chain. Pedimos disculpas por las molestias.",
                     "cs": "Potýkáme se s dočasnými potížemi se synchronizací sítě BNB Smart Chain, které mohou vést k chybám nebo pomalejší odezvě. Bezpečnost vašich prostředků na síti BNB Smart Chain tím však není nijak ohrožena. Omlouváme se za nepříjemnosti a děkujeme za pochopení.",
@@ -1235,7 +1206,6 @@
                 "variant": "info",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
                     "en": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
                     "es": "Estamos experimentando problemas de sincronización con la red de INPUT HERE. Esto puede resultar temporalmente en errores o tiempos de respuesta lentos en INPUT HERE. Este problema no afecta en absoluto la seguridad de sus fondos de INPUT HERE. Pedimos disculpas por las molestias.",
                     "cs": "Potýkáme se s dočasnými potížemi se synchronizací sítě INPUT HERE, které mohou vést k chybám nebo pomalejší odezvě. Bezpečnost vašich prostředků na síti INPUT HERE tím však není nijak ohrožena. Omlouváme se za nepříjemnosti a děkujeme za pochopení.",
@@ -1268,7 +1238,6 @@
                 "variant": "warning",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
                     "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
                     "es": "Actualiza Trezor Suite para mejorar la seguridad, disfrutar de las funciones más recientes y para que todo funcione sin problemas.",
                     "cs": "Aktualizujte Trezor Suite, abyste získali lepší zabezpečení a nejnovější funkce.",
@@ -1287,7 +1256,6 @@
                     "link": "settings-index",
                     "anchor": "@general-settings/version-with-update",
                     "label": {
-                        "en-GB": "Update Suite",
                         "en": "Update Suite",
                         "es": "Actualizar Suite",
                         "cs": "Aktualizovat Suite",
@@ -1326,7 +1294,6 @@
                 "variant": "info",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Testnet account has been updated to new Testnet 4.",
                     "en": "Testnet account has been updated to new Testnet 4.",
                     "es": "Testnet account has been updated to new Testnet 4.",
                     "cs": "Testnet account has been updated to new Testnet 4.",
@@ -1344,7 +1311,6 @@
                     "action": "external-link",
                     "link": "https://trezor.io/learn/a/bitcoin-testnet#testnet4",
                     "label": {
-                        "en-GB": "Learn More",
                         "en": "Learn More",
                         "es": "Learn More",
                         "cs": "Learn More",
@@ -1388,7 +1354,6 @@
                 "variant": "critical",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
                     "en": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
                     "es": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
                     "cs": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
@@ -1406,7 +1371,6 @@
                     "action": "external-link",
                     "link": "https://trezor.io/learn/a/what-is-trezor-suite-lite#open-chat",
                     "label": {
-                        "en-GB": "Contact support",
                         "en": "Contact support",
                         "es": "Contact support",
                         "cs": "Contact support",
@@ -1440,7 +1404,6 @@
                 "variant": "info",
                 "category": "feature",
                 "content": {
-                    "en-GB": "Placeholder",
                     "en": "Placeholder",
                     "es": "Placeholder",
                     "cs": "Placeholder",
@@ -1479,7 +1442,6 @@
                 "variant": "info",
                 "category": "feature",
                 "content": {
-                    "en-GB": "Placeholder",
                     "en": "Placeholder",
                     "es": "Placeholder",
                     "cs": "Placeholder",

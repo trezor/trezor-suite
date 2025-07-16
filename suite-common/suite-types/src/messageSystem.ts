@@ -374,7 +374,6 @@ export interface Message {
  * A multilingual text localization.
  */
 export interface Localization {
-    'en-GB': string;
     en: string;
     es: string;
     cs: string;

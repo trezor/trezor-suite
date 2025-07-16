@@ -13,7 +13,6 @@ const tradingContextMsg = {
     variant: 'info',
     category: ['context'],
     content: {
-        'en-GB': contentText,
         en: contentText,
         es: contentText,
         cs: contentText,

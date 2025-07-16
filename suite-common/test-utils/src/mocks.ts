@@ -384,7 +384,6 @@ const getMessageSystemConfig = (
                 variant: 'warning',
                 category: 'banner',
                 content: {
-                    'en-GB': 'New Trezor firmware is available!',
                     en: 'New Trezor firmware is available!',
                     es: 'El nuevo firmware de Trezor está disponible!',
                     cs: 'Nová verze Trezor firmware je k dispozici',
@@ -403,7 +402,6 @@ const getMessageSystemConfig = (
                     link: 'settings-device',
                     anchor: '@device-settings/firmware-version',
                     label: {
-                        'en-GB': 'Update now',
                         en: 'Update now',
                         es: 'Actualizar ahora',
                         cs: 'Aktualizovat',
@@ -430,7 +428,6 @@ const getMessageSystemConfig = (
                 variant: 'info',
                 category: ['banner', 'context', 'modal'],
                 content: {
-                    'en-GB': 'New Trezor app is available!',
                     en: 'New Trezor app is available!',
                     es: 'La nueva aplicación Trezor está disponible!',
                     cs: 'Nová Trezor aplikace je k dispozici!',
@@ -448,7 +445,6 @@ const getMessageSystemConfig = (
                     action: 'external-link',
                     link: 'https://example.com/',
                     label: {
-                        'en-GB': 'Download now',
                         en: 'Download now',
                         es: 'Descargar ahora',
                         cs: 'Stáhnout nyní',
@@ -465,7 +461,6 @@ const getMessageSystemConfig = (
                 },
                 modal: {
                     title: {
-                        'en-GB': 'Update now',
                         en: 'Update now',
                         es: 'Actualizar ahora',
                         cs: 'Aktualizovat',
