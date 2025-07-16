@@ -3,7 +3,7 @@ import { getPlatformLanguages } from '@trezor/env-utils';
 import LANGUAGES, { Locale, TRANSLATION_PSEUDOLANGUAGE } from 'src/config/suite/languages';
 
 const TRANSLATION_MODE_FLAG = 'translation_mode';
-const DEFAULT_LOCALE = 'en';
+const DEFAULT_LOCALE = 'en-US';
 
 export const isTranslationMode = () => localStorage.getItem(TRANSLATION_MODE_FLAG) === 'true';
 
@@ -27,7 +27,7 @@ export const isCompletedLocale = (lang: string): lang is Locale =>
 export const getOsLocale = (defaultLocale: Locale = DEFAULT_LOCALE): Locale => {
     const languages = getPlatformLanguages() || [];
 
-    return languages.map(lang => lang.split('-')[0]).find(isCompletedLocale) || defaultLocale;
+    return languages.find(isCompletedLocale) || defaultLocale;
 };
 
 export const watchOsLocale = (callback: (loc: Locale) => void) => {

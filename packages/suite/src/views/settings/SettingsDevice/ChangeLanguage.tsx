@@ -7,7 +7,7 @@ import { Locale } from '../../../config/suite/languages';
 import { SettingsAnchor } from '../../../constants/suite/anchors';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 
-const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en'].name }];
+const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en-US'].name }];
 
 interface ChangeLanguageProps {
     isDeviceLocked: boolean;
@@ -25,7 +25,7 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
 
     const deviceSupportedTranslations = (device?.availableTranslations ?? []).map(it => ({
         value: it,
-        label: `${LANGUAGES[it.split('-')[0] as Locale].name} (beta)`,
+        label: `${LANGUAGES[it as Locale].name} (beta)`,
     }));
 
     if (isSupportedDevice !== true || deviceSupportedTranslations.length === 0) {

@@ -73,8 +73,8 @@ test.describe('General settings', { tag: ['@group=settings'] }, () => {
                 const settingsGeneralChangeLanguageEvent = analytics.findAnalyticsEventByType<
                     ExtractByEventType<EventType.SettingsGeneralChangeLanguage>
                 >(EventType.SettingsGeneralChangeLanguage);
-                expect(settingsGeneralChangeLanguageEvent.language).toBe('es');
-                expect(settingsGeneralChangeLanguageEvent.previousLanguage).toBe('en');
+                expect(settingsGeneralChangeLanguageEvent.language).toBe('es-ES');
+                expect(settingsGeneralChangeLanguageEvent.previousLanguage).toBe('en-US');
                 expect(settingsGeneralChangeLanguageEvent.autodetectLanguage).toBe('false');
                 expect(settingsGeneralChangeLanguageEvent.previousAutodetectLanguage).toBe('true');
                 expect(settingsGeneralChangeLanguageEvent.platformLanguages).toBe('en-US');

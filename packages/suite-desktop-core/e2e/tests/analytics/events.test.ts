@@ -38,7 +38,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             ExtractByEventType<EventType.SuiteReady>
         >(EventType.SuiteReady);
         expect(suiteReadyEvent).toContainSubObject({
-            language: 'en',
+            language: 'en-US',
             enabledNetworks: 'btc',
             customBackends: '',
             localCurrency: 'usd',
@@ -117,12 +117,12 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         // change language
         await page.getByTestId('@settings/language-select/input').scrollIntoViewIfNeeded();
         await page.getByTestId('@settings/language-select/input').click();
-        await page.getByTestId('@settings/language-select/option/cs').click();
+        await page.getByTestId('@settings/language-select/option/cs-CZ').click();
 
         // change language back to EN, otherwise `settingsPage.navigateTo` won't work
         await page.getByTestId('@settings/language-select/input').scrollIntoViewIfNeeded();
         await page.getByTestId('@settings/language-select/input').click();
-        await page.getByTestId('@settings/language-select/option/en').click();
+        await page.getByTestId('@settings/language-select/option/en-US').click();
 
         // change fiat
         await page.getByTestId('@settings/fiat-select/input').scrollIntoViewIfNeeded();
@@ -182,7 +182,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             ExtractByEventType<EventType.SuiteReady>
         >(EventType.SuiteReady);
         expect(suiteReadyEvent).toContainSubObject({
-            language: 'en',
+            language: 'en-US',
             enabledNetworks: 'eth,thol',
             customBackends: 'eth',
             localCurrency: 'czk',

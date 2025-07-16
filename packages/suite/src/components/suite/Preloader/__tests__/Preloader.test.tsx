@@ -98,7 +98,7 @@ const getInitialState = ({
                 firmwareRevision: true,
                 firmwareHash: true,
             },
-            language: 'id',
+            language: 'id-ID',
             torOnionLinks: false,
             isCoinjoinReceiveWarningHidden: false,
             isDesktopSuitePromoHidden: false,
