@@ -1,4 +1,10 @@
-import { AcquiredDevice, ExperimentsItem, Message, MessageSystem } from '@suite-common/suite-types';
+import {
+    AcquiredDevice,
+    ExperimentsItem,
+    Localization,
+    Message,
+    MessageSystem,
+} from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { FirmwareType, TransportInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -2060,6 +2066,63 @@ export const validateExperiments = [
                 },
             ],
         },
+    },
+];
+
+const localizedMessages: Localization = {
+    'en-GB': 'This is a message in English-GB.',
+    en: 'This is a message in English.',
+    cs: 'Toto je zpráva v češtině.',
+    de: 'Dies ist eine Nachricht auf Deutsch.',
+    es: 'Este es un mensaje en español.',
+    ru: '',
+    ja: '',
+    fr: '',
+    it: '',
+    ko: '',
+    zh: '',
+    uk: '',
+    pt: '',
+    pl: '',
+    tr: '',
+    hu: '',
+};
+
+export const resolveMessageContentFixture: Array<{
+    description: string;
+    message: Localization;
+    language: string;
+    result: string;
+}> = [
+    {
+        description: 'resolveMessageContent - case 1',
+        message: localizedMessages,
+        language: 'en-GB',
+        result: 'This is a message in English-GB.',
+    },
+    {
+        description: 'resolveMessageContent - case 2',
+        message: localizedMessages,
+        language: 'cs',
+        result: 'Toto je zpráva v češtině.',
+    },
+    {
+        description: 'resolveMessageContent - case 3',
+        message: localizedMessages,
+        language: 'cs-CZ',
+        result: 'Toto je zpráva v češtině.',
+    },
+    {
+        description: 'resolveMessageContent - case 4 - unknown locale fallback to English',
+        message: localizedMessages,
+        language: 'UNKNOWN',
+        result: 'This is a message in English.',
+    },
+    {
+        description: 'resolveMessageContent - case 5 - unknown locale fallback to English',
+        message: localizedMessages,
+        language: '',
+        result: 'This is a message in English.',
     },
 ];
 

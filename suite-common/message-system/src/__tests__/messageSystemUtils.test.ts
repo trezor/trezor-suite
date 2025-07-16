@@ -168,4 +168,14 @@ describe('Message system utils', () => {
             });
         });
     });
+
+    describe('resolveMessageContent', () => {
+        fixtures.resolveMessageContentFixture.forEach(f => {
+            it(f.description, () => {
+                expect(messageSystem.resolveMessageContent(f.message, f.language)).toEqual(
+                    f.result,
+                );
+            });
+        });
+    });
 });

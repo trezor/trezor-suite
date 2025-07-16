@@ -1,6 +1,7 @@
 import * as semver from 'semver';
 
 import type { CountryCode } from '@suite-common/geolocation';
+import { Localization } from '@suite-common/suite-types';
 import type {
     Condition,
     Device,
@@ -310,4 +311,19 @@ export const getValidExperimentIds = (config: MessageSystem | null, options: Opt
                 experiment.conditions.some(condition => validateConditions(condition, options)),
         )
         .map(experiment => experiment?.experiment?.id);
+};
+
+/**
+ * Attempts to return the message content for the exact language code. If not found,
+ * it falls back to the base language (e.g., 'en' from 'en-US'). If neither is available,
+ * it defaults to 'en'.
+ */
+export const resolveMessageContent = (localizedMessages: Localization, language: string) => {
+    if (localizedMessages[language]) {
+        return localizedMessages[language];
+    }
+
+    const fallbackLanguage = language.split('-')[0];
+
+    return localizedMessages[fallbackLanguage] ?? localizedMessages.en;
 };
