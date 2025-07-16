@@ -10,6 +10,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevice, mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -48,7 +49,7 @@ export const ConnectAddressConfirmation = () => {
     if (!popupCall || popupCall?.state !== 'address-confirmation') return null;
 
     return (
-        <Modal.Backdrop>
+        <ConnectModalBackdrop onClick={onFinish}>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device?.features?.internal_model}
@@ -148,6 +149,6 @@ export const ConnectAddressConfirmation = () => {
                     </Card>
                 </Column>
             </Modal.ModalBase>
-        </Modal.Backdrop>
+        </ConnectModalBackdrop>
     );
 };

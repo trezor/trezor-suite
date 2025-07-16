@@ -9,6 +9,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
+import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
@@ -55,103 +56,105 @@ export const ConnectPermissionsModal = () => {
     };
 
     return (
-        <Modal
-            onCancel={onCancel}
-            bottomContent={
-                <>
-                    <Modal.Button
-                        variant="primary"
-                        onClick={onConfirm}
-                        data-testid="@connect-permissions-modal/confirm-button"
-                    >
-                        {confirmLabel || <Translation id="TR_CONFIRM" />}
-                    </Modal.Button>
-                    <Modal.Button
-                        variant="tertiary"
-                        onClick={onCancel}
-                        data-testid="@connect-permissions-modal/cancel-button"
-                    >
-                        <Translation id="TR_CANCEL" />
-                    </Modal.Button>
-                </>
-            }
-            heading={<Translation id="TR_GRANT_PERMISSIONS" />}
-            description={<Translation id="TR_GRANT_PERMISSIONS_DESCRIPTION" />}
-        >
-            <Column gap={spacings.xs}>
-                <Text>
-                    <Translation id="TR_APP" />
-                </Text>
-
-                <Card>
-                    <Row gap={spacings.md}>
-                        <ConnectAppIcon
-                            src={source.manifest?.appIcon}
-                            size={spacings.xxxxl}
-                            type={
-                                source.type === CALL_SOURCE_WALLETCONNECT
-                                    ? 'walletConnect'
-                                    : 'trezorConnect'
-                            }
-                        />
-
-                        <Column gap={spacings.xxs}>
-                            <Row gap={spacings.sm}>
-                                {source.manifest?.appName ? (
-                                    <>
-                                        <Text>{source.manifest.appName}</Text>
-                                        <Text variant="tertiary">{source.origin}</Text>
-                                    </>
-                                ) : (
-                                    <Text>{source.origin}</Text>
-                                )}
-                            </Row>
-                            <Row>
-                                {source.process && (
-                                    <ConnectProcessLabel
-                                        process={source.process}
-                                        data-testid="@connect-permissions-modal/paragraph-process"
-                                    />
-                                )}
-                            </Row>
-                        </Column>
-                    </Row>
-                </Card>
-
-                <Text>
-                    <Translation id="TR_PERMISSIONS" />
-                </Text>
-
-                <Card>
-                    <List>
-                        {permissionTypes.map(permission => (
-                            <List.Item
-                                key={permission}
-                                bulletComponent={<Icon name="checkCircle" variant="primary" />}
-                            >
-                                {getPermissionText(permission)}
-                            </List.Item>
-                        ))}
-                    </List>
-                </Card>
-                {source.type !== CALL_SOURCE_WALLETCONNECT && (
+        <ConnectModalBackdrop onClick={onCancel} canSwitchDevice>
+            <Modal.ModalBase
+                onCancel={onCancel}
+                bottomContent={
                     <>
-                        <Text>
-                            <Translation id="TR_OPTIONAL" />
-                        </Text>
-
-                        <Card>
-                            <Checkbox
-                                data-testid="@connect-permissions-modal/remember-checkbox"
-                                isChecked={isRemembered}
-                                onClick={() => setIsRemembered(!isRemembered)}
-                            >
-                                <Translation id="TR_CONNECT_MODAL_REMEMBER" />
-                            </Checkbox>
-                        </Card>
+                        <Modal.Button
+                            variant="primary"
+                            onClick={onConfirm}
+                            data-testid="@connect-permissions-modal/confirm-button"
+                        >
+                            {confirmLabel || <Translation id="TR_CONFIRM" />}
+                        </Modal.Button>
+                        <Modal.Button
+                            variant="tertiary"
+                            onClick={onCancel}
+                            data-testid="@connect-permissions-modal/cancel-button"
+                        >
+                            <Translation id="TR_CANCEL" />
+                        </Modal.Button>
                     </>
-                )}
-            </Column>
-        </Modal>
+                }
+                heading={<Translation id="TR_GRANT_PERMISSIONS" />}
+                description={<Translation id="TR_GRANT_PERMISSIONS_DESCRIPTION" />}
+            >
+                <Column gap={spacings.xs}>
+                    <Text>
+                        <Translation id="TR_APP" />
+                    </Text>
+
+                    <Card>
+                        <Row gap={spacings.md}>
+                            <ConnectAppIcon
+                                src={source.manifest?.appIcon}
+                                size={spacings.xxxxl}
+                                type={
+                                    source.type === CALL_SOURCE_WALLETCONNECT
+                                        ? 'walletConnect'
+                                        : 'trezorConnect'
+                                }
+                            />
+
+                            <Column gap={spacings.xxs}>
+                                <Row gap={spacings.sm}>
+                                    {source.manifest?.appName ? (
+                                        <>
+                                            <Text>{source.manifest.appName}</Text>
+                                            <Text variant="tertiary">{source.origin}</Text>
+                                        </>
+                                    ) : (
+                                        <Text>{source.origin}</Text>
+                                    )}
+                                </Row>
+                                <Row>
+                                    {source.process && (
+                                        <ConnectProcessLabel
+                                            process={source.process}
+                                            data-testid="@connect-permissions-modal/paragraph-process"
+                                        />
+                                    )}
+                                </Row>
+                            </Column>
+                        </Row>
+                    </Card>
+
+                    <Text>
+                        <Translation id="TR_PERMISSIONS" />
+                    </Text>
+
+                    <Card>
+                        <List>
+                            {permissionTypes.map(permission => (
+                                <List.Item
+                                    key={permission}
+                                    bulletComponent={<Icon name="checkCircle" variant="primary" />}
+                                >
+                                    {getPermissionText(permission)}
+                                </List.Item>
+                            ))}
+                        </List>
+                    </Card>
+                    {source.type !== CALL_SOURCE_WALLETCONNECT && (
+                        <>
+                            <Text>
+                                <Translation id="TR_OPTIONAL" />
+                            </Text>
+
+                            <Card>
+                                <Checkbox
+                                    data-testid="@connect-permissions-modal/remember-checkbox"
+                                    isChecked={isRemembered}
+                                    onClick={() => setIsRemembered(!isRemembered)}
+                                >
+                                    <Translation id="TR_CONNECT_MODAL_REMEMBER" />
+                                </Checkbox>
+                            </Card>
+                        </>
+                    )}
+                </Column>
+            </Modal.ModalBase>
+        </ConnectModalBackdrop>
     );
 };

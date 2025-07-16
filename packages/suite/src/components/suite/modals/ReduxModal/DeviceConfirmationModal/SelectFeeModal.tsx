@@ -12,6 +12,7 @@ import { spacings } from '@trezor/theme';
 
 import { onReceiveFee } from 'src/actions/suite/modalActions';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -157,44 +158,46 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
     };
 
     return (
-        <Modal
-            onCancel={onClose}
-            onBackClick={onChangeAccount}
-            variant="primary"
-            heading={<Translation id="TR_SELECT_FEE" />}
-            description={
-                <>
-                    <ConnectCallSource />
-                </>
-            }
-            bottomContent={
-                <>
-                    <Button onClick={onSend} isDisabled={!errors} variant="primary">
-                        <Translation id="TR_CONTINUE" />
-                    </Button>
-                    <Button onClick={onClose} variant="tertiary">
-                        <Translation id="TR_CANCEL" />
-                    </Button>
-                </>
-            }
-        >
-            <Column gap={spacings.md}>
-                {popupCall?.state === 'ongoing' && popupCall?.payload?.outputs && (
-                    <OutputsSummary account={account} outputs={popupCall.payload.outputs} />
-                )}
-                <Fees
-                    account={account}
-                    feeInfo={feeInfo}
-                    control={control}
-                    register={register}
-                    setValue={setValue}
-                    getValues={getValues}
-                    errors={errors}
-                    isDirty={isDirty}
-                    changeFeeLevel={changeFeeLevel}
-                    trigger={trigger}
-                />
-            </Column>
-        </Modal>
+        <ConnectModalBackdrop onClick={onClose} canSwitchDevice>
+            <Modal.ModalBase
+                onCancel={onClose}
+                onBackClick={onChangeAccount}
+                variant="primary"
+                heading={<Translation id="TR_SELECT_FEE" />}
+                description={
+                    <>
+                        <ConnectCallSource />
+                    </>
+                }
+                bottomContent={
+                    <>
+                        <Button onClick={onSend} isDisabled={!errors} variant="primary">
+                            <Translation id="TR_CONTINUE" />
+                        </Button>
+                        <Button onClick={onClose} variant="tertiary">
+                            <Translation id="TR_CANCEL" />
+                        </Button>
+                    </>
+                }
+            >
+                <Column gap={spacings.md}>
+                    {popupCall?.state === 'ongoing' && popupCall?.payload?.outputs && (
+                        <OutputsSummary account={account} outputs={popupCall.payload.outputs} />
+                    )}
+                    <Fees
+                        account={account}
+                        feeInfo={feeInfo}
+                        control={control}
+                        register={register}
+                        setValue={setValue}
+                        getValues={getValues}
+                        errors={errors}
+                        isDirty={isDirty}
+                        changeFeeLevel={changeFeeLevel}
+                        trigger={trigger}
+                    />
+                </Column>
+            </Modal.ModalBase>
+        </ConnectModalBackdrop>
     );
 };

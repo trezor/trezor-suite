@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 
-import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
+import TrezorConnect from '@trezor/connect';
 
 import { CONTEXT_NONE, CONTEXT_USER } from 'src/actions/suite/constants/modalConstants';
 import { onCancel as cancelModal, openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 export const useConnectPopupModals = () => {
     const dispatch = useDispatch();
@@ -14,6 +17,7 @@ export const useConnectPopupModals = () => {
     // Modal opening control
     const modalContext = useSelector(state => state.modal.context);
     const modalType = useSelector(selectModalType);
+    const activeRoute = useSelector(selectRouteName);
     useEffect(() => {
         const isConnectModal =
             modalContext === CONTEXT_USER &&
@@ -62,6 +66,21 @@ export const useConnectPopupModals = () => {
                 // Not used on desktop
                 return;
             }
+            case 'switch-device': {
+                if (modalContext !== CONTEXT_NONE) {
+                    TrezorConnect.cancel('switching-device');
+                    dispatch(cancelModal());
+                    dispatch(
+                        goto('suite-switch-device', {
+                            params: {
+                                cancelable: true,
+                            },
+                        }),
+                    );
+                }
+
+                return;
+            }
             case 'finished':
             default: {
                 if (isConnectModal) {
@@ -71,5 +90,21 @@ export const useConnectPopupModals = () => {
                 return;
             }
         }
-    }, [popupCall?.state, modalType, modalContext, dispatch]);
+    }, [popupCall?.state, modalType, modalContext, activeRoute, dispatch]);
+
+    // Restart thunk once device is selected
+    useEffect(() => {
+        if (
+            popupCall?.state === 'switch-device' &&
+            activeRoute !== 'suite-switch-device' &&
+            // this check prevents restarting the call immediately after it was created, since the route may not be updated yet
+            popupCall?.timestamp < Date.now() - 500
+        ) {
+            dispatch(
+                connectPopupCallThunkInner({
+                    ...popupCall,
+                }),
+            );
+        }
+    }, [popupCall, activeRoute, dispatch]);
 };

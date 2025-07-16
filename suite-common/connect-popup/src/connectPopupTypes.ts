@@ -1,3 +1,4 @@
+import TrezorConnect from '@trezor/connect';
 import { ErrorCode } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 
@@ -39,7 +40,7 @@ export type ConnectCallSource = {
 
 export type ConnectPopupCallLoaded = {
     // Common properties that are always present
-    method: string;
+    method: keyof typeof TrezorConnect;
     methodInfo: {
         methodTitle: string;
         confirmLabel: string;
@@ -93,6 +94,10 @@ export type ConnectPopupCallLoaded = {
           state: 'tx-simulation';
           selectedAccountKey?: string;
           fromAddress: string;
+      }
+    | {
+          state: 'switch-device';
+          timestamp: number;
       }
 );
 
