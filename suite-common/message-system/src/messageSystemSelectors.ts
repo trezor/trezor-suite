@@ -1,4 +1,4 @@
-import { ExperimentId } from '@suite-common/message-system';
+import { ExperimentId, resolveMessageContent } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { Category, Message } from '@suite-common/suite-types';
 
@@ -81,11 +81,11 @@ export const selectContextMessageContent = createMemoizedSelector(
 
         return {
             ...message,
-            content: message.content[language] ?? message.content.en,
+            content: resolveMessageContent(message.content, language),
             cta: message?.cta
                 ? {
                       ...message.cta,
-                      label: message.cta.label[language] ?? message.cta.label.en,
+                      label: resolveMessageContent(message.cta.label, language),
                   }
                 : undefined,
         };
@@ -107,7 +107,7 @@ export const selectFeatureMessageContent = createMemoizedSelector(
         (_state, _domain, language: string) => language,
     ],
     (featureMessages, _domain, language) =>
-        featureMessages?.content[language] ?? featureMessages?.content.en,
+        featureMessages ? resolveMessageContent(featureMessages.content, language) : undefined,
 );
 
 export const selectFeatureConfig = createMemoizedSelector(
