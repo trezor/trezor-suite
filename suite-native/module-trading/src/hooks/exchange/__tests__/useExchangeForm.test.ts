@@ -10,8 +10,8 @@ import { PROTO } from '@trezor/connect';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
+import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
+import { getWalletState } from '../../../__fixtures__/walletState';
 import { useExchangeForm } from '../useExchangeForm';
 
 describe('useExchangeForm', () => {
@@ -20,13 +20,9 @@ describe('useExchangeForm', () => {
 
     const getInitializedStore = async (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
         const preloadedState: PreloadedState = {
-            wallet: {
-                tradingNew: getInitializedTradingState(),
-                settings: {
-                    bitcoinAmountUnit,
-                },
-                accounts: [getBtcAccount('btc-account-1'), getBtcAccount('btc-account-2')],
-            },
+            wallet: getWalletState({
+                bitcoinAmountUnit,
+            }),
         };
         preloadedState.wallet!.tradingNew!.buy!.tradingAccountKey = 'btc-account-1';
 
@@ -154,6 +150,89 @@ describe('useExchangeForm', () => {
                     account: getBtcAccount('btc-account-1'),
                 }),
             );
+        });
+    });
+
+    describe('validations', () => {
+        it.each([
+            ['0.00001', 'Minimum is 0.0001 BTC'],
+            ['100', 'Maximum is 50 BTC'],
+            ['1', 'Insufficient balance'],
+        ])('should display error for crypto amount %s BTC', async (amount, expectedValue) => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('sendCryptoAmount', amount);
+            });
+
+            await act(() => result.current.trigger('sendCryptoAmount'));
+
+            const { error, invalid } = result.current.getFieldState('sendCryptoAmount');
+
+            expect(invalid).toBe(true);
+            expect(error).toEqual(expect.objectContaining({ message: expectedValue }));
+        });
+
+        it.each([
+            ['100', 'Minimum is 10000 sat'],
+            ['10000000000', 'Maximum is 5000000000 sat'],
+            ['10000000', 'Insufficient balance'],
+        ])('should display error for crypto amount %s SATS', async (amount, expectedValue) => {
+            const store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('sendCryptoAmount', amount);
+            });
+
+            await act(() => result.current.trigger('sendCryptoAmount'));
+
+            const { error, invalid } = result.current.getFieldState('sendCryptoAmount');
+
+            expect(invalid).toBe(true);
+            expect(error).toEqual(expect.objectContaining({ message: expectedValue }));
+        });
+
+        it('should correctly compute balance with SATS', async () => {
+            const store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('sendCryptoAmount', '10000');
+            });
+
+            await act(() => result.current.trigger('sendCryptoAmount'));
+
+            const { invalid } = result.current.getFieldState('sendCryptoAmount');
+
+            expect(invalid).toBe(false);
+        });
+
+        it.each<[string, boolean]>([
+            ['1', false],
+            ['2', true],
+        ])('should use correct balance for USDC and amount %s', async (amount, expectedInvalid) => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('eth-account-1'));
+                result.current.setValue('sendAsset', usdcAsset);
+                result.current.setValue('sendCryptoAmount', amount);
+            });
+
+            await act(() => result.current.trigger('sendCryptoAmount'));
+
+            const { invalid } = result.current.getFieldState('sendCryptoAmount');
+
+            expect(invalid).toBe(expectedInvalid);
         });
     });
 });

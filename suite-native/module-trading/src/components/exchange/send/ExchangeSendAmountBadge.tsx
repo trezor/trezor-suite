@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
+import { Badge } from '@suite-native/atoms';
+import { useField } from '@suite-native/forms';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { TradingRootState } from '../../../reducers';
@@ -24,12 +27,17 @@ const ExchangeSendFiatAmountBadge = ({ amount, asset }: ExchangeSendFiatAmountBa
 
 export const ExchangeSendAmountBadge = () => {
     const { watch } = useExchangeFormContext();
+    const isLoading = useSelector(selectTradingExchangeIsLoading);
 
-    const [asset, amount] = watch(['sendAsset', 'sendCryptoAmount']);
+    const { errorMessage, hasError, value } = useField({ name: 'sendCryptoAmount' });
+    if (!isLoading && hasError) {
+        return <Badge label={errorMessage} variant="red" size="small" />;
+    }
 
-    if (!asset || !amount) {
+    const asset = watch('sendAsset');
+    if (!asset || !value) {
         return null;
     }
 
-    return <ExchangeSendFiatAmountBadge amount={amount} asset={asset} />;
+    return <ExchangeSendFiatAmountBadge amount={value} asset={asset} />;
 };
