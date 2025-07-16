@@ -107,9 +107,6 @@ export const selectExchangeBuyTradeableAssetsSorted = createMemoizedSelector(
 export const selectExchangeQuotes = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.quotes;
 
-export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
-    state.wallet.tradingNew.exchange.isLoading;
-
 const ratingSortingComparator = (
     a: { rate?: number | undefined },
     b: { rate?: number | undefined },

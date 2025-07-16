@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 import { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import { selectTradingExchangeProviders } from '@suite-common/trading';
+import {
+    selectTradingExchangeIsLoading,
+    selectTradingExchangeProviders,
+} from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { selectTradingExchangeIsLoading } from '../../selectors/exchangeSelectors';
 import { OverviewRow } from '../general/OverviewRow';
 import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
 

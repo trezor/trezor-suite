@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { selectTradingExchangeIsLoading } from '@suite-common/trading';
+
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
-import {
-    selectExchangeSelectedReceiveAccount,
-    selectTradingExchangeIsLoading,
-} from '../../../selectors/exchangeSelectors';
+import { selectExchangeSelectedReceiveAccount } from '../../../selectors/exchangeSelectors';
 import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
 import { ReceiveAccountPicker } from '../../general/ReceiveAccount/ReceiveAccountPicker';
 

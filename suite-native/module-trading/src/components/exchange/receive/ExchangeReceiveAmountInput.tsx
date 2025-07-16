@@ -2,11 +2,11 @@ import { forwardRef } from 'react';
 import { TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
-import { selectTradingExchangeIsLoading } from '../../../selectors/exchangeSelectors';
 import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
 import { AmountInput } from '../../general/Input/AmountInput';
 
