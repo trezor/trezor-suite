@@ -43,8 +43,4 @@ describe(parseUTCdatetime.name, () => {
     it('invalid input', () => {
         expect(parseUTCdatetime('not a date')).toBeUndefined();
     });
-
-    it('undefined for undefined', () => {
-        expect(parseUTCdatetime(undefined)).toBeUndefined();
-    });
 });

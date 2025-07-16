@@ -5702,6 +5702,18 @@ export default defineMessages({
         id: 'LOCKTIME_SCHEDULE_SEND',
         defaultMessage: 'Locktime',
     },
+    LOCKTIME_DESCRIPTION: {
+        id: 'LOCKTIME_DESCRIPTION',
+        defaultMessage: 'Transition cannot be broadcast until:',
+    },
+    LOCKTIME_CURRENT_UTC: {
+        id: 'LOCKTIME_CURRENT_UTC',
+        defaultMessage: 'Current UTC datetime: {datetime}',
+    },
+    LOCKTIME_CURRENT_BLOCKHEIGHT: {
+        id: 'LOCKTIME_CURRENT_BLOCKHEIGHT',
+        defaultMessage: 'Current block height: {blockheight}',
+    },
     LOCKTIME_IS_NOT_SET: {
         id: 'LOCKTIME_IS_NOT_SET',
         defaultMessage: "Locktime isn't set",
@@ -5717,6 +5729,10 @@ export default defineMessages({
     LOCKTIME_IS_TOO_BIG: {
         id: 'LOCKTIME_IS_TOO_BIG',
         defaultMessage: 'Locktime is too big',
+    },
+    LOCKTIME_INVALID_DATETIME: {
+        id: 'LOCKTIME_INVALID_DATETIME',
+        defaultMessage: 'Invalid date format, use dd/mm/yyyy hh:mm:ss.',
     },
     LOCKTIME_BLOCKHEIGHT: {
         id: 'LOCKTIME_BLOCKHEIGHT',

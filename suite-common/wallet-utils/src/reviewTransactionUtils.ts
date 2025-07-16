@@ -16,6 +16,7 @@ import { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
+import { datetimeToLocktime } from './bitcoinUtils';
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
 import { getEvmApprovalTxData, getEvmTransactionTextSignature } from './ethUtils';
 import { getStakeType } from './ethereumStakingUtils';
@@ -107,7 +108,6 @@ const constructOldFlow = ({
     const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
 
-    const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
     const hasDestinationTag = 'destinationTag' in precomposedForm;
 
     const isBumpFeeRbf = isRbfBumpFeeTransaction(precomposedTx);
@@ -208,8 +208,15 @@ const constructOldFlow = ({
         });
     }
 
-    if (hasBitcoinLockTime && precomposedForm.bitcoinLockTime) {
-        outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
+    if (precomposedForm.bitcoinLocktimeBlockHeight) {
+        outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLocktimeBlockHeight });
+    } else if (precomposedForm.bitcoinLocktimeDatetime) {
+        const locktime = datetimeToLocktime(precomposedForm.bitcoinLocktimeDatetime);
+        if (locktime)
+            outputs.push({
+                type: 'locktime',
+                value: locktime.toString(),
+            });
     }
 
     if (precomposedForm.ethereumDataHex && !precomposedTx.token) {
@@ -255,7 +262,6 @@ const constructNewFlow = ({
     const isEvmApprovalTx = ['approve', 'revoke'].some(type => type === evmTxType);
     const { networkType, symbol } = account;
 
-    const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
     const hasDestinationTag = 'destinationTag' in precomposedForm;
 
     if (networkType === 'stellar') {
@@ -415,8 +421,15 @@ const constructNewFlow = ({
         });
     }
 
-    if (hasBitcoinLockTime && precomposedForm.bitcoinLockTime) {
-        outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
+    if (precomposedForm.bitcoinLocktimeBlockHeight) {
+        outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLocktimeBlockHeight });
+    } else if (precomposedForm.bitcoinLocktimeDatetime) {
+        const locktime = datetimeToLocktime(precomposedForm.bitcoinLocktimeDatetime);
+        if (locktime)
+            outputs.push({
+                type: 'locktime',
+                value: locktime.toString(),
+            });
     }
 
     if (networkType === 'ripple' && hasDestinationTag && precomposedForm.destinationTag) {

@@ -5,6 +5,7 @@ import {
     eachDayOfInterval,
     eachMonthOfInterval,
     eachQuarterOfInterval,
+    format,
     formatDistance,
     formatDistanceStrict,
     fromUnixTime,
@@ -100,18 +101,37 @@ export const resetTime = (ts: number, resetDay?: boolean) => {
  * - dd/MM/yyyy HH:mm:ss
  * If a component is omitted, it is assumed to be zero.
  *
- * @param {string | undefined} input
+ * @param {string} input
  * @returns {Date | undefined}
  */
-export const parseUTCdatetime = (input: string | undefined): Date | undefined => {
+export const parseUTCdatetime = (input: string): Date | undefined => {
     const formats = ['dd/MM/yyyy X', 'dd/MM/yyyy HH:mm X', 'dd/MM/yyyy HH:mm:ss X'];
 
-    for (const format of formats) {
-        const parsed = parse(input + ' Z', format, new Date()); // Force UTC timezone
+    for (const format_candidate of formats) {
+        const parsed = parse(input + ' Z', format_candidate, new Date()); // Force UTC timezone
         if (!isNaN(parsed.getTime())) {
             return parsed;
         }
     }
 
     return undefined;
+};
+
+/**
+ * Returns current UTC time in "dd/MM/yyyy HH:mm" format
+ *
+ * @returns {string}
+ */
+export const getCurrentUTCDatetime = () => {
+    const now = new Date();
+
+    const utcDate = new Date(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+    );
+
+    return format(utcDate, 'dd/MM/yyyy HH:mm');
 };

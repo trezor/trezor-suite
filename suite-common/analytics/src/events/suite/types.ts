@@ -47,7 +47,7 @@ export type TransactionCreatedEvent = {
         tokens: string;
         outputsCount: number;
         broadcast: boolean;
-        bitcoinLockTime: boolean;
+        bitcoinLocktime: boolean;
         ethereumData: boolean;
         ethereumNonce: boolean;
         destinationTag: boolean;

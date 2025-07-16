@@ -1,108 +1,113 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
+import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
+import { datetimeToLocktime } from '@suite-common/wallet-utils';
+import { Card, IconButton, Row, Select } from '@trezor/components';
 
-import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
-import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { Card, Icon, IconButton } from '@trezor/components';
-import { NumberInput } from '@trezor/product-components';
-import { spacingsPx } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-import { Translation } from 'src/components/suite';
+import { TextColumn } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
+import { LocktimeBlockHeight, inputName as blockHeightInputName } from './LocktimeBlockHeight';
+import { LocktimeDatetime, inputName as datetimeInputName } from './LocktimeDatetime';
 import { canLocktimeTxBeBroadcast } from './canLocktimeTxBeBroadcast';
 
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xs};
-`;
+const LOCKTIME_OPTIONS = [
+    {
+        label: 'Block',
+        value: 'block',
+    },
+    {
+        label: 'Date (UTC)',
+        value: 'date',
+    },
+];
 
-interface LocktimeProps {
+type LocktimeProps = {
     close: () => void;
-}
+};
 
 export const Locktime = ({ close }: LocktimeProps) => {
     const {
-        control,
-        getDefaultValue,
-        toggleOption,
         formState: { errors },
-        composeTransaction,
         network,
+        resetDefaultValue,
+        toggleOption,
         watch,
     } = useSendFormContext();
 
-    const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, network.symbol));
+    const [locktimeBlockHeight, locktimeDatetime] = watch([
+        blockHeightInputName,
+        datetimeInputName,
+    ]);
+
+    const [locktimeOption, setLocktimeOption] = useState(locktimeBlockHeight ? 'block' : 'date');
 
     const { translationString } = useTranslation();
 
-    const locale = useSelector(selectLanguage);
-
-    const options = getDefaultValue('options', []);
+    const options = watch('options');
     const broadcastEnabled = options.includes('broadcast');
-    const inputName = 'bitcoinLockTime';
-    const defaultInputValue = getDefaultValue(inputName) || '';
-    const error = errors[inputName];
+    const blockchainHeight = useSelector(state =>
+        selectBlockchainHeightBySymbol(state, network.symbol),
+    );
 
-    const locktime = watch('bitcoinLockTime');
+    const blockHeightError = errors[blockHeightInputName];
+    const datetimeError = errors[datetimeInputName];
 
     useEffect(() => {
         if (
-            error === undefined &&
+            blockHeightError === undefined &&
+            datetimeError === undefined &&
             !canLocktimeTxBeBroadcast({
-                locktime: locktime !== undefined ? Number(locktime) : undefined,
-                currentBlockHeight: blockchain.blockHeight,
+                locktimeBlockHeight: Number(locktimeBlockHeight),
+                locktimeDatetime: datetimeToLocktime(locktimeDatetime),
+                currentBlockHeight: blockchainHeight,
             }) &&
             broadcastEnabled
         ) {
             toggleOption('broadcast');
         }
+    }, [
+        blockHeightError,
+        datetimeError,
+        locktimeBlockHeight,
+        locktimeDatetime,
+        blockchainHeight,
+        broadcastEnabled,
+        toggleOption,
+    ]);
 
-        composeTransaction(inputName);
-    }, [locktime, blockchain, toggleOption, broadcastEnabled, composeTransaction, error]);
-
-    const rules = {
-        required: translationString('LOCKTIME_IS_NOT_SET'),
-        validate: (value = '') => {
-            const amountBig = new BigNumber(value);
-
-            if (amountBig.lte(0)) {
-                return translationString('LOCKTIME_IS_TOO_LOW');
-            }
-            if (!isInteger(value)) {
-                return translationString('LOCKTIME_IS_NOT_INTEGER');
-            }
-            // max unix timestamp * 2 (2147483647 * 2)
-            if (amountBig.gt(4294967294)) {
-                return translationString('LOCKTIME_IS_TOO_BIG');
-            }
-        },
-    };
+    const locktimeOptionSelect = (
+        <Select
+            options={LOCKTIME_OPTIONS}
+            defaultValue={LOCKTIME_OPTIONS.find(option => option.value === locktimeOption)}
+            onChange={v => {
+                if (v.value !== locktimeOption)
+                    resetDefaultValue(
+                        locktimeOption === 'block'
+                            ? 'bitcoinLocktimeBlockHeight'
+                            : 'bitcoinLocktimeDatetime',
+                    );
+                setLocktimeOption(v.value);
+            }}
+            isClean
+        />
+    );
 
     return (
         <Card>
-            <NumberInput
-                control={control}
-                name={inputName}
-                locale={locale}
-                inputState={getInputState(error)}
-                defaultValue={defaultInputValue}
-                rules={rules}
-                label={
-                    <Label>
-                        <Icon size={16} name="calendar" />
-                        <Translation id="LOCKTIME_SCHEDULE_SEND" />
-                    </Label>
-                }
-                labelRight={<IconButton icon="x" size="tiny" variant="tertiary" onClick={close} />}
-                bottomText={error?.message || null}
-                data-testid="locktime-input"
-            />
+            <Row justifyContent="space-between" alignItems="start">
+                <TextColumn
+                    title={translationString('LOCKTIME_ADD')}
+                    description={translationString('LOCKTIME_DESCRIPTION')}
+                />
+                <IconButton icon="x" size="small" variant="tertiary" onClick={close} />
+            </Row>
+            {locktimeOption == 'block' ? (
+                <LocktimeBlockHeight innerAddon={locktimeOptionSelect} />
+            ) : (
+                <LocktimeDatetime innerAddon={locktimeOptionSelect} />
+            )}
         </Card>
     );
 };

@@ -1,7 +1,6 @@
-import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-
 export type CanLocktimeTxBeBroadcastParams = {
-    locktime: number | undefined;
+    locktimeBlockHeight: number | undefined;
+    locktimeDatetime: number | undefined;
     currentBlockHeight: number;
 };
 
@@ -10,18 +9,9 @@ export type CanLocktimeTxBeBroadcastParams = {
  * Such transaction would be rejected by the full-node's Mempool with error: "non-final".
  */
 export const canLocktimeTxBeBroadcast = ({
-    locktime,
+    locktimeBlockHeight,
+    locktimeDatetime,
     currentBlockHeight,
-}: CanLocktimeTxBeBroadcastParams) => {
-    if (locktime === undefined) {
-        return true;
-    }
-
-    const isBlockLocktime = locktime < BTC_LOCKTIME_VALUE;
-
-    if (isBlockLocktime) {
-        return locktime <= currentBlockHeight;
-    }
-
-    return true; // Todo: validate locktime: new Date(locktime * 1000) < timestampOfTheLastBlock
-};
+}: CanLocktimeTxBeBroadcastParams) =>
+    (locktimeBlockHeight === undefined || locktimeBlockHeight <= currentBlockHeight) &&
+    (locktimeDatetime === undefined || locktimeDatetime * 1000 <= Date.now());

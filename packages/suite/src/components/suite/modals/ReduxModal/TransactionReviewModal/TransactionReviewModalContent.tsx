@@ -247,7 +247,7 @@ export const TransactionReviewModalContent = ({
                     .join(','),
                 outputsCount: precomposedForm.outputs.length,
                 broadcast: isBroadcastEnabled,
-                bitcoinLockTime: !!options.includes('bitcoinLockTime'),
+                bitcoinLocktime: !!options.includes('bitcoinLocktime'),
                 ethereumData: !!options.includes('ethereumData'),
                 ethereumNonce: !!options.includes('ethereumNonce'),
                 destinationTag: !!options.includes('destinationTag'),

@@ -10,6 +10,7 @@ import {
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
+    datetimeToLocktime,
     formatNetworkAmount,
     getBitcoinComposeOutputs,
     getUtxoOutpoint,
@@ -47,7 +48,7 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
         return BTC_RBF_SEQUENCE;
     }
 
-    if (formValues.bitcoinLockTime) {
+    if (formValues.bitcoinLocktimeBlockHeight || formValues.bitcoinLocktimeDatetime) {
         return BTC_LOCKTIME_SEQUENCE;
     }
 
@@ -262,9 +263,14 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         // transactionInfo needs some additional changes:
         const signEnhancement: Partial<SignTransaction> = {};
 
-        if (formState.bitcoinLockTime) {
-            signEnhancement.locktime = new BigNumber(formState.bitcoinLockTime).toNumber();
+        if (formState.bitcoinLocktimeBlockHeight) {
+            signEnhancement.locktime = new BigNumber(
+                formState.bitcoinLocktimeBlockHeight,
+            ).toNumber();
+        } else if (formState.bitcoinLocktimeDatetime) {
+            signEnhancement.locktime = datetimeToLocktime(formState.bitcoinLocktimeDatetime);
         }
+
         if (formState.rbfParams?.type === 'bitcoin' && formState.rbfParams?.locktime) {
             signEnhancement.locktime = formState.rbfParams.locktime;
         }
