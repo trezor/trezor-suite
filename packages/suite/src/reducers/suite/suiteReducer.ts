@@ -522,6 +522,7 @@ export const selectIsFirmwareHashCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareHash;
 export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareRevision;
+export const selectIsAutoEjectEnabled = (state: SuiteRootState) => state.suite.settings.autoEject;
 
 /**
  * Get firmware revision check error, or null if check was successful / skipped.
