@@ -12,7 +12,6 @@ import { useSendFormContext } from 'src/hooks/wallet';
 
 const Inputs = styled.div`
     display: flex;
-    place-items: end stretch;
     margin-top: ${spacingsPx.md};
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
@@ -110,7 +109,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                     defaultValue={asciiValue}
                     maxLength={formInputsMaxLength.opReturn}
                     bottomText={asciiError?.message || null}
-                    label={<Translation id="OP_RETURN" />}
+                    label={<Translation id="OP_RETURN_HUMAN" />}
                     innerRef={asciiRef}
                     {...asciiField}
                 />
@@ -121,6 +120,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                     defaultValue={hexValue}
                     maxLength={formInputsMaxLength.opReturn}
                     bottomText={hexError?.message || null}
+                    label={<Translation id="OP_RETURN_HEX" />}
                     innerRef={hexRef}
                     {...hexField}
                 />
