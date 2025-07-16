@@ -8,6 +8,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
 import { Device, DeviceState, Features, KnownDevice, StaticSessionId, UI } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
@@ -23,9 +24,14 @@ export type DeviceReducerState = {
         firmwareAuthenticity?: string[];
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
+    isDeviceAutoEjectEnabled: boolean;
 };
 
-const initialState: DeviceReducerState = { devices: [], selectedDevice: undefined };
+const initialState: DeviceReducerState = {
+    devices: [],
+    selectedDevice: undefined,
+    isDeviceAutoEjectEnabled: false,
+};
 
 export type DeviceRootState = {
     device: DeviceReducerState;
@@ -184,7 +190,10 @@ const connectDevice = (
         ...deviceCommonFields,
         state: device._state,
         useEmptyPassphrase,
-        remember: isNative() && !isViewOnlyByDefaultEnabled ? false : true,
+        remember: shouldDeviceBeRemembered({
+            isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
+            isViewOnlyByDefaultEnabled,
+        }),
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
@@ -316,6 +325,7 @@ const setDeviceState = (
     device: TrezorDevice,
     state: DeviceState,
     useEmptyPassphrase: boolean,
+    isViewOnlyByDefaultEnabled: boolean,
 ) => {
     // change only acquired devices
     if (!device.features) return;
@@ -344,8 +354,11 @@ const setDeviceState = (
     affectedDevice[0].state = state;
     affectedDevice[0].useEmptyPassphrase = useEmptyPassphrase;
     affectedDevice[0].walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
-    // TODO: On mobile, we don't want to remember the device by default, because it's not supported yet
-    affectedDevice[0].remember = isNative() ? false : true;
+
+    affectedDevice[0].remember = shouldDeviceBeRemembered({
+        isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
+        isViewOnlyByDefaultEnabled,
+    });
 };
 
 /**
@@ -447,11 +460,7 @@ const resetAuthFailed = (draft: DeviceReducerState) => {
  * @returns
  */
 // TODO: this now can only be used for imported device!
-const createInstance = (
-    draft: DeviceReducerState,
-    device: TrezorDevice,
-    isViewOnlyByDefaultEnabled: boolean,
-) => {
+const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
 
@@ -461,7 +470,7 @@ const createInstance = (
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
-        remember: isViewOnlyByDefaultEnabled,
+        remember: true,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
         state: isPortfolioTrackerDevice ? device.state : undefined,
@@ -626,7 +635,13 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             changeDevice(state, payload, { connected: true, available: true });
         })
         .addCase(deviceActions.setDeviceState, (state, { payload }) => {
-            setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
+            setDeviceState(
+                state,
+                payload.device,
+                payload.state,
+                payload.useEmptyPassphrase,
+                payload.isViewOnlyByDefaultEnabled,
+            );
         })
         .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
             addAuthorizedDevice(state, payload.device);
@@ -691,7 +706,10 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             state.devicesWithFailedEntropyCheck.push(payload);
         })
         .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
-            createInstance(state, payload.device, payload.isViewOnlyByDefaultEnabled);
+            createInstance(state, payload.device);
+        })
+        .addCase(deviceActions.toggleIsDeviceAutoEjectEnabled, state => {
+            state.isDeviceAutoEjectEnabled = !state.isDeviceAutoEjectEnabled;
         })
         .addMatcher(
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),

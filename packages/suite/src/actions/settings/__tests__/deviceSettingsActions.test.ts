@@ -23,6 +23,7 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     device: {
         devices: state.device?.devices ?? [DEVICE],
         selectedDevice: DEVICE,
+        isDeviceAutoEjectEnabled: false,
     },
     router: {},
 });

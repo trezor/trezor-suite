@@ -236,7 +236,7 @@ describe('Storage actions', () => {
     it('should store remembered device', async () => {
         let store = mockStore(
             getInitialState({
-                device: { devices: [dev1, dev2, dev2Instance1] },
+                device: { devices: [dev1, dev2, dev2Instance1], isDeviceAutoEjectEnabled: false },
                 wallet: {
                     accounts: [acc1, acc2],
                     send: {
@@ -326,6 +326,7 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2],
+                    isDeviceAutoEjectEnabled: false,
                 },
                 wallet: {
                     accounts: [acc1, acc2],
@@ -368,6 +369,7 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1Connected],
+                    isDeviceAutoEjectEnabled: false,
                 },
                 wallet: {
                     accounts: [acc1],
@@ -402,7 +404,7 @@ describe('Storage actions', () => {
 
         const store = mockStore(
             getInitialState({
-                device: { devices: [dev1] },
+                device: { devices: [dev1], isDeviceAutoEjectEnabled: false },
                 wallet: {
                     accounts: [acc1, accLtc],
                     graph: {
@@ -451,6 +453,7 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [devNotRemembered],
+                    isDeviceAutoEjectEnabled: false,
                 },
             }),
         );

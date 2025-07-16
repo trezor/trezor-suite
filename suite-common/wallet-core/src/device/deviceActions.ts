@@ -23,7 +23,7 @@ const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectAction
 
 const createDeviceInstance = createAction(
     `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
-    (payload: { device: TrezorDevice; isViewOnlyByDefaultEnabled: boolean }) => ({ payload }),
+    (payload: { device: TrezorDevice }) => ({ payload }),
 );
 
 const connectUnacquiredDevice = createAction(
@@ -41,6 +41,7 @@ const setDeviceState = createAction(
         device: TrezorDevice;
         state: DeviceState & { staticSessionId: StaticSessionId };
         useEmptyPassphrase: boolean;
+        isViewOnlyByDefaultEnabled: boolean;
     }) => ({
         payload,
     }),
@@ -125,6 +126,10 @@ const setThpCredentials = createAction(
     }),
 );
 
+const toggleIsDeviceAutoEjectEnabled = createAction(
+    `${DEVICE_MODULE_PREFIX}/toggleAutoEjectDevices`,
+);
+
 export const deviceActions = {
     connectDevice,
     createDeviceInstance,
@@ -145,4 +150,5 @@ export const deviceActions = {
     removeButtonRequests,
     setEntropyCheckFail,
     setThpCredentials,
+    toggleIsDeviceAutoEjectEnabled,
 };

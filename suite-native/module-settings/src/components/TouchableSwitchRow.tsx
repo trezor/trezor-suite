@@ -24,6 +24,12 @@ const contentStyle = prepareNativeStyle(_ => ({
     maxWidth: '75%',
 }));
 
+export const TouchableSwitchRowDescription = ({ children }: { children: ReactNode }) => (
+    <Text variant="hint" color="textSubdued">
+        {children}
+    </Text>
+);
+
 export const TouchableSwitchRow = ({
     isChecked,
     onChange,

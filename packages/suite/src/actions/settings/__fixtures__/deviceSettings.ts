@@ -119,6 +119,7 @@ const fixture: Feature[] = [
                         state: '1stTestnetAddress@device_2_id:0',
                     }),
                 ],
+                isDeviceAutoEjectEnabled: false,
             },
         },
         action: () => wipeDeviceThunk(),

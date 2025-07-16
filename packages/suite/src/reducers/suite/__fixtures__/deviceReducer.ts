@@ -345,6 +345,7 @@ const disconnect = [
                     path: '1',
                 }),
             ],
+            isDeviceAutoEjectEnabled: false,
         },
         actions: [
             {
@@ -360,6 +361,7 @@ const disconnect = [
         description: 'Disconnect device using device_id',
         initialState: {
             devices: [SUITE_DEVICE],
+            isDeviceAutoEjectEnabled: false,
         },
         actions: [
             {
@@ -379,6 +381,7 @@ const disconnect = [
                     state: '1stTestnet@device_id:0',
                 }),
             ],
+            isDeviceAutoEjectEnabled: false,
         },
         actions: [
             {
@@ -415,6 +418,7 @@ const disconnect = [
                     state: '1stTestnet@device_id_2:0',
                 }),
             ],
+            isDeviceAutoEjectEnabled: false,
         },
         actions: [
             {
@@ -458,6 +462,7 @@ const disconnect = [
                     path: '1',
                 }),
             ],
+            isDeviceAutoEjectEnabled: false,
         },
         actions: [
             {
@@ -486,6 +491,7 @@ const disconnect = [
                     path: '1',
                 }),
             ],
+            isDeviceAutoEjectEnabled: false,
         },
         actions: [
             {
@@ -500,7 +506,7 @@ const disconnect = [
     },
     {
         description: `Disconnect device which doesn't exists in reducer`,
-        initialState: { devices: [] },
+        initialState: { devices: [], isDeviceAutoEjectEnabled: false },
         actions: [
             {
                 type: DEVICE.DISCONNECT,

@@ -30,17 +30,17 @@ import TrezorConnect, {
     StaticSessionId,
     UI,
 } from '@trezor/connect';
-import { getEnvironment, isNative } from '@trezor/env-utils';
+import { getEnvironment } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
-import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
+import { ConnectDeviceSettings, DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import {
     selectDeviceByBaseStaticSessionId,
     selectDeviceById,
     selectDevices,
-    selectIsPortfolioTrackerDevice,
+    selectPhysicalDevices,
     selectSelectedDevice,
 } from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -341,23 +341,14 @@ export const createImportedDeviceThunk = createThunk<
     { rejectValue: { error: 'already-created' } }
 >(
     `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
-    (_, { dispatch, getState, rejectWithValue, fulfillWithValue, extra }) => {
+    (_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
         const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
         if (device) return rejectWithValue({ error: 'already-created' });
 
-        const isNativeViewOnlyByDefaultEnabled =
-            extra.selectors.selectIsViewOnlyByDefaultEnabled(getState());
-        const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(getState());
-
         dispatch(
             deviceActions.createDeviceInstance({
                 device: portfolioTrackerDevice,
-                isViewOnlyByDefaultEnabled:
-                    // Note: temporary condition until view only by default is not controlled by feature flag on native
-                    isNative() && !isNativeViewOnlyByDefaultEnabled && !isPortfolioTrackerDevice
-                        ? false
-                        : true,
             }),
         );
 
@@ -568,5 +559,30 @@ export const wipeDeviceThunk = createThunk(
 
             return rejectWithValue(result.payload.error);
         }
+    },
+);
+
+export const toggleAutoEjectThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
+    (_, { dispatch, getState }) => {
+        const physicalDevices = selectPhysicalDevices(getState());
+        dispatch(deviceActions.toggleIsDeviceAutoEjectEnabled());
+
+        physicalDevices.forEach(wallet => {
+            if (!wallet.connected && wallet.remember) {
+                const settings: ConnectDeviceSettings = {
+                    defaultWalletLoading: 'standard',
+                };
+
+                dispatch(deviceActions.forgetDevice({ device: wallet, settings }));
+            } else {
+                dispatch(
+                    deviceActions.rememberDevice({
+                        device: wallet,
+                        remember: !wallet.remember,
+                    }),
+                );
+            }
+        });
     },
 );

@@ -29,6 +29,7 @@ const usedIcons = [
     'arrowCounterClockwise',
     'article',
     'backspace',
+    'eject',
     'bank',
     'bluetooth',
     'bluetoothConnected',
