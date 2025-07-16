@@ -1,6 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { BASE_CURRENCY_ZERO, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { AmountUnit, BASE_CURRENCY_ZERO, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite';
@@ -8,7 +8,10 @@ import { HiddenPlaceholder } from 'src/components/suite';
 import { BigAmountValue } from './BigAmountValue';
 import { useFiatFromCryptoValue } from '../../hooks/suite/useFiatFromCryptoValue';
 
-type UseFiatAmountProps = { amount: string; symbol?: NetworkSymbol };
+type UseFiatAmountProps = {
+    amount: string | AmountUnit; // Todo: `string` only for back compatibility
+    symbol?: NetworkSymbol;
+};
 
 type FiatHeaderProps = {
     size: 'large' | 'medium';

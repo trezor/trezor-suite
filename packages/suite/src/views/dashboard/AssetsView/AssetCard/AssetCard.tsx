@@ -8,6 +8,7 @@ import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
+import { AmountUnit } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     Card,
@@ -80,7 +81,7 @@ const FailedContainer = styled.div`
 
 type AmountComponentProps = {
     failed: boolean;
-    cryptoValue: string;
+    cryptoValue: AmountUnit;
     symbol: NetworkSymbol;
     localCurrency: BaseCurrencyCode;
     shallDisplayBaseCurrency: boolean;
@@ -116,7 +117,7 @@ const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountC
 type AssetCardProps = {
     network: Network;
     failed: boolean;
-    cryptoValue: string;
+    cryptoValue: AmountUnit;
     assetsFiatBalances: AssetFiatBalance[];
     stakingAccounts: Account[];
     assetTokens: TokenInfo[];

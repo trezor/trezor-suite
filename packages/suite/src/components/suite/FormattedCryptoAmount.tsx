@@ -8,6 +8,7 @@ import {
     getNetworkOptional,
 } from '@suite-common/wallet-config';
 import {
+    AmountUnit,
     formatCoinBalance,
     localizeNumber,
     networkAmountToSmallestUnit,
@@ -30,7 +31,7 @@ const Value = styled.span<{ $isTabular: boolean }>`
 `;
 
 export interface FormattedCryptoAmountProps {
-    value?: string | number;
+    value?: string | number | AmountUnit; // Todo: remove `string | number`, its for Back Compatibility only
     symbol?: NetworkSymbolExtended;
     contractAddress?: string | null;
     isBalance?: boolean;

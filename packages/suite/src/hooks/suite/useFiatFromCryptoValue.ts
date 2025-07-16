@@ -1,12 +1,12 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey, selectLocalCurrency } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 interface CommonOwnProps {
-    amount: string;
+    amount: string | AmountUnit; // Todo: remove `string` only for back compatibility
     symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
 }
