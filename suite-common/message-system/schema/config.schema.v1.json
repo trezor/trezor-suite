@@ -233,7 +233,7 @@
             "title": "Localization",
             "description": "A multilingual text localization.",
             "type": "object",
-            "required": ["en", "es", "cs", "de", "fr", "it", "pt", "tr", "ru", "ja", "uk", "hu"],
+            "required": ["en", "es", "cs", "de", "fr", "pt"],
             "properties": {
                 "en": {
                     "type": "string"
@@ -244,31 +244,13 @@
                 "cs": {
                     "type": "string"
                 },
-                "ru": {
-                    "type": "string"
-                },
-                "ja": {
-                    "type": "string"
-                },
                 "de": {
                     "type": "string"
                 },
                 "fr": {
                     "type": "string"
                 },
-                "it": {
-                    "type": "string"
-                },
                 "pt": {
-                    "type": "string"
-                },
-                "tr": {
-                    "type": "string"
-                },
-                "uk": {
-                    "type": "string"
-                },
-                "hu": {
                     "type": "string"
                 }
             },

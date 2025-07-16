@@ -377,15 +377,9 @@ export interface Localization {
     en: string;
     es: string;
     cs: string;
-    ru: string;
-    ja: string;
     de: string;
     fr: string;
-    it: string;
     pt: string;
-    tr: string;
-    uk: string;
-    hu: string;
     [k: string]: string;
 }
 /**
