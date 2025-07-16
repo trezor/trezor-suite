@@ -50,8 +50,7 @@ export const checkFirmwareHashWithRetries = async (context: Context): Promise<vo
 
         // if it succeeded only after a retry, and there was an `errorPayload` previously, we want to pass that information to suite
         if (result.success && lastErrorPayload) {
-            // TODO remove `successOnAttempt`, it duplicates result.attemptCount
-            result.warningPayload = { lastErrorPayload, successOnAttempt: result.attemptCount };
+            result.warningPayload = { lastErrorPayload };
         }
     }
 };

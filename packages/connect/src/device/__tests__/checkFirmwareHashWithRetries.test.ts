@@ -107,7 +107,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
         expect(device.setAuthenticityChecks).toHaveBeenCalledWith({
             success: true,
             attemptCount: 2,
-            warningPayload: { lastErrorPayload: 'first bug', successOnAttempt: 2 },
+            warningPayload: { lastErrorPayload: 'first bug' },
         });
     });
 
