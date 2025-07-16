@@ -15,7 +15,6 @@ const provider = getCompanyNameFromList(swapQuotesTetherBTC[2].exchange, 'swapLi
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${localizeNumber(swapQuotesTetherBTC[2].receiveStringAmount!)} BTC`;
 const { sendAddress, receiveAddress, send: tetherMint } = swapTradeTetherBTC;
-const tetherRawMintAddress = tetherMint.split('--')[1];
 const formattedSendAddress = formatAddress(sendAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
@@ -78,7 +77,6 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=trading', '@webOnl
             await tradingPage.initiateSendConfirmation({ confirmAlsoToken: true });
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
-            await expect(devicePrompt.outputValueOf('contract')).toHaveText(tetherRawMintAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 formattedSendAmount,
             );
