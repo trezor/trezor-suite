@@ -12,7 +12,7 @@ export const DevicesManagement = () => {
     const deviceGroups = useSelector(selectPhysicalDevicesGrouppedById);
 
     return (
-        <VStack spacing="sp12">
+        <VStack spacing="sp16">
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
                 const deviceModel = firstDevice.features?.internal_model;
