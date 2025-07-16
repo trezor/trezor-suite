@@ -26,6 +26,11 @@ export interface CommonParams {
      * todo: this should be moved to another argument instead of mixing this with params
      */
     __info?: boolean;
+    /**
+     * internal flag, only effective if `__info` is set to true.
+     * if set to true, the method will return precomposed result, which is used in suite
+     */
+    __precomposed?: boolean;
 }
 
 export type Params<T> = CommonParams & T & { bundle?: undefined };

@@ -346,7 +346,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     abstract init(): void;
 
-    async getMethodInfo(): Promise<MethodInfo> {
+    getMethodInfo(): MethodInfo {
         return {
             useUi: this.useUi,
             useDevice: this.useDevice,
@@ -355,7 +355,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             requiredPermissions: this.requiredPermissions,
             info: this.info,
             confirmation: this.confirmation,
-            precomposed: await this.payloadToPrecomposed(),
+            precomposed: undefined, // will be filled in only if method.payloadToPrecomposed is implemented and both __info and __precompose param are sent
             // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
         };
     }

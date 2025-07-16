@@ -136,6 +136,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                 const methodInfo = await TrezorConnect.ethereumSignTransaction({
                     ...modifiedPayload,
                     __info: true,
+                    __precomposed: true,
                 });
                 if (!methodInfo.success) {
                     throw methodInfo.payload;

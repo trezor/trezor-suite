@@ -39,6 +39,7 @@ export const connectPopupCallThunkInner = createThunk<
             const methodInfo = await TrezorConnect[method]({
                 ...payload,
                 __info: true,
+                __precomposed: true,
             });
             if (!methodInfo.success) {
                 throw methodInfo.payload;
