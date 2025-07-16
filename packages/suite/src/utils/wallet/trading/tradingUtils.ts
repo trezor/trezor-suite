@@ -132,13 +132,15 @@ export const getComposeAddressPlaceholder = async (
             // as a fallback, use the change address of current account
             return account.addresses?.change[0].address;
         }
+        case 'ethereum':
+            // ethereum address is not used as it breaks calculating fee logic;
+            return '';
         case 'cardano':
             // it is not possible to use change address of the current account as the placeholder, some exchanges use Byron addresses
             // which need more fees than Shelley addresses used in the Suite, using dummy Byron address for the placeholder
             // return '37btjrVyb4KDXBNC4haBVPCrro8AQPHwvCMp3RFhhSVWwfFmZ6wwzSK6JK1hY6wHNmtrpTf1kdbva8TCneM2YsiXT7mrzT21EacHnPpz5YyUdj64na';
             return '';
         case 'solana':
-        case 'ethereum':
         case 'ripple':
         case 'stellar':
             return account.descriptor;

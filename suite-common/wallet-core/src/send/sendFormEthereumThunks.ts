@@ -23,9 +23,12 @@ import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     getAccountIdentity,
+    getApprovalComposeOutput,
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
+    isApprovalFlowSupported,
+    isEvmApprovalTx,
     isPending,
     isSentTransaction,
     prepareEthereumTransaction,
@@ -40,6 +43,7 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectSelectedDevice } from '../device/deviceSelectors';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
 export const calculate = (
@@ -143,11 +147,27 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { dispatch, rejectWithValue, getState }) => {
+        const device = selectSelectedDevice(getState());
+
         const { account, network, feeInfo } = composeContext;
         const { ethereumDataHex } = formState;
 
-        const composedOutput = getExternalComposeOutput(formState, account, network);
+        const isApproveTx = isEvmApprovalTx(ethereumDataHex);
+        const contract = isApprovalFlowSupported(device)
+            ? (formState.outputs[0].token ?? undefined)
+            : formState.outputs[0].address;
+
+        if (isApproveTx && !contract) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Unable to compose output.',
+            });
+        }
+
+        const composedOutput = isApproveTx
+            ? getApprovalComposeOutput(contract, account, network)
+            : getExternalComposeOutput(formState, account, network);
 
         if (!composedOutput)
             return rejectWithValue({
@@ -159,6 +179,16 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         const { availableBalance } = account;
         const { address, amount } = formState.outputs[0];
 
+        const ethereumEstimateFeeParams =
+            isApproveTx && contract
+                ? getEthereumEstimateFeeParams(contract, '0', undefined, formState.ethereumDataHex)
+                : getEthereumEstimateFeeParams(
+                      address || account.descriptor,
+                      amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
+                      tokenInfo,
+                      formState.ethereumDataHex,
+                  );
+
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
@@ -168,13 +198,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 blocks: [2],
                 specific: {
                     from: account.descriptor,
-                    ...getEthereumEstimateFeeParams(
-                        address || account.descriptor,
-                        // if amount is not set (set-max case) use max available balance
-                        amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
-                        tokenInfo,
-                        formState.ethereumDataHex,
-                    ),
+                    ...ethereumEstimateFeeParams,
                 },
             },
         });

@@ -174,6 +174,22 @@ export const TradingFormOffer = () => {
         areSatsUsed = !!shouldSendInSats;
     }
 
+    const onOpenApproveModal = () => {
+        setIsApproveModalOpen(true);
+
+        if (isTradingExchangeContext(context)) {
+            context.setIsApproval(true);
+        }
+    };
+
+    const onCloseApproveModal = () => {
+        setIsApproveModalOpen(false);
+
+        if (isTradingExchangeContext(context)) {
+            context.setIsApproval(false);
+        }
+    };
+
     const amountTooHigh = isAmountTooHigh({
         amount,
         contractAddress: tokenAddress,
@@ -295,7 +311,7 @@ export const TradingFormOffer = () => {
 
             {requiresTokenApproval && bestScoredQuote && !isLoading ? (
                 <TradingFormApproval
-                    openApproveModal={() => setIsApproveModalOpen(true)}
+                    openApproveModal={onOpenApproveModal}
                     approvalType={approvalType}
                     setApprovalType={setApprovalType}
                     isManuallyApproved={isManuallyApproved}
@@ -320,10 +336,7 @@ export const TradingFormOffer = () => {
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
 
             {isApproveModalOpen && (
-                <ApproveModal
-                    onCancel={() => setIsApproveModalOpen(false)}
-                    setApprovalType={setApprovalType}
-                />
+                <ApproveModal onCancel={onCloseApproveModal} setApprovalType={setApprovalType} />
             )}
         </Column>
     );

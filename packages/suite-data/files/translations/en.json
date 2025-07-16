@@ -939,7 +939,7 @@
   "TR_EVM_EXPLANATION_TITLE": "{network} is its own network",
   "TR_EVM_MAX_FEE_DESC": "The maximum fee you're willing to pay network validators to process your transaction. A higher fee may speed up confirmation times, though you'll only pay what's needed if the actual fee is lower.",
   "TR_EXCEEDS_MAX": "Exceeds max length",
-  "TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING": "Approve {displaySymbol} spending",
+  "TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING": "Approve token spending",
   "TR_EXCHANGE_APPROVAL_CONFIRMING": "Waiting for the blockchain to confirm the approval transaction.",
   "TR_EXCHANGE_APPROVAL_DATA": "Approval transaction data",
   "TR_EXCHANGE_APPROVAL_ERROR": "Failed to load approval status.",

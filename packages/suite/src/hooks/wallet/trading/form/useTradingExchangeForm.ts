@@ -6,6 +6,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     type TradingExchangeAmountLimitProps,
@@ -122,6 +123,7 @@ export const useTradingExchangeForm = ({
         isLoading,
     });
 
+    const [isApproval, setIsApproval] = useState<boolean>(false);
     const [approvalInitiated, setApprovalInitiated] = useState<boolean>(false);
     const [isFetchingApprovalStatus, setIsFetchingApprovalStatus] = useState<boolean>(false);
 
@@ -769,6 +771,22 @@ export const useTradingExchangeForm = ({
         await handleChange();
     };
 
+    // save approval tx data for approval fee estimation
+    useEffect(() => {
+        if (isApproval && selectedQuote?.status === 'APPROVAL_REQ' && selectedQuote?.dexTx) {
+            setValue('ethereumDataHex', selectedQuote?.dexTx.data);
+            setValue(TRADING_FORM_OUTPUT_ADDRESS, selectedQuote?.dexTx.to);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isApproval, selectedQuote]);
+
+    // refresh fees when user opens/closes approval modal
+    useEffect(() => {
+        composeRequest();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isApproval]);
+
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
@@ -907,5 +925,7 @@ export const useTradingExchangeForm = ({
         refreshQuotes,
         isScheduledQuotesRefresh,
         resetSelectedOffer,
+        isApproval,
+        setIsApproval,
     };
 };
