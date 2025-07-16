@@ -535,12 +535,28 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SEND_TO',
     },
     TR_EXCHANGE_APPROVAL_ERROR: {
-        defaultMessage: 'Failed to load approval status.',
+        defaultMessage: 'Failed to load approval status',
         id: 'TR_EXCHANGE_APPROVAL_ERROR',
     },
     TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING: {
-        defaultMessage: 'Approve {displaySymbol} spending',
+        defaultMessage: 'Approve token spending',
         id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING',
+    },
+    TR_EXCHANGE_APPROVAL_APPROVE_TOKEN: {
+        defaultMessage: 'Approve {displaySymbol}',
+        id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN',
+    },
+    TR_EXCHANGE_APPROVAL_LIMIT: {
+        defaultMessage: 'Approval limit',
+        id: 'TR_EXCHANGE_APPROVAL_LIMIT',
+    },
+    TR_EXCHANGE_APPROVAL_LIMIT_MINIMAL: {
+        defaultMessage: 'Minimal',
+        id: 'TR_EXCHANGE_APPROVAL_LIMIT_MINIMAL',
+    },
+    TR_EXCHANGE_APPROVAL_LIMIT_INFINITE: {
+        defaultMessage: 'Infinite',
+        id: 'TR_EXCHANGE_APPROVAL_LIMIT_INFINITE',
     },
     TR_EXCHANGE_APPROVAL_FORM_REQUIRED: {
         defaultMessage: 'Approval is required',

@@ -401,6 +401,29 @@ export const getBitcoinComposeOutputs = (
     return result;
 };
 
+export const getApprovalComposeOutput = (
+    contract: string | undefined,
+    account: Account,
+    network: Network,
+): { output: ExternalOutput; tokenInfo: TokenInfo | undefined; decimals: number } | undefined => {
+    if (!contract) {
+        return undefined;
+    }
+
+    const tokenInfo = findToken(account.tokens, contract);
+    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
+
+    return {
+        output: {
+            address: contract,
+            amount: '0',
+            type: 'payment',
+        },
+        tokenInfo,
+        decimals,
+    };
+};
+
 // ETH/XRP composeTransaction, only one Output is used
 // returns { output, tokenInfo, decimals }
 export const getExternalComposeOutput = (

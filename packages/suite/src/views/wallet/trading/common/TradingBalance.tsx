@@ -83,7 +83,7 @@ export const TradingBalance = ({
             </HiddenPlaceholder>
             {stringBalance && fiatAmount && symbol && stringBalance !== '0' && (
                 <>
-                    {' '}
+                    <>&nbsp;≈&nbsp;</>
                     <BaseCurrencyValue
                         amount={stringBalance}
                         symbol={symbol}

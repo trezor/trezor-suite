@@ -6,7 +6,6 @@ import { FiatCurrencyCode } from 'invity-api';
 
 import {
     TRADING_FORM_CRYPTO_TOKEN,
-    TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
@@ -175,8 +174,9 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
         if (!account || isSameCryptoSelected) return;
 
-        const { address, token } = getAddressAndTokenFromAccountOptionsGroupProps(selected);
-        setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
+        const { token } = getAddressAndTokenFromAccountOptionsGroupProps(selected);
+
+        // setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
         setValue(TRADING_FORM_CRYPTO_TOKEN, token);
         setValue(TRADING_FORM_OUTPUT_MAX, undefined);
         setValue(TRADING_FORM_OUTPUT_FIAT, '');

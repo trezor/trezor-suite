@@ -160,6 +160,7 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
         let response: CoinSpecificComposeResponse | undefined;
 
         const { networkType } = account;
+
         if (networkType === 'bitcoin') {
             response = await dispatch(
                 composeBitcoinTransactionFeeLevelsThunk({
