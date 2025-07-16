@@ -16,6 +16,9 @@ import {
 } from '@suite-common/wallet-core';
 import { RatesByKey } from '@suite-common/wallet-types';
 import {
+    AMOUNT_UNIT_ZERO,
+    AmountUnit,
+    asAmountUnit,
     getFiatRateKey,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
@@ -58,7 +61,7 @@ const GridWrapper = styled.div`
 export type AssetData = {
     network: Network;
     failed: boolean;
-    assetNativeCryptoBalance: string;
+    assetNativeCryptoBalance: AmountUnit;
     stakingAccounts: Account[];
     assetTokens: TokenInfo[];
     isStakeNetwork?: boolean;
@@ -123,10 +126,15 @@ export const AssetsView = () => {
     const assetsData: AssetData[] = assetSymbols.map((symbol): AssetData => {
         const network = getNetwork(symbol);
 
-        const assetNativeCryptoBalance = assets[symbol]?.reduce(
-            (total, account) => total.plus(account.formattedBalance),
-            new BigNumber(0),
-        );
+        const assetNativeCryptoBalance =
+            assets[symbol] !== undefined
+                ? asAmountUnit(
+                      assets[symbol].reduce(
+                          (total, account) => total.plus(account.formattedBalance),
+                          new BigNumber(0),
+                      ),
+                  )
+                : undefined;
 
         const assetTokens = assets[symbol]?.reduce((allTokens: TokenInfo[], account) => {
             if (account.tokens) {
@@ -142,8 +150,8 @@ export const AssetsView = () => {
             network,
             failed: !!assetFailed,
             assetNativeCryptoBalance: assetNativeCryptoBalance
-                ? assetNativeCryptoBalance.toFixed()
-                : '0',
+                ? assetNativeCryptoBalance
+                : AMOUNT_UNIT_ZERO,
             assetTokens: assetTokens?.length ? assetTokens : [],
             stakingAccounts: accounts.filter(
                 account =>

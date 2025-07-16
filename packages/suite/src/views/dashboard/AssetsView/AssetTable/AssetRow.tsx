@@ -7,7 +7,7 @@ import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
@@ -38,7 +38,7 @@ import { handleTokensAndStakingData } from '../assetsViewUtils';
 export interface AssetTableRowProps {
     network: Network;
     failed: boolean;
-    assetNativeCryptoBalance: string;
+    assetNativeCryptoBalance: AmountUnit;
     stakingAccounts: Account[];
     assetTokens: TokenInfo[];
     isStakeNetwork?: boolean;
@@ -157,14 +157,16 @@ export const AssetRow = memo(
                                     symbol={symbol}
                                 />
 
-                                <Text typographyStyle="hint" color={theme.textSubdued}>
-                                    <AmountUnitSwitchWrapper symbol={symbol}>
-                                        <CoinBalance
-                                            value={assetNativeCryptoBalance}
-                                            symbol={symbol}
-                                        />
-                                    </AmountUnitSwitchWrapper>
-                                </Text>
+                                {!assetNativeCryptoBalance.eq(0) && (
+                                    <Text typographyStyle="hint" color={theme.textSubdued}>
+                                        <AmountUnitSwitchWrapper symbol={symbol}>
+                                            <CoinBalance
+                                                value={assetNativeCryptoBalance}
+                                                symbol={symbol}
+                                            />
+                                        </AmountUnitSwitchWrapper>
+                                    </Text>
+                                )}
                             </Column>
                         ) : (
                             <Text variant="destructive" typographyStyle="hint" textWrap="nowrap">
