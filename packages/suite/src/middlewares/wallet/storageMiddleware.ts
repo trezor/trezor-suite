@@ -35,6 +35,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { FORM_DRAFT, GRAPH } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
+import { selectIsAutoEjectEnabled } from 'src/reducers/suite/suiteReducer';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
@@ -153,10 +154,12 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (deviceActions.rememberDevice.match(action)) {
+                const isAutoEjectEnabled = selectIsAutoEjectEnabled(api.getState());
+
                 api.dispatch(
                     storageActions.rememberDevice(
                         action.payload.device,
-                        action.payload.remember,
+                        isAutoEjectEnabled ? false : action.payload.remember,
                         action.payload.forceRemember,
                     ),
                 );
@@ -185,7 +188,13 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (deviceActions.updateSelectedDevice.match(action)) {
-                if (isDeviceRemembered(action.payload) && action.payload?.mode === 'normal') {
+                const isAutoEjectEnabled = selectIsAutoEjectEnabled(api.getState());
+
+                if (
+                    isDeviceRemembered(action.payload) &&
+                    action.payload?.mode === 'normal' &&
+                    !isAutoEjectEnabled
+                ) {
                     storageActions.saveDevice(action.payload);
                 }
             }
@@ -242,6 +251,19 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveWalletSettings());
                     break;
 
+                case SUITE.SET_AUTO_EJECT: {
+                    if (action?.payload === true) {
+                        const devices = selectDevices(api.getState());
+
+                        devices.forEach(device => {
+                            if (device.features) {
+                                api.dispatch(storageActions.forgetDevice(device));
+                            }
+                        });
+                    }
+                    api.dispatch(storageActions.saveSuiteSettings());
+                    break;
+                }
                 case SUITE.SET_LANGUAGE:
                 case SUITE.SET_FLAG:
                 case SUITE.SET_DEBUG_MODE:
@@ -251,7 +273,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_ADDRESS_DISPLAY_TYPE:
                 case SUITE.SET_DEFAULT_WALLET_LOADING:
                 case SUITE.SET_AUTODETECT:
-                case SUITE.SET_AUTO_EJECT:
                 case SUITE.SET_SIDEBAR_WIDTH:
                 case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
