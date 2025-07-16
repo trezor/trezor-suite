@@ -207,7 +207,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                 "category": "banner",
                 /*
                 - Message in language of Suite app is shown to a user.
-                - Currently 'en', 'es', 'cs', 'ru', 'ja' are supported.
+                - Only official languages are required, community are optional
                 */
                 "content": {
                     "en": "New Trezor firmware is available!",
