@@ -91,10 +91,10 @@ impl serde::Serialize for TrezorDevice {
     }
 }
 
-const MANUFACTURER_DATA: u16 = 65535;
-pub const SERVICE_UUID: Uuid = uuid!("8c000001-a59b-4d58-a9ad-073df69fa1b1");
-pub const CHARACTERISTIC_RX: Uuid = uuid!("8c000002-a59b-4d58-a9ad-073df69fa1b1");
-pub const CHARACTERISTIC_TX: Uuid = uuid!("8c000003-a59b-4d58-a9ad-073df69fa1b1");
+const MANUFACTURER_DATA: u16 = 3881; // trezor-firmware CONFIG_BT_COMPANY_ID=0x0F29
+pub const SERVICE_UUID: Uuid = uuid!("8c000001-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_VAL
+pub const CHARACTERISTIC_RX: Uuid = uuid!("8c000002-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_TX_VAL
+pub const CHARACTERISTIC_TX: Uuid = uuid!("8c000003-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_RX_VAL
 
 impl TrezorDevice {
     pub async fn new(peripheral: Peripheral) -> Result<Self, Box<dyn Error>> {
