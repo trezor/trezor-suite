@@ -208,16 +208,13 @@ Structure of config, types and optionality of specific keys can be found in the 
                 /*
                 - Message in language of Suite app is shown to a user.
                 - Currently 'en', 'es', 'cs', 'ru', 'ja' are supported.
-                - 'en-GB' is used for backward compatibility and should match value of 'en'.
                 */
                 "content": {
-                    "en-GB": "New Trezor firmware is available!",
                     "en": "New Trezor firmware is available!",
                     "de": "Neue Trezor Firmware ist verfügbar!"
                 },
                 // optional headline following the language structure of content
                 "headline": {
-                    "en-GB": "Update your Trezor",
                     "en": "Update your Trezor",
                     "de": "Neue"
                 },
@@ -237,7 +234,6 @@ Structure of config, types and optionality of specific keys can be found in the 
                     - Label of call to action button shown to a user.
                     */
                     "label": {
-                        "en-GB": "Update now",
                         "en": "Update now",
                         "de": "Jetzt aktualisieren"
                     }
@@ -245,7 +241,6 @@ Structure of config, types and optionality of specific keys can be found in the 
                 // Used only for modals. (To be implemented)
                 "modal": {
                     "title": {
-                        "en-GB": "Update now",
                         "en": "Update now",
                         "de": "Jetzt aktualisieren"
                     },
