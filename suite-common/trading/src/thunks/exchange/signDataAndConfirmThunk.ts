@@ -73,10 +73,15 @@ export const signDataAndConfirmThunk = createThunk(
 
         dispatch(tradingActions.setModalAccountKey(account.key));
         const result = await TrezorConnect.ethereumSignTypedData({
-            device,
             path: account.path,
             metamask_v4_compat: false,
             data: typedData,
+            device: {
+                path: device?.path,
+                instance: device?.instance,
+                state: device?.state,
+            },
+            useEmptyPassphrase: device?.useEmptyPassphrase,
         });
 
         if (!result.success) {
