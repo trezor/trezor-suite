@@ -6,6 +6,7 @@ import { ConnectionDot } from '@suite-native/device-manager';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
+import { AutoEjectSwitch } from './AutoEjectSwitch';
 import { WalletRow } from './WalletRow';
 
 export const DevicesManagement = () => {
@@ -13,6 +14,7 @@ export const DevicesManagement = () => {
 
     return (
         <VStack spacing="sp16">
+            <AutoEjectSwitch />
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
                 const deviceModel = firstDevice.features?.internal_model;

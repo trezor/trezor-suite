@@ -17,7 +17,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    device: { devices: device?.devices || [] },
+    device: { devices: device?.devices || [], isDeviceAutoEjectEnabled: false },
     wallet: {
         settings: {
             enabledNetworks: [],

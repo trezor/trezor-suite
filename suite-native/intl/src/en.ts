@@ -1005,6 +1005,23 @@ export const en = {
                 standard: 'Standard wallet',
                 defaultPassphrase: 'Passphrase wallet #{index}',
             },
+            autoEject: {
+                switch: {
+                    title: 'Auto eject',
+                    description: 'Eject all wallets automatically after unplugging Trezor',
+                    alert: {
+                        titleNoConnectedTrezor: 'Enabling auto eject will eject all wallets',
+                        titleConnectedTrezor: ' after disconnecting Trezor',
+                        description:
+                            'You will need to reconnect your wallets to see your balances again.',
+                        primaryButtonTitle: 'Enable auto eject',
+                    },
+                },
+                toast: {
+                    walletsEjected: 'Wallets ejected',
+                    walletsWillBeEjected: 'Will be ejected after disconnecting Trezor',
+                },
+            },
         },
         advanced: {
             title: 'Advanced',

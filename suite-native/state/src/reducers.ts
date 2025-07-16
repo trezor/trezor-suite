@@ -189,7 +189,7 @@ export const prepareRootReducers = async () => {
 
     const devicePersistedReducer = await preparePersistReducer({
         reducer: deviceReducer,
-        persistedKeys: ['devices'],
+        persistedKeys: ['devices', 'isDeviceAutoEjectEnabled'],
         key: 'devices',
         version: 2,
         transforms: [devicePersistTransform],
