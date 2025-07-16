@@ -58,7 +58,7 @@ jobs:
         with:
           project: "web"
           base-url: "https://dev.suite.sldev.cz/suite-web/fw-canary-788b960e2c6b5112230ded6129d69538/web/"
-          containers: "trezor-user-env-unix bitcoin-regtest"
+          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false
           additional-grep: "(?!.*@specificFirmware)"

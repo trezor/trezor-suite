@@ -10,3 +10,7 @@ services:
     depends_on:
       - trezor-user-env-unix
     network_mode: service:trezor-user-env-unix
+  electrum-regtest:
+    image: ghcr.io/trezor/electrs:latest
+    ports:
+      - "50001:50001"
