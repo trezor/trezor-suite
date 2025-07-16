@@ -6,6 +6,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { usdcAsset } from '../../../../__fixtures__/tradeableAssets';
+import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeFormType } from '../../../../types/exchange';
 import { ExchangeSendCard } from '../ExchangeSendCard';
@@ -20,6 +21,7 @@ describe('ExchangeSendCard', () => {
             <ExchangeSendCard isAmountInputActive={isAmountInputActive} />,
             {
                 wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                preloadedState: { wallet: getWalletState() },
             },
         );
 
@@ -36,7 +38,7 @@ describe('ExchangeSendCard', () => {
         const { getByText, getByLabelText } = await renderExchangeSendCard(false);
 
         expect(getByText('You pay')).toBeOnTheScreen();
-        expect(getByText('$123.00')).toBeOnTheScreen();
+        expect(getByText('$99.00')).toBeOnTheScreen();
         expect(getByLabelText('Select coin')).toHaveTextContent(/USDC/);
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You pay')).toHaveDisplayValue('100');

@@ -1,10 +1,15 @@
 import { Action, Feature, Message } from '@suite-common/suite-types';
 import { InvityServerEnvironment } from '@suite-common/trading';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
+import { BigNumber } from '@trezor/utils';
 
+import { btcAsset } from '../../__fixtures__/tradeableAssets';
+import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState, initialState } from '../../reducers';
+import { TradeableAsset } from '../../types/general';
 import {
     selectActiveTradingType,
+    selectAmountInBaseFiatCurrency,
     selectEnabledTradingTypes,
     selectIsAmountInputActive,
     selectIsTradingBlacklisted,
@@ -251,6 +256,47 @@ describe('commonSelectors', () => {
         it('should return false if trading.restrictions.blacklist feature is not set', () => {
             const state = getPreloadedState({});
             expect(selectIsTradingBlacklisted(state)).toBe(false);
+        });
+    });
+
+    describe('selectAmountInBaseFiatCurrency', () => {
+        const getStateWithRates = () => ({
+            wallet: getWalletState(),
+        });
+
+        it('should return undefined when symbol is not recognized', () => {
+            expect(
+                selectAmountInBaseFiatCurrency(
+                    getStateWithRates(),
+                    {} as any as TradeableAsset,
+                    '100',
+                ),
+            ).toBeUndefined();
+        });
+
+        it('should return undefined when rate is missing', () => {
+            const state = getStateWithRates();
+            state.wallet.fiat.current = {};
+
+            expect(selectAmountInBaseFiatCurrency(state, btcAsset, '100')).toBeUndefined();
+        });
+
+        it('should return rate', () => {
+            expect(selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, '100')).toEqual(
+                new BigNumber('0.1'),
+            );
+        });
+
+        it('should return undefined for invalid amount', () => {
+            expect(
+                selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, 'not a number'),
+            ).toBeUndefined();
+        });
+
+        it('should return 0 for zero balance', () => {
+            expect(selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, '0')).toEqual(
+                new BigNumber('0'),
+            );
         });
     });
 });

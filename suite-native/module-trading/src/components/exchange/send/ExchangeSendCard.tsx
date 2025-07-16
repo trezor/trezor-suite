@@ -1,14 +1,12 @@
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { AnimatedCard, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 
 import { ExchangeSendAccountCryptoBalance } from './ExchangeSendAccountCryptoBalance';
+import { ExchangeSendAmountBadge } from './ExchangeSendAmountBadge';
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useAnimatedBorderStyle } from '../../../hooks/general/useAnimatedBorderStyle';
 import { CardTitle } from '../../general/CardTitle';
-import { FiatAmountBadge } from '../../general/FiatAmountBadge';
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 export type ExchangeSendCardProps = {
@@ -28,7 +26,7 @@ export const ExchangeSendCard = ({ isAmountInputActive }: ExchangeSendCardProps)
                     <CardTitle>
                         <Translation id="moduleTrading.selectCoinToSell.title" />
                     </CardTitle>
-                    <FiatAmountBadge amount={asBaseCurrencyAmount(new BigNumber('123'))} />
+                    <ExchangeSendAmountBadge />
                 </HStack>
                 <ExchangeSendAssetPicker />
                 <HStack
