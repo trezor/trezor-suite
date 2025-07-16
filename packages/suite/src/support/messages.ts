@@ -5675,7 +5675,7 @@ export default defineMessages({
     },
     OP_RETURN: {
         id: 'OP_RETURN',
-        defaultMessage: 'OP RETURN',
+        defaultMessage: 'Hexadecimal message (OP_RETURN)',
     },
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
@@ -5683,8 +5683,15 @@ export default defineMessages({
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
-        description: 'item in dropdown menu',
-        defaultMessage: 'Add OP_RETURN',
+        defaultMessage: 'Attach message',
+    },
+    OP_RETURN_HUMAN: {
+        id: 'OP_RETURN_HUMAN',
+        defaultMessage: 'Human-readable',
+    },
+    OP_RETURN_HEX: {
+        id: 'OP_RETURN_HEX',
+        defaultMessage: 'Hexadecimal',
     },
     RBF: {
         id: 'RBF',

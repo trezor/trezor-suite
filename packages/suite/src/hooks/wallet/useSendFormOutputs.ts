@@ -25,7 +25,9 @@ export const useSendFormOutputs = ({
     composeRequest,
 }: Props) => {
     const addOutput = useCallback(() => {
-        outputsFieldArray.append(
+        const lastOpReturn = outputsFieldArray.fields.at(-1)?.type === 'opreturn';
+        outputsFieldArray.insert(
+            outputsFieldArray.fields.length - Number(lastOpReturn),
             {
                 ...DEFAULT_PAYMENT,
                 currency: localCurrencyOption,
