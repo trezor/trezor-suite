@@ -11,10 +11,12 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, FormOptions, FormState, FormStateTrading } from '@suite-common/wallet-types';
 import {
-    convertAmountUnitsToSubunits,
+    asAmountSubunit,
     getEvmTransactionTextSignature,
+    subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { Success, Unsuccessful } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { tradingThunks } from '../';
 import { TRADING_THUNK_PREFIX } from '../../constants';
@@ -241,13 +243,15 @@ export const recomposeAndSignTxThunk = createThunk<
             the formState (displayed in the UI) and for the payment requests to
             ensure that the payment requests are created with the correct amount.
         */
-        const { decimals } = getNetwork(account.symbol);
         const isTradedWholeBalance = precomposedToSign.outputs.length === 1; // sending whole balance
         const sendAmount = isTradedWholeBalance
             ? precomposedToSign.outputs[0].amount.toString()
             : undefined;
         const formattedMaxAmount = sendAmount
-            ? convertAmountUnitsToSubunits(sendAmount, decimals)
+            ? subunitsToUnits(
+                  asAmountSubunit(new BigNumber(sendAmount), account.symbol),
+                  account.symbol,
+              ).toString()
             : undefined;
 
         const formStateUpdated: FormState = {

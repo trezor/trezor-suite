@@ -7,9 +7,9 @@ import {
     SellProviderInfo,
 } from 'invity-api';
 
-import { getNetwork } from '@suite-common/wallet-config';
-import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { cryptoIdToNetwork, cryptoIdToNetworkAndContractAddress } from '../../utils';
 
@@ -60,14 +60,18 @@ export const tradingExchangeCreatePaymentRequest = ({
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
     const receiveNetworkData = cryptoIdToNetworkAndContractAddress(trade.receive);
-    const sendAmount = convertAmountUnitsToSubunits(
-        trade.sendStringAmount,
-        sendNetworkData.network?.decimals ?? getNetwork('btc').decimals,
-    );
-    const receiveAmount = convertAmountUnitsToSubunits(
-        trade.receiveStringAmount,
-        receiveNetworkData?.network?.decimals ?? getNetwork('btc').decimals,
-    );
+
+    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
+    const sendAmount = unitsToSubunits(
+        asAmountUnit(new BigNumber(trade.sendStringAmount), sendNetworkSymbol),
+        sendNetworkSymbol,
+    ).toString();
+
+    const receiveNetworkSymbol = receiveNetworkData.network?.symbol ?? 'btc';
+    const receiveAmount = unitsToSubunits(
+        asAmountUnit(new BigNumber(trade.receiveStringAmount), receiveNetworkSymbol),
+        receiveNetworkSymbol,
+    ).toString();
 
     const memos: PROTO.PaymentRequestMemo[] = [
         {
@@ -121,10 +125,12 @@ export const tradingSellCreatePaymentRequest = ({
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
-    const sendAmount = convertAmountUnitsToSubunits(
-        trade.cryptoStringAmount,
-        sendNetworkData.network?.decimals ?? getNetwork('btc').decimals,
-    );
+
+    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
+    const sendAmount = unitsToSubunits(
+        asAmountUnit(new BigNumber(trade.cryptoStringAmount), sendNetworkSymbol),
+        sendNetworkSymbol,
+    ).toString();
 
     const memos: PROTO.PaymentRequestMemo[] = [
         {
