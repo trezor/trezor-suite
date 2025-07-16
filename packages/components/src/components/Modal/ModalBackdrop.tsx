@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import FocusLock from 'react-focus-lock';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { ZIndexValues, spacings, zIndices } from '@trezor/theme';
 
@@ -19,11 +19,19 @@ export type ModalBackdropProps = {
     alignment?: ModalAlignment;
     padding?: Padding;
     zIndex?: ZIndexValues;
+    opaque?: boolean;
 };
 
-const Backdrop = styled.div`
-    backdrop-filter: blur(5px);
-    background: rgb(0 0 0 / 30%);
+const Backdrop = styled.div<{ $opaque?: boolean }>`
+    ${({ $opaque, theme }) =>
+        $opaque
+            ? css`
+                  background: ${theme.backgroundSurfaceElevationNegative};
+              `
+            : css`
+                  backdrop-filter: blur(5px);
+                  background: rgb(0 0 0 / 30%);
+              `}
     height: 100%;
 `;
 
@@ -37,6 +45,7 @@ export const ModalBackdrop = ({
     alignment = { x: 'center', y: 'center' },
     padding = spacings.xs,
     zIndex = zIndices.modal,
+    opaque = false,
 }: ModalBackdropProps) => {
     const modalTarget = useModalTarget();
 
@@ -44,7 +53,7 @@ export const ModalBackdrop = ({
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
             <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndex}>
-                <Backdrop onClick={onClick}>
+                <Backdrop onClick={onClick} $opaque={opaque}>
                     <Box padding={padding} height="100%">
                         <Column
                             alignItems={mapAlignmentToAlignItems(alignment)}
