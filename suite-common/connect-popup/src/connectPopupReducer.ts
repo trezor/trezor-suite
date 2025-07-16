@@ -152,6 +152,15 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         selectedFee: payload.selectedFee,
                     };
                 }
+            })
+            .addCase(connectPopupActions.switchDevice, state => {
+                if (state.activeCall && state.activeCall.state !== 'error') {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'switch-device',
+                        timestamp: Date.now(),
+                    };
+                }
             });
     },
 );

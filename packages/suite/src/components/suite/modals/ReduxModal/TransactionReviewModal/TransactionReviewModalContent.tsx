@@ -31,6 +31,7 @@ import { Deferred } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
+import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
@@ -421,7 +422,7 @@ export const TransactionReviewModalContent = ({
     };
 
     return (
-        <Modal.Backdrop>
+        <ConnectModalBackdrop canSwitchDevice>
             {!isRbfConfirmedError && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -468,6 +469,6 @@ export const TransactionReviewModalContent = ({
             >
                 <Content />
             </Modal.ModalBase>
-        </Modal.Backdrop>
+        </ConnectModalBackdrop>
     );
 };

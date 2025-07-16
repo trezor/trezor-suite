@@ -21,6 +21,7 @@ import { spacings } from '@trezor/theme';
 import { onReceiveAccount } from 'src/actions/suite/modalActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
@@ -63,116 +64,123 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
     const filteredAccounts = accounts?.filter(account => account.type === selectedAccountType);
 
     return (
-        <Modal
-            onCancel={close}
-            variant="primary"
-            heading={
-                <Translation id="TR_SELECT_ACCOUNT" values={{ networkName: data.coinInfo.label }} />
-            }
-            description={
-                <>
-                    <ConnectCallSource />
-                </>
-            }
-        >
-            <Column gap={spacings.sm}>
-                <SubTabs activeItemId={selectedAccountType}>
-                    {accountTypes?.map((type, index) => (
-                        <SubTabs.Item
-                            key={index}
-                            id={type}
-                            onClick={() => {
-                                setSelectedAccountType(type);
-                            }}
-                            data-testid={`@select-account-modal/subtab/${type}`}
+        <ConnectModalBackdrop onClick={close} canSwitchDevice>
+            <Modal.ModalBase
+                onCancel={close}
+                variant="primary"
+                heading={
+                    <Translation
+                        id="TR_SELECT_ACCOUNT"
+                        values={{ networkName: data.coinInfo.label }}
+                    />
+                }
+                description={
+                    <>
+                        <ConnectCallSource />
+                    </>
+                }
+            >
+                <Column gap={spacings.sm}>
+                    <SubTabs activeItemId={selectedAccountType}>
+                        {accountTypes?.map((type, index) => (
+                            <SubTabs.Item
+                                key={index}
+                                id={type}
+                                onClick={() => {
+                                    setSelectedAccountType(type);
+                                }}
+                                data-testid={`@select-account-modal/subtab/${type}`}
+                            >
+                                {typeLabels[type]}
+                            </SubTabs.Item>
+                        ))}
+                    </SubTabs>
+
+                    <Card paddingType="none">
+                        <Table
+                            isRowHighlightedOnHover
+                            colWidths={[{ width: 'auto' }, { width: '200px' }, { width: '80px' }]}
                         >
-                            {typeLabels[type]}
-                        </SubTabs.Item>
-                    ))}
-                </SubTabs>
-
-                <Card paddingType="none">
-                    <Table
-                        isRowHighlightedOnHover
-                        colWidths={[{ width: 'auto' }, { width: '200px' }, { width: '80px' }]}
-                    >
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.Cell>
-                                    <Translation id="TR_ACCOUNT" />
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Translation id="TR_BALANCE" />
-                                </Table.Cell>
-                                <Table.Cell></Table.Cell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {filteredAccounts?.map((account, index) => {
-                                const symbol = data.coinInfo.shortcut.toLowerCase();
-                                const suiteAccount = suiteAccounts.find(
-                                    a => a.descriptor === account.descriptor && a.symbol === symbol,
-                                );
-
-                                return (
-                                    <Table.Row
-                                        key={account.descriptor}
-                                        onClick={() => confirm(index)}
-                                        data-testid={`@select-account-modal/accounts/${account.type}/${index}`}
-                                    >
-                                        <Table.Cell>
-                                            <Row gap={spacings.sm}>
-                                                {symbol in NETWORK_ICONS && (
-                                                    <CoinLogo
-                                                        type="network"
-                                                        symbol={symbol as NetworkSymbol}
-                                                        size={24}
-                                                    />
-                                                )}
-                                                {suiteAccount ? (
-                                                    <AccountLabel
-                                                        accountLabel={
-                                                            suiteAccountLabels[suiteAccount.key]
-                                                        }
-                                                        accountType={suiteAccount.accountType}
-                                                        symbol={suiteAccount.symbol}
-                                                        index={suiteAccount.index}
-                                                    />
-                                                ) : (
-                                                    account.label
-                                                )}
-                                            </Row>
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {account.empty ? (
-                                                <Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />
-                                            ) : (
-                                                account.balance
-                                            )}
-                                        </Table.Cell>
-                                        <Table.Cell align="end">
-                                            <Icon size="large" name="caretRight" />
-                                        </Table.Cell>
-                                    </Table.Row>
-                                );
-                            })}
-                            {data.type !== 'end' && (
+                            <Table.Header>
                                 <Table.Row>
                                     <Table.Cell>
-                                        <SkeletonRectangle width="100px" animate />
+                                        <Translation id="TR_ACCOUNT" />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <SkeletonRectangle width="80px" animate />
+                                        <Translation id="TR_BALANCE" />
                                     </Table.Cell>
-                                    <Table.Cell align="end">
-                                        <SkeletonCircle size="24px" />
-                                    </Table.Cell>
+                                    <Table.Cell></Table.Cell>
                                 </Table.Row>
-                            )}
-                        </Table.Body>
-                    </Table>
-                </Card>
-            </Column>
-        </Modal>
+                            </Table.Header>
+                            <Table.Body>
+                                {filteredAccounts?.map((account, index) => {
+                                    const symbol = data.coinInfo.shortcut.toLowerCase();
+                                    const suiteAccount = suiteAccounts.find(
+                                        a =>
+                                            a.descriptor === account.descriptor &&
+                                            a.symbol === symbol,
+                                    );
+
+                                    return (
+                                        <Table.Row
+                                            key={account.descriptor}
+                                            onClick={() => confirm(index)}
+                                            data-testid={`@select-account-modal/accounts/${account.type}/${index}`}
+                                        >
+                                            <Table.Cell>
+                                                <Row gap={spacings.sm}>
+                                                    {symbol in NETWORK_ICONS && (
+                                                        <CoinLogo
+                                                            type="network"
+                                                            symbol={symbol as NetworkSymbol}
+                                                            size={24}
+                                                        />
+                                                    )}
+                                                    {suiteAccount ? (
+                                                        <AccountLabel
+                                                            accountLabel={
+                                                                suiteAccountLabels[suiteAccount.key]
+                                                            }
+                                                            accountType={suiteAccount.accountType}
+                                                            symbol={suiteAccount.symbol}
+                                                            index={suiteAccount.index}
+                                                        />
+                                                    ) : (
+                                                        account.label
+                                                    )}
+                                                </Row>
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {account.empty ? (
+                                                    <Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />
+                                                ) : (
+                                                    account.balance
+                                                )}
+                                            </Table.Cell>
+                                            <Table.Cell align="end">
+                                                <Icon size="large" name="caretRight" />
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    );
+                                })}
+                                {data.type !== 'end' && (
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            <SkeletonRectangle width="100px" animate />
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <SkeletonRectangle width="80px" animate />
+                                        </Table.Cell>
+                                        <Table.Cell align="end">
+                                            <SkeletonCircle size="24px" />
+                                        </Table.Cell>
+                                    </Table.Row>
+                                )}
+                            </Table.Body>
+                        </Table>
+                    </Card>
+                </Column>
+            </Modal.ModalBase>
+        </ConnectModalBackdrop>
     );
 };

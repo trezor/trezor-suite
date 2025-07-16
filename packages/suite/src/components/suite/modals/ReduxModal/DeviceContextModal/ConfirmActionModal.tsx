@@ -10,6 +10,7 @@ import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { DeviceConfirmImage } from 'src/components/suite';
+import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import messages from 'src/support/messages';
 import { TrezorDevice } from 'src/types/suite';
@@ -33,7 +34,11 @@ export const ConfirmActionModal = ({ title, device, onCancel }: ConfirmActionPro
     };
 
     return (
-        <Modal.Backdrop onClick={onCancel} data-testid="@suite/modal/confirm-action-on-device">
+        <ConnectModalBackdrop
+            onClick={onCancel}
+            data-testid="@suite/modal/confirm-action-on-device"
+            canSwitchDevice
+        >
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={getDeviceInternalModel(device)}
@@ -51,6 +56,6 @@ export const ConfirmActionModal = ({ title, device, onCancel }: ConfirmActionPro
                     <Translation id={title ?? 'TR_CONFIRM_ACTION_ON_YOUR'} />
                 </H2>
             </Modal.ModalBase>
-        </Modal.Backdrop>
+        </ConnectModalBackdrop>
     );
 };

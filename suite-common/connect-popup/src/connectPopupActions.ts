@@ -83,6 +83,8 @@ const setSelectedFee = createAction(
     }),
 );
 
+const switchDevice = createAction(`${ACTION_PREFIX}/switchDevice`);
+
 export const connectPopupActions = {
     initiateCall,
     requestPermissions,
@@ -97,4 +99,5 @@ export const connectPopupActions = {
     forgetAppPermissions,
     txSimulation,
     setSelectedFee,
+    switchDevice,
 } as const;

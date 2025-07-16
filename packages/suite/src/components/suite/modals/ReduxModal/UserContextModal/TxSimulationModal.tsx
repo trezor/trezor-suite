@@ -39,6 +39,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -297,7 +298,7 @@ export const TxSimulationModal = () => {
     };
 
     return (
-        <Modal.Backdrop>
+        <ConnectModalBackdrop canSwitchDevice>
             <Modal.ModalBase
                 size="small"
                 heading={
@@ -570,6 +571,6 @@ export const TxSimulationModal = () => {
                     </Column>
                 </Column>
             </Modal.ModalBase>
-        </Modal.Backdrop>
+        </ConnectModalBackdrop>
     );
 };

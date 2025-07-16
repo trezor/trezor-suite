@@ -144,7 +144,10 @@ export const connectPopupCallThunkInner = createThunk<
             getPopupCallDeferred().resolve(response);
         } catch (error) {
             console.error('connectPopupCallThunk', error);
-            if (error?.code === 'Method_Cancel') {
+            if (error?.error === 'switching-device') {
+                // Do nothing, call will be restarted after device switch
+                return;
+            } else if (error?.code === 'Method_Cancel') {
                 dispatch(connectPopupActions.finishCall());
             } else {
                 dispatch(connectPopupActions.setError(serializeError(error)));
