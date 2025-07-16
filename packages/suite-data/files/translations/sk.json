@@ -1584,8 +1584,6 @@
   "TR_TROUBLESHOOTING_CLOSE_TABS": "Close other tabs and windows that might be using your Trezor",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION": "After closing other tabs and windows, try refreshing this page.",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP": "After closing other browser tabs and windows, try quitting and reopening Trezor Suite.",
-  "TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION": "Visit <a>Trezor Bridge status page</a>",
-  "TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE": "Ensure the Trezor Bridge process is running",
   "TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION": "The cable must be fully inserted. In case of a USB-C connected device, the cable should click into place.",
   "TR_TROUBLESHOOTING_TIP_CABLE_TITLE": "Vyskúšajte iný kábel",
   "TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION": "With Trezor Bridge installed.",

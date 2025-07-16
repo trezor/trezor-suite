@@ -13,10 +13,6 @@ export default defineMessages({
         defaultMessage: 'Error 404: Link not found',
         id: 'TR_404_TITLE',
     },
-    TR_ACCESS_HIDDEN_WALLET: {
-        defaultMessage: 'Access Passphrase wallet',
-        id: 'TR_ACCESS_HIDDEN_WALLET',
-    },
     TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET: {
         defaultMessage: 'Access Passphrase wallet',
         id: 'TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET',
@@ -172,10 +168,6 @@ export default defineMessages({
     TR_ADD_WALLET: {
         defaultMessage: 'Standard wallet',
         id: 'TR_ADD_WALLET',
-    },
-    TR_CONTRACT: {
-        defaultMessage: 'Contract',
-        id: 'TR_CONTRACT',
     },
     TR_RECIPIENT_ADDRESS: {
         defaultMessage: 'Recipient address',
@@ -534,10 +526,6 @@ export default defineMessages({
         defaultMessage: 'Confirm & Send',
         id: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
     },
-    TR_EXCHANGE_CREATE_APPROVAL_STEP: {
-        defaultMessage: 'Create approval',
-        id: 'TR_EXCHANGE_CREATE_APPROVAL_STEP',
-    },
     TR_EXCHANGE_SEND_FROM: {
         defaultMessage: 'Sending account',
         id: 'TR_EXCHANGE_SEND_FROM',
@@ -577,10 +565,6 @@ export default defineMessages({
     TR_EXCHANGE_APPROVAL_FORM_TITLE: {
         defaultMessage: 'Contract approval',
         id: 'TR_EXCHANGE_APPROVAL_FORM_TITLE',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_CHECKING_APPROVAL_STATUS: {
-        defaultMessage: 'Checking approval status',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_CHECKING_APPROVAL_STATUS',
     },
     TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON: {
         defaultMessage: 'Approve',
@@ -637,41 +621,9 @@ export default defineMessages({
         defaultMessage: 'Approval transaction data',
         id: 'TR_EXCHANGE_APPROVAL_DATA',
     },
-    TR_EXCHANGE_APPROVAL_TXID: {
-        defaultMessage: 'Approval transaction ID',
-        id: 'TR_EXCHANGE_APPROVAL_TXID',
-    },
-    TR_EXCHANGE_APPROVAL_CONFIRMING: {
-        defaultMessage: 'Waiting for the blockchain to confirm the approval transaction.',
-        id: 'TR_EXCHANGE_APPROVAL_CONFIRMING',
-    },
-    TR_EXCHANGE_APPROVAL_FAILED: {
-        defaultMessage: 'Approval transaction failed',
-        id: 'TR_EXCHANGE_APPROVAL_FAILED',
-    },
-    TR_EXCHANGE_APPROVAL_SUCCESS: {
-        defaultMessage: 'The approval transaction is confirmed.',
-        id: 'TR_EXCHANGE_APPROVAL_SUCCESS',
-    },
     TR_EXCHANGE_APPROVAL_NOT_REQUIRED: {
         defaultMessage: 'No approval transaction needed for {send}.',
         id: 'TR_EXCHANGE_APPROVAL_NOT_REQUIRED',
-    },
-    TR_EXCHANGE_APPROVAL_PREAPPROVED: {
-        defaultMessage: 'Contract already approved.',
-        id: 'TR_EXCHANGE_APPROVAL_PREAPPROVED',
-    },
-    TR_EXCHANGE_APPROVAL_PROCEED: {
-        defaultMessage: 'Proceed to swap, no approval transaction needed.',
-        id: 'TR_EXCHANGE_APPROVAL_PROCEED',
-    },
-    TR_EXCHANGE_APPROVAL_TO_SWAP_BUTTON: {
-        defaultMessage: 'Proceed to swap',
-        id: 'TR_EXCHANGE_APPROVAL_TO_SWAP_BUTTON',
-    },
-    TR_EXCHANGE_SWAP_ACCOUNT_TO_BE_SELECTED: {
-        defaultMessage: 'To be selected',
-        id: 'TR_EXCHANGE_SWAP_ACCOUNT_TO_BE_SELECTED',
     },
     TR_EXCHANGE_SWAP_SEND_TO: {
         defaultMessage: '{provider} contract address',
@@ -719,7 +671,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_NUMBER',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE: {
-        defaultMessage: 'Slippage must be in the range 0.01% - 50%',
+        defaultMessage: 'Slippage must be between 0.01% and 50%',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE',
     },
     TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND: {
@@ -779,7 +731,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
-        defaultMessage: "Use an account ({symbol}) that isn't in Suite",
+        defaultMessage: "Use an account ({symbol}) that isn't in Trezor Suite",
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
@@ -1336,7 +1288,7 @@ export default defineMessages({
         id: 'TR_TRADING_COMPARE_OFFERS',
     },
     TR_TRADING_OFFER_LOOKING: {
-        defaultMessage: 'Searching for your best offer.',
+        defaultMessage: 'Searching for your best offer',
         id: 'TR_TRADING_OFFER_LOOKING',
     },
     TR_TRADING_OFFER_NO_FOUND: {
@@ -1784,14 +1736,6 @@ export default defineMessages({
     TR_ASSETS: {
         defaultMessage: 'Coin',
         id: 'TR_ASSETS',
-    },
-    TR_AUTH_CONFIRM_FAILED_RETRY: {
-        defaultMessage: 'Retry',
-        id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
-    },
-    TR_AUTH_CONFIRM_FAILED_TITLE: {
-        defaultMessage: 'Incorrect passphrase',
-        id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
     TR_BACK: {
         defaultMessage: 'Back',
@@ -2653,19 +2597,19 @@ export default defineMessages({
     },
     TR_FIRMWARE_SUBHEADING_NONE: {
         defaultMessage:
-            'Your Trezor is shipped without firmware. Install the latest firmware in order to use your device safely. For Bitcoin-only users, we recommend installing <button>{bitcoinOnly} firmware</button>.',
+            'Your Trezor ships without firmware for security reasons. To start using it safely, install the latest firmware. Bitcoin-only user? We recommend the <button>{bitcoinOnly} firmware</button>.',
         description: 'Main text on firmware page for devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE',
     },
     TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE: {
         defaultMessage:
-            'Your device is ready for the latest firmware in order to be used safely. For Bitcoin enthusiasts, a Bitcoin-only firmware is available.',
+            "Your device is ready for the latest firmware update to keep it secure. If you're a Bitcoin enthusiast, a Bitcoin-only firmware is also available.",
         description: 'Main text on firmware page for Bitcoin-only devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE',
     },
     TR_FIRMWARE_SUBHEADING_UNKNOWN: {
         defaultMessage:
-            'Your Trezor is shipped without firmware. Install the latest firmware in order to use your device safely. For Bitcoin-only users, we recommend installing <button>{bitcoinOnly} firmware</button>.',
+            'Your Trezor ships without firmware for security reasons. To start using it safely, install the latest firmware. Bitcoin-only user? We recommend the <button>{bitcoinOnly} firmware</button>.',
         description:
             'Main text on firmware page for devices in bootloader mode, i.e. when Suite cannot determine current firmware type',
         id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN',
@@ -2777,7 +2721,7 @@ export default defineMessages({
         id: 'TR_HOLOGRAM_T2B1_NEW_SEAL',
     },
     TR_I_UNDERSTAND_PASSPHRASE: {
-        defaultMessage: "I understand that passphrases can't be retrieved.",
+        defaultMessage: "You understand that passphrases can't be retrieved.",
         id: 'TR_I_UNDERSTAND_PASSPHRASE',
     },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
@@ -3091,10 +3035,6 @@ export default defineMessages({
         defaultMessage: 'Passphrases are case-sensitive',
         id: 'TR_PASSPHRASE_CASE_SENSITIVE',
     },
-    TR_PASSPHRASE_HIDDEN_WALLET: {
-        defaultMessage: 'Passphrase wallet',
-        id: 'TR_PASSPHRASE_HIDDEN_WALLET',
-    },
     TR_PASSPHRASE_TOO_LONG: {
         defaultMessage: 'Passphrase length exceeds the allowed limit.',
         id: 'TR_PASSPHRASE_TOO_LONG',
@@ -3320,10 +3260,6 @@ export default defineMessages({
         defaultMessage: 'Connect & unlock your Trezor to change settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
-    TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP: {
-        defaultMessage: 'Unavailable until device setup is complete.',
-        id: 'TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP',
-    },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
         defaultMessage: 'To access more coins, install <button>{regular}</button> firmware.',
         id: 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION',
@@ -3399,10 +3335,6 @@ export default defineMessages({
         defaultMessage: 'THP credentials have been reset. Reconnect your Trezor.',
         id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
     },
-    TR_THP_PAIR: {
-        defaultMessage: 'Pair',
-        id: 'TR_THP_PAIR',
-    },
     TR_THP_ENTER_ONE_TIME_CODE: {
         id: 'TR_THP_ENTER_ONE_TIME_CODE',
         defaultMessage: 'Enter one-time security code',
@@ -3414,14 +3346,6 @@ export default defineMessages({
     TR_THP_GET_NEW_CODE: {
         id: 'TR_THP_GET_NEW_CODE',
         defaultMessage: 'Get new code',
-    },
-    TR_THP_VERIFICATION_FAILED: {
-        id: 'TR_THP_VERIFICATION_FAILED',
-        defaultMessage: 'Verification failed',
-    },
-    TR_THP_VERIFICATION_FAILED_DESCRIPTION: {
-        id: 'TR_THP_VERIFICATION_FAILED_DESCRIPTION',
-        defaultMessage: 'The one-time security code entered is incorrect. Try again.',
     },
     TR_THP_CHECK_TREZOR_FOR_CODE: {
         id: 'TR_THP_CHECK_TREZOR_FOR_CODE',
@@ -3435,17 +3359,9 @@ export default defineMessages({
         id: 'TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION',
         defaultMessage: 'Trezor Suite will create a secure connection to your Trezor.',
     },
-    TR_DO_NOT_ASK_ME_AGAIN: {
-        id: 'TR_DO_NOT_ASK_ME_AGAIN',
-        defaultMessage: "Don't ask me again",
-    },
     TR_THP_SECURELY_CONNECT_WITH_TREZOR: {
         id: 'TR_THP_SECURELY_CONNECT_WITH_TREZOR',
         defaultMessage: 'Securely connect with your Trezor',
-    },
-    TR_THP_CONFIRM_ON_NEXT_STEP: {
-        id: 'TR_THP_CONFIRM_ON_NEXT_STEP',
-        defaultMessage: 'Confirm on next step',
     },
     TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR: {
         id: 'TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR',
@@ -3595,7 +3511,7 @@ export default defineMessages({
         id: 'TR_TOKEN_ID_COLON',
     },
     TR_NO_TRANSPORT: {
-        defaultMessage: "Your browser can't communicate with your device",
+        defaultMessage: 'Trezor Suite is having trouble connecting to your device.',
         description: '',
         id: 'TR_NO_TRANSPORT',
     },
@@ -3624,10 +3540,6 @@ export default defineMessages({
     TR_UNCONFIRMED_TX: {
         defaultMessage: 'Unconfirmed',
         id: 'TR_UNCONFIRMED_TX',
-    },
-    TR_UNDISCOVERED_WALLET: {
-        defaultMessage: 'Click to discover wallet',
-        id: 'TR_UNDISCOVERED_WALLET',
     },
     TR_UNKNOWN_CONFIRMATION_TIME: {
         defaultMessage: 'unknown',
@@ -4434,7 +4346,7 @@ export default defineMessages({
     TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
         defaultMessage:
-            "Your wallet backup is absolutely essential for regaining access to your funds in case of device loss, theft, or damage. Without it, there's nothing anybody can do, not even Trezor Support. Write it down on paper or your wallet backup card and store it somewhere safe and secure. Just remember where you have it.",
+            'Your wallet backup is absolutely essential for regaining access to your funds in case of device loss, theft, or damage. Without it, no one—not even Trezor Support—can help you regain access. Write your wallet backup down and store it somewhere safe and secure. Just be sure to remember where it is.',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',
@@ -4645,16 +4557,6 @@ export default defineMessages({
         id: 'TR_EJECT_HEADING',
         defaultMessage: 'Eject',
         description: 'Heading above col with "eject wallet" buttons in switch wallets modal',
-    },
-    TR_VIEW_ONLY_CALL_TO_ACTION: {
-        id: 'TR_VIEW_ONLY_CALL_TO_ACTION',
-        defaultMessage:
-            'Enable view-only to check balances <primary>after you disconnect your Trezor</primary>',
-    },
-    TR_VIEW_ONLY_EXPLANATION: {
-        id: 'TR_VIEW_ONLY_EXPLANATION',
-        defaultMessage:
-            'To send or swap coins, <secondLine>simply reconnect your device</secondLine>',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -5109,7 +5011,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_CREATE_NEW_WALLET: {
         id: 'TR_ONBOARDING_CREATE_NEW_WALLET',
-        defaultMessage: 'Create new wallet',
+        defaultMessage: 'Create a new wallet',
     },
     TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE: {
         id: 'TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE',
@@ -5222,7 +5124,7 @@ export default defineMessages({
     },
     TR_CREATE_WALLET: {
         id: 'TR_CREATE_WALLET',
-        defaultMessage: 'Create new wallet',
+        defaultMessage: 'Create a new wallet',
         description:
             'Used for button triggering seed creation (reset device call) if shamir/non-shamir selection is not available.',
     },
@@ -5244,7 +5146,7 @@ export default defineMessages({
     TR_FIRMWARE_REINSTALL_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION',
         defaultMessage:
-            'Your device is already updated to the latest firmware. You may reinstall the firmware if needed.',
+            'Your device already has the latest firmware installed. You can reinstall it at any time if needed.',
     },
     TR_SWITCH_TO_BITCOIN_ONLY_DESCRIPTION: {
         id: 'TR_SWITCH_TO_BITCOIN_ONLY_DESCRIPTION',
@@ -5671,7 +5573,7 @@ export default defineMessages({
     },
     RECIPIENT_ADD: {
         id: 'RECIPIENT_ADD',
-        defaultMessage: 'Add Recipient',
+        defaultMessage: 'Add recipient',
     },
     RECIPIENT_IS_NOT_SET: {
         defaultMessage: "Address isn't set",
@@ -5704,7 +5606,7 @@ export default defineMessages({
     },
     TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT: {
         defaultMessage:
-            'You are sending funds to an associated account (e.g. token or staking account).',
+            "You're sending funds to a linked account, such as a token or staking account.",
         id: 'TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
@@ -5758,7 +5660,7 @@ export default defineMessages({
         id: 'AMOUNT_IS_LESS_THAN_RESERVE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
-        defaultMessage: 'Not enough {networkDisplaySymbol} to cover transaction fee',
+        defaultMessage: 'Insufficient {networkDisplaySymbol} to cover the transaction fee',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT: {
@@ -5814,7 +5716,7 @@ export default defineMessages({
     },
     LOCKTIME_IS_TOO_BIG: {
         id: 'LOCKTIME_IS_TOO_BIG',
-        defaultMessage: 'Timestamp is too big',
+        defaultMessage: 'Locktime is too big',
     },
     LOCKTIME_BLOCKHEIGHT: {
         id: 'LOCKTIME_BLOCKHEIGHT',
@@ -5930,7 +5832,7 @@ export default defineMessages({
     },
     TR_CONNECT_TREZOR_TO_SEND_BUTTON: {
         id: 'TR_CONNECT_TREZOR_TO_SEND_BUTTON',
-        defaultMessage: 'Connect Trezor to Send',
+        defaultMessage: 'Connect Trezor to send',
     },
     SEND_RAW: {
         id: 'SEND_RAW',
@@ -5943,7 +5845,7 @@ export default defineMessages({
     },
     SEND_RAW_TRANSACTION_TOOLTIP: {
         id: 'SEND_RAW_TRANSACTION_TOOLTIP',
-        defaultMessage: 'You can provide all the raw data for your transaction by yourself.',
+        defaultMessage: 'Input the raw data for your transaction yourself.',
     },
     SIGN_TRANSACTION: {
         id: 'SIGN_TRANSACTION',
@@ -6528,11 +6430,11 @@ export default defineMessages({
     },
     FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC: {
         id: 'FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC',
-        defaultMessage: 'Yes, I do!',
+        defaultMessage: 'Yes, I do.',
     },
     FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC: {
         id: 'FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC',
-        defaultMessage: 'I accept the risk',
+        defaultMessage: 'I accept the risk.',
     },
     FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON: {
         id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
@@ -6675,7 +6577,7 @@ export default defineMessages({
     },
     SETTINGS_UPDATE_READY: {
         id: 'SETTINGS_UPDATE_READY',
-        defaultMessage: 'Install now!',
+        defaultMessage: 'Install now',
     },
     TR_LOADING: {
         id: 'TR_LOADING',
@@ -6885,7 +6787,7 @@ export default defineMessages({
     TR_CANCEL_TX_NOTICE: {
         id: 'TR_CANCEL_TX_NOTICE',
         defaultMessage:
-            'Once the transaction is canceled successfully, your funds (minus the transaction fee) will be returned to your wallet.',
+            'Once the transaction is canceled successfully, your funds (minus the transaction fee) will be returned to your account.',
     },
     TR_CANCEL_TX_FEE: {
         id: 'TR_CANCEL_TX_FEE',
@@ -6893,7 +6795,7 @@ export default defineMessages({
     },
     TR_CANCEL_TX_RETURN_TO_YOUR_WALLET: {
         id: 'TR_CANCEL_TX_RETURN_TO_YOUR_WALLET',
-        defaultMessage: 'Return to your wallet',
+        defaultMessage: 'Return to your account',
     },
     TR_CANCEL_TX_FAILED_ALREADY_MINED: {
         id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED',
@@ -7059,7 +6961,7 @@ export default defineMessages({
     },
     TR_CONTRACT_ADDRESS: {
         id: 'TR_CONTRACT_ADDRESS',
-        defaultMessage: 'Contract address',
+        defaultMessage: 'Contract address:',
     },
     TR_POLICY_ID_ADDRESS: {
         id: 'TR_POLICY_ID_ADDRESS',
@@ -7119,11 +7021,11 @@ export default defineMessages({
     },
     TR_GRAPH_VIEW: {
         id: 'TR_GRAPH_VIEW',
-        defaultMessage: 'Graph View',
+        defaultMessage: 'Graph view',
     },
     TR_SHOW_GRAPH: {
         id: 'TR_SHOW_GRAPH',
-        defaultMessage: 'Show Graph',
+        defaultMessage: 'Show graph',
     },
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',
@@ -7416,7 +7318,7 @@ export default defineMessages({
     },
     TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT',
-        defaultMessage: 'Your device rejects firmware installation.',
+        defaultMessage: 'Your Trezor rejected the firmware installation.',
     },
     TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT',
@@ -7531,7 +7433,7 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE',
-        defaultMessage: 'I’ve read and understood the above',
+        defaultMessage: 'I’ve read and understood the above.',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1',
@@ -7685,7 +7587,7 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION: {
         defaultMessage:
-            'You may visit <a>connection status page</a> where you can find useful information to solve your problem with Trezor Support.',
+            'Visit the <a>connection status page</a> to get useful information that you can share with Trezor Support to help resolve your issue.',
         id: 'TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE: {
@@ -7716,12 +7618,12 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE',
-        defaultMessage: 'Use alternative transport',
+        defaultMessage: 'Switch connection method',
     },
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION',
         defaultMessage:
-            '<a>Click to toggle</a> an alternative connection implementation. Current version: ({currentVersion})',
+            "<a>Click to switch</a> how your Trezor connects to Trezor Suite. This may help if you're experiencing connection issues. Current version: ({currentVersion})",
     },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
@@ -7773,7 +7675,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
         defaultMessage:
-            'Restarting your computer may fix the communication issue between your browser and device.',
+            'Restarting your computer may fix the communication issue between Trezor Suite and your Trezor device.',
     },
     TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
         id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
@@ -7827,7 +7729,7 @@ export default defineMessages({
     },
     TR_DISCOVERY_WARNING_DESCRIPTION: {
         id: 'TR_DISCOVERY_WARNING_DESCRIPTION',
-        defaultMessage: 'Just a moment—almost done',
+        defaultMessage: 'Just a moment.',
     },
     TR_STAKING_REWARDS_TITLE: {
         id: 'TR_STAKING_REWARDS_TITLE',
@@ -7835,7 +7737,7 @@ export default defineMessages({
     },
     TR_STAKING_STAKE_TITLE: {
         id: 'TR_STAKING_STAKE_TITLE',
-        defaultMessage: 'Cardano Staking is NOT Active',
+        defaultMessage: "Cardano staking isn't active",
     },
     TR_STAKING_STAKE_ADDRESS: {
         id: 'TR_STAKING_STAKE_ADDRESS',
@@ -7916,12 +7818,12 @@ export default defineMessages({
     TR_STAKING_STAKE_DESCRIPTION: {
         id: 'TR_STAKING_STAKE_DESCRIPTION',
         defaultMessage:
-            'Staking Cardano is a great way to earn ADA staking rewards as a form of passive income for holding Cardano.{br}By staking your ADA, you actively support the Cardano network and contribute to the stability of the network.',
+            'Staking your ADA lets you earn rewards while simply holding your Cardano—it’s a great way to grow your balance passively. By staking, you also help secure and support the Cardano network.',
     },
     TR_STAKING_DEPOSIT_FEE_DECRIPTION: {
         id: 'TR_STAKING_DEPOSIT_FEE_DECRIPTION',
         defaultMessage:
-            'The deposit fee is {feeAmount} ADA and is required to register your address to start staking. If you choose to unstake your Cardano you will get the deposit back.',
+            'To start staking, a deposit of {feeAmount} ADA is required to register your address. If you decide to unstake later, the full deposit will be returned to you.',
     },
     TR_STAKING_NOT_ENOUGH_FUNDS: {
         id: 'TR_STAKING_NOT_ENOUGH_FUNDS',
@@ -9067,7 +8969,7 @@ export default defineMessages({
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING',
-        defaultMessage: 'Before confirming on device',
+        defaultMessage: 'Before confirming on Trezor',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
@@ -9133,7 +9035,7 @@ export default defineMessages({
     TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION: {
         id: 'TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION',
         defaultMessage:
-            'Make sure you send your assets only through the {network} network. If coins or tokens are sent outside the {network} network, the receiver may not be able to access them.',
+            'Make sure you send your assets only through the {network} network. If coins or tokens are sent outside the {network} network, the recipient may not be able to access them.',
     },
     TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
@@ -9694,51 +9596,9 @@ export default defineMessages({
         defaultMessage:
             'Due to Solana network limits, you have less than a minute to confirm and send your transaction before it expires.',
     },
-    TR_VIEW_ONLY_PROMO_YES: {
-        id: 'TR_VIEW_ONLY_PROMO_YES',
-        defaultMessage: 'Enable',
-    },
-    TR_VIEW_ONLY_PROMO_NOT_NOW: {
-        id: 'TR_VIEW_ONLY_PROMO_NOT_NOW',
-        defaultMessage: 'Skip',
-    },
-    TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: 'Change view-only and access passphrase here.',
-    },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
         defaultMessage: 'Got it',
-    },
-    TR_VIEW_ONLY_ENABLED: {
-        id: 'TR_VIEW_ONLY_ENABLED',
-        defaultMessage: 'View-only enabled',
-    },
-    TR_VIEW_ONLY_DISABLED: {
-        id: 'TR_VIEW_ONLY_DISABLED',
-        defaultMessage: 'View-only disabled',
-    },
-    TR_VIEW_ONLY_RADIOS_ENABLED_TITLE: {
-        id: 'TR_VIEW_ONLY_RADIOS_ENABLED_TITLE',
-        defaultMessage: 'Enabled',
-    },
-    TR_VIEW_ONLY_RADIOS_DISABLED_TITLE: {
-        id: 'TR_VIEW_ONLY_RADIOS_DISABLED_TITLE',
-        defaultMessage: 'Disabled',
-    },
-    TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION: {
-        id: 'TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION',
-        defaultMessage:
-            'Balances & transactions <strong>remain visible</strong> in app after Trezor is disconnected.',
-    },
-    TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION: {
-        id: 'TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION',
-        defaultMessage:
-            'Balances & transactions <strong>aren’t visible</strong> in the app after Trezor is disconnected.',
-    },
-    TR_VIEW_ONLY_SEND_COINS_INFO: {
-        id: 'TR_VIEW_ONLY_SEND_COINS_INFO',
-        defaultMessage: 'You must always connect your Trezor to move assets.',
     },
     TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE: {
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE',
@@ -9757,26 +9617,9 @@ export default defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
         defaultMessage: 'Cancel',
     },
-    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE: {
-        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE',
-        defaultMessage: 'Disabling view-only will eject this wallet',
-    },
-    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION: {
-        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION',
-        defaultMessage:
-            "Your funds and transactions won't be visible until you reconnect your device.",
-    },
-    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON: {
-        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON',
-        defaultMessage: 'Disable',
-    },
     TR_DO_NOT_SHOW_AGAIN: {
         id: 'TR_DO_NOT_SHOW_AGAIN',
         defaultMessage: "Don't show again",
-    },
-    TR_VIEW_ONLY: {
-        id: 'TR_VIEW_ONLY',
-        defaultMessage: 'View-only',
     },
     TR_URL_IN_TOKEN: {
         id: 'TR_URL_IN_TOKEN',
@@ -9802,19 +9645,6 @@ export default defineMessages({
     TR_DEFAULT_WALLET_LOADING_PASSPHRASE: {
         id: 'TR_DEFAULT_WALLET_LOADING_PASSPHRASE',
         defaultMessage: 'Passphrase',
-    },
-    TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE: {
-        id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE',
-        defaultMessage: 'View-only',
-    },
-    TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC: {
-        id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC',
-        defaultMessage:
-            "Your balances remain visible—even without your Trezor connected. To move or swap assets, you'll need to connect your Trezor.",
-    },
-    TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON: {
-        id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON',
-        defaultMessage: 'Change',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT',
@@ -9904,31 +9734,6 @@ export default defineMessages({
     TR_PASSPHRASE_EXAMPLES: {
         id: 'TR_PASSPHRASE_EXAMPLES',
         defaultMessage: 'Examples',
-    },
-    TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING: {
-        id: 'TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING',
-        defaultMessage: 'A few uncommon random words',
-    },
-    TR_PASSPHRASE_EXAMPLES_ITEM1_DESCRIPTION: {
-        id: 'TR_PASSPHRASE_EXAMPLES_ITEM1_DESCRIPTION',
-        defaultMessage: 'freeway oppose spinout managing',
-    },
-    TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING: {
-        id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING',
-        defaultMessage: 'Use 10+ characters: mix uppercase, lowercase, and numbers.',
-    },
-    TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION: {
-        id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION',
-        defaultMessage: 'aM7xQ9zLpV',
-    },
-    TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING: {
-        id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING',
-        defaultMessage:
-            'Create a sentence only you would come up with—avoid quotes and famous lines.',
-    },
-    TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION: {
-        id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION',
-        defaultMessage: 'Red clouds drifted above the silent forest as shadows stretched.',
     },
     TR_UNRECOGNIZED: {
         id: 'TR_UNRECOGNIZED',
@@ -10237,10 +10042,6 @@ export default defineMessages({
         id: 'TR_BLUETOOTH_CONNECTING',
         defaultMessage: 'Connecting',
     },
-    TR_BLUETOOTH_DISCONNECT: {
-        id: 'TR_BLUETOOTH_DISCONNECT',
-        defaultMessage: 'Disconnect',
-    },
     TR_BLUETOOTH_DISCONNECTED_BUT_WAITING: {
         id: 'TR_BLUETOOTH_DISCONNECTED_BUT_WAITING',
         defaultMessage: 'Waiting',
@@ -10503,16 +10304,16 @@ export default defineMessages({
     TR_SIMULATION_WARNING: {
         id: 'TR_SIMULATION_WARNING',
         defaultMessage:
-            'This transaction is potentially risky! Please make sure you trust the source.',
+            'This transaction appears suspicious. Make sure you trust the source before continuing.',
     },
     TR_SIMULATION_MALICIOUS: {
         id: 'TR_SIMULATION_MALICIOUS',
         defaultMessage:
-            'This transaction is likely malicious! We recommend not to engage with this app.',
+            "This transaction appears suspicious. To protect your assets, it's best not to proceed with this app.",
     },
     TR_SIMULATION_DISCLAIMER_OVERRIDE: {
         id: 'TR_SIMULATION_DISCLAIMER_OVERRIDE',
-        defaultMessage: 'I want to ignore the warning and proceed anyways',
+        defaultMessage: 'I understand the risks—proceed anyway.',
     },
     TR_CONTRACT_INFO: {
         id: 'TR_CONTRACT_INFO',
@@ -10528,16 +10329,15 @@ export default defineMessages({
     },
     TR_SIMULATION_NO_ASSETS: {
         id: 'TR_SIMULATION_NO_ASSETS',
-        defaultMessage: 'No asset changes detected',
+        defaultMessage: 'No changes to your assets were detected.',
     },
     TR_EXCHANGE_DETAIL_FEEDBACK_TITLE: {
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_TITLE',
-        defaultMessage: 'How was your trading experience with Trezor Suite?',
+        defaultMessage: 'How was your trading experience?',
     },
     TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION: {
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION',
-        defaultMessage:
-            'Can you tell us more about your experience? Any details help make it better.',
+        defaultMessage: 'Your feedback helps us improve—tell us what you think.',
     },
     TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON: {
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON',
