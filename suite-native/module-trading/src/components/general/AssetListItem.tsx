@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { CryptoId } from 'invity-api';
-
 import { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
@@ -15,7 +13,6 @@ import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter
 export type AssetListItemProps = {
     name: string;
     symbol: NetworkSymbolExtended;
-    cryptoId: CryptoId;
     contractAddress?: TokenAddress;
     networkSymbol: NetworkSymbol;
     onPress: () => void;
@@ -40,7 +37,6 @@ const rightContentStyle = prepareNativeStyle(() => ({
 export const AssetListItem = ({
     name,
     symbol,
-    cryptoId,
     contractAddress,
     networkSymbol,
     onPress,
@@ -70,7 +66,7 @@ export const AssetListItem = ({
                     </HStack>
                     <HStack alignItems="center" justifyContent="flex-start">
                         <NetworkSymbolExtendedFormatter symbol={symbol} />
-                        <NetworkBadge cryptoId={cryptoId} />
+                        <NetworkBadge symbol={networkSymbol} />
                     </HStack>
                 </VStack>
                 {rightContent && <Box style={applyStyle(rightContentStyle)}>{rightContent}</Box>}

@@ -39,7 +39,6 @@ export const TradeableAssetListItem = ({ asset, onPress }: TradeableAssetListIte
         <AssetListItem
             name={name}
             symbol={symbol}
-            cryptoId={cryptoId}
             contractAddress={contractAddress}
             networkSymbol={networkSymbol}
             onPress={onPress}

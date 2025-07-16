@@ -17,6 +17,7 @@ describe('MyAssetListItem', () => {
         balance: '1000000',
         fiatBalance: asBaseCurrencyAmount(new BigNumber(42000)),
         cryptoId: 'bitcoin' as CryptoId,
+        isEnabled: true,
     };
 
     const mockEthAsset: MyAsset = {
@@ -25,6 +26,7 @@ describe('MyAssetListItem', () => {
         balance: '1000000000000000000',
         fiatBalance: asBaseCurrencyAmount(new BigNumber(2500)),
         cryptoId: 'ethereum' as CryptoId,
+        isEnabled: true,
     };
 
     const mockUsdcTokenAsset: MyAsset = {
@@ -35,6 +37,7 @@ describe('MyAssetListItem', () => {
         tokenSymbol: 'USDC' as TokenSymbol,
         contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+        isEnabled: true,
     };
 
     const getPreloadedState = () => ({
@@ -50,6 +53,15 @@ describe('MyAssetListItem', () => {
                             name: 'USDC',
                             cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                         },
+                    },
+                },
+                exchange: {
+                    exchangeInfo: {
+                        sellCryptoIds: [
+                            'bitcoin',
+                            'ethereum',
+                            'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        ],
                     },
                 },
             },
@@ -124,15 +136,7 @@ describe('MyAssetListItem', () => {
         expect(getAllByText('100,000,000 USDC')[0]).toBeTruthy();
     });
 
-    it('should not render when tradeable asset cannot be created', async () => {
-        const invalidAsset: MyAsset = {
-            symbol: 'btc' as NetworkSymbol,
-            name: 'Invalid Asset',
-            balance: '1000',
-            fiatBalance: asBaseCurrencyAmount(new BigNumber(10)),
-            cryptoId: undefined,
-        };
-
+    it('should render as no pair when not enabled', async () => {
         const preloadedState = {
             ...getPreloadedState(),
             appSettings: {
@@ -141,9 +145,12 @@ describe('MyAssetListItem', () => {
             },
         };
 
-        const { toJSON } = await renderComponent({ asset: invalidAsset }, preloadedState);
+        const { getByText } = await renderComponent(
+            { asset: { ...mockEthAsset, isEnabled: false } },
+            preloadedState,
+        );
 
-        expect(toJSON()).toBeNull();
+        expect(getByText('No pair')).toBeTruthy();
     });
 
     it('should render without fiat balance when not available', async () => {
@@ -170,5 +177,99 @@ describe('MyAssetListItem', () => {
         expect(getAllByText('USDC').length).toBeGreaterThan(0);
         expect(getByText('100,000,000 USDC')).toBeTruthy();
         expect(getByText('$100.00')).toBeTruthy();
+    });
+
+    describe('handlePress functionality', () => {
+        it('should call onPress when asset is enabled and tradeableAsset exists', async () => {
+            const onPress = jest.fn();
+            const { getAllByText } = await renderComponent({
+                asset: mockBtcAsset,
+                onPress,
+            });
+
+            fireEvent.press(getAllByText('Bitcoin')[0]);
+
+            expect(onPress).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    symbol: 'btc',
+                    name: 'Bitcoin',
+                    cryptoId: 'bitcoin',
+                }),
+            );
+        });
+
+        it('should  not call onPress when asset is not enabled', async () => {
+            const onPress = jest.fn();
+            const disabledAsset = { ...mockBtcAsset, isEnabled: false };
+            const { getAllByText } = await renderComponent({
+                asset: disabledAsset,
+                onPress,
+            });
+
+            fireEvent.press(getAllByText('Bitcoin')[0]);
+
+            expect(onPress).not.toHaveBeenCalled();
+        });
+
+        it('should  not call onPress when tradeableAsset does not exist (no cryptoId)', async () => {
+            const onPress = jest.fn();
+            const assetWithoutCryptoId = { ...mockBtcAsset, cryptoId: undefined };
+            const { getAllByText } = await renderComponent({
+                asset: assetWithoutCryptoId,
+                onPress,
+            });
+
+            fireEvent.press(getAllByText('Bitcoin')[0]);
+
+            expect(onPress).not.toHaveBeenCalled();
+        });
+
+        it('should  not call onPress when coinInfo does not exist in store', async () => {
+            const onPress = jest.fn();
+            const preloadedStateWithoutCoinInfo = {
+                wallet: {
+                    accounts: [getBtcAccount(), getEthAccount()],
+                    tradingNew: {
+                        info: {
+                            coins: {}, // Empty coins object
+                        },
+                        exchange: {
+                            exchangeInfo: {
+                                sellCryptoIds: [],
+                            },
+                        },
+                    },
+                },
+            };
+
+            const { getAllByText } = await renderComponent(
+                {
+                    asset: mockBtcAsset,
+                    onPress,
+                },
+                preloadedStateWithoutCoinInfo as any,
+            );
+
+            fireEvent.press(getAllByText('Bitcoin')[0]);
+
+            expect(onPress).not.toHaveBeenCalled();
+        });
+
+        it('should not call onPress when asset is not enabled and tradeableAsset does not exist', async () => {
+            const onPress = jest.fn();
+            const disabledAssetWithoutCryptoId = {
+                ...mockBtcAsset,
+                isEnabled: false,
+                cryptoId: undefined,
+            };
+            const { getAllByText } = await renderComponent({
+                asset: disabledAssetWithoutCryptoId,
+                onPress,
+            });
+
+            fireEvent.press(getAllByText('Bitcoin')[0]);
+
+            expect(onPress).not.toHaveBeenCalled();
+        });
     });
 });

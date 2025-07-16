@@ -21,6 +21,7 @@ export type MyAsset = {
     tokenSymbol?: TokenSymbol | null;
     contract?: TokenAddress;
     cryptoId?: CryptoId;
+    isEnabled: boolean;
 };
 
 export type Country = { label: string; value: string };

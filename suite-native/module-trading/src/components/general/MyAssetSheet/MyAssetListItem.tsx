@@ -2,12 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { TradingRootState, selectTradingCoinInfoByCryptoId } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
-import { VStack } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
     CryptoAmountFormatter,
     TokenAmountFormatter,
 } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
 
 import { MyAsset, TradeableAsset } from '../../../types/general';
 import { coinInfoToTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
@@ -22,7 +24,10 @@ export type MyAssetListItemProps = {
 export { ASSET_ITEM_HEIGHT };
 
 export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
-    const { symbol, name, balance, fiatBalance, tokenSymbol, contract, cryptoId } = asset;
+    const { showToast } = useToast();
+
+    const { symbol, name, balance, fiatBalance, tokenSymbol, contract, cryptoId, isEnabled } =
+        asset;
 
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, cryptoId),
@@ -30,9 +35,16 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
 
     const tradeableAsset = cryptoId && coinInfo && coinInfoToTradeableAsset(cryptoId, coinInfo);
 
-    if (!tradeableAsset) {
-        return null;
-    }
+    const handlePress = () => {
+        if (tradeableAsset && isEnabled) {
+            onPress(tradeableAsset);
+        } else {
+            showToast({
+                variant: 'default',
+                message: <Translation id="moduleTrading.myAssetSheet.noPair.toast" />,
+            });
+        }
+    };
 
     const balanceContent = (
         <VStack alignItems="flex-end">
@@ -56,25 +68,29 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
                 />
             )}
 
-            {fiatBalance && (
-                <BaseCurrencyAmountFormatter
-                    symbol={symbol}
-                    value={fiatBalance}
-                    variant="hint"
-                    color="textSubdued"
-                />
-            )}
+            {fiatBalance &&
+                (isEnabled ? (
+                    <BaseCurrencyAmountFormatter
+                        symbol={symbol}
+                        value={fiatBalance}
+                        variant="hint"
+                        color="textSubdued"
+                    />
+                ) : (
+                    <Text variant="label" color="textSubdued">
+                        <Translation id="moduleTrading.myAssetSheet.noPair.note" />
+                    </Text>
+                ))}
         </VStack>
     );
 
     return (
         <AssetListItem
             name={name}
-            symbol={tradeableAsset.symbol}
-            cryptoId={cryptoId}
+            symbol={tokenSymbol ?? symbol}
             contractAddress={contract}
             networkSymbol={symbol}
-            onPress={() => onPress(tradeableAsset)}
+            onPress={handlePress}
             rightContent={balanceContent}
         />
     );

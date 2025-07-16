@@ -9,8 +9,10 @@ import {
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
+    TradingRootState as CommonTradingRootState,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeProviders,
+    selectTradingExchangeSellCryptoIds,
     toTokenCryptoId,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -41,6 +43,7 @@ import {
 } from '../utils/general/tradeableAssetUtils';
 
 type ExchangeSelectorsRootState = TradingRootState &
+    CommonTradingRootState &
     AccountsRootState &
     DeviceRootState &
     TokenDefinitionsRootState &
@@ -68,7 +71,7 @@ export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAc
     },
 );
 
-export const selectExchangeTradeableAssetsSorted = createMemoizedSelector(
+export const selectExchangeBuyTradeableAssetsSorted = createMemoizedSelector(
     [
         selectTradingExchangeBuyCryptoIds as unknown as (
             state: TradingRootState,
@@ -138,9 +141,10 @@ export const selectExchangeAccountsWithTokensSectionList = createExchangeMemoize
         selectTokenDefinitions,
         selectCurrentFiatRates,
         selectLocalCurrency,
+        selectTradingExchangeSellCryptoIds,
         state => state,
     ],
-    (accounts: Account[], tokenDefinitions, fiatRates, localCurrency, state) =>
+    (accounts: Account[], tokenDefinitions, fiatRates, localCurrency, sellCryptoIds, state) =>
         accounts
             .map<SectionListData<MyAsset, Account>[number]>((account: Account) => {
                 const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
@@ -158,34 +162,53 @@ export const selectExchangeAccountsWithTokensSectionList = createExchangeMemoize
                     token => parseFloat(token?.balance ?? '0') > 0,
                 );
 
-                const tokens: MyAsset[] = tokensWithBalance.map(token => {
-                    const fiatRateKey = getFiatRateKey(
-                        account.symbol,
-                        localCurrency,
-                        token.contract as TokenAddress,
-                    );
-                    const rate = fiatRates?.[fiatRateKey]?.rate;
-                    const fiatBalance =
-                        rate && token.balance
-                            ? toFiatCurrency({ amount: token.balance, rate })
-                            : null;
+                const tokens: MyAsset[] = tokensWithBalance
+                    .map(token => {
+                        const fiatRateKey = getFiatRateKey(
+                            account.symbol,
+                            localCurrency,
+                            token.contract as TokenAddress,
+                        );
+                        const rate = fiatRates?.[fiatRateKey]?.rate;
+                        const fiatBalance =
+                            rate && token.balance
+                                ? toFiatCurrency({ amount: token.balance, rate })
+                                : null;
 
-                    const tokenSymbol = selectAccountTokenSymbol(
-                        state,
-                        account.key,
-                        token.contract as TokenAddress,
-                    );
+                        const tokenSymbol = selectAccountTokenSymbol(
+                            state,
+                            account.key,
+                            token.contract as TokenAddress,
+                        );
+                        const cryptoId = toTokenCryptoId(account.symbol, token.contract);
 
-                    return {
-                        symbol: account.symbol,
-                        name: token.name ?? token.symbol ?? '',
-                        balance: token.balance ?? '0',
-                        fiatBalance,
-                        tokenSymbol,
-                        contract: token.contract as TokenAddress,
-                        cryptoId: toTokenCryptoId(account.symbol, token.contract),
-                    };
-                });
+                        return {
+                            symbol: account.symbol,
+                            name: token.name ?? token.symbol ?? '',
+                            balance: token.balance ?? '0',
+                            fiatBalance,
+                            tokenSymbol,
+                            contract: token.contract as TokenAddress,
+                            cryptoId,
+                            isEnabled: sellCryptoIds.includes(cryptoId),
+                            fiatRateKey,
+                            rate,
+                        };
+                    })
+                    .sort((a, b) => {
+                        // sellable (isEnabled) assets first
+                        if (a.isEnabled !== b.isEnabled) {
+                            return a.isEnabled ? -1 : 1;
+                        }
+
+                        // bigger fiatBalance first
+                        const aFiatBalance = a.fiatBalance ? Number(a.fiatBalance) : 0;
+                        const bFiatBalance = b.fiatBalance ? Number(b.fiatBalance) : 0;
+
+                        return bFiatBalance - aFiatBalance;
+                    });
+
+                const cryptoId = getNetwork(account.symbol).tradeCryptoId as CryptoId;
 
                 const accountAsset = {
                     symbol: account.symbol,
@@ -198,7 +221,8 @@ export const selectExchangeAccountsWithTokensSectionList = createExchangeMemoize
                         shouldIncludeStaking: false,
                         shouldIncludeTokens: false,
                     }),
-                    cryptoId: getNetwork(account.symbol).tradeCryptoId as CryptoId | undefined,
+                    cryptoId,
+                    isEnabled: sellCryptoIds.includes(cryptoId),
                 };
 
                 const assets: MyAsset[] = [
