@@ -265,5 +265,10 @@ export const config = {
             capabilities: ['entropyCheck'],
             min: { T1B1: '1.13.1', T2T1: '2.8.7', T2B1: '2.8.7', T3B1: '2.8.7', T3T1: '2.8.7' },
         },
+        {
+            capabilities: ['evmApproval'],
+            min: { T1B1: '0', T2T1: '2.9.0', T2B1: '2.9.0', T3B1: '2.9.0', T3T1: '2.9.0' },
+            comment: ['EVM approval flow for ERC20 tokens, introduced in firmware 2.9.0'],
+        },
     ],
 };
