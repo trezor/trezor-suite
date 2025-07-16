@@ -9646,7 +9646,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/staking@workspace:suite-common/staking":
+"@suite-common/staking@workspace:*, @suite-common/staking@workspace:suite-common/staking":
   version: 0.0.0-use.local
   resolution: "@suite-common/staking@workspace:suite-common/staking"
   dependencies:
@@ -12750,6 +12750,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
+    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
