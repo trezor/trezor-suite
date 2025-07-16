@@ -15,11 +15,11 @@ export enum Theme {
 }
 
 export enum Language {
-    Spanish = 'es',
+    Spanish = 'es-ES',
 }
 
 const languageMap = {
-    es: 'Español',
+    'es-ES': 'Español',
 };
 
 const backgroundImages = {

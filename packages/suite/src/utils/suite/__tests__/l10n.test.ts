@@ -7,40 +7,31 @@ describe('utils/suite/l10n', () => {
             languagesGetter = jest.spyOn(window.navigator, 'languages', 'get');
         });
         it('default lang', () => {
-            expect(utils.getOsLocale()).toBe('en');
-            expect(utils.getOsLocale('en')).toBe('en');
+            expect(utils.getOsLocale()).toBe('en-US');
+            expect(utils.getOsLocale('en-US')).toBe('en-US');
         });
         it('browser locales', () => {
             languagesGetter.mockReturnValue(['es-ES', 'de-AT', 'en']);
-            expect(utils.getOsLocale('cs')).toBe('es');
-            languagesGetter.mockReturnValue(['xx-XX', 'en-GB', 'es']);
-            expect(utils.getOsLocale('cs')).toBe('en');
+            expect(utils.getOsLocale('cs-CZ')).toBe('es-ES');
+            languagesGetter.mockReturnValue(['xx-XX', 'en-US', 'es']);
+            expect(utils.getOsLocale('cs-CZ')).toBe('en-US');
             languagesGetter.mockReturnValue(['aa', 'xx-XX']);
-            expect(utils.getOsLocale('cs')).toBe('cs');
+            expect(utils.getOsLocale('cs-CZ')).toBe('cs-CZ');
         });
     });
 
     it('identifying locale', () => {
-        expect(utils.isLocale('en')).toBe(true);
-        expect(utils.isLocale('lol')).toBe(true);
+        expect(utils.isLocale('en-US')).toBe(true);
         expect(utils.isLocale('xx')).toBe(false);
-        expect(utils.isCompletedLocale('en')).toBe(true);
-        expect(utils.isCompletedLocale('lol')).toBe(false);
+        expect(utils.isCompletedLocale('en-US')).toBe(true);
         expect(utils.isCompletedLocale('xx')).toBe(false);
     });
 
     describe('ensureLocale', () => {
-        it('translation mode off', () => {
-            expect(utils.ensureLocale('en')).toBe('en');
-            expect(utils.ensureLocale('lol')).toBe('en');
-            expect(utils.ensureLocale('xx')).toBe('en');
-        });
-        it('translation mode on', () => {
-            localStorage.setItem('translation_mode', 'true');
-            expect(utils.ensureLocale('en')).toBe('lol');
-            expect(utils.ensureLocale('lol')).toBe('lol');
-            expect(utils.ensureLocale('xx')).toBe('lol');
-            localStorage.removeItem('translation_mode');
+        it('ensure if locale is valid or return default', () => {
+            expect(utils.ensureLocale('en-US')).toBe('en-US');
+            expect(utils.ensureLocale('cs-CZ')).toBe('cs-CZ');
+            expect(utils.ensureLocale('xx')).toBe('en-US');
         });
     });
 });

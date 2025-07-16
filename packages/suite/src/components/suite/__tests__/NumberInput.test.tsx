@@ -72,7 +72,7 @@ const testCase = async (
 
 describe('NumberInput component', () => {
     test('Formats with the en locale', async () => {
-        const input = renderInput('en');
+        const input = renderInput('en-US');
 
         await testCase(input, '12345.67', '12,345.67', '12345.67');
         await testCase(input, '1234,67', '1,234.67', '1234.67');
@@ -96,7 +96,7 @@ describe('NumberInput component', () => {
     });
 
     test('Formats with the cs locale', async () => {
-        const input = renderInput('cs');
+        const input = renderInput('cs-CZ');
 
         await testCase(input, '22345.67', '22\u00A0345,67', '22345.67');
         await testCase(input, '2234,67', '2\u00A0234,67', '2234.67');
@@ -120,7 +120,7 @@ describe('NumberInput component', () => {
     });
 
     test('Formats with the es locale', async () => {
-        const input = renderInput('es');
+        const input = renderInput('es-ES');
 
         await testCase(input, '32345,67', '32.345,67', '32345.67');
         await testCase(input, '3345.67', '3345,67', '3345.67');

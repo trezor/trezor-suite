@@ -11,7 +11,7 @@ export const loadPageMarkdownFile = async (id: string, language = 'en'): Promise
     return md;
 };
 
-export const useGuideLoadArticle = (currentNode: GuideNode | null, language: Locale = 'en') => {
+export const useGuideLoadArticle = (currentNode: GuideNode | null, language: Locale = 'en-US') => {
     const [markdown, setMarkdown] = useState<string>();
     const [hasError, setHasError] = useState<boolean>(false);
 
