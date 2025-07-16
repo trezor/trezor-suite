@@ -17,7 +17,6 @@ import {
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
     selectTradingExchange,
-    selectTradingExchangeIsLoading,
 } from '../exchangeSelectors';
 
 describe('exchangeSelectors', () => {
@@ -192,16 +191,6 @@ describe('exchangeSelectors', () => {
 
             expect(selectExchangeQuotes({ wallet: { tradingNew: prevState } })).toEqual(
                 exchangeQuotes,
-            );
-        });
-    });
-
-    describe('selectTradingExchangeIsLoading', () => {
-        it('should return exchange.isLoading', () => {
-            prevState.exchange.isLoading = true;
-
-            expect(selectTradingExchangeIsLoading({ wallet: { tradingNew: prevState } })).toBe(
-                true,
             );
         });
     });

@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectTradingExchangeReceiveAccountKey } from '@suite-common/trading';
+import {
+    selectTradingExchangeIsLoading,
+    selectTradingExchangeReceiveAccountKey,
+} from '@suite-common/trading';
 import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
@@ -11,7 +14,6 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 
-import { selectTradingExchangeIsLoading } from '../../selectors/exchangeSelectors';
 import { ExchangeFormType } from '../../types/exchange';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 

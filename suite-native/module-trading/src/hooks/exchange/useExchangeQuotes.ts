@@ -6,15 +6,13 @@ import {
     HandleExchangeRequestThunkProps,
     cryptoIdToNetwork,
     exchangeThunks,
+    selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
 import { exchangeActions } from '../../reducers';
-import {
-    selectExchangeQuotes,
-    selectTradingExchangeIsLoading,
-} from '../../selectors/exchangeSelectors';
+import { selectExchangeQuotes } from '../../selectors/exchangeSelectors';
 import { ExchangeFormType } from '../../types/exchange';
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';

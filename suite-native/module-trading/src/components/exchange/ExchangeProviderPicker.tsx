@@ -5,6 +5,7 @@ import { ExchangeTrade } from 'invity-api';
 import { invariant } from '@suite-common/suite-utils';
 import {
     TradingRootState,
+    selectTradingExchangeIsLoading,
     selectTradingProviderByNameAndTradeType,
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';
@@ -12,7 +13,6 @@ import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { selectTradingExchangeIsLoading } from '../../selectors/exchangeSelectors';
 import { getKycPolicyWarningTranslation } from '../../utils/general/kycUtils';
 import { OverviewRow } from '../general/OverviewRow';
 import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
