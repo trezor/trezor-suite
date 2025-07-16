@@ -61,7 +61,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                 options.push('broadcast');
             }
             if (typedPayload.locktime) {
-                options.push('bitcoinLockTime');
+                options.push('bitcoinLocktime');
             }
             dispatch(
                 sendFormActions.storePrecomposedTransaction({
@@ -75,7 +75,8 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                         hasCoinControlBeenOpened: false,
                         selectedFee: 'custom',
                         options,
-                        bitcoinLockTime: typedPayload.locktime?.toString(),
+                        bitcoinLocktimeBlockHeight: '',
+                        bitcoinLocktimeDatetime: '',
                     },
                     precomposedTransaction: txSigningPrecomposed,
                 }),

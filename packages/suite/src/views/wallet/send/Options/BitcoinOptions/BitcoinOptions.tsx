@@ -3,6 +3,7 @@ import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { Button, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
@@ -81,7 +82,7 @@ export const BitcoinOptions = () => {
         control,
     });
 
-    const locktimeEnabled = options.includes('bitcoinLockTime');
+    const locktimeEnabled = options.includes('bitcoinLocktime');
     const utxoSelectionEnabled = options.includes('utxoSelection');
     const broadcastEnabled = options.includes('broadcast');
 
@@ -97,10 +98,14 @@ export const BitcoinOptions = () => {
 
     const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, network.symbol));
 
-    const locktime = watch('bitcoinLockTime');
+    const [locktimeBlockHeight, locktimeDatetime] = watch([
+        'bitcoinLocktimeBlockHeight',
+        'bitcoinLocktimeDatetime',
+    ]);
 
-    const isBroadcastDisabled = !canLocktimeTxBeBroadcast({
-        locktime: locktime !== undefined ? Number(locktime) : undefined,
+    const canLocktimeBeBroadcast = canLocktimeTxBeBroadcast({
+        locktimeBlockHeight: Number(locktimeBlockHeight),
+        locktimeDatetime: datetimeToLocktime(locktimeDatetime),
         currentBlockHeight: blockchain.blockHeight,
     });
 
@@ -122,7 +127,7 @@ export const BitcoinOptions = () => {
                                 icon="calendar"
                                 onClick={() => {
                                     // open additional form
-                                    toggleOption('bitcoinLockTime');
+                                    toggleOption('bitcoinLocktime');
                                     composeTransaction();
                                 }}
                                 data-testid="add-locktime-button"
@@ -135,9 +140,9 @@ export const BitcoinOptions = () => {
                         content={
                             <Translation
                                 id={
-                                    isBroadcastDisabled
-                                        ? 'BROADCAST_TOOLTIP_DISABLED_LOCKTIME'
-                                        : 'BROADCAST_TOOLTIP'
+                                    canLocktimeBeBroadcast
+                                        ? 'BROADCAST_TOOLTIP'
+                                        : 'BROADCAST_TOOLTIP_DISABLED_LOCKTIME'
                                 }
                             />
                         }
@@ -151,7 +156,7 @@ export const BitcoinOptions = () => {
                                 composeTransaction();
                             }}
                             data-testid="broadcast-button"
-                            isDisabled={isBroadcastDisabled}
+                            isDisabled={!canLocktimeBeBroadcast}
                         >
                             <Inline>
                                 <Translation id="BROADCAST" />
@@ -201,10 +206,11 @@ export const BitcoinOptions = () => {
             {locktimeEnabled && (
                 <Locktime
                     close={() => {
-                        resetDefaultValue('bitcoinLockTime');
+                        resetDefaultValue('bitcoinLocktimeBlockHeight');
+                        resetDefaultValue('bitcoinLocktimeDatetime');
                         // close additional form
                         if (!broadcastEnabled) toggleOption('broadcast');
-                        toggleOption('bitcoinLockTime');
+                        toggleOption('bitcoinLocktime');
                         composeTransaction();
                     }}
                 />

@@ -5,7 +5,7 @@ import { Output, RbfTransactionParams } from './transaction';
 export type FormOptions =
     | 'broadcast'
     | 'utxoSelection'
-    | 'bitcoinLockTime'
+    | 'bitcoinLocktime'
     | 'ethereumData'
     | 'ethereumNonce' // TODO
     | 'destinationTag';
@@ -33,7 +33,8 @@ export interface FormState {
 
     // advanced form inputs
     options: FormOptions[];
-    bitcoinLockTime?: string; // bitcoin RBF/schedule
+    bitcoinLocktimeBlockHeight?: string;
+    bitcoinLocktimeDatetime?: string;
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
