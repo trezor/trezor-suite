@@ -6,15 +6,28 @@ import {
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { TradingType } from '@suite-common/trading';
 import {
+    FiatRatesRootState,
+    WalletSettingsRootState,
+    selectCurrentFiatRates,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
     FeatureFlag,
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 
 import { TradingRootState } from '../reducers';
+import { TradeableAsset } from '../types/general';
+import { getSymbolFromTradeableAsset } from '../utils/general/tradeableAssetUtils';
 
 const createFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
     MessageSystemRootState & FeatureFlagsRootState
+>();
+
+const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
+    FiatRatesRootState & WalletSettingsRootState & TradingRootState
 >();
 
 export const selectTradingEnvironment = (state: TradingRootState) =>
@@ -74,3 +87,28 @@ export const selectIsAmountInputActive = (state: TradingRootState) =>
 
 export const selectActiveTradingType = (state: TradingRootState) =>
     state.wallet.tradingNew.activeTradingType;
+
+export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
+    [
+        selectCurrentFiatRates,
+        selectLocalCurrency,
+        (_state, asset: TradeableAsset) => asset,
+        (_state, _symbol, amount: string) => amount,
+    ],
+    (fiatRates, localCurrency, asset, amount) => {
+        const symbol = getSymbolFromTradeableAsset(asset);
+
+        if (!symbol || !fiatRates) {
+            return undefined;
+        }
+
+        const fiatRateKey = getFiatRateKey(symbol, localCurrency, asset.contractAddress);
+        const rate = fiatRates[fiatRateKey]?.rate;
+
+        if (!rate) {
+            return undefined;
+        }
+
+        return toFiatCurrency({ amount, rate }) || undefined;
+    },
+);
