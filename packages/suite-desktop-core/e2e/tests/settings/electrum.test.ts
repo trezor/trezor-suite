@@ -20,7 +20,7 @@ test.describe(
                     priority: TestPriority.High,
                 }),
             },
-            async ({ page, dashboardPage, settingsPage, walletPage }) => {
+            async ({ page, dashboardPage, assetsSection, settingsPage, walletPage }) => {
                 test.info().annotations.push({
                     type: 'dependency',
                     description:
@@ -34,8 +34,8 @@ test.describe(
 
                 await dashboardPage.navigateTo();
                 await page.discoveryShouldFinish();
-
                 await expect(walletPage.balanceOfAccount('regtest').first()).toBeVisible();
+                await expect(assetsSection.assetFiatAmount('regtest')).toBeVisible();
             },
         );
     },

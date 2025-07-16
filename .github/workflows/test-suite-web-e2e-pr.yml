@@ -127,7 +127,7 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           project: "web"
-          containers: "trezor-user-env-unix bitcoin-regtest"
+          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           additional-grep: "(?=.*@webOnly)"
           fail-fast: 7

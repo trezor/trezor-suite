@@ -75,7 +75,7 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           project: "desktop"
-          containers: "trezor-user-env-unix bitcoin-regtest"
+          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false
