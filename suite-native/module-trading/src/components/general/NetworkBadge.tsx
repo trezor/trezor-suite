@@ -1,19 +1,15 @@
-import { CryptoId } from 'invity-api';
-
-import { invariant } from '@suite-common/suite-utils';
-import { cryptoIdToNetwork } from '@suite-common/trading';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 export type PlatformBadgeProps = {
-    cryptoId: CryptoId;
+    symbol: NetworkSymbol;
 };
 
-export const NetworkBadge = ({ cryptoId }: PlatformBadgeProps) => {
+export const NetworkBadge = ({ symbol }: PlatformBadgeProps) => {
     const { translate } = useTranslate();
 
-    const networkName = cryptoIdToNetwork(cryptoId)?.name;
-    invariant(networkName, `Network name not found for cryptoId: ${cryptoId}`);
+    const networkName = getNetwork(symbol).name;
 
     return (
         <Badge

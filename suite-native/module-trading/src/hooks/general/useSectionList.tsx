@@ -9,13 +9,14 @@ export type ItemRenderConfig<U> = {
     isFirst?: boolean;
     isLast?: boolean;
     sectionData: U;
+    isEnabled?: boolean;
 };
 
 export type SectionListData<T, U = undefined> = {
     key: string;
     label: ReactNode;
     sectionData: U;
-    data: T[];
+    data: (T & { isEnabled?: boolean })[];
 }[];
 
 export type SectionHeaderRenderConfig<U> = {
@@ -39,7 +40,7 @@ type UseSectionListProps<T, U> = {
 };
 
 const itemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
-    ({ colors, spacings, borders }, { isFirst, isLast }) => ({
+    ({ colors, spacings, borders }, { isFirst, isLast, isEnabled }) => ({
         backgroundColor: colors.backgroundSurfaceElevation1,
         paddingHorizontal: spacings.sp12,
         extend: [
@@ -55,6 +56,12 @@ const itemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
                 style: {
                     borderBottomLeftRadius: borders.radii.r20,
                     borderBottomRightRadius: borders.radii.r20,
+                },
+            },
+            {
+                condition: !isEnabled,
+                style: {
+                    backgroundColor: colors.baseFillSurfacePage,
                 },
             },
         ],
@@ -76,6 +83,7 @@ const transformToInternalFlatListData = <T, U = undefined>(
                         isFirst: index === 0,
                         isLast: index === data.length - 1 && isLastItemRounded,
                         sectionData,
+                        isEnabled: item.isEnabled !== undefined ? item.isEnabled : true,
                     },
                 ],
             );

@@ -11,6 +11,8 @@ export type MyAssetListSectionHeaderProps = {
     isFirst?: boolean;
 };
 
+export const TEST_ID_ACCOUNT_TYPE_BADGE = 'account-type-badge';
+
 export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectionHeaderProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -31,7 +33,13 @@ export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectio
                     {account.accountLabel}
                 </Text>
                 {formattedAccountType && (
-                    <Badge label={formattedAccountType} size="small" elevation="1" variant="blue" />
+                    <Badge
+                        label={formattedAccountType}
+                        size="small"
+                        elevation="1"
+                        variant="blue"
+                        testID={TEST_ID_ACCOUNT_TYPE_BADGE}
+                    />
                 )}
             </HStack>
             <BaseCurrencyAmountFormatter

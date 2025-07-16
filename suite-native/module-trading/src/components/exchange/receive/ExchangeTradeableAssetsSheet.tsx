@@ -1,4 +1,4 @@
-import { useExchangeTradeableAssetsFilteredData } from '../../../hooks/exchange/useExchangeTradeableAssetsFilteredData';
+import { useExchangeBuyTradeableAssetsFilteredData } from '../../../hooks/exchange/useExchangeBuyTradeableAssetsFilteredData';
 import {
     TradeableAssetSheet,
     TradeableAssetsSheetProps,
@@ -11,7 +11,7 @@ export type ExchangeTradeableAssetsSheetProps = Omit<
 
 export const ExchangeTradeableAssetsSheet = (props: ExchangeTradeableAssetsSheetProps) => {
     const { filteredData, filterValue, setFilterValue, setFilterSymbol } =
-        useExchangeTradeableAssetsFilteredData();
+        useExchangeBuyTradeableAssetsFilteredData();
 
     // re-mount FlashList component when filterValue changes (resets scroll position)
     const flashListKey = 'exchange_tradeable_assets-' + filterValue;

@@ -2194,6 +2194,7 @@ export const en = {
             title: 'Your assets',
             emptyTitle: 'No assets found',
             emptyDescription: 'You do not have any assets available for this operation.',
+            noPair: { note: 'No pair', toast: 'There is no pair for this asset' },
         },
     },
     firmware: {
