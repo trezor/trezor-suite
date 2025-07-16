@@ -10,6 +10,7 @@ import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingRootState, TradingState, tradingSlice } from '../../reducers';
 import {
     selectExchangeAccountsWithTokensSectionList,
+    selectExchangeAmountLimits,
     selectExchangeBuyTradeableAssetsSorted,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
@@ -539,6 +540,16 @@ describe('exchangeSelectors', () => {
             expect(result.length).toBe(1);
             expect(result[0].data.length).toBe(1); // Only account asset, no tokens
             expect(result[0].data[0].symbol).toBe('eth');
+        });
+    });
+
+    describe('selectExchangeAmountLimits', () => {
+        it('should return amount limits', () => {
+            expect(selectExchangeAmountLimits({ wallet: { tradingNew: prevState } })).toEqual({
+                currency: 'BTC',
+                minCrypto: '0.0001',
+                maxCrypto: '50',
+            });
         });
     });
 });

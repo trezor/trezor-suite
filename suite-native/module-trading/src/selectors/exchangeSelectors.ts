@@ -254,3 +254,6 @@ export const selectExchangeAccountsWithTokensSectionList = createExchangeMemoize
             })
             .filter(section => section.data.length > 0),
 );
+
+export const selectExchangeAmountLimits = (state: TradingRootState) =>
+    selectTradingExchange(state).amountLimits;

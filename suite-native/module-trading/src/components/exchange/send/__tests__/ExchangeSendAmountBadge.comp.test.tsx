@@ -70,5 +70,37 @@ describe('ExchangeSendAmountBadge', () => {
 
             expect(getByText('$1,234.57')).toBeOnTheScreen();
         });
+
+        it('should display error message when field has error', async () => {
+            act(() => {
+                form.setError('sendCryptoAmount', {
+                    type: 'manual',
+                    message: 'VALIDATION_ERROR',
+                });
+                form.setValue('sendCryptoAmount', '1000');
+            });
+
+            const { getByText, queryByText } = await renderExchangeSendAmountBadge();
+
+            expect(queryByText('$1.00')).toBeNull();
+            expect(getByText('VALIDATION_ERROR')).toBeOnTheScreen();
+        });
+
+        it('should display formatted fiat value when field has error, but quotes are loading', async () => {
+            act(() => {
+                form.setError('sendCryptoAmount', {
+                    type: 'manual',
+                    message: 'VALIDATION_ERROR',
+                });
+                form.setValue('sendCryptoAmount', '1000');
+            });
+            const preloadedState = getPreloadedState();
+            preloadedState!.wallet!.tradingNew!.exchange!.isLoading = true;
+
+            const { getByText, queryByText } = await renderExchangeSendAmountBadge(preloadedState);
+
+            expect(queryByText('VALIDATION_ERROR')).toBeNull();
+            expect(getByText('$1.00')).toBeOnTheScreen();
+        });
     });
 });

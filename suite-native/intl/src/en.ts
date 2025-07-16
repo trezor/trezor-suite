@@ -2094,6 +2094,7 @@ export const en = {
             min: 'Minimum is {min}',
             max: 'Maximum is {max}',
             noQuotes: 'No offers available for your request. Change amount or currency.',
+            insufficientBalance: 'Insufficient balance',
         },
         tradeHistory: {
             list: {

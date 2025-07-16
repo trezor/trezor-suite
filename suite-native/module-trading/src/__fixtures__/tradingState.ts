@@ -76,6 +76,11 @@ export const getInitializedExchangeState = () =>
                 'bitcoin',
             ] as CryptoId[],
         },
+        amountLimits: {
+            currency: 'BTC',
+            minCrypto: '0.0001',
+            maxCrypto: '50',
+        },
     }) as TradingExchangeState;
 
 export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>

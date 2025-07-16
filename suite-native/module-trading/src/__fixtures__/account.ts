@@ -26,14 +26,14 @@ export const getBtcAccount = (key = 'btc-account-1') =>
         },
     }) as unknown as Account;
 
-export const getEthAccount = () =>
+export const getEthAccount = (key = 'eth-account-1') =>
     ({
+        key,
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountLabel: 'Ethereum #1',
         index: 0,
         path: "m/44'/60'/0'/0/0",
         descriptor: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
-        key: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8-eth-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountType: 'normal',
         symbol: 'eth',
         empty: false,
