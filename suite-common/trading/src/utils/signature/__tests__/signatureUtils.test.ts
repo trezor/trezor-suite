@@ -6,16 +6,6 @@ import {
 } from '../signatureUtils';
 
 // Mock external dependencies
-jest.mock('@suite-common/wallet-config', () => ({
-    getNetwork: jest.fn().mockReturnValue({ decimals: 8 }),
-}));
-
-jest.mock('@suite-common/wallet-utils', () => ({
-    convertAmountUnitsToSubunits: jest
-        .fn()
-        .mockImplementation((amount, decimals) => amount * Math.pow(10, decimals)),
-}));
-
 jest.mock('../../../utils', () => ({
     cryptoIdToNetworkAndContractAddress: jest.fn().mockReturnValue({
         network: { decimals: 8 },
@@ -67,12 +57,12 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestExchange',
                 nonce: 'nonce789',
-                amount: 10000000, // 0.1 * 10^8
+                amount: '10000000', // 0.1 * 10^8
                 memos: [
                     {
                         coin_purchase_memo: {
                             address: '0x1234567890123456789012345678901234567890',
-                            amount: 250000000, // 2.5 * 10^8
+                            amount: '250000000', // 2.5 * 10^8
                             coin_type: 60, // ethereum coin type
                             mac: 'macPurchase123',
                         },
@@ -262,7 +252,7 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestSeller',
                 nonce: 'sellNonce123',
-                amount: 50000000, // 0.5 * 10^8
+                amount: '50000000', // 0.5 * 10^8
                 memos: [
                     {
                         text_memo: {
@@ -350,7 +340,7 @@ describe('signatureUtils', () => {
             const result = tradingSellCreatePaymentRequest(propsWithEth);
 
             expect(result).toBeDefined();
-            expect(result?.amount).toBe(1050000000); // 10.5 * 10^8
+            expect(result?.amount).toBe('1050000000'); // 10.5 * 10^8
         });
 
         it('should handle empty memo text', () => {
@@ -422,8 +412,8 @@ describe('signatureUtils', () => {
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe(99999999999999); // 999999.99999999 * 10^8
-                expect(result.memos[0].coin_purchase_memo?.amount).toBe(100000012345678); // 1000000.12345678 * 10^8
+                expect(result.amount).toBe('99999999999999'); // 999999.99999999 * 10^8
+                expect(result.memos[0].coin_purchase_memo?.amount).toBe('100000012345678'); // 1000000.12345678 * 10^8
             }
         });
 
@@ -466,8 +456,8 @@ describe('signatureUtils', () => {
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe(1); // 0.00000001 * 10^8
-                expect(result.memos[0].coin_purchase_memo?.amount).toBe(1); // 0.00000001 * 10^8
+                expect(result.amount).toBe('1'); // 0.00000001 * 10^8
+                expect(result.memos[0].coin_purchase_memo?.amount).toBe('1'); // 0.00000001 * 10^8
             }
         });
     });

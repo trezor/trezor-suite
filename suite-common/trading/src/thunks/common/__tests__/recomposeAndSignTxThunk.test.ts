@@ -647,14 +647,17 @@ describe('recomposeAndSignTxThunk', () => {
             },
         });
         expect(tradingThunks.createPaymentRequestsThunk).toHaveBeenCalledWith({
-            type: expect.any(String), // activeSection from state
-            account: expect.objectContaining({
-                networkType: 'bitcoin',
-            }),
-            composedLevels: expect.objectContaining({
+            account,
+            composedLevels: {
+                outputs: [
+                    {
+                        amount: '10000000',
+                    },
+                ],
                 type: 'final',
-            }),
+            },
             formattedMaxAmount: '0.1',
+            type: 'exchange',
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledWith({
             formState: expect.any(Object),
