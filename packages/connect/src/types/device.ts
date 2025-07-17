@@ -9,8 +9,9 @@ import type { ReleaseInfo } from './firmware';
  * - `available`  no other application has an active session
  * - `occupied`   other application has an active session
  * - `used`       another has released the device and no other application has an active session
+ * - `busy`       this application has an active session but device is currently busy (example: connect to host device screen after RebootToBootloader)
  */
-export type DeviceStatus = 'available' | 'occupied' | 'used';
+export type DeviceStatus = 'available' | 'occupied' | 'used' | 'busy';
 
 export type DeviceMode = 'normal' | 'bootloader' | 'initialize' | 'seedless';
 
@@ -126,7 +127,7 @@ export type UnknownDevice = BaseDevice & {
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
     color?: typeof undefined;
-    status?: typeof undefined;
+    status?: DeviceStatus;
     mode?: typeof undefined;
     _state?: typeof undefined;
     state?: typeof undefined;

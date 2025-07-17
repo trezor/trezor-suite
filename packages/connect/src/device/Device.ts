@@ -177,6 +177,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     // DeviceState list [this.instance]: DeviceState | undefined
     private state: DeviceState[] = [];
     private stateStorage?: IStateStorage = undefined;
+    private busy?: boolean;
 
     private _unavailableCapabilities: UnavailableCapabilities = {};
     public get unavailableCapabilities(): Readonly<UnavailableCapabilities> {
@@ -508,8 +509,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 } else {
                     await this.getFeatures();
                 }
+
+                this.busy = false;
             } catch (error) {
                 _log.warn('Device._runInner error: ', error.message);
+
+                if (error.code === 'Failure_Busy') {
+                    this.busy = true;
+                }
 
                 if (error.code === 'Device_ThpPairingTagInvalid') {
                     // return as TypedError
@@ -1065,6 +1072,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return 'normal';
     }
 
+    private getStatus(): DeviceStatus {
+        if (this.isUsedElsewhere()) return 'occupied';
+        if (this.wasUsedElsewhere) return 'used';
+        if (this.busy) return 'busy';
+
+        return 'available';
+    }
+
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
         const { name, uniquePath: path } = this;
@@ -1090,14 +1105,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
                 bluetoothProps: this.bluetoothProps,
                 thp: this.thp?.serialize(),
+                status: this.busy ? 'busy' : undefined,
             };
         }
         const defaultLabel = 'My Trezor';
         const label =
             this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
-        const status: DeviceStatus = this.isUsedElsewhere()
-            ? 'occupied'
-            : (this.wasUsedElsewhere && 'used') || 'available';
 
         return {
             ...base,
@@ -1106,7 +1119,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             label,
             _state: this.getState(),
             state: this.getState()?.staticSessionId,
-            status,
+            status: this.getStatus(),
             mode: this.getMode(),
             color: this.color,
             firmware: this.firmwareStatus,
