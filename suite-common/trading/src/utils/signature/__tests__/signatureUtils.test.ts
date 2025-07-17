@@ -45,7 +45,9 @@ describe('signatureUtils', () => {
             trade: mockTrade,
             provider: mockProvider,
             macPurchase: 'macPurchase123',
+            pathPurchase: "m/44'/0'/0'/1/0",
             macRefund: 'macRefund456',
+            pathRefund: "m/44'/0'/0'/1/0",
             nonce: 'nonce789',
             sendSlip44: 0,
             receiveSlip44: 60,
@@ -65,12 +67,14 @@ describe('signatureUtils', () => {
                             amount: '250000000', // 2.5 * 10^8
                             coin_type: 60, // ethereum coin type
                             mac: 'macPurchase123',
+                            address_n: [2147483692, 2147483648, 2147483648, 1, 0],
                         },
                     },
                     {
                         refund_memo: {
                             address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
                             mac: 'macRefund456',
+                            address_n: [2147483692, 2147483648, 2147483648, 1, 0],
                         },
                     },
                 ],
@@ -242,6 +246,7 @@ describe('signatureUtils', () => {
             trade: mockSellTrade,
             provider: mockSellProvider,
             macRefund: 'sellMacRefund789',
+            pathRefund: "m/44'/0'/0'/1/0",
             nonce: 'sellNonce123',
             memoText: 'Test memo text',
         };
@@ -263,6 +268,7 @@ describe('signatureUtils', () => {
                         refund_memo: {
                             address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
                             mac: 'sellMacRefund789',
+                            address_n: [2147483692, 2147483648, 2147483648, 1, 0],
                         },
                     },
                 ],
@@ -405,7 +411,9 @@ describe('signatureUtils', () => {
                 trade: largeTrade,
                 provider,
                 macPurchase: 'mac1',
+                pathPurchase: "m/44'/0'/0'/1/0",
                 macRefund: 'mac2',
+                pathRefund: "m/44'/0'/0'/1/0",
                 nonce: 'nonce',
                 receiveSlip44: 60,
             });
@@ -449,7 +457,9 @@ describe('signatureUtils', () => {
                 trade: smallTrade,
                 provider,
                 macPurchase: 'mac1',
+                pathPurchase: "m/44'/0'/0'/1/0",
                 macRefund: 'mac2',
+                pathRefund: "m/44'/0'/0'/1/0",
                 nonce: 'nonce',
                 receiveSlip44: 60,
             });

@@ -13,6 +13,7 @@ type GetRefundAddressProps = {
 type GetRefundAddressFulfillValue = {
     address: string;
     mac: string;
+    path: string;
 };
 
 export const getRefundAddress = createThunk<
@@ -66,6 +67,7 @@ export const getRefundAddress = createThunk<
         return fulfillWithValue({
             address: refund.payload.address,
             mac: refund.payload.mac,
+            path: params.addressPath,
         });
     },
 );

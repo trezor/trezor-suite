@@ -175,6 +175,7 @@ describe('createPaymentRequestsThunk', () => {
             createThunk(getRefundAddress.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue({
                     mac: mockMac,
+                    path: "m/44'/0'/0'",
                 }),
             ),
         );
@@ -219,7 +220,7 @@ describe('createPaymentRequestsThunk', () => {
             tradeSignature: 'signature123',
         };
 
-        const mockPaymentRequest: PROTO.TxAckPaymentRequest = {
+        const mockPaymentRequest: PROTO.PaymentRequest = {
             recipient_name: 'Changelly',
             amount: '100000',
             nonce: mockNonce,
@@ -231,12 +232,14 @@ describe('createPaymentRequestsThunk', () => {
                         amount: '5000000',
                         coin_type: 2,
                         mac: 'verified-mac',
+                        address_n: [2147483692, 2147483648, 2147483648],
                     },
                 },
                 {
                     refund_memo: {
                         address: '1RefundAddress456',
                         mac: mockMac,
+                        address_n: [2147483692, 2147483648, 2147483648],
                     },
                 },
             ],
@@ -250,7 +253,7 @@ describe('createPaymentRequestsThunk', () => {
                     selectedQuote: mockExchangeQuote,
                     exchangeInfo: mockExchangeInfo,
                 },
-                verifiedAddress: { mac: 'verified-mac' },
+                verifiedAddress: { mac: 'verified-mac', path: "m/44'/0'/0'" },
             });
 
             // Execute thunk
@@ -274,7 +277,7 @@ describe('createPaymentRequestsThunk', () => {
                     selectedQuote: { ...mockExchangeQuote, orderId: undefined },
                     exchangeInfo: mockExchangeInfo,
                 },
-                verifiedAddress: { mac: 'verified-mac' },
+                verifiedAddress: { mac: 'verified-mac', path: "m/44'/0'/0'" },
             });
 
             const result = await store.dispatch(
@@ -326,7 +329,7 @@ describe('createPaymentRequestsThunk', () => {
                     selectedQuote: mockExchangeQuote,
                     exchangeInfo: mockExchangeInfo,
                 },
-                verifiedAddress: { mac: 'verified-mac' },
+                verifiedAddress: { mac: 'verified-mac', path: "m/44'/0'/0'" },
             });
 
             const result = await store.dispatch(
@@ -359,7 +362,7 @@ describe('createPaymentRequestsThunk', () => {
                     },
                     exchangeInfo: mockExchangeInfo,
                 },
-                verifiedAddress: { mac: 'verified-mac' },
+                verifiedAddress: { mac: 'verified-mac', path: "m/44'/0'/0'" },
             });
 
             const result = await store.dispatch(
@@ -380,7 +383,7 @@ describe('createPaymentRequestsThunk', () => {
     });
 
     describe('sell flow', () => {
-        const mockSellPaymentRequest: PROTO.TxAckPaymentRequest = {
+        const mockSellPaymentRequest: PROTO.PaymentRequest = {
             recipient_name: 'Coinbase',
             amount: '100000',
             nonce: mockNonce,
@@ -395,6 +398,7 @@ describe('createPaymentRequestsThunk', () => {
                     refund_memo: {
                         address: '1RefundAddress789',
                         mac: mockMac,
+                        address_n: [2147483692, 2147483648, 2147483648],
                     },
                 },
             ],
@@ -574,7 +578,7 @@ describe('createPaymentRequestsThunk', () => {
                     selectedQuote: mockExchangeQuote,
                     exchangeInfo: mockExchangeInfo,
                 },
-                verifiedAddress: { mac: 'verified-mac' },
+                verifiedAddress: { mac: 'verified-mac', path: "m/44'/0'/0'" },
             });
 
             const result = await store.dispatch(

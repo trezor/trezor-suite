@@ -65,6 +65,7 @@ export const verifyAddressThunk = createThunk(
             dispatch(
                 tradingActions.setVerifiedAddress({
                     address: response.payload.address,
+                    path: params.addressPath,
                     mac: 'mac' in response.payload ? response.payload.mac : undefined,
                 }),
             );
