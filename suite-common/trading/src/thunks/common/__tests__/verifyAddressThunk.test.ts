@@ -51,6 +51,7 @@ describe('verifyAddressThunk', () => {
         const verifiedAddress = {
             address: addressData?.address,
             mac: 'mockedMac',
+            path: "m/84'/0'/0'/0/5",
         };
 
         (selectSelectedDevice as jest.Mock).mockImplementation(() => ({

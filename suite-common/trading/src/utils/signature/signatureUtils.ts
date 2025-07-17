@@ -9,6 +9,7 @@ import {
 
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
+import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 
 import { cryptoIdToNetwork, cryptoIdToNetworkAndContractAddress } from '../../utils';
@@ -33,7 +34,9 @@ type TradingExchangeCreatePaymentRequestProps = {
     trade: ExchangeTradeSigned;
     provider: ExchangeProviderInfo;
     macRefund: string;
+    pathRefund: string;
     macPurchase: string;
+    pathPurchase: string;
     nonce: string;
     receiveSlip44: number;
 };
@@ -42,10 +45,12 @@ export const tradingExchangeCreatePaymentRequest = ({
     trade,
     provider,
     macPurchase,
+    pathPurchase,
     macRefund,
+    pathRefund,
     nonce,
     receiveSlip44,
-}: TradingExchangeCreatePaymentRequestProps): PROTO.TxAckPaymentRequest | undefined => {
+}: TradingExchangeCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
         !trade.send ||
@@ -80,12 +85,14 @@ export const tradingExchangeCreatePaymentRequest = ({
                 amount: receiveAmount,
                 coin_type: receiveSlip44,
                 mac: macPurchase,
+                address_n: validatePath(pathPurchase),
             },
         },
         {
             refund_memo: {
                 address: trade.refundAddress,
                 mac: macRefund,
+                address_n: validatePath(pathRefund),
             },
         },
     ];
@@ -103,6 +110,7 @@ type TradingSellCreatePaymentRequestProps = {
     trade: SellFiatTradeSigned;
     provider: SellProviderInfo;
     macRefund: string;
+    pathRefund: string;
     nonce: string;
     memoText: string;
 };
@@ -111,9 +119,10 @@ export const tradingSellCreatePaymentRequest = ({
     trade,
     provider,
     macRefund,
+    pathRefund,
     nonce,
     memoText,
-}: TradingSellCreatePaymentRequestProps): PROTO.TxAckPaymentRequest | undefined => {
+}: TradingSellCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
         !trade.refundAddress ||
@@ -142,6 +151,7 @@ export const tradingSellCreatePaymentRequest = ({
             refund_memo: {
                 address: trade.refundAddress,
                 mac: macRefund,
+                address_n: validatePath(pathRefund),
             },
         },
     ];

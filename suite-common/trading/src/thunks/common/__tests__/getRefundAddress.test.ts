@@ -26,7 +26,7 @@ const { getUnusedAddressFromAccount } = require('../../../utils');
 describe('getRefundAddress thunk', () => {
     const mockAccount: Account = accounts[0];
 
-    const mockPath = [44 | 0x80000000, 0 | 0x80000000, 0 | 0x80000000, 0, 0];
+    const mockPath = "m/84'/0'/0'/0/5";
     const mockAddress = 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx';
     const mockMac = 'test-mac-refund-123';
 
@@ -84,6 +84,7 @@ describe('getRefundAddress thunk', () => {
             expect(result.payload).toEqual({
                 address: mockAddress,
                 mac: mockMac,
+                path: "m/84'/0'/0'/0/5",
             });
 
             // Verify confirmAddressOnDeviceThunk was called with correct parameters
@@ -273,6 +274,7 @@ describe('getRefundAddress thunk', () => {
             expect(result.payload).toEqual({
                 address: mockAddress,
                 mac: mockMac,
+                path: "m/84'/0'/0'/0/5",
             });
         });
 

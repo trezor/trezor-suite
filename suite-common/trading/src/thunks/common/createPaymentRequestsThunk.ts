@@ -38,7 +38,7 @@ type CreateSignatureThunkProps = {
 };
 
 export const createPaymentRequestsThunk = createThunk<
-    PROTO.TxAckPaymentRequest[],
+    PROTO.PaymentRequest[],
     CreateSignatureThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
@@ -49,7 +49,9 @@ export const createPaymentRequestsThunk = createThunk<
         { type, account, composedLevels, formattedMaxAmount },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
-        const { mac: macRefund } = await dispatch(getRefundAddress({ account })).unwrap();
+        const { mac: macRefund, path: pathRefund } = await dispatch(
+            getRefundAddress({ account }),
+        ).unwrap();
         const nonce = await dispatch(getNonce()).unwrap();
 
         if (!('outputs' in composedLevels)) {
@@ -98,6 +100,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (
                     !quote?.orderId ||
                     !verifiedAddress?.mac ||
+                    !verifiedAddress.path ||
                     sendSlip44 === undefined ||
                     receiveSlip44 === undefined
                 ) {
@@ -139,7 +142,9 @@ export const createPaymentRequestsThunk = createThunk<
                     },
                     provider,
                     macPurchase: verifiedAddress.mac,
+                    pathPurchase: verifiedAddress.path,
                     macRefund,
+                    pathRefund,
                     nonce,
                     receiveSlip44,
                 });
@@ -207,6 +212,7 @@ export const createPaymentRequestsThunk = createThunk<
                     },
                     provider,
                     macRefund,
+                    pathRefund,
                     nonce,
                     memoText,
                 });

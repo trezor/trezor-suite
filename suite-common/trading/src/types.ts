@@ -259,7 +259,7 @@ export type TradingSignAndPushSendFormTransactionProps = {
     formState: FormState;
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     selectedAccount: Account;
-    paymentRequests?: PROTO.TxAckPaymentRequest[];
+    paymentRequests?: PROTO.PaymentRequest[];
 };
 
 export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
@@ -296,6 +296,7 @@ export type HandleExchangeRequestThunkProps = {
 export type TradingVerifiedAddress =
     | {
           address: string;
+          path?: string;
           mac?: string;
       }
     | undefined;
