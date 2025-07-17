@@ -2,6 +2,7 @@ import { PROTOCOL_MALFORMED } from '@trezor/protocol';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
+import { TypedError } from '../../constants/errors';
 import { DataManager } from '../../data/DataManager';
 import { WorkflowContext } from '../../types/workflow';
 import { Log } from '../../utils/debug';
@@ -90,6 +91,13 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
             ) {
                 logger?.debug(`handshake Cancel protocol v2 detected`);
                 await device.setupThp();
+            }
+
+            if (
+                result.payload.type === 'Failure' &&
+                result.payload.message.code === 'Failure_Busy'
+            ) {
+                throw TypedError(result.payload.message.code, result.payload.message.message);
             }
 
             return;

@@ -48,6 +48,7 @@ export const ERROR_CODES = {
 
     Failure_ActionCancelled: 'Action canceled by user',
     Failure_FirmwareError: 'Firmware installation failed',
+    Failure_Busy: 'Device busy',
     Failure_UnknownCode: 'Unknown error',
     Failure_PinCancelled: 'PIN canceled',
     Failure_PinInvalid: 'PIN invalid',
