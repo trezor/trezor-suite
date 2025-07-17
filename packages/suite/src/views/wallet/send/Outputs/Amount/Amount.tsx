@@ -10,7 +10,7 @@ import {
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
+import { Banner, Button, Flex, Icon, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -28,7 +28,6 @@ import {
 } from 'src/utils/suite/validation';
 
 import { BaseCurrencyInput } from './BaseCurrencyInput';
-import { SendMaxSwitch } from './SendMaxSwitch';
 
 interface AmountProps {
     output: Partial<Output>;
@@ -62,7 +61,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
     const isSetMaxVisible = isSetMaxActive && !error && !Object.keys(errors).length;
-    const maxSwitchId = `outputs.${outputId}.setMax`;
+    const maxButtonId = `outputs.${outputId}.setMax`;
 
     const amountValue = getDefaultValue(amountName, output.amount || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);
@@ -126,17 +125,15 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         },
     };
 
-    const onSwitchChange = () => {
+    const onMaxClicked = () => {
         setMax(outputId, isSetMaxActive);
         composeTransaction(amountName);
     };
 
     const sendMaxSwitch = (
-        <SendMaxSwitch
-            isSetMaxActive={isSetMaxActive}
-            data-testid={maxSwitchId}
-            onChange={onSwitchChange}
-        />
+        <Button data-testid={maxButtonId} size="tiny" variant="tertiary" onClick={onMaxClicked}>
+            <Translation id="AMOUNT_SEND_MAX" />
+        </Button>
     );
 
     return (

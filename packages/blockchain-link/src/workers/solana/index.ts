@@ -75,6 +75,12 @@ const THROTTLE_OPTIONS: ThrottledTransportOptions = {
     interval: 100,
 };
 
+const DEFAULT_PRIORITY_FEE = {
+    computeUnitPrice: '0',
+    computeUnitLimit: '0',
+    fee: '0',
+};
+
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;
     rpc: RpcMainnet<SolanaRpcApiMainnet>;
@@ -525,6 +531,7 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     if (messageHex == null) {
         throw new Error('Could not estimate fee for transaction.');
     }
+
     const transaction = pipe(messageHex, getBase16Encoder().encode, getTransactionDecoder().decode);
     const message = pipe(transaction.messageBytes, getCompiledTransactionMessageDecoder().decode);
 
@@ -538,7 +545,12 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
         decompiledTransactionMessage,
         message,
         transaction.signatures,
-    );
+    ).catch(err => {
+        console.warn('getPriorityFee failed:', err);
+
+        return DEFAULT_PRIORITY_FEE;
+    });
+
     const baseFee = await getBaseFee(api.rpc, message);
 
     const accountCreationFee = newAccountProgramName

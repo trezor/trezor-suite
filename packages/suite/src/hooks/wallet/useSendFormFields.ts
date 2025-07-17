@@ -158,13 +158,9 @@ export const useSendFormFields = ({
     );
 
     const setMax = useCallback(
-        (outputId: number, active: boolean) => {
+        (outputId: number) => {
             clearErrors([`outputs.${outputId}.amount`, `outputs.${outputId}.fiat`]);
-            if (!active) {
-                setValue(`outputs.${outputId}.amount`, '');
-                setValue(`outputs.${outputId}.fiat`, '');
-            }
-            setValue('setMaxOutputId', active ? undefined : outputId);
+            setValue('setMaxOutputId', outputId);
         },
         [clearErrors, setValue],
     );
