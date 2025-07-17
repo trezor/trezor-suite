@@ -14,6 +14,7 @@ import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
+import { FirmwareUpdate } from './FirmwareUpdate';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
 import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
@@ -98,6 +99,9 @@ export const SettingsDebug = () => {
             <SettingsSection title="TrezorConnect">
                 <TrezorConnectLogs />
                 {isDesktop() && <ConnectPopup />}
+            </SettingsSection>
+            <SettingsSection title="Firmware update source">
+                <FirmwareUpdate />
             </SettingsSection>
         </SettingsLayout>
     );
