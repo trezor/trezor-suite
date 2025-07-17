@@ -69,7 +69,7 @@ export const portfolioTrackerDevice: TrezorDevice = {
     metadata: {},
     passwords: {},
     unavailableCapabilities: {},
-    availableTranslations: [],
+    availableTranslations: {},
     remember: true,
     authenticityChecks: {
         firmwareRevision: { success: true },

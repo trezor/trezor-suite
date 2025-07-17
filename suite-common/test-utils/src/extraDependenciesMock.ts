@@ -96,6 +96,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         }),
         selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: mockSelector('selectTradingEnvironment', 'localhost'),
+        selectFirmwareUpdateSource: mockSelector('selectFirmwareUpdateSource', 'production'),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
