@@ -1,9 +1,9 @@
-import type { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
+import type { FirmwareType, VersionArray } from '@trezor/device-utils';
 import { serializeError, versionUtils } from '@trezor/utils';
 
 import { PROTO } from '../constants';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
-import { getOnlineReleases } from '../data/firmwareInfo';
+import { getOnlineReleaseByVersion } from '../data/firmwareInfo';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 import { HttpRequestError } from '../utils/assets-browser';
 
@@ -30,22 +30,6 @@ const isOfflineError = (e: unknown): boolean => {
     return isNodeJSOfflineError(e) || isReactNativeOfflineError(e) || isAbortControllerTimeout(e);
 };
 
-type GetOnlineReleaseMetadataParams = {
-    firmwareVersion: VersionArray;
-    internalModel: DeviceModelInternal;
-};
-
-const getOnlineReleaseMetadata = async ({
-    firmwareVersion,
-    internalModel,
-}: GetOnlineReleaseMetadataParams): Promise<FirmwareRelease | undefined> => {
-    const onlineReleases = await getOnlineReleases(internalModel);
-
-    return onlineReleases.find(onlineRelease =>
-        versionUtils.isEqual(onlineRelease.version, firmwareVersion),
-    );
-};
-
 const failFirmwareRevisionCheck = (
     error: FirmwareRevisionCheckError,
     errorPayload?: unknown,
@@ -60,6 +44,7 @@ export type CheckFirmwareRevisionParams = {
     internalModel: PROTO.DeviceModelInternal;
     deviceRevision: string | null;
     expectedRevision: string | undefined;
+    firmwareType: FirmwareType;
 };
 
 type DoRevisionsMatchParams = {
@@ -90,17 +75,19 @@ export const checkFirmwareRevision = async ({
     internalModel,
     deviceRevision,
     expectedRevision,
+    firmwareType,
 }: CheckFirmwareRevisionParams): Promise<FirmwareRevisionCheckResult> => {
     if (expectedRevision === undefined) {
-        if (firmwareVersion.length !== 3) {
+        if (!versionUtils.isVersionArray(firmwareVersion)) {
             return failFirmwareRevisionCheck('firmware-version-unknown');
         }
 
         try {
-            const onlineRelease = await getOnlineReleaseMetadata({
-                firmwareVersion,
+            const onlineRelease = await getOnlineReleaseByVersion(
                 internalModel,
-            });
+                firmwareVersion,
+                firmwareType,
+            );
 
             if (onlineRelease?.firmware_revision === undefined) {
                 return failFirmwareRevisionCheck('firmware-version-unknown');

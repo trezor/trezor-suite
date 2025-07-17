@@ -4,6 +4,7 @@ import type { Descriptor } from '@trezor/transport';
 import { Log } from '@trezor/utils';
 
 import { DataManager } from '../../data/DataManager';
+import { getReleaseByVersion } from '../../data/firmwareInfo';
 import type { ConnectSettings, DeviceUniquePath } from '../../types';
 import { Device } from '../Device';
 import type { TypedCallProvider } from '../DeviceCurrentSession';
@@ -26,19 +27,34 @@ const getMockedDevice = (typedCallMock?: TypedCallProvider['typedCall']): Device
     device.getVersion = () => [1, 13, 1];
 
     // @ts-expect-error setting a private property
-    device._features = { internal_model: DeviceModelInternal.T1B1 } as Device['features'];
+    device._features = {
+        bootloader_mode: false,
+        internal_model: DeviceModelInternal.T1B1,
+    } as Device['features'];
 
     return device;
 };
 
 jest.mock('../../api/firmware', () => ({
-    getBinaryOptional: jest.fn(() => Promise.resolve(new ArrayBuffer(1024))),
+    getBinaryOptional: jest.fn(() =>
+        Promise.resolve({
+            binary: new ArrayBuffer(1024),
+            binaryVersion: [1, 13, 1],
+            releaseVersion: [1, 13, 1],
+        }),
+    ),
     stripFwHeaders: jest.fn((b: any) => b),
     calculateFirmwareHash: jest.fn(() => ({ hash: 'expected-hash', challenge: 'challenge' })),
 }));
 
 jest.mock('../../data/firmwareInfo', () => ({
-    getReleases: jest.fn(() => [{ version: [1, 13, 1] }]),
+    getReleaseByVersion: jest.fn(() => ({ version: [1, 13, 1] })),
+    getFirmwareLocation: jest.fn(() => [
+        {
+            baseUrl: 'https://data.trezor.io',
+            path: 'path/to/binary',
+        },
+    ]),
 }));
 
 // @ts-expect-error setting a private property
@@ -103,6 +119,7 @@ describe(checkFirmwareHash.name, () => {
 
     it('returns unknown-release if version cannot be found in releases', async () => {
         const device = getMockedDevice();
+        (getReleaseByVersion as jest.Mock).mockReturnValue(null);
         device.getVersion = () => [1, 99, 99];
         const result = await checkFirmwareHash({ device, logger });
         expect(result).toEqual({ success: false, error: 'unknown-release' });

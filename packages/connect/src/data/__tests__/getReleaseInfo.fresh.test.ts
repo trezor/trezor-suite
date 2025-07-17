@@ -1,6 +1,6 @@
 import {
-    ConditionalRelease,
     DeviceModelInternal,
+    FirmwareRelease,
     FirmwareType,
     VersionArray,
 } from '@trezor/device-utils';
@@ -26,7 +26,7 @@ const fixtures = [
             rollout_probability: 100,
         },
         isBitcoinOnlyAvailable: true,
-        firmwareType: FirmwareType.Regular,
+        firmwareType: FirmwareType.Universal,
         intermediary: {
             min_firmware_version: [1, 6, 2] as VersionArray,
             min_bootloader_version: [1, 8, 0] as VersionArray,
@@ -60,7 +60,7 @@ describe('getReleaseInfo() for fresh device', () => {
         it(f.desc, () => {
             const result = getReleaseInfo({
                 features: f.features,
-                release: f.release as ConditionalRelease['release'],
+                release: f.release as FirmwareRelease,
                 conditions: f.conditions,
                 intermediary: f.intermediary,
                 firmwareType: f.firmwareType,

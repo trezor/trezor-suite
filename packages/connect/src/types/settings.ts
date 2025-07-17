@@ -4,6 +4,8 @@ import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Transport } from '@trezor/transport';
 import { PartialRecord } from '@trezor/type-utils';
 
+import { FirmwareUpdateSource } from '../data/firmwareInfo';
+
 export type { SystemInfo } from '@trezor/connect-common';
 export interface Manifest {
     appName: string;
@@ -69,6 +71,7 @@ export interface ConnectSettingsInternal {
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
     localFirmwares?: LocalFirmwares;
+    firmwareUpdateSource?: FirmwareUpdateSource;
 }
 
 export interface ConnectSettingsWeb {
