@@ -5,7 +5,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useTradingSellForm } from 'src/hooks/wallet/trading/form/useTradingSellForm';
 
 import { TransactionReviewModalProps } from './TransactionReviewModal';
-import { TransactionReviewModalContent } from './TransactionReviewModalContent';
+import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 
 type TransactionReviewModalSellProps = {
     selectedAccount: SelectedAccountLoaded;
@@ -32,7 +32,7 @@ export const TransactionReviewModalSell = ({
     };
 
     return (
-        <TransactionReviewModalContent
+        <TransactionReviewModalBody
             decision={decision}
             txInfoState={txInfoState}
             tryAgainSignTx={handleTryAgainSignTx}

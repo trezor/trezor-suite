@@ -1,0 +1,191 @@
+import { useDispatch, useSelector } from 'react-redux';
+
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { SendState, StakeState } from '@suite-common/wallet-core';
+import { Account, FormState, RbfTransactionType, ReviewOutput } from '@suite-common/wallet-types';
+import { isRbfCancelTransaction, isRbfTransaction } from '@suite-common/wallet-utils';
+import { StakeType } from '@trezor/blockchain-link-types';
+import { Modal } from '@trezor/components';
+import { copyToClipboard, download } from '@trezor/dom-utils';
+import { EventType, TransactionCreatedEvent, analytics } from '@trezor/suite-analytics';
+import { Deferred } from '@trezor/utils';
+
+import { Translation } from 'src/components/suite/Translation';
+
+import { getTxType } from '../TransactionReviewModalBody';
+
+const mapRbfTypeToReporting: Record<
+    RbfTransactionType,
+    TransactionCreatedEvent['payload']['action']
+> = { 'bump-fee': 'replaced', cancel: 'canceled' };
+
+type TransactionReviewModalBottomContentProps = {
+    decision: Deferred<boolean, string | number | undefined> | undefined;
+    isSending: boolean;
+    onSend: (send: boolean) => void;
+    onCancel: () => void;
+    handleTryAgain: (close: boolean) => void;
+    txInfoState: SendState | StakeState;
+    areDetailsVisible: boolean;
+    actionTranslation: ExtendedMessageDescriptor;
+    isTxExpired: boolean;
+    hasTxExpired: boolean;
+    stakeType?: StakeType;
+    isRbfConfirmedError?: boolean;
+    account: Account;
+    precomposedForm: FormState;
+    outputs: ReviewOutput[];
+};
+
+export const TransactionReviewModalBottomContent = ({
+    decision,
+    isRbfConfirmedError,
+    isSending,
+    onSend,
+    onCancel,
+    handleTryAgain,
+    txInfoState,
+    areDetailsVisible,
+    actionTranslation,
+    isTxExpired,
+    hasTxExpired,
+    stakeType,
+    account,
+    precomposedForm,
+    outputs,
+}: TransactionReviewModalBottomContentProps) => {
+    const dispatch = useDispatch();
+    const connectPopupCall = useSelector(selectConnectPopupCall);
+    const { precomposedTx, serializedTx } = txInfoState;
+
+    const { symbol, networkType } = account;
+    const { options, selectedFee } = precomposedForm;
+
+    const isBroadcastEnabled = options.includes('broadcast');
+    const txType = getTxType(txInfoState, precomposedForm);
+
+    const isCancelRbfAction = precomposedTx ? isRbfCancelTransaction(precomposedTx) : false;
+
+    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
+    const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
+
+    const reportTransactionCreatedEvent = (action: TransactionCreatedEvent['payload']['action']) =>
+        analytics.report({
+            type: EventType.TransactionCreated,
+            payload: {
+                action,
+                symbol,
+                tokens: outputs
+                    .filter((output: ReviewOutput) => output.token?.symbol)
+                    .map((output: ReviewOutput) => output.token?.symbol)
+                    .join(','),
+                outputsCount: precomposedForm.outputs.length,
+                broadcast: isBroadcastEnabled,
+                bitcoinLocktime: !!options.includes('bitcoinLocktime'),
+                ethereumData: !!options.includes('ethereumData'),
+                ethereumNonce: !!options.includes('ethereumNonce'),
+                destinationTag: !!options.includes('destinationTag'),
+                selectedFee: selectedFee || 'normal',
+                isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
+                hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
+                txType: txType as 'stake' | 'trade' | undefined,
+            },
+        });
+
+    const handleSend = () => {
+        if (networkType === 'solana' || networkType === 'stellar') {
+            onSend(true);
+        }
+
+        if (decision) {
+            decision.resolve(true);
+            reportTransactionCreatedEvent(
+                isRbfTransaction(precomposedTx!)
+                    ? mapRbfTypeToReporting[precomposedTx!.rbfType]
+                    : 'sent',
+            );
+
+            if (stakeType) {
+                return analytics.report({
+                    type: EventType.StakingConfirm,
+                    payload: { action: stakeType, networkSymbol: symbol },
+                });
+            }
+        }
+    };
+
+    const handleCopy = () => {
+        const result = copyToClipboard(serializedTx!.tx);
+
+        if (typeof result !== 'string') {
+            dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+        }
+
+        reportTransactionCreatedEvent('copied');
+    };
+
+    const handleDownload = () => {
+        download(serializedTx!.tx, 'signed-transaction.txt');
+        reportTransactionCreatedEvent('downloaded');
+    };
+
+    if (isRbfConfirmedError) {
+        return (
+            <Modal.Button variant="tertiary" onClick={onCancel}>
+                <Translation id="TR_CLOSE" />
+            </Modal.Button>
+        );
+    }
+
+    if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
+        return (
+            <>
+                <Modal.Button variant="primary" onClick={() => handleTryAgain(false)}>
+                    <Translation id="TR_TRY_AGAIN" />
+                </Modal.Button>
+                <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Translation id="TR_CLOSE" />
+                </Modal.Button>
+            </>
+        );
+    }
+
+    if (areDetailsVisible) {
+        return null;
+    }
+
+    if (connectPopupCall?.state === 'ongoing') {
+        return null;
+    }
+
+    if (isBroadcastEnabled) {
+        return (
+            <Modal.Button
+                data-testid="@modal/send"
+                isDisabled={!serializedTx || hasTxExpired}
+                isLoading={isSending}
+                variant={isCancelRbfAction ? 'destructive' : 'primary'}
+                onClick={handleSend}
+            >
+                <Translation {...actionTranslation} />
+            </Modal.Button>
+        );
+    }
+
+    return (
+        <>
+            <Modal.Button
+                isDisabled={!serializedTx}
+                onClick={handleCopy}
+                data-testid="@send/copy-raw-transaction"
+            >
+                <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
+            </Modal.Button>
+            <Modal.Button variant="tertiary" isDisabled={!serializedTx} onClick={handleDownload}>
+                <Translation id="DOWNLOAD_TRANSACTION" />
+            </Modal.Button>
+        </>
+    );
+};

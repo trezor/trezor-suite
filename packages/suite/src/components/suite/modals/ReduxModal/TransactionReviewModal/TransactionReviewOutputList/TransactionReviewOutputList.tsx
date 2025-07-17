@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { DeviceRootState, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     FormStateTrading,
@@ -10,7 +11,7 @@ import type {
 } from '@suite-common/wallet-types';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { findAccountsByAddress, getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
-import { BulletList, Card, Column, H3, H4 } from '@trezor/components';
+import { Column, H4 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -18,9 +19,9 @@ import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
 import { TransactionReviewOutput } from './TransactionReviewOutput';
-import type { TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
-import { TransactionReviewOutputTimer } from './TransactionReviewOutputTimer';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
+import { TransactionReviewVerifyAddress } from './TransactionReviewVerifyAddress';
+import { getTransactionReviewState } from './getTransactionReviewState';
 
 export type TransactionReviewOutputListProps = {
     account: Account;
@@ -31,26 +32,11 @@ export type TransactionReviewOutputListProps = {
     buttonRequestsCount: number;
     isRbfAction: boolean;
     tradingFormState: FormStateTrading | undefined;
+    reviewStep: number;
+    onTryAgain: (close: boolean) => void;
     isSending?: boolean;
     stakeType?: StakeType;
     deadline?: number;
-    onTryAgain: (close: boolean) => void;
-};
-
-const getState = (
-    index: number,
-    buttonRequestsCount: number,
-    hasSignedTx: boolean,
-): TransactionReviewOutputElementProps['state'] => {
-    if (hasSignedTx || index < buttonRequestsCount - 1) {
-        return 'confirmed';
-    }
-
-    if (index === buttonRequestsCount - 1) {
-        return 'active';
-    }
-
-    return 'unconfirmed';
 };
 
 const Wrapper = styled.div`
@@ -72,6 +58,8 @@ const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number
     </H4>
 );
 
+const TOTAL_STEPS_PER_RECIPIENT = 2; // 1 for address, 1 for amount
+
 export const TransactionReviewOutputList = ({
     account,
     precomposedTx,
@@ -83,6 +71,7 @@ export const TransactionReviewOutputList = ({
     tradingFormState,
     stakeType,
     deadline,
+    reviewStep,
     onTryAgain,
     isSending,
 }: TransactionReviewOutputListProps) => {
@@ -92,8 +81,25 @@ export const TransactionReviewOutputList = ({
     const { networkType, symbol } = account;
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
+
+    const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
+        selectSendFormReviewLastButtonCode(state, symbol),
+    );
+
+    const totalRecipients = outputs.filter(({ type }) => type === 'address').length;
+    const hasOpReturn = outputs.some(output => output.type === 'opreturn');
+
+    const reviewState = getTransactionReviewState({
+        index: totalRecipients * TOTAL_STEPS_PER_RECIPIENT + (hasOpReturn ? 1 : 0),
+        currentStep: reviewStep,
+        hasSignedTx: !!signedTx,
+        lastButtonRequestCode,
+    });
+
     const isFirstStep = buttonRequestsCount <= 1;
+
     const isStaking = stakeType;
+
     const isInternalTransfer =
         isFirstOutputAddress &&
         typeof outputs[0]?.value === 'string' &&
@@ -106,13 +112,13 @@ export const TransactionReviewOutputList = ({
         !!tradingFormState && 'send' in tradingFormState && 'receive' in tradingFormState;
 
     useEffect(() => {
-        if (buttonRequestsCount - 1 === outputs.length || signedTx) {
+        if (reviewStep === outputs.length || signedTx) {
             // When the tx is signed, the outputs are updated, so we use instant scroll to prevent jumping
             totalOutputRef.current?.scrollIntoView({ behavior: signedTx ? 'instant' : 'smooth' });
-        } else if (buttonRequestsCount !== 0) {
-            outputRefs.current[buttonRequestsCount - 1]?.scrollIntoView({ behavior: 'smooth' });
+        } else if (reviewStep !== 0) {
+            outputRefs.current[reviewStep]?.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [buttonRequestsCount, outputs.length, signedTx]);
+    }, [reviewStep, outputs.length, signedTx]);
 
     if (
         isFirstOutputAddress &&
@@ -123,51 +129,12 @@ export const TransactionReviewOutputList = ({
         !signedTx
     ) {
         return (
-            <Card>
-                <Column gap={spacings.xxl}>
-                    <Column gap={spacings.md}>
-                        <H3>
-                            <Translation id="TR_SEND_ADDRESS_CONFIRMATION_HEADING" />
-                        </H3>
-                        {networkType === 'solana' && deadline && (
-                            <TransactionReviewOutputTimer
-                                deadline={deadline}
-                                onTryAgain={onTryAgain}
-                                isSending={isSending}
-                            />
-                        )}
-                    </Column>
-                    <BulletList
-                        isOrdered
-                        bulletGap={spacings.md}
-                        titleGap={spacings.zero}
-                        gap={spacings.xxl}
-                    >
-                        <BulletList.Item
-                            title={
-                                <H4 typographyStyle="hint">
-                                    <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
-                                </H4>
-                            }
-                        />
-                        <BulletList.Item
-                            title={
-                                <H4 typographyStyle="hint">
-                                    <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
-                                </H4>
-                            }
-                        />
-                        <BulletList.Item
-                            state="done"
-                            title={
-                                <H4 typographyStyle="hint">
-                                    <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
-                                </H4>
-                            }
-                        />
-                    </BulletList>
-                </Column>
-            </Card>
+            <TransactionReviewVerifyAddress
+                networkType={networkType}
+                deadline={deadline}
+                onTryAgain={onTryAgain}
+                isSending={isSending}
+            />
         );
     }
 
@@ -191,9 +158,14 @@ export const TransactionReviewOutputList = ({
                             {isHeadingShown && (
                                 <SectionHeading output={output} index={recipientIndex} />
                             )}
+
                             <TransactionReviewOutput
                                 {...output}
-                                state={getState(index, buttonRequestsCount, !!signedTx)}
+                                state={getTransactionReviewState({
+                                    index,
+                                    currentStep: reviewStep,
+                                    hasSignedTx: !!signedTx,
+                                })}
                                 account={account}
                                 isRbf={isRbfAction}
                                 isTrading={!!tradingFormState}
@@ -206,6 +178,7 @@ export const TransactionReviewOutputList = ({
                     </Wrapper>
                 );
             })}
+
             {!(isRbfAction && networkType === 'bitcoin') && (
                 <Wrapper ref={totalOutputRef}>
                     <Column gap={spacings.sm}>
@@ -216,7 +189,7 @@ export const TransactionReviewOutputList = ({
                         )}
                         <TransactionReviewTotalOutput
                             account={account}
-                            state={getState(outputs.length, buttonRequestsCount, !!signedTx)}
+                            state={reviewState}
                             precomposedTx={precomposedTx}
                             precomposedForm={precomposedForm}
                             stakeType={stakeType}

@@ -5,7 +5,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
 
 import { TransactionReviewModalProps } from './TransactionReviewModal';
-import { TransactionReviewModalContent } from './TransactionReviewModalContent';
+import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 
 type TransactionReviewModalExchangeProps = {
     selectedAccount: SelectedAccountLoaded;
@@ -26,13 +26,17 @@ export const TransactionReviewModalExchange = ({
     const dispatch = useDispatch();
     const tradingExchangeForm = useTradingExchangeForm({ selectedAccount, pageType: 'retry' });
 
+    if (!precomposedForm) {
+        return null;
+    }
+
     const handleTryAgainSignTx = async () => {
         dispatch(sendFormActions.discardTransaction());
         await tradingExchangeForm.sendTransaction();
     };
 
     return (
-        <TransactionReviewModalContent
+        <TransactionReviewModalBody
             decision={decision}
             txInfoState={txInfoState}
             tryAgainSignTx={handleTryAgainSignTx}

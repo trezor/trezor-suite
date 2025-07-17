@@ -18,7 +18,7 @@ import {
 } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { TransactionReviewModalContent } from './TransactionReviewModalContent';
+import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
 import { TransactionReviewModalSell } from './TransactionReviewModalSell';
 
@@ -122,7 +122,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     }
 
     return (
-        <TransactionReviewModalContent
+        <TransactionReviewModalBody
             decision={decision}
             txInfoState={txInfoState}
             tryAgainSignTx={handleTryAgainSignTx}
