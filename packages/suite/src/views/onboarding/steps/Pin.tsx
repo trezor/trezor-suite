@@ -90,7 +90,6 @@ const SetPinStep = () => {
         return (
             <OnboardingStepBox
                 image="PIN"
-                key="pin-mismatch" // to properly rerender in translation mode
                 heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
                 data-testid="@pin-mismatch"
                 innerActions={
@@ -110,7 +109,6 @@ const SetPinStep = () => {
         return (
             <OnboardingStepBox
                 image="PIN"
-                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_PIN_HEADING_SUCCESS" />}
                 description={<Translation id="TR_PIN_SET_SUCCESS" />}
                 outerActions={
@@ -133,7 +131,6 @@ const SetPinStep = () => {
             )}
             <OnboardingStepBox
                 image="PIN"
-                key={status} // to properly rerender in translation mode
                 heading={
                     <>
                         {status === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}

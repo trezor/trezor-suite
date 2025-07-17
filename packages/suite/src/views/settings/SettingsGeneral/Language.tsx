@@ -13,7 +13,7 @@ import LANGUAGES, { Locale, LocaleInfo } from 'src/config/suite/languages';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { getOsLocale, isTranslationMode } from 'src/utils/suite/l10n';
+import { getOsLocale } from 'src/utils/suite/l10n';
 
 const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
     locale[1].type === 'official';
@@ -66,7 +66,7 @@ export const Language = () => {
 
     const isCommunityLanguage = LANGUAGES[language].type === 'community';
     const selectedValue =
-        autodetectLanguage && !isTranslationMode()
+        autodetectLanguage
             ? systemOption
             : {
                   value: language,
@@ -106,7 +106,6 @@ export const Language = () => {
                     value={selectedValue}
                     options={options}
                     onChange={onChange}
-                    isDisabled={isTranslationMode()}
                     data-testid="@settings/language-select"
                 />
             </ActionColumn>

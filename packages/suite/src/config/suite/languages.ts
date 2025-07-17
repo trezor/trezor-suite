@@ -1,5 +1,3 @@
-export const TRANSLATION_PSEUDOLANGUAGE = 'lol' as const;
-
 const LANGUAGES = {
     'en-US': { name: 'English', en: 'English', type: 'official' },
     'es-ES': { name: 'Español', en: 'Spanish', type: 'official' },
@@ -34,7 +32,6 @@ const LANGUAGES = {
     'vi-VN': { name: 'Tiếng Việt', en: 'Vietnamese' },
     'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified', type: 'community' },
     'zh-TW': { name: '中文(繁體)', en: 'Chinese Traditional', type: 'community' },
-    [TRANSLATION_PSEUDOLANGUAGE]: { name: 'TRANSLATION', en: 'TRANSLATION' },
 } as const;
 
 export type Locale = keyof typeof LANGUAGES;
