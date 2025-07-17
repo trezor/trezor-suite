@@ -15,7 +15,7 @@ import {
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,
     deviceColor: 0,
-    filterPolicy: null,
+    filterPolicy: undefined,
 };
 
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependenciesMock);

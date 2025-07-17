@@ -1,4 +1,4 @@
-import { BluetoothFilterPolicy, BluetoothManufacturerData } from '@suite-common/bluetooth';
+import { BluetoothManufacturerData } from '@suite-common/bluetooth';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
@@ -7,7 +7,7 @@ import { remapKnownDevicesForLinux } from '../remapKnownDevicesForLinux';
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,
     deviceColor: 0,
-    filterPolicy: BluetoothFilterPolicy.UNFILTERED,
+    filterPolicy: undefined,
 };
 
 const nearbyDeviceA: DesktopBluetoothDevice = {
