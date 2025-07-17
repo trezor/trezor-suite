@@ -6,6 +6,7 @@ import type { InvityServerEnvironment, TradingType } from '@suite-common/trading
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
+import { FirmwareUpdateSource } from '@trezor/connect/src/data/firmwareInfo';
 import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
@@ -93,6 +94,7 @@ export interface SuiteSettings {
     isCoinjoinReceiveWarningHidden: boolean;
     isDesktopSuitePromoHidden: boolean;
     debug: DebugModeOptions;
+    firmwareUpdateSource: FirmwareUpdateSource;
     autodetect: AutodetectSettings;
     enabledSecurityChecks: {
         deviceAuthenticity: boolean;
@@ -197,6 +199,7 @@ const initialState: SuiteState = {
             isUnlockedBootloaderAllowed: false,
             showConnectLogs: false,
         },
+        firmwareUpdateSource: 'production',
         autodetect: {
             language: true,
             theme: true,
@@ -288,6 +291,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.seenDisconnectNotificationForDeviceIds,
                     action.payload.deviceId,
                 ];
+                break;
+
+            case SUITE.SET_FIRMWARE_UPDATE_SOURCE:
+                draft.settings.firmwareUpdateSource = action.payload;
                 break;
 
             case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:

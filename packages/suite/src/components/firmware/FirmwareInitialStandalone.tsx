@@ -83,7 +83,7 @@ export const FirmwareInitialStandalone = ({
                          * `device.firmware` is status of the firmware currently installed on the device.
                          *  available values: 'valid' | 'outdated' | 'required' | 'unknown' | 'none'
                          *
-                         *  `device.firmwareRelease` on the other hand contains latest available firmware to update to
+                         *  `device.firmwareReleaseConfigInfo` on the other hand contains latest available firmware to update to
                          *   (it is whatever returns getInfo() method from connect)
                          *   so it should not be used here.
                          */
