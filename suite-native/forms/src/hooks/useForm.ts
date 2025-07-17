@@ -8,6 +8,8 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AnyObjectSchema } from 'yup';
 
+export { useFormState, useWatch, useController } from 'react-hook-form';
+
 interface UseFormArgs<
     TFieldValues extends FieldValues = FieldValues,
     TContext extends object = object,
