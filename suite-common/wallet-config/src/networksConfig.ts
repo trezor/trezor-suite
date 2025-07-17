@@ -38,6 +38,7 @@ export const networks = {
         },
         coingeckoId: 'bitcoin',
         tradeCryptoId: 'bitcoin',
+        caipId: 'bip122:000000000019d6689c085ae165831e93',
     },
     eth: {
         symbol: 'eth',
@@ -76,6 +77,7 @@ export const networks = {
         },
         coingeckoId: 'ethereum',
         tradeCryptoId: 'ethereum',
+        caipId: 'eip155:1',
     },
     pol: {
         symbol: 'pol',
@@ -108,6 +110,7 @@ export const networks = {
         },
         coingeckoId: 'polygon-pos',
         tradeCryptoId: 'polygon-ecosystem-token',
+        caipId: 'eip155:137',
     },
     bsc: {
         symbol: 'bsc',
@@ -132,6 +135,7 @@ export const networks = {
         },
         coingeckoId: 'binance-smart-chain',
         tradeCryptoId: 'binancecoin',
+        caipId: 'eip155:56',
     },
     arb: {
         symbol: 'arb',
@@ -165,6 +169,7 @@ export const networks = {
         },
         coingeckoId: 'arbitrum-one',
         tradeCryptoId: 'arbitrum-one--0x0000000000000000000000000000000000000000',
+        caipId: 'eip155:42161',
     },
     base: {
         symbol: 'base',
@@ -198,6 +203,7 @@ export const networks = {
         },
         coingeckoId: 'base',
         tradeCryptoId: 'base--0x0000000000000000000000000000000000000000',
+        caipId: 'eip155:8453',
     },
     op: {
         symbol: 'op',
@@ -231,6 +237,7 @@ export const networks = {
         },
         coingeckoId: 'optimistic-ethereum',
         tradeCryptoId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
+        caipId: 'eip155:10',
     },
     sol: {
         symbol: 'sol',
@@ -260,6 +267,7 @@ export const networks = {
         },
         coingeckoId: 'solana',
         tradeCryptoId: 'solana',
+        caipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     },
     ada: {
         // icarus derivation
@@ -366,6 +374,7 @@ export const networks = {
         },
         coingeckoId: 'litecoin',
         tradeCryptoId: 'litecoin',
+        caipId: 'bip122:12a765e31ffd4059bada1e25190f6e98',
     },
     bch: {
         symbol: 'bch',
@@ -396,6 +405,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'dogecoin',
         tradeCryptoId: 'dogecoin',
+        caipId: 'bip122:1a91e3dace36e2be3bf030a65679fe82',
     },
     zec: {
         symbol: 'zec',
@@ -447,6 +457,7 @@ export const networks = {
         },
         coingeckoId: undefined,
         tradeCryptoId: 'test-bitcoin', // fake, coingecko does not have testnets
+        caipId: 'bip122:00000000da84f2bafbbc53dee25a72ae',
     },
     regtest: {
         symbol: 'regtest',
@@ -537,6 +548,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: undefined,
+        caipId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
     },
     tada: {
         // icarus derivation

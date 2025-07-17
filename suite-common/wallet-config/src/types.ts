@@ -122,6 +122,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     isDebugOnlyNetwork?: boolean;
     coingeckoId?: string;
     tradeCryptoId?: string;
+    caipId?: string; // CAIP-2 chain id, used by WalletConnect
 };
 export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 
