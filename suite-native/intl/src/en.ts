@@ -1975,6 +1975,7 @@ export const en = {
                 buy: 'Buy',
                 sell: 'Sell',
                 exchange: 'Swap',
+                settings: 'Advanced settings',
             },
             kycWarning: 'This provider requires to know your identity.',
             warning: 'Warning',
@@ -2213,6 +2214,16 @@ export const en = {
             emptyTitle: 'No assets found',
             emptyDescription: 'You do not have any assets available for this operation.',
             noPair: { note: 'No pair', toast: 'There is no pair for this asset' },
+        },
+        advancedSettings: {
+            slippage: {
+                title: 'Maximum slippage',
+                description:
+                    "Set the maximum difference you're willing to accept. Higher means more likely to succeed, while lower may fail but protects your price.",
+                confirm: 'Confirm custom slippage',
+                inputLabel: 'Slippage',
+                outOfRangeError: 'Slippage must be between 0.01% and 50%',
+            },
         },
     },
     firmware: {

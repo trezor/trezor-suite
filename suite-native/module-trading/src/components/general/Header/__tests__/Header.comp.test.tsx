@@ -156,4 +156,13 @@ describe('Header', () => {
 
         expect(store.getState().wallet.tradingNew.activeTradingType).toBe('exchange');
     });
+
+    it('should display trade settings button', async () => {
+        const { getByLabelText } = await renderHeader({
+            buyEnabled: true,
+            exchangeEnabled: true,
+        });
+
+        expect(getByLabelText('Advanced settings')).toBeOnTheScreen();
+    });
 });
