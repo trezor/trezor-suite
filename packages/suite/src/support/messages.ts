@@ -8968,10 +8968,17 @@ export default defineMessages({
         id: 'TR_MOBILE_APP_PROMO_TEXT_FOOTER',
         defaultMessage: 'Sync & track on your phone with <b>Trezor Suite Lite</b>',
     },
-    TR_PROMO_BANNER_DASHBOARD: {
-        id: 'TR_PROMO_BANNER_DASHBOARD',
-        defaultMessage:
-            '<underline>The most convenient</underline> <rest>hardware wallet to securely manage your crypto</rest>',
+    TR_PROMO_BANNER_DASHBOARD_TEX_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_TITLE',
+        defaultMessage: '<rest>Trezor Expert</rest> <underline>Consultation</underline>',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION',
+        defaultMessage: 'Unlock the full potential of your hardware wallet.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON',
+        defaultMessage: 'Learn more',
     },
     TR_CANDIDATE_TRANSACTION_HEADER: {
         id: 'TR_CANDIDATE_TRANSACTION_HEADER',

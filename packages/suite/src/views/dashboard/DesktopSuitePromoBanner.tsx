@@ -161,7 +161,7 @@ const StoreBadge = ({
     );
 };
 
-export const PromoBanner = () => {
+export const DesktopSuitePromoBanner = () => {
     const shownQRState = useState<QrType>();
     const { isBelowTablet } = useLayoutSize();
     const { contentWidth } = useResponsiveContext();

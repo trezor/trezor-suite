@@ -10,10 +10,10 @@ import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
 import { DashboardPassphraseBanner } from './DashboardPassphraseBanner';
+import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
+import { DesktopSuitePromoBanner } from './DesktopSuitePromoBanner';
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
-import { PromoBanner } from './PromoBanner';
 import { StakeEthCard } from './StakeEthCard/StakeEthCard';
-// import { T3T1PromoBanner } from './T3T1PromoBanner/T3T1PromoBanner';
 
 const Container = styled.div`
     display: flex;
@@ -31,10 +31,10 @@ export const Dashboard = () => {
                 <DashboardPassphraseBanner />
                 <PortfolioCard />
             </Container>
-            {/*<T3T1PromoBanner />*/}
+            <DashboardPromoBanner />
             <AssetsView />
             <StakeEthCard />
-            <PromoBanner />
+            <DesktopSuitePromoBanner />
         </Column>
     );
 };

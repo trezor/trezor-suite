@@ -665,9 +665,10 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.T3T1DashboardPromo;
+          type: EventType.DashboardBanner;
           payload: {
-              action: 'preorder' | 'close';
+              bannerType: string | null;
+              action: 'cta' | 'close';
           };
       }
     | {

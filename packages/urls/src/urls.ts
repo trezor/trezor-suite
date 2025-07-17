@@ -24,6 +24,9 @@ export const SUITE_MOBILE_APP_STORE: Url = 'https://apps.apple.com/app/id1631884
 export const SUITE_MOBILE_PLAY_STORE: Url =
     'https://play.google.com/store/apps/details?id=io.trezor.suite';
 
+export const DASHBOARD_BANNER_TEX_URL: Url =
+    'https://trezor.io/trezor-expert-consultation?utm_source=trezor_suite&utm_medium=suite_desktop_banner&utm_campaign=expert_consultation';
+
 export const TREZOR_SUPPORT_DEVICE_URL: Url =
     'https://trezor.io/support/troubleshooting/device-issues/trezor-suite-doesn-t-see-my-device';
 export const TREZOR_SUPPORT_RECOVERY_ISSUES_URL: Url =
