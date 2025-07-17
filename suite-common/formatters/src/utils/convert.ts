@@ -15,6 +15,9 @@ type ConvertInput = {
     rate?: number;
 };
 
+/**
+ * @deprecated use `toFiatCurrency` directly
+ */
 export const convertCryptoToFiatAmount = ({
     amount,
     symbol,
@@ -30,6 +33,9 @@ export const convertCryptoToFiatAmount = ({
     return toFiatCurrency({ amount: networkAmount, rate });
 };
 
+/**
+ * @deprecated use `fromBaseCurrencyToCryptoUnit` directly
+ */
 export const convertFiatToCryptoAmount = ({
     amount,
     symbol,

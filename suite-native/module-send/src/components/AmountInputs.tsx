@@ -5,11 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import {
-    AccountsRootState,
-    selectAccountNetworkSymbol,
-    selectIsTestnetAccount,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -21,6 +17,7 @@ import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
 import { SendMaxButton } from './SendMaxButton';
 import { SwitchAmountsButton } from './SwitchAmountsButton';
+import { useDisplayBaseCurrency } from '../hooks/useDisplayBaseCurrency';
 
 type AmountInputProps = {
     index: number;
@@ -51,14 +48,12 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
     const { applyStyle } = useNativeStyles();
-    const isTestnet = useSelector((state: AccountsRootState) =>
-        selectIsTestnetAccount(state, accountKey),
-    );
-    const isFiatDisplayed = !isTestnet;
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const [isCryptoSelected, setIsCryptoSelected] = useState(true);
     const amountInputsWrapperRef = useRef<View>(null);
@@ -115,7 +110,9 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                 </HStack>
                 <Animated.View
                     layout={LinearTransition}
-                    style={applyStyle(inputsWrapperStyle, { isFiatDisplayed })}
+                    style={applyStyle(inputsWrapperStyle, {
+                        isFiatDisplayed: shallDisplayBaseCurrency,
+                    })}
                 >
                     <CryptoAmountInput
                         recipientIndex={index}
@@ -128,7 +125,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                         onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
                         tokenContract={tokenContract}
                     />
-                    {isFiatDisplayed && (
+                    {shallDisplayBaseCurrency && (
                         <>
                             <SwitchAmountsButton onPress={handleSwitchInputs} />
                             <FiatAmountInput
@@ -145,7 +142,10 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                         </>
                     )}
                 </Animated.View>
-                <AmountErrorMessage outputIndex={index} isFiatDisplayed={isFiatDisplayed} />
+                <AmountErrorMessage
+                    outputIndex={index}
+                    isFiatDisplayed={shallDisplayBaseCurrency}
+                />
             </VStack>
         </View>
     );

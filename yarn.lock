@@ -9335,6 +9335,9 @@ __metadata:
 "@suite-common/assets@workspace:*, @suite-common/assets@workspace:suite-common/assets":
   version: 0.0.0-use.local
   resolution: "@suite-common/assets@workspace:suite-common/assets"
+  dependencies:
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

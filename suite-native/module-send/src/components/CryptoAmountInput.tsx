@@ -13,6 +13,7 @@ import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens'
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { SendAmountInputProps } from '../types';
@@ -84,7 +85,7 @@ export const CryptoAmountInput = ({
         const transformedValue = cryptoAmountTransformer(newValue);
         onChange(transformedValue);
 
-        const fiatValue = converters?.convertCryptoToFiat?.(transformedValue);
+        const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(transformedValue));
         if (fiatValue) setValue(fiatFieldName, fiatValue?.toFixed(decimals));
         setValue('setMaxOutputId', undefined);
         debounce(() => {

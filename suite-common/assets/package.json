@@ -9,5 +9,9 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "jest -c ../../jest.config.base.js"
+    },
+    "dependencies": {
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

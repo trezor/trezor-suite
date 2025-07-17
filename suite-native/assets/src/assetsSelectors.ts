@@ -19,7 +19,11 @@ import {
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import {
+    BaseCurrencyAmount,
+    asBaseCurrencyAmount,
+    getAccountFiatBalance,
+} from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import {
@@ -27,11 +31,12 @@ import {
     doesCoinSupportStaking,
     getAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';
+import { BigNumber } from '@trezor/utils';
 
 export interface AssetType {
     symbol: NetworkSymbol;
     assetBalance: string;
-    fiatBalance: string | null;
+    fiatBalance: BaseCurrencyAmount | null;
 }
 
 export type AssetsRootState = AccountsRootState &
@@ -123,34 +128,34 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
             };
         });
 
-        let totalFiatBalance = 0;
+        let totalFiatBalance = asBaseCurrencyAmount(new BigNumber(0));
 
         const assets = deviceNetworksWithAssets.map((symbol: NetworkSymbol) => {
             const networkAccounts = accountsWithFiatBalance.filter(
                 account => account.symbol === symbol,
             );
             const assetBalance = networkAccounts.reduce(
-                (sum, { cryptoValue }) => sum + Number(cryptoValue),
-                0,
+                (sum, { cryptoValue }) => sum.plus(new BigNumber(cryptoValue)),
+                new BigNumber(0),
             );
             const fiatBalance = networkAccounts.reduce(
-                (sum, { fiatValue }) => (fiatValue ? Number(fiatValue) + (sum ?? 0) : sum),
-                null as number | null,
+                (sum, { fiatValue }) => (fiatValue ? sum.plus(fiatValue) : sum),
+                new BigNumber(0),
             );
 
-            totalFiatBalance += fiatBalance ?? 0;
+            totalFiatBalance = asBaseCurrencyAmount(totalFiatBalance.plus(fiatBalance));
 
             const asset: AssetType = {
                 symbol,
                 // For assets we should always only 8 decimals to save space
                 assetBalance: assetBalance.toFixed(8),
-                fiatBalance: fiatBalance !== null ? fiatBalance.toFixed(2) : null,
+                fiatBalance: asBaseCurrencyAmount(fiatBalance),
             };
 
             return asset;
         });
 
-        return { assets, totalFiatBalance: totalFiatBalance.toFixed(2) };
+        return { assets, totalFiatBalance: asBaseCurrencyAmount(totalFiatBalance) };
     },
 );
 

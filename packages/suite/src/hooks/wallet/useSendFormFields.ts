@@ -137,7 +137,7 @@ export const useSendFormFields = ({
                     return null;
                 }
 
-                // 3. If BaseCurrency is BTC and we display Sats, we need to convert it.
+                // 3. If BaseCurrency is BTC, and we display Sats, we need to convert it.
                 const baseCurrencyDisplay =
                     baseCurrencyCode === 'btc' && areSatsDisplayed
                         ? asBaseCurrencyAmount(

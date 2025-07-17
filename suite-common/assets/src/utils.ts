@@ -1,5 +1,7 @@
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+
 export interface AssetFiatBalance {
-    fiatBalance: string | null;
+    fiatBalance: BaseCurrencyAmount | null;
     symbol: string;
 }
 
