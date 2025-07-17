@@ -138,3 +138,4 @@ packages/suite-data/files/translations/master.json
 
 #direnv
 .direnv/
+.zed/*

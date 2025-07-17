@@ -63,7 +63,7 @@ export const selectSendFormReviewButtonRequestsCount = (
     symbol?: NetworkSymbol,
     decreaseOutputId?: number,
 ) => {
-    if (G.isNullable(symbol)) return 0;
+    if (symbol === undefined) return 0;
 
     const networkType = getNetworkType(symbol);
     const isCardano = networkType === 'cardano';
@@ -85,7 +85,7 @@ export const selectSendFormReviewLastButtonCode = (
     state: DeviceRootState,
     symbol?: NetworkSymbol,
 ) => {
-    if (G.isNullable(symbol)) return null;
+    if (symbol === undefined) return null;
 
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 

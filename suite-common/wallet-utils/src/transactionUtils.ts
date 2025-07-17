@@ -3,6 +3,7 @@ import { fromWei, toWei } from 'web3-utils';
 
 import { AccountLabels } from '@suite-common/metadata-types';
 import { SignOperator } from '@suite-common/suite-types';
+import { NetworkType } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -1072,4 +1073,13 @@ export const getTransactionWithLowestNonce = (
             ? tx
             : lowestNonceTransaction,
     );
+};
+
+export const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
+    if (networkType === 'solana') {
+        // Blockhash required in Solana tx is valid for 1 minute. Leave 15 seconds for tx confirmation.
+        return 45 * 1000;
+    }
+
+    return 0;
 };

@@ -1,11 +1,18 @@
 import { TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
 
-export const getTransactionReviewState = (
-    index: number, // index is either the current output index or the total number of outputs
-    currentStep: number,
-    hasSignedTx: boolean,
-    lastButtonRequestCode?: string | null,
-): TransactionReviewOutputElementProps['state'] => {
+type GetTransactionReviewStateParams = {
+    index: number; // index is either the current output index or the total number of outputs
+    currentStep: number;
+    hasSignedTx: boolean;
+    lastButtonRequestCode?: string | null;
+};
+
+export const getTransactionReviewState = ({
+    index,
+    currentStep,
+    hasSignedTx,
+    lastButtonRequestCode,
+}: GetTransactionReviewStateParams): TransactionReviewOutputElementProps['state'] => {
     if (hasSignedTx || index < currentStep) {
         if (lastButtonRequestCode !== undefined) {
             return lastButtonRequestCode === 'ButtonRequest_SignTx' || hasSignedTx
