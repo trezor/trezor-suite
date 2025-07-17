@@ -29,6 +29,7 @@ import {
     SignVerifyFields,
     useSignVerifyForm,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
+import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { SignAddressInput } from './components/SignAddressInput';
 
@@ -57,7 +58,7 @@ const SignVerify = () => {
         isElectrumField,
     } = useSignVerifyForm(isSignPage, selectedAccount.account!);
 
-    const { isLocked } = useDevice();
+    const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
     const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network?.name);
 
@@ -104,6 +105,8 @@ const SignVerify = () => {
         }
     };
 
+    const isDeviceConnected = device?.connected && device?.available;
+
     // Empty accountTypes means there is only 'normal' accountType and therefore the signatures are same.
     const signFormatsDiffer =
         selectedAccount.account!.networkType === 'bitcoin' &&
@@ -119,6 +122,8 @@ const SignVerify = () => {
                     </Button>
                 )}
             </WalletSubpageHeading>
+
+            {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
             <Card>
                 <Tabs activeItemId={page} size="large" margin={{ bottom: spacings.lg }}>
