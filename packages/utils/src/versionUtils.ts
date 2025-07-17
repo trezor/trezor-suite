@@ -8,7 +8,7 @@ export const isVersionArray = (arr: unknown): arr is VersionArray =>
     arr.length === 3 &&
     arr.every(number => typeof number === 'number' && number >= 0);
 
-const tryParse = (version: string): VersionArray | null =>
+export const tryParse = (version: string): VersionArray | null =>
     version
         .match(/^(\d+)\.(\d+)\.(\d+)([+-].*)?$/) // three groups of digits separated by dot, optionally ending with '-whatever.123.@' or '+anything.456.#'
         ?.slice(1, 4)
