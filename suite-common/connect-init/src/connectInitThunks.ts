@@ -21,6 +21,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI,
     UI_EVENT,
+    UI_REQUEST,
 } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
@@ -47,12 +48,13 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
     `${CONNECT_INIT_MODULE}/initThunk`,
     async (connectInitHooks, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectDebugSettings, selectThpSettings },
+            selectors: { selectDebugSettings, selectThpSettings, selectFirmwareUpdateSource },
             actions: { lockDevice },
             utils: { connectInitSettings },
         } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
+        const getFirmwareUpdateSource = () => selectFirmwareUpdateSource(getState());
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
@@ -78,6 +80,11 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 console.warn(
                     'Hey, it looks like you called a TrezorConnect method without providing device property.',
                 );
+            }
+
+            if (action.type === UI_REQUEST.FIRMWARE_DOWNLOADED && !isDesktop()) {
+                // We are in web therefore we ignore `FIRMWARE_DOWNLOADED` action.
+                return;
             }
 
             // dispatch event as action
@@ -180,6 +187,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 thp: selectThpSettings(getState()),
                 debug: showConnectLogs,
                 firmwareHashCheckTimeouts,
+                firmwareUpdateSource: getFirmwareUpdateSource(),
             });
         } catch (error) {
             let formattedError: string;

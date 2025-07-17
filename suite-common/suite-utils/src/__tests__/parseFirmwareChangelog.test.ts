@@ -1,4 +1,4 @@
-import { ConditionalRelease } from '@trezor/device-utils';
+import { FirmwareRelease } from '@trezor/device-utils';
 
 import {
     ParseFirmwareChangelogParams,
@@ -15,7 +15,7 @@ const EXPECTED_STRING =
     '* Show Ypub/Zpub correctly for multisig GetAddress.\n' +
     '* Show amounts in mBTC, uBTC and sat denominations.';
 
-const releaseData: Omit<ConditionalRelease['release'], 'changelog'> = {
+const releaseData: Omit<FirmwareRelease, 'changelog'> = {
     required: false,
     version: [1, 9, 4],
     bootloader_version: [1, 8, 0],
@@ -23,7 +23,14 @@ const releaseData: Omit<ConditionalRelease['release'], 'changelog'> = {
     min_bootloader_version: [1, 5, 0],
     url: 'firmware/1/trezor-1.9.4.bin',
     fingerprint: '867017bd784cc4e9ce6f0875c61ea86f89b19380d54045c34608b85472998000',
-    translations: ['cs-CZ', 'de-DE', 'es-ES', 'fr-FR', 'it-IT', 'pt-BR'],
+    translations: {
+        'cs-CZ': 'firmware/translations/t1b1/translation-T2T1-cs-CZ-2.7.2.bin',
+        'de-DE': 'firmware/translations/t1b1/translation-T2T1-de-DE-2.7.2.bin',
+        'es-ES': 'firmware/translations/t1b1/translation-T2T1-es-ES-2.7.2.bin',
+        'fr-FR': 'firmware/translations/t1b1/translation-T2T1-fr-FR-2.7.2.bin',
+        'it-IT': 'firmware/translations/t1b1/translation-T2T1-it-IT-2.7.2.bin',
+        'pt-BR': 'firmware/translations/t1b1/translation-T2T1-pt-BR-2.7.2.bin',
+    },
     firmware_revision: 'fad9682201cf9289bba2adb66e6e07ed1cf78936',
 };
 
