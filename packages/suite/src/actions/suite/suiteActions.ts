@@ -4,6 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TradingType } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
+import { FirmwareUpdateSource } from '@trezor/connect/src/data/firmwareInfo';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 
@@ -34,6 +35,7 @@ export type SuiteAction =
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
+    | { type: typeof SUITE.SET_FIRMWARE_UPDATE_SOURCE; payload: FirmwareUpdateSource }
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
@@ -352,6 +354,18 @@ export const onSuiteReady = (): SuiteAction => ({
  */
 export const setDebugMode = (payload: Partial<DebugModeOptions>): SuiteAction => ({
     type: SUITE.SET_DEBUG_MODE,
+    payload,
+});
+
+/**
+ * Triggered by user action in:
+ * - Debug Settings
+ * Set `firmwareUpdateSource` field in suite reducer
+ * @param {FirmwareUpdateSource} payload
+ * @returns {SuiteAction}
+ */
+export const setFirmwareUpdateSource = (payload: FirmwareUpdateSource): SuiteAction => ({
+    type: SUITE.SET_FIRMWARE_UPDATE_SOURCE,
     payload,
 });
 

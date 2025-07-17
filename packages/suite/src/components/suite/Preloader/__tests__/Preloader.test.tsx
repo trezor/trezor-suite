@@ -91,6 +91,7 @@ const getInitialState = ({
                 isUnlockedBootloaderAllowed: false,
                 showConnectLogs: false,
             },
+            firmwareUpdateSource: 'production',
             theme: { variant: 'light' },
             enabledSecurityChecks: {
                 deviceAuthenticity: true,

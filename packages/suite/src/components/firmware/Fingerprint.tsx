@@ -11,8 +11,8 @@ export const Fingerprint = ({ device }: FingerprintProps) => {
     const { fingerprint } = device.firmwareReleaseConfigInfo?.release ?? {};
 
     if (!fingerprint) {
-        // device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck)
-        console.error('Fingerprint is not defined in device.firmwareRelease.release');
+        // device.firmwareReleaseConfigInfo should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck)
+        console.error('Fingerprint is not defined in device.firmwareReleaseConfigInfo.release');
 
         return null;
     }

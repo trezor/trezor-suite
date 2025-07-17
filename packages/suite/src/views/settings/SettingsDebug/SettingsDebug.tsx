@@ -13,6 +13,7 @@ import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
+import { FirmwareUpdate } from './FirmwareUpdate';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
 import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
@@ -94,6 +95,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="TrezorConnect">
                 <TrezorConnectLogs />
+            </SettingsSection>
+            <SettingsSection title="Firmware update source">
+                <FirmwareUpdate />
             </SettingsSection>
         </SettingsLayout>
     );
