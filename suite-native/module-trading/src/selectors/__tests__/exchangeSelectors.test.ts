@@ -67,15 +67,13 @@ describe('exchangeSelectors', () => {
             );
         });
 
-        it('should throw when no account with given key exists', () => {
+        it('should return undefined when no account with given key exists', () => {
             prevState.exchange.tradingAccountKey = 'unknown_account_key';
             const state = {
                 wallet: { tradingNew: prevState, accounts: [account] },
             } as unknown as CommonTradingRootState & TradingRootState;
 
-            expect(() => selectExchangeSelectedSendAccount(state)).toThrow(
-                'Unknown tradingAccountKey: [unknown_account_key]',
-            );
+            expect(selectExchangeSelectedSendAccount(state)).toBeUndefined();
         });
     });
 
@@ -116,15 +114,13 @@ describe('exchangeSelectors', () => {
             );
         });
 
-        it('should throw when no account with given key exists', () => {
+        it('should return undefined no account with given key exists', () => {
             prevState.exchange.receiveAccountKey = 'unknown_account_key';
             const state = {
                 wallet: { tradingNew: prevState, accounts: [account] },
             } as unknown as CommonTradingRootState & TradingRootState;
 
-            expect(() => selectExchangeSelectedReceiveAccount(state)).toThrow(
-                'Unknown receiveAccountKey: [unknown_account_key]',
-            );
+            expect(selectExchangeSelectedReceiveAccount(state)).toBeUndefined();
         });
     });
 
