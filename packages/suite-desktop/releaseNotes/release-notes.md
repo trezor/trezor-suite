@@ -16,3 +16,4 @@
 ### 🔧 Bug fixes
 
 - Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience.
+- Fixed an issue where a passphrase prompt appeared during token swaps.
