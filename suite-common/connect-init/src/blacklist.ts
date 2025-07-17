@@ -1,7 +1,7 @@
-import { ConnectWebKey } from './types';
+import { ConnectKey } from './types';
 
 // List of methods that don't work with device, so they don't need to be patched
-export const blacklist: ConnectWebKey[] = [
+export const blacklist: ConnectKey[] = [
     'manifest',
     'init',
     'setTransports',
@@ -30,7 +30,4 @@ export const blacklist: ConnectWebKey[] = [
     // so locking device must be avoided (blocks a lot of Suite features needlessly)
     // TODO find a better solution to wrap this method only when device is used
     'getAccountInfo',
-    // WebUSB methods from Connect web
-    'requestWebUSBDevice',
-    'disableWebUSB',
 ];

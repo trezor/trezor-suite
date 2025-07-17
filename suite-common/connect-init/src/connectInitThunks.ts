@@ -23,7 +23,7 @@ import { getSynchronize } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
 import { cardanoConnectPatch } from './cardanoConnectPatch';
-import { ConnectKey, ConnectWebKey } from './types';
+import { ConnectKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
@@ -128,7 +128,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         const synchronize = getSynchronize();
 
         Object.keys(TrezorConnect)
-            .filter(k => !blacklist.includes(k as ConnectWebKey))
+            .filter(k => !blacklist.includes(k as ConnectKey))
             .forEach(key => {
                 // typescript complains about params and return type, need to be "any"
                 const original: any = TrezorConnect[key as ConnectKey];
