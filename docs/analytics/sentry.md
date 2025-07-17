@@ -104,7 +104,7 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
       wipe_code_protection: False,
     },
   firmware: valid,
-  firmwareRelease:
+  firmwareReleaseConfigInfo:
     {
       changelog: [],
       isNewer: False,
