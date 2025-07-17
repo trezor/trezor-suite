@@ -1,7 +1,7 @@
-import { ConditionalRelease } from '@trezor/device-utils';
+import { FirmwareRelease } from '@trezor/device-utils';
 
 export type ParseFirmwareChangelogParams = {
-    release?: ConditionalRelease['release'];
+    release?: FirmwareRelease;
 };
 
 export type ParseFirmwareChangelogResult = {

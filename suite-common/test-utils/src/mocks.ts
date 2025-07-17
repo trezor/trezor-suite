@@ -60,13 +60,13 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
 });
 
 /**
- * device.firmwareRelease property
+ * device.firmwareReleaseConfigInfo property
  * note that values don't make much sense.
  */
-const getFirmwareReleaseConfig = (): NonNullable<Device['firmwareReleaseConfigInfo']> => ({
+const getFirmwareReleaseConfigInfo = (): NonNullable<Device['firmwareReleaseConfigInfo']> => ({
     isRequired: false,
     isNewer: false,
-    firmwareType: FirmwareType.Regular,
+    firmwareType: FirmwareType.Universal,
     isBitcoinOnlyAvailable: true,
     intermediary: undefined,
     releaseConditions: {
@@ -82,7 +82,14 @@ const getFirmwareReleaseConfig = (): NonNullable<Device['firmwareReleaseConfigIn
         url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
         fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
         firmware_revision: 'fad9682201cf9289bba2adb66e6e07ed1cf78936',
-        translations: ['cs-CZ', 'de-DE', 'es-ES', 'fr-FR', 'it-IT', 'pt-BR'],
+        translations: {
+            'cs-CZ': 'firmware/translations/t1b1/translation-T2T1-cs-CZ-2.7.2.bin',
+            'de-DE': 'firmware/translations/t1b1/translation-T2T1-de-DE-2.7.2.bin',
+            'es-ES': 'firmware/translations/t1b1/translation-T2T1-es-ES-2.7.2.bin',
+            'fr-FR': 'firmware/translations/t1b1/translation-T2T1-fr-FR-2.7.2.bin',
+            'it-IT': 'firmware/translations/t1b1/translation-T2T1-it-IT-2.7.2.bin',
+            'pt-BR': 'firmware/translations/t1b1/translation-T2T1-pt-BR-2.7.2.bin',
+        },
         changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
     },
 });
@@ -184,7 +191,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
         path: '',
         label: 'My Trezor',
         firmware: 'valid',
-        firmwareReleaseConfigInfo: getFirmwareReleaseConfig(),
+        firmwareReleaseConfigInfo: getFirmwareReleaseConfigInfo(),
         status: 'available',
         mode: 'normal',
         state: undefined,
@@ -195,7 +202,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
                 ? FirmwareType.BitcoinOnly
                 : FirmwareType.Universal,
         name: '',
-        availableTranslations: [],
+        availableTranslations: {},
         ...dev,
         error: undefined,
         type: 'acquired',
@@ -659,7 +666,7 @@ const setTrezorConnectFixtures = (f?: any) => {
 
 export const testMocks = {
     getWalletAccount,
-    getFirmwareReleaseConfig,
+    getFirmwareReleaseConfigInfo,
     getDeviceFeatures,
     getConnectDevice,
     getSuiteDevice,
