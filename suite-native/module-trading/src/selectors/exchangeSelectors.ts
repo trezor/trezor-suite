@@ -1,7 +1,6 @@
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { invariant } from '@suite-common/suite-utils';
 import {
     TokenDefinitionsRootState,
     filterKnownTokens,
@@ -58,31 +57,15 @@ export const selectTradingExchange = (state: TradingRootState) => state.wallet.t
 
 export const selectExchangeSelectedSendAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingExchange],
-    (state, { tradingAccountKey }) => {
-        if (!tradingAccountKey) {
-            return undefined;
-        }
-
-        const account = selectAccountByKey(state, tradingAccountKey);
-
-        invariant(account, `Unknown tradingAccountKey: [${tradingAccountKey}]`);
-
-        return account;
-    },
+    (state, { tradingAccountKey }) => selectAccountByKey(state, tradingAccountKey) || undefined,
 );
 
 export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingExchange],
     (state, { receiveAddress: address, receiveAccountKey }) => {
-        if (!receiveAccountKey) {
-            return undefined;
-        }
-
         const account = selectAccountByKey(state, receiveAccountKey);
 
-        invariant(account, `Unknown receiveAccountKey: [${receiveAccountKey}]`);
-
-        return { account, address } as ReceiveAccount;
+        return account ? ({ account, address } as ReceiveAccount) : undefined;
     },
 );
 
