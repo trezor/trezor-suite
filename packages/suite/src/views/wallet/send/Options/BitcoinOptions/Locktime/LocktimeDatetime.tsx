@@ -74,6 +74,7 @@ export const LocktimeDatetime = ({ innerAddon }: LocktimeDatetimeProps) => {
             placeholder="DD/MM/YYYY HH:MM"
             innerAddon={innerAddon}
             innerRef={inputRef}
+            data-testid="locktime-datetime-input"
             {...inputField}
         />
     );

@@ -74,6 +74,7 @@ export const LocktimeBlockHeight = ({ innerAddon }: LocktimeBlockHeightProps) =>
                 </Row>
             }
             innerAddon={innerAddon}
+            data-testid="locktime-blockheight-input"
         />
     );
 };
