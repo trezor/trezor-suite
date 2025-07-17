@@ -5102,6 +5102,10 @@ export default defineMessages({
         defaultMessage:
             "Updating firmware carries risks. If something goes wrong, the device may be wiped, and you'll need your wallet backup to restore access. Create a wallet backup before updating.",
     },
+    ONBOARDING_UNEXPECTED_DEVICE_BUSY_HEADING: {
+        id: 'ONBOARDING_UNEXPECTED_DEVICE_BUSY_HEADING',
+        defaultMessage: 'Allow connection',
+    },
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING',
         defaultMessage: "You're using a different Trezor",
