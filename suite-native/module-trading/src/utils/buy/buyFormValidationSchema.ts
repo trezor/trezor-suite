@@ -60,10 +60,20 @@ export const buyFormValidationSchema = yup.object({
             });
         })
         .test('crypto-max', (value, testContext) => {
-            const { currency, maxCrypto, translate, CryptoAmountFormatter } =
-                getAmountLimitContext(testContext);
+            const {
+                currency,
+                maxCrypto,
+                translate,
+                CryptoAmountFormatter,
+                convertNumberToBaseUnit,
+            } = getAmountLimitContext(testContext);
+            const convertedValue = convertNumberToBaseUnit(value, currency.toLowerCase());
 
-            if (value === undefined || maxCrypto === undefined || value <= parseFloat(maxCrypto)) {
+            if (
+                convertedValue === undefined ||
+                maxCrypto === undefined ||
+                convertedValue <= parseFloat(maxCrypto)
+            ) {
                 return true;
             }
 
