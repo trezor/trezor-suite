@@ -1,5 +1,5 @@
 import { BLUETOOTH_PREFIX, bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
-import { createThunk } from '@suite-common/redux-utils/';
+import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
@@ -48,9 +48,14 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         const attemptDeviceConnect = async ({ device }: { device: DesktopBluetoothDevice }) => {
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
             const autoConnectingDevices = selectConnectingDevices(getState());
+            // do not hijack BT connection
+            const isConnectable =
+                device.connectionStatus.type === 'disconnected' &&
+                (!device.manufacturerData.filterPolicy?.connected ||
+                    device.manufacturerData.filterPolicy.pairing);
 
             if (
-                !device.connected &&
+                isConnectable &&
                 knownDevices.find(d => d.id === device.id) !== undefined &&
                 !autoConnectingDevices.includes(device.id)
             ) {
