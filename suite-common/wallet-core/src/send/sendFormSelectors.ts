@@ -37,14 +37,8 @@ export const selectSendFormDraftOutputsByAccountKey = (
     return draft?.outputs ?? null;
 };
 
-export const selectSendFormReviewButtonRequestsCount = (
-    state: DeviceRootState,
-    symbol?: NetworkSymbol,
-    decreaseOutputId?: number,
-) => {
+export const selectSendFormButtonRequestCodes = (state: DeviceRootState, symbol: NetworkSymbol) => {
     const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
-
-    if (G.isNullable(symbol)) return 0;
 
     const networkType = getNetworkType(symbol);
 
@@ -52,7 +46,7 @@ export const selectSendFormReviewButtonRequestsCount = (
     const isEthereum = networkType === 'ethereum';
     const isStellar = networkType === 'stellar';
 
-    const sendFormReviewRequest = buttonRequestCodes.filter(
+    return buttonRequestCodes.filter(
         code =>
             code === 'ButtonRequest_ConfirmOutput' ||
             code === 'ButtonRequest_SignTx' ||
@@ -62,6 +56,19 @@ export const selectSendFormReviewButtonRequestsCount = (
             // See https://github.com/trezor/trezor-firmware/issues/5120
             (isStellar && (code === 'ButtonRequest_Other' || code === 'ButtonRequest_ProtectCall')),
     );
+};
+
+export const selectSendFormReviewButtonRequestsCount = (
+    state: DeviceRootState,
+    symbol?: NetworkSymbol,
+    decreaseOutputId?: number,
+) => {
+    if (G.isNullable(symbol)) return 0;
+
+    const networkType = getNetworkType(symbol);
+    const isCardano = networkType === 'cardano';
+
+    const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 
     // While confirming decrease amount in RBF, 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount).
     if (
@@ -72,4 +79,16 @@ export const selectSendFormReviewButtonRequestsCount = (
     }
 
     return isCardano ? sendFormReviewRequest.length - 1 : sendFormReviewRequest.length;
+};
+
+export const selectSendFormReviewLastButtonCode = (
+    state: DeviceRootState,
+    symbol?: NetworkSymbol,
+) => {
+    if (G.isNullable(symbol)) return null;
+
+    const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
+
+    // Return the last button request code from the filtered list
+    return sendFormReviewRequest[sendFormReviewRequest.length - 1] ?? null;
 };
