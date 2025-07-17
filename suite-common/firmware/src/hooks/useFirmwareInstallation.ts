@@ -96,7 +96,11 @@ export const useFirmwareInstallation = (
         // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow,
         // T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
         ((buttonEvent?.code &&
-            ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(buttonEvent.code)) ||
+            [
+                'ButtonRequest_ProtectCall',
+                'ButtonRequest_Other',
+                'ButtonRequest_FirmwareUpdate',
+            ].includes(buttonEvent.code)) ||
             showManualReconnectPrompt);
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
