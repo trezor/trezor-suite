@@ -5,7 +5,11 @@ import { ExchangeTrade } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { selectTradingExchangeProviders } from '@suite-common/trading';
+import {
+    TradingExchangeAmountLimitProps,
+    selectTradingExchangeProviders,
+    selectTradingExchangeQuotesRequest,
+} from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
@@ -22,6 +26,7 @@ import { selectAccountTokenBalance } from '@suite-native/tokens';
 
 import {
     selectExchangeAmountLimits,
+    selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
@@ -133,10 +138,10 @@ const useSendAccountAssetBalance = (
 const useContextForExchangeForm = (
     balance: string | null,
     currency: string | undefined,
+    limits: TradingExchangeAmountLimitProps | undefined,
 ): ExchangeFormContext => {
     const { translate } = useTranslate();
     const { CryptoAmountFormatter } = useFormatters();
-    const limits = useSelector(selectExchangeAmountLimits);
     const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
 
     return {
@@ -149,12 +154,34 @@ const useContextForExchangeForm = (
     };
 };
 
+const useValidations = (
+    { trigger, setValue }: ExchangeFormType,
+    limits: TradingExchangeAmountLimitProps | undefined,
+) => {
+    const { translate } = useTranslate();
+    const quotes = useSelector(selectExchangeQuotes);
+    const quoteRequest = useSelector(selectTradingExchangeQuotesRequest);
+
+    const generalAlertMsg =
+        !quoteRequest || quotes.length > 0 || limits
+            ? undefined
+            : translate('moduleTrading.validators.noQuotes');
+
+    useEffect(() => {
+        trigger(['sendCryptoAmount']);
+    }, [limits, trigger]);
+
+    useEffect(() => {
+        setValue('generalAlert', generalAlertMsg);
+    }, [generalAlertMsg, setValue]);
+};
+
 export const useExchangeForm = () => {
     const limits = useSelector(selectExchangeAmountLimits);
 
     const [balance, setBalance] = useState<string | null>(null);
     const [currency, setCurrency] = useState<string | undefined>(undefined);
-    const context = useContextForExchangeForm(balance, currency);
+    const context = useContextForExchangeForm(balance, currency, limits);
 
     const form = useForm<ExchangeFormValues>({
         validation: exchangeFormValidationSchema,
@@ -166,6 +193,7 @@ export const useExchangeForm = () => {
     useSendAccountChangeEffect(form);
     useReceiveAccountChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setCurrency);
+    useValidations(form, limits);
 
     return form;
 };

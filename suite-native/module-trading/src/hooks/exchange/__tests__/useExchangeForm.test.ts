@@ -1,3 +1,5 @@
+import { ExchangeTrade } from 'invity-api';
+
 import { tradingExchangeActions } from '@suite-common/trading';
 import {
     PreloadedState,
@@ -233,6 +235,137 @@ describe('useExchangeForm', () => {
             const { invalid } = result.current.getFieldState('sendCryptoAmount');
 
             expect(invalid).toBe(expectedInvalid);
+        });
+
+        it('should trigger validation once limits are loaded', async () => {
+            const store = await getInitializedStore();
+            act(() => {
+                store.dispatch(tradingExchangeActions.setAmountLimits(undefined));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+            });
+
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('sendCryptoAmount', '10');
+            });
+
+            await act(async () => {
+                store.dispatch(
+                    tradingExchangeActions.setAmountLimits({
+                        maxCrypto: '5',
+                        currency: 'BTC',
+                    }),
+                );
+                // allow to form.trigger validation to finish
+                await Promise.resolve();
+            });
+
+            const { invalid } = result.current.getFieldState('sendCryptoAmount');
+
+            expect(invalid).toBe(true);
+        });
+
+        describe('generalAlert', () => {
+            it('should be undefined by default', async () => {
+                const store = await getInitializedStore();
+                const { result } = await renderUseExchangeForm(store);
+
+                act(() => {
+                    store.dispatch(tradingExchangeActions.saveQuotes([] as ExchangeTrade[]));
+                    store.dispatch(tradingExchangeActions.setAmountLimits(undefined));
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
+
+            it('should be set when empty quotes are fetched and no limits are set', async () => {
+                const store = await getInitializedStore();
+                const { result } = await renderUseExchangeForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingExchangeActions.saveQuoteRequest({
+                            send: btcAsset.cryptoId,
+                            receive: usdcAsset.cryptoId,
+                            sendStringAmount: '1',
+                        }),
+                    );
+                    store.dispatch(tradingExchangeActions.saveQuotes([] as ExchangeTrade[]));
+                    store.dispatch(tradingExchangeActions.setAmountLimits(undefined));
+                });
+
+                expect(result.current.getValues('generalAlert')).toEqual(
+                    'No offers available for your request. Change amount or currency.',
+                );
+            });
+
+            it('should be undefined when empty quotes are fetched and limits are set', async () => {
+                const store = await getInitializedStore();
+                const { result } = await renderUseExchangeForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingExchangeActions.saveQuoteRequest({
+                            send: btcAsset.cryptoId,
+                            receive: usdcAsset.cryptoId,
+                            sendStringAmount: '1',
+                        }),
+                    );
+                    store.dispatch(tradingExchangeActions.saveQuotes([] as ExchangeTrade[]));
+                    store.dispatch(
+                        tradingExchangeActions.setAmountLimits({
+                            currency: 'BTC',
+                            minCrypto: '0.0001',
+                        }),
+                    );
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
+
+            it('should be undefined once quotes are fetched', async () => {
+                const store = await getInitializedStore();
+                const { result } = await renderUseExchangeForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingExchangeActions.saveQuoteRequest({
+                            send: btcAsset.cryptoId,
+                            receive: usdcAsset.cryptoId,
+                            sendStringAmount: '1',
+                        }),
+                    );
+                    store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
+                    store.dispatch(tradingExchangeActions.setAmountLimits(undefined));
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
+
+            it('should be cleared once quotes are fetched', async () => {
+                const store = await getInitializedStore();
+                const { result } = await renderUseExchangeForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingExchangeActions.saveQuoteRequest({
+                            send: btcAsset.cryptoId,
+                            receive: usdcAsset.cryptoId,
+                            sendStringAmount: '1',
+                        }),
+                    );
+                    store.dispatch(tradingExchangeActions.saveQuotes([] as ExchangeTrade[]));
+                    store.dispatch(tradingExchangeActions.setAmountLimits(undefined));
+                });
+
+                act(() => {
+                    store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
         });
     });
 });
