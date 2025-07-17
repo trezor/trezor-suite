@@ -90,7 +90,6 @@ export const TotalSent = () => {
                                         disableHiddenPlaceholder
                                         value={formatNetworkAmount(transactionInfo.fee, symbol)}
                                         symbol={symbol}
-                                        contractAddress={tokenInfo.contract}
                                     />
                                 ) : (
                                     <BaseCurrencyValue
