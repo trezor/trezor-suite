@@ -13,12 +13,11 @@ import {
     restartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { appChanged, setFlag, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
+import { appChanged, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
@@ -92,17 +91,6 @@ const suite =
 
         if (deviceActions.forgetDevice.match(action)) {
             api.dispatch(handleDeviceDisconnect(action.payload.device));
-        }
-
-        if (deviceActions.connectDevice.match(action)) {
-            const isT3T1 =
-                action.payload?.device?.features?.internal_model === DeviceModelInternal.T3T1;
-            const isT3T1DashboardPromoBannerActive =
-                api.getState().suite.flags.showDashboardT3T1PromoBanner;
-
-            if (isT3T1 && isT3T1DashboardPromoBannerActive) {
-                api.dispatch(setFlag('showDashboardT3T1PromoBanner', false));
-            }
         }
 
         switch (action.type) {

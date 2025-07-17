@@ -126,7 +126,7 @@ const getInitialState = ({
             securityStepsHidden: false,
             dashboardGraphHidden: false,
             dashboardAssetsGridMode: false,
-            showDashboardT3T1PromoBanner: false,
+            showTEXDashboardPromoBanner: false,
             showSettingsDesktopAppPromoBanner: false,
             stakeEthBannerClosed: false,
             stakeSolBannerClosed: false,

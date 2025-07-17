@@ -55,6 +55,7 @@ export const Feature = {
             blacklist: 'trading.restrictions.blacklist',
         },
     },
+    dashboardPromoBanner: 'dashboard.promoBanner',
 
     // device onboarding (MOBILE ONLY!!!).
     // TODO: remove during August 2025 release if is everything still working as expected

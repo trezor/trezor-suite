@@ -36,7 +36,7 @@ Navigation between pages is not required to be tracked as it is tracked automati
 
 ## Type declaration
 
-All events and their properties should be declared in [src/events/suite/types.ts](./src/events/suite/types.ts) (or in the corresponding directory for other environments).
+All events and their properties should be declared in [src/events/suite/dashboardBannerTypes.ts](./src/events/suite/types.ts) (or in the corresponding directory for other environments).
 Event types should be declared in the `EventType` enum in [src/events/suite/constants.ts](./src/events/suite/constants.ts).
 Supplementary types can be declared in [src/events/suite/definitions.ts](./src/events/suite/definitions.ts).
 
