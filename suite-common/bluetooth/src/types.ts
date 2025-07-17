@@ -9,16 +9,16 @@ export type BluetoothAdapterStatus =
 
 export type BluetoothScanStatus = 'idle' | 'running' | 'error';
 
-export enum BluetoothFilterPolicy {
-    FILTERED = 0, // accepts connections from known devices
-    UNFILTERED = 1, // accepts connections from all devices (aka pairing mode)
-    BOND_MEMORY_FULL = 2, // same as UNFILTERED but new connections cannot be established
-}
+export type BluetoothFilterPolicy = {
+    pairing: boolean; // accepts connections from all devices
+    connected: boolean; // currently connected here or elsewhere
+    bond_memory_full: boolean; // new connections cannot be established
+};
 
 export type BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal;
     deviceColor: number; // TODO: add proper strict type, plain number is currently used in the codebase
-    filterPolicy: BluetoothFilterPolicy | null;
+    filterPolicy?: BluetoothFilterPolicy;
 };
 
 export type DeviceBluetoothConnectionStatus =

@@ -2,42 +2,78 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { BluetoothFilterPolicy, BluetoothManufacturerData } from './types';
 
-const parseDeviceModel = (bytes: number[]): DeviceModelInternal => {
-    // TODO: There's a bug in FW, the device model is reversed.
-    const deviceModel = String.fromCharCode(...bytes.reverse()) as DeviceModelInternal;
-
-    return DeviceModelInternal[deviceModel] ?? DeviceModelInternal.UNKNOWN;
+// MODEL_BLE_CODE defined in trezor-firmware
+// https://github.com/trezor/trezor-firmware/blob/main/core/embed/models/T3W1/model_T3W1.h#L36
+const MODEL_BLE_CODE: Record<number, DeviceModelInternal> = {
+    6: DeviceModelInternal.T3W1,
 };
 
-const parseFilterPolicy = (value: number): BluetoothFilterPolicy | null =>
-    BluetoothFilterPolicy[value] ? (value as BluetoothFilterPolicy) : null;
+// flags defined in trezor-firmware
+// https://github.com/trezor/trezor-firmware/blob/main/nordic/trezor/trezor-ble/src/ble/advertising.c#L35
+const ADV_FLAG_PAIRING = 0x01;
+const ADV_FLAG_BOND_MEM_FULL = 0x02;
+const ADV_FLAG_DEV_CONNECTED = 0x04;
+
+const parseDeviceModel = (bytes: number): DeviceModelInternal =>
+    MODEL_BLE_CODE[bytes] ?? DeviceModelInternal.UNKNOWN;
+
+const parseFilterPolicy = (value: number): BluetoothFilterPolicy => ({
+    pairing: !!(value & ADV_FLAG_PAIRING),
+    bond_memory_full: !!(value & ADV_FLAG_BOND_MEM_FULL),
+    connected: !!(value & ADV_FLAG_DEV_CONNECTED),
+});
+
+const serializeFilterPolicy = (policy?: BluetoothFilterPolicy) => {
+    let value = 0;
+    if (policy) {
+        if (policy.pairing) {
+            value |= ADV_FLAG_PAIRING;
+        }
+        if (policy.bond_memory_full) {
+            value |= ADV_FLAG_BOND_MEM_FULL;
+        }
+        if (policy.connected) {
+            value |= ADV_FLAG_DEV_CONNECTED;
+        }
+    }
+
+    return value;
+};
+
+Object.keys(MODEL_BLE_CODE)
+    .map(k => Number(k))
+    .find(k => MODEL_BLE_CODE[k]);
+
+const serializeDeviceModel = (m: DeviceModelInternal) =>
+    Object.keys(MODEL_BLE_CODE)
+        .map(k => Number(k))
+        .find(k => MODEL_BLE_CODE[k] === m) || 0;
 
 /**
  * Manufacturer Specific Data
  *
  * 1st byte = filter policy
  * 2nd byte = device color, interpreted the same way as from Device Features
- * remaining four bytes = internal device model, e.g. T3W1
+ * 3rd byte = internal device model
  */
 export const parseManufacturerData = (bytes: number[]): BluetoothManufacturerData => {
-    if (bytes.length !== 6) {
+    if (bytes.length < 3) {
         return {
             deviceModel: DeviceModelInternal.UNKNOWN,
             deviceColor: 0,
-            filterPolicy: null,
+            filterPolicy: undefined,
         };
     }
 
     return {
-        deviceModel: parseDeviceModel(bytes.slice(2)),
+        deviceModel: parseDeviceModel(bytes[2]),
         deviceColor: bytes[1],
         filterPolicy: parseFilterPolicy(bytes[0]),
     };
 };
 
 export const serializeManufacturerData = (data: BluetoothManufacturerData): number[] => [
-    data.filterPolicy ?? 0,
+    serializeFilterPolicy(data.filterPolicy),
     data.deviceColor,
-    // TODO: There's a bug in FW, the device model is reversed.
-    ...Array.from(data.deviceModel, char => char.charCodeAt(0)).reverse(),
+    serializeDeviceModel(data.deviceModel),
 ];

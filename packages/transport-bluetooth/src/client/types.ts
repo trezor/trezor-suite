@@ -26,12 +26,13 @@ export interface BluetoothDevice {
      * Manufacturer Specific Data:
      *
      * Bytes:
-     *      [0]: fist byte is advertising type.
-     *             0 - advertising with whitelist,
-     *             1 - without whitelist (pairing mode),
-     *             2 - also pairing mode but bond memory is full, cannot bond another dive
-     *      [1]: second is device color (interpreted same way as from Device Fetures)
-     *      [2-6]: four remaining bytes represent internal device name, i.e. T3W1
+     *      [0]: advertising type:
+     *             0      - advertising with whitelist
+     *             | 0x01 - without whitelist (pairing mode)
+     *             | 0x02 - bond memory is full. cannot bond another device
+     *             | 0x04 - device currently connected here or elsewhere
+     *      [1]: device color
+     *      [2]: device code (see MODEL_BLE_CODE)
      */
     data: number[]; // advertisement data bytes
     connected: boolean;

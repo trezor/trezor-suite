@@ -1,33 +1,65 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { BluetoothFilterPolicy, parseManufacturerData, serializeManufacturerData } from '../src';
+import { parseManufacturerData, serializeManufacturerData } from '../src';
+
+const filterPolicy = {
+    pairing: false,
+    connected: false,
+    bond_memory_full: false,
+};
 
 describe(parseManufacturerData.name, () => {
     test.each([
         ['empty array', []],
-        ['shorter array', [1, 2, 3, 4, 5]],
-        ['longer array', [1, 2, 3, 4, 5, 6, 7]],
+        ['shorter array', [1, 2]],
     ])('parses %s as invalid', (_, bytes) => {
         expect(parseManufacturerData(bytes)).toEqual({
             deviceModel: DeviceModelInternal.UNKNOWN,
             deviceColor: 0,
-            filterPolicy: null,
+            filterPolicy: undefined,
         });
     });
 
     test('parses invalid data correctly', () => {
-        expect(parseManufacturerData([3, 42, 84, 51, 87, 49])).toEqual({
+        expect(parseManufacturerData([31, 42, 84, 51, 87, 49])).toEqual({
             deviceModel: DeviceModelInternal.UNKNOWN,
             deviceColor: 42,
-            filterPolicy: null,
+            filterPolicy: {
+                pairing: true,
+                connected: true,
+                bond_memory_full: true,
+            },
         });
     });
 
     test('parses valid data correctly', () => {
-        expect(parseManufacturerData([1, 42, 49, 87, 51, 84])).toEqual({
+        expect(parseManufacturerData([1, 0, 6])).toEqual({
             deviceModel: DeviceModelInternal.T3W1,
-            deviceColor: 42,
-            filterPolicy: BluetoothFilterPolicy.UNFILTERED,
+            deviceColor: 0,
+            filterPolicy: {
+                ...filterPolicy,
+                pairing: true,
+            },
+        });
+        expect(parseManufacturerData([3, 0, 6]).filterPolicy).toEqual({
+            pairing: true,
+            connected: false,
+            bond_memory_full: true,
+        });
+        expect(parseManufacturerData([5, 0, 6]).filterPolicy).toEqual({
+            pairing: true,
+            connected: true,
+            bond_memory_full: false,
+        });
+        expect(parseManufacturerData([6, 0, 6]).filterPolicy).toEqual({
+            pairing: false,
+            connected: true,
+            bond_memory_full: true,
+        });
+        expect(parseManufacturerData([7, 0, 6]).filterPolicy).toEqual({
+            pairing: true,
+            connected: true,
+            bond_memory_full: true,
         });
     });
 });
@@ -38,8 +70,11 @@ describe(serializeManufacturerData.name, () => {
             serializeManufacturerData({
                 deviceModel: DeviceModelInternal.T3W1,
                 deviceColor: 2,
-                filterPolicy: BluetoothFilterPolicy.UNFILTERED,
+                filterPolicy: {
+                    ...filterPolicy,
+                    pairing: true,
+                },
             }),
-        ).toEqual([1, 2, 49, 87, 51, 84]);
+        ).toEqual([1, 2, 6]);
     });
 });

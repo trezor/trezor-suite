@@ -5,7 +5,7 @@ export type {
 } from './types';
 export type { BluetoothState } from './bluetoothReducer';
 export type { WithBluetoothState } from './bluetoothSelectors';
-export { BluetoothFilterPolicy } from './types';
+export type { BluetoothFilterPolicy } from './types';
 
 export { BLUETOOTH_PREFIX, bluetoothActions } from './bluetoothActions';
 export { prepareInitialState, prepareBluetoothReducerCreator } from './bluetoothReducer';
