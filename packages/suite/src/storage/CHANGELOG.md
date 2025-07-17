@@ -3,6 +3,7 @@
 ## 25.8.0
 
 - make `device.authenticityChecks` non-nullable
+- migrated locale codes from 2 letter format to full code
 
 ## 25.7.0
 

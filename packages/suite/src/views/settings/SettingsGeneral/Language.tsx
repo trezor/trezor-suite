@@ -65,13 +65,12 @@ export const Language = () => {
     const { options, systemOption } = useLanguageOptions();
 
     const isCommunityLanguage = LANGUAGES[language].type === 'community';
-    const selectedValue =
-        autodetectLanguage
-            ? systemOption
-            : {
-                  value: language,
-                  label: LANGUAGES[language].name,
-              };
+    const selectedValue = autodetectLanguage
+        ? systemOption
+        : {
+              value: language,
+              label: LANGUAGES[language].name,
+          };
 
     const onChange = ({ value }: { value: Locale | 'system' }) => {
         analytics.report({
