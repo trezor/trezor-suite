@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "9276b1702361f70e094286e2f89e919d8a230d5c",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.4.2.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.4.2.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.4.2.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.4.2.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.4.2.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.4.2.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.4.2-bitcoinonly.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.4.2-bitcoinonly.bin",
     "fingerprint": "60fee3c9775d8ccf71099f6f7d277463efd128414cfb9be45656b1a26eeb7301",
     "changelog": "* Memory optimization of BTC signing."
 }

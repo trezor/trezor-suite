@@ -7,7 +7,7 @@
     "bootloader_version": [1, 8, 0],
     "firmware_revision": "cde8f31ec2ddcb7d35e36edbcf8a71dda983a9ea",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.9.2-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.9.2.bin",
     "fingerprint": "45b83acd1330ddfd5567edbae5ff8028df1c48a493f01d47cc5499ee0be9b991",
     "changelog": "* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Adds support for multiple change outputs in outgoing transactions.\n* Adds a security check to prevent potential issues with paths used in altcoin transactions."
 }

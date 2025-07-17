@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.9.bin",
         "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.9.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.9-universal.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.9.bin",
     "fingerprint": "3a0228ae58bfd65ba341b33a34138d0d70a9a16f5d2db387f9ee2659d797dedf",
     "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Solana staking confirmation dialogs.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
 }

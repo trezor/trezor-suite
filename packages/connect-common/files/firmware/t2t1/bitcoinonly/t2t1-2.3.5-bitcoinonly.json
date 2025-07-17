@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "ffa96205fb5e22b43e7b08a3dbc3cdeee0931de3",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.3.5.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.3.5.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.3.5.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.3.5.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.3.5.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.3.5.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.3.5-bitcoinonly.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.3.5-bitcoinonly.bin",
     "fingerprint": "53e7ee5bfc75cfa6412d8de5461b1ea8d9b7e10970ce7cadae9cbb1e17bbb77d",
     "changelog": "* Replacement transaction signing for replace-by-fee and PayJoin.\n* Support for Output Descriptors export.\n* Paginated display for signing/verifying long messages.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations."
 }

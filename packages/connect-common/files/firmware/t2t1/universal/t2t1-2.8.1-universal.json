@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.8.1.bin",
         "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.8.1.bin"
     },
-    "url": "firmware/t2t1/universal/t2t1-2.8.1-universal.bin",
+    "url": "firmware/t2t1/trezor-t2t1-2.8.1.bin",
     "fingerprint": "d3af84a212d32785449ca6575e3cf2a641920b353a82dec9f059083ea5d4b149",
     "changelog": "* Fixed displaying of a progress indicator for the formatting operation.\n* Improve precision of PIN validation countdown.\n* Solana: Improved support for AToken Create operation."
 }

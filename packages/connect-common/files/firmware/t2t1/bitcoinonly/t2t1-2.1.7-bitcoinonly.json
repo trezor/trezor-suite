@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "2cabc8b40ce237ee8a7e1926b6269040519d447a",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.1.7.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.1.7.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.1.7.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.1.7.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.1.7.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.1.7.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.1.7-bitcoinonly.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.1.7-bitcoinonly.bin",
     "fingerprint": "fd92ac173a2cf93cc07ced3287e07800ed10466dc38c0c7240d9b20c689dd1d1",
     "changelog": "* Super Shamir (with Groups)\n* Fix low memory issue"
 }

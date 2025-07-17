@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.8.7.bin",
         "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.8.7.bin"
     },
-    "url": "firmware/t2b1/universal/t2b1-2.8.7-universal.bin",
+    "url": "firmware/t2b1/trezor-t2b1-2.8.7.bin",
     "fingerprint": "554c6586df79e1281dd377bfb99d7b2594dbac66d749837c6a78b9c5e0751098",
     "changelog": "* Show last typed PIN number for short period of time.\n* Multisig-related changes.\n* Simplify UI of Cardano transactions initiated by Trezor Suite.\n* Included new version of bootloader (2.1.8).\n* Fix ETH account number detection.\n* New EVM call contract flow UI.\n* Fix translation of the 'Enable labeling' screen."
 }

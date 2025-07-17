@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "c6b2580cd245ee924507f45e9675f857a3d78768",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.3.1.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.3.1.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.3.1.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.3.1.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.3.1.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.3.1.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.3.1-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.3.1.bin",
     "fingerprint": "37178a5ec24e34f8a0599aebcadaf206af3ebadef2fc596665d617dd3e05a5db",
     "changelog": "* Refactor Bitcoin signing"
 }

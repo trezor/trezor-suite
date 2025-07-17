@@ -7,7 +7,7 @@
     "bootloader_version": [1, 8, 0],
     "firmware_revision": "c6b2580cd245ee924507f45e9675f857a3d78768",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.9.1-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.9.1.bin",
     "fingerprint": "30cde253c46d4fc705f98634a35d06a494cf2a36824622a9c6a573e07f14292d",
     "changelog": "* Refactor Bitcoin signing"
 }

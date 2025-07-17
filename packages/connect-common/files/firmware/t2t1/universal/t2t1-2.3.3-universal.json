@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "0d5f00668fb3d1c093ff3c879311a91d3a7175c8",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.3.3.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.3.3.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.3.3.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.3.3.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.3.3.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.3.3.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.3.3-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.3.3.bin",
     "fingerprint": "46326222f8afcb82e1cd07867bc3bf8836f4e9d0f367e23b58d1e9bc32cd032e",
     "changelog": "* Advances the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Adds support for Verge (XVG).\n* Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).\n* Introduces a hard limit on transaction fees to prevent accidentally paying extra hefty fees (the limit can be manually disabled).\n* Resolves the problems with generating the Crown addresses.\n* Re-enables spending altcoins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).\n* Fixes smaller issues with the user interface, customization, and more."
 }

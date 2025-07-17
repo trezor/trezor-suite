@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 8],
     "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
     "translations": {
-        "cs-CZ": "firmware/translations/t2b1/translation-t2b1-cs-CZ-2.8.10.bin",
-        "de-DE": "firmware/translations/t2b1/translation-t2b1-de-DE-2.8.10.bin",
-        "es-ES": "firmware/translations/t2b1/translation-t2b1-es-ES-2.8.10.bin",
-        "fr-FR": "firmware/translations/t2b1/translation-t2b1-fr-FR-2.8.10.bin",
-        "it-IT": "firmware/translations/t2b1/translation-t2b1-it-IT-2.8.10.bin",
-        "pt-BR": "firmware/translations/t2b1/translation-t2b1-pt-BR-2.8.10.bin"
+        "cs-CZ": "firmware/translations/t2b1/translation-T2B1-cs-CZ-2.8.10.bin",
+        "de-DE": "firmware/translations/t2b1/translation-T2B1-de-DE-2.8.10.bin",
+        "es-ES": "firmware/translations/t2b1/translation-T2B1-es-ES-2.8.10.bin",
+        "fr-FR": "firmware/translations/t2b1/translation-T2B1-fr-FR-2.8.10.bin",
+        "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.8.10.bin",
+        "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.8.10.bin"
     },
-    "url": "firmware/t2b1/universal/t2b1-2.8.10-bitcoinonly.bin",
+    "url": "firmware/t2b1/trezor-t2b1-2.8.10-bitcoinonly.bin",
     "fingerprint": "5bd50bbcf6435f97b6dc46f96ad11235965cd8a78619c573c3c0aca6822e9ed2",
     "changelog": "* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
 }

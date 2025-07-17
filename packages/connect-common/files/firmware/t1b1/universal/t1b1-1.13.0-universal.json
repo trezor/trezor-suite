@@ -7,7 +7,7 @@
     "bootloader_version": [1, 12, 1],
     "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.13.0-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.13.0.bin",
     "fingerprint": "356433bd9de6cb564bf7778fc5de73c56197459523358f267e9235af9e1ce46d",
     "changelog": "* Multisig-related changes.\n* Reworked PIN processing.\n* Allow showing XPUB using a QR code."
 }

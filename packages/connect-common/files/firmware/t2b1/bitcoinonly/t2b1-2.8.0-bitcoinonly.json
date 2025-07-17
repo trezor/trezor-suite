@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 4],
     "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
     "translations": {
-        "cs-CZ": "firmware/translations/t2b1/translation-t2b1-cs-CZ-2.8.0.bin",
-        "de-DE": "firmware/translations/t2b1/translation-t2b1-de-DE-2.8.0.bin",
-        "es-ES": "firmware/translations/t2b1/translation-t2b1-es-ES-2.8.0.bin",
-        "fr-FR": "firmware/translations/t2b1/translation-t2b1-fr-FR-2.8.0.bin",
-        "it-IT": "firmware/translations/t2b1/translation-t2b1-it-IT-2.8.0.bin",
-        "pt-BR": "firmware/translations/t2b1/translation-t2b1-pt-BR-2.8.0.bin"
+        "cs-CZ": "firmware/translations/t2b1/translation-T2B1-cs-CZ-2.8.0.bin",
+        "de-DE": "firmware/translations/t2b1/translation-T2B1-de-DE-2.8.0.bin",
+        "es-ES": "firmware/translations/t2b1/translation-T2B1-es-ES-2.8.0.bin",
+        "fr-FR": "firmware/translations/t2b1/translation-T2B1-fr-FR-2.8.0.bin",
+        "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.8.0.bin",
+        "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.8.0.bin"
     },
-    "url": "firmware/t2b1/universal/t2b1-2.8.0-bitcoinonly.bin",
+    "url": "firmware/t2b1/trezor-t2b1-2.8.0-bitcoinonly.bin",
     "fingerprint": "ae088439d44fc8643b8de28e0d7a8720cd3dbb247619f2742604bbe884542558",
     "changelog": "* Removed CoSi functionality. \n* Increased Optiga read timeout to avoid spurious RSODs."
 }

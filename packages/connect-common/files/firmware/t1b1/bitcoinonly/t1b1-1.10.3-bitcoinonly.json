@@ -7,7 +7,7 @@
     "bootloader_version": [1, 10, 0],
     "firmware_revision": "9276b1702361f70e094286e2f89e919d8a230d5c",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.10.3-bitcoinonly.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.10.3-bitcoinonly.bin",
     "fingerprint": "d1143d2cba9c7dba4d57703d2b7da87859d8668472ffc651177ead6b94e89117",
     "changelog": "* Small code improvements"
 }

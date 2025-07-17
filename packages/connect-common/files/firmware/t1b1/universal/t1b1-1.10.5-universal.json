@@ -7,7 +7,7 @@
     "bootloader_version": [1, 10, 0],
     "firmware_revision": "3f12742669bd782cac374a1750d517f4fd88c43b",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.10.5-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.10.5.bin",
     "fingerprint": "7619fcc73c43ca8a3e6aad3dc3eb6551fed05bb218340efe01a02bb96e9f346b",
     "changelog": "* Support for blindly signing EIP-712 data."
 }

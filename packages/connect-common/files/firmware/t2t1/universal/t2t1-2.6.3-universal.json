@@ -6,15 +6,8 @@
     "min_firmware_version": [2, 0, 8],
     "bootloader_version": [2, 1, 4],
     "firmware_revision": "2c7cc6e0255dee2339b445b5551eaffb88dbd1b4",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.6.3.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.6.3.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.6.3.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.6.3.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.6.3.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.6.3.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.6.3-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.6.3.bin",
     "fingerprint": "9ff0874f2ce3579a7502747578cef65c824097d906e7150b0142f6b9aa395a43",
     "changelog": "* QR Code for Extended Public Keys (XPUBs). \n* Adjusted buttons for multipage content scrolling, providing a more intuitive and user-friendly experience. \n* The new bootloader version 2.1.4 is now included for enhanced system performance and security."
 }

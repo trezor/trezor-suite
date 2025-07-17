@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "8eb6ce08995514c67d175b7197feeadeccc48ff0",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.1.8.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.1.8.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.1.8.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.1.8.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.1.8.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.1.8.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.1.8-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.1.8.bin",
     "fingerprint": "8a5fa12132651b6e33344fd025d0d90885f5cc1c342427ebcea4f0ae98b50d8c",
     "changelog": "* Support Tezos 005-BABYLON hardfork\n* Show XPUBs in GetAddress for multisig\n* Security improvements"
 }

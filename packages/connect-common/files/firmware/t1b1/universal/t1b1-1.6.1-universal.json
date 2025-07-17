@@ -7,7 +7,7 @@
     "bootloader_version": [1, 4, 0],
     "firmware_revision": "9588e8f2736b60916f51e470deb18f55112a6ebc",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.6.1-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.6.1.bin",
     "fingerprint": "83c3190a94e524ac83a1704eb584a2ab53f8a65a893b1ab52e7135812857c807",
     "changelog": "* Use fixed-width font for addresses\n* Lots of under-the-hood improvements\n* Fixed issue with write-protection settings"
 }

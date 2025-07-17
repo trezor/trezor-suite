@@ -10,11 +10,9 @@
         "cs-CZ": "firmware/translations/t2b1/translation-T2B1-cs-CZ-2.7.0.bin",
         "de-DE": "firmware/translations/t2b1/translation-T2B1-de-DE-2.7.0.bin",
         "es-ES": "firmware/translations/t2b1/translation-T2B1-es-ES-2.7.0.bin",
-        "fr-FR": "firmware/translations/t2b1/translation-T2B1-fr-FR-2.7.0.bin",
-        "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.7.0.bin",
-        "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.7.0.bin"
+        "fr-FR": "firmware/translations/t2b1/translation-T2B1-fr-FR-2.7.0.bin"
     },
-    "url": "firmware/t2b1/universal/t2b1-2.7.0-universal.bin",
+    "url": "firmware/t2b1/trezor-t2b1-2.7.0.bin",
     "fingerprint": "522eb5db073c0f039f7164360668e75a43399d0b4e40edfd06f77f4401cd98aa",
     "changelog": "* Add translations capability. \n* Add loader to homescreen when locking the device. \n* Allow for going back to previous word in recovery process. \n* Clear sign ETH staking transactions on Everstake pool. [Universal fw only] \n* Display descriptors for BTC Taproot public keys. \n* Multiple Solana instructions improved. [Universal fw only] \n* Add missing semicolon character to the passphrase entry."
 }

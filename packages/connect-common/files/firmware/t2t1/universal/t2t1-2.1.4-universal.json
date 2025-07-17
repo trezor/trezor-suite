@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 1, 0],
     "firmware_revision": "6a1a02ca3c595067ed02a78f2d6c36eb58eaa9ed",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.1.4.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.1.4.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.1.4.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.1.4.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.1.4.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.1.4.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.1.4-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.1.4.bin",
     "fingerprint": "820611a92605b1ccc612b9bf8550617aec6962bd2484fcb6ae4792bc498654e4",
     "changelog": "* Shamir Backup with Recovery persistence\n* Touchscreen freeze fix\n* Fix display of non-divisible OMNI amounts"
 }

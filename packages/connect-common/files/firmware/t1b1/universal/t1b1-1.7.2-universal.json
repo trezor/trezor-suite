@@ -7,7 +7,7 @@
     "bootloader_version": [1, 6, 0],
     "firmware_revision": "0b26c529ec49daf584f322f3ef959c79694c8cf5",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.7.2-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.7.2.bin",
     "fingerprint": "4d5c7ac191dba315b2433af27c187925fb713d06984cc6f566231d809dd8d370",
     "changelog": "* Add support for OMNI layer: OMNI/MAID/USDT\n* U2F fixes\n* Don't ask for PIN if it has been just set"
 }

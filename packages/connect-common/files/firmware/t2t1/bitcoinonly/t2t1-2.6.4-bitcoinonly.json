@@ -6,15 +6,8 @@
     "min_firmware_version": [2, 0, 8],
     "bootloader_version": [2, 1, 4],
     "firmware_revision": "42e9ed0e09033d474dee1a560fe5870646fa440e",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.6.4.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.6.4.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.6.4.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.6.4.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.6.4.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.6.4.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.6.4-bitcoinonly.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.6.4-bitcoinonly.bin",
     "fingerprint": "e78da8a00354dd1223da081600f881b71bd297dd565e7a2c0a9880e52575d127",
     "changelog": "* The display of spaced addresses has been refined, offering a more user-friendly and visually optimized experience. \n* Boot-up logo display has been optimized, contributing to a smoother and more visually appealing device startup."
 }

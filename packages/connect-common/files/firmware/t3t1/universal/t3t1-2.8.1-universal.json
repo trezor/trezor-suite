@@ -10,11 +10,9 @@
         "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.8.1.bin",
         "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.8.1.bin",
         "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.8.1.bin",
-        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.8.1.bin",
-        "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.1.bin",
-        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.1.bin"
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.8.1.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.1-universal.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.1.bin",
     "fingerprint": "6a064df4a928e1264d682a34cc014fc9272f312e0f8a8270ff88d6f1408fe68b",
     "changelog": "* Added PIN keyboard animation.\n* Added menu entry animation.\n* Added screen brightness settings.\n* Screen transitions and animations were improved and are now more smooth.\n* Improved precision of PIN validation countdown.\n* Improved instruction screens during multi-share recovery process.\n* New UI of firmware update.\n* Improved share words swiping animation during wallet creation.\n* Solana: Improved support for AToken Create operation.\n* Fixed title sometimes not fitting into result screen.\n* Improved touch layer precision.\n* Fixed “More info” screen during multi-share backup creation.\n* Fixed title sometimes not fitting into result screen.\n* Adjusted detection of swipes: vertical swipes are preferred over horizontal swipes now."
 }

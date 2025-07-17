@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "0d87b55ba4fed7eecc72bf2a94ee473830b095e9",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.5.2.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.5.2.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.5.2.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.5.2.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.5.2.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.5.2.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.5.2-bitcoinonly.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.5.2-bitcoinonly.bin",
     "fingerprint": "76aa25f9602cfb03cd3e07a82ac09226344eb355355aec216295e43b675eedf7",
     "changelog": "* Show the fee rate on the signing confirmation screen. \n* Show thousands separator when displaying large amounts."
 }

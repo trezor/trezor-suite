@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.8.0.bin",
         "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.8.0.bin"
     },
-    "url": "firmware/t2b1/universal/t2b1-2.8.0-universal.bin",
+    "url": "firmware/t2b1/trezor-t2b1-2.8.0.bin",
     "fingerprint": "cf3ce230a69a681199f74cf6ac8c6c431f8fa7e0d0183437f93c5cc029fbd155",
     "changelog": "* Removed CoSi functionality. \n* Increased Optiga read timeout to avoid spurious RSODs."
 }
