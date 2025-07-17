@@ -6,12 +6,11 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import {
     composeSendFormTransactionFeeLevelsThunk,
     selectConvertedNetworkFeeInfo,
-    selectDeviceFirmwareVersion,
+    selectDeviceUnavailableCapabilities,
 } from '@suite-common/wallet-core';
 import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { Success, Unsuccessful } from '@trezor/connect';
-import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import {
@@ -79,9 +78,7 @@ export const recomposeAndSignTxThunk = createThunk<
         const options: FormOptions[] = ['broadcast'];
         const network = getNetwork(account.symbol);
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        const firmwareVersion = selectDeviceFirmwareVersion(getState());
-        const isNewApproveFlowSupported =
-            firmwareVersion && isNewerOrEqual(firmwareVersion, '2.9.0');
+        const unavailableCapabilities = selectDeviceUnavailableCapabilities(getState());
         const activeTradingSection = selectTradingActiveSection(
             getState(),
         ) as TradingTradeSellExchangeType;
@@ -100,7 +97,7 @@ export const recomposeAndSignTxThunk = createThunk<
         // Otherwise if ethereumDataHex is present, token is not used as details are in the ethereumDataHex.
         const shouldIncludeToken =
             !!(ethereumDataHex && isTransferEvmTxType) ||
-            !(ethereumDataHex && !isTransferEvmTxType && !isNewApproveFlowSupported);
+            !(ethereumDataHex && !isTransferEvmTxType && unavailableCapabilities?.['evmApproval']);
 
         // prepare the fee levels, set custom values from composed
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
