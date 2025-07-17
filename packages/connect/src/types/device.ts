@@ -106,7 +106,7 @@ export type KnownDevice = BaseDevice & {
     features: PROTO.Features;
     thp?: ThpStateSerialized;
     unavailableCapabilities: UnavailableCapabilities;
-    availableTranslations: string[];
+    availableTranslations: Record<string, string>;
     authenticityChecks: {
         firmwareRevision: FirmwareRevisionCheckResult | null;
         firmwareHash: FirmwareHashCheckResult | null;

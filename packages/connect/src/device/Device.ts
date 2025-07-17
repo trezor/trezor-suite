@@ -1,5 +1,5 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { DeviceModelInternal, models } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease, models } from '@trezor/device-utils';
 import {
     TransportProtocol,
     thp as protocolThp,
@@ -19,12 +19,7 @@ import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
-import {
-    getFirmwareReleaseConfig,
-    getFirmwareStatus,
-    getRelease,
-} from '../data/firmwareInfo';
-import { getLanguage } from '../data/getLanguage';
+import { getFirmwareReleaseConfigInfo, getFirmwareStatus, getLanguage } from '../data/firmwareInfo';
 import {
     DEVICE,
     DeviceButtonRequestPayload,
@@ -52,6 +47,7 @@ import {
     VersionArray,
 } from '../types';
 import { handshakeCancel } from './workflow/handshake';
+import { getReleaseAsset } from '../utils/assetUtils';
 import { initLog } from '../utils/debug';
 import {
     ensureInternalModelFeature,
@@ -59,6 +55,7 @@ import {
     parseCapabilities,
     parseRevision,
 } from '../utils/deviceFeaturesUtils';
+import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
 
 // custom log
 const _log = initLog('Device');
@@ -142,6 +139,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this._firmwareStatus;
     }
 
+    private _currentRelease?: FirmwareRelease;
+    public get currentRelease() {
+        return this._currentRelease;
+    }
+
     private _firmwareReleaseConfigInfo?: FirmwareReleaseConfigInfo;
     public get firmwareReleaseConfigInfo() {
         return this._firmwareReleaseConfigInfo;
@@ -186,7 +188,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private color?: string;
 
-    private availableTranslations: string[] = [];
+    private availableTranslations: Record<string, string> = {};
 
     private authenticityChecks: KnownDevice['authenticityChecks'] = {
         firmwareRevision: null,
@@ -677,21 +679,28 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private async checkFirmwareRevision() {
         const firmwareVersion = this.getVersion();
 
-        if (!firmwareVersion || !this.features) {
+        if (!firmwareVersion || !this.features || !this.firmwareType) {
             return; // This happens when device has no features (not yet connected)
         }
 
-        if (this.features.bootloader_mode === true) {
+        if (this.features && this.features.bootloader_mode === true) {
             return;
         }
 
-        const release = getRelease(this.features.internal_model, firmwareVersion);
+        // TODO(karliatto): We get bundled relase here, if it is not present it will try to get the it online inside `checkFirmwareRevision`
+        // by using `getReleaseByVersion` that checks the bundled and if not found then it tries to find it online.
+        const release = getReleaseAsset(
+            this.features.internal_model,
+            firmwareVersion,
+            this.firmwareType,
+        );
 
         const result = await checkFirmwareRevision({
             internalModel: this.features.internal_model,
             deviceRevision: this.features.revision,
             firmwareVersion,
             expectedRevision: release?.firmware_revision,
+            firmwareType: this.firmwareType,
         });
         this.authenticityChecks = {
             ...this.authenticityChecks,
@@ -716,11 +725,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
             throw ERRORS.TypedError('Runtime', 'changeLanguage: device version unknown');
         }
 
-        const downloadedBinary = await getLanguage({
-            language,
-            version,
-            internal_model: this.features.internal_model,
-        });
+        if (!this.firmwareType) {
+            throw ERRORS.TypedError('Runtime', 'changeLanguage: firmware type unknown');
+        }
+
+        if (!this._currentRelease) {
+            throw ERRORS.TypedError('Runtime', 'changeLanguage: release not found');
+        }
+        const languageBinPath = this._currentRelease.translations[language];
+        const downloadedBinary = await getLanguage(languageBinPath);
 
         if (!downloadedBinary) {
             throw ERRORS.TypedError('Runtime', 'changeLanguage: translation not found');
@@ -804,29 +817,23 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     device: this.toMessageObject(),
                 });
             }
+            this._currentRelease = getReleaseAsset(
+                feat.internal_model,
+                newVersion,
+                getFirmwareType(feat),
+            );
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this._firmwareStatus = getFirmwareStatus(feat, FirmwareType.Regular);
-            this._firmwareReleaseConfigInfo = getFirmwareReleaseConfig(feat, FirmwareType.Regular);
-
-            this.availableTranslations = this.firmwareReleaseConfigInfo?.translations ?? [];
+            this._firmwareStatus = getFirmwareStatus(feat, getFirmwareType(feat));
+            this._firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(
+                feat,
+                getFirmwareType(feat),
+            );
+            this.availableTranslations = this._currentRelease?.translations ?? {};
         }
 
         this._features = feat;
 
-        // Vendor headers have been changed in 2.6.3.
-        if (feat.fw_vendor === 'Trezor Bitcoin-only') {
-            this._firmwareType = FirmwareType.BitcoinOnly;
-        } else if (feat.fw_vendor === 'Trezor') {
-            this._firmwareType = FirmwareType.Universal;
-        } else if (this.getMode() !== 'bootloader') {
-            // Relevant for T1B1, T2T1 and custom firmware with a different vendor header. Capabilities do not work in bootloader mode.
-            this._firmwareType =
-                feat.capabilities &&
-                feat.capabilities.length > 0 &&
-                !feat.capabilities.includes('Capability_Bitcoin_like')
-                    ? FirmwareType.BitcoinOnly
-                    : FirmwareType.Universal;
-        }
+        this._firmwareType = getFirmwareType(feat);
 
         const deviceInfo = models[feat.internal_model] ?? {
             name: `Unknown ${feat.internal_model}`,
@@ -968,14 +975,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return null;
     }
 
-    private getMode() {
-        if (this.features.bootloader_mode) return 'bootloader';
-        if (!this.features.initialized) return 'initialize';
-        if (this.features.no_backup) return 'seedless';
-
-        return 'normal';
-    }
-
     private getStatus(): DeviceStatus {
         if (this.isUsedElsewhere()) return 'occupied';
         if (this.wasUsedElsewhere) return 'used';
@@ -983,7 +982,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         return 'available';
     }
-
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
         const { name, uniquePath: path } = this;
@@ -1024,7 +1022,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             _state: this.getState(),
             state: this.getState()?.staticSessionId,
             status: this.getStatus(),
-            mode: this.getMode(),
+            mode: getFirmwareMode(this.features),
             color: this.color,
             firmware: this.firmwareStatus,
             firmwareReleaseConfigInfo: this.firmwareReleaseConfigInfo,

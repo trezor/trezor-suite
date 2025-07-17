@@ -1,12 +1,13 @@
 import { randomBytes } from 'crypto';
 
-import { serializeError, versionUtils } from '@trezor/utils';
+import { serializeError } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { DataManager } from '../../data/DataManager';
-import { getFirmwareLocation, getReleases } from '../../data/firmwareInfo';
-import { FirmwareHashCheckError, FirmwareHashCheckResult, FirmwareType } from '../../types';
+import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
+import { FirmwareHashCheckError, FirmwareHashCheckResult } from '../../types';
 import { Log } from '../../utils/debug';
+import { getFirmwareType } from '../../utils/firmwareUtils';
 import type { Device } from '../Device';
 
 const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
@@ -33,12 +34,19 @@ export const checkFirmwareHash = async ({
         return null;
     }
 
+    const firmwareType = getFirmwareType(device.features);
+    const release = await getReleaseByVersion(device.features, firmwareVersion, firmwareType);
+
+    // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
+    if (!release) return createFailResult('unknown-release');
+
     const firmwareLocation = getFirmwareLocation({
         firmwareVersion,
-        internalModel: device.features.internal_model,
-        firmwareType: device.firmwareType ? device.firmwareType : FirmwareType.Universal,
+        remotePath: release.url,
+        deviceModel: device.features.internal_model,
+        firmwareType: getFirmwareType(device.features),
     });
-    const { baseUrl, firmwareName } = firmwareLocation;
+    const { baseUrl, path } = firmwareLocation;
 
     const timeoutThresholdsPerModel = DataManager.getSettings('firmwareHashCheckTimeouts');
     // device has no features (not yet connected) or no firmware
@@ -49,15 +57,9 @@ export const checkFirmwareHash = async ({
     const checkSupported = !device.unavailableCapabilities.getFirmwareHash;
     if (!checkSupported) return createFailResult('check-unsupported');
 
-    const release = getReleases(device.features.internal_model).find(r =>
-        versionUtils.isEqual(r.version, firmwareVersion),
-    );
-    // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
-    if (release === undefined) return createFailResult('unknown-release');
-
     const firmwareBinary = await getBinaryOptional({
         baseUrl,
-        firmwareName,
+        path,
         version: firmwareVersion,
     });
 

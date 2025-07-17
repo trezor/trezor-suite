@@ -1,6 +1,7 @@
 import type {
     ConditionalRelease,
     DeviceModelInternal,
+    FirmwareRelease,
     FirmwareType,
     IntermediaryReleaseConfig,
     VersionArray,
@@ -24,9 +25,9 @@ export type FirmwareReleaseConfigInfo = {
     firmwareType: FirmwareType;
     isBitcoinOnlyAvailable: boolean;
     releaseConditions: ConditionalRelease['conditions'] & { shouldBeOffered: boolean };
-    release: ConditionalRelease['release'];
+    release: FirmwareRelease;
     intermediary: IntermediaryReleaseConfig | undefined;
     isRequired: boolean | null;
     isNewer: boolean | null;
-    translations?: string[];
+    translations?: Record<string, string>;
 };

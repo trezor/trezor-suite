@@ -7,13 +7,13 @@ import { httpRequest } from '../../utils/assets';
 
 interface GetBinaryParams {
     baseUrl: string;
-    firmwareName: string;
+    path: string;
     version: VersionArray;
 }
 
-export const getBinary = async ({ baseUrl, firmwareName, version }: GetBinaryParams) => {
+export const getBinary = async ({ baseUrl, path, version }: GetBinaryParams) => {
     const sanitizedBaseUrl = removeTrailingSlashes(baseUrl);
-    const url = `${sanitizedBaseUrl}/${firmwareName}`;
+    const url = `${sanitizedBaseUrl}/${path}`;
 
     const res = await httpRequest(url, 'binary');
     // suspiciously small binary. this typically happens when build does not have git lfs enabled and all

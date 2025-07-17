@@ -2,14 +2,22 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
+import {
+    ConditionalRelease,
+    DeviceModelInternal,
+    FirmwareType,
+    IntermediaryReleaseConfig,
+    ReleasesConfig,
+} from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmwareReleaseConfig, parseFirmwareReleases } from './firmwareInfo';
+import { initializeFirmwareConfig } from './firmwareInfo';
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
-import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
-import { getFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
+import {
+    getFirmwareReleaseConfig,
+    getOnlyLocalFirmwareReleaseConfig,
+} from '../utils/firmwareReleaseConfigUtils';
 
 type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
 type AssetCollection = {
@@ -22,8 +30,18 @@ export class DataManager {
     private static settings: ConnectSettings;
     private static messages: Record<string, any> = messages;
     private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
+    private static firmwareReleasesConfig: Partial<
+        Record<keyof typeof DeviceModelInternal, Record<FirmwareType, ConditionalRelease>>
+    > = {};
+    private static firmwareIntermediaryReleasesConfig:
+        | Record<keyof typeof DeviceModelInternal, IntermediaryReleaseConfig[]>
+        | undefined;
 
-    static async load(settings: ConnectSettings, withAssets = true) {
+    static async load(
+        settings: ConnectSettings,
+        withAssets = true,
+        onlyLocalFirmwareConfig = false,
+    ) {
         this.settings = settings;
 
         if (!withAssets) return;
@@ -31,14 +49,6 @@ export class DataManager {
         const assetsMap = {
             coins,
             coinsEth,
-            ...Object.fromEntries(
-                Object.entries(firmwareAssets).map(([key, value]) => {
-                    // For `unknown` firmware we get `{}` so we use `[]` to have always same type.
-                    const release = Array.isArray(value) ? value : [];
-
-                    return [`firmware-${key.toLowerCase()}`, release];
-                }),
-            ),
         };
         Object.assign(this.assets, assetsMap);
 
@@ -48,20 +58,20 @@ export class DataManager {
             ...this.assets.coinsEth,
         });
 
-        // parse firmware definitions
-        for (const model in DeviceModelInternal) {
-            const firmwareKey: `firmware-${string}` = `firmware-${model.toLowerCase()}`;
-            const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
-            const modelReleases = this.assets[firmwareKey] as FirmwareRelease[];
-            // Check if the firmware data exists for this model
-            if (modelReleases) {
-                parseFirmwareReleases(modelReleases, modelType);
-            }
+        await this.loadFirmwareRelaseConfig(onlyLocalFirmwareConfig);
+    }
+
+    static async loadFirmwareRelaseConfig(onlyLocal: boolean): Promise<void> {
+        let firmwareRelaseConfig;
+        if (onlyLocal) {
+            firmwareRelaseConfig = getOnlyLocalFirmwareReleaseConfig();
+        } else {
+            firmwareRelaseConfig = await getFirmwareReleaseConfig();
         }
-
-        const firmwareReleaseConfig = await getFirmwareReleaseConfig();
-
-        parseFirmwareReleaseConfig(firmwareReleaseConfig);
+        const { config, isRemote } = firmwareRelaseConfig;
+        const firmwareconfig = await initializeFirmwareConfig(config, isRemote);
+        this.setFirmwareReleaseConfig(firmwareconfig.releases);
+        this.setFirmwareIntermediaryReleaseConfig(firmwareconfig.intermediaries);
     }
 
     static getProtobufMessages() {
@@ -84,5 +94,20 @@ export class DataManager {
     }
     static getLocalFirmwares(): LocalFirmwares {
         return this.localFirmwares;
+    }
+
+    static setFirmwareReleaseConfig(releaseConfig: ReleasesConfig): void {
+        this.firmwareReleasesConfig = releaseConfig;
+    }
+    static getFirmwareReleaseConfig() {
+        return this.firmwareReleasesConfig;
+    }
+    static setFirmwareIntermediaryReleaseConfig(
+        intermediariesConfig: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>,
+    ) {
+        this.firmwareIntermediaryReleasesConfig = intermediariesConfig;
+    }
+    static getFirmwareIntermediaryReleaseConfig() {
+        return this.firmwareIntermediaryReleasesConfig;
     }
 }

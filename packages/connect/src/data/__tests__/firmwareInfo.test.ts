@@ -1,38 +1,48 @@
-import releases from '@trezor/connect-common/files/firmware/t2t1/releases.json';
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
+import { FirmwareType } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/protobuf/src/messages-schema';
 
-import { getFirmwareStatus, getReleases, parseFirmwareReleases } from '../firmwareInfo';
+import { getDeviceFeatures } from '../../../setupJest';
+import { DataManager } from '../DataManager';
+import { parseConnectSettings } from '../connectSettings';
+import { getFirmwareReleaseConfigInfo, getFirmwareStatus } from '../firmwareInfo';
 
 describe('data/firmwareInfo', () => {
-    beforeEach(() => {
-        parseFirmwareReleases(releases as FirmwareRelease[], DeviceModelInternal.T2T1);
-    });
-
-    test('getReleases', () => {
-        expect(getReleases(DeviceModelInternal.T2T1)[0]).toMatchObject({
-            ...releases[0],
-            url: expect.any(String),
-            url_bitcoinonly: expect.any(String),
+    describe('getFirmwareStatus', () => {
+        it('getFirmwareStatus should return none when no incomplet features and firmware is not present', () => {
+            expect(
+                // @ts-expect-error, incomplete Features
+                getFirmwareStatus({
+                    firmware_present: false,
+                }),
+            ).toEqual('none');
         });
-
-        // custom model
-        expect(getReleases(2000 as any)).toEqual([]);
+        it('getFirmwareStatus should return unknown when incomplete Features', () => {
+            expect(
+                // @ts-expect-error, incomplete Features
+                getFirmwareStatus({
+                    major_version: 1,
+                    bootloader_mode: true,
+                }),
+            ).toEqual('unknown');
+        });
     });
-
-    test('getFirmwareStatus', () => {
-        expect(
-            // @ts-expect-error, incomplete Features
-            getFirmwareStatus({
-                firmware_present: false,
-            }),
-        ).toEqual('none');
-
-        expect(
-            // @ts-expect-error, incomplete Features
-            getFirmwareStatus({
-                major_version: 1,
-                bootloader_mode: true,
-            }),
-        ).toEqual('unknown');
+    describe('getFirmwareReleaseConfigInfo', () => {
+        beforeAll(async () => {
+            await DataManager.load(parseConnectSettings({}));
+        });
+        it('should offer latest compatible relase when latest one is not compatible', () => {
+            const features = getDeviceFeatures({
+                bootloader_mode: null,
+                major_version: 2,
+                minor_version: 0,
+                patch_version: 7,
+                internal_model: DeviceModelInternal.T2T1,
+            });
+            const firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(
+                features,
+                FirmwareType.Universal,
+            );
+            expect(firmwareReleaseConfigInfo.release.version).toEqual([2, 1, 1]);
+        });
     });
 });
