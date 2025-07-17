@@ -10,11 +10,9 @@
         "cs-CZ": "firmware/translations/t2b1/translation-T2B1-cs-CZ-2.7.2.bin",
         "de-DE": "firmware/translations/t2b1/translation-T2B1-de-DE-2.7.2.bin",
         "es-ES": "firmware/translations/t2b1/translation-T2B1-es-ES-2.7.2.bin",
-        "fr-FR": "firmware/translations/t2b1/translation-T2B1-fr-FR-2.7.2.bin",
-        "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.7.2.bin",
-        "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.7.2.bin"
+        "fr-FR": "firmware/translations/t2b1/translation-T2B1-fr-FR-2.7.2.bin"
     },
-    "url": "firmware/t2b1/universal/t2b1-2.7.2-universal.bin",
+    "url": "firmware/t2b1/trezor-t2b1-2.7.2.bin",
     "fingerprint": "d072560f34782faf5537aa08a48c4e24671d4c60e9c291a00bfbf12cbc425666",
     "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
 }

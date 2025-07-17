@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "0d5f00668fb3d1c093ff3c879311a91d3a7175c8",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.3.3.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.3.3.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.3.3.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.3.3.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.3.3.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.3.3.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.3.3-bitcoinonly.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.3.3-bitcoinonly.bin",
     "fingerprint": "dda77cd7893a5f413f8fc4b2f44d1d43ed4b26e8ced5e6e578cc6b302c1a2310",
     "changelog": "* Advances the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Introduces a hard limit on transaction fees to prevent accidentally paying extra hefty fees (the limit can be manually disabled).\n* Fixes smaller issues with the user interface, customization, and more."
 }

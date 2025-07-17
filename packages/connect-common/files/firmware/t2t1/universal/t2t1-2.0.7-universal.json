@@ -6,15 +6,8 @@
     "min_firmware_version": [2, 0, 5],
     "bootloader_version": [2, 0, 0],
     "firmware_revision": "5c621800110a791c84865b6b381908e8c2f15283",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.0.7.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.0.7.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.0.7.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.0.7.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.0.7.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.0.7.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.0.7-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.0.7.bin",
     "fingerprint": "f3a42e640e526fba6574fafa520fc7d97ef9f557d24da24d9a2ea4176a4c4164",
     "changelog": "* Bitcoin Cash cashaddr support\n* Zcash Overwinter hardfork support\n* NEM support\n* Lisk support\n* Show warning on home screen if PIN is not set\n* Support for new coins:\n  - Bitcoin Private, Fujicoin, Vertcoin, Viacoin, Zcoin\n* Support for new Ethereum networks:\n  - EOS Classic, Ethereum Social, Ellaism, Callisto, EtherGem, Wanchain\n* Support for 500+ new Ethereum tokens"
 }

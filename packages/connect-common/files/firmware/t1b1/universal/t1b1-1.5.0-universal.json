@@ -6,7 +6,7 @@
     "min_firmware_version": [1, 0, 0],
     "firmware_revision": "6b74139b4530a4687b4a317b8b08f4329704efc4",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.5.0-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.5.0.bin",
     "fingerprint": "c4eddafd29b580d8482cda68e61bdcf1740d77520ef3a603758646bbffe957ea",
     "changelog": "* Enable Segwit for Testnet and Litecoin\n* Enable ERC-20 tokens for Ethereum chains"
 }

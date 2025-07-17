@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 10],
     "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
     "translations": {
-        "cs-CZ": "firmware/translations/t3b1/translation-t3b1-cs-CZ-2.8.10.bin",
-        "de-DE": "firmware/translations/t3b1/translation-t3b1-de-DE-2.8.10.bin",
-        "es-ES": "firmware/translations/t3b1/translation-t3b1-es-ES-2.8.10.bin",
-        "fr-FR": "firmware/translations/t3b1/translation-t3b1-fr-FR-2.8.10.bin",
-        "it-IT": "firmware/translations/t3b1/translation-t3b1-it-IT-2.8.10.bin",
-        "pt-BR": "firmware/translations/t3b1/translation-t3b1-pt-BR-2.8.10.bin"
+        "cs-CZ": "firmware/translations/t3b1/translation-T3B1-cs-CZ-2.8.10.bin",
+        "de-DE": "firmware/translations/t3b1/translation-T3B1-de-DE-2.8.10.bin",
+        "es-ES": "firmware/translations/t3b1/translation-T3B1-es-ES-2.8.10.bin",
+        "fr-FR": "firmware/translations/t3b1/translation-T3B1-fr-FR-2.8.10.bin",
+        "it-IT": "firmware/translations/t3b1/translation-T3B1-it-IT-2.8.10.bin",
+        "pt-BR": "firmware/translations/t3b1/translation-T3B1-pt-BR-2.8.10.bin"
     },
-    "url": "firmware/t3b1/universal/t3b1-2.8.10-bitcoinonly.bin",
+    "url": "firmware/t3b1/trezor-t3b1-2.8.10-bitcoinonly.bin",
     "fingerprint": "5a0aa661b61d056f72b83bf0d5c7eb4ddc84d6370fb977be794b145e49e8ff3f",
     "changelog": "* Upgrade bundled bootloader to 2.1.10.\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
 }

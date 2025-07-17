@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "b19cbf67c6c7c38513947b703df6d4409c59bc98",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.3.6.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.3.6.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.3.6.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.3.6.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.3.6.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.3.6.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.3.6-bitcoinonly.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.3.6-bitcoinonly.bin",
     "fingerprint": "e2cab40bb4c6ae65417b80ad564b905796038a0f5e6d0f50cead257fdd3a9c2d",
     "changelog": "* Add compatibility paths for Unchained Capital"
 }

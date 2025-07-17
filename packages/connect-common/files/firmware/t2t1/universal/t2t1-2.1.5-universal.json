@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 1, 0],
     "firmware_revision": "df0963ec48f01f3d07ffca556e21ff0070cab099",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.1.5.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.1.5.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.1.5.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.1.5.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.1.5.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.1.5.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.1.5-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.1.5.bin",
     "fingerprint": "40e4bfaf3c5ec77872c1aaaac085aafcc443f60279ca2bb38d29c669233fdf62",
     "changelog": "* Fix for sluggish U2F authentication when using Shamir\n* Fix UI for Shamir with 33 words\n* Fix Wanchain signing"
 }

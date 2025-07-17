@@ -7,14 +7,12 @@
     "bootloader_version": [2, 1, 6],
     "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
     "translations": {
-        "cs-CZ": "firmware/translations/t3t1/translation-t3t1-cs-CZ-2.8.0.bin",
-        "de-DE": "firmware/translations/t3t1/translation-t3t1-de-DE-2.8.0.bin",
-        "es-ES": "firmware/translations/t3t1/translation-t3t1-es-ES-2.8.0.bin",
-        "fr-FR": "firmware/translations/t3t1/translation-t3t1-fr-FR-2.8.0.bin",
-        "it-IT": "firmware/translations/t3t1/translation-t3t1-it-IT-2.8.0.bin",
-        "pt-BR": "firmware/translations/t3t1/translation-t3t1-pt-BR-2.8.0.bin"
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.8.0.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.8.0.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.8.0.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.8.0.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.0-bitcoinonly.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.0-bitcoinonly.bin",
     "fingerprint": "3dc847cc396fe83f5a324242097a4cf97fc64acf90516efcfcf23b6d3103a992",
     "changelog": "* Added tutorial flow. \n* Added Animated device label on homescreen/lockscreen. \n* Added word counter during wallet creation. \n* Improved change homescreen flow. \n* Improved swipe behavior and animations. \n* Increased Optiga read timeout to avoid spurious RSODs. \n* Fixed swipe back from address QR code screen. \n* Fixed device authenticity check. \n* Removed CoSi functionality."
 }

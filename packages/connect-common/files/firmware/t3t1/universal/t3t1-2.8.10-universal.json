@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.10.bin",
         "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.10.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.10-universal.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.10.bin",
     "fingerprint": "f6f50b4a419b041a59620ef681047c27af0902798e0227397c532dd70736694a",
     "changelog": "* Add Nostr support (in debug mode only!).\n* Visual cues to distinguish unlocked state on Homescreen.\n* Solana: rent fee calculation [#4933]\n* Solana: loadable token definitions [#3541]\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Updated EIP-1559 fee-related labels.\n* Allow firmware upgrade even if language change failed.\n* Solana: fees calculation is now exact [#4965]"
 }

@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.8.8.bin",
         "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.8.8.bin"
     },
-    "url": "firmware/t2t1/universal/t2t1-2.8.8-universal.bin",
+    "url": "firmware/t2t1/trezor-t2t1-2.8.8.bin",
     "fingerprint": "f4888bed3e75205464910f3956d1f3ad19bb73e093b31c9141a66226a7081990",
     "changelog": "* Fix \"PIN attempts exceeded\" screen\n* Fixed a bug resulting in restarting the recovery flow when inputting 33-word mnemonic"
 }

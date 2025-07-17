@@ -7,7 +7,7 @@
     "bootloader_version": [1, 5, 1],
     "firmware_revision": "ef86786ff750351ec454c7bae33b4966cfa862d7",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.6.3-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.6.3.bin",
     "fingerprint": "e8dbb4b7fe8384afd4c99790277c2f2f366a1a0f3957aa3545c75371a99a8fcc",
     "changelog": "* Implement RSKIP-60 Ethereum checksum encoding\n* Add support for new Ethereum networks (ESN, AKA, ETHO, MUSI, PIRL, ATH, GO)\n* Add support for new 80 Ethereum tokens\n* Improve MPU configuration"
 }

@@ -7,7 +7,7 @@
     "bootloader_version": [1, 8, 0],
     "firmware_revision": "0d5f00668fb3d1c093ff3c879311a91d3a7175c8",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.9.3-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.9.3.bin",
     "fingerprint": "2589f456559f813d1149be1022e62f2d48fbe28f4d02de933bd888d91035cace",
     "changelog": "* Improves the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Adds support for Verge (XVG).\n* Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).\n* Re-enables spending coins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).\n* Fixes smaller issues in the user interface."
 }

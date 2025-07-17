@@ -5,15 +5,8 @@
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "ea3596ad89a7993ad7b9d62798de94325ad1717a",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.4.0.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.4.0.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.4.0.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.4.0.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.4.0.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.4.0.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.4.0-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.4.0.bin",
     "fingerprint": "d90265ee6d7d499c7d938b5322f71f27042da8a6fdaed54c224d31b65e868def",
     "changelog": "* Locking the device by holding finger on the homescreen.\n* Support PIN of unlimited length.\n* Allow decreasing the output value in RBF transactions.\n* Reduce memory fragmentation.\n* Update FIDO icons.\n* Improve wording when showing multisig XPUBs."
 }

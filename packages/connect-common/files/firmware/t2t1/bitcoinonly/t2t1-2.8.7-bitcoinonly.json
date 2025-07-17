@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 8],
     "firmware_revision": "8a254aa8eae82f99630df63f40e4d290066a3efc",
     "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.8.7.bin",
-        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.8.7.bin",
-        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.8.7.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.8.7.bin",
-        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.8.7.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.8.7.bin"
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.8.7.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.8.7.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.8.7.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.8.7.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.8.7.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.8.7.bin"
     },
-    "url": "firmware/t2t1/universal/t2t1-2.8.7-bitcoinonly.bin",
+    "url": "firmware/t2t1/trezor-t2t1-2.8.7-bitcoinonly.bin",
     "fingerprint": "7bdf5de0c00c5d15c06d526a5b0d22cfd8343eb3e7aa01ee3c4ed60dd063bbf1",
     "changelog": "* Show last typed PIN number for short period of time.\n* Multisig-related changes.\n* Included new version of bootloader (2.1.8).\n* Fix translation of the 'Enable labeling' screen."
 }

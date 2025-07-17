@@ -6,15 +6,8 @@
     "min_firmware_version": [2, 0, 5],
     "bootloader_version": [2, 0, 0],
     "firmware_revision": "8852fb54820032f4f287414aa250df981d25445f",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.0.5.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.0.5.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.0.5.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.0.5.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.0.5.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.0.5.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.0.5-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.0.5.bin",
     "fingerprint": "851172eab96c07bf9efb43771cb0fd14dc0320a68de047132c7bd787a1ad64e9",
     "changelog": "* First public release"
 }

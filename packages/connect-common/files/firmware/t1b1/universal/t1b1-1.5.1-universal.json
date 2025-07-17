@@ -6,7 +6,7 @@
     "min_firmware_version": [1, 0, 0],
     "firmware_revision": "f0d2e7a37142a6d4c7f7e45a6e4427e53123d614",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.5.1-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.5.1.bin",
     "fingerprint": "1c1fa9802cbd6a947a4f3e78f209d3efe49eb4abbacb101bbc3a0a709c742707",
     "changelog": "* Wipe storage after 16 wrong PIN attempts\n* Enable Segwit for Bitcoin\n* Bcash aka Bitcoin Cash support\n* Message signing/verification for Ethereum and Segwit\n* Make address dialog nicer (switch text/QR via button)\n* Use checksum for Ethereum addresses\n* Add more ERC-20 tokens, handle unrecognized ERC-20 tokens\n* Allow \"dry run\" recovery procedure\n* Allow separated backup procedure"
 }

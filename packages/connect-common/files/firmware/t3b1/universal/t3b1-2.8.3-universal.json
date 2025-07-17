@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t3b1/translation-T3B1-it-IT-2.8.3.bin",
         "pt-BR": "firmware/translations/t3b1/translation-T3B1-pt-BR-2.8.3.bin"
     },
-    "url": "firmware/t3b1/universal/t3b1-2.8.3-universal.bin",
+    "url": "firmware/t3b1/trezor-t3b1-2.8.3.bin",
     "fingerprint": "b659bdc5ddce208d46ce649fc7a8995ae49541c7c41a88ddaac5dfc038ffb5de",
     "changelog": "* Renamed MATIC to POL, following a network upgrade.\n* Fix persistent word when going to previous word during recovery process.\n* Fix display orientation south."
 }

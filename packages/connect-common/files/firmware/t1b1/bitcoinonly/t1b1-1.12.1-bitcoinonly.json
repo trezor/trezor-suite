@@ -7,7 +7,7 @@
     "bootloader_version": [1, 12, 1],
     "firmware_revision": "1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.12.1-bitcoinonly.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.12.1-bitcoinonly.bin",
     "fingerprint": "985fb6a8c87f7547fb810f6c4a8331ebf19c677445810358778eb21eca78a181",
     "changelog": "* Fee rate shown when replacing transaction.\n* Ledger Live legacy derivation path m/44'/coin_type'/0'/account is now supported.\n* SLIP-0019 proofs of ownership for native SegWit implemented.\n* SLIP-0025 coinjoin accounts implemented for testing purposes.\n* Bech32 addresses now not converting to uppercase in QR code to increase compatibility.\n* Decimals of fee rate extended to 2 digits.\n* Only \"sat\" displayed instead of \"sat BTC\".\n* Bootloader 1.12.1. included."
 }

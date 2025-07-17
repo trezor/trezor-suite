@@ -7,7 +7,7 @@
     "bootloader_version": [1, 12, 1],
     "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.13.1-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.13.1.bin",
     "fingerprint": "f588657818ccf99b0046ede3f87eeaf17a0e6e6f1b7853344e18b846ca835328",
     "changelog": "* Clear sign ETH staking transactions on Everstake pool.\n* Use GWei when formatting large ETH amounts."
 }

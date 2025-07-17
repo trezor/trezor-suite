@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 9],
     "firmware_revision": "8a254aa8eae82f99630df63f40e4d290066a3efc",
     "translations": {
-        "cs-CZ": "firmware/translations/t3t1/translation-t3t1-cs-CZ-2.8.7.bin",
-        "de-DE": "firmware/translations/t3t1/translation-t3t1-de-DE-2.8.7.bin",
-        "es-ES": "firmware/translations/t3t1/translation-t3t1-es-ES-2.8.7.bin",
-        "fr-FR": "firmware/translations/t3t1/translation-t3t1-fr-FR-2.8.7.bin",
-        "it-IT": "firmware/translations/t3t1/translation-t3t1-it-IT-2.8.7.bin",
-        "pt-BR": "firmware/translations/t3t1/translation-t3t1-pt-BR-2.8.7.bin"
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.8.7.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.8.7.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.8.7.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.8.7.bin",
+        "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.7.bin",
+        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.7.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.7-bitcoinonly.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.7-bitcoinonly.bin",
     "fingerprint": "2f58de2b7c2c29b6a2f14909ad0941e4aa9dd6d3e1416ab66c512a743b5385a9",
     "changelog": "* Show last typed PIN number for short period of time.\n* Multisig-related changes.\n* Included new version of bootloader (2.1.9).\n* Fix XPUB confirmed success screen title.\n* Fix incorrect navigation in handy menu while signing BTC message.\n* Fix translation of the 'Enable labeling' screen."
 }

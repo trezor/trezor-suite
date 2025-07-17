@@ -6,15 +6,8 @@
     "min_firmware_version": [2, 0, 8],
     "bootloader_version": [2, 1, 4],
     "firmware_revision": "42e9ed0e09033d474dee1a560fe5870646fa440e",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.6.4.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.6.4.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.6.4.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.6.4.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.6.4.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.6.4.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.6.4-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.6.4.bin",
     "fingerprint": "441faa92156e8ae0b8247f9434c3ec8cf6ffd872f16fc593b22c4460dfd93913",
     "changelog": "* Trezor Model T now supports Solana, expanding the range of cryptocurrencies it can securely manage. [Universal fw only] \n* Ethereum fees are now uniformly presented in Gwei, enhancing clarity and consistency for users. [Universal fw only] \n* The display of spaced addresses has been refined, offering a more user-friendly and visually optimized experience. \n* Boot-up logo display has been optimized, contributing to a smoother and more visually appealing device startup."
 }

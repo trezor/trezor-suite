@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 8],
     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
     "translations": {
-        "cs-CZ": "firmware/translations/t3b1/translation-t3b1-cs-CZ-2.8.9.bin",
-        "de-DE": "firmware/translations/t3b1/translation-t3b1-de-DE-2.8.9.bin",
-        "es-ES": "firmware/translations/t3b1/translation-t3b1-es-ES-2.8.9.bin",
-        "fr-FR": "firmware/translations/t3b1/translation-t3b1-fr-FR-2.8.9.bin",
-        "it-IT": "firmware/translations/t3b1/translation-t3b1-it-IT-2.8.9.bin",
-        "pt-BR": "firmware/translations/t3b1/translation-t3b1-pt-BR-2.8.9.bin"
+        "cs-CZ": "firmware/translations/t3b1/translation-T3B1-cs-CZ-2.8.9.bin",
+        "de-DE": "firmware/translations/t3b1/translation-T3B1-de-DE-2.8.9.bin",
+        "es-ES": "firmware/translations/t3b1/translation-T3B1-es-ES-2.8.9.bin",
+        "fr-FR": "firmware/translations/t3b1/translation-T3B1-fr-FR-2.8.9.bin",
+        "it-IT": "firmware/translations/t3b1/translation-T3B1-it-IT-2.8.9.bin",
+        "pt-BR": "firmware/translations/t3b1/translation-T3B1-pt-BR-2.8.9.bin"
     },
-    "url": "firmware/t3b1/universal/t3b1-2.8.9-bitcoinonly.bin",
+    "url": "firmware/t3b1/trezor-t3b1-2.8.9-bitcoinonly.bin",
     "fingerprint": "d3905f15221f7b2733e5496986ceb1a3b39f390c4439e2d3cc89d5f3b7423278",
     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
 }

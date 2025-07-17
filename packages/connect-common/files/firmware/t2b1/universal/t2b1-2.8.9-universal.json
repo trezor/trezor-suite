@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.8.9.bin",
         "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.8.9.bin"
     },
-    "url": "firmware/t2b1/universal/t2b1-2.8.9-universal.bin",
+    "url": "firmware/t2b1/trezor-t2b1-2.8.9.bin",
     "fingerprint": "f6e03b48ab163f302bb886da197b6a0e7b390efdc5815b419535c5dee5cac1f7",
     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages.\n* Solana staking confirmation dialogs."
 }

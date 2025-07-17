@@ -6,7 +6,7 @@
     "min_firmware_version": [1, 0, 0],
     "firmware_revision": "ae37ea8a9a2ab96e60714451a7a9502e0ef1ffc9",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.4.1-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.4.1.bin",
     "fingerprint": "92636493f76f352213e681bbc26eb3a8844f7b8a3044214b65c3c2c10a0f788c",
     "changelog": "* Support for Zcash JoinSplit transactions\n* Enable device lock after 10 minutes of inactivity\n* Enable device lock by pressing left button for 2 seconds\n* Confirm dialog for U2F counter change"
 }

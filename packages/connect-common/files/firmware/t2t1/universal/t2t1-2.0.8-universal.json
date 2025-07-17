@@ -6,15 +6,8 @@
     "min_firmware_version": [2, 0, 5],
     "bootloader_version": [2, 0, 0],
     "firmware_revision": "939a93221941df8d454569a674f6fb082bf1d423",
-    "translations": {
-        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.0.8.bin",
-        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.0.8.bin",
-        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.0.8.bin",
-        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.0.8.bin",
-        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.0.8.bin",
-        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.0.8.bin"
-    },
-    "url": "firmware/t2t1/universal/t2t1-2.0.8-universal.bin",
+    "translations": {},
+    "url": "firmware/t2t1/trezor-t2t1-2.0.8.bin",
     "fingerprint": "642b6215bda981f8eacafee34dbee5cdeee7d47d49f605bbe2828a8d9b79813d",
     "changelog": "* Monero support\n* Cardano support\n* Stellar support\n* Ripple support\n* Tezos support\n* Decred support\n* Groestlcoin support\n* Zencash support\n* Zcash sapling hardfork support\n* Implemented seedless setup"
 }

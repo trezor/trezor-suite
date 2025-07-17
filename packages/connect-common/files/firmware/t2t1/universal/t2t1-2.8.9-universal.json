@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.8.9.bin",
         "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.8.9.bin"
     },
-    "url": "firmware/t2t1/universal/t2t1-2.8.9-universal.bin",
+    "url": "firmware/t2t1/trezor-t2t1-2.8.9.bin",
     "fingerprint": "ec61dba50be195f1cbb78688a0b92fb293c23150b68f5dab3b44420a106fca17",
     "changelog": "* Ability to cancel recovery on word count selection screen.\n* Account info for ETH transactions.\n* New UI for confirming long messages.\n* Solana staking confirmation dialogs."
 }

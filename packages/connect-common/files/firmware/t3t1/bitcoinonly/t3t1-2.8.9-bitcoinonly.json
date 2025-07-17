@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 10],
     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
     "translations": {
-        "cs-CZ": "firmware/translations/t3t1/translation-t3t1-cs-CZ-2.8.9.bin",
-        "de-DE": "firmware/translations/t3t1/translation-t3t1-de-DE-2.8.9.bin",
-        "es-ES": "firmware/translations/t3t1/translation-t3t1-es-ES-2.8.9.bin",
-        "fr-FR": "firmware/translations/t3t1/translation-t3t1-fr-FR-2.8.9.bin",
-        "it-IT": "firmware/translations/t3t1/translation-t3t1-it-IT-2.8.9.bin",
-        "pt-BR": "firmware/translations/t3t1/translation-t3t1-pt-BR-2.8.9.bin"
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.8.9.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.8.9.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.8.9.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.8.9.bin",
+        "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.9.bin",
+        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.9.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.9-bitcoinonly.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.9-bitcoinonly.bin",
     "fingerprint": "ac995c394f7a7b3ea4cbd9c04977621d6d2fbef30bba856f707f585f34866ac4",
     "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
 }

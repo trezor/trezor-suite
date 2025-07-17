@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.3.bin",
         "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.3.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.3-universal.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.3.bin",
     "fingerprint": "0de51126c17cc0ac623800638dc851c0abd5b787cad5f3aa5843ea2c4cf8248a",
     "changelog": "* Added reassuring screen when entering empty passphrase on device.\n* Improved ETH send and staking flow.\n* Redesigned FIDO2 UI.\n* Renamed MATIC to POL, following a network upgrade.\n* Fix persistent word when going to previous word during recovery process.\n* Added missing info about remaining shares in super-shamir recovery."
 }

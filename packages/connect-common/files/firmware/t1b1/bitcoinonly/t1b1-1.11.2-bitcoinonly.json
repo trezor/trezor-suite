@@ -7,7 +7,7 @@
     "bootloader_version": [1, 11, 0],
     "firmware_revision": "0d87b55ba4fed7eecc72bf2a94ee473830b095e9",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.11.2-bitcoinonly.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.11.2-bitcoinonly.bin",
     "fingerprint": "7e51546f4411ecf44688c681ada72a18495fd08e91f3a0429ab91bc4415b362a",
     "changelog": "* Show the fee rate on the signing confirmation screen. \n* Show thousands separator when displaying large amounts \n* Fix potential security issues in recovery workflow. \n* Fix key extraction vulnerability in Cothority Collective Signing (CoSi). \n* Fix nonce bias in CoSi signing."
 }

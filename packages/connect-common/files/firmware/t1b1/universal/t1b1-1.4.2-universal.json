@@ -6,7 +6,7 @@
     "min_firmware_version": [1, 0, 0],
     "firmware_revision": "14399f100e862608c24a7e214e9ce971c4d32457",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.4.2-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.4.2.bin",
     "fingerprint": "a4b39f01bd134d01d7534821445bf779dbe6c25f0fcf7c7cb285a79b17f25e0a",
     "changelog": "* New Matrix-based recovery method\n* Minor Ethereum fixes (including EIP-155 replay protection)\n* Minor USB, U2F and GPG fixes"
 }

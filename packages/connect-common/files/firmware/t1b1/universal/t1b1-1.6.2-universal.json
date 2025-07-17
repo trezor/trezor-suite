@@ -7,7 +7,7 @@
     "bootloader_version": [1, 5, 0],
     "firmware_revision": "c9113fd3f5fcd78e9e560dbac75ed5aae359eb2d",
     "translations": {},
-    "url": "firmware/t1b1/universal/t1b1-1.6.2-universal.bin",
+    "url": "firmware/t1b1/trezor-t1b1-1.6.2.bin",
     "fingerprint": "d31304f793854e343df6ccf1804f7e2abf48ddcd82a379ca2d3711d54127e138",
     "changelog": "* Add possibility to set custom auto-lock delay\n* Bitcoin Cash cashaddr support\n* Zcash Overwinter hardfork support\n* Support for new coins:\n  - Decred, Bitcoin Private, Fujicoin, Groestlcoin, Vertcoin, Viacoin, Zcoin\n* Support for new Ethereum networks:\n  - EOS Classic, Ethereum Social, Ellaism, Callisto, EtherGem, Wanchain\n* Support for 500+ new Ethereum tokens"
 }

@@ -7,14 +7,14 @@
     "bootloader_version": [2, 1, 10],
     "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
     "translations": {
-        "cs-CZ": "firmware/translations/t3t1/translation-t3t1-cs-CZ-2.8.10.bin",
-        "de-DE": "firmware/translations/t3t1/translation-t3t1-de-DE-2.8.10.bin",
-        "es-ES": "firmware/translations/t3t1/translation-t3t1-es-ES-2.8.10.bin",
-        "fr-FR": "firmware/translations/t3t1/translation-t3t1-fr-FR-2.8.10.bin",
-        "it-IT": "firmware/translations/t3t1/translation-t3t1-it-IT-2.8.10.bin",
-        "pt-BR": "firmware/translations/t3t1/translation-t3t1-pt-BR-2.8.10.bin"
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.8.10.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.8.10.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.8.10.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.8.10.bin",
+        "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.10.bin",
+        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.10.bin"
     },
-    "url": "firmware/t3t1/universal/t3t1-2.8.10-bitcoinonly.bin",
+    "url": "firmware/t3t1/trezor-t3t1-2.8.10-bitcoinonly.bin",
     "fingerprint": "11d3f68d08f3f95c04dd526826f81eb7918df85928cfcef73beeae3132342bf0",
     "changelog": "* Visual cues to distinguish unlocked state on Homescreen.\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
 }

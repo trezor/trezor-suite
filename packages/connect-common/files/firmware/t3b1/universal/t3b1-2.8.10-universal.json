@@ -14,7 +14,7 @@
         "it-IT": "firmware/translations/t3b1/translation-T3B1-it-IT-2.8.10.bin",
         "pt-BR": "firmware/translations/t3b1/translation-T3B1-pt-BR-2.8.10.bin"
     },
-    "url": "firmware/t3b1/universal/t3b1-2.8.10-universal.bin",
+    "url": "firmware/t3b1/trezor-t3b1-2.8.10.bin",
     "fingerprint": "ad763b0193bf2814bdb9807b51226e1c7639693e912e9334db3f446091943369",
     "changelog": "* Upgrade bundled bootloader to 2.1.10.\n* Add Nostr support (in debug mode only!).\n* Solana: rent fee calculation [#4933]\n* Solana: loadable token definitions [#3541]\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Fixed Solana staking dialog title.\n* Updated EIP-1559 fee-related labels.\n* Allow firmware upgrade even if language change failed.\n* Solana: fees calculation is now exact [#4965]"
 }
