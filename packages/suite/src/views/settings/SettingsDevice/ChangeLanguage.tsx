@@ -23,10 +23,12 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
 
     const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Translations');
 
-    const deviceSupportedTranslations = (device?.availableTranslations ?? []).map(it => ({
-        value: it,
-        label: `${LANGUAGES[it.split('-')[0] as Locale].name} (beta)`,
-    }));
+    const deviceSupportedTranslations = Object.keys(device?.availableTranslations ?? {}).map(
+        it => ({
+            value: it,
+            label: `${LANGUAGES[it.split('-')[0] as Locale].name} (beta)`,
+        }),
+    );
 
     if (isSupportedDevice !== true || deviceSupportedTranslations.length === 0) {
         return null;
