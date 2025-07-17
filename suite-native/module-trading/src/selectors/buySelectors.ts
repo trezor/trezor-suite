@@ -105,7 +105,7 @@ export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
         [...new Set(currencies)].map(code => ({
             value: code,
             displayValue: code.toUpperCase(),
-            label: supportedFiatCurrenciesMap[code].label,
+            label: supportedFiatCurrenciesMap[code]?.label ?? code.toUpperCase(),
         })),
 );
 
