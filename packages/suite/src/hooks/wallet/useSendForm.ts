@@ -63,7 +63,12 @@ export interface UseSendFormProps extends SendFormProps {
 }
 
 // convert UseSendFormProps to UseSendFormState
-const getStateFromProps = (props: UseSendFormProps) => {
+const getStateFromProps = (
+    props: Pick<
+        UseSendFormProps,
+        'selectedAccount' | 'localCurrency' | 'online' | 'metadataEnabled'
+    >,
+) => {
     const { account, network } = props.selectedAccount;
     const currencyCode = props.localCurrency;
     const localCurrencyOption = {
@@ -86,10 +91,14 @@ const getStateFromProps = (props: UseSendFormProps) => {
 // see: ./packages/suite/docs/send/ARCHITECTURE.md
 
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
+    const { selectedAccount, localCurrency, online, metadataEnabled } = props;
+
     // public variables, exported to SendFormContext
     const [isLoading, setLoading] = useState(false);
 
-    const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
+    const [state, setState] = useState<UseSendFormState>(
+        getStateFromProps({ selectedAccount, localCurrency, online, metadataEnabled }),
+    );
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
 
@@ -215,8 +224,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
         dispatch(removeSendFormDraftThunk()); // reset draft;
-        setState(getStateFromProps(props)); // resetting state will trigger "loadDraft" useEffect block, which will reset FormState to default
-    }, [dispatch, props, setComposedLevels]);
+        setState(getStateFromProps({ selectedAccount, localCurrency, online, metadataEnabled }));
+    }, [dispatch, setComposedLevels, selectedAccount, localCurrency, online, metadataEnabled]);
 
     const resetDraft = useCallback(() => {
         dispatch(removeSendFormDraftThunk());
@@ -252,7 +261,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         const precomposedTransaction = composedLevels
             ? composedLevels[formState.selectedFee || 'normal']
             : undefined;
-        if (precomposedTransaction && precomposedTransaction.type === 'final') {
+        if (precomposedTransaction?.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]SendFormTransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             setLoading(true);
@@ -260,7 +269,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 signAndPushSendFormTransactionThunk({
                     formState,
                     precomposedTransaction,
-                    selectedAccount: props.selectedAccount.account,
+                    selectedAccount: selectedAccount.account,
                 }),
             ).unwrap();
 
@@ -270,14 +279,14 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 dispatch(goto('wallet-index', { preserveParams: true }));
             }
         }
-    }, [getValues, composedLevels, dispatch, resetContext, props.selectedAccount.account]);
+    }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);
 
     // reset on account change
     useEffect(() => {
-        if (state.account.key !== props.selectedAccount.account.key) {
+        if (state.account.key !== selectedAccount.account.key) {
             resetContext();
         }
-    }, [props, resetContext, state.account]);
+    }, [state.account.key, selectedAccount.account.key, resetContext]);
 
     const protocol = useSelector(state => state.protocol);
 
@@ -286,8 +295,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         if (
             protocol.sendForm.shouldFill &&
             protocol.sendForm.scheme &&
-            props.selectedAccount.network.symbol ===
-                getNetworkSymbolForProtocol(protocol.sendForm.scheme)
+            selectedAccount.network.symbol === getNetworkSymbolForProtocol(protocol.sendForm.scheme)
         ) {
             // for now we always fill only first output
             const outputIndex = 0;
@@ -301,18 +309,20 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
             }
+
             if (protocol.sendForm.address) {
                 setValue(`outputs.${outputIndex}.address`, protocol.sendForm.address, {
                     shouldValidate: true,
                 });
             }
+
             dispatch(fillSendForm(false));
             composeRequest();
         }
     }, [
         dispatch,
         setValue,
-        props.selectedAccount.network,
+        selectedAccount.network,
         protocol,
         sendFormUtils,
         composeRequest,
