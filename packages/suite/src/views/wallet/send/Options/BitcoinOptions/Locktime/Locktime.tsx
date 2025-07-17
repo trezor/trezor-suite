@@ -91,6 +91,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                 setLocktimeOption(v.value);
             }}
             isClean
+            data-testid="locktime-option"
         />
     );
 
