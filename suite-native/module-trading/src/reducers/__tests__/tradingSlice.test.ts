@@ -156,6 +156,7 @@ describe('tradingSlice', () => {
                 isFromRedirect: false,
                 isLoading: false,
                 formStep: 'RECEIVING_ADDRESS',
+                maxSlippage: '1',
             });
         });
 

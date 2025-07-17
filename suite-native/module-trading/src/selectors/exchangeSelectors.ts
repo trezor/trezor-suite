@@ -237,3 +237,6 @@ export const selectExchangeAccountsWithTokensSectionList = createExchangeMemoize
 
 export const selectExchangeAmountLimits = (state: TradingRootState) =>
     selectTradingExchange(state).amountLimits;
+
+export const selectExchangeMaxSlippage = (state: TradingRootState) =>
+    state.wallet.tradingNew.exchange.maxSlippage;

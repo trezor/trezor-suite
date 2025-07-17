@@ -12,6 +12,7 @@ import {
     selectExchangeAccountsWithTokensSectionList,
     selectExchangeAmountLimits,
     selectExchangeBuyTradeableAssetsSorted,
+    selectExchangeMaxSlippage,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -535,6 +536,12 @@ describe('exchangeSelectors', () => {
                 minCrypto: '0.0001',
                 maxCrypto: '50',
             });
+        });
+    });
+
+    describe('selectExchangeMaxSlippage', () => {
+        it('should return exchange.maxSlippage', () => {
+            expect(selectExchangeMaxSlippage({ wallet: { tradingNew: prevState } })).toEqual('1');
         });
     });
 });
