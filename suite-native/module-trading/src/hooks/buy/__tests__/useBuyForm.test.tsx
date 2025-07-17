@@ -506,6 +506,34 @@ describe('useBuyForm', () => {
             },
         );
 
+        it('should correctly compute limits with SATS', async () => {
+            const store = await getInitializedStore(true);
+            const { result } = await renderUseTradingBuyForm(store);
+
+            act(() => {
+                result.current.setValue('amountInCrypto', true);
+                result.current.setValue('asset', btcAsset);
+            });
+            act(() => {
+                store.dispatch(
+                    tradingBuyActions.setAmountLimits({
+                        minCrypto: '0.1',
+                        maxCrypto: '2',
+                        currency: 'BTC',
+                    }),
+                );
+            });
+            act(() => {
+                result.current.setValue('cryptoValue', '20000000');
+            });
+
+            await act(() => result.current.trigger('cryptoValue'));
+
+            const { invalid } = result.current.getFieldState('cryptoValue');
+
+            expect(invalid).toBe(false);
+        });
+
         it('should trigger validation once limits are loaded', async () => {
             const store = await getInitializedStore(true);
             const { result } = await renderUseTradingBuyForm(store);
