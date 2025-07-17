@@ -795,7 +795,7 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
         case 'ethereum':
             return (
                 freshInfo.misc!.nonce !== account.misc.nonce ||
-                freshInfo.balance !== account.balance || // balance can change because of beacon chain txs (staking) |
+                freshInfo.balance !== account.balance || // balance can change because of beacon chain/internal txs
                 JSON.stringify(freshInfo?.misc?.stakingPools) !==
                     JSON.stringify(account?.misc?.stakingPools)
             );

@@ -74,7 +74,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             coin: account.symbol,
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
-            details: 'txids',
+            details: account.networkType === 'solana' ? 'txids' : 'basic',
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
         });
