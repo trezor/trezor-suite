@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 5, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.5.3-bitcoinonly.bin",
+    "fingerprint": "c094c84ba958129885fa725ee6ddb781b580fd2c7851e83aef9054ba4a10526c",
+    "firmware_revision": "2f03ace311584988d5aeab58fd1acf24ef54711a",
+    "changelog": "* Add SLIP-0025 CoinJoin accounts. \n* Show red error header when Trezor doesn't see USB data connection. \n* Show fee rate when replacing transaction. \n* Optimize the signing of BTC transactions. \n* Extend decimals of fee rate to 2 digits. \n* Display only “sat” instead of “sat BTC”."
+}

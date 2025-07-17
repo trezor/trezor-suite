@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 9, 1],
+    "bootloader_version": [1, 8, 0],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.9.1-bitcoinonly.bin",
+    "fingerprint": "ee743e3bd1e424ceb45a1d877a5422e7af449706f636c459cdd8bb0d4796cba5",
+    "firmware_revision": "c6b2580cd245ee924507f45e9675f857a3d78768",
+    "changelog": "* Refactor Bitcoin signing"
+}

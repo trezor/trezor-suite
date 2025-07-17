@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 1, 7],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.1.7-bitcoinonly.bin",
+    "fingerprint": "fd92ac173a2cf93cc07ced3287e07800ed10466dc38c0c7240d9b20c689dd1d1",
+    "firmware_revision": "2cabc8b40ce237ee8a7e1926b6269040519d447a",
+    "changelog": "* Super Shamir (with Groups)\n* Fix low memory issue"
+}

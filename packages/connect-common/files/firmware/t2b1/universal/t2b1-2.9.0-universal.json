@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 9, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 1],
+    "min_firmware_version": [2, 6, 1],
+    "bootloader_version": [2, 1, 8],
+    "firmware_revision": "5e4c97f98d2e139aa82135a0ee43003816f62c6c",
+    "translations": {
+        "cs-CZ": "firmware/unsigned/translations/t2b1/translation-T2B1-cs-CZ-2.9.0-unsigned.bin",
+        "de-DE": "firmware/unsigned/translations/t2b1/translation-T2B1-de-DE-2.9.0-unsigned.bin",
+        "es-ES": "firmware/unsigned/translations/t2b1/translation-T2B1-es-ES-2.9.0-unsigned.bin",
+        "fr-FR": "firmware/unsigned/translations/t2b1/translation-T2B1-fr-FR-2.9.0-unsigned.bin",
+        "it-IT": "firmware/unsigned/translations/t2b1/translation-T2B1-it-IT-2.9.0-unsigned.bin",
+        "pt-BR": "firmware/unsigned/translations/t2b1/translation-T2B1-pt-BR-2.9.0-unsigned.bin"
+    },
+    "url": "firmware/unsigned/t2b1/firmware-T2B1-2.9.0-5e4c97f.bin",
+    "fingerprint": "7a8ccfcbe4636916801478b5594c0838cc8c6417c6f22be3311a00503497117e",
+    "changelog": "* Human readable Ethereum “approve”/”revoke” flow.\n* Changed unknown contract address warning screen.\n* Remove BNB Beacon Chain support.\n* Remove Turkish language support.\n* Fix tutorial-related translations.\n* Fix horizontal scroll of the title when setting Wipe code.\n* Known Solana tokens' don’t need to be confirmed.\n* Fix screen title when confirming installation.\n* \"Enter passphrase on host\" dialog is now not shown immediately after accessing Suite."
+}

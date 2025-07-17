@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 3, 5],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.3.5-bitcoinonly.bin",
+    "fingerprint": "53e7ee5bfc75cfa6412d8de5461b1ea8d9b7e10970ce7cadae9cbb1e17bbb77d",
+    "firmware_revision": "ffa96205fb5e22b43e7b08a3dbc3cdeee0931de3",
+    "changelog": "* Replacement transaction signing for replace-by-fee and PayJoin.\n* Support for Output Descriptors export.\n* Paginated display for signing/verifying long messages.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations."
+}

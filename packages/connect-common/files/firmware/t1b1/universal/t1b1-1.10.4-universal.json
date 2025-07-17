@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 10, 4],
+    "bootloader_version": [1, 10, 0],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.10.4-universal.bin",
+    "fingerprint": "74dfdfb9addb9d90fedb2c88794b7236af521d21ef0096f9080c25b597c8af86",
+    "firmware_revision": "595b14254c1abb2be3f69e42c7932f1eca8cf1b1",
+    "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage.\n* Support for Ethereum EIP-1559 transactions."
+}

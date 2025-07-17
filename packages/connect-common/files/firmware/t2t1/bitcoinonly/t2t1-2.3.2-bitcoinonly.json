@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 3, 2],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.3.2-bitcoinonly.bin",
+    "fingerprint": "389cb54fb6fc75489b788ad669ce51f41d47a67af54b8745a0dfe48da38a777f",
+    "firmware_revision": "63ebb8ccb56fc17a72eef91db36a37ff3176519d",
+    "changelog": "* Introduces 'Autolock' feature, which automatically locks the device to enforce the PIN entry after a certain period.\n* Fixes compatibility issues with Casa and GreenAddress.\n* Adds support for multiple change outputs in outgoing transactions.\n* Improves some interface elements."
+}

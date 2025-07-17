@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 0],
+    "bootloader_version": [2, 1, 6],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 7, 2],
+    "min_bootloader_version": [2, 1, 6],
+    "url": "/suite/firmware/t3t1/universal/t3t1-2.8.0-bitcoinonly.bin",
+    "fingerprint": "3dc847cc396fe83f5a324242097a4cf97fc64acf90516efcfcf23b6d3103a992",
+    "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
+    "changelog": "* Added tutorial flow. \n* Added Animated device label on homescreen/lockscreen. \n* Added word counter during wallet creation. \n* Improved change homescreen flow. \n* Improved swipe behavior and animations. \n* Increased Optiga read timeout to avoid spurious RSODs. \n* Fixed swipe back from address QR code screen. \n* Fixed device authenticity check. \n* Removed CoSi functionality."
+}

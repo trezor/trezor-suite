@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 4, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.4.1-universal.bin",
+    "fingerprint": "84bc47bb197b3ae7bfb096f03d4a528ccf6c9ef4dfee0aac4022971e4ec91d68",
+    "firmware_revision": "24bb4016388fca4b998285b95dcd408f4ed0bff6",
+    "changelog": "* Security and major perfomance improvements.\n* Cardano fixes.\n* Fix red screen on shutdown."
+}

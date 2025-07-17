@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 1],
+    "bootloader_version": [2, 1, 6],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 7, 2],
+    "min_bootloader_version": [2, 1, 6],
+    "url": "/suite/firmware/t3t1/universal/t3t1-2.8.1-universal.bin",
+    "fingerprint": "6a064df4a928e1264d682a34cc014fc9272f312e0f8a8270ff88d6f1408fe68b",
+    "firmware_revision": "632b9561559b7ab6824bb7eeac072874e07b7b82",
+    "changelog": "* Added PIN keyboard animation.\n* Added menu entry animation.\n* Added screen brightness settings.\n* Screen transitions and animations were improved and are now more smooth.\n* Improved precision of PIN validation countdown.\n* Improved instruction screens during multi-share recovery process.\n* New UI of firmware update.\n* Improved share words swiping animation during wallet creation.\n* Solana: Improved support for AToken Create operation.\n* Fixed title sometimes not fitting into result screen.\n* Improved touch layer precision.\n* Fixed “More info” screen during multi-share backup creation.\n* Fixed title sometimes not fitting into result screen.\n* Adjusted detection of swipes: vertical swipes are preferred over horizontal swipes now."
+}

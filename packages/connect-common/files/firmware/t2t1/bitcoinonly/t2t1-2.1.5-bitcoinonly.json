@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 1, 5],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 1, 0],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.1.5-bitcoinonly.bin",
+    "fingerprint": "9de90d9f8ca12506f3b9a4cbe7616294144d965d67daa3a03bfe6c0b74a44843",
+    "firmware_revision": "df0963ec48f01f3d07ffca556e21ff0070cab099",
+    "changelog": "* Fix UI for Shamir with 33 words"
+}

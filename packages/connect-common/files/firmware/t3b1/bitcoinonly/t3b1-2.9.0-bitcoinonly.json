@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 9, 0],
+    "bootloader_version": [2, 1, 10],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 8, 3],
+    "min_bootloader_version": [2, 1, 7],
+    "url": "/suite/firmware/t3b1/universal/t3b1-2.9.0-bitcoinonly.bin",
+    "fingerprint": "ef16d4e2529cbf4dd6a45f9b15177883873819dd886134dc5986cb5b71c5556f",
+    "firmware_revision": "a09e6f04d4204607d821d9b742dcf7ffe9c4e2f5",
+    "changelog": "* Changed unknown contract address warning screen.\n* Remove Turkish language support.\n* Fix tutorial-related translations.\n* Fix horizontal scroll of the title when setting Wipe code.\n* Fix screen title when confirming installation.\n* \"Enter passphrase on host\" dialog is now not shown immediately after accessing Suite."
+}

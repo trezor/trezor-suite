@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 10, 5],
+    "bootloader_version": [1, 10, 0],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.10.5-bitcoinonly.bin",
+    "fingerprint": "1d319f643fe2ba5c247b178c7f73b989ab4e43d914a60468566ee7cc5bb9dde0",
+    "firmware_revision": "3f12742669bd782cac374a1750d517f4fd88c43b",
+    "changelog": "* Small code improvements."
+}

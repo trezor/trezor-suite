@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 10, 0],
+    "bootloader_version": [1, 10, 0],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.10.0-universal.bin",
+    "fingerprint": "595ba3e8e887cba185e03098f9538e18164f72f9fc82445e691abcd03e5cf0a4",
+    "firmware_revision": "f4424ece1ccb7fc0d6cad00ff840fac287a34f07",
+    "changelog": "* Bootloader 1.10.0.\n* Allow decreasing the output value in RBF transactions.\n* Support long PIN of up to 50 digits.\n* Display nLockTime in human-readable form."
+}

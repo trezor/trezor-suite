@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 8],
+    "bootloader_version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.8.8-bitcoinonly.bin",
+    "fingerprint": "81928bbb5bc855f46a2ccb210173f9676b69d153a513bfa0101abfc063f7aef5",
+    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
+    "changelog": "* Fix \"PIN attempts exceeded\" screen\n* Fixed a bug resulting in restarting the recovery flow when inputting 33-word mnemonic"
+}

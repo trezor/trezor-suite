@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 3],
+    "bootloader_version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 8, 3],
+    "min_bootloader_version": [2, 1, 7],
+    "url": "/suite/firmware/t3b1/universal/t3b1-2.8.3-universal.bin",
+    "fingerprint": "b659bdc5ddce208d46ce649fc7a8995ae49541c7c41a88ddaac5dfc038ffb5de",
+    "firmware_revision": "7f373ae71eca855dd41b4a0fdcc7cadaa13a8281",
+    "changelog": "* Renamed MATIC to POL, following a network upgrade.\n* Fix persistent word when going to previous word during recovery process.\n* Fix display orientation south."
+}

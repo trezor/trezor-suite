@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 3, 6],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.3.6-universal.bin",
+    "fingerprint": "0efa3ba6135caea7693d145d60441eeb46283fe0b8b1fd59a04af33a638ad237",
+    "firmware_revision": "b19cbf67c6c7c38513947b703df6d4409c59bc98",
+    "changelog": "* Add compatibility paths for Unchained Capital"
+}

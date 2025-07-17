@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 1, 0],
+    "bootloader_version": [2, 0, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 5],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.1.0-universal.bin",
+    "fingerprint": "bb5b0308807b45d41d1e2ab66a468152997ad69a01099789d8a35e464cde999f",
+    "firmware_revision": "3f0e3a334e03f49ff819d14cbbec00194c586c27",
+    "changelog": "* Security improvements\n* Upgraded to new storage format\n* Ripple, Stellar, Cardano and NEM fixes\n* New coins: ATS, AXE, FLO, GIN, KMD, NIX,\n  PIVX, REOSC, XPM, XSN, ZCL\n* New ETH tokens"
+}

@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 1, 6],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.1.6-bitcoinonly.bin",
+    "fingerprint": "4e7f0f95d71631159b9e873f36a812c93a10eca1fad5f38c78ae7fbe4c1f6ed4",
+    "firmware_revision": "629fa58d396e732f230866ebe733d268370d7879",
+    "changelog": "* Small code improvements."
+}

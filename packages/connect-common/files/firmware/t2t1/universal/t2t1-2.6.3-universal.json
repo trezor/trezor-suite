@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 6, 3],
+    "bootloader_version": [2, 1, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.6.3-universal.bin",
+    "fingerprint": "9ff0874f2ce3579a7502747578cef65c824097d906e7150b0142f6b9aa395a43",
+    "firmware_revision": "2c7cc6e0255dee2339b445b5551eaffb88dbd1b4",
+    "changelog": "* QR Code for Extended Public Keys (XPUBs). \n* Adjusted buttons for multipage content scrolling, providing a more intuitive and user-friendly experience. \n* The new bootloader version 2.1.4 is now included for enhanced system performance and security."
+}

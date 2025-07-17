@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 6, 2],
+    "bootloader_version": [1, 5, 0],
+    "min_bridge_version": [1, 1, 5],
+    "min_firmware_version": [1, 0, 0],
+    "min_bootloader_version": [1, 0, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.6.2-universal.bin",
+    "fingerprint": "d31304f793854e343df6ccf1804f7e2abf48ddcd82a379ca2d3711d54127e138",
+    "firmware_revision": "c9113fd3f5fcd78e9e560dbac75ed5aae359eb2d",
+    "changelog": "* Add possibility to set custom auto-lock delay\n* Bitcoin Cash cashaddr support\n* Zcash Overwinter hardfork support\n* Support for new coins:\n  - Decred, Bitcoin Private, Fujicoin, Groestlcoin, Vertcoin, Viacoin, Zcoin\n* Support for new Ethereum networks:\n  - EOS Classic, Ethereum Social, Ellaism, Callisto, EtherGem, Wanchain\n* Support for 500+ new Ethereum tokens"
+}

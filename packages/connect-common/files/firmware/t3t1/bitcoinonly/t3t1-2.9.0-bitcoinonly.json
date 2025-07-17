@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 9, 0],
+    "bootloader_version": [2, 1, 10],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 7, 2],
+    "min_bootloader_version": [2, 1, 6],
+    "url": "/suite/firmware/t3t1/universal/t3t1-2.9.0-bitcoinonly.bin",
+    "fingerprint": "6726de011043c01eafbe153f869725a1544f63e15ca24f5530aecadb8ecfe1be",
+    "firmware_revision": "a09e6f04d4204607d821d9b742dcf7ffe9c4e2f5",
+    "changelog": "* Adjust warning screen when sending from multiple accounts at once.\n* Show success screen after sending address, public key or signature to host.\n* Remove Turkish language support.\n* Don't enter/exit menu via horizontal swipe.\n* Fix tutorial-related translations.\n* Fix issues with multishare backup creation.\n* \"Enter passphrase on host\" dialog is now not shown immediately after accessing Suite."
+}

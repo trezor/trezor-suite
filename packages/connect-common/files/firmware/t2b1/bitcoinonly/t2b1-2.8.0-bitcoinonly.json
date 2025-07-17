@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 0],
+    "bootloader_version": [2, 1, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 6, 1],
+    "min_bootloader_version": [2, 1, 1],
+    "url": "/suite/firmware/t2b1/universal/t2b1-2.8.0-bitcoinonly.bin",
+    "fingerprint": "ae088439d44fc8643b8de28e0d7a8720cd3dbb247619f2742604bbe884542558",
+    "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
+    "changelog": "* Removed CoSi functionality. \n* Increased Optiga read timeout to avoid spurious RSODs."
+}

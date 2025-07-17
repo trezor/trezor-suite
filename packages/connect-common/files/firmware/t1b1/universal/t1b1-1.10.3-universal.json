@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 10, 3],
+    "bootloader_version": [1, 10, 0],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.10.3-universal.bin",
+    "fingerprint": "bf0cc936a9afbf0a4ae7b727a2817fb69fba432d7230a0ff7b79b4a73b845197",
+    "firmware_revision": "9276b1702361f70e094286e2f89e919d8a230d5c",
+    "changelog": "* Remove Lisk.\n* Re-enabled Firo support.\n* Stricter protobuf field handling in Stellar."
+}

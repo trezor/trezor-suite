@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 7, 0],
+    "bootloader_version": [2, 1, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 6, 1],
+    "min_bootloader_version": [2, 1, 1],
+    "url": "/suite/firmware/t2b1/universal/t2b1-2.7.0-bitcoinonly.bin",
+    "fingerprint": "bb91489a4790b3668e2f5d574a729a0f43009510550fecb5e04c0937d355b2cf",
+    "firmware_revision": "45e8a842a31e62a6d43d7f6ccac62a45e1198ef0",
+    "changelog": "* Add translations capability. \n* Add loader to homescreen when locking the device. \n* Allow for going back to previous word in recovery process. \n* Display descriptors for BTC Taproot public keys. \n* Add missing semicolon character to the passphrase entry."
+}

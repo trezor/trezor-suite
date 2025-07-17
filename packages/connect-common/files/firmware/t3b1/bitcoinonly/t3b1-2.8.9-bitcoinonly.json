@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 9],
+    "bootloader_version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 8, 3],
+    "min_bootloader_version": [2, 1, 7],
+    "url": "/suite/firmware/t3b1/universal/t3b1-2.8.9-bitcoinonly.bin",
+    "fingerprint": "d3905f15221f7b2733e5496986ceb1a3b39f390c4439e2d3cc89d5f3b7423278",
+    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+}

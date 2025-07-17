@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 3, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.3.3-bitcoinonly.bin",
+    "fingerprint": "dda77cd7893a5f413f8fc4b2f44d1d43ed4b26e8ced5e6e578cc6b302c1a2310",
+    "firmware_revision": "0d5f00668fb3d1c093ff3c879311a91d3a7175c8",
+    "changelog": "* Advances the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Introduces a hard limit on transaction fees to prevent accidentally paying extra hefty fees (the limit can be manually disabled).\n* Fixes smaller issues with the user interface, customization, and more."
+}

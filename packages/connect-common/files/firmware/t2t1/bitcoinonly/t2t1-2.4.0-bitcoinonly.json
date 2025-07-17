@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 4, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.4.0-bitcoinonly.bin",
+    "fingerprint": "89c91287ab7a9cd3ec246b6822a0d04b7d40401abef706cccafbb7b98bd6a3d7",
+    "firmware_revision": "ea3596ad89a7993ad7b9d62798de94325ad1717a",
+    "changelog": "* Locking the device by holding finger on the homescreen.\n* Support PIN of unlimited length.\n* Allow decreasing the output value in RBF transactions.\n* Reduce memory fragmentation.\n* Improve wording when showing multisig XPUBs."
+}

@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.1.8-bitcoinonly.bin",
+    "fingerprint": "ec752e9fa99a29979497e093b32bdb2b592783e2b48c87d8f6f0c18c73cd3022",
+    "firmware_revision": "8eb6ce08995514c67d175b7197feeadeccc48ff0",
+    "changelog": "* Show XPUBs in GetAddress for multisig\n* Security improvements"
+}

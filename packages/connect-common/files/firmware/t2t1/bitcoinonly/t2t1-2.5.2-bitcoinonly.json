@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 5, 2],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.5.2-bitcoinonly.bin",
+    "fingerprint": "76aa25f9602cfb03cd3e07a82ac09226344eb355355aec216295e43b675eedf7",
+    "firmware_revision": "0d87b55ba4fed7eecc72bf2a94ee473830b095e9",
+    "changelog": "* Show the fee rate on the signing confirmation screen. \n* Show thousands separator when displaying large amounts."
+}

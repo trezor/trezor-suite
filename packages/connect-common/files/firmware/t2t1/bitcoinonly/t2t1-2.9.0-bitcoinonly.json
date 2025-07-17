@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 9, 0],
+    "bootloader_version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.9.0-bitcoinonly.bin",
+    "fingerprint": "4cbaa64a0c9191745e8452245f235c00b053ccd157085e640c52ed9c27ccda19",
+    "firmware_revision": "a09e6f04d4204607d821d9b742dcf7ffe9c4e2f5",
+    "changelog": "* Remove Turkish language support.\n* Don't enter/exit menu via horizontal swipe.\n* Fixed tutorial-related translations.\n* \"Enter passphrase on host\" dialog is now not shown immediately after accessing Suite."
+}

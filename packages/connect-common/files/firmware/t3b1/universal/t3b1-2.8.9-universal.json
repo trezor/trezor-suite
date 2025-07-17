@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 9],
+    "bootloader_version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 8, 3],
+    "min_bootloader_version": [2, 1, 7],
+    "url": "/suite/firmware/t3b1/universal/t3b1-2.8.9-universal.bin",
+    "fingerprint": "5b3a639c5b6423d87f4c0a3855dc4be8ad7e5be6d6b1b33f93ab1a54f3f36a91",
+    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages.\n* Solana staking confirmation dialogs."
+}

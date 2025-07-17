@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [1, 3, 6],
+    "min_bridge_version": [1, 1, 5],
+    "min_firmware_version": [1, 0, 0],
+    "min_bootloader_version": [1, 0, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.3.6-universal.bin",
+    "fingerprint": "03b559a758961b2bfd4443e6c36c10025268cf033ecd376fdd7a79ff658bf511",
+    "firmware_revision": "36b9d80120348700264bba518a533d4f82d79cbd",
+    "changelog": "* Enable advanced transactions such as ones with REPLACE-BY-FEE and CHECKLOCKTIMEVERIFY\n* Fix message signing for altcoins\n* Message verification now shows address\n* Enable GPG signing support\n* Enable Ed25519 curve (for SSH and GPG)\n* Use separate deterministic hierarchy for NIST256P1 and Ed25519 curves\n* Users using SSH already need to regenerate their keys using the new firmware!!!"
+}

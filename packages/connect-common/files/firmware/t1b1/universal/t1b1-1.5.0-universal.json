@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [1, 5, 0],
+    "min_bridge_version": [1, 1, 5],
+    "min_firmware_version": [1, 0, 0],
+    "min_bootloader_version": [1, 0, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.5.0-universal.bin",
+    "fingerprint": "c4eddafd29b580d8482cda68e61bdcf1740d77520ef3a603758646bbffe957ea",
+    "firmware_revision": "6b74139b4530a4687b4a317b8b08f4329704efc4",
+    "changelog": "* Enable Segwit for Testnet and Litecoin\n* Enable ERC-20 tokens for Ethereum chains"
+}

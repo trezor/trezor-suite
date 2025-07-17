@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 6, 0],
+    "bootloader_version": [2, 1, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.6.0-bitcoinonly.bin",
+    "fingerprint": "54f084dab4be1e64dc2cb970a6de87969407e4d6c48d79acdcf5d374ec0f29d6",
+    "firmware_revision": "88e1f8c7a5c7615723664c64b0a25adc0c409dee",
+    "changelog": " Show source account path in BTC signing. \n* Ability to reboot the device into bootloader mode directly, without needing to unplug the device. \n* Support for Ledger Live legacy derivation path \"m/44'/coin_type'/0'/account\". \n* Redesigned UI. \n* Homescreen now supports full-screen images."
+}

@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 1, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 1, 0],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.1.4-universal.bin",
+    "fingerprint": "820611a92605b1ccc612b9bf8550617aec6962bd2484fcb6ae4792bc498654e4",
+    "firmware_revision": "6a1a02ca3c595067ed02a78f2d6c36eb58eaa9ed",
+    "changelog": "* Shamir Backup with Recovery persistence\n* Touchscreen freeze fix\n* Fix display of non-divisible OMNI amounts"
+}

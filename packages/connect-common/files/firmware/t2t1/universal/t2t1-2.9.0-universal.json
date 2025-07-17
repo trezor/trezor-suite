@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 9, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "bootloader_version": [2, 1, 8],
+    "firmware_revision": "5e4c97f98d2e139aa82135a0ee43003816f62c6c",
+    "translations": {
+        "cs-CZ": "firmware/unsigned/translations/t2t1/translation-T2T1-cs-CZ-2.9.0-unsigned.bin",
+        "de-DE": "firmware/unsigned/translations/t2t1/translation-T2T1-de-DE-2.9.0-unsigned.bin",
+        "es-ES": "firmware/unsigned/translations/t2t1/translation-T2T1-es-ES-2.9.0-unsigned.bin",
+        "fr-FR": "firmware/unsigned/translations/t2t1/translation-T2T1-fr-FR-2.9.0-unsigned.bin",
+        "it-IT": "firmware/unsigned/translations/t2t1/translation-T2T1-it-IT-2.9.0-unsigned.bin",
+        "pt-BR": "firmware/unsigned/translations/t2t1/translation-T2T1-pt-BR-2.9.0-unsigned.bin"
+    },
+    "url": "firmware/unsigned/t2t1/firmware-T2T1-btconly-2.9.0-5e4c97f.bin",
+    "fingerprint": "9d1dc10cf33bf480efe726b984f0420f05d6745c49eb31730895e2aeae2ef9cf",
+    "changelog": "* Human readable Ethereum “approve”/”revoke” flow.\n* Remove BNB Beacon Chain support.\n* Remove Turkish language support.\n* Don't enter/exit menu via horizontal swipe.\n* Fixed tutorial-related translations.\n* Known Solana tokens' don’t need to be confirmed.\n* \"Enter passphrase on host\" dialog is now not shown immediately after accessing Suite."
+}

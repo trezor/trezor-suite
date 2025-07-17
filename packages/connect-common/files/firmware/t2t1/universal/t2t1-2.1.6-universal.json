@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 1, 6],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.1.6-universal.bin",
+    "fingerprint": "e2032ad84108a85d4014d477b955b9181a1a56e6f222ef21bb7d47b503a02f0b",
+    "firmware_revision": "629fa58d396e732f230866ebe733d268370d7879",
+    "changelog": "* Super Shamir (with Groups)\n* FIDO2 support with credential management"
+}

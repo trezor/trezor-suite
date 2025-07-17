@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 3],
+    "bootloader_version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 7, 2],
+    "min_bootloader_version": [2, 1, 6],
+    "url": "/suite/firmware/t3t1/universal/t3t1-2.8.3-universal.bin",
+    "fingerprint": "0de51126c17cc0ac623800638dc851c0abd5b787cad5f3aa5843ea2c4cf8248a",
+    "firmware_revision": "7f373ae71eca855dd41b4a0fdcc7cadaa13a8281",
+    "changelog": "* Added reassuring screen when entering empty passphrase on device.\n* Improved ETH send and staking flow.\n* Redesigned FIDO2 UI.\n* Renamed MATIC to POL, following a network upgrade.\n* Fix persistent word when going to previous word during recovery process.\n* Added missing info about remaining shares in super-shamir recovery."
+}

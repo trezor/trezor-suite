@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 10],
+    "bootloader_version": [2, 1, 10],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 8, 3],
+    "min_bootloader_version": [2, 1, 7],
+    "url": "/suite/firmware/t3b1/universal/t3b1-2.8.10-universal.bin",
+    "fingerprint": "ad763b0193bf2814bdb9807b51226e1c7639693e912e9334db3f446091943369",
+    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+    "changelog": "* Upgrade bundled bootloader to 2.1.10.\n* Add Nostr support (in debug mode only!).\n* Solana: rent fee calculation [#4933]\n* Solana: loadable token definitions [#3541]\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Fixed Solana staking dialog title.\n* Updated EIP-1559 fee-related labels.\n* Allow firmware upgrade even if language change failed.\n* Solana: fees calculation is now exact [#4965]"
+}

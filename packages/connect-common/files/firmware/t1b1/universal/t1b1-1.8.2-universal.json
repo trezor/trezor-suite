@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 8, 2],
+    "bootloader_version": [1, 8, 0],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.8.2-universal.bin",
+    "fingerprint": "909742eddcffdc72ca854557962ecad90e97585770f514170abe7a691b0c6eb1",
+    "firmware_revision": "3c19e3167d69902305a27f10e43abb5fc7a0254d",
+    "changelog": "* Security improvements\n* Fix display of non-divisible OMNI amounts"
+}

@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 7, 2],
+    "bootloader_version": [2, 1, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.7.2-universal.bin",
+    "fingerprint": "d64fcf47a8ead6edf0329583e312136d1548d30990c29cfaa2ce7c67197babcc",
+    "firmware_revision": "da75d8f4b67410b40a9cfd2954d183d81dd6e8e8",
+    "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
+}

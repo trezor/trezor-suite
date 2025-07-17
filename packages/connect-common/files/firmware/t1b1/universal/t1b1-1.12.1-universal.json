@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 12, 1],
+    "bootloader_version": [1, 12, 1],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 12, 0],
+    "min_bootloader_version": [1, 12, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.12.1-universal.bin",
+    "fingerprint": "3c694191f5b66a65cb5bb209adbf113cb40209e644b77162ba996bb7ee8f382b",
+    "firmware_revision": "1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f",
+    "changelog": "* Fee rate shown when replacing transaction.\n* Ledger Live legacy derivation path m/44'/coin_type'/0'/account is now supported.\n* SLIP-0019 proofs of ownership for native SegWit implemented.\n* SLIP-0025 coinjoin accounts implemented for testing purposes.\n* Bech32 addresses now not converting to uppercase in QR code to increase compatibility.\n* Decimals of fee rate extended to 2 digits.\n* Only \"sat\" displayed instead of \"sat BTC\".\n* Bootloader 1.12.1. included.\n* Stellar addresses now shown in full + as a QR code.\n* Ethereum fees now wrapped to the next line when needed."
+}

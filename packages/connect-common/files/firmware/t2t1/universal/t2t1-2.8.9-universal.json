@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 9],
+    "bootloader_version": [2, 1, 8],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.8.9-universal.bin",
+    "fingerprint": "ec61dba50be195f1cbb78688a0b92fb293c23150b68f5dab3b44420a106fca17",
+    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+    "changelog": "* Ability to cancel recovery on word count selection screen.\n* Account info for ETH transactions.\n* New UI for confirming long messages.\n* Solana staking confirmation dialogs."
+}

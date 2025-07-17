@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 8, 3],
+    "bootloader_version": [1, 8, 0],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.8.3-universal.bin",
+    "fingerprint": "496aecfab867504b2283a9f057a0b2fd9d17970a22c81f6ad74232e7b914ce68",
+    "firmware_revision": "df0963ec48f01f3d07ffca556e21ff0070cab099",
+    "changelog": "* Small code improvements"
+}

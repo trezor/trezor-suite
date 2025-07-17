@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 8, 0],
+    "bootloader_version": [2, 1, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 6, 1],
+    "min_bootloader_version": [2, 1, 1],
+    "url": "/suite/firmware/t2b1/universal/t2b1-2.8.0-universal.bin",
+    "fingerprint": "cf3ce230a69a681199f74cf6ac8c6c431f8fa7e0d0183437f93c5cc029fbd155",
+    "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
+    "changelog": "* Removed CoSi functionality. \n* Increased Optiga read timeout to avoid spurious RSODs."
+}

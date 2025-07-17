@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [2, 6, 3],
+    "bootloader_version": [2, 1, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 6, 1],
+    "min_bootloader_version": [2, 1, 1],
+    "url": "/suite/firmware/t2b1/universal/t2b1-2.6.3-bitcoinonly.bin",
+    "fingerprint": "6aecc9d9fd137a661f38ce36713aa0889b77ec4d35d91c68e01bda225cda2850",
+    "firmware_revision": "2c7cc6e0255dee2339b445b5551eaffb88dbd1b4",
+    "changelog": "* QR Code for Extended Public Keys (XPUBs). \n* The new bootloader version 2.1.4 is now included for enhanced system performance and security. \n* The screen will now automatically turn off when the device is locked, helping to extend the life of the OLED display and save energy."
+}

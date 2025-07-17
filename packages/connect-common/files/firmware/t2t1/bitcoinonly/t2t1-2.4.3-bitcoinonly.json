@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "version": [2, 4, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.4.3-bitcoinonly.bin",
+    "fingerprint": "1744efccabd479526392b281b7e0fc7aa2b4ecb454007dff7ca8c1f8171fad90",
+    "firmware_revision": "595b14254c1abb2be3f69e42c7932f1eca8cf1b1",
+    "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage."
+}

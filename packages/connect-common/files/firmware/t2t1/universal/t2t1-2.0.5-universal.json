@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "version": [2, 0, 5],
+    "bootloader_version": [2, 0, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_firmware_version": [2, 0, 5],
+    "min_bootloader_version": [2, 0, 0],
+    "url": "/suite/firmware/t2t1/universal/t2t1-2.0.5-universal.bin",
+    "fingerprint": "851172eab96c07bf9efb43771cb0fd14dc0320a68de047132c7bd787a1ad64e9",
+    "firmware_revision": "8852fb54820032f4f287414aa250df981d25445f",
+    "changelog": "* First public release"
+}

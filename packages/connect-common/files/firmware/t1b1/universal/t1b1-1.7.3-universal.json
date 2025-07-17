@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 7, 3],
+    "bootloader_version": [1, 6, 1],
+    "min_bridge_version": [2, 0, 25],
+    "min_firmware_version": [1, 6, 2],
+    "min_bootloader_version": [1, 5, 0],
+    "url": "/suite/firmware/t1b1/universal/t1b1-1.7.3-universal.bin",
+    "fingerprint": "10acc6aa4f24aff36627473b98c23dc4f6d0220d33bc1e09cb572f02410ffdaf",
+    "firmware_revision": "f641e798f91a15c3b09e8dc6a163195dd56f86d2",
+    "changelog": "* Fix USB issue on some Windows 10 installations"
+}
