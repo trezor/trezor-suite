@@ -3,7 +3,6 @@ import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {
     getBinary,
-    getLanguage,
     parseFirmwareHeaders,
     shouldStripFwHeaders,
     stripFwHeaders,
@@ -176,7 +175,7 @@ const getInstallationParams = (device: Device, params: Params) => {
     } else {
         // if device connected initially in bootloader mode:
         // manual: false - device is already in bootloader, so this field doesn't matter
-        // upgrade,language: false - we don't know if supported, so take the safest route and don't use these features
+        // upgrade: false - we don't know if supported, so take the safest route and don't use these features
         return {
             manual: false,
             upgrade: false,
@@ -189,23 +188,34 @@ const getFwHeader = (binary: ArrayBuffer) => Buffer.from(binary.slice(0, 6000)).
 
 type BinaryHelperParams = {
     device: Device;
+    params: Params;
+    firmwareType: FirmwareType;
     isIntermediary: boolean;
     log: Log;
 };
 
 const getBinaryHelper = ({
     device,
+    params,
+    firmwareType,
     isIntermediary,
     log,
 }: BinaryHelperParams): Promise<BinaryInfo> => {
+    if (params.binary) {
+        return Promise.resolve({
+            binary: params.binary,
+            binaryVersion: parseFirmwareHeaders(Buffer.from(params.binary)).version,
+            releaseVersion: undefined,
+        });
+    }
+
     if (!device.firmwareReleaseConfigInfo) {
         throw ERRORS.TypedError('Runtime', 'device.firmwareReleaseMessage is not set');
     }
-    const firmwareType = device.firmwareType ? device.firmwareType : FirmwareType.Regular;
-    const internalModel = device.features?.internal_model;
+    const deviceModel = device.features?.internal_model;
 
     const {
-        release: { version },
+        release: { version, url },
         intermediary,
     } = device.firmwareReleaseConfigInfo;
     log.debug(
@@ -216,18 +226,19 @@ const getBinaryHelper = ({
         version,
         'firmwareType',
         firmwareType,
-        'internalModel',
-        internalModel,
+        'deviceModel',
+        deviceModel,
     );
 
-    const { baseUrl, firmwareName } = getFirmwareLocation({
+    const { baseUrl, path } = getFirmwareLocation({
         firmwareVersion: version,
-        internalModel,
+        remotePath: url,
+        deviceModel,
         firmwareType,
         intermediaryVersion: isIntermediary && intermediary ? intermediary.version : undefined,
     });
 
-    return getBinary({ baseUrl, firmwareName, version });
+    return getBinary({ baseUrl, path, version });
 };
 
 export type Params = {
@@ -257,6 +268,9 @@ export const onCallFirmwareUpdate = async ({
 }: OnCallFirmwareUpdateParams): Promise<FirmwareUpdateResponse> => {
     const { deviceList, registerEvents, postMessage, initDevice, log } = context;
     log.debug('onCallFirmwareUpdate with params: ', params);
+
+    // Firmware type can be determine by the device.firmwareType but in case of switching form one to other we use params.btcOnly.
+    const firmwareType = params.btcOnly ? FirmwareType.BitcoinOnly : FirmwareType.Universal;
 
     const device = await initDevice(params?.device?.path);
     // Sanity check if device is missing `features`.
@@ -300,11 +314,15 @@ export const onCallFirmwareUpdate = async ({
 
     // Initiate the download for the intermediary firmware if requeried.
     if (intermediary) {
-        fwFetchPromises.push(getBinaryHelper({ device, isIntermediary: true, log }));
+        fwFetchPromises.push(
+            getBinaryHelper({ device, params, firmwareType, isIntermediary: true, log }),
+        );
     }
 
     // Always initiate the download for the final firmware.
-    fwFetchPromises.push(getBinaryHelper({ device, isIntermediary: false, log }));
+    fwFetchPromises.push(
+        getBinaryHelper({ device, params, firmwareType, isIntermediary: false, log }),
+    );
 
     // Fetch required FWs.
     const [firstResult, finalResult] = await Promise.all(fwFetchPromises);
@@ -344,17 +362,12 @@ export const onCallFirmwareUpdate = async ({
     );
 
     const deviceInitiallyConnectedInBootloader = device.features.bootloader_mode;
-    const deviceInitiallyConnectedWithoutFirmware = device.features.firmware_present === false;
 
     let reconnectedDevice: Device = device;
 
     if (deviceInitiallyConnectedInBootloader) {
         // Device started in bootloader, just acquire it
-
-        log.warn(
-            'onCallFirmwareUpdate',
-            'device is already in bootloader mode. language will not be updated',
-        );
+        log.warn('onCallFirmwareUpdate', 'device is already in bootloader mode.');
 
         await device.acquire();
     } else if (manual) {
@@ -375,54 +388,12 @@ export const onCallFirmwareUpdate = async ({
 
         await device.acquire();
 
-        // There was a time where we were checking that updating language during firmwaware update
-        // some devices version where not working, that was changed after https://github.com/trezor/trezor-firmware/pull/4827
-        const targetLanguage = device.features.language || 'en-US';
-        const languageBlob =
-            device.firmwareReleaseConfigInfo && targetLanguage !== 'en-US'
-                ? await getLanguage({
-                      language: targetLanguage,
-                      version: device.firmwareReleaseConfigInfo.release.version,
-                      internal_model: device.features.internal_model,
-                  }).catch(() => {
-                      // silent, language data is not critical, it can be updated any time later and it indeed happens inside device.updateFeatures
-                  })
-                : null;
-
         const disconnectedPromise = new Promise(resolve => {
             deviceList.once('device-disconnect', resolve);
         });
-        if (!languageBlob) {
-            await device.getCommands().typedCall('RebootToBootloader', 'Success', rebootParams);
-        } else {
-            let rebootResponse = await device.getCommands().typedCall(
-                'RebootToBootloader',
-                // DataChunkRequest is returned when language_data_length is sent and supported
-                // Once Success is returned, device is ready to receive FirmwareErase and FirmwareUpload commands
-                ['DataChunkRequest', 'Success'],
-                { ...rebootParams, language_data_length: languageBlob?.byteLength },
-            );
 
-            log.debug(
-                'onCallFirmwareUpdate',
-                'RebootToBootloader response',
-                rebootResponse.message,
-            );
+        await device.getCommands().typedCall('RebootToBootloader', 'Success', rebootParams);
 
-            while (languageBlob && rebootResponse.type !== 'Success') {
-                const start = rebootResponse.message.data_offset;
-                const end = rebootResponse.message.data_offset + rebootResponse.message.data_length;
-                const chunk = languageBlob.slice(start, end);
-
-                rebootResponse = await device.getCommands().typedCall(
-                    'DataChunkAck',
-                    // DataChunkRequest is returned when language_data_length is sent and supported
-                    // Once Success is returned, device is ready to receive FirmwareErase and FirmwareUpload commands
-                    ['DataChunkRequest', 'Success'],
-                    { data_chunk: Buffer.from(chunk).toString('hex') },
-                );
-            }
-        }
         log.info(
             'onCallFirmwareUpdate',
             'waiting for disconnected event after rebootToBootloader...',
@@ -485,25 +456,6 @@ export const onCallFirmwareUpdate = async ({
         { bootloader: false, method: 'wait' },
         { ...context, device: reconnectedDevice },
     );
-
-    // features.firmware_present non-null value implies that device was initially connected with
-    // features.bootloader_mode=true, which means that no automatic language update was performed
-    if (
-        reconnectedDevice.atLeast('2.7.0') &&
-        deviceInitiallyConnectedWithoutFirmware &&
-        params.language
-    ) {
-        try {
-            log.info(
-                'onCallFirmwareUpdate',
-                'changing language for fresh device to: ',
-                params.language,
-            );
-            await reconnectedDevice.changeLanguage({ language: params.language });
-        } catch (err) {
-            log.error('onCallFirmwareUpdate', 'changeLanguage failed silently: ', err);
-        }
-    }
 
     const installedVersion = reconnectedDevice.getVersion();
     if (!bootloaderVersion || !installedVersion) {

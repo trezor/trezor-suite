@@ -1,4 +1,4 @@
-import { isStrictFeatures, isValidReleases } from '../firmwareUtils';
+import { isStrictFeatures } from '../firmwareUtils';
 
 describe('parse', () => {
     describe('isStrictFeatures()', () => {
@@ -7,12 +7,6 @@ describe('parse', () => {
                 // @ts-expect-error
                 isStrictFeatures({ foo: 'bar' }),
             ).toEqual(false);
-        });
-    });
-
-    describe('isValidReleases()', () => {
-        it('fail on not matching pattern', () => {
-            expect(isValidReleases({ foo: 'bar' })).toEqual(false);
         });
     });
 });

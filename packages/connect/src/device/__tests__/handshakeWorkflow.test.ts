@@ -42,9 +42,9 @@ const getAcquiredDevice = async (apiMethods: any = {}) => {
 const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);
 
 describe('workflow/handshake', () => {
-    beforeAll(() => {
+    beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
-        DataManager.load(
+        await DataManager.load(
             {
                 ...parseConnectSettings({}),
             },

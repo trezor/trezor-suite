@@ -20,9 +20,9 @@ const waitForNthEventOfType = (
     });
 
 describe('DeviceList', () => {
-    beforeAll(() => {
+    beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
-        DataManager.load({
+        await DataManager.load({
             ...parseConnectSettings({}),
         });
     });

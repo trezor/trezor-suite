@@ -1,30 +1,34 @@
 import { FetchError } from 'node-fetch';
 
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 
 import { FirmwareRevisionCheckResult } from '../../exports';
 import * as utilsAssets from '../../utils/assets';
 import { CheckFirmwareRevisionParams, checkFirmwareRevision } from '../checkFirmwareRevision';
 
-const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease[] = [
-    {
-        required: false,
-        version: [2, 7, 2],
-        bootloader_version: [1, 12, 1],
-        min_firmware_version: [1, 12, 0],
-        min_bootloader_version: [1, 12, 0],
-        url: 'firmware/t1b1/trezor-t1b1-1.12.1.bin',
-        url_bitcoinonly: 'firmware/t1b1/trezor-t1b1-1.12.1-bitcoinonly.bin',
-        fingerprint: '3c694191f5b66a65cb5bb209adbf113cb40209e644b77162ba996bb7ee8f382b',
-        fingerprint_bitcoinonly: '985fb6a8c87f7547fb810f6c4a8331ebf19c677445810358778eb21eca78a181',
-        firmware_revision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
-        changelog: '* A\n* B\n* C',
+const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease = {
+    required: false,
+    version: [2, 7, 2],
+    bootloader_version: [1, 12, 1],
+    min_firmware_version: [1, 12, 0],
+    min_bootloader_version: [1, 12, 0],
+    url: 'firmware/t1b1/trezor-t1b1-1.12.1.bin',
+    fingerprint: '3c694191f5b66a65cb5bb209adbf113cb40209e644b77162ba996bb7ee8f382b',
+    firmware_revision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
+    translations: {
+        'cs-CZ': 'firmware/translations/t1b1/translation-T2T1-cs-CZ-2.7.2.bin',
+        'de-DE': 'firmware/translations/t1b1/translation-T2T1-de-DE-2.7.2.bin',
+        'es-ES': 'firmware/translations/t1b1/translation-T2T1-es-ES-2.7.2.bin',
+        'fr-FR': 'firmware/translations/t1b1/translation-T2T1-fr-FR-2.7.2.bin',
+        'it-IT': 'firmware/translations/t1b1/translation-T2T1-it-IT-2.7.2.bin',
+        'pt-BR': 'firmware/translations/t1b1/translation-T2T1-pt-BR-2.7.2.bin',
     },
-];
+    changelog: '* A\n* B\n* C',
+};
 
 const DeviceNames = Object.values(DeviceModelInternal);
 
-type CreateDeviceParams = Omit<CheckFirmwareRevisionParams, 'internalModel'>;
+type CreateDeviceParams = Omit<CheckFirmwareRevisionParams, 'internalModel' | 'firmwareType'>;
 
 const createDeviceParams = (params: Partial<CreateDeviceParams>): CreateDeviceParams => ({
     deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
@@ -36,7 +40,7 @@ const createDeviceParams = (params: Partial<CreateDeviceParams>): CreateDevicePa
 describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, internalModel => {
     it.each<{
         it: string;
-        httpRequestMock?: () => Promise<FirmwareRelease[]>;
+        httpRequestMock?: () => Promise<FirmwareRelease>;
         params: CreateDeviceParams;
         expected: FirmwareRevisionCheckResult;
     }>([
@@ -116,7 +120,11 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             jest.spyOn(utilsAssets, 'httpRequest').mockImplementation(httpRequestMock);
         }
 
-        const result = await checkFirmwareRevision({ ...params, internalModel });
+        const result = await checkFirmwareRevision({
+            ...params,
+            internalModel,
+            firmwareType: FirmwareType.Universal,
+        });
 
         expect(result).toStrictEqual(expected);
     });

@@ -1,6 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import { ConditionalRelease, DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import { AbstractApiTransport, UsbApi } from '@trezor/transport';
 
 import { type Features } from './src/types';
@@ -80,14 +80,21 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     ...feat,
 });
 
-const commonReleaseData: ConditionalRelease['release'] = {
+const commonReleaseData: FirmwareRelease = {
     required: false,
     url: '/some/path/to/firmware.bin',
     version: [2, 8, 9],
     min_bootloader_version: [2, 1, 6],
     min_firmware_version: [2, 7, 2],
     bootloader_version: [2, 1, 8],
-    translations: ['cs-CZ', 'de-DE', 'es-ES', 'fr-FR', 'it-IT', 'pt-BR'],
+    translations: {
+        'cs-CZ': 'firmware/translations/t2t1/translation-T2T1-cs-CZ-2.8.9.bin',
+        'de-DE': 'firmware/translations/t2t1/translation-T2T1-de-DE-2.8.9.bin',
+        'es-ES': 'firmware/translations/t2t1/translation-T2T1-es-ES-2.8.9.bin',
+        'fr-FR': 'firmware/translations/t2t1/translation-T2T1-fr-FR-2.8.9.bin',
+        'it-IT': 'firmware/translations/t2t1/translation-T2T1-it-IT-2.8.9.bin',
+        'pt-BR': 'firmware/translations/t2t1/translation-T2T1-pt-BR-2.8.9.bin',
+    },
     firmware_revision: 'fad9682201cf9289bba2adb66e6e07ed1cf78936',
     fingerprint: 'ac995c394f7a7b3ea4cbd9c04977621d6d2fbef30bba856f707f585f34866ac4',
     changelog:
@@ -96,9 +103,7 @@ const commonReleaseData: ConditionalRelease['release'] = {
         '* Changed "swipe to continue" to "tap to continue". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen.',
 };
 
-const getReleaseData = (
-    releaseInfo: Partial<ConditionalRelease['release']> = {},
-): ConditionalRelease['release'] => ({
+const getReleaseData = (releaseInfo: Partial<FirmwareRelease> = {}): FirmwareRelease => ({
     ...commonReleaseData,
     ...releaseInfo,
 });
