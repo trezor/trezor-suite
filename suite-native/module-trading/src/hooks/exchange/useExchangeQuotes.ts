@@ -9,6 +9,7 @@ import {
     selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { useFormState } from '@suite-native/forms';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
 import { exchangeActions } from '../../reducers';
@@ -30,14 +31,27 @@ type PromiseType = {
 
 const noop = () => {};
 
+const defaultState = {
+    sendAsset: undefined,
+    receiveAsset: undefined,
+    sendCryptoAmount: undefined,
+} as const;
+
 const useShouldFetchExchangeQuotes = (
     watch: ExchangeFormType['watch'],
+    control: ExchangeFormType['control'],
 ): { isFetchAllowed: boolean; shouldFetchQuotes: boolean } => {
-    const prevState = useRef<ShouldFetchExchangeQuotesRef>({
-        sendAsset: undefined,
-        receiveAsset: undefined,
-        sendCryptoAmount: undefined,
-    });
+    const prevState = useRef<ShouldFetchExchangeQuotesRef>(defaultState);
+
+    const { isValid } = useFormState({ control });
+    if (!isValid) {
+        prevState.current = defaultState;
+
+        return {
+            isFetchAllowed: false,
+            shouldFetchQuotes: false,
+        };
+    }
 
     const [sendAsset, receiveAsset, sendCryptoAmount] = watch([
         'sendAsset',
@@ -168,11 +182,11 @@ const useExchangeQuotesInvalidator = (
     );
 };
 
-export const useExchangeQuotes = ({ watch, getValues }: ExchangeFormType) => {
+export const useExchangeQuotes = ({ watch, getValues, control }: ExchangeFormType) => {
     const debounce = useDebounce();
     const promiseRef = useRef<PromiseType | undefined>(undefined);
 
-    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchExchangeQuotes(watch);
+    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchExchangeQuotes(watch, control);
 
     const { timer, shouldReload } = useReloadTimer({ isEnabled: isFetchAllowed });
 

@@ -144,6 +144,57 @@ describe('useExchangeQuotes', () => {
         },
     );
 
+    it('should not query quotes when form contains error', async () => {
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseExchangeQuotes(store);
+        const form = result.current;
+
+        act(() => {
+            form.setValue('sendAsset', btcAsset);
+            form.setValue('receiveAsset', ethAsset);
+            form.setValue('sendCryptoAmount', '10');
+            form.setError('receiveAsset', {
+                type: 'manual',
+                message: 'VALIDATION_ERROR',
+            });
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
+
+    it('should query quotes as soon as form contains no errors', async () => {
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseExchangeQuotes(store);
+        const form = result.current;
+
+        act(() => {
+            form.setValue('sendAsset', btcAsset);
+            form.setValue('receiveAsset', btcAsset);
+            form.setValue('sendCryptoAmount', '10');
+            form.setError('receiveAsset', {
+                type: 'manual',
+                message: 'VALIDATION_ERROR',
+            });
+        });
+
+        await act(async () => {
+            form.clearErrors();
+            await form.trigger();
+        });
+
+        expect(dispatchSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
+
     it('should clear exchange state on unmount', async () => {
         const store = await getInitializedStore();
         store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
