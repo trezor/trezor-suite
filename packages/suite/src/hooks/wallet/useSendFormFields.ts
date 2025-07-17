@@ -119,6 +119,8 @@ export const useSendFormFields = ({
 
                 const amountBigNumber = new BigNumber(amount);
 
+                // Todo: this logic is duplicated in `suite-native/formatters/src/hooks/useCryptoFiatConverters.ts` shall be deduped
+
                 // 1. Get the correct Crypto Amount (in units, as I could have been entered in Sats)
                 const cryptoAmount = shouldSendInSats
                     ? subunitsToUnits({
@@ -178,6 +180,8 @@ export const useSendFormFields = ({
             const convert = (fiat: string, fiatRate: number) => {
                 const cryptoDecimals = token ? token.decimals : network.decimals;
                 const fiatAmountBigNumber = asBaseCurrencyAmount(new BigNumber(fiat));
+
+                // Todo: this logic is duplicated in `suite-native/formatters/src/hooks/useCryptoFiatConverters.ts` shall be deduped
 
                 // 1. When BTC is used as BaseCurrency, and we display all in Sats, we have to perform
                 // the conversion from sats->btc
