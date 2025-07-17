@@ -18,6 +18,7 @@ import { RatesByKey } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
     AmountUnit,
+    BASE_CURRENCY_ZERO,
     asAmountUnit,
     getFiatRateKey,
     isSupportedEthStakingNetworkSymbol,
@@ -84,7 +85,7 @@ const useAssetsFiatBalances = (
                 .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
                 .toString() ?? '0';
 
-        const fiatBalance = toFiatCurrency({ amount, rate: fiatRate?.rate })?.toFixed(2) ?? '0';
+        const fiatBalance = toFiatCurrency({ amount, rate: fiatRate?.rate }) ?? BASE_CURRENCY_ZERO;
 
         return [...acc, { fiatBalance, symbol: asset.network.symbol }];
     }, []);

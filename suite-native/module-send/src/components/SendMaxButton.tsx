@@ -6,15 +6,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountNetworkSymbol,
+    selectAreSatsAmountUnit,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { isAddressValid } from '@suite-common/wallet-utils';
+import { getDecimalsForBaseCurrency, isAddressValid } from '@suite-common/wallet-utils';
 import { Button } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
@@ -35,8 +41,14 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-
     const decimals = symbol && getNetwork(symbol).decimals;
+
+    const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
+    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const decimalsForBaseCurrency = getDecimalsForBaseCurrency({
+        code: baseCurrencyCode,
+        areSatsDisplayed: isBtcAmountInSats,
+    });
 
     const tokenBalance = useSelector((state: TokensRootState) =>
         selectAccountTokenBalance(state, accountKey, tokenContract),
@@ -93,9 +105,12 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
             shouldTouch: true,
         });
 
-        const fiatValue = converters?.convertCryptoToFiat(maxAmountValue);
+        const fiatValue = converters?.convertCryptoToFiat(new BigNumber(maxAmountValue));
         if (fiatValue && decimals !== null) {
-            setValue(getOutputFieldName(outputIndex, 'fiat'), fiatValue?.toFixed(decimals));
+            setValue(
+                getOutputFieldName(outputIndex, 'fiat'),
+                fiatValue?.toFixed(decimalsForBaseCurrency),
+            );
         }
     };
 

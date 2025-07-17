@@ -7,14 +7,17 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
     TransactionsRootState,
+    selectAreSatsAmountUnit,
     selectLocalCurrency,
 } from '@suite-common/wallet-core';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Input } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { selectAccountTokenDecimals } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
+import { BigNumber } from '@trezor/utils';
 
 import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
@@ -35,7 +38,8 @@ export const FiatAmountInput = ({
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext<SendOutputsFormValues>();
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
     const { decimals } = getNetwork(symbol);
     const tokenDecimals = useSelector(
@@ -69,7 +73,9 @@ export const FiatAmountInput = ({
         const transformedValue = fiatAmountTransformer(newValue);
         onChange(transformedValue);
 
-        const cryptoValue = converters?.convertFiatToCrypto?.(transformedValue);
+        const cryptoValue = converters?.convertFiatToCrypto?.(
+            asBaseCurrencyAmount(new BigNumber(transformedValue)),
+        );
         if (cryptoValue) {
             const cryptoDecimals = tokenDecimals ?? decimals;
             setValue(cryptoFieldName, cryptoValue.toFixed(cryptoDecimals), {
@@ -101,7 +107,9 @@ export const FiatAmountInput = ({
                     hasError={!isDisabled && hasError}
                     rightIcon={
                         <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                            {fiatCurrencyCode.toUpperCase()}
+                            {baseCurrencyCode === 'btc' && isBtcAmountInSats
+                                ? 'sat'
+                                : baseCurrencyCode.toUpperCase()}
                         </SendAmountCurrencyLabelWrapper>
                     }
                 />

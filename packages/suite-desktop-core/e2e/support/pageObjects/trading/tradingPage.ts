@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import { TradingCountryCode } from '@suite-common/trading/libDev/src';
+import { TradingCountryCode } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
