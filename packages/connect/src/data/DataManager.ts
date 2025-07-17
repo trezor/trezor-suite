@@ -2,13 +2,11 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmwareReleaseConfig, parseFirmwareReleases } from './firmwareInfo';
+import { parseFirmwareReleaseConfig } from './firmwareInfo';
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
-import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 import { getFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
 
 type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
@@ -31,14 +29,6 @@ export class DataManager {
         const assetsMap = {
             coins,
             coinsEth,
-            ...Object.fromEntries(
-                Object.entries(firmwareAssets).map(([key, value]) => {
-                    // For `unknown` firmware we get `{}` so we use `[]` to have always same type.
-                    const release = Array.isArray(value) ? value : [];
-
-                    return [`firmware-${key.toLowerCase()}`, release];
-                }),
-            ),
         };
         Object.assign(this.assets, assetsMap);
 
@@ -48,20 +38,8 @@ export class DataManager {
             ...this.assets.coinsEth,
         });
 
-        // parse firmware definitions
-        for (const model in DeviceModelInternal) {
-            const firmwareKey: `firmware-${string}` = `firmware-${model.toLowerCase()}`;
-            const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
-            const modelReleases = this.assets[firmwareKey] as FirmwareRelease[];
-            // Check if the firmware data exists for this model
-            if (modelReleases) {
-                parseFirmwareReleases(modelReleases, modelType);
-            }
-        }
-
         const firmwareReleaseConfig = await getFirmwareReleaseConfig();
-
-        parseFirmwareReleaseConfig(firmwareReleaseConfig);
+        await parseFirmwareReleaseConfig(firmwareReleaseConfig);
     }
 
     static getProtobufMessages() {

@@ -3,14 +3,13 @@ import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {
     getBinary,
-    getLanguage,
     parseFirmwareHeaders,
     shouldStripFwHeaders,
     stripFwHeaders,
     uploadFirmware,
 } from '../api/firmware';
 import { ERRORS, PROTO } from '../constants';
-import { getFirmwareLocation } from '../data/firmwareInfo';
+import { getFirmwareLocation, getLanguage } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
 import { CoreEventMessage, UI, createUiMessage } from '../events';
@@ -201,11 +200,11 @@ const getBinaryHelper = ({
     if (!device.firmwareReleaseConfigInfo) {
         throw ERRORS.TypedError('Runtime', 'device.firmwareReleaseMessage is not set');
     }
-    const firmwareType = device.firmwareType ? device.firmwareType : FirmwareType.Regular;
-    const internalModel = device.features?.internal_model;
+    const firmwareType = device.firmwareType ? device.firmwareType : FirmwareType.Universal;
+    const deviceModel = device.features?.internal_model;
 
     const {
-        release: { version },
+        release: { version, url },
         intermediary,
     } = device.firmwareReleaseConfigInfo;
     log.debug(
@@ -216,18 +215,19 @@ const getBinaryHelper = ({
         version,
         'firmwareType',
         firmwareType,
-        'internalModel',
-        internalModel,
+        'deviceModel',
+        deviceModel,
     );
 
-    const { baseUrl, firmwareName } = getFirmwareLocation({
+    const { baseUrl, path } = getFirmwareLocation({
         firmwareVersion: version,
-        internalModel,
+        remotePath: url,
+        deviceModel,
         firmwareType,
         intermediaryVersion: isIntermediary && intermediary ? intermediary.version : undefined,
     });
 
-    return getBinary({ baseUrl, firmwareName, version });
+    return getBinary({ baseUrl, path, version });
 };
 
 export type Params = {
@@ -378,13 +378,10 @@ export const onCallFirmwareUpdate = async ({
         // There was a time where we were checking that updating language during firmwaware update
         // some devices version where not working, that was changed after https://github.com/trezor/trezor-firmware/pull/4827
         const targetLanguage = device.features.language || 'en-US';
+        const languageBinPath = device.firmwareReleaseConfigInfo?.translations?.[targetLanguage];
         const languageBlob =
-            device.firmwareReleaseConfigInfo && targetLanguage !== 'en-US'
-                ? await getLanguage({
-                      language: targetLanguage,
-                      version: device.firmwareReleaseConfigInfo.release.version,
-                      internal_model: device.features.internal_model,
-                  }).catch(() => {
+            languageBinPath && targetLanguage !== 'en-US'
+                ? await getLanguage(languageBinPath).catch(() => {
                       // silent, language data is not critical, it can be updated any time later and it indeed happens inside device.updateFeatures
                   })
                 : null;

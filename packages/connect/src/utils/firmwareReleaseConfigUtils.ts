@@ -4,26 +4,16 @@ import { FirmwareReleaseConfig } from '@trezor/device-utils';
 import { getJWSPublicKey } from '@trezor/env-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
-
-type FirmwareUpdateSource = 'production' | 'test-unsigned' | 'test-signed';
+import { getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
 
 const JWS_SIGN_ALGORITHM = 'ES256';
 const VERSION = 1;
-const JWS_RELEASES_FILENAME_REMOTE = `releases.v${VERSION}.jws`;
+const JWS_RELEASES_FILENAME_REMOTE = `releases.v${VERSION}.json`;
 
-export const RELEASES_URL_REMOTE_BASE = 'https://data.trezor.io/suite/firmware';
-export const RELEASES_URL_REMOTE: Record<FirmwareUpdateSource, string> = {
-    production: `${RELEASES_URL_REMOTE_BASE}/production/${JWS_RELEASES_FILENAME_REMOTE}`,
-    'test-unsigned': `${RELEASES_URL_REMOTE_BASE}/unsigned/${JWS_RELEASES_FILENAME_REMOTE}`,
-    'test-signed': `${RELEASES_URL_REMOTE_BASE}/signed/${JWS_RELEASES_FILENAME_REMOTE}`,
-};
+// Enable this for local development purposes: set to true to always fetch local JWS
+const FORCE_LOCAL_JWS = false;
 
-// Enable this for local development purposes:
-// set to true to always fetch local JWS
-// TODO: WIP: for now we are forcing local since it was not deployed yet.
-const FORCE_LOCAL_JWS = true;
-
-const getReleaseJWS = async (firmwareUpdateSource: FirmwareUpdateSource = 'production') => {
+const getReleaseJWS = async () => {
     if (FORCE_LOCAL_JWS) {
         return {
             releasesJws: firmwareReleaseConfigAssets.jws,
@@ -31,7 +21,8 @@ const getReleaseJWS = async (firmwareUpdateSource: FirmwareUpdateSource = 'produ
         };
     }
 
-    const remoteReleasesUrl = RELEASES_URL_REMOTE[firmwareUpdateSource];
+    const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl();
+    const remoteReleasesUrl = `${onlineFirmwareBaseUrl}/firmware/unsigned/${JWS_RELEASES_FILENAME_REMOTE}`;
 
     try {
         const controller = new AbortController();
@@ -49,8 +40,10 @@ const getReleaseJWS = async (firmwareUpdateSource: FirmwareUpdateSource = 'produ
 
         const releasesJws = await response.text();
 
+        const parsedConfig = JSON.parse(releasesJws);
+
         return {
-            releasesJws,
+            releasesJws: parsedConfig.jws,
             isRemote: true,
         };
     } catch (error) {
@@ -63,36 +56,32 @@ const getReleaseJWS = async (firmwareUpdateSource: FirmwareUpdateSource = 'produ
     }
 };
 
-export const getFirmwareReleaseConfig = async () => {
-    const { releasesJws, isRemote } = await getReleaseJWS();
-
-    const decodedJws = decode(releasesJws);
-
+const verifyFirmwareRelease = (releasesJws: string, isRemote: boolean) => {
+    let decodedJws = decode(releasesJws);
     if (!decodedJws) {
         throw new Error('Decoding of releases failed.');
     }
 
     if (isRemote) {
         const decodedJwsLocal = decode(firmwareReleaseConfigAssets.jws);
-
-        if (!decodedJwsLocal) {
-            // Just sanity check, local JWS should always be there and should be possible to decode it.
+        if (!decodedJwsLocal || !decodedJwsLocal.payload) {
+            // Sanity check, local config should always be there and should be possible to decode it.
             throw new Error('Local firmware release config missing.');
         }
-        if (decodedJwsLocal.payload.sequence > decodedJws.payload.sequence) {
-            throw new Error(
-                'Local firmware release config cannot have greater sequence than remote.',
-            );
+        const localJws = JSON.parse(decodedJwsLocal?.payload);
+        if (localJws.version !== VERSION) {
+            // Sanity check, local config should always be the hard-coded version.
+            throw new Error(`Local firmware release config expected version ${VERSION}.`);
         }
-        const localConfigDate: Date = new Date(decodedJwsLocal.payload.timestamp);
-        const remoteConfigDate: Date = new Date(decodedJws.payload.sequence);
-        if (remoteConfigDate > localConfigDate) {
-            throw new Error(
-                'Local firmware release config cannot have older timestamp than remote.',
-            );
+        if (localJws.sequence > decodedJws.payload.sequence) {
+            // If we fetch remote but local is newer than remote then we use local.
+            decodedJws = decodedJwsLocal;
         }
-        if (decodedJwsLocal.payload.version === VERSION) {
-            throw new Error(`Local firmware release config exepected version ${VERSION}.`);
+        const localConfigDate: Date = new Date(localJws.timestamp);
+        const remoteConfigDate: Date = new Date(decodedJws.payload.timestamp);
+        if (localConfigDate > remoteConfigDate) {
+            // If we fetch remote but local is newer than remote then we use local.
+            decodedJws = decodedJwsLocal;
         }
     }
 
@@ -108,16 +97,23 @@ export const getFirmwareReleaseConfig = async () => {
 
     try {
         const isAuthenticityValid = verify(releasesJws, JWS_SIGN_ALGORITHM, JWSPublicKey);
-
         if (!isAuthenticityValid) {
             throw new Error('Config authenticity is invalid');
         }
 
-        const releases: FirmwareReleaseConfig = JSON.parse(decodedJws.payload);
-
-        return releases;
+        return JSON.parse(decodedJws.payload);
     } catch (error) {
         console.error('Error validating:', error);
         throw new Error(`Failed to validate release message: ${error.message}`);
     }
 };
+
+export const getFirmwareReleaseConfig = async () => {
+    const { releasesJws, isRemote } = await getReleaseJWS();
+    const releases: FirmwareReleaseConfig = verifyFirmwareRelease(releasesJws, isRemote);
+
+    return releases;
+};
+
+export const getOnlyLocalFirmwareReleaseConfig = (): FirmwareReleaseConfig =>
+    verifyFirmwareRelease(firmwareReleaseConfigAssets.jws, false);

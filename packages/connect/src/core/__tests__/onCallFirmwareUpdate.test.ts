@@ -1,5 +1,4 @@
-import releasesT1B1 from '@trezor/connect-common/files/firmware/t1b1/releases.json';
-import releasesT2T1 from '@trezor/connect-common/files/firmware/t2t1/releases.json';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { parseConfigure } from '@trezor/protobuf';
 import { v1 as protocolV1 } from '@trezor/protocol';
 import { buildMessage } from '@trezor/transport/src/utils/send';
@@ -8,6 +7,7 @@ import { Log } from '@trezor/utils';
 import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
 import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
+import { getBundledRelease } from '../../data/firmwareInfo';
 import { DeviceList } from '../../device/DeviceList';
 // mocks
 import * as mockAssets from '../../utils/assets';
@@ -23,7 +23,7 @@ const ASSETS_BASE_URL = '';
 // jest.setTimeout(30000);
 
 const { createTestTransport } = global.JestMocks;
-const LATEST_RELEASE = releasesT2T1[0];
+const LATEST_RELEASE = getBundledRelease(DeviceModelInternal.T2T1, FirmwareType.Universal);
 
 type ResponseFixture = {
     id: string; // messageType from .write
@@ -91,7 +91,10 @@ const buildProtobufMessage = (messages: any, override: any = {}) => {
     const major_version = override.data?.major_version || 2;
     const model = major_version === 1 ? 1 : 2;
     const internal_model = major_version === 1 ? 'T1B1' : 'T2T1';
-    const latest = major_version === 1 ? releasesT1B1[0] : LATEST_RELEASE;
+    const latest =
+        major_version === 1
+            ? getBundledRelease(DeviceModelInternal.T1B1, FirmwareType.Universal)
+            : LATEST_RELEASE;
     const [fw_major, fw_minor, fw_patch] = latest.version;
     const version = {
         major_version: fw_major,
@@ -141,7 +144,7 @@ const httpRequestMock = (version?: number[]) => {
 };
 
 const calculateFirmwareHashMock = (hash?: string) => ({
-    hash: hash || LATEST_RELEASE.firmware_revision,
+    hash: hash || LATEST_RELEASE.firmware_revision || '',
     challenge: '',
 });
 
@@ -207,8 +210,8 @@ const setupTest = () => {
 };
 
 describe('onCallFirmwareUpdate', () => {
-    beforeAll(() => {
-        DataManager.load(parseConnectSettings({}));
+    beforeAll(async () => {
+        await DataManager.load(parseConnectSettings({}));
     });
     beforeEach(() => {
         if (!ASSETS_BASE_URL) {

@@ -1,24 +1,6 @@
-import releases from '@trezor/connect-common/files/firmware/t2t1/releases.json';
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-
-import { getFirmwareStatus, getReleases, parseFirmwareReleases } from '../firmwareInfo';
+import { getFirmwareStatus } from '../firmwareInfo';
 
 describe('data/firmwareInfo', () => {
-    beforeEach(() => {
-        parseFirmwareReleases(releases as FirmwareRelease[], DeviceModelInternal.T2T1);
-    });
-
-    test('getReleases', () => {
-        expect(getReleases(DeviceModelInternal.T2T1)[0]).toMatchObject({
-            ...releases[0],
-            url: expect.any(String),
-            url_bitcoinonly: expect.any(String),
-        });
-
-        // custom model
-        expect(getReleases(2000 as any)).toEqual([]);
-    });
-
     test('getFirmwareStatus', () => {
         expect(
             // @ts-expect-error, incomplete Features

@@ -22,14 +22,14 @@ export const isValidReleases = (extReleases: any): extReleases is FirmwareReleas
             release.version && release.min_firmware_version && release.min_bootloader_version,
     );
 
-export const buildFirmwareFileName = (
+export const buildLocalFirmwareFileName = (
     firmwareType: FirmwareType,
     internalModel: DeviceModelInternal,
     version: VersionArray,
 ) => {
     const firmwareTypeFileString = firmwareType === FirmwareType.BitcoinOnly ? '-bitcoinonly' : '';
 
-    return `trezor-${internalModel.toLocaleLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
+    return `trezor-${internalModel.toLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
 };
 
 export const buildIntermediaryFirmwareFileName = (

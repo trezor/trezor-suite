@@ -1,17 +1,28 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { isArrayMember } from '@trezor/utils';
+import {
+    DeviceModelInternal,
+    FirmwareRelease,
+    FirmwareType,
+    VersionArray,
+} from '@trezor/device-utils';
 
-const isDeviceModel = (model: string): model is DeviceModelInternal =>
-    isArrayMember(model, Object.values(DeviceModelInternal));
+export const getReleaseAsset = (
+    deviceModel: DeviceModelInternal,
+    version: VersionArray,
+    firmwareType: FirmwareType,
+) => {
+    const firmwareTypeInFileName =
+        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+    const fileName = `${deviceModel.toLowerCase()}-${version.join('.')}-${firmwareTypeInFileName}.json`;
+    const deviceLower = deviceModel.toLowerCase();
 
-export const firmwareAssets: Record<DeviceModelInternal, NodeJS.Require> = {
-    [DeviceModelInternal.UNKNOWN]: {} as NodeJS.Require,
-    [DeviceModelInternal.T1B1]: require('@trezor/connect-common/files/firmware/t1b1/releases.json'),
-    [DeviceModelInternal.T2T1]: require('@trezor/connect-common/files/firmware/t2t1/releases.json'),
-    [DeviceModelInternal.T2B1]: require('@trezor/connect-common/files/firmware/t2b1/releases.json'),
-    [DeviceModelInternal.T3B1]: require('@trezor/connect-common/files/firmware/t3b1/releases.json'),
-    [DeviceModelInternal.T3T1]: require('@trezor/connect-common/files/firmware/t3t1/releases.json'),
-    [DeviceModelInternal.T3W1]: require('@trezor/connect-common/files/firmware/t3w1/releases.json'),
+    const asset = require(
+        /* webpackInclude: /\.json$/ */
+        /* webpackChunkName: "firmware" */
+        /* webpackMode: "lazy" */
+        `@trezor/connect-common/files/firmware/${deviceLower}/${firmwareTypeInFileName}/${fileName}`,
+    );
+
+    return asset as FirmwareRelease;
 };
 
 export const firmwareReleaseConfigAssets = require('@trezor/connect-common/files/firmware/release/releases.v1.json');
@@ -26,14 +37,6 @@ export const tryLocalAssetRequire = (url: string) => {
             return require('@trezor/connect-common/files/coins-eth.json');
         case './data/messages/messages.json':
             return require('@trezor/protobuf/messages.json');
-    }
-
-    const firmwareMatch = fileUrl.match(/\/firmware\/(\w+)\/releases\.json$/);
-    if (firmwareMatch) {
-        const modelKey = firmwareMatch[1].toUpperCase();
-        if (isDeviceModel(modelKey)) {
-            return firmwareAssets[modelKey];
-        }
     }
 
     return null;
