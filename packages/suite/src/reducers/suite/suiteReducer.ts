@@ -189,7 +189,7 @@ const initialState: SuiteState = {
         theme: {
             variant: 'light',
         },
-        language: ensureLocale('en'),
+        language: ensureLocale('en-US'),
         torOnionLinks: isWeb(),
         isCoinjoinReceiveWarningHidden: false,
         isDesktopSuitePromoHidden: false,

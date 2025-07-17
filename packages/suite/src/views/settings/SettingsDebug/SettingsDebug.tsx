@@ -23,7 +23,6 @@ import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
 import { Tor } from './Tor';
-import { TranslationMode } from './TranslationMode';
 import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
 import { TrezorConnectLogs } from './TrezorConnectLogs';
@@ -38,11 +37,6 @@ export const SettingsDebug = () => {
         <SettingsLayout>
             <ContextMessage context={Context.getSettings('debug')} />
 
-            {isWeb() && (
-                <SettingsSection title="Localization">
-                    <TranslationMode />
-                </SettingsSection>
-            )}
             <SettingsSection title="Debug">
                 <GithubIssue />
                 {!isWeb() && <WipeData />}

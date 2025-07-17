@@ -69,7 +69,6 @@ export const BackupStep = () => {
             )}
             {backup.status === 'initial' && (
                 <OnboardingStepBox
-                    key={backup.status} // to properly rerender in translation mode
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
                     description={<Translation id="TR_ONBOARDING_BACKUP_SUBHEADING" />}
@@ -98,7 +97,6 @@ export const BackupStep = () => {
             )}
             {backup.status === 'in-progress' && (
                 <OnboardingStepBox
-                    key={backup.status} // to properly rerender in translation mode
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
                     description={<Translation id="TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP" />}
@@ -109,7 +107,6 @@ export const BackupStep = () => {
 
             {backup.status === 'finished' && (
                 <OnboardingStepBox
-                    key={backup.status} // to properly rerender in translation mode
                     image="BACKUP"
                     heading={<Translation id="TR_BACKUP_CREATED" />}
                     description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
@@ -126,7 +123,6 @@ export const BackupStep = () => {
             )}
             {backup.status === 'error' && (
                 <OnboardingStepBox
-                    key={backup.status} // to properly rerender in translation mode
                     image="BACKUP"
                     heading={<Translation id="TOAST_BACKUP_FAILED" />}
                     description={

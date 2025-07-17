@@ -17,7 +17,6 @@ import {
     selectFirmwareRevisionCheckErrorIfEnabled,
     selectTransportOfType,
 } from 'src/reducers/suite/suiteReducer';
-import { isTranslationMode } from 'src/utils/suite/l10n';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
 import { BridgeDeprecated } from './BridgeDeprecatedBanner';
@@ -26,7 +25,6 @@ import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBann
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
-import { TranslationMode } from './TranslationModeBanner';
 
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
@@ -104,7 +102,6 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
 
     const isBannerVisible =
         isMessageSystemBannerVisible ||
-        isTranslationMode() ||
         !isOnline ||
         (!isMessageSystemBannerVisible && banner !== null);
     if (!isBannerVisible) return null;
@@ -112,7 +109,6 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     return (
         <Container $fill={fill}>
             {isMessageSystemBannerVisible && <MessageSystemBanner message={bannerMessage} />}
-            {isTranslationMode() && <TranslationMode />}
             {!isOnline && <NoConnectionBanner />}
             {!isMessageSystemBannerVisible && banner}
             {/* TODO: add Pin not set */}

@@ -12,15 +12,7 @@ interface Props {
 
 export const renderWithIntl = (ui: ReactElement, { locale = 'en' }: Props = {}): RenderResult => {
     const mockStore = configureStore([]);
-    const store = mockStore({
-        suite: {
-            settings: {
-                debug: {
-                    translationMode: false,
-                },
-            },
-        },
-    });
+    const store = mockStore({});
 
     return render(
         <Provider store={store}>
