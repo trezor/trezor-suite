@@ -18,7 +18,6 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
@@ -148,9 +147,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(periodicCheckStakeDataThunk());
 
     // 14. init wallet connect
-    if (selectHasExperimentalFeature('walletconnect')(getState())) {
-        dispatch(walletConnectActions.walletConnectInitThunk());
-    }
+    dispatch(walletConnectActions.walletConnectInitThunk());
 
     // 15. backend connected, suite is ready to use
     dispatch(onSuiteReady());

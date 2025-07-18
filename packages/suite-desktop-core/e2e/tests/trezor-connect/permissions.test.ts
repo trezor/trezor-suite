@@ -30,6 +30,7 @@ test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () =
         async ({ settingsPage, connectPermissionsModal, page }) => {
             await settingsPage.navigateTo('connect');
 
+            await page.getByTestId('@settings/connect-apps/tabs/trezor-connect').click();
             await page.getByTestId('@settings/connect-apps/no-apps').waitFor({ state: 'visible' });
 
             TrezorConnect.getAddress({

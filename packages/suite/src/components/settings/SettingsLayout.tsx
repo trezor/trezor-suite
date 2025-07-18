@@ -11,10 +11,7 @@ import {
     SubpageNavigation,
 } from 'src/components/suite/layouts/SuiteLayout';
 import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
-import {
-    selectHasExperimentalFeature,
-    selectIsDebugModeActive,
-} from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 
@@ -26,8 +23,6 @@ type SettingsLayoutProps = {
 
 const SettingsHeader = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const enabledTrezorConnectWS = useSelector(selectHasExperimentalFeature('trezor-connect-ws'));
-    const enabledWalletConnect = useSelector(selectHasExperimentalFeature('walletconnect'));
 
     const dispatch = useDispatch();
 
@@ -58,7 +53,6 @@ const SettingsHeader = () => {
                 id: 'settings-connected-apps',
                 title: <Translation id="TR_CONNECTED_APPS" />,
                 position: 'primary',
-                isHidden: !(enabledTrezorConnectWS || enabledWalletConnect),
                 'data-testid': '@settings/menu/connected-apps',
                 callback: () => dispatch(goto('settings-connected-apps', { preserveParams: true })),
             },
@@ -71,7 +65,7 @@ const SettingsHeader = () => {
                 callback: () => dispatch(goto('settings-debug', { preserveParams: true })),
             },
         ],
-        [dispatch, isDebugModeActive, enabledTrezorConnectWS, enabledWalletConnect],
+        [dispatch, isDebugModeActive],
     );
 
     return (

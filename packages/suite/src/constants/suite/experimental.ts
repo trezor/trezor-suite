@@ -10,8 +10,7 @@ export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
     | 'nft-section'
-    | 'trezor-connect-ws'
-    | 'walletconnect';
+    | 'trezor-connect-ws';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -55,9 +54,5 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         onToggle: async ({ newValue }) => {
             await desktopApi.connectPopupSetEnabled(newValue);
         },
-    },
-    walletconnect: {
-        title: 'TR_WALLETCONNECT',
-        description: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
     },
 };
