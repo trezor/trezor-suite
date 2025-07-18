@@ -31,6 +31,7 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import {
     ComposeOutput,
@@ -531,7 +532,10 @@ export const buildCurrencyOption = ({
     areSatsDisplayed,
 }: BuildCurrencyOptionParams): BaseCurrencyOption => ({
     value: currency,
-    label: currency === 'btc' && areSatsDisplayed ? 'Sats' : currency.toUpperCase(),
+    label:
+        currency !== '' && isBaseCurrencyWithSats(currency) && areSatsDisplayed
+            ? 'Sats'
+            : currency.toUpperCase(),
 });
 
 type BuildCurrencyOptionsParams = {

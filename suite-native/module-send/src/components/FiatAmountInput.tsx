@@ -7,7 +7,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
     TransactionsRootState,
-    selectAreSatsAmountUnit,
+    selectIsBaseCurrencyInSats,
     selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
@@ -39,7 +39,7 @@ export const FiatAmountInput = ({
     const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const baseCurrencyCode = useSelector(selectLocalCurrency);
-    const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
+    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
     const { decimals } = getNetwork(symbol);
     const tokenDecimals = useSelector(
@@ -107,9 +107,7 @@ export const FiatAmountInput = ({
                     hasError={!isDisabled && hasError}
                     rightIcon={
                         <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                            {baseCurrencyCode === 'btc' && isBtcAmountInSats
-                                ? 'sat'
-                                : baseCurrencyCode.toUpperCase()}
+                            {isBaseCurrencyInSats ? 'sat' : baseCurrencyCode.toUpperCase()}
                         </SendAmountCurrencyLabelWrapper>
                     }
                 />

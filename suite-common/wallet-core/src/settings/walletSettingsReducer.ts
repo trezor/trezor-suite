@@ -1,6 +1,7 @@
 import { createReducerWithExtraDeps, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbol, getNetwork, networkSymbolCollection } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
+import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
@@ -100,4 +101,11 @@ export const selectIsAmountInSats = (
     const isAmountUnitSupported = network && network.features.includes('amount-unit');
 
     return isAmountUnitSupported && selectAreSatsAmountUnit(state);
+};
+
+export const selectIsBaseCurrencyInSats = (state: WalletSettingsRootState) => {
+    const areSatsAmountUnit = selectAreSatsAmountUnit(state);
+    const baseCurrency = selectLocalCurrency(state);
+
+    return isBaseCurrencyWithSats(baseCurrency) && areSatsAmountUnit;
 };
