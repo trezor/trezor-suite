@@ -105,8 +105,10 @@ export const useConnectPopupDesktop = () => {
 
             setCurrentlyOngoing(true);
             // Remember visibility state
-            desktopApi.appIsVisible().then(isVisible => setWasVisible(isVisible));
-            desktopApi.appFocus();
+            desktopApi.appIsVisible().then(isVisible => {
+                setWasVisible(isVisible && document.visibilityState === 'visible');
+                desktopApi.appFocus();
+            });
         }
 
         if (popupCall?.state === 'finished') {
