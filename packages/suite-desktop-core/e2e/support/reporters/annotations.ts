@@ -1,8 +1,6 @@
 import { TestDetailsAnnotation } from '@playwright/test';
 import { TestCase } from '@playwright/test/reporter';
 
-import { capitalizeFirstLetter } from '@trezor/utils';
-
 import {
     DeviceModel,
     TestAnnotationType,
@@ -14,7 +12,8 @@ import {
     annotationsAddedToTest,
     annotationsForBodyDescription,
     annotationsForProjectFields,
-} from '../enums/testAnnotations';
+} from '@trezor/e2e-utils';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 type TestMetadataInput = {
     testCase?: string;

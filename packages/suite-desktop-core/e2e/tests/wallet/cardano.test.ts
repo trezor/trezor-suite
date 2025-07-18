@@ -1,6 +1,7 @@
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+
 import { cardanoAccountDetails } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
 import { formatAddress } from '../../support/common';
-import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 

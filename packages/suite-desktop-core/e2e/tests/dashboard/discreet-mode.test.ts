@@ -1,8 +1,8 @@
 import { Locator } from '@playwright/test';
 
+import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { EventType } from '@trezor/suite-analytics';
 
-import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';

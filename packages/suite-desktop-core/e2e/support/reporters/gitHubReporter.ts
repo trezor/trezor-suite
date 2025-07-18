@@ -1,18 +1,19 @@
 import type { Octokit } from '@octokit/rest';
 import { Reporter, TestCase } from '@playwright/test/reporter';
 
-import { scheduleAction } from '@trezor/utils';
-
-import { TestReportProvider } from './annotations';
-import { GitHubProject } from './gitHubProject';
-import { IssueRequests } from './issueRequests';
-import { LoggingFunctions, ProjectField } from './types';
 import {
+    GitHubProject,
+    IssueRequests,
+    LoggingFunctions,
+    ProjectField,
     TestOsEmoticons,
     TestOsMatrix,
     osMatrixAnnotation,
     statusAnnotation,
-} from '../enums/testAnnotations';
+} from '@trezor/e2e-utils';
+import { scheduleAction } from '@trezor/utils';
+
+import { TestReportProvider } from './annotations';
 
 const RETRY_CONF = {
     attempts: 3,

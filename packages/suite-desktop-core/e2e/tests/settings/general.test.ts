@@ -1,6 +1,6 @@
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { EventType } from '@trezor/suite-analytics';
 
-import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';

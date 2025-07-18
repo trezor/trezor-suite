@@ -1,8 +1,8 @@
 import fs from 'fs';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
-import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExportType } from '../../support/pageObjects/walletPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';

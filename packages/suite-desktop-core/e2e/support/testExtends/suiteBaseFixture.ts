@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 
+import { TestAnnotationType } from '@trezor/e2e-utils';
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, getUrl, getVideoPath, isDesktopProject } from '../common';
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { enhancePage } from './enhancePage';
-import { TestAnnotationType } from '../enums/testAnnotations';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 

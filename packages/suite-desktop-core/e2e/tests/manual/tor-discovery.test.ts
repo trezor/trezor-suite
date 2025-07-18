@@ -1,9 +1,5 @@
-import {
-    TestCategory,
-    TestOsMatrix,
-    TestPriority,
-    TestStream,
-} from '../../support/enums/testAnnotations';
+import { TestCategory, TestOsMatrix, TestPriority, TestStream } from '@trezor/e2e-utils';
+
 import { test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
