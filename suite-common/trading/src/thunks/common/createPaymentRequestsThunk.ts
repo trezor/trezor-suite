@@ -17,6 +17,7 @@ import { TRADING_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import {
     selectTradingCoinInfoByCryptoId,
+    selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
     selectTradingSellProviders,
@@ -96,13 +97,18 @@ export const createPaymentRequestsThunk = createThunk<
                 const verifiedAddress = selectTradingVerifiedAddress(getState());
                 const sendSlip44 = await tradingGetCoinSlip44(quote?.send);
                 const receiveSlip44 = await tradingGetCoinSlip44(quote?.receive);
+                const receiveDisplaySymbol = selectTradingCoinSymbolByCryptoId(
+                    getState(),
+                    quote?.receive,
+                );
 
                 if (
                     !quote?.orderId ||
                     !verifiedAddress?.mac ||
                     !verifiedAddress.path ||
                     sendSlip44 === undefined ||
-                    receiveSlip44 === undefined
+                    receiveSlip44 === undefined ||
+                    !receiveDisplaySymbol
                 ) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
@@ -147,6 +153,7 @@ export const createPaymentRequestsThunk = createThunk<
                     pathRefund,
                     nonce,
                     receiveSlip44,
+                    receiveDisplaySymbol,
                 });
 
                 if (!paymentRequest) {

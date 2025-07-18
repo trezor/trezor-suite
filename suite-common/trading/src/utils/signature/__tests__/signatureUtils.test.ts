@@ -51,6 +51,7 @@ describe('signatureUtils', () => {
             nonce: 'nonce789',
             sendSlip44: 0,
             receiveSlip44: 60,
+            receiveDisplaySymbol: 'ETH',
         };
 
         it('should create valid payment request for exchange trade', () => {
@@ -64,7 +65,7 @@ describe('signatureUtils', () => {
                     {
                         coin_purchase_memo: {
                             address: '0x1234567890123456789012345678901234567890',
-                            amount: '250000000', // 2.5 * 10^8
+                            amount: '2.5 ETH',
                             coin_type: 60, // ethereum coin type
                             mac: 'macPurchase123',
                             address_n: [2147483692, 2147483648, 2147483648, 1, 0],
@@ -416,12 +417,13 @@ describe('signatureUtils', () => {
                 pathRefund: "m/44'/0'/0'/1/0",
                 nonce: 'nonce',
                 receiveSlip44: 60,
+                receiveDisplaySymbol: 'ETH',
             });
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('99999999999999'); // 999999.99999999 * 10^8
-                expect(result.memos[0].coin_purchase_memo?.amount).toBe('100000012345678'); // 1000000.12345678 * 10^8
+                expect(result.amount).toBe('99999999999999');
+                expect(result.memos[0].coin_purchase_memo?.amount).toBe('1000000.12345678 ETH');
             }
         });
 
@@ -462,12 +464,13 @@ describe('signatureUtils', () => {
                 pathRefund: "m/44'/0'/0'/1/0",
                 nonce: 'nonce',
                 receiveSlip44: 60,
+                receiveDisplaySymbol: 'ETH',
             });
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('1'); // 0.00000001 * 10^8
-                expect(result.memos[0].coin_purchase_memo?.amount).toBe('1'); // 0.00000001 * 10^8
+                expect(result.amount).toBe('1');
+                expect(result.memos[0].coin_purchase_memo?.amount).toBe('0.00000001 ETH');
             }
         });
     });

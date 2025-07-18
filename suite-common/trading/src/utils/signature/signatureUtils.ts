@@ -39,6 +39,7 @@ type TradingExchangeCreatePaymentRequestProps = {
     pathPurchase: string;
     nonce: string;
     receiveSlip44: number;
+    receiveDisplaySymbol: string;
 };
 
 export const tradingExchangeCreatePaymentRequest = ({
@@ -50,6 +51,7 @@ export const tradingExchangeCreatePaymentRequest = ({
     pathRefund,
     nonce,
     receiveSlip44,
+    receiveDisplaySymbol,
 }: TradingExchangeCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
@@ -64,25 +66,19 @@ export const tradingExchangeCreatePaymentRequest = ({
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
-    const receiveNetworkData = cryptoIdToNetworkAndContractAddress(trade.receive);
-
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
     const sendAmount = unitsToSubunits(
         asAmountUnit(new BigNumber(trade.sendStringAmount), sendNetworkSymbol),
         sendNetworkSymbol,
     ).toString();
 
-    const receiveNetworkSymbol = receiveNetworkData.network?.symbol ?? 'btc';
-    const receiveAmount = unitsToSubunits(
-        asAmountUnit(new BigNumber(trade.receiveStringAmount), receiveNetworkSymbol),
-        receiveNetworkSymbol,
-    ).toString();
+    const receiveAmount = `${trade.receiveStringAmount} ${receiveDisplaySymbol}`;
 
     const memos: PROTO.PaymentRequestMemo[] = [
         {
             coin_purchase_memo: {
                 address: trade.receiveAddress,
-                amount: Number(receiveAmount).toString(),
+                amount: receiveAmount,
                 coin_type: receiveSlip44,
                 mac: macPurchase,
                 address_n: validatePath(pathPurchase),
