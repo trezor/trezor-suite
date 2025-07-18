@@ -2,7 +2,8 @@ import { IntlShape } from 'react-intl';
 
 import { FormatNumberOptions } from '@formatjs/intl';
 
-import { BaseCurrencyAmount ,
+import {
+    BaseCurrencyAmount,
     asAmountUnit,
     asBaseCurrencyAmount,
     isBaseCurrencyWithSats,
