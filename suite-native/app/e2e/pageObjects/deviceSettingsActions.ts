@@ -47,12 +47,14 @@ class DeviceSettingsActions {
     }
 
     async redirectToDeviceAuthenticityScreen() {
-        await waitFor(redirectToDeviceAuthenticityScreenButton).toBeVisible().withTimeout(10000);
+        await scrollUntilVisible(redirectToDeviceAuthenticityScreenButton);
         await redirectToDeviceAuthenticityScreenButton.tap();
     }
 
     async tapEnablePinProtectionButton() {
-        await waitFor(element(by.id('@screen/PinProtection')));
+        await waitFor(element(by.id('@screen/PinProtection')))
+            .toBeVisible()
+            .withTimeout(10000);
 
         const enablePinProtectionButton = element(by.id('@device-pin-protection/enable-button'));
         await waitFor(enablePinProtectionButton).toBeVisible().withTimeout(10000);
@@ -72,10 +74,6 @@ class DeviceSettingsActions {
 
         await waitFor(disablePinProtectionButton).toBeVisible().withTimeout(10000);
         await disablePinProtectionButton.tap();
-    }
-
-    async scrollUntilCheckAuthenticityButtonIsVisible() {
-        await scrollUntilVisible(redirectToDeviceAuthenticityScreenButton);
     }
 
     async tapChangeDeviceNameButton() {
