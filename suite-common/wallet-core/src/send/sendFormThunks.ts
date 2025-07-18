@@ -457,15 +457,19 @@ export const signTransactionThunk = createThunk<
                 selectedAccount,
                 device,
             };
+            // TODO: slip24 - can be moved into thinkArguments when slip24 is enabled for all networks
+            const thunkArgumentsWithPaymentRequests = {
+                ...thunkArguments,
+                paymentRequests,
+            };
             if (networkType === 'bitcoin') {
                 response = await dispatch(
-                    signBitcoinSendFormTransactionThunk({
-                        ...thunkArguments,
-                        paymentRequests,
-                    }),
+                    signBitcoinSendFormTransactionThunk(thunkArgumentsWithPaymentRequests),
                 );
             } else if (networkType === 'ethereum') {
-                response = await dispatch(signEthereumSendFormTransactionThunk(thunkArguments));
+                response = await dispatch(
+                    signEthereumSendFormTransactionThunk(thunkArgumentsWithPaymentRequests),
+                );
             } else if (networkType === 'solana') {
                 response = await dispatch(signSolanaSendFormTransactionThunk(thunkArguments));
             } else if (['ripple', 'stellar'].includes(networkType)) {

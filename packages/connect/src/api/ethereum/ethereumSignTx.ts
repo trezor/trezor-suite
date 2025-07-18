@@ -134,6 +134,7 @@ export const ethereumSignTx = async (
     data?: string,
     tx_type?: number,
     definitions?: MessagesSchema.EthereumDefinitions,
+    payment_req?: PROTO.PaymentRequest,
 ) => {
     const length = data == null ? 0 : data.length / 2;
 
@@ -149,6 +150,7 @@ export const ethereumSignTx = async (
         value: stripLeadingZeroes(value),
         definitions,
         chunkify,
+        payment_req,
     };
 
     if (length !== 0) {
@@ -186,6 +188,7 @@ export const ethereumSignTxEIP1559 = async (
     data?: string,
     access_list?: EthereumAccessList[],
     definitions?: MessagesSchema.EthereumDefinitions,
+    payment_req?: PROTO.PaymentRequest,
 ) => {
     const length = data == null ? 0 : data.length / 2;
 
@@ -208,6 +211,7 @@ export const ethereumSignTxEIP1559 = async (
         })),
         definitions,
         chunkify,
+        payment_req,
     };
 
     const response = await typedCall('EthereumSignTxEIP1559', 'EthereumTxRequest', message);

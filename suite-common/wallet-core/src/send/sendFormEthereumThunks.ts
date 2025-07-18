@@ -308,7 +308,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, device },
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { dispatch, getState, extra, rejectWithValue },
     ) => {
         const {
@@ -344,6 +344,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
             gasPrice: precomposedTransaction.feePerByte,
             nonce,
+            payment_req: paymentRequests?.[0] ?? undefined,
         });
 
         const response = await TrezorConnect.ethereumSignTransaction({

@@ -6,6 +6,7 @@ import {
     AccountUtxo,
     ComposeOutput,
     FeeLevel,
+    PROTO,
     PrecomposedTransactionErrorCardano as PrecomposedTransactionCardanoConnectResponseError,
     PrecomposedTransactionFinalCardano as PrecomposedTransactionCardanoConnectResponseFinal,
     PrecomposedTransactionNonFinalCardano as PrecomposedTransactionCardanoConnectResponseNonFinal,
@@ -90,6 +91,7 @@ export type EthTransactionData = {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
     nonce: string;
+    payment_req?: PROTO.PaymentRequest;
 };
 
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;

@@ -80,9 +80,27 @@ export default class EthereumSignTransaction extends AbstractMethod<
         );
 
         if (isEIP1559) {
-            this.params = { path, network, type: 'eip1559', tx: strip(tx), chunkify };
+            this.params = {
+                path,
+                network,
+                type: 'eip1559',
+                tx: {
+                    ...strip(tx),
+                    payment_req: tx.payment_req,
+                },
+                chunkify,
+            };
         } else {
-            this.params = { path, network, type: 'legacy', tx: strip(tx), chunkify };
+            this.params = {
+                path,
+                network,
+                type: 'legacy',
+                tx: {
+                    ...strip(tx),
+                    payment_req: tx.payment_req,
+                },
+                chunkify,
+            };
         }
 
         // Since FW 2.4.3+ chainId will be required
@@ -212,6 +230,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.data,
                   tx.txType,
                   definitions,
+                  tx.payment_req,
               )
             : await helper.ethereumSignTxEIP1559(
                   this.device.getCommands().typedCall,
@@ -227,6 +246,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.data,
                   tx.accessList,
                   definitions,
+                  tx.payment_req,
               );
 
         const serializedTx = helper.serializeEthereumTx(tx, signature, isLegacy);
