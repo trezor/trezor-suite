@@ -309,7 +309,10 @@ export const NotificationRenderer = ({
             return success(render, notification, 'TR_THP_RESET_CREDENTIALS_SUCCESS');
         case 'sign-transaction-timeout':
             return error(render, notification, 'TR_SIGN_TRANSACTION_TIMEOUT');
-
+        case 'connect-popup-success':
+            return success(render, notification, 'TR_CONNECT_POPUP_SUCCESS', 'check', {
+                appName: notification.appName,
+            });
         default:
             return exhaustive(type);
     }

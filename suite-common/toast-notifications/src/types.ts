@@ -140,6 +140,10 @@ export type ToastPayload = (
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }
+    | {
+          type: 'connect-popup-success';
+          appName: string;
+      }
 ) &
     NotificationOptions;
 
