@@ -23,6 +23,7 @@ import {
     prepareDeviceReducer,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import TrezorConnect from '@trezor/connect';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -121,6 +122,7 @@ const fixtures: Fixture[] = [
             updateMissingTxFiatRatesThunk.fulfilled.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
+            walletConnectInitThunk.pending.type,
             SUITE.READY,
         ],
     },
@@ -166,6 +168,7 @@ const fixtures: Fixture[] = [
             ROUTER.LOCATION_CHANGE,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
+            walletConnectInitThunk.pending.type,
             SUITE.READY,
         ],
     },
@@ -209,6 +212,7 @@ const fixtures: Fixture[] = [
             ROUTER.LOCATION_CHANGE,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
+            walletConnectInitThunk.pending.type,
             SUITE.READY,
         ],
     },

@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { selectDevices } from '@suite-common/wallet-core';
-import { selectSessions } from '@suite-common/walletconnect';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
@@ -18,12 +15,7 @@ import { WalletConnectList } from './WalletConnectList';
 
 export const SettingsConnectedApps = () => {
     const dispatch = useDispatch();
-    const hasSupportedDevice =
-        useSelector(selectDevices).find(device => !hasBitcoinOnlyFirmware(device)) !== undefined;
-    const hasExistingWalletConnectSessions = useSelector(selectSessions).length > 0;
-    const wcFeatureFlag = useSelector(selectHasExperimentalFeature('walletconnect'));
     const connectFeatureFlag = useSelector(selectHasExperimentalFeature('trezor-connect-ws'));
-    const wcEnabled = wcFeatureFlag && (hasSupportedDevice || hasExistingWalletConnectSessions);
 
     const tabs = [
         {
@@ -31,7 +23,7 @@ export const SettingsConnectedApps = () => {
             icon: 'walletConnect' as const,
             title: <Translation id="TR_WALLETCONNECT" />,
             component: <WalletConnectList />,
-            isEnabled: wcEnabled,
+            isEnabled: true,
         },
         {
             id: 'trezor-connect',
@@ -57,6 +49,7 @@ export const SettingsConnectedApps = () => {
                         <SubTabs.Item
                             key={tab.id}
                             id={tab.id}
+                            data-testid={`@settings/connect-apps/tabs/${tab.id}`}
                             onClick={() => setActiveItemId(tab.id)}
                         >
                             <Row alignItems="center" gap={spacings.xs}>
@@ -66,9 +59,7 @@ export const SettingsConnectedApps = () => {
                         </SubTabs.Item>
                     ))}
                 </SubTabs>
-                {wcEnabled && (
-                    <WalletConnectButton handleOpened={() => setActiveItemId('walletconnect')} />
-                )}
+                <WalletConnectButton handleOpened={() => setActiveItemId('walletconnect')} />
             </Row>
             {tabs.find(tab => tab.id === activeItemdId)?.component}
         </Column>
