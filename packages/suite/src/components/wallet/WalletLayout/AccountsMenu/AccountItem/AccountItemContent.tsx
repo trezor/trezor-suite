@@ -75,23 +75,11 @@ const BaseCurrency = ({
             {isLoading ? (
                 <SkeletonRectangle animate={shouldAnimate} />
             ) : (
-                <BaseCurrencyAmountFormatter
-                    value={customFiatValue}
-                    currency={localCurrency}
-                    minimumFractionDigits={0}
-                    maximumFractionDigits={0}
-                />
+                <BaseCurrencyAmountFormatter value={customFiatValue} currency={localCurrency} />
             )}
         </HiddenPlaceholder>
     ) : (
-        <BaseCurrencyValue
-            amount={formattedBalance}
-            symbol={symbol}
-            fiatAmountFormatterOptions={{
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-            }}
-        >
+        <BaseCurrencyValue amount={formattedBalance} symbol={symbol}>
             {FiatValueRenderComponent}
         </BaseCurrencyValue>
     );
