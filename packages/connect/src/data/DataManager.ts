@@ -38,8 +38,8 @@ export class DataManager {
             ...this.assets.coinsEth,
         });
 
-        const firmwareReleaseConfig = await getFirmwareReleaseConfig();
-        await parseFirmwareReleaseConfig(firmwareReleaseConfig);
+        const {config, isRemote} = await getFirmwareReleaseConfig();
+        await parseFirmwareReleaseConfig(config, isRemote);
     }
 
     static getProtobufMessages() {

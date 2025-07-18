@@ -52,18 +52,20 @@ const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareUpdateSource, RemoteBaseInfo> = 
 };
 
 export const getOnlineFirmwareBaseUrl = () => {
-    const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
+    // TODO(karliatto): just dev while testing.
+    return FIRMWARE_REMOTE_BASE_URLS['test-unsigned'];
+    // const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
 
-    if (!firmwareUpdateSource) {
-        // If for some reason `firmwareUpdateSource` settings is not set we return production one.
-        return FIRMWARE_REMOTE_BASE_URLS['production'];
-    }
+    // if (!firmwareUpdateSource) {
+    //     // If for some reason `firmwareUpdateSource` settings is not set we return production one.
+    //     return FIRMWARE_REMOTE_BASE_URLS['production'];
+    // }
 
-    return FIRMWARE_REMOTE_BASE_URLS[firmwareUpdateSource];
+    // return FIRMWARE_REMOTE_BASE_URLS[firmwareUpdateSource];
 };
 
 // We use `bundledReleases` to know what are the binaries that are bundled so we do not need to download them if they are needed.
-const getBundledVersionByDeviceAndFwType = (
+const getBundledFirmwareVersion = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
 ) => {
@@ -81,7 +83,7 @@ const getBundledVersionByDeviceAndFwType = (
 };
 
 export const getBundledRelease = (deviceModel: DeviceModelInternal, firmwareType: FirmwareType) => {
-    const version = getBundledVersionByDeviceAndFwType(deviceModel, firmwareType);
+    const version = getBundledFirmwareVersion(deviceModel, firmwareType);
     const versionArray = versionUtils.tryParse(version);
     if (!versionArray) {
         throw new Error('There was error parsing bundled release.');
@@ -133,7 +135,9 @@ export const getReleaseByVersion = async (
     return await getOnlineReleaseByVersion(deviceModel, firmwareVersion, firmwareType);
 };
 
-export const parseFirmwareReleaseConfig = async (config: FirmwareReleaseConfig) => {
+export const parseFirmwareReleaseConfig = async (config: FirmwareReleaseConfig, isRemote: boolean) => {
+    // TODO(karliatto): if `isRemote` is false we should bundle it only from local ones.
+    // TODO(karliatto): if `isRemote` is true and fetching remotes fails we should use the local config with local releases.
     const releasePromises = Object.keys(config.releases).map(async deviceModel => {
         const modelKey = deviceModel as DeviceModelInternal;
         if (modelKey === DeviceModelInternal.UNKNOWN) {
@@ -171,6 +175,7 @@ export const parseFirmwareReleaseConfig = async (config: FirmwareReleaseConfig) 
         };
     });
 
+    // TODO(karliatto): if this fails we should be able to build the bundled firmware release config using only bundled releases JSON. 
     const resolvedReleases = await Promise.all(releasePromises);
 
     // Filter out any null results and populate the configuration
@@ -462,7 +467,7 @@ export const getFirmwareLocation = ({
         : firmwareVersion.join('.');
 
     const bundledBaseUrl = removeTrailingSlashes(DataManager.getSettings('binFilesBaseUrl'));
-    const bundledVersion = getBundledVersionByDeviceAndFwType(deviceModel, firmwareType);
+    const bundledVersion = getBundledFirmwareVersion(deviceModel, firmwareType);
 
     if (bundledBaseUrl && bundledVersion === versionString) {
         return {

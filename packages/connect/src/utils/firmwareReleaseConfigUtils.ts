@@ -73,14 +73,8 @@ const verifyFirmwareRelease = (releasesJws: string, isRemote: boolean) => {
             // Sanity check, local config should always be the hard-coded version.
             throw new Error(`Local firmware release config expected version ${VERSION}.`);
         }
-        if (localJws.sequence > decodedJws.payload.sequence) {
-            // If we fetch remote but local is newer than remote then we use local.
-            decodedJws = decodedJwsLocal;
-        }
-        const localConfigDate: Date = new Date(localJws.timestamp);
-        const remoteConfigDate: Date = new Date(decodedJws.payload.timestamp);
-        if (localConfigDate > remoteConfigDate) {
-            // If we fetch remote but local is newer than remote then we use local.
+        if (localJws.sequence >= decodedJws.payload.sequence) {
+            // If we fetch remote but local is newer or equal to remote then we use local.
             decodedJws = decodedJwsLocal;
         }
     }
@@ -110,9 +104,12 @@ const verifyFirmwareRelease = (releasesJws: string, isRemote: boolean) => {
 
 export const getFirmwareReleaseConfig = async () => {
     const { releasesJws, isRemote } = await getReleaseJWS();
-    const releases: FirmwareReleaseConfig = verifyFirmwareRelease(releasesJws, isRemote);
+    const config: FirmwareReleaseConfig = verifyFirmwareRelease(releasesJws, isRemote);
 
-    return releases;
+    return {
+        config,
+        isRemote
+    };
 };
 
 export const getOnlyLocalFirmwareReleaseConfig = (): FirmwareReleaseConfig =>
