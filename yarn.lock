@@ -12223,6 +12223,8 @@ __metadata:
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
     "@trezor/node-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    dotenv: "npm:^16.4.7"
     express: "npm:^5.1.0"
     uuid: "npm:^11.1.0"
     ws: "npm:^8.18.0"

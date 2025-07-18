@@ -1,7 +1,7 @@
+import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 

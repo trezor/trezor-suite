@@ -1,6 +1,6 @@
+import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
-import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 

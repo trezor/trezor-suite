@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
+import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+
 import { csvToJson } from '../../support/csvToJson';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
-import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
