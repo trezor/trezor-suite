@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { FormOptions, FormState, Output, Rate, TokenAddress } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
@@ -44,6 +44,7 @@ export const useSendFormFields = ({
 }: UseSendFormFieldsParams) => {
     const { shouldSendInSats, areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
     const currentRates = useSelector(selectCurrentFiatRates);
+    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
 
     const getCurrentFiatRate = useCallback(
         ({ currencyCode, tokenAddress }: GetCurrentRateParams) => {
@@ -140,15 +141,14 @@ export const useSendFormFields = ({
                 }
 
                 // 3. If BaseCurrency is BTC, and we display Sats, we need to convert it.
-                const baseCurrencyDisplay =
-                    baseCurrencyCode === 'btc' && areSatsDisplayed
-                        ? asBaseCurrencyAmount(
-                              unitsToSubunits({
-                                  value: asAmountUnit(baseCurrencyAmountUnit),
-                                  symbol: 'btc',
-                              }),
-                          )
-                        : baseCurrencyAmountUnit;
+                const baseCurrencyDisplay = isBaseCurrencyInSats
+                    ? asBaseCurrencyAmount(
+                          unitsToSubunits({
+                              value: asAmountUnit(baseCurrencyAmountUnit),
+                              symbol: 'btc',
+                          }),
+                      )
+                    : baseCurrencyAmountUnit;
 
                 // 4. We have to return this correctly rounded as this value is used in the NumberInput
                 const baseCurrencyDecimals = getDecimalsForBaseCurrency({
@@ -171,6 +171,7 @@ export const useSendFormFields = ({
             getValues,
             shouldSendInSats,
             network.symbol,
+            isBaseCurrencyInSats,
             areSatsDisplayed,
         ],
     );
@@ -194,15 +195,14 @@ export const useSendFormFields = ({
                     return null;
                 }
 
-                const baseCurrencyUnitAmount =
-                    baseCurrencyCode === 'btc' && areSatsDisplayed
-                        ? asBaseCurrencyAmount(
-                              subunitsToUnits({
-                                  value: asAmountSubunit(fiatAmountBigNumber),
-                                  symbol: 'btc',
-                              }),
-                          )
-                        : fiatAmountBigNumber;
+                const baseCurrencyUnitAmount = isBaseCurrencyInSats
+                    ? asBaseCurrencyAmount(
+                          subunitsToUnits({
+                              value: asAmountSubunit(fiatAmountBigNumber),
+                              symbol: 'btc',
+                          }),
+                      )
+                    : fiatAmountBigNumber;
 
                 // 2. `fromFiatCurrency` requires Amount in Unit (BTC, not Sats)
                 const cryptoAmount = fromBaseCurrencyToCryptoUnit({
@@ -233,7 +233,7 @@ export const useSendFormFields = ({
             calculateFiatFromAmountOrViceVersa,
             network.decimals,
             getValues,
-            areSatsDisplayed,
+            isBaseCurrencyInSats,
             shouldSendInSats,
         ],
     );

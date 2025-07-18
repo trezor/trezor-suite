@@ -4,9 +4,9 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRatesRootState,
     WalletSettingsRootState,
-    selectAreSatsAmountUnit,
     selectFiatRatesByFiatRateKey,
     selectIsAmountInSats,
+    selectIsBaseCurrencyInSats,
     selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
@@ -45,8 +45,7 @@ export const useCryptoFiatConverters = ({
     );
 
     const baseCurrencyCode = useSelector(selectLocalCurrency);
-    const isBtcInSats = useSelector(selectAreSatsAmountUnit);
-    const isBaseCurrencyAmountInSats = baseCurrencyCode === 'btc' && isBtcInSats;
+    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const fiatRateKey = getFiatRateKey(symbolHelper, baseCurrencyCode, tokenContract);
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
@@ -62,7 +61,7 @@ export const useCryptoFiatConverters = ({
     return {
         convertFiatToCrypto: (baseCurrencyAmount: BaseCurrencyAmount) => {
             // 1. If the Base Currency is in sats (BTC only), we first unify it to whole Unit
-            const baseCurrencyUnitAmount = isBaseCurrencyAmountInSats
+            const baseCurrencyUnitAmount = isBaseCurrencyInSats
                 ? asBaseCurrencyAmount(
                       subunitsToUnits({
                           value: asAmountSubunit(baseCurrencyAmount),
@@ -98,7 +97,7 @@ export const useCryptoFiatConverters = ({
             }
 
             // 2. If BaseUnits are Sats (BTC only), we have to convert it to sats
-            return isBaseCurrencyAmountInSats
+            return isBaseCurrencyInSats
                 ? asBaseCurrencyAmount(
                       unitsToSubunits({ value: asAmountUnit(baseCurrency), symbol: 'btc' }),
                   )

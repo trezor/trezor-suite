@@ -2,13 +2,14 @@ import { IntlShape } from 'react-intl';
 
 import { FormatNumberOptions } from '@formatjs/intl';
 
-import {
-    BaseCurrencyAmount,
+import { BaseCurrencyAmount ,
     asAmountUnit,
     asBaseCurrencyAmount,
+    isBaseCurrencyWithSats,
     redactNumericalSubstring,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -74,10 +75,13 @@ const handleBigNumberFormatting = (
 ) => {
     const { intl, baseCurrency, bitcoinAmountUnit } = config;
     const { currency: currencyFromContext } = dataContext;
-    const currency = currencyFromContext ?? baseCurrency;
+    const currency =
+        (currencyFromContext?.toLowerCase() !== undefined
+            ? (currencyFromContext as BaseCurrencyCode)
+            : undefined) ?? baseCurrency;
 
     const isSats =
-        currency.toLowerCase() === 'btc' && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+        isBaseCurrencyWithSats(currency) && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
 
     const formatParams: FormatParams = {
         intl,

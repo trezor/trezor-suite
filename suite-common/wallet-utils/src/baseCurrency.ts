@@ -11,6 +11,8 @@ export const asBaseCurrencyAmount = (value: BigNumber) => value as BaseCurrencyA
 
 export const BASE_CURRENCY_ZERO = asBaseCurrencyAmount(new BigNumber(0));
 
+export const isBaseCurrencyWithSats = (baseCurrency: BaseCurrencyCode) => baseCurrency === 'btc';
+
 type GetDecimalsForBaseCurrencyParams = {
     code: BaseCurrencyCode | '';
     areSatsDisplayed: boolean;
