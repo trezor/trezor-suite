@@ -10498,4 +10498,8 @@ export default defineMessages({
         id: 'TR_CONTRACT_APPROVE_TITLE',
         defaultMessage: 'Approve to',
     },
+    TR_CONNECT_POPUP_SUCCESS: {
+        id: 'TR_CONNECT_POPUP_SUCCESS',
+        defaultMessage: 'Success! {appName} request completed',
+    },
 } as const);

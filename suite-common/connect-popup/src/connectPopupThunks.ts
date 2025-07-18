@@ -2,6 +2,7 @@ import { AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { EventType, analytics } from '@suite-common/analytics';
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, { CallMethodParams } from '@trezor/connect';
@@ -124,6 +125,12 @@ export const connectPopupCallThunkInner = createThunk<
             }
             if (!postCallOngoing) {
                 dispatch(connectPopupActions.finishCall());
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'connect-popup-success',
+                        appName: source.manifest.appName,
+                    }),
+                );
             }
 
             analytics.report({
