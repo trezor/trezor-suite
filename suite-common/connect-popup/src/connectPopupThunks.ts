@@ -12,7 +12,7 @@ import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
-import { ConnectCallSource } from './connectPopupTypes';
+import { CALL_SOURCE_WALLETCONNECT, ConnectCallSource } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
@@ -73,7 +73,7 @@ export const connectPopupCallThunkInner = createThunk<
                     ),
             );
 
-            if (!isRemembered) {
+            if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
                 dispatch(extra.actions.lockDevice(true));
                 dispatch(connectPopupActions.requestPermissions());
                 await getPermissionDeferred(true).promise;
