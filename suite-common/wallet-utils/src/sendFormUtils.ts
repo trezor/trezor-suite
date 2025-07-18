@@ -163,6 +163,7 @@ export const prepareEthereumTransaction = (
         chainId: txInfo.chainId,
         nonce: numberToHex(txInfo.nonce),
         gasLimit: numberToHex(txInfo.gasLimit),
+        payment_req: txInfo.payment_req,
     };
 
     if (txInfo.maxFeePerGas) {

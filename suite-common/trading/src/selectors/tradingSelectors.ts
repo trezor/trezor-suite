@@ -1,7 +1,7 @@
 import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     DeviceReducerState,
@@ -612,8 +612,10 @@ export const selectTradingIsSlip24Allowed = createMemoizedSelector(
     ],
     (unavailableCapabilities, account, isSlip24Active) => {
         const isFirmwareVersionSlip24Compatible = !unavailableCapabilities?.['slip24'];
-        const isBitcoinLikeNetwork = account.networkType === 'bitcoin';
+        // TODO: slip24 - can be removed when slip24 is enabled for all networks
+        const supportedNetworks: NetworkType[] = ['bitcoin', 'ethereum'];
+        const isNetworkSupported = supportedNetworks.includes(account.networkType);
 
-        return isSlip24Active && isFirmwareVersionSlip24Compatible && isBitcoinLikeNetwork;
+        return isSlip24Active && isFirmwareVersionSlip24Compatible && isNetworkSupported;
     },
 );

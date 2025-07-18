@@ -1,5 +1,6 @@
 import { Static, Type } from '@trezor/schema-utils';
 
+import { PROTO } from '../../../constants';
 import { DerivationPath } from '../../params';
 
 // ethereumSignMessage
@@ -25,6 +26,7 @@ export const EthereumTransaction = Type.Object({
     data: Type.Optional(Type.String()),
     chainId: Type.Number(),
     txType: Type.Optional(Type.Number()),
+    payment_req: Type.Optional(PROTO.PaymentRequest),
 });
 
 export type EthereumAccessList = Static<typeof EthereumAccessList>;
@@ -45,6 +47,7 @@ export const EthereumTransactionEIP1559 = Type.Object({
     maxFeePerGas: Type.String(),
     maxPriorityFeePerGas: Type.String(),
     accessList: Type.Optional(Type.Array(EthereumAccessList)),
+    payment_req: Type.Optional(PROTO.PaymentRequest),
 });
 
 export type EthereumSignTransaction = Static<typeof EthereumSignTransaction>;

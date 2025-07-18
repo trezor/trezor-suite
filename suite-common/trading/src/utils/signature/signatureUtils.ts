@@ -82,7 +82,7 @@ export const tradingExchangeCreatePaymentRequest = ({
         {
             coin_purchase_memo: {
                 address: trade.receiveAddress,
-                amount: receiveAmount,
+                amount: Number(receiveAmount).toString(),
                 coin_type: receiveSlip44,
                 mac: macPurchase,
                 address_n: validatePath(pathPurchase),
