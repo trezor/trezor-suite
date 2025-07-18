@@ -1,5 +1,4 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -28,7 +27,6 @@ import type {
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
-import { cryptoIdToNetwork } from '../../utils';
 
 type FulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
 
@@ -36,7 +34,6 @@ export type RecomposeAndSignTxThunkProps = {
     account: Account;
     address: string;
     amount: string;
-    receiveCryptoId?: CryptoId;
     destinationTag?: string;
     ethereumDataHex?: string;
     recalculateCustomLimit?: boolean;
@@ -90,7 +87,6 @@ export const recomposeAndSignTxThunk = createThunk<
             account,
             address,
             amount,
-            receiveCryptoId,
             destinationTag,
             ethereumDataHex,
             recalculateCustomLimit,
@@ -107,12 +103,11 @@ export const recomposeAndSignTxThunk = createThunk<
         const network = getNetwork(account.symbol);
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
         const unavailableCapabilities = selectDeviceUnavailableCapabilities(getState());
-        const receiveNetwork = receiveCryptoId && cryptoIdToNetwork(receiveCryptoId);
+
         const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
             getState(),
             account,
             isSlip24Active,
-            receiveNetwork,
         );
         const isTransferEvmTxType = getEvmTransactionTextSignature(ethereumDataHex) === 'transfer';
 

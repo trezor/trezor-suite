@@ -123,6 +123,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             path: params.address_n,
             serializedPath: getSerializedPath(params.address_n),
             address: response.address,
+            mac: response.mac,
         };
     }
 
