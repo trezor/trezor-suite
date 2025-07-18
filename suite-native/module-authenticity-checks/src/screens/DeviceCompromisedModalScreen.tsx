@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { selectCompromisedDeviceFailedCheck } from '@suite-native/device';
 import { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -14,7 +17,9 @@ import { FirmwareAuthenticityCheckFailModalContent } from '../components/Firmwar
 export const DeviceCompromisedModalScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.DeviceCompromisedModal>) => {
-    const { failedCheck, onCloseRedirect } = route.params;
+    const { onClose } = route.params;
+
+    const failedCheck = useSelector(selectCompromisedDeviceFailedCheck);
 
     switch (failedCheck) {
         case 'device-authenticity':
@@ -22,7 +27,7 @@ export const DeviceCompromisedModalScreen = ({
         case 'entropy':
             return <EntropyCheckFailModalContent />;
         case 'firmware-authenticity':
-            return <FirmwareAuthenticityCheckFailModalContent onCloseRedirect={onCloseRedirect} />;
+            return <FirmwareAuthenticityCheckFailModalContent onClose={onClose} />;
         default:
             return exhaustive(failedCheck);
     }

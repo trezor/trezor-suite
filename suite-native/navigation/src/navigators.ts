@@ -307,8 +307,7 @@ export type RootStackParamList = {
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.BackupFailedModal]: undefined;
     [RootStackRoutes.DeviceCompromisedModal]: {
-        failedCheck: 'device-authenticity' | 'entropy' | 'firmware-authenticity';
-        onCloseRedirect: () => void;
+        onClose: () => void;
     };
     [RootStackRoutes.TradingWebView]: {
         closeCallbackUrl: string;

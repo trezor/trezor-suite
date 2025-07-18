@@ -1,5 +1,5 @@
 export * from './middlewares/deviceMiddleware';
-export * from './middlewares/deviceConnectionNavigationMiddleware';
+export * from './middlewares/deviceConnectionMiddleware';
 export * from './hooks/useHandleDeviceConnection';
 export * from './hooks/useDetectDeviceError';
 export * from './hooks/useDeviceConnectionRouteBlacklist';

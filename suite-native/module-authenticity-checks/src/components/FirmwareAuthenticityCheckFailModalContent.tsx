@@ -11,11 +11,11 @@ import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
 const supportUrlWithChat = `${TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL}#open-chat`;
 
 type FirmwareAuthenticityCheckFailModalContentProps = {
-    onCloseRedirect: () => void;
+    onClose: () => void;
 };
 
 export const FirmwareAuthenticityCheckFailModalContent = ({
-    onCloseRedirect,
+    onClose,
 }: FirmwareAuthenticityCheckFailModalContentProps) => {
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export const FirmwareAuthenticityCheckFailModalContent = ({
 
     const handleClose = () => {
         dismissCheck();
-        onCloseRedirect();
+        onClose();
     };
 
     const screenHeaderContent = <ScreenHeader closeActionType="close" closeAction={handleClose} />;
