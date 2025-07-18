@@ -27,8 +27,8 @@ import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './
 import { regional } from './regional';
 import {
     TradingAccountOptionsGroupOptionProps,
-    TradingExchangeType,
     TradingCountryCode,
+    TradingExchangeType,
     TradingParsedCryptoIdProps,
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
