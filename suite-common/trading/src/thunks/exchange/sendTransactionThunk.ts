@@ -114,7 +114,6 @@ export const sendTransactionThunk = createThunk<
                 setMaxOutputId,
                 isSlip24Active,
                 tradingFormState,
-                receiveCryptoId: selectedTrade.receive,
             }),
         );
 
