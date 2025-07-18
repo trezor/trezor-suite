@@ -81,8 +81,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         });
 
         test('Check device authenticity', async () => {
-            await onDeviceSettings.scrollUntilCheckAuthenticityButtonIsVisible();
-
             await onDeviceSettings.redirectToDeviceAuthenticityScreen();
 
             await onDeviceSettings.tapCheckAuthenticityButton();
