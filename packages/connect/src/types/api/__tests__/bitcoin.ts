@@ -253,7 +253,7 @@ export const signTransaction = async (api: TrezorConnect) => {
                     {
                         coin_purchase_memo: {
                             coin_type: 1, // CoinInfo.slip44
-                            amount: 1,
+                            amount: '1 BTC',
                             address_n: [],
                             address: 'PROTO.Address.address',
                             mac: 'PROTO.Address.mac',

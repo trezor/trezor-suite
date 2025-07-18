@@ -195,6 +195,13 @@ describe('createPaymentRequestsThunk', () => {
                 wallet: {
                     tradingNew: {
                         ...initialState,
+                        info: {
+                            coins: {
+                                litecoin: {
+                                    symbol: 'LTC',
+                                },
+                            },
+                        },
                         ...preloadedState,
                     },
                 },
@@ -229,7 +236,7 @@ describe('createPaymentRequestsThunk', () => {
                 {
                     coin_purchase_memo: {
                         address: '1ReceiveAddress123',
-                        amount: '5000000',
+                        amount: '0.05 LTC',
                         coin_type: 2,
                         mac: 'verified-mac',
                         address_n: [2147483692, 2147483648, 2147483648],

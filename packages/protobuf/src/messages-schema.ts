@@ -1352,7 +1352,7 @@ export type CoinPurchaseMemo = Static<typeof CoinPurchaseMemo>;
 export const CoinPurchaseMemo = Type.Object(
     {
         coin_type: Type.Number(),
-        amount: Type.Uint(),
+        amount: Type.String(),
         address: Type.String(),
         address_n: Type.Array(Type.Number()),
         mac: Type.String(),
