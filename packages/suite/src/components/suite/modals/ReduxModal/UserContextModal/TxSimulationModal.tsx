@@ -452,7 +452,9 @@ export const TxSimulationModal = () => {
                                                         )?.[1]?.name_tag,
                                                     },
                                                     {
-                                                        label: <Translation id="TR_ADDRESS" />,
+                                                        label: (
+                                                            <Translation id="TR_CONTRACT_ADDRESS" />
+                                                        ),
                                                         value: (
                                                             <TxAddress
                                                                 txAddress={targetContract}
