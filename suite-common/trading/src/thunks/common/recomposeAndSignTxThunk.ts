@@ -6,12 +6,13 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import {
     composeSendFormTransactionFeeLevelsThunk,
     selectConvertedNetworkFeeInfo,
-    selectDeviceUnavailableCapabilities,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Account, FormOptions, FormState, FormStateTrading } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    getEvmTransactionTextSignature,
+    isApprovalFlowSupported,
+    isEvmApprovalTx,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { Success, Unsuccessful } from '@trezor/connect';
@@ -102,14 +103,13 @@ export const recomposeAndSignTxThunk = createThunk<
         const options: FormOptions[] = ['broadcast'];
         const network = getNetwork(account.symbol);
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        const unavailableCapabilities = selectDeviceUnavailableCapabilities(getState());
+        const device = selectSelectedDevice(getState());
 
         const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
             getState(),
             account,
             isSlip24Active,
         );
-        const isTransferEvmTxType = getEvmTransactionTextSignature(ethereumDataHex) === 'transfer';
 
         if (!composed || !feeInfo) {
             return rejectWithValue({
@@ -123,8 +123,8 @@ export const recomposeAndSignTxThunk = createThunk<
         // Token is being used for approval transactions unless on firmware < 2.9.0.
         // Otherwise if ethereumDataHex is present, token is not used as details are in the ethereumDataHex.
         const shouldIncludeToken =
-            !!(ethereumDataHex && isTransferEvmTxType) ||
-            !(ethereumDataHex && !isTransferEvmTxType && unavailableCapabilities?.['evmApproval']);
+            !ethereumDataHex ||
+            (isApprovalFlowSupported(device) && isEvmApprovalTx(ethereumDataHex));
 
         const restrictedTradingFormState = getTradingFormStateAccordingRestriction(
             tradingFormState,
@@ -233,8 +233,8 @@ export const recomposeAndSignTxThunk = createThunk<
 
         /*
             SLIP-24 to achieve the consistent trade data
-            --- 
-            If the transaction is a trade of whole balance, we need to set the amount to 
+            ---
+            If the transaction is a trade of whole balance, we need to set the amount to
             the formState (displayed in the UI) and for the payment requests to
             ensure that the payment requests are created with the correct amount.
         */

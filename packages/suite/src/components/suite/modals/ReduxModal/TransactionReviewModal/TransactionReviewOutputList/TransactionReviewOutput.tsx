@@ -7,11 +7,13 @@ import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-comm
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
-import { findAccountsByAddress, isTestnet } from '@suite-common/wallet-utils';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import {
+    findAccountsByAddress,
+    isApprovalFlowSupported,
+    isTestnet,
+} from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { Translation } from 'src/components/suite';
 import { TransactionReviewOutputAssets } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
@@ -82,10 +84,7 @@ const getTranslationValues = (
     evmApprovalType?: Exclude<EvmTransactionPurpose, 'transfer'>,
     device?: TrezorDevice,
 ): Record<'value' | 'label', TranslationKey> | null => {
-    const firmwareVersion = getFirmwareVersion(device);
-    const isNewApproveFlowSupported = firmwareVersion && isNewerOrEqual(firmwareVersion, '2.9.0');
-
-    if (evmApprovalType && !isNewApproveFlowSupported) {
+    if (evmApprovalType && !isApprovalFlowSupported(device)) {
         return null;
     }
 
@@ -102,9 +101,10 @@ const getTranslationValues = (
 
 const getContractTitle = (
     networkType: NetworkType,
+    isApprovalFlowSupported: boolean,
     evmApprovalType?: Exclude<EvmTransactionPurpose, 'transfer'>,
 ): TranslationKey => {
-    if (evmApprovalType) {
+    if (evmApprovalType && isApprovalFlowSupported) {
         return evmApprovalType === 'approval'
             ? 'TR_CONTRACT_APPROVE_TITLE'
             : 'TR_CONTRACT_REVOKE_TITLE';
@@ -123,7 +123,11 @@ const getOutputTitle = (
     device?: TrezorDevice,
 ): ReactNode | undefined => {
     const translation = getTranslationValues(networkType, stakeType, evmApprovalType, device);
-    const contractTitle = getContractTitle(networkType, evmApprovalType);
+    const contractTitle = getContractTitle(
+        networkType,
+        isApprovalFlowSupported(device),
+        evmApprovalType,
+    );
 
     switch (type) {
         case 'locktime': {

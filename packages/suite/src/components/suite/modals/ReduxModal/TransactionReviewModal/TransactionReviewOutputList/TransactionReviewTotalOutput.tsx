@@ -10,6 +10,7 @@ import {
 import {
     getIsUpdatedEthereumSendFlow,
     getIsUpdatedSendFlow,
+    isApprovalFlowSupported,
     isEvmApprovalTx,
     isTestnet,
 } from '@suite-common/wallet-utils';
@@ -85,7 +86,8 @@ const getLines = (
             type: 'amount',
         };
 
-        return isUnknownStakingValue || isEvmApprovalTx(precomposedForm.ethereumDataHex)
+        return isUnknownStakingValue ||
+            (isEvmApprovalTx(precomposedForm.ethereumDataHex) && isApprovalFlowSupported(device))
             ? [feeLine]
             : [amountLine, feeLine];
     }

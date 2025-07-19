@@ -18,6 +18,7 @@ import { versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
+import { isApprovalFlowSupported as isApprovalSupported } from './deviceUtils';
 import { getEvmApprovalTxData, isEvmApprovalTx } from './ethUtils';
 import { getStakeType } from './ethereumStakingUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
@@ -251,8 +252,12 @@ const constructNewFlow = ({
     decreaseOutputId,
     account,
     precomposedForm,
+    isApprovalFlowSupported,
     isUpdatedEthereumSendFlow,
-}: ConstructOutputsParams & { isUpdatedEthereumSendFlow: boolean }): ReviewOutput[] => {
+}: ConstructOutputsParams & {
+    isUpdatedEthereumSendFlow: boolean;
+    isApprovalFlowSupported: boolean;
+}): ReviewOutput[] => {
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -296,7 +301,10 @@ const constructNewFlow = ({
         );
     }
 
-    if (precomposedForm.ethereumDataHex && !precomposedTx.token && !isEvmApproval) {
+    if (
+        (precomposedForm.ethereumDataHex && !precomposedTx.token && !isEvmApproval) ||
+        (precomposedForm.ethereumDataHex && isEvmApproval && !isApprovalFlowSupported)
+    ) {
         outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
@@ -375,7 +383,10 @@ const constructNewFlow = ({
                 if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana) {
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
-                } else if (precomposedForm.ethereumDataHex && !isEvmApproval) {
+                } else if (
+                    (precomposedForm.ethereumDataHex && !isEvmApproval) ||
+                    (isEvmApproval && !isApprovalFlowSupported)
+                ) {
                     // EVM contract call
                     outputs.push({ type: 'contract', value: o.address });
                 } else {
@@ -404,7 +415,7 @@ const constructNewFlow = ({
         });
     }
 
-    if (isEvmApproval && evmApprovalTxData && networkType === 'ethereum') {
+    if (evmApprovalTxData && networkType === 'ethereum' && isApprovalFlowSupported) {
         outputs.push({
             type: 'contract',
             value: EVM_SPENDER_LABELS[evmApprovalTxData.spender] || evmApprovalTxData.spender,
@@ -468,7 +479,11 @@ export const constructTransactionReviewOutputs = ({
         return constructOldFlow(params);
     }
 
-    return constructNewFlow({ isUpdatedEthereumSendFlow, ...params });
+    return constructNewFlow({
+        isUpdatedEthereumSendFlow,
+        isApprovalFlowSupported: isApprovalSupported(device),
+        ...params,
+    });
 };
 
 export const constructTransactionReviewOutputsOptional = ({
