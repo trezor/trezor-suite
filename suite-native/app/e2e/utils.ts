@@ -1,11 +1,12 @@
 import { expect as detoxExpect } from 'detox';
 import { resolveConfig } from 'detox/internals';
 
+import { LaunchArguments } from '@suite-native/config';
 import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const platform = device.getPlatform();
 
-const APP_LAUNCH_ARGS = {
+const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
     // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
     detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*"\\)',
@@ -13,6 +14,10 @@ const APP_LAUNCH_ARGS = {
     // Main loop synchronization is infinitely blocking iOS tests while is the graph displayed, so we need to disable it.
     // Not sure about the cause of it yet.
     DTXDisableMainRunLoopSync: platform === 'ios',
+    isConnectPopupEnabled: true,
+    isDebugKeysAllowed: true,
+    isTradingBuyEnabled: true,
+    isCheckBackupsEnabled: true,
 };
 
 export const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
@@ -27,13 +32,19 @@ const getExpoDeepLinkUrl = () => {
     return `exp+trezor-suite-debug://expo-development-client/?url=${expoLauncherUrl}`;
 };
 
-const openExpoDevClientApp = async ({ newInstance }: { newInstance: boolean }) => {
+const openExpoDevClientApp = async ({
+    newInstance,
+    launchArgs,
+}: {
+    newInstance: boolean;
+    launchArgs: LaunchArguments;
+}) => {
     const deepLinkUrl = getExpoDeepLinkUrl();
 
     if (platform === 'ios') {
         await device.launchApp({
             newInstance,
-            launchArgs: APP_LAUNCH_ARGS,
+            launchArgs,
         });
 
         await device.openURL({
@@ -43,7 +54,7 @@ const openExpoDevClientApp = async ({ newInstance }: { newInstance: boolean }) =
         await device.launchApp({
             newInstance,
             url: deepLinkUrl,
-            launchArgs: APP_LAUNCH_ARGS,
+            launchArgs,
         });
     }
 };
@@ -58,24 +69,35 @@ const isDebugTestBuild = async () => {
 
 // Inspired by Expo E2E detox-tests guide:
 // See more: https://docs.expo.dev/build-reference/e2e-tests/#e2eutilsopenappjs-new-file
-export const openApp = async ({ newInstance }: { newInstance: boolean }) => {
+export const openApp = async ({
+    newInstance,
+    args = {},
+}: {
+    newInstance: boolean;
+    args?: LaunchArguments;
+}) => {
+    const launchArgs = {
+        ...INITIAL_LAUNCH_ARGS,
+        ...args,
+    };
+
     if (await isDebugTestBuild()) {
-        await openExpoDevClientApp({ newInstance });
+        await openExpoDevClientApp({ newInstance, launchArgs });
     } else {
         await device.launchApp({
             newInstance,
-            launchArgs: APP_LAUNCH_ARGS,
+            launchArgs,
         });
     }
 };
 
-export const restartApp = async () => {
-    if (await isDebugTestBuild()) {
-        await device.reloadReactNative();
-    } else {
-        await device.terminateApp();
-        await openApp({ newInstance: false });
-    }
+type RestartAppProps = {
+    args?: LaunchArguments;
+};
+
+export const restartApp = async ({ args = {} }: RestartAppProps = {}) => {
+    await device.terminateApp();
+    await openApp({ newInstance: false, args });
 };
 
 export const scrollUntilVisible = async (

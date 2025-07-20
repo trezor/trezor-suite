@@ -117,7 +117,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceSettings.waitForHomescreenAndUninitializedTitle();
         });
 
-        test.skip('Device Check Backup', async () => {
+        test('Device Check Backup', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
 
             await onDeviceSettings.passCheckBackupFlow();
@@ -152,7 +152,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceManager.tapDeviceSettingsButton();
         });
 
-        test.skip('Device Check Backup with unsupported Device Model', async () => {
+        test('Device Check Backup with unsupported Device Model', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
 
             expect(

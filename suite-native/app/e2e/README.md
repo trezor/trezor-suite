@@ -46,6 +46,40 @@ To test the app in the release mode, you need to build the app with the release 
 
 Some tests use Trezor-user-env to simulate the Trezor device. To make these tests work locally, make sure that the trezor-user-env is up and running. To do so, follow the [trezor-user-env documentation](https://github.com/trezor/trezor-user-env/blob/master/README.md).
 
+## Working with Launch Arguments
+
+You can pass launch arguments to the app when running tests. This is useful for testing specific scenarios. To do so you can pass arbitrary arguments via `openApp` or `restartApp` util functions.
+
+```
+ await openApp({ newInstance: true, args: { myArg: 'myValue' } });
+```
+
+then you can access the arguments in the app using `launchArguments` constant from `@suite-native/config`
+
+```
+ import { launchArguments } from '@suite-native/config';
+
+ const myArg = launchArguments.myArg; // 'myValue'
+```
+
+### Adding a New Argument
+
+- Update type definitions in the [@suite-native/config/src/launch-arguments](../../config/src/launch-arguments.ts) to secure type safety.
+
+```
+
+export type LaunchArguments = {
+    myArg?: string;
+    // ... other arguments
+};
+```
+
+- if you want to set a default value for the argument, update `INITIAL_LAUNCH_ARGS` in [e2e util file](./utils.ts)
+
+## Working with E2E-Specific Files
+
+- If you need to render different components or screens in the E2E tests, use `e2e` suffix, e.g `MyComponent.e2e.tsx`. This file will be used only in the `E2E` tests and will not affect the production code.
+
 ## Mocking
 
 To make the tests as much standalone and independent on third party services as possible, we are mocking some parts of the app. The mocks are located in the `/mocks` folder.
