@@ -8,7 +8,7 @@ const insertAllSeed = async () => {
     }
 };
 
-const redirectToDeviceAuthenticityScreenButton = element(
+export const redirectToDeviceAuthenticityScreenButton = element(
     by.id('@device-authenticity/redirectToDeviceAuthenticityScreen'),
 );
 
