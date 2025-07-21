@@ -44,6 +44,7 @@ test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () =
             );
             await connectPermissionsModal.rememberCheckbox.click();
             await connectPermissionsModal.confirmButton.click();
+            await page.getByTestId('@connect-address-confirmation/confirm-button').click();
             await page.getByTestId('@connect-address-confirmation/close-button').click();
 
             // permission is already saved, user won't be prompted again for this app
@@ -51,6 +52,7 @@ test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () =
                 path: "m/44'/0'/0'/0/0",
                 coin: 'btc',
             });
+            await page.getByTestId('@connect-address-confirmation/confirm-button').click();
             await page.getByTestId('@connect-address-confirmation/close-button').click();
             await page.getByTestId(`@settings/connect-apps/0`).waitFor({ state: 'visible' });
             await page.getByTestId(`@settings/connect-apps/0/dropdown`).click();

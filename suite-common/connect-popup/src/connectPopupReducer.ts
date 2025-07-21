@@ -87,6 +87,7 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         ...state.activeCall,
                         state: 'address-confirmation',
                         addresses: payload.addresses,
+                        exported: payload.exported,
                     };
                 }
             })

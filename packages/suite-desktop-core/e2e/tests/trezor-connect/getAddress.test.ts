@@ -37,6 +37,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             await expect(connectPermissionsModal.loadingHeader).toHaveText(
                 'Export Bitcoin address',
             );
+            await page.getByTestId('@connect-address-confirmation/confirm-button').click();
             await page.getByTestId('@connect-address-confirmation/verify-button/0').click();
             await expect(
                 page.getByTestId('@connect-address-confirmation/verify-button/0'),
@@ -74,6 +75,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             await expect(connectPermissionsModal.loadingHeader).toHaveText(
                 'Export multiple Bitcoin addresses',
             );
+            await page.getByTestId('@connect-address-confirmation/confirm-button').click();
 
             // click on the second (last) address
             await page.getByTestId('@connect-address-confirmation/verify-button/1').click();
@@ -99,6 +101,8 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             });
 
             await connectPermissionsModal.confirmButton.click();
+            await page.getByTestId('@connect-address-confirmation/confirm-button').click();
+
             await expect(
                 page.getByTestId('@connect-address-confirmation/verify-button/0'),
             ).toBeDisabled();
