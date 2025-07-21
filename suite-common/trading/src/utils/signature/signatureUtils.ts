@@ -67,10 +67,10 @@ export const tradingExchangeCreatePaymentRequest = ({
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
-    const sendAmount = unitsToSubunits(
-        asAmountUnit(new BigNumber(trade.sendStringAmount), sendNetworkSymbol),
-        sendNetworkSymbol,
-    ).toString();
+    const sendAmount = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(trade.sendStringAmount)),
+        symbol: sendNetworkSymbol,
+    }).toString();
 
     const receiveAmount = `${trade.receiveStringAmount} ${receiveDisplaySymbol}`;
 
@@ -132,10 +132,10 @@ export const tradingSellCreatePaymentRequest = ({
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
 
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
-    const sendAmount = unitsToSubunits(
-        asAmountUnit(new BigNumber(trade.cryptoStringAmount), sendNetworkSymbol),
-        sendNetworkSymbol,
-    ).toString();
+    const sendAmount = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(trade.cryptoStringAmount)),
+        symbol: sendNetworkSymbol,
+    }).toString();
 
     const memos: PROTO.PaymentRequestMemo[] = [
         {
