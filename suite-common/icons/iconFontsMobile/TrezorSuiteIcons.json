@@ -127,13 +127,14 @@
     "arrowsClockwise": 61822,
     "arrowUpRight": 61823,
     "arrowUp": 61824,
-    "arrowURightDown": 61825,
-    "arrowSquareOut": 61826,
-    "arrowRight": 61827,
-    "arrowLineUpRight": 61828,
-    "arrowLineUp": 61829,
-    "arrowLineDown": 61830,
-    "arrowLeft": 61831,
-    "arrowDown": 61832,
-    "arrowCounterClockwise": 61833
+    "arrowUUpLeft": 61825,
+    "arrowURightDown": 61826,
+    "arrowSquareOut": 61827,
+    "arrowRight": 61828,
+    "arrowLineUpRight": 61829,
+    "arrowLineUp": 61830,
+    "arrowLineDown": 61831,
+    "arrowLeft": 61832,
+    "arrowDown": 61833,
+    "arrowCounterClockwise": 61834
 }

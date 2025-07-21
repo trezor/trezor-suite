@@ -26,6 +26,7 @@ const usedIcons = [
     'arrowUpRight',
     'arrowUpRight',
     'arrowURightDown',
+    'arrowUUpLeft',
     'arrowCounterClockwise',
     'article',
     'backspace',

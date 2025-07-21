@@ -1024,6 +1024,7 @@ export const en = {
                 },
                 toast: {
                     walletsEjected: 'Wallets ejected',
+                    walletEjected: 'Wallet ejected',
                     walletsWillBeEjected: 'Will be ejected after disconnecting Trezor',
                 },
             },
