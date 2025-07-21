@@ -2703,6 +2703,10 @@
                 "physical_button": {
                     "type": "DebugPhysicalButton",
                     "id": 8
+                },
+                "touch_event_type": {
+                    "type": "DebugTouchEventType",
+                    "id": 9
                 }
             },
             "nested": {
@@ -2726,6 +2730,13 @@
                         "LEFT_BTN": 0,
                         "MIDDLE_BTN": 1,
                         "RIGHT_BTN": 2
+                    }
+                },
+                "DebugTouchEventType": {
+                    "values": {
+                        "TOUCH_FULL_CLICK": 0,
+                        "TOUCH_START": 1,
+                        "TOUCH_END": 2
                     }
                 }
             }
@@ -3700,6 +3711,10 @@
                 "definitions": {
                     "type": "EthereumDefinitions",
                     "id": 4
+                },
+                "show_message_hash": {
+                    "type": "bytes",
+                    "id": 5
                 }
             }
         },

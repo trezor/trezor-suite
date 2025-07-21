@@ -76,13 +76,13 @@ export type ThpNfcTagTrezor = {
 };
 
 export type ThpCredentialRequest = {
-    host_static_pubkey: string;
+    host_static_public_key: string;
     autoconnect: boolean;
     credential?: string;
 };
 
 export type ThpCredentialResponse = {
-    trezor_static_pubkey: string;
+    trezor_static_public_key: string;
     credential: string;
 };
 

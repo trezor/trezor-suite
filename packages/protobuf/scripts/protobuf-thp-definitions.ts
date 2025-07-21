@@ -52,7 +52,7 @@ const buildThpTypes = (json: ReturnType<typeof buildDefinitions>) => {
 // MessageType is defined in common messages.proto file
 const modifyMessageType = (proto: ReturnType<typeof buildDefinitions>) => {
     const messageTypeEnum = proto.nested?.['MessageType'];
-    const messageTypeDuplicates = ['ButtonRequest', 'Cancel']; // exclude defined in both messages.proto and thp.proto
+    const messageTypeDuplicates = ['ButtonRequest', 'Cancel', 'ButtonAck']; // exclude defined in both messages.proto and thp.proto
     const thpMessageTypeEnum = proto.nested?.['ThpMessageType'];
     const thpMessageType = thpMessageTypeEnum?.values;
     if (messageTypeEnum && thpMessageType) {
