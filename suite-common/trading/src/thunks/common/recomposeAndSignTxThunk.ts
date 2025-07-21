@@ -243,10 +243,10 @@ export const recomposeAndSignTxThunk = createThunk<
             ? precomposedToSign.outputs[0].amount.toString()
             : undefined;
         const formattedMaxAmount = sendAmount
-            ? subunitsToUnits(
-                  asAmountSubunit(new BigNumber(sendAmount), account.symbol),
-                  account.symbol,
-              ).toString()
+            ? subunitsToUnits({
+                  value: asAmountSubunit(new BigNumber(sendAmount)),
+                  symbol: account.symbol,
+              }).toString()
             : undefined;
 
         const formStateUpdated: FormState = {
