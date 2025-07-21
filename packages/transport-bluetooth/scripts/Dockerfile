@@ -1,6 +1,6 @@
 # https://github.com/joseluisq/rust-linux-darwin-builder/blob/master/README.md
 
-FROM joseluisq/rust-linux-darwin-builder:1.75.0
+FROM joseluisq/rust-linux-darwin-builder:1.85.1
 
 RUN apt-get update && apt-get install -y mingw-w64
 
