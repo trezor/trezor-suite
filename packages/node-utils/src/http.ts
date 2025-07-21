@@ -94,12 +94,11 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     private routes: Route[] = [];
     private readonly emitter: TypedEmitter<BaseEvents> = this;
     private ports: number[] = [];
+    private port: number | undefined;
     private sockets: Record<number, net.Socket> = {};
 
     constructor({ logger, port, ports }: { logger: Log; port?: number; ports?: number[] }) {
         super();
-
-        // either try to take the first member of ports array
 
         if (ports && ports.length > 0) {
             this.ports = ports;
@@ -149,8 +148,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     }
 
     public start() {
-        const port = this.ports.shift();
-
+        const port = this.port || this.ports.shift();
         if (typeof port !== 'number') {
             // this should not happen
             throw new Error('There is no port available in ports array');
@@ -220,6 +218,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 if (address) {
                     this.emitter.emit('server/listening', address);
                 }
+                // even if server was instructed to start on a random port, take the real port and save it for future use (toggling server on and off)
+                this.port = address.port;
 
                 return resolve({ success: true, payload: address });
             });
