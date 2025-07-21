@@ -49,19 +49,21 @@ async fn stop_scanning(adapter: &Adapter) {
 pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) -> MethodResult {
     let adapter = manager.get_powered_adapter_or_die().await?;
 
-    // start or restart scanning process
-    // restart (stop/start) ensures that the event stream is really running in 
-    // workaround for https://github.com/deviceplug/btleplug/issues/255
-    if let Err(err) = start_scanning(&adapter).await {
-        return Err(err.into());
-    }
-
     if manager.is_scanning().await {
         info!("AdapterManager is already scanning");
         let devices = manager.get_devices().await;
         return Ok(WsResponsePayload::Peripherals(devices));
     } else {
         manager.set_scanning(true).await;
+    }
+
+    // let the_task = broadcast.get_abortable_task("get_abortable_task".to_string());
+    // start or restart scanning process
+    // restart (stop/start) ensures that the event stream is really running in
+    // workaround for https://github.com/deviceplug/btleplug/issues/255
+    // windows: calling adapter.stop_scan breaks current broadcast.subscribe stream
+    if let Err(err) = start_scanning(&adapter).await {
+        return Err(err.into());
     }
 
     // listen for Abort and AdapterStateChanged messages from the other threads
