@@ -40,7 +40,11 @@ export const TradingOfferExchangeSignData = () => {
     return (
         <Column gap={spacings.lg} flex="1">
             <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />}>
-                <AccountLabeling account={account} />
+                <AccountLabeling
+                    account={account}
+                    showAccountTypeBadge
+                    accountTypeBadgeSize="small"
+                />
             </InfoItem>
             <InfoItem
                 label={

@@ -31,7 +31,6 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { AccountLabel, Translation } from 'src/components/suite';
-import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
@@ -229,19 +228,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                         <CoinLogo type="token" symbol={account.symbol} size={24} />
                                     )}
                                     <AccountLabel
+                                        account={{
+                                            ...account,
+                                            accountLabel: accountLabels[account.key],
+                                        }}
                                         key={account.descriptor}
-                                        accountLabel={accountLabels[account.key]}
-                                        accountType={account.accountType}
-                                        networkType={account.networkType}
-                                        symbol={account.symbol}
-                                        index={account.index}
-                                        path={account.path}
-                                    />
-                                    <AccountTypeBadge
-                                        accountType={account.accountType}
-                                        networkType={account.networkType}
-                                        size="small"
-                                        onElevation
+                                        showAccountTypeBadge
+                                        accountTypeBadgeSize="small"
                                     />
                                 </Row>
                             )}

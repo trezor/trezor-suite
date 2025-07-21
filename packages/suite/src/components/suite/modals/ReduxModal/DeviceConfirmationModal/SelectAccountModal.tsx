@@ -138,12 +138,13 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                                     )}
                                                     {suiteAccount ? (
                                                         <AccountLabel
-                                                            accountLabel={
-                                                                suiteAccountLabels[suiteAccount.key]
-                                                            }
-                                                            accountType={suiteAccount.accountType}
-                                                            symbol={suiteAccount.symbol}
-                                                            index={suiteAccount.index}
+                                                            account={{
+                                                                ...suiteAccount,
+                                                                accountLabel:
+                                                                    suiteAccountLabels[
+                                                                        suiteAccount.key
+                                                                    ],
+                                                            }}
                                                         />
                                                     ) : (
                                                         account.label

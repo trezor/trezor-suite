@@ -36,7 +36,6 @@ export const Left = styled.div`
 interface AccountItemProps {
     account: Account;
     type: AccountItemType;
-    accountLabel?: string;
     isSelected: boolean;
     isGroupSelected?: boolean;
     formattedBalance: string;
@@ -54,7 +53,6 @@ export const AccountItem = forwardRef(
         {
             account,
             type,
-            accountLabel,
             isSelected,
             isGroupSelected,
             formattedBalance,
@@ -114,13 +112,9 @@ export const AccountItem = forwardRef(
                 handleHeaderClick={handleHeaderClick}
                 dataTestKey={dataTestKey}
                 type={type}
-                symbol={symbol}
                 account={account}
                 ref={ref}
                 customFiatValue={customFiatValue}
-                accountLabel={accountLabel}
-                accountType={accountType}
-                index={index}
                 formattedBalance={formattedBalance}
             />
         );

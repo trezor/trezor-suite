@@ -52,7 +52,7 @@ export const TransactionReviewSummary = ({
     ) as string;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useLocales();
-    const { symbol, accountType, index, networkType } = account;
+    const { symbol, networkType } = account;
     const network = networks[symbol];
     const fee = getFee(account.networkType, tx);
     const estimateTime = getEstimatedTime(networkType, rawFeeInfo, tx);
@@ -69,10 +69,12 @@ export const TransactionReviewSummary = ({
             <Row gap={spacings.xxs}>
                 <CoinLogo size={14} symbol={symbol} />
                 <AccountLabel
-                    accountLabel={accountLabel || account.accountLabel}
-                    accountType={accountType}
-                    symbol={symbol}
-                    index={index}
+                    account={{
+                        ...account,
+                        accountLabel: accountLabel || account.accountLabel,
+                    }}
+                    showAccountTypeBadge
+                    accountTypeBadgeSize="small"
                 />
             </Row>
 

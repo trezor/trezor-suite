@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 
-import type {
-    AccountType,
-    Bip43Path,
-    NetworkSymbol,
-    NetworkType,
-} from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
 import { BadgeSize, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -21,27 +16,18 @@ const TabularNums = styled.span`
 `;
 
 interface AccountLabelProps {
-    accountLabel?: string;
-    accountType: AccountType;
-    symbol: NetworkSymbol;
-    index?: number;
     showAccountTypeBadge?: boolean;
     accountTypeBadgeSize?: BadgeSize;
-    path?: Bip43Path;
-    networkType?: NetworkType;
+    account: Account;
 }
 
 export const AccountLabel = ({
-    accountLabel,
-    accountType = 'normal',
-    path,
-    networkType,
     showAccountTypeBadge,
     accountTypeBadgeSize = 'medium',
-    symbol,
-    index,
+    account,
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
+    const { symbol, accountType, index, path, networkType, accountLabel } = account;
 
     return (
         <Row gap={spacings.sm}>

@@ -97,12 +97,13 @@ export const SignMessageModal = ({
                                 <CoinLogo size={14} symbol={network.symbol} />
                                 {account ? (
                                     <AccountLabel
-                                        accountLabel={
-                                            accountLabels[account.key] || account.accountLabel
-                                        }
-                                        accountType={account.accountType}
-                                        symbol={account.symbol}
-                                        index={account.index}
+                                        account={{
+                                            ...account,
+                                            accountLabel:
+                                                accountLabels[account.key] || account.accountLabel,
+                                        }}
+                                        showAccountTypeBadge
+                                        accountTypeBadgeSize="small"
                                     />
                                 ) : (
                                     network.name

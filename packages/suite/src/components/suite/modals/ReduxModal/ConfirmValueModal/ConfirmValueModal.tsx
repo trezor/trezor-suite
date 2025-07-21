@@ -122,10 +122,12 @@ export const ConfirmValueModal = ({
                         <Row gap={spacings.xxs}>
                             <CoinLogo size={14} symbol={account.symbol} />
                             <AccountLabel
-                                accountLabel={accountLabel}
-                                accountType={account.accountType}
-                                symbol={account.symbol}
-                                index={account.index}
+                                account={{
+                                    ...account,
+                                    accountLabel,
+                                }}
+                                accountTypeBadgeSize="small"
+                                showAccountTypeBadge
                             />
                         </Row>
                     )

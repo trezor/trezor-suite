@@ -40,7 +40,6 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
 
 interface AccountItemsGroupProps {
     account: Account;
-    accountLabel?: string;
     selected: boolean;
     showStaking: boolean;
     tokens?: Account['tokens'];
@@ -49,7 +48,6 @@ interface AccountItemsGroupProps {
 
 export const AccountItemsGroup = ({
     account,
-    accountLabel,
     selected,
     showStaking,
     tokens,
@@ -80,7 +78,6 @@ export const AccountItemsGroup = ({
                         (routeName === 'wallet-index' ||
                             (routeName === 'wallet-staking' && !showStaking))
                     }
-                    accountLabel={accountLabel}
                     formattedBalance={account.formattedBalance}
                     isGroup
                     isGroupSelected={selected}
