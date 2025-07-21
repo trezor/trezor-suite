@@ -31,7 +31,7 @@ export const AutoEjectSwitch = () => {
     const onToggleAutoEject = () => {
         if (!isAutoEjectEnabled) {
             showToast({
-                variant: 'error',
+                variant: 'default',
                 message: isNoPhysicalDeviceConnected ? (
                     <Translation id="moduleSettings.viewOnly.autoEject.toast.walletsEjected" />
                 ) : (
