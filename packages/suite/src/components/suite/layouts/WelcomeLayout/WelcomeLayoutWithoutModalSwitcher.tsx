@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { selectBannerMessage } from '@suite-common/message-system';
 import {
     Column,
     ElevationDown,
@@ -12,11 +11,11 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
-import { Elevation, spacings, spacingsPx } from '@trezor/theme';
+import { Elevation, spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
-import { MessageSystemBanner } from 'src/components/suite/banners';
+import { SuiteBanners } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
@@ -71,7 +70,6 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
     children,
     hideSidebar,
 }: WelcomeLayoutWithoutModalSwitcherProps) => {
-    const bannerMessage = useSelector(selectBannerMessage);
     const theme = useSelector(state => state.suite.settings.theme);
 
     return (
@@ -90,19 +88,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                             </ElevationDown>
                         ) : null}
 
-                        <Right
-                            bannerSlot={
-                                bannerMessage && (
-                                    <MessageSystemBanner
-                                        message={bannerMessage}
-                                        margin={spacings.xs}
-                                        width="100%"
-                                    />
-                                )
-                            }
-                        >
-                            {children}
-                        </Right>
+                        <Right bannerSlot={<SuiteBanners fill />}>{children}</Right>
 
                         <GuideButton />
                         <GuideRouter />

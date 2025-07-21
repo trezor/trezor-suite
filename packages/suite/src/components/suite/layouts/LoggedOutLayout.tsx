@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react';
 
-import { ElevationContext, ElevationDown, ElevationUp, Modal } from '@trezor/components';
+import { Column, ElevationContext, ElevationDown, ElevationUp, Modal } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -10,6 +10,7 @@ import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutCon
 
 import { Metadata } from '../Metadata';
 import { LoggedOutSidebar } from './LoggedOutSidebar';
+import { SuiteBanners } from '../banners';
 import { DebugLegend } from './SuiteLayout/DebugLegend';
 import {
     AppWrapper,
@@ -49,16 +50,19 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                                     <ElevationDown>
                                         <LoggedOutSidebar />
                                     </ElevationDown>
-                                    <AppWrapper
-                                        data-testid="@app"
-                                        ref={scrollRef}
-                                        id="layout-scroll"
-                                    >
-                                        {layoutHeader}
-                                        <ElevationUp>
-                                            <ContentWrapper>{children}</ContentWrapper>
-                                        </ElevationUp>
-                                    </AppWrapper>
+                                    <Column width="100%" alignItems="center">
+                                        <SuiteBanners />
+                                        <AppWrapper
+                                            data-testid="@app"
+                                            ref={scrollRef}
+                                            id="layout-scroll"
+                                        >
+                                            {layoutHeader}
+                                            <ElevationUp>
+                                                <ContentWrapper>{children}</ContentWrapper>
+                                            </ElevationUp>
+                                        </AppWrapper>
+                                    </Column>
                                 </Columns>
                             </Body>
                         </LayoutContext.Provider>

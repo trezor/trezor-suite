@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { selectBannerMessage } from '@suite-common/message-system';
 import { Button, Row, variables } from '@trezor/components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
@@ -10,7 +9,7 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
-import { MessageSystemBanner } from 'src/components/suite/banners';
+import { SuiteBanners } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
@@ -166,15 +165,12 @@ type OnboardingLayoutProps = {
 };
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const bannerMessage = useSelector(selectBannerMessage);
     const theme = useSelector(state => state.suite.settings.theme);
 
     return (
         <TrafficLightOffset>
             <Wrapper>
-                {bannerMessage && (
-                    <MessageSystemBanner message={bannerMessage} margin={spacings.xs} />
-                )}
+                <SuiteBanners isOnboarding fill />
 
                 <Body data-testid="@onboarding-layout/body">
                     <ScrollingWrapper>
