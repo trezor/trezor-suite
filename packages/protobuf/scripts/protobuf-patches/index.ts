@@ -185,6 +185,7 @@ export const TYPE_PATCH = {
     'CardanoToken.mint_amount': SINT_TYPE,
     'CardanoNativeScript.invalid_before': UINT_TYPE,
     'CardanoNativeScript.invalid_hereafter': UINT_TYPE,
+    'CoinPurchaseMemo.amount': 'string',
     'EosAsset.symbol': 'string',
     'EosPermissionLevel.actor': 'string',
     'EosPermissionLevel.permission': 'string',
