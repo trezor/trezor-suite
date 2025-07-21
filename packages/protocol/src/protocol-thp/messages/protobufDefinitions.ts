@@ -50,14 +50,14 @@ export const getProtobufDefinitions = () => ({
     ThpNfcTagTrezor: { fields: { tag: { rule: 'required', type: 'bytes', id: 1 } } },
     ThpCredentialRequest: {
         fields: {
-            host_static_pubkey: { rule: 'required', type: 'bytes', id: 1 },
+            host_static_public_key: { rule: 'required', type: 'bytes', id: 1 },
             autoconnect: { type: 'bool', id: 2, options: { default: false } },
             credential: { type: 'bytes', id: 3 },
         },
     },
     ThpCredentialResponse: {
         fields: {
-            trezor_static_pubkey: { rule: 'required', type: 'bytes', id: 1 },
+            trezor_static_public_key: { rule: 'required', type: 'bytes', id: 1 },
             credential: { rule: 'required', type: 'bytes', id: 2 },
         },
     },

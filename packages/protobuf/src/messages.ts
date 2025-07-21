@@ -984,6 +984,12 @@ export enum DebugPhysicalButton {
     RIGHT_BTN = 2,
 }
 
+export enum DebugTouchEventType {
+    TOUCH_FULL_CLICK = 0,
+    TOUCH_START = 1,
+    TOUCH_END = 2,
+}
+
 export enum DebugWaitType {
     IMMEDIATE = 0,
     NEXT_LAYOUT = 1,
@@ -1236,6 +1242,7 @@ export type EthereumSignTypedData = {
     primary_type: string;
     metamask_v4_compat?: boolean;
     definitions?: EthereumDefinitions;
+    show_message_hash?: string;
 };
 
 export type EthereumTypedDataStructRequest = {
