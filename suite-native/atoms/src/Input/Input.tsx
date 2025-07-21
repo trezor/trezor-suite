@@ -6,6 +6,7 @@ import {
     TextInputFocusEventData,
     TextInputProps,
 } from 'react-native';
+import { TextInput as GHTextInput } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
     FadeIn,
@@ -16,6 +17,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { D, G, S } from '@mobily/ts-belt';
 import { RequireOneOrNone } from 'type-fest';
 
@@ -42,9 +44,12 @@ export type InputProps = TextInputProps &
             rightIcon?: ReactNode;
             elevation?: SurfaceElevation;
             keepPlaceholderOnFocus?: boolean;
+            asBottomSheetInput?: boolean;
         },
         'label' | 'placeholder'
     >;
+
+export type InputType = TextInput | GHTextInput;
 
 const INPUT_VERTICAL_PADDING =
     Platform.OS == 'android' ? nativeSpacings.sp16 - 2 : nativeSpacings.sp16;
@@ -250,6 +255,7 @@ export const Input = forwardRef<TextInput, InputProps>(
             hasWarning = false,
             elevation = '0',
             keepPlaceholderOnFocus = false,
+            asBottomSheetInput = false,
             ...props
         }: InputProps,
         ref,
@@ -265,6 +271,8 @@ export const Input = forwardRef<TextInput, InputProps>(
         const { animatedInputLabelStyle } = useInputLabelAnimationStyles({
             isLabelMinimized,
         });
+        // BottomSheetTextInput allows to avoid keyboard by expanding BottomSheet
+        const InputComponent = asBottomSheetInput ? BottomSheetTextInput : TextInput;
 
         const handleOnFocus = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
             setIsFocused(true);
@@ -329,8 +337,8 @@ export const Input = forwardRef<TextInput, InputProps>(
                         </Animated.View>
                     )}
                     <Box flexDirection="row" alignItems="center">
-                        <TextInput
-                            ref={ref}
+                        <InputComponent
+                            ref={ref as any}
                             style={[
                                 applyStyle(inputStyle, {
                                     isLabelDisplayed,

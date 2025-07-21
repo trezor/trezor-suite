@@ -1,5 +1,5 @@
 import { RefObject } from 'react';
-import { TextInput, TextInputProps } from 'react-native';
+import { TextInputProps } from 'react-native';
 import { SharedValue } from 'react-native-reanimated';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -10,6 +10,7 @@ import {
     ReviewOutputState,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { InputType } from '@suite-native/atoms';
 import { Utxo } from '@trezor/blockchain-link-types';
 
 export type StatefulReviewOutput = ReviewOutput & { state: ReviewOutputState };
@@ -19,7 +20,7 @@ export type NativeSupportedFeeLevel = Exclude<FeeLevelLabel, 'low'>;
 export type SendAmountInputProps = {
     recipientIndex: number;
     symbol: NetworkSymbol;
-    inputRef: RefObject<TextInput | null>;
+    inputRef: RefObject<InputType | null>;
     scaleValue: SharedValue<number>;
     translateValue: SharedValue<number>;
     accountKey?: AccountKey;

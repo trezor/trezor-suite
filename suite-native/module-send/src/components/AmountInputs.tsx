@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, { LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -7,7 +7,7 @@ import { useRoute } from '@react-navigation/native';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { HStack, InputType, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -58,13 +58,13 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
     const [isCryptoSelected, setIsCryptoSelected] = useState(true);
     const amountInputsWrapperRef = useRef<View>(null);
 
-    const cryptoRef = useRef<TextInput | null>(null);
+    const cryptoRef = useRef<InputType | null>(null);
     const cryptoScale = useSharedValue(SCALE_FOCUSED);
     const cryptoTranslateY = useSharedValue(TRANSLATE_Y_FOCUSED);
 
     const fiatScale = useSharedValue(SCALE_UNFOCUSED);
     const fiatTranslateY = useSharedValue(TRANSLATE_Y_UNFOCUSED);
-    const fiatRef = useRef<TextInput | null>(null);
+    const fiatRef = useRef<InputType | null>(null);
 
     const handleSwitchInputs = () => {
         if (isCryptoSelected) {

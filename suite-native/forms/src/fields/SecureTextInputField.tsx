@@ -1,8 +1,7 @@
 import { forwardRef, useState } from 'react';
 import { Pressable } from 'react-native';
 
-import { TextInput } from 'react-native/types';
-
+import { InputType } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 
 import { FieldProps, TextInputField } from './TextInputField';
@@ -22,7 +21,7 @@ const ToggleSecureTextIcon = ({ onPress, isTextHidden }: ToggleSecureTextIconPro
     );
 };
 
-export const SecureTextInputField = forwardRef<TextInput, FieldProps>(
+export const SecureTextInputField = forwardRef<InputType, FieldProps>(
     ({ ...textInputFieldProps }, ref) => {
         const [isTextHidden, setIsTextHidden] = useState(true);
 
