@@ -1,21 +1,13 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    ConnectDeviceSettings,
-    DeviceRootState,
-    deviceActions,
-    selectDeviceLabelOrNameById,
-    selectHasRunningDiscovery,
-} from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
-import { Button, HStack, Loader, Text } from '@suite-native/atoms';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { HStack, Loader, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { setViewOnlyCancelationTimestamp } from '@suite-native/settings';
-import { useToast } from '@suite-native/toasts';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { WalletRememberModeIconButton } from './WalletRememberModeIconButton';
 
 type WalletRowProps = {
     device: TrezorDevice;
@@ -29,14 +21,8 @@ const walletRowStyle = prepareNativeStyle(utils => ({
 }));
 
 export const WalletRow = ({ device }: WalletRowProps) => {
-    const dispatch = useDispatch();
-    const { showAlert, hideAlert } = useAlert();
-    const { showToast } = useToast();
     const { applyStyle } = useNativeStyles();
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const deviceLabel = useSelector((state: DeviceRootState) =>
-        selectDeviceLabelOrNameById(state, device?.id),
-    );
 
     const walletNameLabel = device.useEmptyPassphrase ? (
         <Translation id="moduleSettings.viewOnly.wallet.standard" />
@@ -47,67 +33,6 @@ export const WalletRow = ({ device }: WalletRowProps) => {
         />
     );
 
-    const toggleViewOnly = () => {
-        const toastTranslationId =
-            (device.remember ?? false)
-                ? 'moduleSettings.viewOnly.toast.disabled'
-                : 'moduleSettings.viewOnly.toast.enabled';
-        showToast({
-            variant: 'default',
-            message: <Translation id={toastTranslationId} />,
-            icon: 'check',
-        });
-
-        analytics.report({
-            type: EventType.ViewOnlyChange,
-            payload: { enabled: !device.remember, origin: 'settingsToggle' },
-        });
-
-        if (device.remember) {
-            // if user disables view-only here, save the timestamp of the cancelation not to promote it later
-            dispatch(setViewOnlyCancelationTimestamp(new Date().getTime()));
-        }
-
-        if (!device.connected && device.remember) {
-            const settings: ConnectDeviceSettings = {
-                defaultWalletLoading: 'standard',
-            };
-
-            // disconnected device, view-only is being disabled so it can be forgotten
-            dispatch(deviceActions.forgetDevice({ device, settings }));
-        } else {
-            // device is connected or become remembered
-            dispatch(deviceActions.rememberDevice({ device, remember: !device.remember }));
-        }
-    };
-
-    const handleDisableViewOnly = () => {
-        showAlert({
-            title: (
-                <Translation
-                    id="moduleSettings.viewOnly.disableDialog.title"
-                    values={{ name: walletNameLabel }}
-                />
-            ),
-            description: (
-                <Translation
-                    id="moduleSettings.viewOnly.disableDialog.subtitle"
-                    values={{ device: deviceLabel }}
-                />
-            ),
-            primaryButtonTitle: (
-                <Translation id="moduleSettings.viewOnly.disableDialog.buttons.primary" />
-            ),
-            onPressPrimaryButton: toggleViewOnly,
-            primaryButtonVariant: 'redBold',
-            secondaryButtonTitle: (
-                <Translation id="moduleSettings.viewOnly.disableDialog.buttons.secondary" />
-            ),
-            onPressSecondaryButton: hideAlert,
-            secondaryButtonVariant: 'redElevation0',
-        });
-    };
-
     const showToggleButton = device.remember || !hasDiscovery;
 
     return (
@@ -117,20 +42,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
                 <Text variant="callout">{walletNameLabel}</Text>
             </HStack>
             {showToggleButton ? (
-                <Button
-                    size="extraSmall"
-                    colorScheme={device.remember ? 'redElevation0' : 'primary'}
-                    onPress={() => (device.remember ? handleDisableViewOnly() : toggleViewOnly())}
-                    testID={`@settings/view-only/toggle-button/${device.features?.label}/${device.walletNumber ?? 0}`}
-                >
-                    <Translation
-                        id={
-                            device.remember
-                                ? 'moduleSettings.viewOnly.button.disable'
-                                : 'moduleSettings.viewOnly.button.enable'
-                        }
-                    />
-                </Button>
+                <WalletRememberModeIconButton device={device} walletNameLabel={walletNameLabel} />
             ) : (
                 <Loader size="small" />
             )}
