@@ -39,8 +39,8 @@ describe('data/thpSettings', () => {
             manifest,
             thp: {
                 knownCredentials: [
-                    { credential: '0000', trezor_static_pubkey: '1111', autoconnect: true },
-                    { credential: '0101', trezor_static_pubkey: '0202' },
+                    { credential: '0000', trezor_static_public_key: '1111', autoconnect: true },
+                    { credential: '0101', trezor_static_public_key: '0202' },
                 ],
                 pairingMethods,
             },
@@ -49,8 +49,8 @@ describe('data/thpSettings', () => {
             hostName,
             pairingMethods,
             knownCredentials: [
-                { credential: '0000', trezor_static_pubkey: '1111', autoconnect: true },
-                { credential: '0101', trezor_static_pubkey: '0202' },
+                { credential: '0000', trezor_static_public_key: '1111', autoconnect: true },
+                { credential: '0101', trezor_static_public_key: '0202' },
             ],
         });
 
@@ -79,7 +79,7 @@ describe('data/thpSettings', () => {
                     // @ts-expect-error
                     { credential: 'aa' },
                     // @ts-expect-error
-                    { trezor_static_pubkey: 'aa' },
+                    { trezor_static_public_key: 'aa' },
                     // @ts-expect-error
                     null,
                 ],

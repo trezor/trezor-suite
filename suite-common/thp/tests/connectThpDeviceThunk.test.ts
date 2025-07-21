@@ -15,14 +15,14 @@ const thpCredential1: ThpSuiteCredentials = {
     connectionCounter: 0,
     credential: 'credential-1',
     autoconnect: false,
-    trezor_static_pubkey: 'pubkey-1',
+    trezor_static_public_key: 'pubkey-1',
 };
 
 const thpCredential2: ThpSuiteCredentials = {
     connectionCounter: 0,
     credential: 'credential-2',
     autoconnect: false,
-    trezor_static_pubkey: 'pubkey-2',
+    trezor_static_public_key: 'pubkey-2',
 };
 
 const initialThpState: ThpState = {

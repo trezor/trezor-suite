@@ -17,7 +17,7 @@ const initialState: ThpState = {
 const createCredential = (credential: string): ThpSuiteCredentials => ({
     credential,
     connectionCounter: 0,
-    trezor_static_pubkey: '',
+    trezor_static_public_key: '',
     autoconnect: false,
 });
 
