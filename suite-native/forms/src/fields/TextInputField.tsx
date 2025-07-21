@@ -1,9 +1,8 @@
 import { forwardRef } from 'react';
 
-import { TextInput } from 'react-native/types';
 import { RequireOneOrNone } from 'type-fest';
 
-import { Input, InputProps, InputWrapper, InputWrapperProps } from '@suite-native/atoms';
+import { Input, InputProps, InputType, InputWrapper, InputWrapperProps } from '@suite-native/atoms';
 
 import { useField } from '../hooks/useField';
 import { FieldName } from '../types';
@@ -27,7 +26,7 @@ export type FieldProps = AllowedTextInputFieldProps &
         'label' | 'placeholder'
     >;
 
-export const TextInputField = forwardRef<TextInput, FieldProps>(
+export const TextInputField = forwardRef<InputType, FieldProps>(
     (
         { name, hint, onBlur, defaultValue = '', valueTransformer, onChangeText, ...otherProps },
         ref,

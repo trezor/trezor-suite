@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
 
 import {
     Badge,
@@ -15,6 +15,7 @@ import {
     IconButton,
     InlineAlertBox,
     Input,
+    InputType,
     InputWrapper,
     NumPadButton,
     PriceChangeBadge,
@@ -67,7 +68,7 @@ export const DemoScreen = () => {
     const [isCheckBox4Checked, setIsCheckBox4Checked] = useState(true);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
-    const demoInputRef = useRef<TextInput | null>(null);
+    const demoInputRef = useRef<InputType | null>(null);
 
     const buttonColorSchemes = [
         'primary',

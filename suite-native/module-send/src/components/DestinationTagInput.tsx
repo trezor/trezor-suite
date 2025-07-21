@@ -1,9 +1,16 @@
 import { useRef, useState } from 'react';
-import { TextInput } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
-import { AnimatedVStack, HStack, InlineAlertBox, Switch, Text, VStack } from '@suite-native/atoms';
+import {
+    AnimatedVStack,
+    HStack,
+    InlineAlertBox,
+    InputType,
+    Switch,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { integerTransformer } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
@@ -30,7 +37,7 @@ interface DestinationTagInputProps {
 }
 
 export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps) => {
-    const inputRef = useRef<TextInput | null>(null);
+    const inputRef = useRef<InputType | null>(null);
     const { applyStyle } = useNativeStyles();
 
     const [isInputDisplayed, setIsInputDisplayed] = useState(true);

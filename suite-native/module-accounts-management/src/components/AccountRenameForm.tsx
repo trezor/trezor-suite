@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TextInput } from 'react-native/types';
-
 import {
     AccountsRootState,
     accountsActions,
@@ -15,7 +13,7 @@ import {
     MAX_ACCOUNT_LABEL_LENGTH,
     useAccountLabelForm,
 } from '@suite-native/accounts';
-import { Box, Button, VStack } from '@suite-native/atoms';
+import { Box, Button, InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -30,7 +28,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<InputType>(null);
 
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
