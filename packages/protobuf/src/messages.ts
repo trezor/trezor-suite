@@ -900,7 +900,7 @@ export type RefundMemo = {
 
 export type CoinPurchaseMemo = {
     coin_type: number;
-    amount: UintType;
+    amount: string;
     address: string;
     address_n: number[];
     mac: string;

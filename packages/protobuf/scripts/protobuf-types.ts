@@ -109,7 +109,7 @@ const parseMessage = (
             // find patch for "type"
             let type = TYPE_PATCH[fieldKey] || FIELD_TYPES[field.type || ''] || field.type;
             // automatically convert all amount and fee fields to UINT_TYPE
-            if (['amount', 'fee'].includes(fieldName)) {
+            if (!TYPE_PATCH[fieldKey] && ['amount', 'fee'].includes(fieldName)) {
                 type = UINT_TYPE;
             }
             // array
