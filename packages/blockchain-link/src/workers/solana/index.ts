@@ -99,7 +99,7 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
-    fullHistory = true,
+    fullHistory = false,
 ) => {
     let lastSignature: SignatureWithSlot | undefined;
     let keepFetching = true;
