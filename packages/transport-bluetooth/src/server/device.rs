@@ -1,4 +1,7 @@
-use crate::server::{platform, utils};
+use crate::server::{
+    platform::{BluetoothDevice, PlatformDevice},
+    utils,
+};
 use btleplug::{
     api::{Peripheral as _, PeripheralProperties},
     platform::Peripheral,
@@ -135,13 +138,13 @@ impl TrezorDevice {
         };
         let discovery_timestamp = utils::get_timestamp();
         let paired = match is_known {
-            false => platform::is_device_paired(&peripheral)
+            false => BluetoothDevice::is_paired(&peripheral)
                 .await
                 .unwrap_or(false),
             true => true,
         };
 
-        let address = platform::get_device_address(peripheral);
+        let address = BluetoothDevice::get_address(peripheral);
 
         info!(
             "create TrezorDevice known: {is_known}, id: {id}, address: {address}, manufacturer_data: {manufacturer_data:?}"

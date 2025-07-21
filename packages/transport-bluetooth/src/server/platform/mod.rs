@@ -1,14 +1,22 @@
+use btleplug::platform::Peripheral;
+
+pub trait PlatformDevice {
+    async fn is_paired(peripheral: &Peripheral) -> Result<bool, Box<dyn std::error::Error>>;
+
+    fn get_address(peripheral: Peripheral) -> String;
+}
+
 #[cfg(target_os = "linux")]
-mod platform_linux;
+mod linux;
 #[cfg(target_os = "linux")]
-pub use self::platform_linux::{get_device_address, is_device_paired};
+pub type BluetoothDevice = self::linux::LinuxDevice;
 
 #[cfg(target_os = "macos")]
-mod platform_macos;
+mod macos;
 #[cfg(target_os = "macos")]
-pub use self::platform_macos::{get_device_address, is_device_paired};
+pub type BluetoothDevice = self::macos::MacosDevice;
 
 #[cfg(target_os = "windows")]
-mod platform_windows;
+mod windows;
 #[cfg(target_os = "windows")]
-pub use self::platform_windows::{get_device_address, is_device_paired};
+pub type BluetoothDevice = self::windows::WindowsDevice;
