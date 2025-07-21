@@ -28,9 +28,9 @@ import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 
-const Container = styled.div<{ $isVisible?: boolean }>`
+const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
-    max-width: ${MAX_CONTENT_WIDTH};
+    max-width: ${({ $fill }) => ($fill ? 'none' : MAX_CONTENT_WIDTH)};
     padding: ${spacingsPx.sm} ${spacingsPx.md};
     display: flex;
     flex-direction: column;
@@ -38,7 +38,12 @@ const Container = styled.div<{ $isVisible?: boolean }>`
     position: relative; /* because it must be on the top of the draggable area on Mac */
 `;
 
-export const SuiteBanners = () => {
+type SuiteBannersProps = {
+    isOnboarding?: boolean;
+    fill?: boolean;
+};
+
+export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
     const device = useSelector(selectSelectedDevice);
     const isOnline = useSelector(state => state.suite.online);
@@ -53,6 +58,16 @@ export const SuiteBanners = () => {
     useEffect(() => {
         setSafetyChecksDismissed(false);
     }, [device?.features?.safety_checks]);
+
+    if (isOnboarding) {
+        if (isOnboarding) {
+            return bannerMessage ? (
+                <Container $fill={fill}>
+                    <MessageSystemBanner message={bannerMessage} />
+                </Container>
+            ) : null;
+        }
+    }
 
     let banner = null;
     let priority = 0;
@@ -95,7 +110,7 @@ export const SuiteBanners = () => {
     if (!isBannerVisible) return null;
 
     return (
-        <Container>
+        <Container $fill={fill}>
             {isMessageSystemBannerVisible && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             {!isOnline && <NoConnectionBanner />}
