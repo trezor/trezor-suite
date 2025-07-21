@@ -2,6 +2,7 @@ import TrezorConnect, { Address, SolanaPublicKey } from '@trezor/connect';
 import { HDNodeResponse } from '@trezor/connect/src/types/api/getPublicKey';
 
 import { connectPopupActions } from '../connectPopupActions';
+import { getPermissionDeferred } from '../connectPopupPromiseManager';
 
 import { PostCallHookParams, PreCallHookParams } from './index';
 
@@ -49,7 +50,7 @@ const preCallHook = <M extends keyof typeof TrezorConnect>({
     return payload;
 };
 
-export function postCallHook<M extends keyof typeof TrezorConnect>({
+export async function postCallHook<M extends keyof typeof TrezorConnect>({
     method,
     originalPayload,
     response,
@@ -88,6 +89,14 @@ export function postCallHook<M extends keyof typeof TrezorConnect>({
         dispatch(
             connectPopupActions.confirmAddresses({
                 addresses,
+                exported: false,
+            }),
+        );
+        await getPermissionDeferred(true).promise;
+        dispatch(
+            connectPopupActions.confirmAddresses({
+                addresses,
+                exported: true,
             }),
         );
 

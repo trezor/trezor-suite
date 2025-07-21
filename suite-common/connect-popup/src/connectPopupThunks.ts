@@ -272,6 +272,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
         // Update loading state of addresses
         dispatch(
             connectPopupActions.confirmAddresses({
+                exported: call.exported,
                 addresses: call.addresses?.map((address, i) => ({
                     ...address,
                     loading: i === index,
@@ -295,6 +296,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
             const validatedStatus = res.success ? 'valid' : 'failed';
             dispatch(
                 connectPopupActions.confirmAddresses({
+                    exported: call.exported,
                     addresses: call.addresses.map((address, i) => ({
                         ...address,
                         loading: false,
@@ -306,6 +308,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
             console.error('connectPopupVerifyAddressThunk', error);
             dispatch(
                 connectPopupActions.confirmAddresses({
+                    exported: call.exported,
                     addresses: call.addresses.map((address, i) => ({
                         ...address,
                         loading: false,

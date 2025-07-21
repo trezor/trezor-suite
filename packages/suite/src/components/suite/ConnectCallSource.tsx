@@ -13,6 +13,7 @@ export const ConnectCallSource = () => {
     if (
         connectPopupCall?.state !== 'ongoing' &&
         connectPopupCall?.state !== 'call-error' &&
+        connectPopupCall?.state !== 'address-confirmation' &&
         connectPopupCall?.state !== 'tx-simulation'
     )
         return null;

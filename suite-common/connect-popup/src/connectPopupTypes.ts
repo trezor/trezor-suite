@@ -79,6 +79,7 @@ export type ConnectPopupCallLoaded = {
       }
     | {
           state: 'address-confirmation';
+          exported: boolean;
           addresses: {
               address: string;
               loading: boolean;

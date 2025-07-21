@@ -3,17 +3,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     connectPopupActions,
     connectPopupVerifyAddressThunk,
+    getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Button, Card, HStack, IconButton, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const AddressConfirmation = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
+    const device = useSelector(selectSelectedDevice);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    const passphraseWalletLabel = device?.useEmptyPassphrase ? (
+        <Translation id="deviceManager.wallet.standard" />
+    ) : (
+        <Translation
+            id="deviceManager.wallet.defaultPassphrase"
+            values={{ index: device?.walletNumber }}
+        />
+    );
 
     const onFinish = () => {
         dispatch(connectPopupActions.finishCall());
+    };
+    const onConfirm = () => {
+        getPermissionDeferred()?.resolve();
     };
     const onVerify = (index: number) => {
         dispatch(connectPopupVerifyAddressThunk({ index }));
@@ -23,10 +38,28 @@ export const AddressConfirmation = () => {
 
     return (
         <VStack testID="@popup/address-confirmation" spacing="sp16" flex={1}>
-            <TitleHeader
-                title={<Translation id="moduleConnectPopup.confirmAddress.title" />}
-                subtitle={<Translation id="moduleConnectPopup.confirmAddress.message" />}
-            />
+            {popupCall.exported ? (
+                <TitleHeader
+                    title={<Translation id="moduleConnectPopup.confirmAddress.title" />}
+                    subtitle={<Translation id="moduleConnectPopup.confirmAddress.message" />}
+                />
+            ) : (
+                <TitleHeader
+                    title={<Translation id="moduleConnectPopup.exportAccounts.title" />}
+                    subtitle={
+                        <Translation
+                            id="moduleConnectPopup.exportAccounts.message"
+                            values={{
+                                passphraseWalletLabel: (
+                                    <Text variant="body">{passphraseWalletLabel}</Text>
+                                ),
+                                deviceLabel: <Text variant="body">{deviceLabel}</Text>,
+                                thirdParty: <Text variant="body">{popupCall.source.origin}</Text>,
+                            }}
+                        />
+                    }
+                />
+            )}
             <Card>
                 <VStack>
                     {popupCall.addresses.map((item, index) => (
@@ -52,7 +85,10 @@ export const AddressConfirmation = () => {
                 </VStack>
             </Card>
 
-            <Button testID="@popup/confirm-addresses" onPress={onFinish}>
+            <Button
+                testID="@popup/confirm-addresses"
+                onPress={popupCall.exported ? onFinish : onConfirm}
+            >
                 <Translation id="moduleConnectPopup.confirm" />
             </Button>
         </VStack>

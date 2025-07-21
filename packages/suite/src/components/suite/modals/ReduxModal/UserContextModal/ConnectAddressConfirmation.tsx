@@ -3,25 +3,37 @@ import { useEffect } from 'react';
 import {
     connectPopupActions,
     connectPopupVerifyAddressThunk,
+    getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
+import { TypedError } from '@trezor/connect/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevice, mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
+import { WalletLabeling } from 'src/components/suite/labeling';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
     const onVerify = (index: number) => {
         dispatch(connectPopupVerifyAddressThunk({ index }));
     };
+    const onConfirm = () => {
+        getPermissionDeferred()?.resolve();
+    };
     const onFinish = () => {
+        if (popupCall?.state === 'address-confirmation' && !popupCall?.exported) {
+            getPermissionDeferred()?.reject(TypedError('Method_Cancel'));
+        }
         dispatch(connectPopupActions.finishCall());
     };
     const isLoading =
@@ -30,7 +42,8 @@ export const ConnectAddressConfirmation = () => {
 
     useEffect(() => {
         // Automatically verify addresses that have showOnDevice enabled and are not already verified
-        if (!popupCall || popupCall?.state !== 'address-confirmation') return;
+        if (!popupCall || popupCall?.state !== 'address-confirmation' || !popupCall.exported)
+            return;
         const addressToVerify = popupCall?.addresses.findIndex(
             address =>
                 address.validatePayload.showOnTrezor &&
@@ -49,7 +62,7 @@ export const ConnectAddressConfirmation = () => {
     if (!popupCall || popupCall?.state !== 'address-confirmation') return null;
 
     return (
-        <ConnectModalBackdrop onClick={onFinish}>
+        <ConnectModalBackdrop onClick={onFinish} canSwitchDevice={!popupCall.exported}>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device?.features?.internal_model}
@@ -60,6 +73,16 @@ export const ConnectAddressConfirmation = () => {
                 variant="primary"
                 bottomContent={
                     <>
+                        {!popupCall.exported && (
+                            <Modal.Button
+                                variant="primary"
+                                onClick={onConfirm}
+                                size="medium"
+                                data-testid="@connect-address-confirmation/confirm-button"
+                            >
+                                <Translation id="TR_CONFIRM" />
+                            </Modal.Button>
+                        )}
                         <Modal.Button
                             variant="tertiary"
                             onClick={onFinish}
@@ -67,24 +90,45 @@ export const ConnectAddressConfirmation = () => {
                             data-testid="@connect-address-confirmation/close-button"
                             isDisabled={isLoading}
                         >
-                            <Translation id="TR_CLOSE" />
+                            <Translation id={popupCall.exported ? 'TR_CLOSE' : 'TR_CANCEL'} />
                         </Modal.Button>
                     </>
                 }
             >
                 <Column gap={spacings.xs}>
-                    <Row alignItems="center" gap={spacings.sm}>
-                        <Icon name="checkCircle" size={32} variant="primary" />
-                        <H3 variant="primary">
-                            <Translation id="TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS" />
+                    {popupCall.exported ? (
+                        <Row alignItems="center" gap={spacings.sm}>
+                            <Icon name="checkCircle" size={32} variant="primary" />
+                            <H3 variant="primary">
+                                <Translation id="TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS" />
+                            </H3>
+                        </Row>
+                    ) : (
+                        <H3>
+                            <Translation id="TR_CONNECT_EXPORT_ACCOUNTS" />
                         </H3>
-                    </Row>
+                    )}
+                    <ConnectCallSource />
                     <Paragraph>
                         <Translation
-                            id="TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION"
+                            id={
+                                popupCall.exported
+                                    ? 'TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION'
+                                    : 'TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION'
+                            }
                             values={{
-                                thirdParty:
-                                    popupCall.source.manifest?.appName ?? popupCall.source.origin,
+                                thirdParty: (
+                                    <b>
+                                        {popupCall.source.manifest?.appName ??
+                                            popupCall.source.origin}
+                                    </b>
+                                ),
+                                passphraseWalletLabel: device && (
+                                    <b>
+                                        <WalletLabeling device={device} />
+                                    </b>
+                                ),
+                                deviceLabel: <b>{deviceLabel}</b>,
                             }}
                         />
                     </Paragraph>

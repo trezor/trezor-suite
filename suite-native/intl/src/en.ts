@@ -480,6 +480,11 @@ export const en = {
             title: 'Confirm address',
             message: 'Please compare the address on your Trezor with the third-party app.',
         },
+        exportAccounts: {
+            title: 'Export accounts',
+            message:
+                'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
+        },
         connectionStatus: {
             loading: 'Loading...',
             discoveryRunning: 'Discovery running, please wait...',

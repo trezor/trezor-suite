@@ -114,10 +114,13 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
 
         await element(by.id('@popup/deeplink-info'));
 
-        await waitFor(element(by.id('@popup/call-device')))
-            .toBeVisible()
-            .withTimeout(30000);
-        await element(by.id('@popup/call-device')).tap();
+        const permissionButton = element(by.id('@popup/call-device'));
+        await waitFor(permissionButton).toBeVisible().withTimeout(30000);
+        await permissionButton.tap();
+
+        const confirmButton = element(by.id('@popup/confirm-addresses'));
+        await waitFor(confirmButton).toBeVisible().withTimeout(10000);
+        await confirmButton.tap();
 
         await TrezorUserEnvLink.pressYes();
 

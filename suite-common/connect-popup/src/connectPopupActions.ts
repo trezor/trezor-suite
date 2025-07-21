@@ -32,7 +32,12 @@ const finishCall = createAction(`${ACTION_PREFIX}/finishCall`);
 
 const confirmAddresses = createAction(
     `${ACTION_PREFIX}/confirmAddresses`,
-    (payload: Pick<ConnectPopupCall & { state: 'address-confirmation' }, 'addresses'>) => ({
+    (
+        payload: Pick<
+            ConnectPopupCall & { state: 'address-confirmation' },
+            'addresses' | 'exported'
+        >,
+    ) => ({
         payload,
     }),
 );

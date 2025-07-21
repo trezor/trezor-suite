@@ -10522,4 +10522,13 @@ export default defineMessages({
         id: 'TR_CONNECT_POPUP_SUCCESS',
         defaultMessage: 'Success! {appName} request completed',
     },
+    TR_CONNECT_EXPORT_ACCOUNTS: {
+        id: 'TR_CONNECT_EXPORT_ACCOUNTS',
+        defaultMessage: 'Export accounts',
+    },
+    TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION: {
+        id: 'TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION',
+        defaultMessage:
+            'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
+    },
 } as const);
