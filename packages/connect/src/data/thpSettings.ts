@@ -27,7 +27,7 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
                 k &&
                 typeof k === 'object' &&
                 typeof k.credential === 'string' &&
-                typeof k.trezor_static_pubkey === 'string'
+                typeof k.trezor_static_public_key === 'string'
             ) {
                 return k;
             }
