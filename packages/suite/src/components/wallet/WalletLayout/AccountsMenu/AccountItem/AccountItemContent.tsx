@@ -3,7 +3,6 @@ import { JSX } from 'react';
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDiscreteModeActive, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
@@ -39,10 +38,6 @@ type ItemContentProps = {
     customFiatValue?: BaseCurrencyAmount;
     account: Account;
     type: AccountItemType;
-    accountLabel?: string;
-    accountType: AccountType;
-    symbol: NetworkSymbol;
-    index?: number;
     formattedBalance: string;
     dataTestKey?: string;
     isFiatLoading?: boolean;
@@ -59,10 +54,6 @@ export const AccountItemContent = ({
     customFiatValue,
     account,
     type,
-    accountLabel,
-    accountType,
-    symbol,
-    index,
     formattedBalance,
     dataTestKey,
     isFiatLoading,
@@ -80,18 +71,11 @@ export const AccountItemContent = ({
         <Column flex="1" overflow={discreetMode ? 'visible' : 'hidden'} gap={spacings.xxxs}>
             <Row gap={spacings.md} margin={{ right: spacings.xxs }} justifyContent="space-between">
                 <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
-                    {type === 'coin' && (
-                        <AccountLabel
-                            accountLabel={accountLabel}
-                            accountType={accountType}
-                            symbol={symbol}
-                            index={index}
-                        />
-                    )}
+                    {type === 'coin' && <AccountLabel account={account} />}
                     {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
                     {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                 </AccountLabelContainer>
-                {customFiatValue && !isTestnet(symbol) ? (
+                {customFiatValue && !isTestnet(account.symbol) ? (
                     <HiddenPlaceholder>
                         {isFiatLoading ? (
                             <SkeletonRectangle animate={shouldAnimate} />
@@ -107,7 +91,7 @@ export const AccountItemContent = ({
                 ) : (
                     <BaseCurrencyValue
                         amount={formattedBalance}
-                        symbol={symbol}
+                        symbol={account.symbol}
                         fiatAmountFormatterOptions={{
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 0,
@@ -118,7 +102,11 @@ export const AccountItemContent = ({
                 )}
             </Row>
             {isBalanceShown && type !== 'tokens' && (
-                <CoinBalance data-testid="@wallet" value={formattedBalance} symbol={symbol} />
+                <CoinBalance
+                    data-testid="@wallet"
+                    value={formattedBalance}
+                    symbol={account.symbol}
+                />
             )}
             {!isBalanceShown && (
                 <Column gap={spacings.xs}>

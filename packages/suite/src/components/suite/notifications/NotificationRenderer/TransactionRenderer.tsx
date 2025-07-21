@@ -60,7 +60,13 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
             {...props}
             messageValues={{
                 amount: <HiddenPlaceholder>{formattedAmount}</HiddenPlaceholder>,
-                account: <AccountLabeling account={found} />,
+                account: (
+                    <AccountLabeling
+                        account={found}
+                        showAccountTypeBadge
+                        accountTypeBadgeSize="small"
+                    />
+                ),
                 confirmations,
             }}
             action={{

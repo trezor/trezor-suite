@@ -117,15 +117,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         networkType={selectedAccount.networkType}
                         path={path}
                         defaultVisibleValue={
-                            <AccountLabel
-                                showAccountTypeBadge
-                                accountLabel={selectedAccountLabels.accountLabel}
-                                accountType={accountType}
-                                symbol={selectedAccount.symbol}
-                                index={index}
-                                path={path}
-                                networkType={selectedAccount.networkType}
-                            />
+                            <AccountLabel account={selectedAccount} showAccountTypeBadge />
                         }
                         payload={{
                             type: 'accountLabel',

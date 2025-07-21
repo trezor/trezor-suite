@@ -15,12 +15,7 @@ interface AccountSectionProps {
     onItemClick?: () => void;
 }
 
-export const AccountSection = ({
-    account,
-    selected,
-    accountLabel,
-    onItemClick,
-}: AccountSectionProps) => {
+export const AccountSection = ({ account, selected, onItemClick }: AccountSectionProps) => {
     const {
         symbol,
         accountType,
@@ -49,7 +44,6 @@ export const AccountSection = ({
         <AccountItemsGroup
             key={`${descriptor}-${symbol}`}
             account={account}
-            accountLabel={accountLabel}
             selected={selected}
             showStaking={isStakeShown}
             tokens={tokens.shownWithBalance}
@@ -62,7 +56,6 @@ export const AccountSection = ({
             account={account}
             isSelected={selected}
             onClick={onItemClick}
-            accountLabel={accountLabel}
             formattedBalance={formattedBalance}
             tokens={tokens.shownWithBalance}
             dataTestKey={dataTestKey}

@@ -2,7 +2,6 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -19,12 +18,8 @@ type AccountRowProps = {
     handleHeaderClick: () => void;
     dataTestKey?: string;
     type: AccountItemType;
-    symbol: NetworkSymbol;
     account: Account;
     customFiatValue?: BaseCurrencyAmount;
-    accountLabel?: string;
-    accountType: AccountType;
-    index?: number;
     formattedBalance: string;
     isFiatLoading?: boolean;
 };
@@ -56,12 +51,8 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             handleHeaderClick,
             dataTestKey,
             type,
-            symbol,
             account,
             customFiatValue,
-            accountLabel,
-            accountType,
-            index,
             formattedBalance,
             isFiatLoading,
         },
@@ -77,16 +68,12 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             tabIndex={0}
         >
             <Left>
-                <AccountItemLeft type={type} symbol={symbol} account={account} />
+                <AccountItemLeft type={type} symbol={account.symbol} account={account} />
             </Left>
             <AccountItemContent
                 customFiatValue={customFiatValue}
                 account={account}
                 type={type}
-                accountLabel={accountLabel}
-                accountType={accountType}
-                symbol={symbol}
-                index={index}
                 formattedBalance={formattedBalance}
                 dataTestKey={dataTestKey}
                 isFiatLoading={Boolean(isFiatLoading)}

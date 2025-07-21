@@ -56,7 +56,11 @@ export const TradingOfferExchangeSend = () => {
                         data-testid="@trading/exchange-send/from-account"
                         label={<Translation id="TR_EXCHANGE_SEND_FROM" />}
                     >
-                        <AccountLabeling account={account} />
+                        <AccountLabeling
+                            account={account}
+                            showAccountTypeBadge
+                            accountTypeBadgeSize="small"
+                        />
                     </InfoItem>
                     <InfoItem
                         data-testid="@trading/exchange-send/to-address"

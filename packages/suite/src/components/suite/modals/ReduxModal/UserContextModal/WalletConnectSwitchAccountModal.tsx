@@ -88,13 +88,11 @@ export const WalletConnectSwitchAccountModal = ({
                                 <CoinLogo type="token" symbol={account.symbol} size={24} />
                             )}
                             <AccountLabel
+                                account={{
+                                    ...account,
+                                    accountLabel: accountLabels[account.key],
+                                }}
                                 key={account.descriptor}
-                                accountLabel={accountLabels[account.key]}
-                                accountType={account.accountType}
-                                networkType={account.networkType}
-                                symbol={account.symbol}
-                                index={account.index}
-                                path={account.path}
                             />
                             <AccountTypeBadge
                                 accountType={account.accountType}

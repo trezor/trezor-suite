@@ -7,7 +7,7 @@ import { Column, InfoItem, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { AccountLabeling, Translation } from 'src/components/suite';
+import { AccountLabel, Translation } from 'src/components/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
@@ -44,8 +44,11 @@ export const TradingInfoItem = ({
                 {account && (
                     <Text variant="tertiary" typographyStyle="label" as="div">
                         <Row gap={spacings.xxs}>
-                            <AccountLabeling account={account} />
-                            {account.accountType !== 'normal' ? `(${account.accountType})` : ''}
+                            <AccountLabel
+                                account={account}
+                                showAccountTypeBadge
+                                accountTypeBadgeSize="small"
+                            />
                         </Row>
                     </Text>
                 )}

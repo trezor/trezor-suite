@@ -96,7 +96,11 @@ export const TradingSelectedOfferSellTransaction = () => {
                             <Translation id="TR_SELL_SEND_FROM" />
                         </LabelText>
                         <Value data-testid="@trading/form/verify/account">
-                            <AccountLabeling account={account} />
+                            <AccountLabeling
+                                account={account}
+                                showAccountTypeBadge
+                                accountTypeBadgeSize="small"
+                            />
                         </Value>
                     </Row>
                     <Row>
