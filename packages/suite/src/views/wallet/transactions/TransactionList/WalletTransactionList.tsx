@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
-import { selectIsHideSuspiciousTransactions } from '@suite-common/wallet-core';
+import {
+    selectAreAllTransactionsLoaded,
+    selectIsHideSuspiciousTransactions,
+} from '@suite-common/wallet-core';
 import { Card, Column, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionList } from './TransactionList';
@@ -39,6 +42,9 @@ export const WalletTransactionList = ({
     const fraudTransactionPossible =
         suspiciousTransactionsHidden && hasNetworkPotentialFraudTransactions(symbol);
     const [visiblePages, setVisiblePages] = useState(1);
+    const areAllTransactionsLoaded = useSelector(state =>
+        Boolean(selectAreAllTransactionsLoaded(state, account.key)),
+    );
     const result = useVisibleTransactions({
         account,
         numberOfPagesRequested: visiblePages,
@@ -48,6 +54,7 @@ export const WalletTransactionList = ({
     return (
         <TransactionList
             key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
+            areAllTransactionsLoaded={areAllTransactionsLoaded}
             customPageFetching={fraudTransactionPossible}
             customNoTransactions={<NoVisibleTransactions />}
             allTransactions={result.allTransactions}

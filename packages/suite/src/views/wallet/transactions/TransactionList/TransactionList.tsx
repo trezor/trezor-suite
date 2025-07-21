@@ -29,6 +29,7 @@ import { useFetchTransactions } from './useFetchTransactions';
 
 interface TransactionListProps {
     allTransactions: WalletAccountTransaction[];
+    areAllTransactionsLoaded: boolean;
     transactions: WalletAccountTransaction[];
     symbol: WalletAccountTransaction['symbol'];
     isLoading?: boolean;
@@ -42,6 +43,7 @@ interface TransactionListProps {
 
 export const TransactionList = ({
     allTransactions,
+    areAllTransactionsLoaded,
     transactions,
     isLoading,
     account,
@@ -164,7 +166,8 @@ export const TransactionList = ({
             )}
 
             {/* TODO: show this skeleton also while searching in txs */}
-            {isLoading ? (
+            {isLoading ||
+            (!areAllTransactionsLoaded && searchQuery && searchedTransactions.length === 0) ? (
                 <SkeletonStack $col $childMargin="0px 0px 16px 0px">
                     <SkeletonTransactionItem />
                     <SkeletonTransactionItem />
