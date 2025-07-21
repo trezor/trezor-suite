@@ -4,7 +4,7 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
 
-const IsSameDevice = () => {
+export const DeviceDifferent = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
 
     return (
@@ -33,5 +33,3 @@ const IsSameDevice = () => {
         />
     );
 };
-
-export default IsSameDevice;
