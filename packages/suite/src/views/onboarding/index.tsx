@@ -7,7 +7,7 @@ import { OnboardingLayout } from 'src/components/onboarding';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useFilteredModal, useOnboarding } from 'src/hooks/suite';
-import UnexpectedState from 'src/views/onboarding/UnexpectedState';
+import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
 import { BackupStep } from 'src/views/onboarding/steps/Backup';
 import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
 import CreateOrRecover from 'src/views/onboarding/steps/CreateOrRecover';
