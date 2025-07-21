@@ -491,4 +491,36 @@ describe('HttpServer', () => {
 
         await Promise.all([server.stop(), server2.stop()]);
     });
+
+    test('port negotiation - it is possible to start and stop server multiple times', async () => {
+        const [freePort1] = await getFreePort(1);
+
+        server = new HttpServer<Events>({ logger: muteLogger, ports: [freePort1] });
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({
+            port: freePort1,
+        });
+
+        await server.stop();
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({
+            port: freePort1,
+        });
+
+        await server.stop();
+    });
+
+    test('port negotiation - even when started using random port, the resulting port is stored for future use', async () => {
+        server = new HttpServer<Events>({ logger: muteLogger, ports: [0] });
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        expect(address.port).toBeGreaterThan(0);
+
+        // stop and start again, the port should be the same
+        await server.stop();
+        await server.start();
+        const newAddress = server.getServerAddress();
+        expect(newAddress.port).toEqual(address.port);
+    });
 });
