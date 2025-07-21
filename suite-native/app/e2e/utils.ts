@@ -84,11 +84,11 @@ export const scrollUntilVisible = async (
 ) => {
     try {
         // Try to confirm that the element is visible without scrolling.
-        await detoxExpect(target).toBeVisible();
+        await detoxExpect(target).toBeVisible(100);
     } catch {
         // If the element is not visible, then use the scroll to find it.
         await waitFor(target)
-            .toBeVisible()
+            .toBeVisible(100)
             .whileElement(by.id(scrollViewTestId))
             .scroll(300, 'down');
 
