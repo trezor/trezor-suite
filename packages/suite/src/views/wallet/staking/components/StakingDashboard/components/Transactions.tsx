@@ -16,7 +16,7 @@ export const Transactions = () => {
         selectIsLoadingAccountTransactions(state, accountKey),
     );
     const areAllTransactionsLoaded = useSelector(state =>
-        selectAreAllTransactionsLoaded(state, accountKey),
+        Boolean(selectAreAllTransactionsLoaded(state, accountKey)),
     );
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, accountKey),
@@ -31,6 +31,7 @@ export const Transactions = () => {
 
     return (
         <TransactionList
+            areAllTransactionsLoaded={areAllTransactionsLoaded}
             allTransactions={allTransactions}
             account={account}
             transactions={stakeTxs}
