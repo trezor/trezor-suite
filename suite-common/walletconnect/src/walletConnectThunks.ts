@@ -141,7 +141,7 @@ export const sessionRequestThunk = createThunk<
 
         const result = await dispatch(adapter.requestThunk({ event }));
         if (!result || result.error) {
-            throw new Error('Device request failed');
+            throw result?.error || new Error('Device request failed');
         }
 
         await walletKit.respondSessionRequest({

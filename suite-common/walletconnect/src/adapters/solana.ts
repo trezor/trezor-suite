@@ -33,10 +33,11 @@ const solanaSignTransaction = createThunk<
         transaction: string;
         feePayer?: string;
         origin: string;
+        isDevnet: boolean;
     }
 >(
-    `${WALLETCONNECT_MODULE}/solanaRequest`,
-    async ({ session, transaction, feePayer, origin }, { dispatch, getState }) => {
+    `${WALLETCONNECT_MODULE}/solanaSignTransaction`,
+    async ({ session, transaction, feePayer, origin, isDevnet }, { dispatch, getState }) => {
         // Convert from base64 to hex
         const transactionBuffer = Buffer.from(transaction, 'base64');
         const serializedTx = transactionBuffer.toString('hex');
@@ -44,7 +45,7 @@ const solanaSignTransaction = createThunk<
         const device = selectSelectedDevice(getState());
         const accounts = selectAccounts(getState());
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: 'sol',
+            coin: isDevnet ? 'dsol' : 'sol',
             request: {
                 specific: {
                     data: serializedTx,
@@ -52,7 +53,7 @@ const solanaSignTransaction = createThunk<
             },
         });
         if (!estimatedFee.success) {
-            throw new Error('Failed to estimate fee');
+            throw new Error('Failed to estimate fee. ' + estimatedFee.payload.error);
         }
         // Get from argument or use decoded from estimate fee
         feePayer = feePayer || estimatedFee.payload.levels[0].feePayer;
@@ -72,6 +73,9 @@ const solanaSignTransaction = createThunk<
                     useEmptyPassphrase: device?.useEmptyPassphrase,
                     serializedTx,
                     serialize: true,
+                    additionalInfo: {
+                        isDevnet,
+                    },
                 },
                 source: {
                     type: 'walletconnect' as const,
@@ -87,7 +91,7 @@ const solanaSignTransaction = createThunk<
         const typedPayload = response.payload as CallMethodResponse<'solanaSignTransaction'>;
         if (!response.success || !typedPayload.serializedTx) {
             console.error('solana_signTransaction error', response);
-            throw new Error('solana_signTransaction error');
+            throw new Error('Solana signing error');
         }
 
         return {
@@ -107,6 +111,7 @@ const solanaRequestThunk = createThunk<
     if (!session) {
         throw new Error('Session not found');
     }
+    const isDevnet = session.lastAccount?.symbol === 'dsol';
 
     switch (event.params.request.method) {
         case 'solana_getAccounts':
@@ -122,7 +127,7 @@ const solanaRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
 
             const response = await dispatch(
-                solanaSignTransaction({ session, transaction, feePayer, origin }),
+                solanaSignTransaction({ session, transaction, feePayer, origin, isDevnet }),
             ).unwrap();
 
             const signature = bs58.encode(Buffer.from(response.signature, 'hex'));
@@ -134,17 +139,16 @@ const solanaRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
 
             const signResponse = await dispatch(
-                solanaSignTransaction({ session, transaction, origin }),
+                solanaSignTransaction({ session, transaction, origin, isDevnet }),
             ).unwrap();
 
             const pushResponse = await TrezorConnect.pushTransaction({
-                // NOTE: I don't see any parameter that would determine devnet/mainnet
-                coin: 'sol',
+                coin: isDevnet ? 'dsol' : 'sol',
                 tx: signResponse.transaction,
             });
             if (!pushResponse.success) {
                 console.error('eth_sendTransaction push error', pushResponse);
-                throw new Error('eth_sendTransaction push error');
+                throw new Error('Solana transaction push error');
             }
 
             return { signature: pushResponse.payload.txid };
@@ -152,7 +156,7 @@ const solanaRequestThunk = createThunk<
         case 'solana_signMessage': {
             // Signing arbitrary messages for Solana is not supported in FW
             // We indicate support for it in the adapter for compatibility, since some apps request it but don't actually use it
-            throw new Error('solana_signMessage not supported');
+            throw new Error('Solana message signing is not supported');
         }
     }
 });

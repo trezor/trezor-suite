@@ -27,7 +27,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
         if (method === 'solanaSignTransaction' && txSigningPrecomposed) {
             const typedPayload = payload as any as SolanaSignTransaction;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-            const network = getNetwork('sol'); // solanaSignTransaction has no parameter for testnet
+            const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
             // Try to find matching account
             let selectedAccount = selectAccountForNetworkSymbolAndPath(
                 getState(),
