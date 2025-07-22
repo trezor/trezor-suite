@@ -22,13 +22,18 @@ export const createBioAuthAPI = <R extends StrictIpcRenderer<any, IpcRendererEve
 
     return {
         validateBioAuth: (options: { message: string }) => {
+            type RendererResult = {
+                success: boolean;
+                message?: string;
+            };
+
             const resultPromise = Promise.race([
                 new Promise<boolean>((resolve, reject) => {
-                    ipcRenderer.on('bio-auth/validated', (_, result: boolean) => {
-                        if (result) {
+                    ipcRenderer.on('bio-auth/validated', (_, result: RendererResult) => {
+                        if (result.success) {
                             resolve(true);
                         } else {
-                            reject(false);
+                            reject(result.message);
                         }
                     });
 

@@ -90,7 +90,14 @@ export interface RendererChannels {
 
     // bio auth
     'bio-auth/request': { message: string };
-    'bio-auth/validated': boolean;
+    'bio-auth/validated':
+        | {
+              success: true;
+          }
+        | {
+              success: false;
+              message: string;
+          };
     'bio-auth/is-available': boolean;
 }
 
