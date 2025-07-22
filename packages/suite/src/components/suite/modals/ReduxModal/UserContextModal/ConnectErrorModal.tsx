@@ -13,6 +13,9 @@ export const ConnectErrorModal = () => {
     const onFinish = () => {
         dispatch(connectPopupActions.finishCall());
     };
+    const onSwitchDevice = () => {
+        dispatch(connectPopupActions.switchDevice());
+    };
 
     if (!popupCall || (popupCall?.state !== 'error' && popupCall?.state !== 'call-error'))
         return null;
@@ -21,6 +24,11 @@ export const ConnectErrorModal = () => {
         popupCall.error?.code === 'Method_Cancel' ||
         popupCall.error?.code === 'Method_Interrupted' ||
         popupCall.error?.code === 'Failure_ActionCancelled';
+    const isDeviceReconnectError =
+        popupCall.error?.code === 'Device_NotFound' ||
+        popupCall.error?.code === 'Device_Disconnected' ||
+        popupCall.error?.code === 'Device_UsedElsewhere' ||
+        popupCall.error?.code === 'Device_InvalidState';
 
     const getVariant = () => {
         if (isCancelled) return 'warning';
@@ -50,6 +58,11 @@ export const ConnectErrorModal = () => {
                 variant="primary"
                 bottomContent={
                     <>
+                        {isDeviceReconnectError && (
+                            <Modal.Button onClick={onSwitchDevice} size="medium">
+                                <Translation id="TR_SWITCH_DEVICE" />
+                            </Modal.Button>
+                        )}
                         <Modal.Button variant="tertiary" onClick={onFinish} size="medium">
                             <Translation id="TR_CLOSE" />
                         </Modal.Button>
