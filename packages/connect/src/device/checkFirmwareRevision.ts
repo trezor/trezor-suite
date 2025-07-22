@@ -13,17 +13,21 @@ const isNotFoundError = (e: unknown): boolean =>
 const isNodeJSOfflineError = (e: Error) => ['FetchError', 'AbortError'].includes(e.name);
 const isReactNativeOfflineError = (e: Error) =>
     e.name === 'TypeError' && e.message.includes('Network request failed');
+const isAbortControllerTimeout = (e: Error) =>
+    e.name === 'AbortError' ||
+    (e.name === 'TimeoutError' && e.message.includes('signal timed out'));
 
 /**
  * Check if an error signifies a missing fetch response (meaning network connection loss or unavailable host).
  * This can only by correctly identified in nodeJS or React native runtimes (i.e. Suite Desktop main process, or Suite Lite).
  * In browser runtime (Suite Web), all fetch errors are lumped together as CORS errors, therefore indistinguishable.
- * (even a request that had no response is CORS error, since a non-existent response does not have CORS headers)
+ * (even a request that had no response is CORS error, since a non-existent response does not have CORS headers).
+ * Additionally, AbortController timeouts are also considered to be network issues.
  */
 const isOfflineError = (e: unknown): boolean => {
     if (!(e instanceof Error)) return false;
 
-    return isNodeJSOfflineError(e) || isReactNativeOfflineError(e);
+    return isNodeJSOfflineError(e) || isReactNativeOfflineError(e) || isAbortControllerTimeout(e);
 };
 
 type GetOnlineReleaseMetadataParams = {
