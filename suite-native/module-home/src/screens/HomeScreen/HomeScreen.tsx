@@ -15,7 +15,7 @@ import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
 import { PortfolioContent } from './components/PortfolioContent';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
-import { useShowViewOnlyAlert } from './useShowViewOnlyAlert';
+import { useShowAutoEjectAlert } from './useShowAutoEjectAlert';
 
 export const HomeScreen = () => {
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
@@ -37,7 +37,7 @@ export const HomeScreen = () => {
         portfolioContentRef,
     });
 
-    useShowViewOnlyAlert();
+    useShowAutoEjectAlert();
 
     return (
         <Screen

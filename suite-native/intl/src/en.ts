@@ -1028,6 +1028,14 @@ export const en = {
                     walletEjected: 'Wallet ejected',
                     walletsWillBeEjected: 'Will be ejected after disconnecting Trezor',
                 },
+                alert: {
+                    title: 'Your balances are still visible even when your Trezor is disconnected.',
+                    subtitle:
+                        'You can always eject your wallets at any time. Funds can’t be moved without a connected device.',
+                    primaryButtonTitle: 'Got it',
+                    secondaryButtonTitle: 'Auto eject wallets',
+                    successToast: 'Wallets now eject after disconnecting Trezor',
+                },
             },
         },
         advanced: {
