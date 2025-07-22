@@ -2,7 +2,15 @@ import { ReactNode, createContext, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    Button,
+    ElevationContext,
+    ElevationDown,
+    ElevationUp,
+    Modal,
+    variables,
+} from '@trezor/components';
 import { useDebounce } from '@trezor/react-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -12,7 +20,7 @@ import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
 import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -149,6 +157,16 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const { scrollRef } = useResetScrollOnUrl();
     useClearAnchorHighlightOnClick(wrapperRef);
 
+    const dispatch = useDispatch();
+
+    // Fire an error toast with custom message
+    // dispatch(
+    //     notificationsActions.addToast({
+    //         type: 'error',
+    //         error: 'Something went wrong!',
+    //     }),
+    // );
+
     const isAccountPage = !!selectedAccount;
 
     return (
@@ -187,7 +205,24 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                                     )}
                                                     {layoutHeader}
 
-                                                    <ContentWrapper>{children}</ContentWrapper>
+                                                    <ContentWrapper>
+                                                        <Button
+                                                            onClick={() =>
+                                                                dispatch(
+                                                                    notificationsActions.addToast({
+                                                                        //type: 'coin-scheme-protocol',
+                                                                        type: 'add-token-success',
+                                                                        //scheme: 'btc',
+                                                                        //address: '123',
+                                                                        //amount: 100,
+                                                                    }),
+                                                                )
+                                                            }
+                                                        >
+                                                            Click me
+                                                        </Button>
+                                                        {children}
+                                                    </ContentWrapper>
                                                 </ElevationUp>
                                             </AppWrapper>
                                         </MainContent>

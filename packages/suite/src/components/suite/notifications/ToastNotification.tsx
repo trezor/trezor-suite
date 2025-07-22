@@ -1,58 +1,27 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
-import { Button, Icon } from '@trezor/components';
-import { spacings, typography } from '@trezor/theme';
+import { NotificationEntry } from '@suite-common/toast-notifications';
+import { Button, Icon, IconButton, Paragraph, Row } from '@trezor/components';
+import { borders, spacings } from '@trezor/theme';
 
 import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
 
 import { ToastNotificationVariant } from '../../../types/suite';
 
-const Wrapper = styled.div<{ $variant: ToastNotificationVariant; $isTall: boolean }>`
-    display: flex;
-    align-items: ${({ $isTall }) => ($isTall ? 'start' : 'center')};
-    font-size: ${typography.hint};
+const Wrapper = styled.div<{ $variant: ToastNotificationVariant }>`
+    width: 100%;
     height: 100%;
-    padding: ${({ $isTall }) => ($isTall ? '16px 16px 12px 12px' : '12px 16px 12px 12px')};
-    border-left: 4px solid ${({ $variant }) => getVariantColor($variant)};
     overflow-wrap: anywhere;
     word-break: normal;
-    max-width: 430px;
-`;
-
-const BodyWrapper = styled.div<{ $isTall: boolean }>`
-    flex: 1;
-    margin-top: ${({ $isTall }) => $isTall && '-4px'};
-    margin-left: 14px;
-`;
-
-const Message = styled.div`
-    font-weight: ${typography.callout};
-    color: ${({ theme }) => theme.textDefault};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }>`
-    ${({ $action }) =>
-        (!$action?.position || $action.position === 'right') &&
-        css`
-            margin-left: 16px;
-        `};
-
-    ${({ $action }) =>
-        $action?.position === 'bottom' &&
-        css`
-            margin-top: 12px;
-            height: 32px;
-        `};
+    background: ${({ theme }) => theme.baseFillSurfaceModelessBrand};
+    border: ${borders.widths.small} solid ${({ theme }) => theme.baseBorderSurfaceModelessBrand};
+    border-radius: ${borders.radii.md};
 `;
 
 interface ToastNotificationProps extends NotificationViewProps {
-    cancelable?: boolean;
     onCancel?: () => void;
 }
 
@@ -62,77 +31,52 @@ const ToastNotification = ({
     messageValues,
     action,
     variant,
-    cancelable = true,
     onCancel,
     notification: { type, id },
 }: ToastNotificationProps) => {
-    const [isTall, setIsTall] = useState(false);
-    const theme = useTheme();
-    const dispatch = useDispatch();
-    const wrapperRef = useRef<HTMLDivElement>(null);
-
-    useLayoutEffect(() => {
-        const height = wrapperRef.current?.getBoundingClientRect().height ?? 0;
-
-        // more than 2 lines of text
-        if (height > 70) {
-            setIsTall(true);
-        }
-    }, []);
-
     const dataTestBase = `@toast/${type}`;
     const defaultIcon = icon ?? getNotificationIcon(variant);
 
     const handleCancelClick = () => {
-        dispatch(notificationsActions.close(id));
+        toast.dismiss(id);
         onCancel?.();
     };
 
     const actionButton = action && (
-        <StyledButton
+        <Button
             variant={action.variant || 'tertiary'}
             onClick={action.onClick}
             isFullWidth={action.position === 'bottom'}
-            $action={action}
             size="tiny"
         >
             <Translation id={action.label} />
-        </StyledButton>
+        </Button>
     );
 
     return (
-        <Wrapper
-            data-testid={dataTestBase}
-            data-testid-alt="@toast"
-            $variant={variant}
-            $isTall={isTall}
-            ref={wrapperRef}
-        >
-            {defaultIcon && typeof defaultIcon === 'string' ? (
-                <Icon name={defaultIcon} size={24} color={getVariantColor(variant)} />
-            ) : (
-                defaultIcon
-            )}
-            <BodyWrapper $isTall={isTall}>
-                <Message>
+        <Wrapper data-testid={dataTestBase} data-testid-alt="@toast" $variant={variant}>
+            <Row gap={spacings.md} padding={spacings.sm}>
+                {defaultIcon && typeof defaultIcon === 'string' ? (
+                    <Icon name={defaultIcon} size={24} color={getVariantColor(variant)} />
+                ) : (
+                    defaultIcon
+                )}
+
+                <Paragraph typographyStyle="body" variant="primary" flex="1">
                     <Translation id={message} values={messageValues} />
-                </Message>
+                </Paragraph>
 
-                {action?.position === 'bottom' && actionButton}
-            </BodyWrapper>
-
-            {(action?.position === 'right' || !action?.position) && actionButton}
-
-            {cancelable && (
-                <Icon
-                    size={16}
-                    name="x"
-                    hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
-                    onClick={handleCancelClick}
-                    data-testid={`${dataTestBase}/close`}
-                    margin={{ left: spacings.md }}
-                />
-            )}
+                <Row gap={spacings.xs}>
+                    {actionButton}
+                    <IconButton
+                        icon="x"
+                        isSubtle
+                        size="small"
+                        onClick={handleCancelClick}
+                        data-testid={`${dataTestBase}/close`}
+                    />
+                </Row>
+            </Row>
         </Wrapper>
     );
 };

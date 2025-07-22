@@ -115,7 +115,7 @@
         "react-router": "^7.8.0",
         "react-select": "^5.10.2",
         "react-svg": "16.3.0",
-        "react-toastify": "^10.0.4",
+        "react-toastify": "^11.0.5",
         "react-use": "^17.6.0",
         "react-zxing": "^2.1.0",
         "recharts": "^2.15.3",

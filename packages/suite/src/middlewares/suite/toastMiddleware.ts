@@ -20,11 +20,6 @@ const toastMiddleware =
         // pass action
         next(action);
 
-        if (notificationsActions.close.match(action)) {
-            // we are using custom close button that dispatch this action
-            toast.dismiss(action.payload);
-        }
-
         if (notificationsActions.addToast.match(action)) {
             const payload = { ...action.payload };
             // assetType error is returned by @trezor/connect
