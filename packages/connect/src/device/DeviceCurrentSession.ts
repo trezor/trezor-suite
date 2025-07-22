@@ -321,7 +321,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 default: {
                     // reload features after successful PIN; TODO improve
                     if (!this.disposed && pinUnlocked && !this.device.features.unlocked) {
-                        await this.device.getFeatures();
+                        await this.device.getFeatures().catch(() => {});
                     }
 
                     return success(res);
