@@ -32,6 +32,9 @@ export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string
 
     const handshake = new Promise<HandshakeResult>(resolve => {
         const timeoutCallback = async () => {
+            // if renderer process was killed during timeout, then do not invoke any renderer api
+            if (mainWindow.isDestroyed()) return {};
+
             // TODO: what happen if handshake will be fired up after timeout?
             const result = await showDialog(mainWindow);
             if (result === 'wait') {

@@ -47,6 +47,7 @@ interface IpcMainHandlers<Api> {
 export interface ElectronIpcMainInvokeEvent {
     senderFrame: {
         url: string;
+        isDestroyed: () => boolean;
     } | null;
 }
 
