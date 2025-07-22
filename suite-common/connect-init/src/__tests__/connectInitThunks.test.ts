@@ -143,4 +143,31 @@ describe('TrezorConnect Actions', () => {
             payload: true,
         });
     });
+
+    it('Test that connect mock works with __info parameter', async () => {
+        testMocks.setTrezorConnectFixtures();
+        await store.dispatch(connectInitThunk());
+        const res1 = await testMocks.getTrezorConnectMock().getFeatures({ __info: true });
+        expect(res1).toMatchObject({
+            success: true,
+            payload: expect.objectContaining({
+                name: 'getFeatures',
+                useDevice: true,
+            }),
+        });
+
+        const res2 = await testMocks.getTrezorConnectMock().getAccountInfo({
+            coin: 'btc',
+            descriptor: 'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiK9w',
+            __info: true,
+        });
+
+        expect(res2).toMatchObject({
+            success: true,
+            payload: expect.objectContaining({
+                name: 'getAccountInfo',
+                useDevice: false,
+            }),
+        });
+    });
 });
