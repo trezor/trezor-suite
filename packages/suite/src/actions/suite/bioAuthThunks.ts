@@ -1,8 +1,9 @@
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isWeb } from '@trezor/env-utils';
+import { isMacOs, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 import {
     BLUR_LOCK_TIMEOUT_MS,
     selectBioAuthEnabled,
@@ -58,7 +59,14 @@ export const bioAuthWindowFocusThunk = createThunk(
 
 export const requestBioAuthChangeThunk = createThunk(
     `${BIO_AUTH_PREFIX}/requestBioAuthChangeThunk`,
-    async (_, { dispatch, getState }) => {
+    async (
+        {
+            translationString,
+        }: {
+            translationString: TranslationFunction;
+        },
+        { dispatch, getState },
+    ) => {
         const prevBioEnabled = selectBioAuthEnabled(getState());
         const isRequestingChange = selectIsRequestingBioAuthChange(getState());
         const nextBioEnabled = !prevBioEnabled;
@@ -70,7 +78,11 @@ export const requestBioAuthChangeThunk = createThunk(
         dispatch(bioAuthActions.requestBioAuthChange(nextBioEnabled));
 
         try {
-            await desktopApi.validateBioAuth();
+            await desktopApi.validateBioAuth({
+                message: translationString(
+                    isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
+                ),
+            });
 
             dispatch(bioAuthActions.setBioAuthEnabled(nextBioEnabled));
             dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
@@ -82,7 +94,7 @@ export const requestBioAuthChangeThunk = createThunk(
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: 'Biometric authentication failed',
+                    error: translationString('TR_BIO_AUTH_FAILED'),
                 }),
             );
         } finally {
@@ -93,7 +105,10 @@ export const requestBioAuthChangeThunk = createThunk(
 
 export const requestBioAuthValidationThunk = createThunk(
     `${BIO_AUTH_PREFIX}/validateAuth`,
-    async (_, { dispatch, getState }) => {
+    async (
+        { translationString }: { translationString: TranslationFunction },
+        { dispatch, getState },
+    ) => {
         const isRequestingValidation = selectIsBioAuthValidationRequested(getState());
 
         if (isRequestingValidation) {
@@ -102,7 +117,11 @@ export const requestBioAuthValidationThunk = createThunk(
 
         dispatch(bioAuthActions.toggleBioAuthValidationRequested(true));
         try {
-            await desktopApi.validateBioAuth();
+            await desktopApi.validateBioAuth({
+                message: translationString(
+                    isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
+                ),
+            });
             dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
             const blurTimeoutId = selectBlurTimeoutId(getState());
             if (blurTimeoutId) {
@@ -114,7 +133,7 @@ export const requestBioAuthValidationThunk = createThunk(
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: 'Biometric authentication failed',
+                    error: translationString('TR_BIO_AUTH_FAILED'),
                 }),
             );
         } finally {
@@ -125,11 +144,8 @@ export const requestBioAuthValidationThunk = createThunk(
 
 export const requestOnceBioAuthValidationThunk = createSingleInstanceThunk(
     `${BIO_AUTH_PREFIX}/validateAuthOnce`,
-    (_, { dispatch }) => {
-        console.log('beng');
-
-        return dispatch(requestBioAuthValidationThunk()).unwrap();
-    },
+    ({ translationString }: { translationString: TranslationFunction }, { dispatch }) =>
+        dispatch(requestBioAuthValidationThunk({ translationString })),
 );
 
 export const checkBioAuthAvailableThunk = createThunk(

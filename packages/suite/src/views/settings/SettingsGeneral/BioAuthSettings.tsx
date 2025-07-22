@@ -12,7 +12,7 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import {
     selectBioAuthChangeNextValue,
     selectBioAuthEnabled,
@@ -33,9 +33,14 @@ export const BioAuthSettings = () => {
     const isBioAuthAvailable = useSelector(selectIsBioAuthAvailable);
     const optimisticValue = bioAuthChangeNextValue ?? biometricAuthEnabled;
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const onChange = () => {
-        dispatch(requestBioAuthChangeThunk());
+        dispatch(
+            requestBioAuthChangeThunk({
+                translationString,
+            }),
+        );
     };
 
     useEffect(() => {

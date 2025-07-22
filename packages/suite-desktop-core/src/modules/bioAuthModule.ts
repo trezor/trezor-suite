@@ -15,7 +15,7 @@ type BioAuthModule = (dependencies: Dependencies) => {
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
 const loadWin = ({ mainWindowProxy }: Dependencies) => {
-    ipcMain.on('bio-auth/request', async () => {
+    ipcMain.on('bio-auth/request', async (_, params) => {
         if (!Passport.available()) {
             console.error('bioAuth', 'WIN: Passport is not available');
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
@@ -24,7 +24,9 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
         }
 
         try {
-            const verificationResult = await Passport.requestVerification(PROMPT_REASON);
+            const verificationResult = await Passport.requestVerification(
+                params.message ?? PROMPT_REASON,
+            );
 
             if (verificationResult !== VerificationResult.Verified) {
                 throw new Error('WIN: bioAuth validation failed');
@@ -53,7 +55,7 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
 };
 
 const loadMac = ({ mainWindowProxy }: Dependencies) => {
-    ipcMain.on('bio-auth/request', async () => {
+    ipcMain.on('bio-auth/request', async (_, params) => {
         try {
             await systemPreferences.canPromptTouchID();
         } catch (error) {
@@ -64,7 +66,7 @@ const loadMac = ({ mainWindowProxy }: Dependencies) => {
         }
 
         try {
-            await systemPreferences.promptTouchID(PROMPT_REASON);
+            await systemPreferences.promptTouchID(params.message ?? PROMPT_REASON);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', true);
 
             return;

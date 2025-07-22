@@ -27,7 +27,7 @@ import {
     PageWrapper,
     Wrapper,
 } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import {
     selectBioAuthEnabled,
     selectHasEverValidatedBioAuth,
@@ -57,14 +57,15 @@ const BioAuthOverlay = ({
     const dispatch = useDispatch();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { elevation } = useElevation();
+    const { translationString } = useTranslation();
 
     const hasEverValidatedBioAuth = useSelector(selectHasEverValidatedBioAuth);
 
     useEffect(() => {
         if (!hasEverValidatedBioAuth && isBioAuthValidationRequired) {
-            dispatch(requestOnceBioAuthValidationThunk());
+            dispatch(requestOnceBioAuthValidationThunk({ translationString }));
         }
-    }, [hasEverValidatedBioAuth, dispatch, isBioAuthValidationRequired]);
+    }, [hasEverValidatedBioAuth, dispatch, isBioAuthValidationRequired, translationString]);
 
     return (
         <Wrapper ref={wrapperRef} data-testid="@suite-layout">
@@ -95,7 +96,11 @@ const BioAuthOverlay = ({
                                             isFullWidth
                                             variant="primary"
                                             onClick={() =>
-                                                dispatch(requestBioAuthValidationThunk())
+                                                dispatch(
+                                                    requestBioAuthValidationThunk({
+                                                        translationString,
+                                                    }),
+                                                )
                                             }
                                         >
                                             <Translation id="TR_BIO_AUTH_UNLOCK" />
