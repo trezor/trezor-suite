@@ -1,3 +1,5 @@
+const isJest = typeof jest !== 'undefined';
+
 export class InvariantError extends Error {
     constructor(message: string = 'Invariant Violation') {
         super(message);
@@ -10,7 +12,10 @@ export class InvariantError extends Error {
  */
 export function invariant<T>(condition: T, message?: string): asserts condition {
     if (!condition) {
-        console.error('Invariant violation:', message);
+        // do not log errors to console in jest tests
+        if (!isJest) {
+            console.error('Invariant violation:', message);
+        }
         throw new InvariantError(message);
     }
 }
