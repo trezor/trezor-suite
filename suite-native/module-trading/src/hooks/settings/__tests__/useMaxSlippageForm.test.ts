@@ -12,19 +12,11 @@ describe('useMaxSlippageForm', () => {
         renderHookWithStoreProviderAsync(() => useMaxSlippageForm(), { store });
 
     it('should have default value from store', async () => {
-        const store = await initStore({
-            wallet: {
-                tradingNew: {
-                    exchange: {
-                        maxSlippage: '0.5',
-                    },
-                },
-            },
-        });
+        const store = await initStore();
         const { result } = await renderUseMaxSlippageForm(store);
 
         expect(result.current.getValues()).toEqual({
-            maxSlippage: '0.5',
+            maxSlippage: '1',
         });
     });
 

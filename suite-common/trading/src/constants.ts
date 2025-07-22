@@ -4,6 +4,7 @@ export const TRADING_PREFIX = '@trading';
 export const TRADING_BUY_PREFIX = `${TRADING_PREFIX}-buy`;
 export const TRADING_EXCHANGE_PREFIX = `${TRADING_PREFIX}-exchange`;
 export const TRADING_SELL_PREFIX = `${TRADING_PREFIX}-sell`;
+export const TRADING_SETTINGS_PREFIX = `${TRADING_PREFIX}-settings`;
 
 export const TRADING_THUNK_PREFIX = `${TRADING_PREFIX}/thunk`;
 export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;
@@ -52,6 +53,7 @@ export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER = 'exchangeComparatorKycFilt
 export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL = 'all';
 export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC = 'noKyc';
 
+export const TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT = '1';
 export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
 

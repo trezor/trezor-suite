@@ -9,11 +9,12 @@ import type {
 
 import {
     TradingPaymentMethodProps,
+    TradingRootState,
+    TradingRootStateWithDeviceAndAccounts,
     selectTradingBuyLoadingTimestampAndStatus,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeLoadingTimestampAndStatus,
 } from '@suite-common/trading';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
@@ -26,7 +27,6 @@ import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingReducer';
 import { TradingPaymentMethodListProps } from '../../types';
 import {
-    TradingRootState,
     selectBestBuyQuoteByPaymentMethod,
     selectBuyQuotesByPaymentMethod,
     selectDeviceHasTradingTrades,
@@ -75,7 +75,7 @@ import {
 } from '../tradingSelectors';
 
 describe('tradingSelectors', () => {
-    let state: TradingRootState & DeviceRootState & AccountsRootState;
+    let state: TradingRootStateWithDeviceAndAccounts;
 
     const getBuyState = () =>
         ({
@@ -275,7 +275,7 @@ describe('tradingSelectors', () => {
                     },
                 },
             },
-        }) as unknown as TradingRootState & DeviceRootState & AccountsRootState;
+        }) as unknown as TradingRootStateWithDeviceAndAccounts;
 
     beforeEach(() => {
         state = getState();
@@ -1209,7 +1209,7 @@ describe('tradingSelectors', () => {
                         ],
                     },
                 },
-            } as unknown as TradingRootState;
+            } as unknown as TradingRootStateWithDeviceAndAccounts;
 
             const result = selectTradingTradesForSelectedDevice(mockState);
 
@@ -1230,7 +1230,7 @@ describe('tradingSelectors', () => {
                         trades: [{ tradeType: 'buy' }, { tradeType: 'sell' }],
                     },
                 },
-            } as unknown as TradingRootState;
+            } as unknown as TradingRootStateWithDeviceAndAccounts;
 
             const result = selectTradingTradesForSelectedDevice(mockState);
 
@@ -1251,7 +1251,7 @@ describe('tradingSelectors', () => {
                         trades: [],
                     },
                 },
-            } as unknown as TradingRootState;
+            } as unknown as TradingRootStateWithDeviceAndAccounts;
 
             const result = selectTradingTradesForSelectedDevice(mockState);
 

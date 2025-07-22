@@ -22,16 +22,19 @@ import type {
 import { CountryCode } from '@suite-common/geolocation';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AccountType, Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
-import type {
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
+    SelectedAccountStatus,
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';
 import { PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
+import { TradingState } from './reducers/tradingReducer';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;
@@ -311,3 +314,20 @@ export type TradingVerifiedAddress =
           mac?: string;
       }
     | undefined;
+
+export type TradingRootState = {
+    wallet: {
+        tradingNew: TradingState; // TODO: trading - tradingNew is temporary
+    };
+};
+
+type SelectedAccountRootState = {
+    wallet: {
+        selectedAccount: SelectedAccountStatus;
+    };
+};
+
+export type TradingRootStateWithDeviceAndAccounts = TradingRootState &
+    DeviceRootState &
+    AccountsRootState &
+    SelectedAccountRootState;

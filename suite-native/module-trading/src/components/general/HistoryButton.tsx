@@ -4,8 +4,10 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { TradingRootState, selectDeviceHasTradingTrades } from '@suite-common/trading';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import {
+    TradingRootStateWithDeviceAndAccounts,
+    selectDeviceHasTradingTrades,
+} from '@suite-common/trading';
 import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -46,7 +48,7 @@ const buttonStyle = prepareNativeStyle(utils => ({
 export const HistoryButton = ({ isFormMountedRecently }: HistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
-    const hasTrades = useSelector((state: TradingRootState & AccountsRootState & DeviceRootState) =>
+    const hasTrades = useSelector((state: TradingRootStateWithDeviceAndAccounts) =>
         selectDeviceHasTradingTrades(state),
     );
     const shouldHideButton = useSelector(selectIsAmountInputActive);

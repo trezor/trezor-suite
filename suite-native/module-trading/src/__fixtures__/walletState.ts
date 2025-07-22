@@ -35,4 +35,5 @@ export const getWalletState = ({
         lastWeek: {},
     } as FiatRatesState,
     accounts: [getBtcAccount(), getEthAccount()] as Account[],
+    selectedAccount: { status: 'none' as const },
 });

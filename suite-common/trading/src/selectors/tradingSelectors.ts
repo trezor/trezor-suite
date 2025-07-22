@@ -3,15 +3,11 @@ import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
-    DeviceReducerState,
-    type DeviceRootState,
     selectAccounts,
     selectDeviceAccounts,
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/wallet-core';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
-import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
 import addressValidator from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -20,9 +16,10 @@ import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer'
 import { SellInfo, TradingSellState } from '../reducers/sellReducer';
 import type { TradingState } from '../reducers/tradingReducer';
 import {
-    InvityServerEnvironment,
     TradingFiatCurrenciesProps,
     TradingPaymentMethodProps,
+    TradingRootState,
+    TradingRootStateWithDeviceAndAccounts,
     TradingTransaction,
     TradingType,
 } from '../types';
@@ -40,24 +37,6 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
-
-// partial copy of Suite state
-export type TradingRootState = {
-    wallet: {
-        selectedAccount: SelectedAccountStatus;
-        accounts: Account[];
-        tradingNew: TradingState; // TODO: trading - tradingNew is temporary
-    };
-    suite: {
-        settings: {
-            addressDisplayType: AddressDisplayOptions;
-            debug: {
-                invityServerEnvironment?: InvityServerEnvironment;
-            };
-        };
-    };
-    device: DeviceReducerState;
-};
 
 export type TradingBuyInfoSelector = Omit<
     BuyInfo,
@@ -102,9 +81,8 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell
 };
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
-const createMemoizedSelectorWithDeviceAndAccounts = createWeakMapSelector.withTypes<
-    TradingRootState & DeviceRootState & AccountsRootState
->();
+const createMemoizedSelectorWithDeviceAndAccounts =
+    createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 
 export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
     [
@@ -309,7 +287,7 @@ export const selectTradingPaymentMethods = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.tradingNew.trades);
 
-export const selectTradingTradesForSelectedDevice = createMemoizedSelector(
+export const selectTradingTradesForSelectedDevice = createMemoizedSelectorWithDeviceAndAccounts(
     [selectAccounts, state => state.wallet.selectedAccount, selectTradingTrades],
     (accounts, selectedAccount, trades): TradingTransaction[] =>
         trades.filter(tx => {
@@ -325,7 +303,7 @@ export const selectTradingTradesForSelectedDevice = createMemoizedSelector(
 );
 
 export const selectDeviceTradingTrades: (
-    state: TradingRootState & AccountsRootState & DeviceRootState,
+    state: TradingRootStateWithDeviceAndAccounts,
 ) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
     [state => selectDeviceAccounts(state), selectTradingTrades],
     (accounts, trades) => {
@@ -343,15 +321,14 @@ export const selectDeviceTradingTrades: (
 );
 
 export const selectDeviceTradingTradesOrderedByDate: (
-    state: TradingRootState & AccountsRootState & DeviceRootState,
+    state: TradingRootStateWithDeviceAndAccounts,
 ) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
     [selectDeviceTradingTrades],
     trades => trades.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
 );
 
-export const selectDeviceHasTradingTrades = (
-    state: TradingRootState & AccountsRootState & DeviceRootState,
-) => selectDeviceTradingTrades(state).length > 0;
+export const selectDeviceHasTradingTrades = (state: TradingRootStateWithDeviceAndAccounts) =>
+    selectDeviceTradingTrades(state).length > 0;
 
 export const selectTradingTradeByOrderId = (state: TradingRootState, orderId: string | undefined) =>
     selectTradingTrades(state).find(t => orderId && t.data.orderId === orderId);
@@ -520,32 +497,33 @@ export const selectTradingSellFormStep = (state: TradingRootState) =>
 export const selectTradingComposedTransactionInfo = (state: TradingRootState) =>
     state.wallet.tradingNew.composedTransactionInfo;
 
-export const selectTradingAccountAccordingActiveSection = createMemoizedSelector(
-    [
-        selectTradingExchange,
-        selectTradingSell,
-        selectTradingBuy,
-        ({ wallet }) => wallet.accounts,
-        (_: TradingRootState, activeSection: TradingType) => activeSection,
-        (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
-            selectedAccount,
-    ],
-    (tradingExchange, tradingSell, tradingBuy, accounts, activeSection, selectedAccount) => {
-        const tradingSectionMap = {
-            buy: tradingBuy.tradingAccountKey,
-            sell: tradingSell.tradingAccountKey,
-            exchange: tradingExchange.tradingAccountKey,
-        };
+export const selectTradingAccountAccordingActiveSection =
+    createMemoizedSelectorWithDeviceAndAccounts(
+        [
+            selectTradingExchange,
+            selectTradingSell,
+            selectTradingBuy,
+            ({ wallet }) => wallet.accounts,
+            (_: TradingRootState, activeSection: TradingType) => activeSection,
+            (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
+                selectedAccount,
+        ],
+        (tradingExchange, tradingSell, tradingBuy, accounts, activeSection, selectedAccount) => {
+            const tradingSectionMap = {
+                buy: tradingBuy.tradingAccountKey,
+                sell: tradingSell.tradingAccountKey,
+                exchange: tradingExchange.tradingAccountKey,
+            };
 
-        const tradingAccountKey = tradingSectionMap[activeSection];
+            const tradingAccountKey = tradingSectionMap[activeSection];
 
-        const account = tradingAccountKey
-            ? accounts.find(acc => acc.key === tradingAccountKey)
-            : null;
+            const account = tradingAccountKey
+                ? accounts.find(acc => acc.key === tradingAccountKey)
+                : null;
 
-        return account ?? selectedAccount.account; // TODO: trading - delete selectedAccount and set tradingAccountKey on desktop
-    },
-);
+            return account ?? selectedAccount.account; // TODO: trading - delete selectedAccount and set tradingAccountKey on desktop
+        },
+    );
 
 export const selectValidTradingBuyQuotes = createMemoizedSelector(
     [selectTradingBuyQuotes],
@@ -604,7 +582,7 @@ export const selectTradingSellTransactionId = (state: TradingRootState) =>
 export const selectTradingVerifiedAddress = (state: TradingRootState) =>
     state.wallet.tradingNew.verifiedAddress;
 
-export const selectTradingIsSlip24Allowed = createMemoizedSelector(
+export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndAccounts(
     [
         state => selectDeviceUnavailableCapabilities(state),
         (_: TradingRootState, account: Account) => account,

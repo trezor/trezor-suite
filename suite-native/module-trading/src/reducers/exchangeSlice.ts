@@ -8,13 +8,11 @@ import { Address } from '@trezor/blockchain-link-types';
 
 export interface TradingExchangeState extends CommonTradingExchangeState {
     receiveAddress: Address | undefined;
-    maxSlippage: string;
 }
 
 export const exchangeInitialState: TradingExchangeState = {
     ...initialState.exchange,
     receiveAddress: undefined,
-    maxSlippage: '1',
 };
 
 export const TRADING_EXCHANGE = 'tradingExchange';
@@ -38,9 +36,6 @@ const exchangeSlice = createSlice({
         clearQuotesAndQuotesRequest: state => {
             state.quotesRequest = undefined;
             state.quotes = [];
-        },
-        setMaxSlippage: (state, { payload }: PayloadAction<string>) => {
-            state.maxSlippage = payload;
         },
     },
 });
