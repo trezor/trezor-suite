@@ -58,6 +58,7 @@ const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKe
 
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
+const nestedError = (cause: Error) => error(ERRORS.nestError(cause));
 const fail = (msg: string) =>
     error(isErrorWithoutDeviceInteraction(msg) ? new ERRORS.TransportError(msg) : new Error(msg));
 
@@ -121,8 +122,8 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
         this.abortController = new AbortController();
         const { signal } = this.abortController;
-        const abortPromise = new Promise<ReturnType<typeof fail>>(resolve =>
-            signal.addEventListener('abort', () => resolve(error(signal.reason))),
+        const abortPromise = new Promise<Error>(resolve =>
+            signal.addEventListener('abort', () => resolve(signal.reason)),
         );
         const callPromise = this.callLoop(type, msg, abortPromise);
         this.callPromise = callPromise;
@@ -172,7 +173,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private async callLoop<T extends Messages.MessageKey>(
         type: T,
         msg: Messages.MessagePayload<T>,
-        abortPromise: Promise<ReturnType<typeof fail>>,
+        abortPromise: Promise<Error>,
     ) {
         let [name, data] = [type, msg];
         let pinUnlocked = false;
@@ -191,7 +192,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
             const [abortedDuringCall, response] = await Promise.race([
                 callPromise.then(res => [false, res] as const),
-                abortPromise.then(res => [true, res] as const),
+                abortPromise.then(res => [true, nestedError(res)] as const),
             ]);
 
             if (name === 'ButtonAck' && abortedDuringCall && !this.disposed) {
@@ -218,7 +219,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
             await callPromise;
 
-            if (this.disposed) return error(this.disposed);
+            if (this.disposed) return nestedError(this.disposed);
 
             if (!response.success) return response;
 
@@ -266,7 +267,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 case 'PinMatrixRequest': {
                     const promptRes = await Promise.race([
                         this.device.prompt(DEVICE.PIN, { type: res.message.type }),
-                        abortPromise,
+                        abortPromise.then(nestedError),
                     ]);
 
                     if (!promptRes.success) {
@@ -282,7 +283,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 case 'PassphraseRequest': {
                     const promptRes = await Promise.race([
                         this.device.prompt(DEVICE.PASSPHRASE, {}),
-                        abortPromise,
+                        abortPromise.then(nestedError),
                     ]);
 
                     if (!promptRes.success) {
@@ -301,7 +302,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 case 'WordRequest': {
                     const promptRes = await Promise.race([
                         this.device.prompt(DEVICE.WORD, { type: res.message.type }),
-                        abortPromise,
+                        abortPromise.then(nestedError),
                     ]);
 
                     if (!promptRes.success) {
@@ -326,7 +327,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     }
 
     async call(name: string, data: Record<string, unknown>, options: AbortableOptions = {}) {
-        if (this.disposed) return Promise.resolve(error(this.disposed));
+        if (this.disposed) return Promise.resolve(nestedError(this.disposed));
 
         logger.debug('Sending', name, filterForLog(name, data));
 
@@ -351,7 +352,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     }
 
     async send(name: string, data: Record<string, unknown>, options: AbortableOptions = {}) {
-        if (this.disposed) return Promise.resolve(error(this.disposed));
+        if (this.disposed) return Promise.resolve(nestedError(this.disposed));
 
         const result = await this.transport.send({
             name,
@@ -366,7 +367,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     }
 
     async receive(options: AbortableOptions = {}) {
-        if (this.disposed) return Promise.resolve(error(this.disposed));
+        if (this.disposed) return Promise.resolve(nestedError(this.disposed));
 
         const result = await this.transport.receive({
             session: this.session,
