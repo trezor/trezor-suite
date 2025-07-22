@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
+import { useAtom } from 'jotai';
 
 import {
     deviceActions,
@@ -9,6 +10,7 @@ import {
     selectIsDeviceRemembered,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
+    toggleAutoEjectThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -17,9 +19,11 @@ import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
+    selectShouldShowAutoEjectAlert,
     selectViewOnlyCancelationTimestamp,
     setViewOnlyCancelationTimestamp,
 } from '@suite-native/settings';
+import { atomWithUnecryptedStorage } from '@suite-native/storage';
 import { useToast } from '@suite-native/toasts';
 import { TimerId } from '@trezor/type-utils';
 
@@ -27,9 +31,14 @@ import viewOnlyLottie from '../../assets/view-only-lottie.json';
 
 const SHOW_TIMEOUT = 1500;
 
-export const useShowViewOnlyAlert = () => {
+const hasAutoEjectAlertBeenDisplayedAtom = atomWithUnecryptedStorage(
+    'hasAutoEjectAlertBeenDisplayed',
+    false,
+);
+
+export const useShowAutoEjectAlert = () => {
     const dispatch = useDispatch();
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
 
     const isViewOnlyByDefaultEnabled = useFeatureFlag(FeatureFlag.IsViewOnlyByDefaultEnabled);
@@ -40,6 +49,12 @@ export const useShowViewOnlyAlert = () => {
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
+
+    const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
+
+    const [hasAutoEjectAlertBeenDisplayed, setHasAutoEjectAlertBeenDisplayed] = useAtom(
+        hasAutoEjectAlertBeenDisplayedAtom,
+    );
 
     const handleEnable = useCallback(() => {
         if (device) {
@@ -87,6 +102,59 @@ export const useShowViewOnlyAlert = () => {
             ),
         });
     }, [showAlert, handleEnable, handleCancel]);
+
+    useEffect(() => {
+        if (
+            isViewOnlyByDefaultEnabled &&
+            !hasAutoEjectAlertBeenDisplayed &&
+            shouldShowAutoEjectAlert
+        ) {
+            showAlert({
+                appendix: (
+                    <VStack alignItems="center" spacing="sp24" testID="@home/alert/view-only">
+                        <LottieAnimation source={viewOnlyLottie} />
+                        <CenteredTitleHeader
+                            title={
+                                <Translation id="moduleSettings.viewOnly.autoEject.alert.title" />
+                            }
+                            subtitle={
+                                <Translation id="moduleSettings.viewOnly.autoEject.alert.subtitle" />
+                            }
+                        />
+                    </VStack>
+                ),
+                primaryButtonTitle: (
+                    <Translation id="moduleSettings.viewOnly.autoEject.alert.primaryButtonTitle" />
+                ),
+                onPressPrimaryButton: () => setHasAutoEjectAlertBeenDisplayed(true),
+                secondaryButtonTitle: (
+                    <Translation id="moduleSettings.viewOnly.autoEject.alert.secondaryButtonTitle" />
+                ),
+                onPressSecondaryButton: () => {
+                    setHasAutoEjectAlertBeenDisplayed(true);
+                    dispatch(toggleAutoEjectThunk());
+                    showToast({
+                        message: (
+                            <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />
+                        ),
+                        variant: 'default',
+                    });
+                },
+            });
+        }
+        if (isViewOnlyByDefaultEnabled && !shouldShowAutoEjectAlert) {
+            hideAlert();
+        }
+    }, [
+        dispatch,
+        hasAutoEjectAlertBeenDisplayed,
+        hideAlert,
+        isViewOnlyByDefaultEnabled,
+        setHasAutoEjectAlertBeenDisplayed,
+        shouldShowAutoEjectAlert,
+        showAlert,
+        showToast,
+    ]);
 
     useFocusEffect(
         useCallback(() => {

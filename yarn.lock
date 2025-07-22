@@ -11509,6 +11509,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-native/config": "workspace:*"
+    "@trezor/connect": "workspace:*"
     react: "npm:19.0.0"
   languageName: unknown
   linkType: soft

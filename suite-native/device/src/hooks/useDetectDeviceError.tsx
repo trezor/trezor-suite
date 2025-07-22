@@ -27,7 +27,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
-import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
@@ -64,6 +64,7 @@ export const useDetectDeviceError = () => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
+    const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -268,8 +269,8 @@ export const useDetectDeviceError = () => {
         // Device with error can't be view-only.
         // Edge case: If user has connected two devices simultaneously,
         // it will not hide the alert.
-        if (isNoPhysicalDeviceConnected) {
+        if (isNoPhysicalDeviceConnected && !shouldShowAutoEjectAlert) {
             hideAlert();
         }
-    }, [isNoPhysicalDeviceConnected, hideAlert]);
+    }, [isNoPhysicalDeviceConnected, hideAlert, shouldShowAutoEjectAlert]);
 };

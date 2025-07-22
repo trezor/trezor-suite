@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { isDetoxTestBuild } from '@suite-native/config';
+import { DEVICE } from '@trezor/connect';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -10,6 +11,7 @@ export interface AppSettingsState {
     isFirmwareRevisionCheckEnabled: boolean;
     isFirmwareHashCheckEnabled: boolean;
     areTestnetsEnabled: boolean;
+    shouldShowAutoEjectAlert: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -24,6 +26,7 @@ export const appSettingsInitialState: AppSettingsState = {
     isFirmwareRevisionCheckEnabled: true,
     isFirmwareHashCheckEnabled: true,
     areTestnetsEnabled: isDetoxTestBuild(),
+    shouldShowAutoEjectAlert: false,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -60,6 +63,15 @@ export const appSettingsSlice = createSlice({
             state.isCoinEnablingInitFinished = payload;
         },
     },
+    extraReducers: builder => {
+        builder
+            .addCase(DEVICE.DISCONNECT, state => {
+                state.shouldShowAutoEjectAlert = true;
+            })
+            .addCase(DEVICE.CONNECT, state => {
+                state.shouldShowAutoEjectAlert = false;
+            });
+    },
 });
 
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
@@ -68,6 +80,9 @@ export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState
     state.appSettings.viewOnlyCancelationTimestamp;
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isDeviceAuthenticityCheckEnabled;
+
+export const selectShouldShowAutoEjectAlert = (state: SettingsSliceRootState) =>
+    state.appSettings.shouldShowAutoEjectAlert;
 
 export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.areTestnetsEnabled;
