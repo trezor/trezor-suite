@@ -91,19 +91,11 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
         <Modal
             onCancel={onCancel}
             heading={
-                <Text case="titlecase" as="p">
+                <Text as="p">
                     {network.name} <Translation id="TR_BACKENDS" />
                 </Text>
             }
-            description={
-                <Translation
-                    id={
-                        network?.networkType === 'cardano'
-                            ? 'SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION'
-                            : 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION'
-                    }
-                />
-            }
+            description={<Translation id="SETTINGS_BACKEND_SETTINGS_DESCRIPTION" />}
             size="small"
             bottomContent={
                 <>

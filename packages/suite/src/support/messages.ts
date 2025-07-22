@@ -6234,14 +6234,10 @@ export default defineMessages({
         id: 'TR_LABELING_ENABLED',
         defaultMessage: 'Labeling',
     },
-    SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION: {
-        id: 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION',
+    SETTINGS_BACKEND_SETTINGS_DESCRIPTION: {
+        id: 'SETTINGS_BACKEND_SETTINGS_DESCRIPTION',
         defaultMessage:
-            'Trezor Suite uses Trezor Blockbook for the wallet backend. You can also use your own custom blockbook.',
-    },
-    SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION: {
-        id: 'SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION',
-        defaultMessage: 'Trezor Suite uses Blockfrost websocket-link for the wallet backend.',
+            'Connects to trusted backend servers to load your account data. You can also use a custom backend and set a different blockchain explorer.',
     },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
