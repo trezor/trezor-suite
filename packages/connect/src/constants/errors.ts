@@ -67,8 +67,8 @@ export class TrezorError extends Error {
 
     message: string;
 
-    constructor(code: ErrorCode, message: string) {
-        super(message);
+    constructor(code: ErrorCode, message: string, options?: ErrorOptions) {
+        super(message, options);
         this.code = code;
         this.message = message;
     }
@@ -79,6 +79,11 @@ export class TrezorError extends Error {
     }
 }
 
+export const nestError = (cause: Error) =>
+    cause instanceof TrezorError
+        ? new TrezorError(cause.code, cause.message, { cause })
+        : new Error(cause.message, { cause });
+
 export class TransportError extends Error {}
 
 export const TypedError = (id: ErrorCode, message?: string) =>
@@ -86,20 +91,11 @@ export const TypedError = (id: ErrorCode, message?: string) =>
 
 // serialize Error/TypeError object into payload error type (Error object/class is converted to string while sent via postMessage)
 export const serializeError = (payload: any) => {
-    if (payload && payload.error instanceof Error) {
-        return { error: payload.error.message, code: payload.error.code };
-    }
-    if (payload instanceof TrezorError) {
-        return { error: payload.message, code: payload.code };
-    }
-    if (payload instanceof Error) {
-        return {
-            error: payload.message,
-            code: 'code' in payload ? payload.code : 'Failure_UnknownCode',
-        };
-    }
+    const error = payload?.error instanceof Error ? payload.error : payload;
 
-    return { ...payload };
+    return error instanceof Error
+        ? { error: error.message, code: 'code' in error ? error.code : 'Failure_UnknownCode' }
+        : { ...payload };
 };
 
 // trezord error prefix.
