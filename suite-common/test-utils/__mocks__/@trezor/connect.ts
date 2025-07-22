@@ -6,6 +6,8 @@
 
 const connect = jest.requireActual('@trezor/connect');
 
+const realMethods = { ...connect.default };
+
 // event listeners
 const listeners: Record<string, (e: any) => void> = {};
 // methods response fixtures
@@ -17,18 +19,33 @@ const getNextFixture = (_methodName: string) => {
     return fixture;
 };
 
-const result = (methodName: string, data: any) =>
-    jest.fn(params =>
-        Promise.resolve({
+const result = (methodName: string, defaults: any) =>
+    jest.fn(params => {
+        if (params && params.__info) {
+            realMethods['init']({
+                manifest: {
+                    email: '',
+                    appUrl: '',
+                },
+            });
+
+            // call actual implementation
+            return realMethods[methodName](params).finally(() => {
+                // I needed to call dispose to get rid of 'Jest did not exit one second after the test run has completed.' warning
+                realMethods['dispose']();
+            });
+        }
+
+        return Promise.resolve({
             success: true,
             payload: { _comment: 'Default mock payload' },
-            ...data,
+            ...defaults,
             ...getNextFixture(methodName),
             _method: methodName,
             _fixtures: fixtures,
             _params: params,
-        }),
-    );
+        });
+    });
 
 const ERROR_RESULT = { success: false, payload: { error: 'Default mock error' } };
 
@@ -55,10 +72,10 @@ const DEFAULT_PAYLOAD: Record<string, any> = {
 
 Object.keys(methods).forEach(methodName => {
     if (typeof methods[methodName] === 'function') {
-        const failed = failedByDefaultMethods.includes(methodName)
+        const defaults = failedByDefaultMethods.includes(methodName)
             ? ERROR_RESULT
             : DEFAULT_PAYLOAD[methodName];
-        methods[methodName] = result(methodName, failed);
+        methods[methodName] = result(methodName, defaults);
     }
 });
 
