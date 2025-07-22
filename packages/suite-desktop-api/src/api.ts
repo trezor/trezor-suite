@@ -43,7 +43,7 @@ export interface MainChannels {
     'logger/config': LoggerConfig;
 
     // bio auth
-    'bio-auth/request': void;
+    'bio-auth/request': { message: string };
     'bio-auth/is-available': void;
     'bio-auth/request-availability': void;
 }
@@ -89,7 +89,7 @@ export interface RendererChannels {
     'app/auto-start/popup-request': void;
 
     // bio auth
-    'bio-auth/request': void;
+    'bio-auth/request': { message: string };
     'bio-auth/validated': boolean;
     'bio-auth/is-available': boolean;
 }
@@ -131,7 +131,7 @@ export interface InvokeChannels {
     'system/open-settings': (settings: string) => InvokeResult;
 
     // bio auth
-    'bio-auth/request': () => void;
+    'bio-auth/request': (options: { message: string }) => void;
     'bio-auth/is-available': () => void;
 }
 

@@ -6,7 +6,7 @@ import { StrictIpcRenderer } from './ipc';
 const BIO_AUTH_TIMEOUT = 60 * 1000;
 
 export type BioAuthApi = {
-    validateBioAuth: () => Promise<boolean>;
+    validateBioAuth: (options: { message: string }) => Promise<boolean>;
     isBioAuthAvailable: () => Promise<boolean>;
 };
 
@@ -21,7 +21,7 @@ export const createBioAuthAPI = <R extends StrictIpcRenderer<any, IpcRendererEve
     if (!ipcRenderer) return createBioAuthAPI(ipcRendererFallback);
 
     return {
-        validateBioAuth: () => {
+        validateBioAuth: (options: { message: string }) => {
             const resultPromise = Promise.race([
                 new Promise<boolean>((resolve, reject) => {
                     ipcRenderer.on('bio-auth/validated', (_, result: boolean) => {
@@ -39,7 +39,7 @@ export const createBioAuthAPI = <R extends StrictIpcRenderer<any, IpcRendererEve
                 createTimeoutPromise(),
             ]);
 
-            ipcRenderer.send('bio-auth/request');
+            ipcRenderer.send('bio-auth/request', options);
 
             return resultPromise;
         },

@@ -1740,6 +1740,18 @@ export default defineMessages({
         defaultMessage: 'Use biometric authentication to access Trezor Suite.',
         id: 'TR_BIO_AUTH_DESCRIPTION',
     },
+    TR_BIO_AUTH_FAILED: {
+        defaultMessage: 'Biometric authentication failed',
+        id: 'TR_BIO_AUTH_FAILED',
+    },
+    TR_BIO_AUTH_SYSTEM_MESSAGE_MAC: {
+        defaultMessage: 'verify your identity. Touch ID or enter your password to allow this',
+        id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC',
+    },
+    TR_BIO_AUTH_SYSTEM_MESSAGE_WIN: {
+        defaultMessage: 'Trezor Suite is trying to verify your identity.',
+        id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
+    },
     TR_ADDRESS_DISPLAY: {
         defaultMessage: 'Address display',
         id: 'TR_ADDRESS_DISPLAY',
