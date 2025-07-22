@@ -14,4 +14,8 @@ export const validateIpcMessage = (ipcEvent: ElectronIpcMainInvokeEvent) => {
     } else {
         throw new Error(`Invalid ipcEvent: ${JSON.stringify(ipcEvent)}`);
     }
+
+    if (ipcEvent?.senderFrame?.isDestroyed()) {
+        throw new Error('ipcEvent.senderFrame is destroyed');
+    }
 };

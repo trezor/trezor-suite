@@ -5,6 +5,7 @@ import { ElectronIpcMainInvokeEvent } from '../proxy-handler';
 const ipcMainEvent: ElectronIpcMainInvokeEvent = {
     senderFrame: {
         url: 'http://localhost:8000/',
+        isDestroyed: () => false,
     },
 };
 

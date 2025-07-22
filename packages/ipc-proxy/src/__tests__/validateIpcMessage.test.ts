@@ -1,7 +1,9 @@
 import { ElectronIpcMainInvokeEvent } from '../proxy-handler';
 import { validateIpcMessage } from '../validateIpcMessage';
 
-const createSenderFrame = (url: string) => ({ senderFrame: { url } });
+const createSenderFrame = (url: string, destroyed?: boolean): ElectronIpcMainInvokeEvent => ({
+    senderFrame: { url, isDestroyed: () => destroyed === true },
+});
 
 describe(validateIpcMessage.name, () => {
     it('passes when in DEV (localhost.8000)', () => {
@@ -39,5 +41,13 @@ describe(validateIpcMessage.name, () => {
         };
 
         expect(subject).toThrow('Invalid ipcEvent: {}');
+    });
+
+    it('fails when senderFrame has been destroyed', () => {
+        const subject = () => {
+            validateIpcMessage(createSenderFrame('http://localhost:8000/', true));
+        };
+
+        expect(subject).toThrow('ipcEvent.senderFrame is destroyed');
     });
 });
