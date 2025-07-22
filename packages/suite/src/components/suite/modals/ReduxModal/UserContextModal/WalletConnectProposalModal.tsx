@@ -36,6 +36,8 @@ import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
+import { TxSimulationBanner } from './TxSimulationModal';
+
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
     flex-direction: row;
@@ -65,6 +67,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         selectableAccounts[0] || null,
     );
+    const [ignoreWarning, setIgnoreWarning] = useState(false);
     const { isLoading, isMalicious } = useDappScan(pendingProposal?.params.proposer.metadata.url);
 
     const handleAccept = () => {
@@ -117,9 +120,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         onClick={handleAccept}
                         isDisabled={
                             pendingProposal.expired ||
-                            pendingProposal.isScam ||
                             noNetworksActivated ||
-                            isMalicious
+                            ((pendingProposal.isScam || isMalicious) && !ignoreWarning)
                         }
                         isLoading={isLoading}
                     >
@@ -272,9 +274,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 )}
 
                 {(isMalicious || pendingProposal.isScam) && (
-                    <Banner variant="destructive">
-                        <Translation id="TR_WALLETCONNECT_IS_SCAM" />
-                    </Banner>
+                    <TxSimulationBanner
+                        type="error"
+                        title={<Translation id="TR_WALLETCONNECT_IS_SCAM" />}
+                        description={<></>}
+                        disclaimerAccepted={ignoreWarning}
+                        setDisclaimerAccepted={setIgnoreWarning}
+                    />
                 )}
                 {pendingProposal.validation === 'INVALID' && (
                     <Banner variant="destructive">
