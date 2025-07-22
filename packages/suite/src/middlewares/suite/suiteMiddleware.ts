@@ -70,9 +70,16 @@ const suite =
                 }
 
                 setTimeout(() => {
+                    const hasModalContext = state.modal.context !== '@modal/context-none';
+                    const { route } = state.router;
+                    const isForegroundApp =
+                        route && !route.isFullscreenApp && !!route.isForegroundApp;
+                    const isModalActive = hasModalContext || isForegroundApp;
+
                     if (
                         !state.suite.flags.hasSeenDisconnectTooltip &&
-                        state.wallet.accounts.length > 0
+                        state.wallet.accounts.length > 0 &&
+                        !isModalActive
                     ) {
                         api.dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
                     }
