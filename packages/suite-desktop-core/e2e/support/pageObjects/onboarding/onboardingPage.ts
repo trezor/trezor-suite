@@ -95,6 +95,7 @@ export class OnboardingPage {
     @step()
     async completeOnboarding() {
         await this.disableNecessaryFirmwareChecks();
+        await this.disableDisconnectPrompt();
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
         await this.onboardingContinueButton.click();
@@ -168,6 +169,11 @@ export class OnboardingPage {
 
     @step()
     async disableDisconnectPrompt() {
+        // Desktop starts with already disabled disconnect prompt. Web needs to disable it.
+        if (!isWebProject(this.testInfo)) {
+            return;
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-shadow
         await this.page.evaluate(SuiteActions => {
             window.store.dispatch({
