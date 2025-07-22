@@ -17,6 +17,7 @@ export interface BioAuthState {
     bioAuthValidationRequired: boolean;
     windowBlurred: boolean;
     bioAuthAvailable: boolean | null;
+    hasEverValidatedBioAuth: boolean;
 }
 
 export const bioAuthPersistedWhitelist = ['bioAuthEnabled'];
@@ -37,6 +38,7 @@ const initialState: BioAuthState = {
     bioAuthValidationRequired: false,
     windowBlurred: false,
     bioAuthAvailable: null,
+    hasEverValidatedBioAuth: false,
 };
 
 export const BLUR_LOCK_TIMEOUT_MS = 5 * 60 * 1000;
@@ -85,6 +87,7 @@ export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
                     ? new Date(action.payload).getTime()
                     : null;
                 state.bioAuthValidationRequested = false;
+                state.hasEverValidatedBioAuth = true;
                 state.lastWindowBlurTimestamp = null;
                 state.bioAuthValidationRequired = false;
                 // NOTE: it happens that when the bio auth validated action is received, the window is not focused but it is in front
@@ -174,3 +177,6 @@ export const selectIsBioAuthAvailable = (state: BioAuthRootState) =>
 
 export const selectBlurTimeoutId = (state: BioAuthRootState) =>
     selectBioAuthState(state).blurTimeoutId;
+
+export const selectHasEverValidatedBioAuth = (state: BioAuthRootState) =>
+    selectBioAuthState(state).hasEverValidatedBioAuth;

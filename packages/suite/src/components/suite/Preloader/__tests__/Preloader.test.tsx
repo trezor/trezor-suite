@@ -265,6 +265,7 @@ const getInitialState = ({
         bioAuthValidationRequired: false,
         windowBlurred: false,
         bioAuthAvailable: null,
+        hasEverValidatedBioAuth: false,
     },
 });
 

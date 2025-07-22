@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -120,6 +120,15 @@ export const requestBioAuthValidationThunk = createThunk(
         } finally {
             dispatch(bioAuthActions.toggleBioAuthValidationRequested(false));
         }
+    },
+);
+
+export const requestOnceBioAuthValidationThunk = createSingleInstanceThunk(
+    `${BIO_AUTH_PREFIX}/validateAuthOnce`,
+    (_, { dispatch }) => {
+        console.log('beng');
+
+        return dispatch(requestBioAuthValidationThunk()).unwrap();
     },
 );
 
