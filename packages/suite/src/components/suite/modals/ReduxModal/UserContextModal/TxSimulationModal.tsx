@@ -163,7 +163,7 @@ const TxSimulationAsset = ({
     );
 };
 
-const TxSimulationBanner = ({
+export const TxSimulationBanner = ({
     title,
     description,
     type = 'error',
