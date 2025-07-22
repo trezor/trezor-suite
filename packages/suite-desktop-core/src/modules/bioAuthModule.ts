@@ -15,9 +15,10 @@ type BioAuthModule = (dependencies: Dependencies) => {
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
 const loadWin = ({ mainWindowProxy }: Dependencies) => {
+    const { logger } = global;
     ipcMain.on('bio-auth/request', async (_, params) => {
         if (!Passport.available()) {
-            console.error('bioAuth', 'WIN: Passport is not available');
+            logger.info('bioAuth', 'WIN: Passport is not available');
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: false,
                 message: 'Windows Hello is not available',
@@ -41,7 +42,7 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
 
             return;
         } catch (error) {
-            console.error('WIN: bioAuth validation failed', error);
+            logger.info('bioAuth', `WIN: bioAuth validation failed: ${error}`);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: false,
                 message: error.message,
@@ -53,9 +54,12 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
         try {
             const available = Passport.available();
 
+            if (!available) {
+                logger.info('bioAuth', 'WIN: passport is not available');
+            }
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', available);
         } catch (error) {
-            console.error('WIN: bioAuth isAvailable failed', error);
+            logger.info('bioAuth', `WIN: bioAuth isAvailable failed: ${error}`);
 
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', false);
         }
@@ -63,11 +67,12 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
 };
 
 const loadMac = ({ mainWindowProxy }: Dependencies) => {
+    const { logger } = global;
     ipcMain.on('bio-auth/request', async (_, params) => {
         try {
             await systemPreferences.canPromptTouchID();
         } catch (error) {
-            console.error('MAC: bioAuth canPromptTouchID failed', error);
+            logger.info('bioAuth', `MAC: bioAuth canPromptTouchID failed: ${error}`);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: false,
                 message: error.message,
@@ -84,7 +89,7 @@ const loadMac = ({ mainWindowProxy }: Dependencies) => {
 
             return;
         } catch (error) {
-            console.error('MAC: bioAuth validation failed', error);
+            logger.info('bioAuth', `MAC: bioAuth validation failed: ${error}`);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: false,
                 message: error.message,
@@ -100,7 +105,7 @@ const loadMac = ({ mainWindowProxy }: Dependencies) => {
                 .getInstance()
                 ?.webContents.send('bio-auth/is-available', canPromptTouchID);
         } catch (error) {
-            console.error('MAC: bioAuth isAvailable failed', error);
+            logger.info('bioAuth', `MAC: bioAuth isAvailable failed: ${error}`);
 
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', false);
         }
@@ -133,11 +138,13 @@ export const initBioAuthModule: BioAuthModule = dependencies => {
         if (isMacOs()) {
             loaded = true;
             loadMac(dependencies);
+            logger.info('bioAuth', 'Loaded for Mac');
         }
 
         if (isWindows()) {
             loaded = true;
             loadWin(dependencies);
+            logger.info('bioAuth', 'Loaded for Windows');
         }
 
         if (isLinux()) {

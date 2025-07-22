@@ -1,5 +1,5 @@
 import { Context } from '@suite-common/message-system';
-import { isDesktop, isWeb } from '@trezor/env-utils';
+import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -75,9 +75,11 @@ export const SettingsDebug = () => {
             <SettingsSection title="Backends">
                 <Backends />
             </SettingsSection>
-            <SettingsSection title="Biometric authentication">
-                <BioAuthSettings />
-            </SettingsSection>
+            {isDesktop() && !isLinux() && (
+                <SettingsSection title="Biometric authentication">
+                    <BioAuthSettings />
+                </SettingsSection>
+            )}
             <SettingsSection title="Flags JSON">
                 <PreField>{JSON.stringify(flags)}</PreField>
             </SettingsSection>
