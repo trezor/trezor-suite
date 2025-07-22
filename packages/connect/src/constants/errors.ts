@@ -79,6 +79,8 @@ export class TrezorError extends Error {
     }
 }
 
+export class TransportError extends Error {}
+
 export const TypedError = (id: ErrorCode, message?: string) =>
     new TrezorError(id, message || ERROR_CODES[id]);
 

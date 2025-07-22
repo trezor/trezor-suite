@@ -4,6 +4,7 @@ import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import { ERRORS, PROTO } from '../constants';
+import { TransportError } from '../constants/errors';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
@@ -64,7 +65,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
         // error.message should be one of ERRORS_WITHOUT_DEVICE_INTERACTION, otherwise it could be a fake device's attempt to bypass the entropy check.
         const handleErr = (error: any) => {
-            throw error.cause === 'transport-error'
+            throw error instanceof TransportError
                 ? error
                 : ERRORS.TypedError('Failure_EntropyCheck', error.message);
         };
