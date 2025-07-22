@@ -59,12 +59,7 @@ const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKe
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
 const fail = (msg: string) =>
-    error(
-        new Error(
-            msg,
-            isErrorWithoutDeviceInteraction(msg) ? { cause: 'transport-error' } : undefined,
-        ),
-    );
+    error(isErrorWithoutDeviceInteraction(msg) ? new ERRORS.TransportError(msg) : new Error(msg));
 
 const getFeaturesTimeout = () =>
     // Due to performance issues in suite-native during app start, original timeout is not sufficient.
