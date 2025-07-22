@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { tradingSettingsActions } from '@suite-common/trading';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useMaxSlippageForm } from '../../hooks/settings/useMaxSlippageForm';
-import { exchangeActions } from '../../reducers';
 import { MaxSlippageFormValues } from '../../types/settings';
 
 export type MaxSlippageFormProps = {
@@ -30,7 +30,7 @@ export const MaxSlippageForm = ({ onSubmit }: MaxSlippageFormProps) => {
 
     const submitForm = useCallback(
         ({ maxSlippage }: MaxSlippageFormValues) => {
-            dispatch(exchangeActions.setMaxSlippage(String(maxSlippage)));
+            dispatch(tradingSettingsActions.setMaxSlippagePercentage(String(maxSlippage)));
             onSubmit();
             reset();
         },

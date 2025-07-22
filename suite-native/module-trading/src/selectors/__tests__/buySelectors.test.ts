@@ -9,14 +9,13 @@ import { Platform } from 'react-native';
 
 import { BuyTrade, CryptoId } from 'invity-api';
 
-import { extraDependenciesMock } from '@suite-common/test-utils';
-import { TradingRootState as CommonTradingRootState } from '@suite-common/trading';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount } from '../../__fixtures__/account';
 import quotes from '../../__fixtures__/quotes.json';
-import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { TradingRootState, TradingState, tradingSlice } from '../../reducers';
+import { getWalletState } from '../../__fixtures__/walletState';
+import { TradingRootState } from '../../reducers';
 import {
     selectBuyAmountLimits,
     selectBuyBestQuotesForAvailablePaymentMethods,
@@ -31,16 +30,14 @@ import {
 } from '../buySelectors';
 
 describe('buySelectors', () => {
-    let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
-    let prevState: TradingState;
+    let state: TradingRootState & AccountsRootState;
 
     beforeEach(() => {
-        tradingReducer = tradingSlice.prepareReducer(extraDependenciesMock);
-        prevState = getInitializedTradingState();
+        state = { wallet: getWalletState() };
     });
 
     it('selectTradingBuy should select trading buy state', () => {
-        expect(selectTradingBuy({ wallet: { tradingNew: prevState } })).toEqual(prevState.buy);
+        expect(selectTradingBuy(state)).toEqual(state.wallet.tradingNew.buy);
     });
 
     describe('selectBuySelectedReceiveAccount', () => {
@@ -48,24 +45,17 @@ describe('buySelectors', () => {
 
         beforeEach(() => {
             account = getBtcAccount();
-            prevState.buy.tradingAccountKey = account.key;
-            prevState.buy.receiveAddress = account.addresses?.used[0];
+            state.wallet.tradingNew.buy.tradingAccountKey = account.key;
+            state.wallet.tradingNew.buy.receiveAddress = account.addresses?.used[0];
         });
 
         it('should be undefined when no tradingAccountKey is defined', () => {
-            prevState.buy.tradingAccountKey = undefined;
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
+            state.wallet.tradingNew.buy.tradingAccountKey = undefined;
 
             expect(selectBuySelectedReceiveAccount(state)).toBeUndefined();
         });
 
         it('should select receiveAccount and receiveAddress', () => {
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
-
             expect(selectBuySelectedReceiveAccount(state)).toEqual({
                 account,
                 address: account.addresses?.used[0],
@@ -73,19 +63,13 @@ describe('buySelectors', () => {
         });
 
         it('should be stable', () => {
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
             expect(selectBuySelectedReceiveAccount(state)).toBe(
                 selectBuySelectedReceiveAccount(state),
             );
         });
 
         it('should throw when no account with given key exists', () => {
-            prevState.buy.tradingAccountKey = 'unknown_account_key';
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
+            state.wallet.tradingNew.buy.tradingAccountKey = 'unknown_account_key';
 
             expect(() => selectBuySelectedReceiveAccount(state)).toThrow(
                 'Unknown tradingAccountKey: [unknown_account_key]',
@@ -95,7 +79,7 @@ describe('buySelectors', () => {
 
     describe('selectBuyTradeableAssetsSorted', () => {
         it('should select only coins with buy set to true', () => {
-            expect(selectBuyTradeableAssetsSorted({ wallet: { tradingNew: prevState } })).toEqual([
+            expect(selectBuyTradeableAssetsSorted(state)).toEqual([
                 expect.objectContaining({ cryptoId: 'bitcoin' }),
                 expect.objectContaining({ cryptoId: 'ethereum' }),
                 expect.objectContaining({
@@ -108,7 +92,7 @@ describe('buySelectors', () => {
         });
 
         it('should sort coins', () => {
-            prevState.buy.buyInfo!.supportedCryptoCurrencies = [
+            state.wallet.tradingNew.buy.buyInfo!.supportedCryptoCurrencies = [
                 'bitcoin',
                 'ethereum',
                 'eos',
@@ -117,7 +101,7 @@ describe('buySelectors', () => {
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ] as CryptoId[];
 
-            expect(selectBuyTradeableAssetsSorted({ wallet: { tradingNew: prevState } })).toEqual([
+            expect(selectBuyTradeableAssetsSorted(state)).toEqual([
                 expect.objectContaining({ cryptoId: 'bitcoin' }),
                 expect.objectContaining({ cryptoId: 'ethereum' }),
                 expect.objectContaining({
@@ -130,32 +114,28 @@ describe('buySelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectBuyTradeableAssetsSorted({ wallet: { tradingNew: prevState } });
-            const second = selectBuyTradeableAssetsSorted({
-                wallet: { tradingNew: prevState },
-            });
+            const first = selectBuyTradeableAssetsSorted(state);
+            const second = selectBuyTradeableAssetsSorted(state);
 
             expect(first).toBe(second);
         });
 
         it('should be empty array when coins are not set', () => {
-            prevState = tradingReducer(undefined, { type: 'undefined_action' });
+            state.wallet.tradingNew.info.coins = undefined;
 
-            expect(selectBuyTradeableAssetsSorted({ wallet: { tradingNew: prevState } })).toEqual(
-                [],
-            );
+            expect(selectBuyTradeableAssetsSorted(state)).toEqual([]);
         });
     });
 
     describe('selectBuyFormDefaultValues', () => {
         it('should return object with empty values when buy info is not initialized ', () => {
-            const state = tradingReducer(undefined, { type: 'undefined_action' });
+            state.wallet.tradingNew.buy.buyInfo = undefined;
 
-            expect(selectBuyFormDefaultValues({ wallet: { tradingNew: state } })).toEqual({});
+            expect(selectBuyFormDefaultValues(state)).toEqual({});
         });
 
         it('should return object with computed default values', () => {
-            expect(selectBuyFormDefaultValues({ wallet: { tradingNew: prevState } })).toEqual({
+            expect(selectBuyFormDefaultValues(state)).toEqual({
                 fiatCurrency: 'czk',
                 country: {
                     label: '🇨🇿 Czech Republic',
@@ -166,9 +146,9 @@ describe('buySelectors', () => {
         });
 
         it('should use default value for fiat currency if no fiat is suggested', () => {
-            prevState.buy.buyInfo!.buyInfo.suggestedFiatCurrency = undefined;
+            state.wallet.tradingNew.buy.buyInfo!.buyInfo.suggestedFiatCurrency = undefined;
 
-            expect(selectBuyFormDefaultValues({ wallet: { tradingNew: prevState } })).toEqual(
+            expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
                     fiatCurrency: 'usd',
                 }),
@@ -176,9 +156,9 @@ describe('buySelectors', () => {
         });
 
         it('should not specify country if country is not in the list', () => {
-            prevState.buy.buyInfo!.buyInfo.country = 'XX';
+            state.wallet.tradingNew.buy.buyInfo!.buyInfo.country = 'XX';
 
-            expect(selectBuyFormDefaultValues({ wallet: { tradingNew: prevState } })).toEqual(
+            expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
                     country: undefined,
                 }),
@@ -188,27 +168,21 @@ describe('buySelectors', () => {
 
     describe('selectBuySupportedFiatCurrencies', () => {
         it('should select supportedFiatCurrencies', () => {
-            expect(selectBuySupportedFiatCurrencies({ wallet: { tradingNew: prevState } })).toEqual(
-                ['usd', 'eur', 'czk'],
-            );
+            expect(selectBuySupportedFiatCurrencies(state)).toEqual(['usd', 'eur', 'czk']);
         });
 
         it('should return stable empty array when supportedFiatCurrencies are not set', () => {
-            prevState.buy.buyInfo = undefined;
+            state.wallet.tradingNew.buy.buyInfo = undefined;
 
-            const result = selectBuySupportedFiatCurrencies({ wallet: { tradingNew: prevState } });
+            const result = selectBuySupportedFiatCurrencies(state);
             expect(result).toEqual([]);
-            expect(selectBuySupportedFiatCurrencies({ wallet: { tradingNew: prevState } })).toEqual(
-                result,
-            );
+            expect(selectBuySupportedFiatCurrencies(state)).toEqual(result);
         });
     });
 
     describe('selectBuySupportedFiatCurrenciesList', () => {
         it('should return supportedFiatCurrencies', () => {
-            expect(
-                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
-            ).toEqual([
+            expect(selectBuySupportedFiatCurrenciesList(state)).toEqual([
                 {
                     displayValue: 'USD',
                     label: 'United States Dollar',
@@ -228,17 +202,21 @@ describe('buySelectors', () => {
         });
 
         it('should be stable', () => {
-            expect(
-                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
-            ).toBe(selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }));
+            expect(selectBuySupportedFiatCurrenciesList(state)).toBe(
+                selectBuySupportedFiatCurrenciesList(state),
+            );
         });
 
         it('should deduplicate values', () => {
-            prevState.buy.buyInfo!.supportedFiatCurrencies = ['usd', 'usd', 'eur', 'czk', 'eur'];
+            state.wallet.tradingNew.buy.buyInfo!.supportedFiatCurrencies = [
+                'usd',
+                'usd',
+                'eur',
+                'czk',
+                'eur',
+            ];
 
-            expect(
-                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
-            ).toEqual([
+            expect(selectBuySupportedFiatCurrenciesList(state)).toEqual([
                 expect.objectContaining({ value: 'usd' }),
                 expect.objectContaining({ value: 'eur' }),
                 expect.objectContaining({ value: 'czk' }),
@@ -248,7 +226,7 @@ describe('buySelectors', () => {
 
     describe('selectBuyAmountLimits', () => {
         it('should return amount limits', () => {
-            expect(selectBuyAmountLimits({ wallet: { tradingNew: prevState } })).toEqual({
+            expect(selectBuyAmountLimits(state)).toEqual({
                 currency: 'BTC',
                 maxCrypto: '50',
                 minCrypto: '0.0001',
@@ -258,18 +236,14 @@ describe('buySelectors', () => {
 
     describe('selectValidMobileTradingBuyQuotes', () => {
         beforeEach(() => {
-            prevState.buy.quotes = [
+            state.wallet.tradingNew.buy.quotes = [
                 ...quotes,
                 { ...quotes[0], exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 
         it('should return valid quotes', () => {
-            expect(
-                selectValidTradingBuyQuotesNative({
-                    wallet: { tradingNew: prevState },
-                }),
-            ).toEqual([
+            expect(selectValidTradingBuyQuotesNative(state)).toEqual([
                 expect.objectContaining({ orderId: 'order_id_0' }),
                 expect.objectContaining({ orderId: 'order_id_1' }),
                 expect.objectContaining({ orderId: 'order_id_3' }),
@@ -278,8 +252,8 @@ describe('buySelectors', () => {
         });
 
         it('should be stable', () => {
-            expect(selectValidTradingBuyQuotesNative({ wallet: { tradingNew: prevState } })).toBe(
-                selectValidTradingBuyQuotesNative({ wallet: { tradingNew: prevState } }),
+            expect(selectValidTradingBuyQuotesNative(state)).toBe(
+                selectValidTradingBuyQuotesNative(state),
             );
         });
 
@@ -299,11 +273,7 @@ describe('buySelectors', () => {
             });
 
             it('should ignore applePay', () => {
-                expect(
-                    selectValidTradingBuyQuotesNative({
-                        wallet: { tradingNew: prevState },
-                    }),
-                ).toEqual([
+                expect(selectValidTradingBuyQuotesNative(state)).toEqual([
                     expect.objectContaining({ orderId: 'order_id_1' }),
                     expect.objectContaining({ orderId: 'order_id_3' }),
                     expect.objectContaining({ orderId: 'order_id_4' }),
@@ -314,15 +284,11 @@ describe('buySelectors', () => {
 
     describe('selectBuyBestQuotesForAvailablePaymentMethods', () => {
         beforeEach(() => {
-            prevState.buy.quotes = quotes as BuyTrade[];
+            state.wallet.tradingNew.buy.quotes = quotes as BuyTrade[];
         });
 
         it('should return only best quote for each payment method', () => {
-            expect(
-                selectBuyBestQuotesForAvailablePaymentMethods({
-                    wallet: { tradingNew: prevState },
-                }),
-            ).toEqual([
+            expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([
                 expect.objectContaining({
                     paymentMethod: 'applePay',
                     rate: 9998.316675433,
@@ -339,14 +305,8 @@ describe('buySelectors', () => {
         });
 
         it('should be stable', () => {
-            expect(
-                selectBuyBestQuotesForAvailablePaymentMethods({
-                    wallet: { tradingNew: prevState },
-                }),
-            ).toBe(
-                selectBuyBestQuotesForAvailablePaymentMethods({
-                    wallet: { tradingNew: prevState },
-                }),
+            expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toBe(
+                selectBuyBestQuotesForAvailablePaymentMethods(state),
             );
         });
 
@@ -356,13 +316,9 @@ describe('buySelectors', () => {
                 paymentMethod: undefined,
             } as unknown as BuyTrade;
 
-            prevState.buy.quotes = [quote];
+            state.wallet.tradingNew.buy.quotes = [quote];
 
-            expect(
-                selectBuyBestQuotesForAvailablePaymentMethods({
-                    wallet: { tradingNew: prevState },
-                }),
-            ).toEqual([]);
+            expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
 
         it('should ignore quotes without payment method name', () => {
@@ -371,47 +327,30 @@ describe('buySelectors', () => {
                 paymentMethodName: undefined,
             } as unknown as BuyTrade;
 
-            prevState.buy.quotes = [quote];
+            state.wallet.tradingNew.buy.quotes = [quote];
 
-            expect(
-                selectBuyBestQuotesForAvailablePaymentMethods({
-                    wallet: { tradingNew: prevState },
-                }),
-            ).toEqual([]);
+            expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
     });
 
     describe('selectMobileBuyQuotesByPaymentMethod', () => {
         beforeEach(() => {
-            prevState.buy.quotes = [
+            state.wallet.tradingNew.buy.quotes = [
                 ...quotes,
                 { ...quotes[0], exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 
         it('should select valid quotes', () => {
-            expect(
-                selectBuyQuotesByPaymentMethodNative(
-                    { wallet: { tradingNew: prevState } },
-                    'creditCard',
-                ),
-            ).toEqual([
+            expect(selectBuyQuotesByPaymentMethodNative(state, 'creditCard')).toEqual([
                 expect.objectContaining({ orderId: 'order_id_1' }),
                 expect.objectContaining({ orderId: 'order_id_3' }),
             ]);
         });
 
         it('should be stable', () => {
-            expect(
-                selectBuyQuotesByPaymentMethodNative(
-                    { wallet: { tradingNew: prevState } },
-                    'creditCard',
-                ),
-            ).toBe(
-                selectBuyQuotesByPaymentMethodNative(
-                    { wallet: { tradingNew: prevState } },
-                    'creditCard',
-                ),
+            expect(selectBuyQuotesByPaymentMethodNative(state, 'creditCard')).toBe(
+                selectBuyQuotesByPaymentMethodNative(state, 'creditCard'),
             );
         });
     });

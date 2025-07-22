@@ -1,3 +1,4 @@
+import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
 import {
     TestStore,
     initStore,
@@ -5,7 +6,6 @@ import {
     userEvent,
 } from '@suite-native/test-utils';
 
-import { selectExchangeMaxSlippage } from '../../../selectors/exchangeSelectors';
 import { MaxSlippageForm, MaxSlippageFormProps, SLIPPAGE_INPUT_TEST_ID } from '../MaxSlippageForm';
 
 describe('MaxSlippageForm', () => {
@@ -15,18 +15,10 @@ describe('MaxSlippageForm', () => {
         });
 
     it('should render value based on store', async () => {
-        const store = await initStore({
-            wallet: {
-                tradingNew: {
-                    exchange: {
-                        maxSlippage: '0.5',
-                    },
-                },
-            },
-        });
+        const store = await initStore();
         const { getByTestId, getByText, queryByText } = await renderMaxSlippageForm({}, store);
 
-        expect(getByTestId(SLIPPAGE_INPUT_TEST_ID)).toHaveDisplayValue('0.5');
+        expect(getByTestId(SLIPPAGE_INPUT_TEST_ID)).toHaveDisplayValue('1');
         expect(queryByText('Slippage must be between 0.01 and 50')).toBeNull();
         expect(getByText('Confirm custom slippage')).toBeEnabled();
     });
@@ -51,7 +43,7 @@ describe('MaxSlippageForm', () => {
         await userEvent.type(input, '20');
         await userEvent.press(getByText('Confirm custom slippage'));
 
-        expect(selectExchangeMaxSlippage(store.getState())).toBe('20');
+        expect(selectTradingMaxSlippagePercentage(store.getState())).toBe('20');
         expect(onSubmit).toHaveBeenCalled();
     });
 

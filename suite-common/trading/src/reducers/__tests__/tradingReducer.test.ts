@@ -2,8 +2,10 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
+import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
 import { buyThunks, sellThunks } from '../../thunks';
 import { tradingFixtures } from '../__fixtures__/tradingReducer';
+import { settingsInitialState, tradingSettingsActions } from '../settingsReducer';
 import { initialState, prepareTradingReducer } from '../tradingReducer';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
@@ -103,5 +105,35 @@ describe('Testing trading reducer', () => {
         expect(store.getState().wallet.tradingNew.info).toEqual(
             expect.objectContaining({ paymentMethods: [] }),
         );
+    });
+
+    describe('tradingSettings', () => {
+        it('should contain settings initial state', () => {
+            const store = configureMockStore({
+                extra: {},
+                reducer: combineReducers({
+                    wallet: combineReducers({
+                        tradingNew: tradingReducer,
+                    }),
+                }),
+            });
+
+            expect(store.getState().wallet.tradingNew.settings).toEqual(settingsInitialState);
+        });
+
+        it('should delegate settings actions to settings slice', () => {
+            const store = configureMockStore({
+                extra: {},
+                reducer: combineReducers({
+                    wallet: combineReducers({
+                        tradingNew: tradingReducer,
+                    }),
+                }),
+            });
+
+            store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('2'));
+
+            expect(selectTradingMaxSlippagePercentage(store.getState())).toEqual('2');
+        });
     });
 });

@@ -5,11 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import {
-    TradingRootState,
+    TradingRootStateWithDeviceAndAccounts,
     TradingTransaction,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -38,7 +37,7 @@ export const TradingHistoryScreen = () => {
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
     const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
-    const trades = useSelector((state: TradingRootState & AccountsRootState & DeviceRootState) =>
+    const trades = useSelector((state: TradingRootStateWithDeviceAndAccounts) =>
         selectDeviceTradingTradesOrderedByDate(state),
     );
 

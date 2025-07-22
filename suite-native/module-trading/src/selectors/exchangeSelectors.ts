@@ -8,7 +8,6 @@ import {
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
-    TradingRootState as CommonTradingRootState,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeProviders,
     selectTradingExchangeSellCryptoIds,
@@ -42,7 +41,6 @@ import {
 } from '../utils/general/tradeableAssetUtils';
 
 type ExchangeSelectorsRootState = TradingRootState &
-    CommonTradingRootState &
     AccountsRootState &
     DeviceRootState &
     TokenDefinitionsRootState &
@@ -237,6 +235,3 @@ export const selectExchangeAccountsWithTokensSectionList = createExchangeMemoize
 
 export const selectExchangeAmountLimits = (state: TradingRootState) =>
     selectTradingExchange(state).amountLimits;
-
-export const selectExchangeMaxSlippage = (state: TradingRootState) =>
-    state.wallet.tradingNew.exchange.maxSlippage;

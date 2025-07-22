@@ -16,7 +16,6 @@ describe('exchangeSlice', () => {
 
         expect(state).toEqual({
             quotes: [],
-            maxSlippage: '1',
             isFromRedirect: false,
             isLoading: false,
             formStep: 'RECEIVING_ADDRESS',
@@ -65,7 +64,6 @@ describe('exchangeSlice', () => {
                 formStep: 'RECEIVING_ADDRESS',
                 isFromRedirect: false,
                 isLoading: false,
-                maxSlippage: '1',
             });
         });
     });
@@ -85,14 +83,6 @@ describe('exchangeSlice', () => {
 
             expect(state.quotes).toEqual([]);
             expect(state.quotesRequest).toBeUndefined();
-        });
-    });
-
-    describe('setMaxSlippage', () => {
-        it('should set max slippage', () => {
-            const state = exchangeReducer(undefined, exchangeActions.setMaxSlippage('2'));
-
-            expect(state.maxSlippage).toBe('2');
         });
     });
 });

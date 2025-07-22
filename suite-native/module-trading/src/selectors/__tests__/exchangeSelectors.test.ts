@@ -1,18 +1,17 @@
 import { CryptoId } from 'invity-api';
 
-import { extraDependenciesMock } from '@suite-common/test-utils';
-import { TradingRootState as CommonTradingRootState } from '@suite-common/trading';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount, getEthAccount } from '../../__fixtures__/account';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { TradingRootState, TradingState, tradingSlice } from '../../reducers';
+import { getWalletState } from '../../__fixtures__/walletState';
+import { TradingRootState } from '../../reducers';
 import {
     selectExchangeAccountsWithTokensSectionList,
     selectExchangeAmountLimits,
     selectExchangeBuyTradeableAssetsSorted,
-    selectExchangeMaxSlippage,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -21,18 +20,16 @@ import {
 } from '../exchangeSelectors';
 
 describe('exchangeSelectors', () => {
-    let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
-    let prevState: TradingState;
+    let state: TradingRootState & AccountsRootState;
 
     beforeEach(() => {
-        tradingReducer = tradingSlice.prepareReducer(extraDependenciesMock);
-        prevState = getInitializedTradingState('exchange');
+        state = {
+            wallet: getWalletState({ tradeType: 'exchange' }),
+        };
     });
 
     it('selectTradingExchange should select trading exchange state', () => {
-        expect(selectTradingExchange({ wallet: { tradingNew: prevState } })).toEqual(
-            prevState.exchange,
-        );
+        expect(selectTradingExchange(state)).toEqual(state.wallet.tradingNew.exchange);
     });
 
     describe('selectExchangeSelectedSendAccount', () => {
@@ -40,39 +37,27 @@ describe('exchangeSelectors', () => {
 
         beforeEach(() => {
             account = getBtcAccount();
-            prevState.exchange.tradingAccountKey = account.key;
+            state.wallet.tradingNew.exchange.tradingAccountKey = account.key;
         });
 
         it('should be undefined when no tradingAccountKey is defined', () => {
-            prevState.exchange.tradingAccountKey = undefined;
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
+            state.wallet.tradingNew.exchange.tradingAccountKey = undefined;
 
             expect(selectExchangeSelectedSendAccount(state)).toBeUndefined();
         });
 
         it('should select receiveAccount and receiveAddress', () => {
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
             expect(selectExchangeSelectedSendAccount(state)).toEqual(account);
         });
 
         it('should be stable', () => {
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
             expect(selectExchangeSelectedSendAccount(state)).toBe(
                 selectExchangeSelectedSendAccount(state),
             );
         });
 
         it('should return undefined when no account with given key exists', () => {
-            prevState.exchange.tradingAccountKey = 'unknown_account_key';
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
+            state.wallet.tradingNew.exchange.tradingAccountKey = 'unknown_account_key';
 
             expect(selectExchangeSelectedSendAccount(state)).toBeUndefined();
         });
@@ -83,23 +68,17 @@ describe('exchangeSelectors', () => {
 
         beforeEach(() => {
             account = getBtcAccount();
-            prevState.exchange.receiveAccountKey = account.key;
-            prevState.exchange.receiveAddress = account.addresses?.used[0];
+            state.wallet.tradingNew.exchange.receiveAccountKey = account.key;
+            state.wallet.tradingNew.exchange.receiveAddress = account.addresses?.used[0];
         });
 
         it('should be undefined when no receiveAccountKey is defined', () => {
-            prevState.exchange.receiveAccountKey = undefined;
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
+            state.wallet.tradingNew.exchange.receiveAccountKey = undefined;
 
             expect(selectExchangeSelectedReceiveAccount(state)).toBeUndefined();
         });
 
         it('should select receiveAccount and receiveAddress', () => {
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
             expect(selectExchangeSelectedReceiveAccount(state)).toEqual({
                 account,
                 address: account.addresses?.used[0],
@@ -107,19 +86,13 @@ describe('exchangeSelectors', () => {
         });
 
         it('should be stable', () => {
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
             expect(selectExchangeSelectedReceiveAccount(state)).toBe(
                 selectExchangeSelectedReceiveAccount(state),
             );
         });
 
         it('should return undefined no account with given key exists', () => {
-            prevState.exchange.receiveAccountKey = 'unknown_account_key';
-            const state = {
-                wallet: { tradingNew: prevState, accounts: [account] },
-            } as unknown as CommonTradingRootState & TradingRootState;
+            state.wallet.tradingNew.exchange.receiveAccountKey = 'unknown_account_key';
 
             expect(selectExchangeSelectedReceiveAccount(state)).toBeUndefined();
         });
@@ -127,9 +100,7 @@ describe('exchangeSelectors', () => {
 
     describe('selectExchangeBuyTradeableAssetsSorted', () => {
         it('should select only coins with exchange set to true', () => {
-            expect(
-                selectExchangeBuyTradeableAssetsSorted({ wallet: { tradingNew: prevState } }),
-            ).toEqual([
+            expect(selectExchangeBuyTradeableAssetsSorted(state)).toEqual([
                 expect.objectContaining({ cryptoId: 'bitcoin' }),
                 expect.objectContaining({ cryptoId: 'ethereum' }),
                 expect.objectContaining({
@@ -139,7 +110,7 @@ describe('exchangeSelectors', () => {
         });
 
         it('should sort coins', () => {
-            prevState.exchange.exchangeInfo!.buyCryptoIds = [
+            state.wallet.tradingNew.exchange.exchangeInfo!.buyCryptoIds = [
                 'bitcoin',
                 'ethereum',
                 'eos',
@@ -148,9 +119,7 @@ describe('exchangeSelectors', () => {
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ] as CryptoId[];
 
-            expect(
-                selectExchangeBuyTradeableAssetsSorted({ wallet: { tradingNew: prevState } }),
-            ).toEqual([
+            expect(selectExchangeBuyTradeableAssetsSorted(state)).toEqual([
                 expect.objectContaining({ cryptoId: 'bitcoin' }),
                 expect.objectContaining({ cryptoId: 'ethereum' }),
                 expect.objectContaining({
@@ -163,38 +132,30 @@ describe('exchangeSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectExchangeBuyTradeableAssetsSorted({
-                wallet: { tradingNew: prevState },
-            });
-            const second = selectExchangeBuyTradeableAssetsSorted({
-                wallet: { tradingNew: prevState },
-            });
+            const first = selectExchangeBuyTradeableAssetsSorted(state);
+            const second = selectExchangeBuyTradeableAssetsSorted(state);
 
             expect(first).toBe(second);
         });
 
         it('should be empty array when coins are not set', () => {
-            prevState = tradingReducer(undefined, { type: 'undefined_action' });
+            state.wallet.tradingNew.info.coins = undefined;
 
-            expect(
-                selectExchangeBuyTradeableAssetsSorted({ wallet: { tradingNew: prevState } }),
-            ).toEqual([]);
+            expect(selectExchangeBuyTradeableAssetsSorted(state)).toEqual([]);
         });
     });
 
     describe('selectExchangeQuotes', () => {
         it('should return exchange.quotes', () => {
-            prevState.exchange.quotes = exchangeQuotes;
+            state.wallet.tradingNew.exchange.quotes = exchangeQuotes;
 
-            expect(selectExchangeQuotes({ wallet: { tradingNew: prevState } })).toEqual(
-                exchangeQuotes,
-            );
+            expect(selectExchangeQuotes(state)).toEqual(exchangeQuotes);
         });
     });
 
     describe('selectGroupedExchangeQuotes', () => {
         it('should return empty groups when no quotes are specified', () => {
-            expect(selectGroupedExchangeQuotes({ wallet: { tradingNew: prevState } })).toEqual({
+            expect(selectGroupedExchangeQuotes(state)).toEqual({
                 fixed: [],
                 float: [],
                 dex: [],
@@ -202,11 +163,9 @@ describe('exchangeSelectors', () => {
         });
 
         it('should group quotes by fixed/float/dex', () => {
-            prevState.exchange.quotes = exchangeQuotes;
+            state.wallet.tradingNew.exchange.quotes = exchangeQuotes;
 
-            const groupedQuotes = selectGroupedExchangeQuotes({
-                wallet: { tradingNew: prevState },
-            });
+            const groupedQuotes = selectGroupedExchangeQuotes(state);
 
             expect(groupedQuotes).toEqual({
                 fixed: [
@@ -231,32 +190,20 @@ describe('exchangeSelectors', () => {
         });
 
         it('should be stable', () => {
-            prevState.exchange.quotes = exchangeQuotes;
-            const rootState = { wallet: { tradingNew: prevState } };
+            state.wallet.tradingNew.exchange.quotes = exchangeQuotes;
 
-            expect(selectGroupedExchangeQuotes(rootState)).toBe(
-                selectGroupedExchangeQuotes(rootState),
-            );
+            expect(selectGroupedExchangeQuotes(state)).toBe(selectGroupedExchangeQuotes(state));
         });
     });
 
     describe('selectExchangeAccountsWithTokensSectionList', () => {
         it('should return empty array when no accounts', () => {
-            const cleanState = getInitializedTradingState('exchange');
-
-            const state = {
-                wallet: {
-                    tradingNew: cleanState,
-                    accounts: [],
-                    settings: { localCurrency: 'usd', enabledNetworks: [] },
-                    transactions: { transactions: {} },
-                },
+            const stateWithDevice = {
+                ...state,
                 device: { selectedDevice: null },
-                tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            expect(selectExchangeAccountsWithTokensSectionList(state)).toEqual([]);
+            expect(selectExchangeAccountsWithTokensSectionList(stateWithDevice)).toEqual([]);
         });
 
         it('should return sections for accounts with positive balance', () => {
@@ -268,7 +215,7 @@ describe('exchangeSelectors', () => {
             };
             const cleanState = getInitializedTradingState('exchange');
 
-            const state = {
+            const stateWithDevice = {
                 wallet: {
                     tradingNew: cleanState,
                     accounts: [btcAccount],
@@ -280,7 +227,7 @@ describe('exchangeSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            const result = selectExchangeAccountsWithTokensSectionList(state);
+            const result = selectExchangeAccountsWithTokensSectionList(stateWithDevice);
 
             expect(result.length).toBeGreaterThan(0);
             expect(result[0]).toEqual(
@@ -304,7 +251,7 @@ describe('exchangeSelectors', () => {
             };
             const cleanState = getInitializedTradingState('exchange');
 
-            const state = {
+            const stateWithDevice = {
                 wallet: {
                     tradingNew: cleanState,
                     accounts: [zeroBalanceAccount],
@@ -315,7 +262,7 @@ describe('exchangeSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            expect(selectExchangeAccountsWithTokensSectionList(state)).toEqual([]);
+            expect(selectExchangeAccountsWithTokensSectionList(stateWithDevice)).toEqual([]);
         });
 
         it('should handle accounts with tokens and include only tokens with positive balance', () => {
@@ -351,7 +298,7 @@ describe('exchangeSelectors', () => {
             };
             const cleanState = getInitializedTradingState('exchange');
 
-            const state = {
+            const stateWithDevice = {
                 wallet: {
                     tradingNew: cleanState,
                     accounts: [ethAccount],
@@ -376,7 +323,7 @@ describe('exchangeSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            const result = selectExchangeAccountsWithTokensSectionList(state);
+            const result = selectExchangeAccountsWithTokensSectionList(stateWithDevice);
 
             expect(result.length).toBe(1);
             expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
@@ -407,7 +354,7 @@ describe('exchangeSelectors', () => {
             };
             const cleanState = getInitializedTradingState('exchange');
 
-            const state = {
+            const stateWithDevice = {
                 wallet: {
                     tradingNew: cleanState,
                     accounts: [ethAccount],
@@ -429,7 +376,7 @@ describe('exchangeSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            const result = selectExchangeAccountsWithTokensSectionList(state);
+            const result = selectExchangeAccountsWithTokensSectionList(stateWithDevice);
 
             expect(result.length).toBe(1);
             expect(result[0].data.length).toBe(1); // Only token, no account asset
@@ -459,7 +406,7 @@ describe('exchangeSelectors', () => {
             };
             const cleanState = getInitializedTradingState('exchange');
 
-            const state = {
+            const stateWithDevice = {
                 wallet: {
                     tradingNew: cleanState,
                     accounts: [ethAccount],
@@ -481,7 +428,7 @@ describe('exchangeSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            const result = selectExchangeAccountsWithTokensSectionList(state);
+            const result = selectExchangeAccountsWithTokensSectionList(stateWithDevice);
 
             expect(result).toEqual([]); // No sections with assets
         });
@@ -509,7 +456,7 @@ describe('exchangeSelectors', () => {
             };
             const cleanState = getInitializedTradingState('exchange');
 
-            const state = {
+            const stateWithDevice = {
                 wallet: {
                     tradingNew: cleanState,
                     accounts: [ethAccount],
@@ -521,7 +468,7 @@ describe('exchangeSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            const result = selectExchangeAccountsWithTokensSectionList(state);
+            const result = selectExchangeAccountsWithTokensSectionList(stateWithDevice);
 
             expect(result.length).toBe(1);
             expect(result[0].data.length).toBe(1); // Only account asset, no tokens
@@ -531,17 +478,11 @@ describe('exchangeSelectors', () => {
 
     describe('selectExchangeAmountLimits', () => {
         it('should return amount limits', () => {
-            expect(selectExchangeAmountLimits({ wallet: { tradingNew: prevState } })).toEqual({
+            expect(selectExchangeAmountLimits(state)).toEqual({
                 currency: 'BTC',
                 minCrypto: '0.0001',
                 maxCrypto: '50',
             });
-        });
-    });
-
-    describe('selectExchangeMaxSlippage', () => {
-        it('should return exchange.maxSlippage', () => {
-            expect(selectExchangeMaxSlippage({ wallet: { tradingNew: prevState } })).toEqual('1');
         });
     });
 });

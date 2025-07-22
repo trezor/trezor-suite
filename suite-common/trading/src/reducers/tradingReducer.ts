@@ -12,7 +12,7 @@ import {
     TradingVerifiedAddress,
 } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
-import { TRADING_PREFIX } from '../constants';
+import { TRADING_PREFIX, TRADING_SETTINGS_PREFIX } from '../constants';
 import { buyThunks, exchangeThunks, sellThunks } from '../thunks';
 import {
     TradingExchangeState,
@@ -20,6 +20,11 @@ import {
     tradingExchangeReducer,
 } from './exchangeReducer';
 import { TradingSellState, sellInitialState, tradingSellReducer } from './sellReducer';
+import {
+    TradingSettingsState,
+    settingsInitialState,
+    tradingSettingsReducer,
+} from './settingsReducer';
 
 type TradingComposedTransactionInfoOutputs = {
     outputs?: PROTO.TxOutputType[] | CardanoOutput[];
@@ -65,6 +70,7 @@ export interface TradingState {
     activeSection: TradingType;
     prefilledFromAccount: TradingPreffiledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
+    settings: TradingSettingsState;
 }
 
 export const initialState: TradingState = {
@@ -88,6 +94,7 @@ export const initialState: TradingState = {
         descriptor: undefined,
     },
     verifiedAddress: undefined,
+    settings: settingsInitialState,
 };
 
 type StorageActionPayload = {
@@ -199,6 +206,12 @@ export const tradingSlice = createSliceWithExtraDeps({
             .addCase(exchangeThunks.confirmTradeThunk.fulfilled, state => {
                 state.exchange.isLoading = false;
             })
+            .addMatcher(
+                action => action.type.startsWith(TRADING_SETTINGS_PREFIX),
+                (state, action) => {
+                    tradingSettingsReducer(state.settings, action);
+                },
+            )
             .addDefaultCase((state, action) => {
                 tradingBuyReducer(state.buy, action);
                 tradingSellReducer(state.sell, action);
