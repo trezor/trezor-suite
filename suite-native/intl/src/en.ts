@@ -1010,11 +1010,11 @@ export const en = {
                     title: 'Auto eject',
                     description: 'Eject all wallets automatically after unplugging Trezor',
                     alert: {
-                        titleNoConnectedTrezor: 'Enabling auto eject will eject all wallets',
+                        titleNoConnectedTrezor: 'Enabling auto-eject will eject all wallets',
                         titleConnectedTrezor: ' after disconnecting Trezor',
                         description:
                             'You will need to reconnect your wallets to see your balances again.',
-                        primaryButtonTitle: 'Enable auto eject',
+                        primaryButtonTitle: 'Enable auto-eject',
                     },
                 },
                 toast: {
