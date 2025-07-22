@@ -1,7 +1,7 @@
 import { systemPreferences } from 'electron';
 import { Passport, VerificationResult } from 'passport-desktop';
 
-import { isMacOs, isWindows } from '@trezor/env-utils';
+import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 
 import { ipcMain } from '../typed-electron';
 
@@ -18,7 +18,10 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
     ipcMain.on('bio-auth/request', async (_, params) => {
         if (!Passport.available()) {
             console.error('bioAuth', 'WIN: Passport is not available');
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
+                success: false,
+                message: 'Windows Hello is not available',
+            });
 
             return;
         }
@@ -32,12 +35,17 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
                 throw new Error('WIN: bioAuth validation failed');
             }
 
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', true);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
+                success: true,
+            });
 
             return;
         } catch (error) {
             console.error('WIN: bioAuth validation failed', error);
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
+                success: false,
+                message: error.message,
+            });
         }
     });
 
@@ -60,19 +68,27 @@ const loadMac = ({ mainWindowProxy }: Dependencies) => {
             await systemPreferences.canPromptTouchID();
         } catch (error) {
             console.error('MAC: bioAuth canPromptTouchID failed', error);
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
+                success: false,
+                message: error.message,
+            });
 
             return;
         }
 
         try {
             await systemPreferences.promptTouchID(params.message ?? PROMPT_REASON);
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', true);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
+                success: true,
+            });
 
             return;
         } catch (error) {
             console.error('MAC: bioAuth validation failed', error);
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
+                success: false,
+                message: error.message,
+            });
         }
     });
 
@@ -91,6 +107,19 @@ const loadMac = ({ mainWindowProxy }: Dependencies) => {
     });
 };
 
+const loadLinux = ({ mainWindowProxy }: Dependencies) => {
+    ipcMain.on('bio-auth/request', () => {
+        mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
+            success: false,
+            message: 'Linux is not supported',
+        });
+    });
+
+    ipcMain.on('bio-auth/request-availability', () => {
+        mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', false);
+    });
+};
+
 export const initBioAuthModule: BioAuthModule = dependencies => {
     let loaded = false;
 
@@ -102,11 +131,18 @@ export const initBioAuthModule: BioAuthModule = dependencies => {
         loaded = true;
 
         if (isMacOs()) {
+            loaded = true;
             loadMac(dependencies);
         }
 
         if (isWindows()) {
+            loaded = true;
             loadWin(dependencies);
+        }
+
+        if (isLinux()) {
+            loaded = true;
+            loadLinux(dependencies);
         }
     };
 
