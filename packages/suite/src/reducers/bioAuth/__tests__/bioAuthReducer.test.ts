@@ -142,6 +142,7 @@ describe('bioAuthReducer', () => {
             bioAuthValidationRequired: false,
             blurTimeoutId: null,
             initialNow: 0,
+            hasEverValidatedBioAuth: false,
         });
     });
 

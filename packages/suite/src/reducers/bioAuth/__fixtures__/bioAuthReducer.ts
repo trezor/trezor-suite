@@ -14,6 +14,7 @@ const initialState: BioAuthState = {
     bioAuthValidationRequested: false,
     windowBlurred: false,
     bioAuthAvailable: null,
+    hasEverValidatedBioAuth: false,
 };
 
 // Mock date for consistent testing
@@ -102,6 +103,7 @@ export default {
                 bioAuthValidationRequested: false,
                 lastWindowBlurTimestamp: null,
                 windowBlurred: false,
+                hasEverValidatedBioAuth: true,
             },
         },
         {
@@ -119,6 +121,7 @@ export default {
                 bioAuthValidationRequested: false,
                 lastWindowBlurTimestamp: null,
                 windowBlurred: false,
+                hasEverValidatedBioAuth: true,
             },
         },
     ],

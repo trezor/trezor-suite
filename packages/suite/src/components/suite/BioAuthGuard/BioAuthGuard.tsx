@@ -17,6 +17,7 @@ import {
     bioAuthWindowBlurThunk,
     bioAuthWindowFocusThunk,
     requestBioAuthValidationThunk,
+    requestOnceBioAuthValidationThunk,
 } from 'src/actions/suite/bioAuthThunks';
 import { Translation } from 'src/components/suite';
 import {
@@ -27,7 +28,11 @@ import {
     Wrapper,
 } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectBioAuthEnabled, selectIsBioAuthValidationRequired } from 'src/reducers/bioAuth';
+import {
+    selectBioAuthEnabled,
+    selectHasEverValidatedBioAuth,
+    selectIsBioAuthValidationRequired,
+} from 'src/reducers/bioAuth';
 
 const Container = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -52,6 +57,14 @@ const BioAuthOverlay = ({
     const dispatch = useDispatch();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { elevation } = useElevation();
+
+    const hasEverValidatedBioAuth = useSelector(selectHasEverValidatedBioAuth);
+
+    useEffect(() => {
+        if (!hasEverValidatedBioAuth && isBioAuthValidationRequired) {
+            dispatch(requestOnceBioAuthValidationThunk());
+        }
+    }, [hasEverValidatedBioAuth, dispatch, isBioAuthValidationRequired]);
 
     return (
         <Wrapper ref={wrapperRef} data-testid="@suite-layout">
