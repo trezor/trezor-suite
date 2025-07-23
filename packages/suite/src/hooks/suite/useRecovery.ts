@@ -1,6 +1,10 @@
+import { useMemo } from 'react';
+
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
 import { MODAL } from 'src/actions/suite/constants';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { WordCount } from 'src/types/recovery';
 
 const getWordRequestInputType = (request: string | undefined) => {
     switch (request) {
@@ -18,6 +22,7 @@ const getWordRequestInputType = (request: string | undefined) => {
 export const useRecovery = () => {
     const recovery = useSelector(state => state.recovery);
     const modal = useSelector(state => state.modal);
+    const dispatch = useDispatch();
 
     let wordRequestInputType;
     if (modal.context === MODAL.CONTEXT_DEVICE) {
@@ -25,13 +30,17 @@ export const useRecovery = () => {
         wordRequestInputType = getWordRequestInputType(modal.windowType);
     }
 
-    const actions = useActions({
-        setWordsCount: recoveryActions.setWordsCount,
-        setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
-        recoverDevice: recoveryActions.recoverDevice,
-        setStatus: recoveryActions.setStatus,
-        resetReducer: recoveryActions.resetReducer,
-    });
+    const actions = useMemo(
+        () => ({
+            setWordsCount: (count: WordCount) => dispatch(recoveryActions.setWordsCount(count)),
+            setAdvancedRecovery: (value: boolean) =>
+                dispatch(recoveryActions.setAdvancedRecovery(value)),
+            recoverDevice: () => dispatch(recoveryActions.recoverDevice()),
+            setStatus: (status: SeedInputStatus) => dispatch(recoveryActions.setStatus(status)),
+            resetReducer: () => dispatch(recoveryActions.resetReducer()),
+        }),
+        [dispatch],
+    );
 
     return {
         ...recovery,

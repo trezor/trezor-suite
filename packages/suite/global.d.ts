@@ -10,24 +10,6 @@ declare global {
 }
 
 declare module 'redux' {
-    /**
-     * This is copied from older version of the redux-thunk package
-     * https://github.com/reduxjs/redux-thunk/blob/698241dec398639018d5f21c529b0889b78d36f8/extend-redux.d.ts
-     * Because suite still use that odl bindActionCreators function we need to keep it, once we get rid of that we can remove this
-     */
-    function bindActionCreators<ActionCreators extends ActionCreatorsMapObject<any>>(
-        actionCreators: ActionCreators,
-        dispatch: Dispatch,
-    ): {
-        [ActionCreatorName in keyof ActionCreators]: ReturnType<
-            ActionCreators[ActionCreatorName]
-        > extends ThunkAction<any, any, any, any>
-            ? (
-                  ...args: Parameters<ActionCreators[ActionCreatorName]>
-              ) => ReturnType<ReturnType<ActionCreators[ActionCreatorName]>>
-            : ActionCreators[ActionCreatorName];
-    };
-
     /*
      * Overload to add thunk support to Redux's dispatch() function and also to override UnknownAction with AnyAction
      */

@@ -7,7 +7,7 @@ import { ElevationUp, ResizableBox, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
 
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { Navigation } from './Navigation';
@@ -46,17 +46,14 @@ export const Sidebar = () => {
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
     const [isBannerVisible, setIsBannerVisible] = useState(true);
     const { isSidebarCollapsed, setSidebarWidth, sidebarWidth } = useResponsiveContext();
+    const dispatch = useDispatch();
 
     const { elevation } = useElevation();
     const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
 
-    const actions = useActions({
-        setSidebarWidth: (width: number) => setSidebarWidthInRedux({ width }),
-    });
-
     const handleSidebarWidthChanged = (width: number) => {
         setSidebarWidth(width);
-        actions.setSidebarWidth(width);
+        dispatch(setSidebarWidthInRedux({ width }));
     };
     const handleSidebarWidthUpdate = (width: number) => {
         setSidebarWidth(width);

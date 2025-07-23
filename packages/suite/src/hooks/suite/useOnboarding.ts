@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 
+import { BackupType } from '@suite-common/suite-types';
 import { UI } from '@trezor/connect';
+import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
-import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { AnyPath, AnyStepId } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
 
@@ -19,17 +22,23 @@ export const useOnboarding = () => {
     const showPinMatrix =
         modal.context === '@modal/context-device' && modal.windowType === UI.REQUEST_PIN;
 
-    const actions = useActions({
-        goToStep: onboardingActions.goToStep,
-        goToNextStep: onboardingActions.goToNextStep,
-        goToPreviousStep: onboardingActions.goToPreviousStep,
-        resetOnboarding: onboardingActions.resetOnboarding,
-        enableOnboardingReducer: onboardingActions.enableOnboardingReducer,
-        rerun: recoveryActions.rerun,
-        updateAnalytics: onboardingActions.updateAnalytics,
-        addPath: onboardingActions.addPath,
-        updateBackupType: onboardingActions.updateBackupType,
-    });
+    const actions = useMemo(
+        () => ({
+            goToStep: (stepId: AnyStepId) => dispatch(onboardingActions.goToStep(stepId)),
+            goToNextStep: (stepId?: AnyStepId) => dispatch(onboardingActions.goToNextStep(stepId)),
+            goToPreviousStep: () => dispatch(onboardingActions.goToPreviousStep()),
+            resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
+            enableOnboardingReducer: (enabled: boolean) =>
+                dispatch(onboardingActions.enableOnboardingReducer(enabled)),
+            rerun: () => dispatch(recoveryActions.rerun()),
+            updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
+                dispatch(onboardingActions.updateAnalytics(payload)),
+            addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),
+            updateBackupType: (payload: BackupType) =>
+                dispatch(onboardingActions.updateBackupType(payload)),
+        }),
+        [dispatch],
+    );
 
     const goToSuite = (initialRedirection = false) => {
         dispatch(suiteActions.initialRunCompleted());
