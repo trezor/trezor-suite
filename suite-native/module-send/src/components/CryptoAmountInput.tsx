@@ -4,7 +4,8 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectIsBaseCurrencyInSats, selectLocalCurrency } from '@suite-common/wallet-core';
+import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
@@ -55,7 +56,8 @@ export const CryptoAmountInput = ({
     const { applyStyle } = useNativeStyles();
     const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
-    const { decimals } = getNetwork(symbol);
+    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
 
@@ -81,12 +83,17 @@ export const CryptoAmountInput = ({
         [isDisabled],
     );
 
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+        code: baseCurrencyCode,
+        areSatsDisplayed: isBaseCurrencyInSats,
+    });
+
     const handleChangeValue = (newValue: string) => {
         const transformedValue = cryptoAmountTransformer(newValue);
         onChange(transformedValue);
 
         const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(transformedValue));
-        if (fiatValue) setValue(fiatFieldName, fiatValue?.toFixed(decimals));
+        if (fiatValue) setValue(fiatFieldName, fiatValue?.toFixed(baseCurrencyDecimals));
         setValue('setMaxOutputId', undefined);
         debounce(() => {
             trigger(cryptoFieldName);
