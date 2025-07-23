@@ -1,18 +1,24 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router';
 
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as protocolActions from 'src/actions/suite/protocolActions';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 const Protocol = () => {
-    const { handleProtocolRequest } = useActions({
-        handleProtocolRequest: protocolActions.handleProtocolRequest,
-    });
+    const dispatch = useDispatch();
+
+    const handleProtocolRequest = useCallback(
+        (uri: string) => {
+            dispatch(protocolActions.handleProtocolRequest(uri));
+        },
+        [dispatch],
+    );
 
     const { search } = useLocation();
+
     useEffect(() => {
         if (search) {
             const query = new URLSearchParams(search);

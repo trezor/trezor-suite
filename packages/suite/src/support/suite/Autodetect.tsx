@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import * as languageActions from 'src/actions/settings/languageActions';
 import { setTheme as setThemeAction } from 'src/actions/suite/suiteActions';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { Locale } from 'src/config/suite/languages';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from 'src/utils/suite/l10n';
 
@@ -12,21 +13,25 @@ const Autodetect = () => {
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
     const currentLanguage = useSelector(state => state.suite.settings.language);
 
-    const { setTheme, setLanguage } = useActions({
-        setTheme: setThemeAction,
-        setLanguage: languageActions.setLanguage,
-    });
+    const dispatch = useDispatch();
+
+    const setLanguage = useCallback(
+        (language: Locale) => {
+            dispatch(languageActions.setLanguage(language));
+        },
+        [dispatch],
+    );
 
     useEffect(() => {
         if (!autodetectTheme) return;
         const osTheme = getOsTheme();
         if (osTheme !== currentTheme) {
-            setTheme(osTheme);
+            dispatch(setThemeAction(osTheme));
         }
-        const unwatch = watchOsTheme(setTheme);
+        const unwatch = watchOsTheme(setThemeAction);
 
         return () => unwatch();
-    }, [autodetectTheme, currentTheme, setTheme]);
+    }, [autodetectTheme, currentTheme, dispatch]);
 
     useEffect(() => {
         if (!autodetectLanguage) return;
@@ -37,7 +42,7 @@ const Autodetect = () => {
         const unwatch = watchOsLocale(setLanguage);
 
         return () => unwatch();
-    }, [autodetectLanguage, currentLanguage, setLanguage]);
+    }, [autodetectLanguage, currentLanguage, dispatch, setLanguage]);
 
     return null;
 };

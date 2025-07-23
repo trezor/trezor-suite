@@ -1,17 +1,27 @@
+import { useMemo } from 'react';
+
+import { Account } from '@suite-common/wallet-types';
+
 import * as accountSearchActions from 'src/actions/wallet/accountSearchActions';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useAccountSearch = () => {
     const { coinFilter, searchString } = useSelector(state => state.wallet.accountSearch);
-    const { setCoinFilter, setSearchString } = useActions({
-        setCoinFilter: accountSearchActions.setCoinFilter,
-        setSearchString: accountSearchActions.setSearchString,
-    });
+    const dispatch = useDispatch();
+
+    const actions = useMemo(
+        () => ({
+            setCoinFilter: (filter?: Account['symbol']) =>
+                dispatch(accountSearchActions.setCoinFilter(filter)),
+            setSearchString: (search?: string) =>
+                dispatch(accountSearchActions.setSearchString(search)),
+        }),
+        [dispatch],
+    );
 
     return {
         coinFilter,
-        setCoinFilter,
         searchString,
-        setSearchString,
+        ...actions,
     };
 };

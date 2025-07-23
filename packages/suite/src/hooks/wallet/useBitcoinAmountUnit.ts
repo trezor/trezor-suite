@@ -6,17 +6,20 @@ import {
 } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
-import { useActions } from 'src/hooks/suite/useActions';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
     const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
+    const dispatch = useDispatch();
 
-    const { toggleBitcoinAmountUnitsAction, setBitcoinAmountUnitsAction } = useActions({
-        toggleBitcoinAmountUnitsAction: toggleBitcoinAmountUnits,
-        setBitcoinAmountUnitsAction: setBitcoinAmountUnits,
-    });
+    const toggleBitcoinAmountUnitsAction = () => {
+        dispatch(toggleBitcoinAmountUnits());
+    };
+
+    const setBitcoinAmountUnitsAction = (unit: PROTO.AmountUnit) => {
+        dispatch(setBitcoinAmountUnits(unit));
+    };
 
     const areSatsDisplayed = bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
 

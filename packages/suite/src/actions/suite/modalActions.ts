@@ -89,11 +89,11 @@ export const openDeferredModal =
     <T extends DeferredModals['type']>(payload: DeferredPayload<T>) =>
     (dispatch: Dispatch) => {
         const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
+        // @ts-expect-error: Tightening types, but I don't know how to resolve this.
         dispatch({
             type: MODAL.OPEN_USER_CONTEXT,
             payload: {
                 ...payload,
-                // @ts-expect-error: Tightening types, but I don't know how to resolve this.
                 decision: dfd,
             },
         });
