@@ -9,8 +9,9 @@ import {
     TickerId,
     TickerResult,
     Timestamp,
-    TokenAddress,
     WalletAccountTransaction,
+    toTimestamp,
+    toTokenAddress,
 } from '@suite-common/wallet-types';
 import {
     fetchTransactionsRates,
@@ -19,6 +20,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TimerId, exhaustive } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
@@ -43,7 +45,10 @@ export const updateTxsFiatRatesThunk = createThunk(
 
         const rates: TickerResult[] = [];
 
-        const timestamps = txs.map(tx => tx.blockTime) as Timestamp[];
+        const timestamps = txs
+            .map(tx => (tx.blockTime !== undefined ? toTimestamp(tx.blockTime) : undefined))
+            .filter(it => it !== undefined);
+
         await fetchTransactionsRates(
             { symbol: account.symbol },
             timestamps,
@@ -54,7 +59,7 @@ export const updateTxsFiatRatesThunk = createThunk(
 
         const groupedTokensTxs = groupTokensTransactionsByContractAddress(txs);
 
-        for (const token in groupedTokensTxs) {
+        for (const token of typedObjectKeys(groupedTokensTxs)) {
             const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
                 'coin-definitions',
             );
@@ -63,7 +68,7 @@ export const updateTxsFiatRatesThunk = createThunk(
                 const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
                     getState(),
                     account.symbol,
-                    token as TokenAddress,
+                    token,
                 );
 
                 if (!isTokenKnown) {
@@ -71,13 +76,14 @@ export const updateTxsFiatRatesThunk = createThunk(
                 }
             }
 
-            const tokenTimestamps = groupedTokensTxs[token as TokenAddress].map(
-                tx => tx.blockTime!,
-            ) as Timestamp[];
+            const tokenTimestamps = groupedTokensTxs[token]
+                .map(tx => (tx.blockTime !== undefined ? toTimestamp(tx.blockTime) : undefined))
+                .filter(it => it !== undefined);
+
             await fetchTransactionsRates(
                 {
                     symbol: account.symbol,
-                    tokenAddress: token as TokenAddress,
+                    tokenAddress: toTokenAddress(token),
                 },
                 tokenTimestamps,
                 localCurrency,
@@ -191,7 +197,7 @@ type FetchFiatRatesThunkPayload = {
 export const fetchFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/fetchFiatRates`,
     ({ rateType, localCurrency }: FetchFiatRatesThunkPayload, { dispatch, getState }) => {
-        const currentTimestamp = Date.now();
+        const currentTimestamp = toTimestamp(Date.now());
         const tickers = selectTickersToBeUpdated(
             getState(),
             currentTimestamp,
@@ -224,7 +230,7 @@ export const fetchFiatRatesThunk = createThunk(
                             tickers: chunk,
                             localCurrency,
                             rateType,
-                            fetchAttemptTimestamp: Date.now() as Timestamp,
+                            fetchAttemptTimestamp: toTimestamp(Date.now()),
                         }),
                     ),
                 ),

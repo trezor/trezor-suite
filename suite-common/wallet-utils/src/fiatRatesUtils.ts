@@ -8,8 +8,11 @@ import {
     Timestamp,
     TokenAddress,
     WalletAccountTransaction,
+    toFiatRateKey,
+    toTimestamp,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -19,10 +22,10 @@ export const getFiatRateKey = (
     tokenAddress?: TokenAddress,
 ): FiatRateKey => {
     if (tokenAddress) {
-        return `${symbol}-${tokenAddress}-${fiatCurrency}` as FiatRateKey;
+        return toFiatRateKey(`${symbol}-${tokenAddress}-${fiatCurrency}`);
     }
 
-    return `${symbol}-${fiatCurrency}` as FiatRateKey;
+    return toFiatRateKey(`${symbol}-${fiatCurrency}`);
 };
 
 export const getFiatRateKeyFromTicker = (
@@ -35,21 +38,18 @@ export const getFiatRateKeyFromTicker = (
 };
 
 export const roundTimestampToNearestPastHour = (timestamp: Timestamp): Timestamp =>
-    (Math.floor(timestamp / ONE_HOUR_IN_SECONDS) * ONE_HOUR_IN_SECONDS) as Timestamp;
+    toTimestamp(Math.floor(timestamp / ONE_HOUR_IN_SECONDS) * ONE_HOUR_IN_SECONDS);
 
 export const roundTimestampsToNearestPastHour = (timestamps: Timestamp[]): Timestamp[] =>
     timestamps.map(timestamp => roundTimestampToNearestPastHour(timestamp));
 
 const combineFiatRates = (fiatRates: RatesByTimestamps, accountRates: RatesByTimestamps) => {
-    for (const fiatRate in accountRates) {
-        const fiatRateKey = fiatRate as FiatRateKey;
-
+    for (const fiatRateKey of typedObjectKeys(accountRates)) {
         if (Object.prototype.hasOwnProperty.call(accountRates, fiatRateKey)) {
             if (!fiatRates[fiatRateKey]) {
                 fiatRates[fiatRateKey] = accountRates[fiatRateKey];
             } else {
-                for (const timestampRate in accountRates[fiatRateKey]) {
-                    const timestamp = timestampRate as unknown as Timestamp;
+                for (const timestamp of typedObjectKeys(accountRates[fiatRateKey])) {
                     if (
                         Object.prototype.hasOwnProperty.call(
                             accountRates[fiatRateKey],
@@ -69,10 +69,8 @@ export const buildHistoricRatesFromStorage = (storageHistoricRates: RatesByTimes
     const historicFiatRates: RatesByTimestamps = {};
 
     storageHistoricRates.forEach(fiatRates => {
-        for (const fiatRate in fiatRates) {
-            if (Object.prototype.hasOwnProperty.call(fiatRates, fiatRate)) {
-                const fiatRateKey = fiatRate as FiatRateKey;
-
+        for (const fiatRateKey of typedObjectKeys(fiatRates)) {
+            if (Object.prototype.hasOwnProperty.call(fiatRates, fiatRateKey)) {
                 if (!historicFiatRates[fiatRateKey]) {
                     historicFiatRates[fiatRateKey] = fiatRates[fiatRateKey];
                 } else {
@@ -93,11 +91,9 @@ export const selectHistoricRatesByTransactions = (
 
     txs.forEach(tx => {
         const { symbol, blockTime, tokens } = tx;
-        const timestamp = roundTimestampToNearestPastHour(blockTime as Timestamp);
+        const timestamp = roundTimestampToNearestPastHour(toTimestamp(blockTime ?? 0));
 
-        Object.keys(historicRates).forEach(fiatRate => {
-            const fiatRateKey = fiatRate as FiatRateKey;
-
+        typedObjectKeys(historicRates).forEach(fiatRateKey => {
             if (
                 fiatRateKey.startsWith(symbol) ||
                 tokens.some(token => fiatRateKey.startsWith(`[${symbol}-${token.contract}]`))
