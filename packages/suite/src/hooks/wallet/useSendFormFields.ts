@@ -114,7 +114,7 @@ export const useSendFormFields = ({
                     baseCurrencyCode,
                     rate: fiatRate,
                     value: new BigNumber(amount),
-                    isCryptoInSats: shouldSendInSats === true,
+                    baseCurrencyToSats: shouldSendInSats === true,
                     areSatsDisplayed,
                     symbol: network.symbol,
                 });

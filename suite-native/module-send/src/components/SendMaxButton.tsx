@@ -47,7 +47,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
     const baseCurrencyCode = useSelector(selectLocalCurrency);
     const decimalsForBaseCurrency = getDecimalsForBaseCurrency({
         code: baseCurrencyCode,
-        areSatsDisplayed: isBtcAmountInSats,
+        isInSats: isBtcAmountInSats,
     });
 
     const tokenBalance = useSelector((state: TokensRootState) =>

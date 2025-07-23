@@ -81,7 +81,7 @@ export const BaseCurrencyInput = ({
 
     const baseCurrencyDecimals = getDecimalsForBaseCurrency({
         code: baseCurrencyCode,
-        areSatsDisplayed,
+        isInSats: areSatsDisplayed,
     });
 
     const recalculateFiat = (rate: number) => {
@@ -90,7 +90,7 @@ export const BaseCurrencyInput = ({
         if (rate && !cryptoValue.isNaN() && baseCurrencyCode !== '') {
             const formatterAmount = parseCryptoToFormattedBaseCurrency({
                 baseCurrencyCode,
-                isCryptoInSats: shouldSendInSats === true,
+                baseCurrencyToSats: shouldSendInSats === true,
                 areSatsDisplayed,
                 value: cryptoValue,
                 symbol: network.symbol,

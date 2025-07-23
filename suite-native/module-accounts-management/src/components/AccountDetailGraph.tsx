@@ -30,7 +30,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     const { graphPoints, graphEvents, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
         useGraphForSingleAccount({
             accountKey,
-            fiatCurrency: fiatCurrencyCode,
+            baseCurrencyCode: fiatCurrencyCode,
             tokensFilter,
             hideMainAccount: !!tokenContract,
         });

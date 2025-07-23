@@ -1,5 +1,6 @@
 import { fromUnixTime } from 'date-fns';
 
+import { FiatRatesItem } from '../graphDataFetching';
 import {
     findOldestBalanceMovementTimestamp,
     getDataStepInMinutes,
@@ -12,8 +13,8 @@ import {
     FiatGraphPointWithCryptoBalance,
 } from '../types';
 
-describe('Graph utils', () => {
-    it('getDataStepInMinutes for 1 hour', () => {
+describe(getDataStepInMinutes.name, () => {
+    it('gets the 1m step size for 1 hour interval (60 points)', () => {
         const stepInMinutes = getDataStepInMinutes({
             startOfTimeFrameDate: new Date(2022, 0, 1, 0),
             endOfTimeFrameDate: new Date(2022, 0, 1, 1),
@@ -22,7 +23,7 @@ describe('Graph utils', () => {
         expect(stepInMinutes).toBe(1);
     });
 
-    it('getDataStepInMinutes for 1 day', () => {
+    it('gets the 1h step size for 1 day interval (24points)', () => {
         const stepInMinutes = getDataStepInMinutes({
             startOfTimeFrameDate: new Date(2022, 0, 1),
             endOfTimeFrameDate: new Date(2022, 0, 2),
@@ -31,7 +32,7 @@ describe('Graph utils', () => {
         expect(stepInMinutes).toBe(60);
     });
 
-    it('getDataStepInMinutes for 1 year', () => {
+    it('gets the weird step size for 1 year interval (364, intentionally! points)', () => {
         const stepInMinutes = getDataStepInMinutes({
             startOfTimeFrameDate: new Date(2021, 0, 1),
             endOfTimeFrameDate: new Date(2022, 0, 1),
@@ -39,8 +40,10 @@ describe('Graph utils', () => {
         });
         expect(stepInMinutes).toBe(1444);
     });
+});
 
-    it('mapCryptoBalanceMovementToFixedTimeFrame - evenly distributed values', () => {
+describe(mapCryptoBalanceMovementToFixedTimeFrame.name, () => {
+    it('maps evenly distributed values with different rates', () => {
         const balanceHistory = [
             {
                 time: 0,
@@ -75,7 +78,7 @@ describe('Graph utils', () => {
                 cryptoBalance: '10',
             },
         ];
-        const fiatRates = [
+        const fiatRates: FiatRatesItem[] = [
             {
                 time: 0,
                 rates: {
@@ -111,7 +114,7 @@ describe('Graph utils', () => {
             mapCryptoBalanceMovementToFixedTimeFrame({
                 balanceHistory,
                 fiatRates,
-                fiatCurrency: 'eur',
+                baseCurrencyCode: 'eur',
             }),
         ).toStrictEqual([
             {
@@ -142,7 +145,7 @@ describe('Graph utils', () => {
         ] as FiatGraphPointWithCryptoBalance[]);
     });
 
-    it('mapCryptoBalanceMovementToFixedTimeFrame - handles out of bounds values', () => {
+    it('handles out of bounds values', () => {
         const balanceHistory: AccountHistoryBalancePoint[] = [
             {
                 time: -20,
@@ -173,7 +176,7 @@ describe('Graph utils', () => {
                 cryptoBalance: '50',
             },
         ];
-        const fiatRates = [
+        const fiatRates: FiatRatesItem[] = [
             {
                 time: 0,
                 rates: {
@@ -209,7 +212,7 @@ describe('Graph utils', () => {
             mapCryptoBalanceMovementToFixedTimeFrame({
                 balanceHistory,
                 fiatRates,
-                fiatCurrency: 'eur',
+                baseCurrencyCode: 'eur',
             }),
         ).toStrictEqual([
             {
@@ -240,9 +243,9 @@ describe('Graph utils', () => {
         ]);
     });
 
-    it('mapCryptoBalanceMovementToFixedTimeFrame - account with no transactions', () => {
+    it('sums data from the account with no transactions as 0', () => {
         const balanceHistory: AccountHistoryBalancePoint[] = [];
-        const fiatRates = [
+        const fiatRates: FiatRatesItem[] = [
             {
                 time: 0,
                 rates: {
@@ -278,7 +281,7 @@ describe('Graph utils', () => {
             mapCryptoBalanceMovementToFixedTimeFrame({
                 balanceHistory,
                 fiatRates,
-                fiatCurrency: 'eur',
+                baseCurrencyCode: 'eur',
             }),
         ).toStrictEqual(
             fiatRates.map(({ time }) => ({
@@ -288,8 +291,10 @@ describe('Graph utils', () => {
             })),
         );
     });
+});
 
-    it('mergeMultipleFiatBalanceHistories', () => {
+describe(mergeMultipleFiatBalanceHistories.name, () => {
+    it('merges correctly BaseCurrency values by the date (timestamp) into time-buckets', () => {
         const fiatBalancesHistories: Array<FiatGraphPointWithCryptoBalance[]> = [
             [
                 {
@@ -332,16 +337,18 @@ describe('Graph utils', () => {
         expect(mergeMultipleFiatBalanceHistories(fiatBalancesHistories)).toStrictEqual([
             {
                 date: fromUnixTime(0),
-                value: 8,
+                value: 8, // = 2 + 5 + 1
             },
             {
                 date: fromUnixTime(5),
-                value: 10,
+                value: 10, // = 1 + 4 + 6
             },
         ]);
     });
+});
 
-    it('findOldestBalanceMovementTimestamp', () => {
+describe(findOldestBalanceMovementTimestamp.name, () => {
+    it('finds the oldest balance movement', () => {
         const balanceHistory: AccountWithBalanceHistory[] = [
             {
                 symbol: 'btc',
