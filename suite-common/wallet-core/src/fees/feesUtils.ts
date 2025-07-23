@@ -4,6 +4,17 @@ import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { BlockchainEstimatedFeeLevel } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { isNative } from '@trezor/env-utils';
+import { BigNumber } from '@trezor/utils';
+
+const NETWORK_FEE_OVERRIDES: Record<
+    string,
+    { minFeePerUnit: string; overrideLevels: FeeLevel['label'][] }
+> = {
+    bitcoin: {
+        minFeePerUnit: '1',
+        overrideLevels: ['normal', 'high'],
+    },
+} as const;
 
 // sort FeeLevels in reversed order (Low > High)
 // TODO: consider to use same order in @trezor/connect to avoid double sorting
@@ -76,6 +87,17 @@ export const getNewFeeInfo = async ({
         },
     });
     if (!result.success) return;
+
+    if (network.symbol === 'btc') {
+        const feeOverride = NETWORK_FEE_OVERRIDES.bitcoin;
+        result.payload.levels.forEach(level => {
+            if (feeOverride.overrideLevels.includes(level.label)) {
+                level.feePerUnit = new BigNumber(level.feePerUnit).lte(feeOverride.minFeePerUnit)
+                    ? feeOverride.minFeePerUnit
+                    : level.feePerUnit;
+            }
+        });
+    }
 
     return {
         ...result.payload,
