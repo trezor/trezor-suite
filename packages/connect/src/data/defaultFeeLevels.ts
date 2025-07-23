@@ -78,11 +78,15 @@ export const getBitcoinFeeLevels = (coin: CoinsJsonData): FeeInfoWithLevels => {
             };
         });
 
+    // BTC supports lower fees (min 0.1 sat/vb), so do not round for it
+    const minFee =
+        coin.shortcut === 'BTC' ? coin.minfee_kb / 1000 : Math.round(coin.minfee_kb / 1000);
+
     return {
         blockTime: Math.max(1, Math.round(coin.blocktime_seconds / 60)),
         dustLimit: coin.dust_limit,
         maxFee: Math.round(coin.maxfee_kb / 1000),
-        minFee: Math.round(coin.minfee_kb / 1000),
+        minFee,
         minPriorityFee: -1, // unknown/unused
         defaultFees: levels,
     };
