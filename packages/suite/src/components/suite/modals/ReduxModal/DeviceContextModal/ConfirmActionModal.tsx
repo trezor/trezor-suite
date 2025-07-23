@@ -15,6 +15,7 @@ import messages from 'src/support/messages';
 import { TrezorDevice } from 'src/types/suite';
 
 interface ConfirmActionProps {
+    cancelable?: boolean;
     device: TrezorDevice;
     title?: TranslationKey;
     onCancel?: () => void;
@@ -25,10 +26,14 @@ export const ConfirmActionModal = ({
     title,
     device,
     onCancel,
+    cancelable = true,
     enableBackdropClick = true,
 }: ConfirmActionProps) => {
     const intl = useIntl();
     const handleCancel = () => {
+        if (!cancelable) {
+            return;
+        }
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
         onCancel?.();
     };
@@ -43,7 +48,7 @@ export const ConfirmActionModal = ({
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={getDeviceInternalModel(device)}
                 deviceUnitColor={getDeviceColorVariant(device)}
-                onCancel={handleCancel}
+                onCancel={cancelable ? handleCancel : undefined}
             />
             <Modal.ModalBase size="tiny">
                 <Column alignItems="center" gap={16}>

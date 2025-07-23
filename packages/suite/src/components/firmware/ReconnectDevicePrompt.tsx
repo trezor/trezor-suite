@@ -68,8 +68,13 @@ interface ReconnectDevicePromptProps {
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
-    const { showManualReconnectPrompt, status, reconnectEvent, buttonEvent } =
-        useFirmwareDesktopUpdate();
+    const {
+        showManualReconnectPrompt,
+        status,
+        reconnectEvent,
+        buttonEvent,
+        deviceIsWaitingForConfirmationToConnectToHost,
+    } = useFirmwareDesktopUpdate();
     const { device } = useDevice();
 
     const eventDevice = usePreviousDefined(buttonEvent?.device || device);
@@ -94,12 +99,12 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
 
     const rebootPhase = getRebootPhase();
     const isRebootDone = rebootPhase === 'done';
-    const deviceModelInternal = device?.features?.internal_model;
     const isAbortable =
         onClose !== undefined && isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
     const showWebUsbButton = rebootPhase === 'disconnected' && isWebUsbTransport;
-
     const toNormal = reconnectEvent?.target === 'normal' && reconnectEvent.method === 'manual';
+    const showConfirmOnDevice =
+        (!isManualRebootRequired && !isRebootDone) || deviceIsWaitingForConfirmationToConnectToHost;
 
     const getHeading = () => {
         if (isRebootDone) {
@@ -142,12 +147,12 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
 
     return (
         <Modal.Backdrop onClick={isAbortable ? onClose : undefined}>
-            {!isManualRebootRequired && !isRebootDone && (
+            {showConfirmOnDevice && (
                 <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                    deviceModelInternal={deviceModelInternal}
-                    deviceUnitColor={device?.features?.unit_color}
-                    isConfirmed={!buttonEvent}
+                    deviceModelInternal={eventDevice?.features?.internal_model}
+                    deviceUnitColor={eventDevice?.features?.unit_color}
+                    isConfirmed={!buttonEvent && !deviceIsWaitingForConfirmationToConnectToHost}
                 />
             )}
             <Modal.ModalBase

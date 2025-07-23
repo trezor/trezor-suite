@@ -141,13 +141,17 @@ export const useFirmwareInstallation = (
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
+    const deviceIsWaitingForConfirmationToConnectToHost =
+        reconnectEvent?.method === 'auto' && reconnectEvent.target === 'bootloader';
 
     const showReconnectPrompt =
         shouldShowReconnectPrompt({
             buttonEvent,
             firmwareStatus: firmware.status,
             originalDevice,
-        }) || showManualReconnectPrompt;
+        }) ||
+        showManualReconnectPrompt ||
+        deviceIsWaitingForConfirmationToConnectToHost;
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
         originalDevice,
@@ -255,5 +259,6 @@ export const useFirmwareInstallation = (
         reconnectEvent,
         buttonEvent,
         progressEvent,
+        deviceIsWaitingForConfirmationToConnectToHost,
     };
 };
