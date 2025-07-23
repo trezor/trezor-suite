@@ -32,8 +32,6 @@ import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSe
 import { TransactionsRootState } from '../transactions/transactionsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
-type UnixTimestamp = number;
-
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
     state.wallet.fiat?.['current'];
 
@@ -79,7 +77,7 @@ export const selectIsTickerLoading = (
 
 export const selectShouldUpdateFiatRate = (
     state: FiatRatesRootState,
-    currentTimestamp: UnixTimestamp,
+    currentTimestamp: Timestamp,
     fiatRateKey: FiatRateKey,
     rateType: RateTypeWithoutHistoric = 'current',
 ) => {
@@ -128,7 +126,7 @@ export const selectTickerFromAccounts = (
 
 export const selectTickersToBeUpdated = (
     state: FiatRatesRootState & TokenDefinitionsRootState,
-    currentTimestamp: UnixTimestamp,
+    currentTimestamp: Timestamp,
     fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric,
 ): TickerId[] => {

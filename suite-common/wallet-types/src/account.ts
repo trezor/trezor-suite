@@ -14,6 +14,7 @@ export type XpubAddress = string;
 
 export type TokenSymbol = string & Branded<'TokenSymbol'>;
 export type TokenAddress = string & Branded<'TokenAddress'>;
+export const toTokenAddress = (value: string) => value as TokenAddress;
 
 export type AddressType = 'contract' | 'fingerprint' | 'policyId';
 

@@ -22,8 +22,11 @@ export interface HistoricRates {
 }
 
 export type FiatRateKey = string & Branded<'FiatRateKey'>;
+export const toFiatRateKey = (value: string) => value as FiatRateKey;
 
+// Unix Timestamp in milliseconds
 export type Timestamp = number & Branded<'Timestamp'>;
+export const toTimestamp = (number: number) => number as Timestamp;
 
 export type RateType = 'current' | 'lastWeek' | 'historic';
 export type RateTypeWithoutHistoric = Exclude<RateType, 'historic'>;
