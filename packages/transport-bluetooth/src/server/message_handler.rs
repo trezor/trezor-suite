@@ -69,6 +69,7 @@ pub async fn handle_message(
         WsRequestMethod::Enumerate => methods::enumerate(manager).await,
         WsRequestMethod::StartScan => methods::start_scan(manager, broadcast).await,
         WsRequestMethod::StopScan => methods::stop_scan(manager, broadcast).await,
+        WsRequestMethod::SetState(params) => methods::set_state(manager, params).await,
     };
 
     match payload {

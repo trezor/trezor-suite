@@ -97,7 +97,7 @@ pub const CHARACTERISTIC_RX: Uuid = uuid!("8c000002-a59b-4d58-a9ad-073df69fa1b1"
 pub const CHARACTERISTIC_TX: Uuid = uuid!("8c000003-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_RX_VAL
 
 impl TrezorDevice {
-    pub async fn new(peripheral: Peripheral) -> Result<Self, Box<dyn Error>> {
+    pub async fn new(peripheral: Peripheral, is_known: bool) -> Result<Self, Box<dyn Error>> {
         let PeripheralProperties {
             local_name,
             manufacturer_data,
@@ -121,14 +121,17 @@ impl TrezorDevice {
             false => DeviceConnectionStatus::Disconnected,
         };
         let discovery_timestamp = utils::get_timestamp();
-        let paired = platform::is_device_paired(&peripheral)
-            .await
-            .unwrap_or(false);
+        let paired = match is_known {
+            false => platform::is_device_paired(&peripheral)
+                .await
+                .unwrap_or(false),
+            true => true,
+        };
+
         let address = platform::get_device_address(peripheral);
 
         info!(
-            "create TrezorDevice {}, {}, {:?}",
-            id, address, manufacturer_data
+            "create TrezorDevice known: {is_known}, id: {id}, address: {address}, manufacturer_data: {manufacturer_data:?}"
         );
 
         let props = TrezorDeviceProps {
