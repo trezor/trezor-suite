@@ -47,6 +47,7 @@ pub enum WsRequestMethod {
     Enumerate,
     StartScan,
     StopScan,
+    SetState(SetStateParams),
 }
 
 #[derive(serde::Deserialize, Debug)]

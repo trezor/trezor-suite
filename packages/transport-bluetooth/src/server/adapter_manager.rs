@@ -17,7 +17,7 @@ use tokio::{
 
 use crate::server::{
     device::{DeviceConnectionStatus, TrezorDevice},
-    types::{AdapterState, ChannelMessage, NotificationEvent},
+    types::{AdapterState, ChannelMessage, KnownDevice, NotificationEvent},
     utils, ConnectionBroadcast,
 };
 
@@ -34,6 +34,7 @@ struct ManagerState {
     is_scanning: bool,
     listeners: Vec<ConnectionBroadcast>,
     peripherals: DashMap<String, TrezorDevice>,
+    known_peripherals: Vec<KnownDevice>,
 }
 
 impl Debug for AdapterManager {
@@ -67,6 +68,7 @@ impl AdapterManager {
             is_scanning: false,
             listeners: Vec::new(),
             peripherals: DashMap::new(),
+            known_peripherals: Vec::new(),
         }));
 
         Ok(Self {
@@ -251,9 +253,22 @@ impl AdapterManager {
         state.is_scanning = value;
     }
 
+    pub async fn set_known_peripherals(&self, value: Vec<KnownDevice>) {
+        let mut state = self.manager_state.lock().await;
+        state.known_peripherals = value;
+    }
+
+    async fn is_known_peripheral(&self, id: &str) -> bool {
+        let state = self.manager_state.lock().await;
+
+        state.known_peripherals.iter().any(|x| x.id == id)
+    }
+
     async fn add_device(&self, id: &PeripheralId) -> Result<TrezorDevice, AdapterError> {
-        let peripheral = self.get_peripheral_or_die(&id.to_string()).await?;
-        let device = match TrezorDevice::new(peripheral).await {
+        let id = id.to_string();
+        let peripheral = self.get_peripheral_or_die(&id).await?;
+        let is_known = self.is_known_peripheral(&id).await;
+        let device = match TrezorDevice::new(peripheral, is_known).await {
             Ok(device) => device,
             Err(_) => {
                 return Err(AdapterError::AdapterMissing);
