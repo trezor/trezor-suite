@@ -80,20 +80,6 @@ export const removeSendFormDraftThunk = createThunk(
     },
 );
 
-// this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-// used in send/Address component
-export const scanOrRequestSendFormThunk = createThunk(
-    `${MODULE_PREFIX}/scanOrRequestSendFormThunk`,
-    (_, { dispatch }) => dispatch(modalActions.openDeferredModal({ type: 'qr-reader' })),
-);
-
-// this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-// used in send/Header component
-export const importSendFormRequestThunk = createThunk(
-    `${MODULE_PREFIX}/importSendFormRequestThunk`,
-    (_, { dispatch }) => dispatch(modalActions.openDeferredModal({ type: 'import-transaction' })),
-);
-
 type UpdateRbfLabelsThunkParams = {
     labelsToBeEdited: RbfLabelsToBeUpdated;
     precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;

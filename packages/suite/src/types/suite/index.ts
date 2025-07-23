@@ -11,7 +11,12 @@ import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, discoveryActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    discoveryActions,
+    feesActions,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import { BlockchainEvent, DEVICE, DeviceEvent, TransportEvent, UiEvent } from '@trezor/connect';
 import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
@@ -79,6 +84,7 @@ type BluetoothActionDesktop = ReturnType<
 >;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
+type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -109,16 +115,12 @@ export type Action =
     | BluetoothActionDesktop
     | ThpAction
     | GeolocationAction
-    | BioAuthAction;
+    | BioAuthAction
+    | FeeAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 
-// export type Dispatch = ReduxDispatch<Action>;
-// export type Dispatch = ThunkDispatch<AppState, any, Action>;
-// fixed return type from `dispatch(A)` in actions
-export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
-    <A extends Action>(action: A): A extends (...args: any) => infer R ? R : A;
-}
+export type Dispatch = ThunkDispatch<AppState, any, Action>;
 
 export type GetState = () => AppState;
 

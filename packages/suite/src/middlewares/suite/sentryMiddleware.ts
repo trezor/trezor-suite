@@ -33,7 +33,7 @@ import {
 
 const deviceContextName = 'trezor-device';
 
-const breadcrumbActions = [
+const breadcrumbActions = new Set<Action['type']>([
     SUITE.SET_LANGUAGE,
     SUITE.SET_THEME,
     SUITE.SET_ADDRESS_DISPLAY_TYPE,
@@ -70,14 +70,14 @@ const breadcrumbActions = [
     deviceActions.removeButtonRequests.type,
     PROTOCOL.SAVE_COIN_PROTOCOL,
     MODAL.OPEN_USER_CONTEXT,
-];
+]);
 
 const sentryMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
         // pass action
         next(action);
 
-        if (breadcrumbActions.includes(action.type)) {
+        if (breadcrumbActions.has(action.type)) {
             addSentryBreadcrumb({
                 category: 'redux.action',
                 message: action.type,
