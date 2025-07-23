@@ -90,6 +90,10 @@ export const requestBioAuthChangeThunk = createThunk(
             dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
             // Persist bioAuthEnabled to storage
             dispatch(storageActions.saveBioAuth());
+
+            return {
+                success: true,
+            };
         } catch (error) {
             dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
@@ -104,6 +108,10 @@ export const requestBioAuthChangeThunk = createThunk(
                     error: translationString('TR_BIO_AUTH_FAILED'),
                 }),
             );
+
+            return {
+                success: false,
+            };
         } finally {
             dispatch(bioAuthActions.requestBioAuthChangeEnd());
         }
@@ -138,7 +146,7 @@ export const requestBioAuthValidationThunk = createThunk(
             dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
 
-            if (KNOWN_ERROR_MESSAGES.has(error)) {
+            if (KNOWN_ERROR_MESSAGES.has(String(error))) {
                 // NOTE: known error message
                 return;
             }

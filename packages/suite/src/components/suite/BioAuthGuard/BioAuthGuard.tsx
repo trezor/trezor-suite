@@ -16,6 +16,7 @@ import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import {
     bioAuthWindowBlurThunk,
     bioAuthWindowFocusThunk,
+    checkBioAuthAvailableThunk,
     requestBioAuthValidationThunk,
     requestOnceBioAuthValidationThunk,
 } from 'src/actions/suite/bioAuthThunks';
@@ -125,6 +126,10 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
     const isBioAuthAvailable = useSelector(selectBioAuthEnabled);
     const isAppUiHidden = false; // NOTE: temporary
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(checkBioAuthAvailableThunk());
+    }, [dispatch]);
 
     useEffect(() => {
         if (!isBioAuthAvailable) {

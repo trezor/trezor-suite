@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
@@ -9,7 +11,8 @@ import { SUITE } from 'src/actions/suite/constants';
 import { goto } from 'src/actions/suite/routerActions';
 import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { selectIsBioAuthAvailable } from 'src/reducers/bioAuth';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 type FeatureLineProps = {
@@ -20,6 +23,7 @@ type FeatureLineProps = {
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const dispatch = useDispatch();
     const checked = enabledFeatures.includes(feature);
+    const { translationString } = useTranslation();
 
     const config = EXPERIMENTAL_FEATURES[feature];
     const titleId = config.title;
@@ -29,16 +33,19 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const onChangeFeature = async () => {
         const newValue = !checked;
 
-        await config?.onToggle?.({ dispatch, newValue });
-
-        dispatch({
-            type: SUITE.SET_EXPERIMENTAL_FEATURES,
-            payload: {
-                enabledFeatures: newValue
-                    ? [...enabledFeatures, feature]
-                    : enabledFeatures.filter(enabledFeature => enabledFeature !== feature),
-            },
-        });
+        try {
+            await config?.onToggle?.({ dispatch, newValue, translationString });
+            dispatch({
+                type: SUITE.SET_EXPERIMENTAL_FEATURES,
+                payload: {
+                    enabledFeatures: newValue
+                        ? [...enabledFeatures, feature]
+                        : enabledFeatures.filter(enabledFeature => enabledFeature !== feature),
+                },
+            });
+        } catch (error) {
+            console.error('Could not turn on an experimental feature: ', error);
+        }
     };
     const handleClick = () => {
         if (!config.routeName) return;
@@ -85,12 +92,18 @@ const motionDivProps = {
 export const Experimental = () => {
     const enabledFeatures = useSelector(state => state.suite.settings.experimental);
     const isDebug = useSelector(selectIsDebugModeActive);
+    const { translationString } = useTranslation();
+    const isBioAuthAvailable = useSelector(selectIsBioAuthAvailable);
 
     const dispatch = useDispatch();
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>
-            EXPERIMENTAL_FEATURES[feature]?.onToggle?.({ dispatch, newValue: false }),
+            EXPERIMENTAL_FEATURES[feature]?.onToggle?.({
+                dispatch,
+                newValue: false,
+                translationString,
+            }),
         );
 
         dispatch({
@@ -99,8 +112,16 @@ export const Experimental = () => {
         });
     };
 
-    const experimentalFeatures = typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
-        feature => !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({ isDebug }),
+    const experimentalFeatures = useMemo(
+        () =>
+            typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
+                feature =>
+                    !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({
+                        isDebug,
+                        isBioAuthAvailable,
+                    }),
+            ),
+        [isDebug, isBioAuthAvailable],
     );
 
     return (
