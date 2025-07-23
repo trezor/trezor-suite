@@ -56,9 +56,11 @@ const Accounts = ({
                 return (
                     <AccountSection
                         key={account.key}
-                        account={account}
+                        account={{
+                            ...account,
+                            accountLabel: accountLabels[account.key],
+                        }}
                         selected={selected}
-                        accountLabel={accountLabels[account.key]}
                         onItemClick={onItemClick}
                     />
                 );
