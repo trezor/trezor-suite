@@ -7,6 +7,11 @@ use crate::server::{
 use hyper_tungstenite::tungstenite::Message;
 use log::info;
 
+#[derive(serde::Deserialize)]
+struct WsRequestFallback {
+    id: Option<String>,
+}
+
 pub async fn handle_message(
     message: Message,
     broadcast: ConnectionBroadcast,
@@ -44,8 +49,14 @@ pub async fn handle_message(
     let request = match serde_json::from_str::<WsRequest>(&msg) {
         Ok(req) => req,
         Err(err) => {
+            // Try to parse just the "id" from the malformed message
+            let partial_id = serde_json::from_str::<WsRequestFallback>(&msg)
+                .ok()
+                .and_then(|partial| partial.id)
+                .unwrap_or_else(|| "-1".to_string());
+
             let json_error = serde_json::json!({
-                "id": "-1", // TODO: try to read "id" from malformed json? this could not be exact WsRequest but it can have "id"
+                "id": partial_id,
                 "error": format!("WsRequest serialization error: {err:?}"),
             });
             return Some(Message::text(json_error.to_string()));
