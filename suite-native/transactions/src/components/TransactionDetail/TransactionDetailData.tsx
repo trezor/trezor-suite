@@ -72,7 +72,7 @@ export const TransactionDetailData = ({
                             values={{
                                 blogLink: chunks => (
                                     <Link
-                                        href="https://trezor.io/support/a/address-poisoning-attacks"
+                                        href="https://trezor.io/support/troubleshooting/coins-tokens/address-poisoning-attacks"
                                         label={chunks}
                                         textColor="textDefault"
                                         isUnderlined

@@ -11,7 +11,7 @@ export const buyInvity = {
     paymentMethods: ['creditCard', 'googlePay', 'applePay'],
     brandName: 'Invity Finance',
     statusUrl: 'https://checkout.invity.io/#status/{{paymentId}}',
-    supportUrl: 'https://invity.io/#support',
+    supportUrl: 'https://invity.io/invest-crypto/#support',
 } as BuyProviderInfo;
 
 export const buyMercuryo = {

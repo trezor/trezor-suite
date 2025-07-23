@@ -5,7 +5,8 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 
-const LINK_URL = 'https://trezor.io/learn/a/evm-address-checksum-in-trezor-suite';
+const LINK_URL =
+    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/experimental-features-in-trezor-suite';
 
 export const AddressChecksumMessage = () => (
     <Animated.View entering={FadeIn} exiting={FadeOut}>

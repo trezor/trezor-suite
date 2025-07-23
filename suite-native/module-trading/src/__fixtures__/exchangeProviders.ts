@@ -8,7 +8,7 @@ export const exchangeInvity: ExchangeProviderInfo = {
     buyTickers: ['bitcoin'] as CryptoId[],
     sellTickers: ['bitcoin', 'ethereum', 'eos'] as CryptoId[],
     statusUrl: 'https://checkout.invity.io/#status/{{paymentId}}',
-    supportUrl: 'https://invity.io/#support',
+    supportUrl: 'https://invity.io/invest-crypto',
     isDex: false,
     isFixedRate: true,
     kycPolicyType: 'noKYC',

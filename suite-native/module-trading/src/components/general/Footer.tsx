@@ -18,7 +18,7 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
     const shouldHideFooter = useSelector(selectIsAmountInputActive);
 
     const imageSource = useMemo(() => require('../../../assets/InvityLogo.png'), []);
-    const openLinkToInvity = () => openLink('https://invity.io');
+    const openLinkToInvity = () => openLink('https://invity.io/invest-crypto');
 
     if (shouldHideFooter) {
         return null;

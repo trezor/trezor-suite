@@ -3,7 +3,7 @@
 Metadata is a feature that allows the user to associate persistent data with their wallets, accounts, receive addresses, and outputs.
 Trezor Suite refers to metadata as to "labeling" in the user interface.
 
-For non-technical introduction, see [Trezor Learn](https://trezor.io/learn/a/labels-in-trezor-suite-app).
+For non-technical introduction, see [Trezor Learn](https://trezor.io/guides/trezor-suite/trezor-suite-desktop/labels-in-trezor-suite).
 
 ## Data stores
 
