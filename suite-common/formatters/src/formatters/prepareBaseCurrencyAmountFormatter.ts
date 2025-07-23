@@ -77,8 +77,8 @@ const handleBigNumberFormatting = (
     const { intl, baseCurrency, bitcoinAmountUnit } = config;
     const { currency: currencyFromContext } = dataContext;
     const currency =
-        (currencyFromContext?.toLowerCase() !== undefined
-            ? (currencyFromContext as BaseCurrencyCode)
+        (currencyFromContext !== undefined
+            ? (currencyFromContext.toLowerCase() as BaseCurrencyCode) // 'react-intl' uses uppercase currencies
             : undefined) ?? baseCurrency;
 
     const isSats =
