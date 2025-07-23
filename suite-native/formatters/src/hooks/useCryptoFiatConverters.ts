@@ -56,7 +56,7 @@ export const useCryptoFiatConverters = ({
 
     if (!rate || currentRate?.error || isTestnetCoin || !symbol) return null;
 
-    // Todo: this logic is duplicated in `packages/suite/src/hooks/wallet/useSendFormFields.ts` shall be deduped
+    // Todo: this logic is duplicated in `parseBaseCurrencyToFormattedCrypto`/`parseCryptoToFormattedBaseCurrency` shall be deduped
 
     return {
         convertFiatToCrypto: (baseCurrencyAmount: BaseCurrencyAmount) => {

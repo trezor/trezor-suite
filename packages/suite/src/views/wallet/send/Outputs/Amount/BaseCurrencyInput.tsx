@@ -13,11 +13,11 @@ import {
 import {
     buildCurrencyOption,
     buildCurrencyOptions,
-    convertAmountSubunitsToUnits,
     findToken,
     getDecimalsForBaseCurrency,
     getInputState,
     isLowAnonymityWarning,
+    parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
@@ -73,36 +73,37 @@ export const BaseCurrencyInput = ({
     const baseCurrencyValue = getDefaultValue(baseCurrencyInputName, output.fiat || '');
     const tokenContractAddress = getDefaultValue(tokenInputName, output.token);
 
-    const amountValue = getDefaultValue(amountInputName, '');
+    const cryptoAmountValue = getDefaultValue(amountInputName, '');
     const token = findToken(account.tokens, tokenContractAddress);
 
     const currencyValue = watch(currencyInputName);
+    const baseCurrencyCode = currencyValue.value;
 
-    const decimals = getDecimalsForBaseCurrency({
-        code: currencyValue.value,
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+        code: baseCurrencyCode,
         areSatsDisplayed,
     });
 
     const recalculateFiat = (rate: number) => {
-        const formattedAmount = new BigNumber(
-            shouldSendInSats
-                ? convertAmountSubunitsToUnits(amountValue, network.decimals)
-                : amountValue,
-        );
+        const cryptoValue = new BigNumber(cryptoAmountValue);
 
-        if (
-            rate &&
-            formattedAmount &&
-            !formattedAmount.isNaN() &&
-            formattedAmount.gt(0) // formatAmount() returns '-1' on error
-        ) {
-            const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
-
-            setValue(baseCurrencyInputName, fiatValueBigNumber.toFixed(decimals), {
-                shouldValidate: true,
+        if (rate && !cryptoValue.isNaN() && baseCurrencyCode !== '') {
+            const formatterAmount = parseCryptoToFormattedBaseCurrency({
+                baseCurrencyCode,
+                isCryptoInSats: shouldSendInSats === true,
+                areSatsDisplayed,
+                value: cryptoValue,
+                symbol: network.symbol,
+                rate,
             });
-            // call compose to store draft, precomposedTx should be the same
-            composeTransaction(amountInputName);
+
+            if (formatterAmount !== null) {
+                setValue(baseCurrencyInputName, formatterAmount, {
+                    shouldValidate: true,
+                });
+                // call compose to store draft, precomposedTx should be the same
+                composeTransaction(amountInputName);
+            }
         }
     };
 
@@ -122,7 +123,7 @@ export const BaseCurrencyInput = ({
     const rules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
-            decimals: validateDecimals(translationString, { decimals }),
+            decimals: validateDecimals(translationString, { decimals: baseCurrencyDecimals }),
         },
     };
 
