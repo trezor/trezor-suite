@@ -8,6 +8,7 @@ import { PrerequisitesGuide } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
+// import { DeviceBusy } from './DeviceBusy';
 import { DeviceDifferent } from './DeviceDifferent';
 import { ShowPinMatrix } from './ShowPinMatrix';
 
@@ -27,6 +28,11 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const prerequisite = useSelector(selectPrerequisite);
 
     const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
+
+    // device respond with Failure_Busy
+    if (activeStepId !== 'firmware' && device?.status === 'busy') {
+        return children;
+    }
 
     // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
     // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.

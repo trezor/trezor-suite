@@ -15,7 +15,7 @@ const Percentage = styled.div`
 
 export const FirmwareProgressBar = () => {
     const theme = useTheme();
-    const { operation, progress } = useFirmwareInstallation();
+    const { operation, progress, uiEvent } = useFirmwareInstallation();
     const isActiveOnboarding = useSelector(state => state.onboarding.isActive);
 
     const mapOperationToTranslationId: Record<
@@ -28,6 +28,12 @@ export const FirmwareProgressBar = () => {
             : 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',
         completed: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
     };
+
+    if (uiEvent?.type === 'ui-firmware_reconnect') {
+        console.warn('RECONNECT!!!', operation);
+
+        return null;
+    }
 
     const isDone = progress === 100;
 

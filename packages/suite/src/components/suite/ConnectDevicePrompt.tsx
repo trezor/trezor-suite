@@ -130,6 +130,7 @@ const getMessageId = ({
         'device-unacquired': 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
         'device-unacquired-requires-thp': 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
 
+        'device-busy': defaultKey,
         'device-disconnect-required': defaultKey,
         'device-disconnected': defaultKey,
         'device-initialize': defaultKey,
