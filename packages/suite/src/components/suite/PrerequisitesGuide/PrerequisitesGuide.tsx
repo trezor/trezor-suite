@@ -86,6 +86,8 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                     return <DeviceConnect setIsBluetoothConnectOpen={setIsBluetoothConnectOpen} />;
                 case 'device-unacquired':
                     return <DeviceAcquire />;
+                case 'device-busy':
+                    return <DeviceAcquire />;
                 case 'device-unacquired-requires-thp':
                     return <DeviceTrezorHostProtocolPair />;
                 case 'device-used-elsewhere':
