@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { Button } from '@trezor/components';
-import { UI } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 
 import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
@@ -26,16 +25,16 @@ interface FirmwareInstallationProps {
 }
 
 export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallationProps) => {
-    const { status, showReconnectPrompt, uiEvent, targetType } = useFirmwareInstallation();
+    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareInstallation();
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     const getInnerActionComponent = () => {
         if (
             isWebUsbTransport &&
-            uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            uiEvent.payload.disconnected &&
-            uiEvent.payload.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
+            reconnectEvent &&
+            reconnectEvent.disconnected &&
+            reconnectEvent.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
             status !== 'done'
         ) {
             // Device needs to be paired twice when using web usb transport.

@@ -95,8 +95,7 @@ export const useFirmware = (
     const confirmOnDevice =
         confirmOnDeviceCommon ||
         // This is needed for firmware reinstall to show Confirm on device correctly
-        // @ts-expect-error types are not correct here, IDK why
-        firmwareInstallation.uiEvent?.payload?.code === 'ButtonRequest_Other';
+        firmwareInstallation.buttonEvent?.code === 'ButtonRequest_Other';
 
     const originalFirmwareVersion = getFirmwareVersion(firmwareInstallation.originalDevice);
 

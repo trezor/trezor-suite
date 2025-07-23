@@ -48,7 +48,7 @@ export const FirmwareModal = ({
         setStatus,
         deviceWillBeWiped,
         error,
-        uiEvent,
+        buttonEvent,
         confirmOnDevice,
         showConfirmationPill,
     } = useFirmwareInstallation({ shouldSwitchFirmwareType });
@@ -59,8 +59,7 @@ export const FirmwareModal = ({
     const dispatch = useDispatch();
     const intl = useIntl();
     const [isChecked, setIsChecked] = useState(false);
-    const uiEventDevice =
-        uiEvent && 'device' in uiEvent.payload ? uiEvent.payload.device : undefined;
+    const uiEventDevice = buttonEvent?.device;
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
 
@@ -68,8 +67,7 @@ export const FirmwareModal = ({
     // It can be canceled only via `trezorCancel`
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
 
-    const isAwaitingPinEntry =
-        uiEvent?.type === 'button' && uiEvent.payload.code === 'ButtonRequest_PinEntry';
+    const isAwaitingPinEntry = buttonEvent?.code === 'ButtonRequest_PinEntry';
 
     const handleClose = () => {
         if (device?.status !== 'available') {

@@ -4,7 +4,7 @@ import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, DeviceAnimation, H2, Modal, Paragraph } from '@trezor/components';
-import { DEVICE, Device, UI } from '@trezor/connect';
+import { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -65,10 +65,10 @@ interface ReconnectDevicePromptProps {
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
-    const { showManualReconnectPrompt, status, uiEvent } = useFirmwareInstallation();
+    const { showManualReconnectPrompt, status, reconnectEvent, buttonEvent } =
+        useFirmwareInstallation();
     const { device } = useDevice();
-    const eventDevice =
-        uiEvent && uiEvent.type === DEVICE.BUTTON ? uiEvent.payload.device : undefined;
+    const eventDevice = buttonEvent?.device;
 
     const isManualRebootRequired =
         // Automatic reboot isn't supported:
@@ -77,15 +77,10 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         status === 'error';
 
     const getRebootPhase = () => {
-        if (
-            device?.mode === 'bootloader' &&
-            uiEvent?.type === DEVICE.BUTTON &&
-            isManualRebootRequired
-        ) {
+        if (device?.mode === 'bootloader' && buttonEvent && isManualRebootRequired) {
             return 'done';
         }
-        const rebootToBootloaderNotSupported =
-            uiEvent?.type === UI.FIRMWARE_RECONNECT && !uiEvent.payload.disconnected;
+        const rebootToBootloaderNotSupported = reconnectEvent && !reconnectEvent.disconnected;
         const rebootToBootloaderCancelled = device?.connected && device?.mode !== 'bootloader';
 
         return rebootToBootloaderNotSupported || rebootToBootloaderCancelled
@@ -100,10 +95,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         onClose !== undefined && isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
     const showWebUsbButton = rebootPhase === 'disconnected' && isWebUsbTransport;
 
-    const toNormal =
-        uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-        uiEvent.payload.target === 'normal' &&
-        uiEvent.payload.method === 'manual';
+    const toNormal = reconnectEvent?.target === 'normal' && reconnectEvent.method === 'manual';
 
     const getHeading = () => {
         if (isRebootDone) {
@@ -123,13 +115,8 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         }
 
         // internal_model cannot be read from features while in bootloader mode.
-        const deviceModelFromEvent = eventDevice?.features?.internal_model;
-
-        if (deviceModelFromEvent === undefined) {
-            // Fallback. This should never happen.
-            return 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON';
-        }
-
+        const deviceModelFromEvent =
+            eventDevice?.features?.internal_model || DeviceModelInternal.UNKNOWN;
         const deviceFwVersion = getFirmwareVersion(eventDevice);
         const switchToBootloaderMap: Record<DeviceModelInternal, TranslationKey> = {
             // just to have something, I assume new models will have touch screen
@@ -156,7 +143,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={deviceModelInternal}
                     deviceUnitColor={device?.features?.unit_color}
-                    isConfirmed={uiEvent?.type !== 'button'}
+                    isConfirmed={!buttonEvent}
                 />
             )}
             <Modal.ModalBase
