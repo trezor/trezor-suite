@@ -501,8 +501,16 @@ class RippleWorker extends BaseWorker<Client> {
         return client;
     }
 
-    disconnect() {
-        return this.api?.disconnect();
+    async disconnect() {
+        try {
+            if (this.api?.isConnected()) {
+                await this.api.disconnect();
+            }
+        } catch (error) {
+            this.debug('Disconnect failed', error);
+        } finally {
+            this.cleanup();
+        }
     }
 
     async messageHandler(event: { data: MessageTypes.Message }) {
@@ -543,7 +551,7 @@ class RippleWorker extends BaseWorker<Client> {
 
         if (this.state.hasSubscriptions() || this.settings.keepAlive) {
             try {
-                await this.api.getServerInfo();
+                await this.api.request({ command: 'ping' });
             } catch (error) {
                 this.debug(`Error in timeout ping request: ${error}`);
             }
