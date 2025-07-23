@@ -29,7 +29,6 @@ import {
 } from 'src/utils/suite/validation';
 
 import { BaseCurrencyInput } from './BaseCurrencyInput';
-import { SendMaxSwitch } from './SendMaxSwitch';
 
 interface AmountProps {
     output: Partial<Output>;
