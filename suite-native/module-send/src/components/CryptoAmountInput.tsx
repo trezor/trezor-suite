@@ -85,7 +85,7 @@ export const CryptoAmountInput = ({
 
     const baseCurrencyDecimals = getDecimalsForBaseCurrency({
         code: baseCurrencyCode,
-        areSatsDisplayed: isBaseCurrencyInSats,
+        isInSats: isBaseCurrencyInSats,
     });
 
     const handleChangeValue = (newValue: string) => {

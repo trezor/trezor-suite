@@ -3,12 +3,13 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Branded } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { AMOUNT_UNIT_ZERO, asAmountSubunit, asAmountUnit } from './AmountTypes';
+import { AMOUNT_UNIT_ZERO, AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { subunitsToUnits, unitsToSubunits } from './accountUtils';
 import { fromBaseCurrencyToCryptoUnit, toFiatCurrency } from './fiatConverterUtils';
 
 /**
  * Value in EUR, USD, ... but also it can be in BTC, currently the global BaseCurrency from the Settings is used.
+ * In case of BTC this also can contain value converted to Sats. // Todo: Consider to separate those situations.
  */
 export type BaseCurrencyAmount = BigNumber & Branded<`base-currency-amount`>;
 export const asBaseCurrencyAmount = (value: BigNumber) => value as BaseCurrencyAmount;
@@ -19,42 +20,33 @@ export const isBaseCurrencyWithSats = (baseCurrency: BaseCurrencyCode) => baseCu
 
 type GetDecimalsForBaseCurrencyParams = {
     code: BaseCurrencyCode | '';
-    areSatsDisplayed: boolean;
+    isInSats: boolean;
 };
 
 export const getDecimalsForBaseCurrency = ({
     code,
-    areSatsDisplayed,
+    isInSats,
 }: GetDecimalsForBaseCurrencyParams) => {
-    if (code === 'btc' && areSatsDisplayed) {
+    if (code !== '' && isBaseCurrencyWithSats(code) && isInSats) {
         return 0;
     }
 
     return code in networks ? networks[code as NetworkSymbol].decimals : 2;
 };
 
-type ParseCryptoToFormattedBaseCurrencyParams = {
-    areSatsDisplayed: boolean;
-    isCryptoInSats: boolean; // This is related to `areSatsDisplayed` but should also cover the capability of network, etc...
-    symbol: NetworkSymbol;
-    value: BigNumber; // Intentionally no Branded Type. We don't know if it is in Units or Sub-Units.
+type AmountToFiatCurrencyWithSatsConversionParams = {
+    cryptoAmount: AmountUnit;
     rate: number;
     baseCurrencyCode: BaseCurrencyCode;
+    baseCurrencyToSats: boolean;
 };
 
-export const parseCryptoToFormattedBaseCurrency = ({
-    areSatsDisplayed,
-    isCryptoInSats,
-    symbol,
-    value,
+const amountToFiatCurrencyWithSatsConversion = ({
+    cryptoAmount,
     rate,
     baseCurrencyCode,
-}: ParseCryptoToFormattedBaseCurrencyParams) => {
-    // 1. Get the correct Crypto Amount (in units, as I could have been entered in Sats)
-    const cryptoAmount = isCryptoInSats
-        ? subunitsToUnits({ value: asAmountSubunit(value), symbol })
-        : asAmountUnit(value);
-
+    baseCurrencyToSats,
+}: AmountToFiatCurrencyWithSatsConversionParams) => {
     // 2. toFiatCurrency always works with Unit Amount (BTC, not Satoshis)
     const baseCurrencyAmountUnit = toFiatCurrency({ amount: cryptoAmount, rate });
 
@@ -63,8 +55,9 @@ export const parseCryptoToFormattedBaseCurrency = ({
     }
 
     // 3. If BaseCurrency is BTC, and we display Sats, we need to convert it.
-    const isBaseCurrencyInSats = isBaseCurrencyWithSats(baseCurrencyCode) && areSatsDisplayed;
-    const baseCurrencyDisplay = isBaseCurrencyInSats
+    const shouldConvertToSats = isBaseCurrencyWithSats(baseCurrencyCode) && baseCurrencyToSats;
+
+    return shouldConvertToSats
         ? asBaseCurrencyAmount(
               unitsToSubunits({
                   value: asAmountUnit(baseCurrencyAmountUnit),
@@ -72,10 +65,40 @@ export const parseCryptoToFormattedBaseCurrency = ({
               }),
           )
         : baseCurrencyAmountUnit;
+};
+
+type ParseCryptoToFormattedBaseCurrencyParams = {
+    areSatsDisplayed: boolean;
+    baseCurrencyToSats: boolean; // This is related to `areSatsDisplayed` but should also cover the capability of network, etc...
+    symbol: NetworkSymbol;
+    value: BigNumber; // Intentionally no Branded Type. We don't know if it is in Units or Sub-Units.
+    rate: number;
+    baseCurrencyCode: BaseCurrencyCode;
+};
+
+export const parseCryptoToFormattedBaseCurrency = ({
+    areSatsDisplayed,
+    baseCurrencyToSats,
+    symbol,
+    value,
+    rate,
+    baseCurrencyCode,
+}: ParseCryptoToFormattedBaseCurrencyParams) => {
+    // 1. Get the correct Crypto Amount (in units, as I could have been entered in Sats)
+    const cryptoAmount = baseCurrencyToSats
+        ? subunitsToUnits({ value: asAmountSubunit(value), symbol })
+        : asAmountUnit(value);
+
+    const baseCurrencyDisplay = amountToFiatCurrencyWithSatsConversion({
+        cryptoAmount,
+        rate,
+        baseCurrencyCode,
+        baseCurrencyToSats: areSatsDisplayed,
+    });
 
     // 4. We have to return this correctly rounded as this value is used in the NumberInput
     const baseCurrencyDecimals = getDecimalsForBaseCurrency({
-        areSatsDisplayed,
+        isInSats: areSatsDisplayed,
         code: baseCurrencyCode,
     });
 

@@ -71,7 +71,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
         onSelectTimeFrame,
         timeframe,
     } = useGraphForAllDeviceAccounts({
-        fiatCurrency: fiatCurrencyCode,
+        baseCurrencyCode: fiatCurrencyCode,
     });
 
     const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } = useGraphAtoms({

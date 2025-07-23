@@ -84,7 +84,7 @@ const checkAndReportGraphError = (error: Error | null) => {
 
 export const useGraphForSingleAccount = ({
     accountKey,
-    fiatCurrency,
+    baseCurrencyCode,
     tokensFilter,
     hideMainAccount = false,
 }: CommonUseGraphParams & Omit<AccountItem, 'symbol' | 'descriptor'>) => {
@@ -137,7 +137,7 @@ export const useGraphForSingleAccount = ({
 
     const graphForAccounts = useGraphForAccounts({
         accounts,
-        fiatCurrency,
+        baseCurrencyCode,
         startOfTimeFrameDate,
         endOfTimeFrameDate,
         isPortfolioGraph: false,
@@ -153,7 +153,7 @@ export const useGraphForSingleAccount = ({
     };
 };
 
-export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphParams) => {
+export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGraphParams) => {
     const dispatch = useDispatch();
     // if we memoize selectPortfolioGraphAccountItems, it will randomly break so we need to use deep comparison instead to prevent unnecessary rerenders
     const accountItems = useSelectorDeepComparison(selectPortfolioGraphAccountItems);
@@ -178,7 +178,7 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
 
     const graphForAccounts = useGraphForAccounts({
         accounts: accountItems,
-        fiatCurrency,
+        baseCurrencyCode,
         startOfTimeFrameDate,
         endOfTimeFrameDate,
         isPortfolioGraph: true,

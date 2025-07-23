@@ -17,7 +17,7 @@ import {
 } from './types';
 
 export type CommonUseGraphParams = {
-    fiatCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
 };
 
 type useGraphForAccountsParams<TIsPortfolioGraph extends boolean = boolean> =
@@ -79,7 +79,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
 } & CommonUseGraphReturnType {
     const {
         accounts,
-        fiatCurrency,
+        baseCurrencyCode,
         endOfTimeFrameDate,
         startOfTimeFrameDate,
         isPortfolioGraph,
@@ -114,7 +114,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                 try {
                     const points = await getMultipleAccountBalanceHistoryWithFiat({
                         accounts,
-                        fiatCurrency,
+                        baseCurrencyCode,
                         startOfTimeFrameDate,
                         endOfTimeFrameDate,
                         forceRefetch,
@@ -157,12 +157,12 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
             }
         },
         [
-            accounts,
-            fiatCurrency,
-            endOfTimeFrameDate,
-            startOfTimeFrameDate,
             isPortfolioGraph,
             isDiscoveryActive,
+            accounts,
+            baseCurrencyCode,
+            startOfTimeFrameDate,
+            endOfTimeFrameDate,
             isElectrumBackend,
             dispatch,
         ],

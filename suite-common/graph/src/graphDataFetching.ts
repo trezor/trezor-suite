@@ -286,7 +286,7 @@ const getAccountBalanceHistory = async ({
     return result;
 };
 
-type FiatRatesItem = {
+export type FiatRatesItem = {
     time: number;
     rates: {
         [key: string]: number | undefined;
@@ -295,22 +295,24 @@ type FiatRatesItem = {
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};
 
+type GetFiatRatesForNetworkInTimeFrame = {
+    timestamps: number[];
+    symbol: NetworkSymbol;
+    contractId?: TokenAddress;
+    baseCurrencyCode: BaseCurrencyCode;
+    forceRefetch?: boolean;
+    isElectrumBackend: boolean;
+};
+
 export const getFiatRatesForNetworkInTimeFrame = async ({
     timestamps,
     symbol,
     contractId,
-    fiatCurrency,
+    baseCurrencyCode,
     forceRefetch,
     isElectrumBackend,
-}: {
-    timestamps: number[];
-    symbol: NetworkSymbol;
-    contractId?: TokenAddress;
-    fiatCurrency: BaseCurrencyCode;
-    forceRefetch?: boolean;
-    isElectrumBackend: boolean;
-}) => {
-    const cacheKey = `${symbol}-${contractId}-${fiatCurrency}-${JSON.stringify(timestamps)}`;
+}: GetFiatRatesForNetworkInTimeFrame) => {
+    const cacheKey = `${symbol}-${contractId}-${baseCurrencyCode}-${JSON.stringify(timestamps)}`;
 
     if (fiatRatesCache[cacheKey] && !forceRefetch) {
         return fiatRatesCache[cacheKey];
@@ -319,7 +321,7 @@ export const getFiatRatesForNetworkInTimeFrame = async ({
     const fiatRates = await getFiatRatesForTimestamps(
         { symbol, tokenAddress: contractId },
         timestamps,
-        fiatCurrency,
+        baseCurrencyCode,
         isElectrumBackend,
     );
     if (G.isNullable(fiatRates)) return null;
@@ -334,25 +336,29 @@ export const getFiatRatesForNetworkInTimeFrame = async ({
     return formattedFiatRates;
 };
 
+type GetMultipleAccountBalanceHistoryWithFiatParams = {
+    accounts: AccountItem[];
+    startOfTimeFrameDate: Date | null;
+    endOfTimeFrameDate: Date;
+    numberOfPoints?: number;
+    baseCurrencyCode: BaseCurrencyCode;
+    forceRefetch?: boolean;
+    isElectrumBackend: boolean;
+    dispatch: ReturnType<typeof useDispatch>;
+};
+
 export const getMultipleAccountBalanceHistoryWithFiat = async ({
     accounts,
     startOfTimeFrameDate,
     endOfTimeFrameDate,
     numberOfPoints = NUMBER_OF_POINTS,
-    fiatCurrency,
+    baseCurrencyCode,
     forceRefetch,
     isElectrumBackend,
     dispatch,
-}: {
-    accounts: AccountItem[];
-    startOfTimeFrameDate: Date | null;
-    endOfTimeFrameDate: Date;
-    numberOfPoints?: number;
-    fiatCurrency: BaseCurrencyCode;
-    forceRefetch?: boolean;
-    isElectrumBackend: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
-}): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
+}: GetMultipleAccountBalanceHistoryWithFiatParams): Promise<
+    FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]
+> => {
     const accountsWithBalanceHistory = await Promise.all(
         accounts
             .filter(a => !isIgnoredBalanceHistoryCoin(a.symbol))
@@ -473,7 +479,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                 timestamps,
                 symbol,
                 contractId,
-                fiatCurrency,
+                baseCurrencyCode,
                 forceRefetch,
                 isElectrumBackend,
             })
@@ -485,10 +491,10 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                 })
                 .catch(error => {
                     console.error(
-                        `Unable to fetch GRAPH fiat rates ${fiatCurrency} for ${symbol} ${contractId}:`,
+                        `Unable to fetch GRAPH fiat rates ${baseCurrencyCode} for ${symbol} ${contractId}:`,
                         error,
                     );
-                    error.message = `${symbol.toUpperCase()} (${fiatCurrency}): ${error.message}`;
+                    error.message = `${symbol.toUpperCase()} (${baseCurrencyCode}): ${error.message}`;
                     if (contractId) {
                         error.message = `${error.message} - ${contractId}`;
                     }
@@ -499,7 +505,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
     const coinsFiatRates: Record<CoinKey, FiatRatesItem[]> = D.fromPairs(
         // Some coins might not have fiat rates, so we need to filter them out
-        pairs.filter(([, res]) => res?.[0].rates?.[fiatCurrency] !== -1),
+        pairs.filter(([, res]) => res?.[0].rates?.[baseCurrencyCode] !== -1),
     );
 
     if (A.length(accountsWithBalanceHistoryFlattened) === 1) {
@@ -510,7 +516,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
         return mapCryptoBalanceMovementToFixedTimeFrame({
             fiatRates: coinsFiatRates[coinKey],
-            fiatCurrency,
+            baseCurrencyCode,
             balanceHistory,
         }) as FiatGraphPointWithCryptoBalance[];
     }
@@ -528,7 +534,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
             const m = mapCryptoBalanceMovementToFixedTimeFrame({
                 fiatRates: coinFiatRates,
-                fiatCurrency,
+                baseCurrencyCode,
                 balanceHistory,
             });
 

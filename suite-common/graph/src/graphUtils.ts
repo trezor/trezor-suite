@@ -1,9 +1,16 @@
 import { A, D, pipe } from '@mobily/ts-belt';
 import { differenceInMinutes, eachMinuteOfInterval, fromUnixTime, getUnixTime } from 'date-fns';
 
+import {
+    AMOUNT_UNIT_ZERO,
+    asAmountUnit,
+    getDecimalsForBaseCurrency,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { FiatRatesItem } from './graphDataFetching';
 import {
     AccountHistoryBalancePoint,
     AccountWithBalanceHistory,
@@ -11,15 +18,17 @@ import {
     FiatGraphPointWithCryptoBalance,
 } from './types';
 
+type GetDataStepInMinutesParams = {
+    startOfTimeFrameDate: Date;
+    endOfTimeFrameDate: Date;
+    numberOfPoints: number;
+};
+
 export const getDataStepInMinutes = ({
     startOfTimeFrameDate,
     endOfTimeFrameDate,
     numberOfPoints,
-}: {
-    startOfTimeFrameDate: Date;
-    endOfTimeFrameDate: Date;
-    numberOfPoints: number;
-}): number => {
+}: GetDataStepInMinutesParams): number => {
     const differenceMinutes = differenceInMinutes(endOfTimeFrameDate, startOfTimeFrameDate);
 
     return Math.ceil(differenceMinutes / numberOfPoints);
@@ -52,24 +61,21 @@ export const getTimestampsInTimeFrame = (
     return datesInRangeUnixTime as number[];
 };
 
+type MapCryptoBalanceMovementToFixedTimeFrameParams = {
+    balanceHistory: AccountHistoryBalancePoint[];
+    fiatRates: FiatRatesItem[];
+    baseCurrencyCode: BaseCurrencyCode;
+};
+
 export const mapCryptoBalanceMovementToFixedTimeFrame = ({
     balanceHistory,
     fiatRates,
-    fiatCurrency,
-}: {
-    balanceHistory: AccountHistoryBalancePoint[];
-    fiatRates: Array<{
-        time: number;
-        rates: {
-            [key: string]: number | undefined;
-        };
-    }>;
-    fiatCurrency: BaseCurrencyCode;
-}): readonly FiatGraphPointWithCryptoBalance[] =>
+    baseCurrencyCode,
+}: MapCryptoBalanceMovementToFixedTimeFrameParams): readonly FiatGraphPointWithCryptoBalance[] =>
     pipe(
         fiatRates,
         A.map(fiatRatePoint => {
-            let fiatRate = fiatRatePoint.rates[fiatCurrency] ?? 0;
+            let fiatRate = fiatRatePoint.rates[baseCurrencyCode] ?? 0;
             // for some tokens we could get fiat rate -1, which is not valid
             fiatRate = fiatRate < 0 ? 0 : fiatRate;
             const rateDate = fromUnixTime(fiatRatePoint.time);
@@ -89,14 +95,26 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
             );
 
             const cryptoBalance = accountBalancePoint
-                ? new BigNumber(accountBalancePoint.cryptoBalance)
-                : new BigNumber('0');
+                ? asAmountUnit(new BigNumber(accountBalancePoint.cryptoBalance))
+                : AMOUNT_UNIT_ZERO;
+
+            const value = toFiatCurrency({
+                amount: cryptoBalance,
+                rate: fiatRate,
+            });
+
+            const baseCurrencyDecimal = getDecimalsForBaseCurrency({
+                code: baseCurrencyCode,
+                // Here, we NEVER use sats. The formatting to sats shall ALWAYS be a domain of the view-component.
+                isInSats: false,
+            });
 
             return {
                 date: rateDate,
                 cryptoBalance: cryptoBalance.toFixed(),
-                // We display only two decimal places in the graph. So if there is any value lower than that, we want to round it.
-                value: Number(cryptoBalance.multipliedBy(fiatRate).toFixed(2)),
+                // We display only to specific decimal places the graph.
+                // So if there is any value lower than that, we want to round it.
+                value: value !== null ? Number(value.toFixed(baseCurrencyDecimal)) : 0,
             };
         }),
     );
