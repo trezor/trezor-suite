@@ -59,7 +59,9 @@ export const PassphraseFormScreen = () => {
 
     const handleOpenLink = () => {
         analytics.report({ type: EventType.PassphraseArticleOpened });
-        openLink('https://trezor.io/learn/a/passphrases-and-hidden-wallets');
+        openLink(
+            'https://trezor.io/guides/backups-recovery/advanced-wallets/passphrases-and-hidden-wallets',
+        );
     };
 
     const setWarningHeight = (height: number) => {

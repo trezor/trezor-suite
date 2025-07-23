@@ -45,7 +45,7 @@ In WSL:
 
 - Run `sudo apt-get install build-essential`
 - Install these [Electron dependencies](https://www.electronjs.org/docs/latest/development/build-instructions-linux) for Linux
-- Install udev rules [as per the Trezor docs](https://trezor.io/learn/a/udev-rules)
+- Install udev rules [as per the Trezor docs](https://trezor.io/guides/trezorctl/udev-rules)
 
 Then proceed with the [Getting Started instructions in README](https://github.com/trezor/trezor-suite/blob/develop/README.md#getting-started).
 

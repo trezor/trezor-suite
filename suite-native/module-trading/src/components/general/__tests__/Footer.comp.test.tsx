@@ -34,14 +34,14 @@ describe('Footer', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('pressing links should lead to https://invity.io', async () => {
+    it('pressing links should lead to https://invity.io/invest-crypto', async () => {
         const { getByText, getByLabelText } = await renderFooter({});
 
         fireEvent.press(getByLabelText('Invity'));
         fireEvent.press(getByText('Learn more'));
 
         expect(mockOpenLink).toHaveBeenCalledTimes(2);
-        expect(mockOpenLink).toHaveBeenNthCalledWith(1, 'https://invity.io');
-        expect(mockOpenLink).toHaveBeenNthCalledWith(2, 'https://invity.io');
+        expect(mockOpenLink).toHaveBeenNthCalledWith(1, 'https://invity.io/invest-crypto');
+        expect(mockOpenLink).toHaveBeenNthCalledWith(2, 'https://invity.io/invest-crypto');
     });
 });

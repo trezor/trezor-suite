@@ -3,7 +3,8 @@ import { Link } from '@suite-native/link';
 
 import { TokenOfNetworkAlertBody } from '../../components/TokenOfNetworkAlertContent';
 
-const CHECKSUM_LINK_URL = 'https://trezor.io/learn/a/evm-address-checksum-in-trezor-suite';
+const CHECKSUM_LINK_URL =
+    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/experimental-features-in-trezor-suite';
 
 export const createChecksumAlert = (onPressPrimaryButton: () => void) => ({
     title: <Translation id="moduleSend.outputs.recipients.checksum.alert.title" />,

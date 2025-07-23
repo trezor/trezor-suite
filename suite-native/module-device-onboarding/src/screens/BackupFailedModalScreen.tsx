@@ -8,7 +8,7 @@ import { useOpenLink } from '@suite-native/link';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 export const BACKUP_FAILED_SUPPORT_URL =
-    'https://trezor.io/support/a/trezor-recovery-issues#open-chat';
+    'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues#open-chat';
 
 export const BackupFailedModalScreen = () => {
     const openLink = useOpenLink();
