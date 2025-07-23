@@ -13,6 +13,33 @@ pub enum ChannelMessage {
     Notification(NotificationEvent),
 }
 
+// partial TrezorDevice
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct KnownDevice {
+    pub id: String,
+    #[serde(rename = "macAddress")]
+    pub mac_address: String,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct SetStateParams {
+    pub devices: Vec<KnownDevice>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct ConnectDeviceParams {
+    pub id: String,
+    pub timeout: u32,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct WriteParams {
+    pub id: String,
+    pub data: Vec<u8>,
+    #[serde(rename = "withResponse")]
+    pub with_response: bool,
+}
+
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 #[serde(tag = "method", content = "params", rename_all = "snake_case")]
 pub enum WsRequestMethod {

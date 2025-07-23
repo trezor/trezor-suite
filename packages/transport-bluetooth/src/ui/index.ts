@@ -66,7 +66,7 @@ const createDevice = (api: TrezorBluetooth, d: BluetoothDevice) => {
     connectBtn.textContent = d.connected ? 'Disconnect' : 'Connect';
     connectBtn.addEventListener('click', () => {
         if (!d.connected) {
-            api.send('connect_device', [d.id, 30000])
+            api.send('connect_device', { id: d.id, timeout: 30000 })
                 .then(r => {
                     writeOutput(r);
                     (document.getElementById('connect_device_input') as HTMLInputElement).value =
@@ -199,7 +199,7 @@ async function init() {
 
     getElement('connect_device').onclick = () => {
         const id = getDeviceId();
-        api.send('connect_device', [id, 30000])
+        api.send('connect_device', { id, timeout: 30000 })
             .then(r => {
                 writeOutput(r);
             })
@@ -254,7 +254,7 @@ async function init() {
 
     getElement('write').onclick = () => {
         const id = getDeviceId();
-        api.send('write', [id, [63, 35, 35, 0, 55]]) // GetFeatures
+        api.send('write', { id, data: [63, 35, 35, 0, 55] }) // GetFeatures
             .then(r => {
                 writeOutput(r);
             })
@@ -272,6 +272,29 @@ async function init() {
             .catch(e => {
                 writeOutput({ error: e.message });
             });
+    };
+
+    getElement('set_state').onclick = () => {
+        const value = getDeviceId().split(',');
+        const state = { devices: value.map(d => ({ id: d, macAddress: d })) };
+        api.send('set_state', state)
+            .then(r => {
+                writeOutput(r);
+            })
+            .catch(e => {
+                writeOutput({ error: e.message });
+            });
+    };
+
+    getElement('send_message').onclick = () => {
+        const input = document.getElementById('send_message_input') as HTMLInputElement;
+        try {
+            const json = JSON.parse(input.value);
+            const resp = api.sendMessage(json);
+            writeOutput(resp);
+        } catch (e) {
+            writeOutput(e);
+        }
     };
 }
 
