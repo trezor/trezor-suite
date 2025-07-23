@@ -1,2 +1,2 @@
-export const LOAD = '@storage/load';
-export const ERROR = '@storage/error';
+export const LOAD = '@storage/load' as const;
+export const ERROR = '@storage/error' as const;

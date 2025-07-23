@@ -1,1 +1,1 @@
-export const INIT = '@wallet/init';
+export const INIT = '@wallet/init' as const;
