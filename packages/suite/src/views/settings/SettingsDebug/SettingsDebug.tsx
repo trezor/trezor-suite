@@ -1,5 +1,5 @@
 import { Context } from '@suite-common/message-system';
-import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
+import { isDesktop, isMacOs, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -75,7 +75,7 @@ export const SettingsDebug = () => {
             <SettingsSection title="Backends">
                 <Backends />
             </SettingsSection>
-            {isDesktop() && !isLinux() && (
+            {isDesktop() && isMacOs() && (
                 <SettingsSection title="Biometric authentication">
                     <BioAuthSettings />
                 </SettingsSection>
