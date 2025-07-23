@@ -11,7 +11,6 @@ import { AccountItemsGroup } from './AccountItemsGroup';
 interface AccountSectionProps {
     account: Account;
     selected: boolean;
-    accountLabel?: string;
     onItemClick?: () => void;
 }
 
@@ -43,7 +42,10 @@ export const AccountSection = ({ account, selected, onItemClick }: AccountSectio
     return showGroup && (isStakeShown || tokens.shownWithBalance.length) ? (
         <AccountItemsGroup
             key={`${descriptor}-${symbol}`}
-            account={account}
+            account={{
+                ...account,
+                accountLabel: account.accountLabel,
+            }}
             selected={selected}
             showStaking={isStakeShown}
             tokens={tokens.shownWithBalance}
@@ -53,7 +55,10 @@ export const AccountSection = ({ account, selected, onItemClick }: AccountSectio
         <AccountItem
             type="coin"
             key={`${descriptor}-${symbol}`}
-            account={account}
+            account={{
+                ...account,
+                accountLabel: account.accountLabel,
+            }}
             isSelected={selected}
             onClick={onItemClick}
             formattedBalance={formattedBalance}
