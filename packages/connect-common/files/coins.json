@@ -32,7 +32,7 @@
             "max_address_length": 34,
             "maxfee_kb": 2000000,
             "min_address_length": 27,
-            "minfee_kb": 1000,
+            "minfee_kb": 100,
             "name": "Bitcoin",
             "overwintered": false,
             "segwit": true,
