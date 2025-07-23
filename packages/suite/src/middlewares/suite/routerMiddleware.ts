@@ -25,13 +25,13 @@ const router = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
              * Exclude foreground apps – to prevent going back to modals and other unexpected states.
              */
             if (router.app !== 'settings' && !router.route?.isForegroundApp) {
+                // @ts-expect-error: Tightening types, but I don't know how to resolve this.
                 return next({
                     ...action,
                     payload: {
                         ...action.payload,
                         settingsBackRoute: {
                             name: router.route?.name ?? 'suite-index',
-                            // @ts-expect-error: Tightening types, but I don't know how to resolve this.
                             params: router.params,
                         },
                     },

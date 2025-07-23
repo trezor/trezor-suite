@@ -28,7 +28,7 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
@@ -109,7 +109,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     };
 
     const handleQrClick = useCallback(async () => {
-        const uri = await dispatch(scanOrRequestSendFormThunk()).unwrap();
+        const uri = await dispatch(openDeferredModal({ type: 'qr-reader' }));
 
         if (typeof uri !== 'string') {
             return;

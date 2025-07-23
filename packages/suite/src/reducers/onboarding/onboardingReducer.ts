@@ -51,15 +51,14 @@ const addPath = (path: AnyPath, state: OnboardingState) => {
 const removePath = (paths: AnyPath[], state: OnboardingState) =>
     state.path.filter(p => !paths.includes(p));
 
+const ALLOWED_ACTION_TYPES = new Set<Action['type']>([
+    ONBOARDING.RESET_ONBOARDING,
+    ONBOARDING.ENABLE_ONBOARDING_REDUCER,
+    ONBOARDING.ANALYTICS,
+]);
+
 const onboarding = (state: OnboardingState = initialState, action: Action) => {
-    if (
-        !state.isActive &&
-        ![
-            ONBOARDING.RESET_ONBOARDING,
-            ONBOARDING.ENABLE_ONBOARDING_REDUCER,
-            ONBOARDING.ANALYTICS,
-        ].includes(action.type)
-    ) {
+    if (!state.isActive && !ALLOWED_ACTION_TYPES.has(action.type)) {
         return state;
     }
 

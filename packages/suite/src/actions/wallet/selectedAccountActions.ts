@@ -161,7 +161,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
 // list of all actions which has influence on "selectedAccount" reducer
 // other actions will be ignored
-const actions = [
+const actions = new Set<Action['type']>([
     ROUTER.LOCATION_CHANGE,
     deviceActions.selectDevice.type,
     deviceActions.updateSelectedDevice.type,
@@ -178,14 +178,14 @@ const actions = [
     discoveryActions.updateDiscovery.type,
     feesActions.updateFee.type,
     feesActions.updateMultipleFees.type,
-];
+]);
 
 /*
  * Called from WalletMiddleware
  */
 export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getState: GetState) => {
     // ignore not listed actions
-    if (actions.indexOf(action.type) < 0) return;
+    if (!actions.has(action.type)) return;
     const state = getState();
     // ignore if not in wallet
     if (state.router.app !== 'wallet') return;
