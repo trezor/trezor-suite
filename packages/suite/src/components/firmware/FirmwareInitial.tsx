@@ -22,6 +22,7 @@ import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { PrerequisitesGuide, Translation } from '../suite';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
+import { selectIsDebugModeActive } from '../../reducers/suite/suiteReducer';
 
 const Description = styled.div`
     align-items: center;
@@ -123,6 +124,7 @@ export const FirmwareInitial = ({
         });
     const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
+    const isDebug = useSelector(selectIsDebugModeActive);
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
 
@@ -133,10 +135,10 @@ export const FirmwareInitial = ({
 
     // This is essential for detecting potentially malicious devices,
     // as the firmware revision check is a critical part of the verification process.
-    //
+    // In debug mode you may bypass it.
     // See: https://github.com/trezor/trezor-suite/issues/19157
     const isFirmwareInstallationMandatory =
-        device.features.internal_model === DeviceModelInternal.T1B1;
+        device.features.internal_model === DeviceModelInternal.T1B1 && !isDebug;
 
     // todo: move to utils device.ts
     const devicesConnected = devices.filter(device => device?.connected);
