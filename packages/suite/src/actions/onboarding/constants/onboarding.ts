@@ -1,8 +1,8 @@
-export const SET_STEP_ACTIVE = '@onboarding/set-step-active';
-export const ADD_PATH = '@onboarding/add-path';
-export const REMOVE_PATH = '@onboarding/remove-path';
-export const RESET_ONBOARDING = '@onboarding/reset-onboarding';
-export const ENABLE_ONBOARDING_REDUCER = '@onboarding/enable-onboarding-reducer';
-export const ANALYTICS = '@onboarding/analytics';
-export const SET_TUTORIAL_STATUS = '@onboarding/set-tutorial-status';
-export const SELECT_BACKUP_TYPE = '@onboarding/select-backup-type';
+export const SET_STEP_ACTIVE = '@onboarding/set-step-active' as const;
+export const ADD_PATH = '@onboarding/add-path' as const;
+export const REMOVE_PATH = '@onboarding/remove-path' as const;
+export const RESET_ONBOARDING = '@onboarding/reset-onboarding' as const;
+export const ENABLE_ONBOARDING_REDUCER = '@onboarding/enable-onboarding-reducer' as const;
+export const ANALYTICS = '@onboarding/analytics' as const;
+export const SET_TUTORIAL_STATUS = '@onboarding/set-tutorial-status' as const;
+export const SELECT_BACKUP_TYPE = '@onboarding/select-backup-type' as const;

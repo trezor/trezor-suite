@@ -1,12 +1,12 @@
 import { UI } from '@trezor/connect';
 
-export const CLOSE = '@modal/close';
-export const CONTEXT_NONE = '@modal/context-none';
-export const CONTEXT_DEVICE = '@modal/context-device';
-export const CONTEXT_DEVICE_CONFIRMATION = '@modal/context-device-confirmation';
-export const OPEN_USER_CONTEXT = '@modal/open-user-context';
-export const CONTEXT_USER = '@modal/context-user';
-export const PRESERVE = '@modal/preserve';
+export const CLOSE = '@modal/close' as const;
+export const CONTEXT_NONE = '@modal/context-none' as const;
+export const CONTEXT_DEVICE = '@modal/context-device' as const;
+export const CONTEXT_DEVICE_CONFIRMATION = '@modal/context-device-confirmation' as const;
+export const OPEN_USER_CONTEXT = '@modal/open-user-context' as const;
+export const CONTEXT_USER = '@modal/context-user' as const;
+export const PRESERVE = '@modal/preserve' as const;
 
 export const REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES = [
     UI.REQUEST_PASSPHRASE,
