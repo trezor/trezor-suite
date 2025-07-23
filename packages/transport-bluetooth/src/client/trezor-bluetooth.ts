@@ -8,6 +8,21 @@ import {
     TrezorBluetoothSettings,
 } from './types';
 
+type SetStateParams = {
+    devices: Pick<BluetoothDevice, 'id' | 'macAddress'>[];
+};
+
+type ConnectDeviceParams = {
+    id: string;
+    timeout: number;
+};
+
+type WriteParams = {
+    id: string;
+    data: number[];
+    withResponse?: boolean;
+};
+
 // Client for trezor-bluetooth rust websocket server
 export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
     readonly settings: TrezorBluetoothSettings;
@@ -38,26 +53,44 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
         return Promise.resolve(this.sendRawMessage('PING'));
     }
 
+    connectDevice(params: ConnectDeviceParams) {
+        // adjust websocket timeout and allow the server to respond with timeout error (timeout on the server)
+        const wsTimeout =
+            typeof params.timeout === 'number' && params.timeout > 0
+                ? params.timeout + 3000
+                : undefined;
+
+        return this.sendMessage({ method: 'connect_device', params }, { timeout: wsTimeout });
+    }
+
+    write(params: WriteParams) {
+        const withResponse = false;
+
+        return this.sendMessage({ method: 'write', params: { ...params, withResponse } });
+    }
+
+    send(method: 'set_state', state: SetStateParams): Promise<boolean>;
     send(method: 'get_info', adapter?: boolean): Promise<BluetoothInfo>;
     send(method: 'enumerate'): Promise<BluetoothDevice[]>;
     send(method: 'start_scan'): Promise<BluetoothDevice[]>;
     send(method: 'stop_scan'): Promise<boolean>;
-    send(method: 'connect_device', args: [string, number]): Promise<boolean>; // args: id, timeout
+    send(method: 'connect_device', params: ConnectDeviceParams): Promise<boolean>; // args: id, timeout
     send(method: 'disconnect_device', id: string): Promise<boolean>;
     send(method: 'forget_device', id: string): Promise<boolean>;
     send(method: 'open_device', id: string): Promise<boolean>;
     send(method: 'close_device', id: string): Promise<boolean>;
     send(method: 'read', id: string): Promise<boolean>;
-    send(method: 'write', args: [string, number[]]): Promise<boolean>; // args: id, data
+    send(method: 'write', params: WriteParams): Promise<boolean>;
     public send(method: string, params?: any) {
-        // connect_device timeout is dynamically set,
-        // adjust websocket client and allow the server to respond with timeout error (timeout on the server)
-        const timeout =
-            method === 'connect_device' && Array.isArray(params) && typeof params[1] === 'number'
-                ? params[1] + 3000
-                : undefined;
+        if (method === 'connect_device') {
+            return this.connectDevice(params);
+        }
 
-        return this.sendMessage({ method, params }, { timeout });
+        if (method === 'write') {
+            return this.write(params);
+        }
+
+        return this.sendMessage({ method, params });
     }
 
     protected onMessage(message: string | Buffer) {
