@@ -13,7 +13,7 @@ const getMethod = (instanceName: string) => {
             method = 'GET_BLOCK';
             break;
         case 'ripple':
-            method = 'server_info';
+            method = 'ping';
             break;
         default:
             method = 'getBlockHash';
@@ -138,14 +138,7 @@ workers.forEach(instance => {
             await new Promise(resolve => setTimeout(resolve, 500));
 
             expect(callback).toHaveBeenCalled();
-
-            // xrpl.js calls this.getServerInfo() inside the connect() method,
-            // which results in the mock server sending a response and then removing the first fixture
-            if (instance.name === 'ripple') {
-                expect(server.getFixtures()!.length).toEqual(1);
-            } else {
-                expect(server.getFixtures()!.length).toEqual(2);
-            }
+            expect(server.getFixtures()!.length).toEqual(2);
         });
 
         it('Handle connect event', () =>
