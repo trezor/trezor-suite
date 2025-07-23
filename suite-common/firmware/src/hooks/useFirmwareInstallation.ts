@@ -65,15 +65,29 @@ export const useFirmwareInstallation = (
     const firmware = useSelector(selectFirmware);
     const device = useSelector(selectSelectedDevice);
 
+    const [reconnectEvent, buttonEvent, progressEvent] = useMemo(() => {
+        if (firmware.uiEvent) {
+            if (firmware.uiEvent.type === UI.FIRMWARE_RECONNECT) {
+                return [firmware.uiEvent.payload];
+            }
+            if (firmware.uiEvent.type === DEVICE.BUTTON) {
+                return [undefined, firmware.uiEvent.payload];
+            }
+            if (firmware.uiEvent.type === UI.FIRMWARE_PROGRESS) {
+                return [undefined, undefined, firmware.uiEvent.payload];
+            }
+        }
+
+        return [];
+    }, [firmware.uiEvent]);
+
     // Device in its state before installation is cached when installation begins.
     // Until then, access device as normal.
     const originalDevice = firmware.cachedDevice || device;
 
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
-    const showManualReconnectPrompt =
-        firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-        firmware.uiEvent.payload.method === 'manual';
+    const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
 
     const showReconnectPrompt =
         // For some magic reason, the `ButtonRequest_Other` is present in FW after THP pairing;
@@ -81,11 +95,8 @@ export const useFirmwareInstallation = (
         firmware.status !== 'done' &&
         // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow,
         // T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
-        ((firmware.uiEvent?.type === DEVICE.BUTTON &&
-            firmware.uiEvent.payload.code &&
-            ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(
-                firmware.uiEvent.payload.code,
-            )) ||
+        ((buttonEvent?.code &&
+            ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(buttonEvent.code)) ||
             showManualReconnectPrompt);
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
@@ -103,29 +114,23 @@ export const useFirmwareInstallation = (
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
         // after ReconnectDevicePrompt is closed and user selects the option to install firmware while in bootloader.
         // Also, in case the device is PIN-locked at the start of the process.
-        (firmware.uiEvent?.type === DEVICE.BUTTON &&
-            firmware.uiEvent.payload.code !== undefined &&
+        (buttonEvent?.code &&
             ['ButtonRequest_FirmwareUpdate', 'ButtonRequest_PinEntry'].includes(
-                firmware.uiEvent.payload.code,
+                buttonEvent.code,
             )) ||
         // Show the confirmation pill right after ReconnectDevicePrompt is closed while using the "wait" or "manual" method,
         // before the user selects the option to install firmware while in bootloader
         // When a PIN-protected device reconnects to normal mode after installation, PIN is requested and the pill is shown.
         // There is a false positive in case such device is wiped (including PIN) during custom installation.
-        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            (firmware.uiEvent.payload.target === 'bootloader' ||
-                (firmware.uiEvent.payload.target === 'normal' &&
+        (reconnectEvent &&
+            (reconnectEvent.target === 'bootloader' ||
+                (reconnectEvent.target === 'normal' &&
                     originalDevice?.features?.pin_protection &&
                     !deviceWillBeWiped))) ||
         isThpConfirmationRequested;
 
     const showConfirmationPill =
-        (!showReconnectPrompt &&
-            !!firmware.uiEvent &&
-            !(
-                firmware.uiEvent.type === UI.FIRMWARE_PROGRESS &&
-                firmware.uiEvent.payload.operation === 'downloading'
-            )) ||
+        (!showReconnectPrompt && progressEvent?.operation === 'downloading') ||
         isThpConfirmationRequested;
 
     const updateStatus = useMemo<FirmwareOperationStatus>(() => {
@@ -136,26 +141,20 @@ export const useFirmwareInstallation = (
             };
         }
 
-        if (
-            firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
-            firmware.uiEvent.payload.operation === 'flashing'
-        ) {
+        if (progressEvent?.operation === 'flashing') {
             return {
                 operation: 'installing',
-                progress: firmware.uiEvent.payload.progress,
+                progress: progressEvent.progress,
             };
         }
 
         // Automatically restarting from bootloader to normal mode at the end of non-intermediary installation:
-        if (
-            firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            firmware.uiEvent.payload.method === 'wait'
-        ) {
+        if (reconnectEvent?.method === 'wait') {
             return { operation: 'restarting', progress: 100 };
         }
 
         return { operation: null, progress: 0 };
-    }, [firmware.uiEvent, firmware.status]);
+    }, [firmware.status, reconnectEvent, progressEvent]);
 
     const targetFirmwareType = useMemo(() => {
         const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
@@ -196,5 +195,8 @@ export const useFirmwareInstallation = (
         deviceWillBeWiped,
         showReconnectPrompt,
         showConfirmationPill,
+        reconnectEvent,
+        buttonEvent,
+        progressEvent,
     };
 };

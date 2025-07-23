@@ -1,6 +1,6 @@
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { Banner, Card, Column } from '@trezor/components';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 import { spacings } from '@trezor/theme';
 
@@ -21,7 +21,7 @@ export const FirmwareInstallationStandalone = ({
     install,
     onPromptClose,
 }: FirmwareInstallationStandaloneProps) => {
-    const { status, showReconnectPrompt, uiEvent, targetType } = useFirmwareInstallation();
+    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareInstallation();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     // Device needs to be paired twice when using web usb transport. // Once in
@@ -31,9 +31,9 @@ export const FirmwareInstallationStandalone = ({
     // in normal mode, till it is paired again.
     const isDeviceNotSelected =
         isWebUsbTransport &&
-        uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-        uiEvent.payload.disconnected &&
-        uiEvent.payload.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
+        reconnectEvent &&
+        reconnectEvent.disconnected &&
+        reconnectEvent.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
         status !== 'done';
 
     return (
