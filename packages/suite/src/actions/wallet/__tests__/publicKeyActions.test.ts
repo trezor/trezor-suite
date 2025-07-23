@@ -12,13 +12,19 @@ const TrezorConnect = testMocks.getTrezorConnectMock();
 const setTrezorConnectFixtures = (fixture: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
-    const getPublicKey = (_params: any) => {
+    const getPublicKey = (params: any) => {
+        if (params && params.__info) {
+            return Promise.resolve({
+                success: true,
+                payload: { useDevice: true },
+            });
+        }
         if (fixture && fixture.getPublicKey) {
             if (fixture.getPublicKey.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_PublicKey' });
             }
 
-            return fixture.getPublicKey;
+            return Promise.resolve(fixture.getPublicKey);
         }
         // trigger multiple button requests
         if (buttonRequest) {
@@ -27,9 +33,9 @@ const setTrezorConnectFixtures = (fixture: any) => {
             buttonRequest();
         }
 
-        return {
+        return Promise.resolve({
             success: true,
-        };
+        });
     };
 
     jest.spyOn(TrezorConnect, 'on').mockImplementation((event: string, cb) => {

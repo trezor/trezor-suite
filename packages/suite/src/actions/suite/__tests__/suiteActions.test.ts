@@ -35,27 +35,43 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
 const setTrezorConnectFixtures = (fixture: any) => {
-    jest.spyOn(TrezorConnect, 'getFeatures').mockImplementation(
-        () =>
+    const mockFn = (params: any) => {
+        if (params.__info) {
+            return Promise.resolve({
+                success: true,
+                payload: {
+                    useDevice: true,
+                },
+            });
+        }
+
+        return Promise.resolve(
             fixture || {
                 success: true,
             },
-    );
-    jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementation(
-        ({ device }: any) =>
+        );
+    };
+    jest.spyOn(TrezorConnect, 'getFeatures').mockImplementation(mockFn);
+    jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementation(({ device, __info }: any) => {
+        if (__info) {
+            return Promise.resolve({
+                success: true,
+                payload: {
+                    useDevice: true,
+                },
+            });
+        }
+
+        return Promise.resolve(
             fixture || {
                 success: true,
                 payload: {
                     state: `state@device-id:${device ? device.instance : undefined}`,
                 },
             },
-    );
-    jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(
-        () =>
-            fixture || {
-                success: true,
-            },
-    );
+        );
+    });
+    jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(mockFn);
 };
 
 type SuiteState = ReturnType<typeof suiteReducer>;

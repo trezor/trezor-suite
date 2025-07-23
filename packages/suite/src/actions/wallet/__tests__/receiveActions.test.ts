@@ -23,13 +23,19 @@ const TrezorConnect = testMocks.getTrezorConnectMock();
 const setTrezorConnectFixtures = (fixture?: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
-    const getAddress = (_params: any) => {
+    const getAddress = (params: any) => {
+        if (params && params.__info) {
+            return Promise.resolve({
+                success: true,
+                payload: { useDevice: true },
+            });
+        }
         if (fixture && fixture.getAddress) {
             if (fixture.getAddress.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_Address' });
             }
 
-            return fixture.getAddress;
+            return Promise.resolve(fixture.getAddress);
         }
         // trigger multiple button requests
         if (buttonRequest) {
@@ -38,12 +44,12 @@ const setTrezorConnectFixtures = (fixture?: any) => {
             buttonRequest();
         }
 
-        return {
+        return Promise.resolve({
             success: true,
             payload: {
                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
             },
-        };
+        });
     };
 
     jest.spyOn(TrezorConnect, 'on').mockImplementation((event: string, cb) => {
