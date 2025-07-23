@@ -97,9 +97,10 @@ export const NeedsAttentionBanner = ({
 
     const onSolveIssueClick = (): void => {
         switch (deviceStatus) {
-            case 'initialize': // wiped device
+            // wiped device - should pass through Manual Device Check before starting onboarding
+            case 'initialize':
                 selectDevice();
-                dispatch(goto('onboarding-index'));
+                dispatch(goto('suite-start'));
                 break;
 
             case 'bootloader': // device without firmware or in the bootloader mode
