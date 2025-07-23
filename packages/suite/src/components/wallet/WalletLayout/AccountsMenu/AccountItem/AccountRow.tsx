@@ -2,7 +2,6 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { AccountType } from '@suite-common/wallet-config';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
 
