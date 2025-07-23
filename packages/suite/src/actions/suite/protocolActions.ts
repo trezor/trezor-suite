@@ -12,8 +12,7 @@ import { isArrayMember } from '@trezor/utils';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { goto } from 'src/actions/suite/routerActions';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { Dispatch, GetState } from 'src/types/suite';
+import { Dispatch } from 'src/types/suite';
 import { parseUri } from 'src/utils/suite/parseUri';
 import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
 
@@ -45,7 +44,7 @@ const saveCoinProtocol = (scheme: Protocol, address: string, amount?: number): P
     payload: { scheme, address, amount },
 });
 
-export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch, getState: GetState) => {
+export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch) => {
     const protocol = getProtocolInfo(uri);
 
     if (protocol && !('error' in protocol) && getNetworkSymbolForProtocol(protocol.scheme)) {
@@ -64,10 +63,6 @@ export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch, getSt
     } else if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
         dispatch(routerActions.goto('suite-bridge-requested', { params: { cancelable: true } }));
     } else if (uri?.startsWith(SUITE_WALLETCONNECT_DEEPLINK)) {
-        // This feature is currently only available in debug mode
-        const isDebug = selectIsDebugModeActive(getState());
-        if (!isDebug) return;
-
         const parsedUri = parseUri(uri);
         const wcUri = parsedUri?.searchParams?.get('uri');
         if (wcUri) {
