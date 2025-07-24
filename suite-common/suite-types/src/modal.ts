@@ -107,6 +107,9 @@ export type UserContextPayload =
           type: 'firmware-authenticity-checks-opt-out';
       }
     | {
+          type: 'turn-on-debug-mode';
+      }
+    | {
           type: 'metadata-provider';
           decision: Deferred<boolean>;
       }

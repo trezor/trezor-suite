@@ -3783,6 +3783,19 @@ export default defineMessages({
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: 'PIN mismatch!',
     },
+    TR_TURN_ON_DEBUG_MODE_TITLE: {
+        id: 'TR_TURN_ON_DEBUG_MODE_TITLE',
+        defaultMessage: 'Turn on Debug mode',
+    },
+    TR_TURN_ON_DEBUG_MODE_MODAL_DESCRIPTION_1: {
+        id: 'TR_TURN_ON_DEBUG_MODE_MODAL_DESCRIPTION_1',
+        defaultMessage:
+            "Only turn on the debug mode if you fully understand the risks and have clear reasons for doing so. If you're uncertain, contact Trezor Support for assistance.",
+    },
+    TR_TURN_ON_DEBUG_MODE_MODAL_BUTTON: {
+        id: 'TR_TURN_ON_DEBUG_MODE_MODAL_BUTTON',
+        defaultMessage: 'Turn on',
+    },
     TR_DEBUG_SETTINGS: {
         id: 'TR_DEBUG_SETTINGS',
         defaultMessage: 'Debug',

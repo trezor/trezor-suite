@@ -45,6 +45,8 @@ export class SettingsPage {
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
     readonly debugTabButton: Locator;
+    readonly debugModalCheckbox: Locator;
+    readonly debugModalButton: Locator;
     readonly connectTabButton: Locator;
     readonly applicationTabButton: Locator;
     readonly deviceTabButton: Locator;
@@ -79,6 +81,8 @@ export class SettingsPage {
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.page.getByTestId('@settings/menu/title');
         this.debugTabButton = this.page.getByTestId('@settings/menu/debug');
+        this.debugModalCheckbox = this.page.getByTestId('@debug-mode-dialog/turn-on-button');
+        this.debugModalButton = this.page.getByTestId('@debug-mode-dialog/checkbox');
         this.connectTabButton = this.page.getByTestId('@settings/menu/connected-apps');
         this.applicationTabButton = this.page.getByTestId('@settings/menu/general');
         this.deviceTabButton = this.page.getByTestId('@settings/menu/device');
@@ -130,6 +134,8 @@ export class SettingsPage {
         for (let i = 0; i < this.TIMES_CLICK_TO_SET_DEBUG_MODE; i++) {
             await this.settingsHeader.click();
         }
+        await this.debugModalCheckbox.click();
+        await this.debugModalButton.click();
         await expect(this.debugTabButton).toBeVisible();
     }
 

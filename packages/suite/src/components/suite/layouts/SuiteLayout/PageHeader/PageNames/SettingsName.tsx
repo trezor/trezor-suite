@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacingsPx } from '@trezor/theme';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -31,19 +32,16 @@ export const SettingsName = () => {
 
         if (clickCounter === 4) {
             setClickCounter(0);
-            dispatch(setDebugMode({ showDebugMenu: !isDebugModeActive }));
 
+            if (!isDebugModeActive) {
+                dispatch(openModal({ type: 'turn-on-debug-mode' }));
+
+                return;
+            }
+
+            dispatch(setDebugMode({ showDebugMenu: false }));
             if (desktopApi.available) {
-                desktopApi.configLogger(
-                    isDebugModeActive
-                        ? {} // Reset to default values.
-                        : {
-                              level: 'debug',
-                              options: {
-                                  writeToDisk: true,
-                              },
-                          },
-                );
+                desktopApi.configLogger({}); // Reset to default values.
             }
         }
     };

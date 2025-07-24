@@ -56,6 +56,7 @@ import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { TradingDCAModal } from './TradingDCAModal';
+import { TurnOnDebugModeModal } from './TurnOnDebugModeModal';
 import { TxSimulationModal } from './TxSimulationModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
@@ -100,6 +101,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
         case 'firmware-authenticity-checks-opt-out':
             return <FirmwareRevisionOptOutModal onCancel={onCancel} />;
+        case 'turn-on-debug-mode':
+            return <TurnOnDebugModeModal onCancel={onCancel} />;
         case 'qr-reader':
             return <QrScannerModal decision={payload.decision} onCancel={onCancel} />;
         case 'transaction-detail':
