@@ -1277,17 +1277,17 @@
                 "category": ["banner"],
                 "content": {
                     "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
-                    "es": "La cuenta de Bitcoin Testnet ha sido actualizada al nuevo Testnet4.",
-                    "cs": "Účet Bitcoin Testnet byl aktualizován na nový Testnet4.",
-                    "ru": "Аккаунт Bitcoin Testnet был обновлён до нового Testnet4.",
-                    "ja": "Bitcoin Testnetのアカウントは新しいTestnet4に更新されました。",
-                    "hu": "A Bitcoin Testnet fiók frissítve lett az új Testnet4-re.",
-                    "it": "L'account Bitcoin Testnet è stato aggiornato al nuovo Testnet4.",
-                    "fr": "Le compte Bitcoin Testnet a été mis à jour vers le nouveau Testnet4.",
-                    "de": "Das Bitcoin Testnet-Konto wurde auf das neue Testnet4 aktualisiert.",
-                    "tr": "Bitcoin Testnet hesabı yeni Testnet4'e güncellendi.",
-                    "pt": "A conta do Bitcoin Testnet foi atualizada para o novo Testnet4.",
-                    "uk": "Обліковий запис Bitcoin Testnet оновлено до нового Testnet4."
+                    "es": "Actualiza Trezor Suite para mejorar la seguridad, disfrutar de las funciones más recientes y para que todo funcione sin problemas.",
+                    "cs": "Aktualizujte Trezor Suite, abyste získali lepší zabezpečení a nejnovější funkce.",
+                    "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу.",
+                    "ja": "Trezor Suiteをアップデートすることで、セキュリティの強化、最新機能の搭載、スムーズな動作が可能になります。",
+                    "hu": "Frissítse a Trezor Suite-ot a fokozott biztonság, a legújabb funkciók és a lehető leggördülékenyebb működés érdekében.",
+                    "it": "Aggiornate Trezor Suite per ottenere una maggiore sicurezza, tutte le funzioni più recenti e per far funzionare tutto nel modo più fluido possibile.",
+                    "fr": "Mettez à jour Trezor Suite pour bénéficier d’une sécurité renforcée, de toutes les dernières fonctionnalités, et pour garantir un fonctionnement optimal.",
+                    "de": "Aktualisiere Trezor Suite für mehr Sicherheit, neue Funktionen und reibungslose Abläufe.",
+                    "tr": "Geliştirilmiş güvenlik, en yeni özellikler ve her şeyin olabildiğince sorunsuz çalışması için Trezor Suite'i güncelleyin.",
+                    "pt": "Atualize o Trezor Suite para maior segurança, todos os recursos mais recentes e para manter tudo funcionando da forma mais suave possível.",
+                    "uk": "Оновіть Trezor Suite для підвищення безпеки, використання всіх новітніх функцій та забезпечення максимально плавної роботи."
                 },
                 "cta": {
                     "action": "internal-link",
