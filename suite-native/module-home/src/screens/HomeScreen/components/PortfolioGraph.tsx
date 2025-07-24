@@ -56,7 +56,7 @@ const IgnoredNetworksBanner = () => {
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectLocalCurrency);
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
@@ -71,7 +71,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
         onSelectTimeFrame,
         timeframe,
     } = useGraphForAllDeviceAccounts({
-        baseCurrencyCode: fiatCurrencyCode,
+        baseCurrencyCode,
     });
 
     const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } = useGraphAtoms({
@@ -90,6 +90,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     );
 
     const showHeader = isAnyMainnetAccountPresent || isLoading;
+
     const showGraph = hasDeviceHistoryEnabledAccounts || hasDeviceDiscovery;
 
     return (

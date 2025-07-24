@@ -195,17 +195,19 @@ export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGrap
     };
 };
 
+type UseGraphAtomsParams<TGraphPoint extends FiatGraphPoint> = {
+    referencePointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
+    selectedPointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
+    graphPoints: TGraphPoint[];
+    totalFiatBalance: BaseCurrencyAmount;
+};
+
 export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
     referencePointAtom,
     selectedPointAtom,
     graphPoints,
     totalFiatBalance,
-}: {
-    referencePointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
-    selectedPointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
-    graphPoints: TGraphPoint[];
-    totalFiatBalance: BaseCurrencyAmount;
-}): {
+}: UseGraphAtomsParams<TGraphPoint>): {
     handleGestureStart: () => void;
     setInitialSelectedPoints: () => void;
     setSelectedPoint: (point: TGraphPoint) => void;
@@ -234,7 +236,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
         if (lastPoint && referencePoint) {
             setSelectedPoint({
                 ...lastPoint,
-                valueLatestTotal: totalFiatBalance.toFixed(2),
+                valueLatestTotal: totalFiatBalance,
             });
             setReferencePoint(referencePoint);
         }
@@ -248,7 +250,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
         if (!isGestureActive && lastPoint) {
             setSelectedPoint({
                 ...lastPoint,
-                valueLatestTotal: totalFiatBalance.toFixed(2),
+                valueLatestTotal: totalFiatBalance,
             });
         }
     }, [isGestureActive, setInitialSelectedPoints, totalFiatBalance, lastPoint, setSelectedPoint]);

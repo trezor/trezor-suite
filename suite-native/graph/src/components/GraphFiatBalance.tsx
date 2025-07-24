@@ -42,18 +42,18 @@ const Skeleton = () => (
 
 const Balance = ({ selectedPointAtom, latestValue }: BalanceProps) => {
     const point = useAtomValue(selectedPointAtom);
-    const fiatValue =
-        latestValue !== undefined
-            ? latestValue
-            : asBaseCurrencyAmount(
-                  new BigNumber(
-                      point?.valueLatestTotal || (point?.value ? String(point.value) : '0'),
-                  ),
-              );
+
+    const baseCurrencyValue =
+        latestValue ??
+        point?.valueLatestTotal ??
+        asBaseCurrencyAmount(new BigNumber(point?.value ? String(point.value) : '0'));
 
     return (
         <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
-            <FiatBalanceFormatter value={fiatValue} testID="@home/portfolio/fiat-balance-header" />
+            <FiatBalanceFormatter
+                value={baseCurrencyValue}
+                testID="@home/portfolio/fiat-balance-header"
+            />
         </DiscreetTextTrigger>
     );
 };
@@ -77,7 +77,7 @@ export const GraphFiatBalance = ({
     const showBalanceFallback =
         !hasDeviceDiscovery && ((hasBalance && showLoading) || !isHistoryEnabledAccount);
 
-    // If discovery finished but graph still loading or missing first point we just show latest total balance
+    // If discovery finished but the graph still loading or missing first point, we just show the latest total balance
     if (showBalanceFallback) {
         return (
             <Box style={applyStyle(wrapperStyle)}>
