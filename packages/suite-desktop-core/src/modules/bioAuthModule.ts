@@ -1,5 +1,5 @@
 import { systemPreferences } from 'electron';
-import * as winHello from 'win-hello';
+import createWinHello from 'win-hello';
 
 import { isMacOs, isWindows } from '@trezor/env-utils';
 
@@ -15,14 +15,8 @@ type BioAuthModule = (dependencies: Dependencies) => {
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
 const loadWin = ({ mainWindowProxy }: Dependencies) => {
+    const winHello = createWinHello();
     ipcMain.on('bio-auth/request', async () => {
-        if (!(await winHello.isHelloAvailable())) {
-            console.error('bioAuth', 'WIN: Passport is not available');
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
-
-            return;
-        }
-
         try {
             await winHello.requestHello(PROMPT_REASON);
 

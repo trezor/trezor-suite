@@ -27,7 +27,7 @@
         "openpgp": "^6.1.1",
         "passport-desktop": "^0.1.2",
         "usb": "^2.15.0",
-        "win-hello": "^1.0.10"
+        "win-hello": "^1.0.13"
     },
     "devDependencies": {
         "electron": "37.2.0",
