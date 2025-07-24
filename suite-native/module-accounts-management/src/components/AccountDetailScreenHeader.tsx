@@ -11,6 +11,7 @@ import {
     RootStackRoutes,
     ScreenHeader,
     StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
 type AccountDetailScreenHeaderProps = {
@@ -51,6 +52,7 @@ export const AccountDetailScreenHeader = ({
     accountKey,
 }: AccountDetailScreenHeaderProps) => {
     const navigation = useNavigation<AccountDetailNavigationProps>();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
@@ -78,6 +80,7 @@ export const AccountDetailScreenHeader = ({
                 />
             }
             closeActionType={closeActionType}
+            closeAction={navigateToInitialScreen}
         />
     );
 };

@@ -7,11 +7,14 @@ import {
     SendStackParamList,
     SendStackRoutes,
     StackProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
 export const SendAccountsScreen = ({
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+
     const navigateToSendFormScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
         analytics.report({
             type: EventType.SendFlowEntered,
@@ -35,6 +38,7 @@ export const SendAccountsScreen = ({
                 <ScreenHeader
                     title={<Translation id="moduleSend.accountsList.title" />}
                     closeActionType="close"
+                    closeAction={navigateToInitialScreen}
                 />
             }
         >
