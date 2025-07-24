@@ -21,7 +21,6 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/theme" }
     ]
 }
