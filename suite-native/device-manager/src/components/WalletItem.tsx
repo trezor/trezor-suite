@@ -15,12 +15,9 @@ type WalletItemProps = {
 export const WalletItem = ({ onPress, deviceState, isSelectable = true }: WalletItemProps) => {
     const device = useSelector((state: any) => selectDeviceByState(state, deviceState));
     const selectedDevice = useSelector(selectSelectedDevice);
-    const fiatBalance = useSelector((state: any) =>
+    const baseCurrencyAmount = useSelector((state: any) =>
         device?.state?.staticSessionId
-            ? selectDeviceTotalFiatBalanceByDeviceState(
-                  state,
-                  device?.state?.staticSessionId,
-              ).toFixed(2)
+            ? selectDeviceTotalFiatBalanceByDeviceState(state, device?.state?.staticSessionId)
             : undefined,
     );
 
@@ -40,7 +37,7 @@ export const WalletItem = ({ onPress, deviceState, isSelectable = true }: Wallet
             isSelectable={isSelectable}
             isSelected={showAsSelected}
             walletNumber={device.walletNumber}
-            fiatBalance={fiatBalance}
+            baseCurrencyAmount={baseCurrencyAmount}
         />
     );
 };

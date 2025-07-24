@@ -27,7 +27,6 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "@trezor/utils": "workspace:*",
         "jotai": "^2.12.5",
         "react": "19.0.0",
         "react-native": "0.79.3",

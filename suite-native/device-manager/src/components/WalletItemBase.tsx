@@ -1,12 +1,11 @@
 import { Pressable } from 'react-native';
 
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { HStack, Radio, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { BigNumber } from '@trezor/utils';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
 
@@ -16,7 +15,7 @@ type WalletItemBaseProps = {
     isSelectable: boolean;
     isSelected: boolean;
     walletNumber?: number;
-    fiatBalance?: string;
+    baseCurrencyAmount?: BaseCurrencyAmount;
 };
 
 type WalletItemBaseStyleProps = { isSelected: boolean; isSelectable: boolean };
@@ -60,7 +59,7 @@ export const WalletItemBase = ({
     isSelected,
     isSelectable,
     walletNumber,
-    fiatBalance,
+    baseCurrencyAmount,
 }: WalletItemBaseProps) => {
     const { applyStyle } = useNativeStyles();
     const isStandard = variant === 'standard';
@@ -81,9 +80,9 @@ export const WalletItemBase = ({
                     </Text>
                 </HStack>
                 <HStack alignItems="center" spacing="sp12">
-                    {fiatBalance && (
+                    {baseCurrencyAmount && (
                         <BaseCurrencyAmountFormatter
-                            value={asBaseCurrencyAmount(new BigNumber(fiatBalance))}
+                            value={baseCurrencyAmount}
                             variant="hint"
                             color="textSubdued"
                         />

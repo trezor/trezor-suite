@@ -35,7 +35,11 @@ import {
     selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { asBaseCurrencyAmount, getAccountFiatBalance } from '@suite-common/wallet-utils';
+import {
+    BaseCurrencyAmount,
+    asBaseCurrencyAmount,
+    getAccountFiatBalance,
+} from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
@@ -96,16 +100,18 @@ export const selectDeviceError = (
     return device?.error;
 };
 
+type GetTotalFiatBalanceNativeParams = {
+    deviceAccounts: Account[];
+    localCurrency: BaseCurrencyCode;
+    rates?: RatesByKey;
+};
+
 // FIXME: this function can be removed and substituted with @suite-common/wallet-utils/getTotalFiatBalance when Solana supports staking on mobile.
 const getTotalFiatBalanceNative = ({
     deviceAccounts,
     localCurrency,
     rates,
-}: {
-    deviceAccounts: Account[];
-    localCurrency: BaseCurrencyCode;
-    rates?: RatesByKey;
-}) => {
+}: GetTotalFiatBalanceNativeParams): BaseCurrencyAmount => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
         const accountFiatBalance =
