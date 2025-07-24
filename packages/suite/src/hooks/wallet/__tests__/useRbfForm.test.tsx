@@ -67,7 +67,9 @@ jest.mock('@trezor/blockchain-link', () => ({
             return true;
         }
 
-        disconnect() {}
+        disconnect() {
+            return Promise.resolve(true);
+        }
 
         removeAllListeners() {}
 

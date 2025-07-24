@@ -55,7 +55,7 @@ export type BlockchainOptions = {
 };
 
 export class Blockchain {
-    link: BlockchainLink;
+    readonly link: BlockchainLink;
     serverInfo?: ServerInfo;
 
     readonly identity?: string;
@@ -99,19 +99,13 @@ export class Blockchain {
         });
     }
 
-    onError(error: ERRORS.TrezorError) {
-        const pendingSubscriptions =
-            this.link.listenerCount('block') ||
-            this.link.listenerCount('notification') ||
-            this.link.listenerCount('fiatRates');
-
-        this.link.dispose();
+    private onBackendDisconnected(pendingSubscriptions = false) {
         this.postMessage(
             createBlockchainMessage(BLOCKCHAIN.ERROR, {
                 coin: this.coinInfo,
                 identity: this.identity,
-                error: error.message,
-                code: error.code,
+                error: ERRORS.ERROR_CODES.Backend_Disconnected,
+                code: 'Backend_Disconnected',
             }),
         );
         this.onDisconnected?.(!!pendingSubscriptions);
@@ -137,7 +131,13 @@ export class Blockchain {
         }
 
         this.link.on('disconnected', () => {
-            this.onError(ERRORS.TypedError('Backend_Disconnected'));
+            const pendingSubscriptions =
+                this.link.listenerCount('block') ||
+                this.link.listenerCount('notification') ||
+                this.link.listenerCount('fiatRates');
+
+            this.link.dispose();
+            this.onBackendDisconnected(!!pendingSubscriptions);
         });
 
         return info;
@@ -305,7 +305,7 @@ export class Blockchain {
 
     disconnect() {
         this.link.removeAllListeners();
-        this.link.disconnect();
-        this.onError(ERRORS.TypedError('Backend_Disconnected'));
+        this.link.disconnect().then(() => this.link.dispose());
+        this.onBackendDisconnected();
     }
 }
