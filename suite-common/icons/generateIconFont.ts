@@ -31,6 +31,7 @@ const usedIcons = [
     'article',
     'backspace',
     'eject',
+    'ejectSimple',
     'bank',
     'bluetooth',
     'bluetoothConnected',

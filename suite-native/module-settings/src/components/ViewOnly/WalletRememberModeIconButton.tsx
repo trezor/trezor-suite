@@ -153,9 +153,10 @@ export const WalletRememberModeIconButton = ({
     return (
         <Animated.View entering={FadeIn} exiting={FadeOut}>
             <IconButton
-                iconName={device.remember ? 'eject' : 'arrowUUpLeft'}
+                iconName={device.remember ? 'ejectSimple' : 'arrowUUpLeft'}
                 onPress={handleEjectWallet}
                 colorScheme="tertiaryElevation1"
+                size="extraSmall"
             />
         </Animated.View>
     );
