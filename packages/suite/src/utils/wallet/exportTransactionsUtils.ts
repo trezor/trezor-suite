@@ -23,6 +23,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TransactionTarget } from '@trezor/connect';
+import { getCSVSeparator } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
@@ -55,7 +56,6 @@ type Fields = {
 };
 
 const CSV_NEWLINE = '\n';
-const CSV_SEPARATOR = ';';
 
 // Docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/format
 const dateFormat = {
@@ -291,8 +291,8 @@ const prepareContent = (
         .filter(record => record !== null) as Fields[];
 };
 
-const sanitizeCsvValue = (value: string) => {
-    if (value.indexOf(CSV_SEPARATOR) !== -1) {
+const sanitizeCsvValue = (value: string, locale: string) => {
+    if (value.indexOf(getCSVSeparator(locale)) !== -1) {
         return `"${value.replace(/"/g, '""')}"`;
     }
 
@@ -301,6 +301,7 @@ const sanitizeCsvValue = (value: string) => {
 
 const prepareCsv = (
     data: Data,
+    locale: string,
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ) => {
@@ -333,17 +334,17 @@ const prepareCsv = (
         line.push(v);
     });
 
-    lines.push(line.join(CSV_SEPARATOR));
+    lines.push(line.join(getCSVSeparator(locale)));
 
     // Prepare data
     content.forEach(item => {
         line = [];
 
         fieldKeys.forEach(field => {
-            line.push(sanitizeCsvValue(item[field]));
+            line.push(sanitizeCsvValue(item[field], locale));
         });
 
-        lines.push(line.join(CSV_SEPARATOR));
+        lines.push(line.join(getCSVSeparator(locale)));
     });
 
     return lines.join(CSV_NEWLINE);
@@ -446,6 +447,7 @@ const preparePdf = (
 
 export const formatData = async (
     data: Data,
+    locale: string,
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ) => {
@@ -453,7 +455,7 @@ export const formatData = async (
 
     switch (type) {
         case 'csv': {
-            const csv = prepareCsv(data, tokenDefinitions, historicFiatRates);
+            const csv = prepareCsv(data, locale, tokenDefinitions, historicFiatRates);
 
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
