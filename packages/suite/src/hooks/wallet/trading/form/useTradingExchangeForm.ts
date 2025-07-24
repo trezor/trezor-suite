@@ -104,11 +104,13 @@ export const useTradingExchangeForm = ({
 
     const { buildDefaultCryptoOption } = useTradingInfo();
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
+    const shouldUseTradingAccountKey =
+        !!tradingAccountKey && selectedAccount.account?.key !== tradingAccountKey;
     const [accountKey, setAccountKey] = useTradingAccountKey({
         type,
         tradingAccountKey,
         selectedAccount,
-        shouldUseTradingAccountKey: isPreviousRouteFromTradeSection,
+        shouldUseTradingAccountKey,
     });
     const accountByKey = useSelector(state => selectAccountByKey(state, accountKey));
     const account = accountByKey ?? selectedAccount.account;
