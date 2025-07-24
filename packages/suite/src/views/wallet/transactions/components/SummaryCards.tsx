@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
+import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import {
     DISCREET_PLACEHOLDER,
     asBaseCurrencyAmount,
@@ -17,7 +18,6 @@ import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
 import { FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';
 
 import { InfoCard } from './InfoCard';
-import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 
 const InfoCardsWrapper = styled.div`
     display: grid;

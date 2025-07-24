@@ -11,13 +11,14 @@ import {
     selectIsElectrumBackendSelected,
     selectLocalCurrency,
 } from '@suite-common/wallet-core';
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { percentageDiff } from '@suite-native/graph';
 
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
 
 export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
-    const [currentValue, setCurrentValue] = useState<number | null>(null);
+    const [currentValue, setCurrentValue] = useState<BaseCurrencyAmount | null>(null);
     const [yesterdayValue, setYesterdayValue] = useState<number | null>(null);
     const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
 
@@ -43,7 +44,11 @@ export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
 
             const [yesterday, today] = timestampedFiatRates.tickers;
             setYesterdayValue(yesterday.rates[fiatCurrencyCode] ?? null);
-            setCurrentValue(today.rates[fiatCurrencyCode] ?? null);
+
+            const currentRate = today.rates[fiatCurrencyCode];
+            setCurrentValue(
+                currentRate !== undefined ? asBaseCurrencyAmount(new BigNumber(currentRate)) : null,
+            );
         };
 
         getPrices();
@@ -54,7 +59,7 @@ export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
 
     useEffect(() => {
         if (G.isNotNullable(currentValue) && G.isNotNullable(yesterdayValue)) {
-            setValuePercentageChange(percentageDiff(yesterdayValue, currentValue));
+            setValuePercentageChange(percentageDiff(yesterdayValue, currentValue.toNumber()));
         }
     }, [currentValue, yesterdayValue]);
 

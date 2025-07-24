@@ -1,5 +1,6 @@
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
@@ -17,7 +18,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector, useTranslation } from 'src/hooks/suite';
-import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';

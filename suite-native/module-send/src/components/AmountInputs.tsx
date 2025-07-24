@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountNetworkSymbol,
+    useDisplayBaseCurrency,
+} from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -13,7 +17,6 @@ import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
 import { SendMaxButton } from './SendMaxButton';
-import { useDisplayBaseCurrency } from '../hooks/useDisplayBaseCurrency';
 
 type AmountInputProps = {
     index: number;

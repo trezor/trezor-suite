@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
+import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -15,7 +16,6 @@ import {
     MetadataLabeling,
 } from 'src/components/suite';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 const LOGO_SIZE = 36;

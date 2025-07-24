@@ -4,7 +4,11 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectIsDiscreteModeActive, selectLocalCurrency } from '@suite-common/wallet-core';
+import {
+    selectIsDiscreteModeActive,
+    selectLocalCurrency,
+    useDisplayBaseCurrency,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
 import {
@@ -25,8 +29,6 @@ import {
 } from 'src/components/suite';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
-
-import { useDisplayBaseCurrency } from '../../../../../hooks/suite/useDisplayBaseCurrency';
 
 const AccountLabelContainer = styled.div`
     flex: 1;

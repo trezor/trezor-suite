@@ -5,7 +5,11 @@ import { useTheme } from 'styled-components';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
-import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
+import {
+    selectAnyAccountIsStakingActive,
+    useDisplayBaseCurrency,
+    useDisplayBaseCurrency,
+} from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -31,7 +35,6 @@ import { AssetCoinName } from '../AssetCoinName';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { AssetTokenRow } from './AssetTokenRow';
-import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 import { TradingButton } from '../TradingButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 

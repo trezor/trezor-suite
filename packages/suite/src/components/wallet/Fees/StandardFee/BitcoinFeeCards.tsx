@@ -1,12 +1,11 @@
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import { selectAreFeesLoading, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { FeeRate } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useLocales, useSelector } from 'src/hooks/suite';
-import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
