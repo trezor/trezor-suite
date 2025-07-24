@@ -1,5 +1,7 @@
 import { CryptoId, SellFiatFlowType } from 'invity-api';
 
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 export const TRADING_PREFIX = '@trading';
 export const TRADING_BUY_PREFIX = `${TRADING_PREFIX}-buy`;
 export const TRADING_EXCHANGE_PREFIX = `${TRADING_PREFIX}-exchange`;
@@ -62,3 +64,13 @@ export const CRYPTO_PLATFORM_SEPARATOR = '--';
  * Used for L2 networks (e.g. base, op)
  */
 export const CONTRACT_ADDRESS_FOR_NATIVE_TOKEN = '0x0000000000000000000000000000000000000000';
+
+export const TOKEN_SELECT_SELECTABLE_NETWORKS: NetworkSymbol[] = [
+    'eth',
+    'sol',
+    'pol',
+    'bsc',
+    'base',
+    'op',
+    'arb',
+];
