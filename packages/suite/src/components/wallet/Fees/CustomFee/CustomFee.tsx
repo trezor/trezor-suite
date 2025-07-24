@@ -91,6 +91,9 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const feeUnits = getFeeUnits(networkType);
 
+    const shouldShowTxSize =
+        networkType === 'bitcoin' && cachedBytes !== undefined && cachedBytes !== false;
+
     return (
         <>
             <CustomFeeWrapper>
@@ -158,7 +161,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                     </Row>
                 </Column>
             )}
-            {cachedBytes !== undefined && cachedBytes !== false && (
+            {shouldShowTxSize && (
                 <Row alignItems="baseline" justifyContent="space-between">
                     <Text variant="tertiary" typographyStyle="hint">
                         <Translation id="TR_SIZE" />:
