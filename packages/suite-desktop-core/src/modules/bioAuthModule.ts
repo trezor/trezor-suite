@@ -1,5 +1,5 @@
 import { systemPreferences } from 'electron';
-import { Passport, VerificationResult } from 'passport-desktop';
+import createWinHello from 'win-hello';
 
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 
@@ -15,26 +15,14 @@ type BioAuthModule = (dependencies: Dependencies) => {
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
 const loadWin = ({ mainWindowProxy }: Dependencies) => {
-    const { logger } = global;
+    const winHello = createWinHello();
+
     ipcMain.on('bio-auth/request', async (_, params) => {
-        if (!Passport.available()) {
-            logger.info('bioAuth', 'WIN: Passport is not available');
-            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
-                success: false,
-                message: 'Windows Hello is not available',
-            });
-
-            return;
-        }
-
         try {
-            const verificationResult = await Passport.requestVerification(
+            await winHello.requestHello(
                 params.message ?? PROMPT_REASON,
+                mainWindowProxy.getInstance()?.getNativeWindowHandle(),
             );
-
-            if (verificationResult !== VerificationResult.Verified) {
-                throw new Error('WIN: bioAuth validation failed');
-            }
 
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: true,
@@ -50,9 +38,9 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
         }
     });
 
-    ipcMain.on('bio-auth/request-availability', () => {
+    ipcMain.on('bio-auth/request-availability', async () => {
         try {
-            const available = Passport.available();
+            const available = await winHello.isHelloAvailable();
 
             if (!available) {
                 logger.info('bioAuth', 'WIN: passport is not available');
