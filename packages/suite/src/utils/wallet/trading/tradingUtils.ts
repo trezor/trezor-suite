@@ -39,6 +39,15 @@ interface TradingGetDecimalsProps {
     network?: Network | null;
 }
 
+export const translationKeys: Record<
+    TradingType,
+    Extract<ExtendedMessageDescriptor['id'], 'TR_BUY' | 'TR_TRADING_SELL' | 'TR_TRADING_SWAP'>
+> = {
+    buy: 'TR_BUY',
+    sell: 'TR_TRADING_SELL',
+    exchange: 'TR_TRADING_SWAP',
+};
+
 export const getTradingCryptoInfo = (
     cryptoSelect:
         | TradingAccountOptionsGroupOptionProps
