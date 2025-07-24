@@ -1,13 +1,25 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-/** Matches three groups: 1. currency symbol,  2. whole number part and 3. decimal part. */
+/** Matches three groups: 1. currency symbol, 2. whole number part and 3. decimal part. */
 const BALANCE_PARSING_REGEX = /^(\D+)([\d,]+)(?:\.(\d+))?$/u;
 
 export const convertTokenValueToDecimal = (value: string | number, decimals: number) =>
     BigNumber(value).div(BigNumber(10).exponentiatedBy(decimals));
 
+const normalizeValueForBtcAndSats = (value: string) => {
+    const [first, second] = value.split(' ');
+
+    if (!second) {
+        return first;
+    }
+
+    return second === 'sat' ? `${second}${first}` : `${first}${second}`;
+};
+
 export const parseBalanceAmount = (value: string) => {
-    const regexGroups = value.match(BALANCE_PARSING_REGEX);
+    const normalizedValue = normalizeValueForBtcAndSats(value);
+
+    const regexGroups = normalizedValue.match(BALANCE_PARSING_REGEX);
     const [_, currencySymbol, wholeNumberPart, decimalNumberPart] = regexGroups ?? [
         null,
         null,
