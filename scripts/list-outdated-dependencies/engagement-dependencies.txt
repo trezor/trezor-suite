@@ -58,4 +58,5 @@ ua-parser-js
 vite
 vite-plugin-wasm
 vm-browserify
+win-hello
 zxcvbn
