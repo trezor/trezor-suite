@@ -73,19 +73,16 @@ export type AdditionalParams = Pick<
     identity?: string;
 };
 
-type TypedAccountParam = AccountTypeKey &
-    AdditionalParams & {
-        skip?: number;
-    };
-
-type UntypedAccountParam = AdditionalParams & {
-    symbol: AccountTypeItem['symbol'];
-    type?: undefined;
-    skip?: undefined;
-};
+type CoinParam<T extends AccountTypeKey['symbol'] = AccountTypeKey['symbol']> = T extends T
+    ? AdditionalParams & {
+          symbol: T;
+          known?: { type: Extract<AccountTypeKey, { symbol: T }>['type']; skip?: number }[];
+          knownOnly?: boolean;
+      }
+    : never;
 
 type DiscoverAccountsParams = {
-    accounts: (TypedAccountParam | UntypedAccountParam)[];
+    coins: CoinParam[];
 };
 
 type ProgressBaseType = AccountTypeKey & { index: number; path: string; backendType?: string };
