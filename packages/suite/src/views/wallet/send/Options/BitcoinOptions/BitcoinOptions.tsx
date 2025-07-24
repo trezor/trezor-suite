@@ -2,20 +2,16 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
-import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { Button, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { OnOffSwitcher } from '../OnOffSwitcher';
 import { CoinControl } from './CoinControl/CoinControl';
 import { Locktime } from './Locktime/Locktime';
-import { canLocktimeTxBeBroadcast } from './Locktime/canLocktimeTxBeBroadcast';
 
 const Wrapper = styled.div`
     display: flex;
@@ -72,8 +68,6 @@ export const BitcoinOptions = () => {
         setDraftSaveRequest,
         resetDefaultValue,
         setValue,
-        watch,
-        network,
     } = useSendFormContext();
 
     const options = useWatch({
@@ -96,75 +90,10 @@ export const BitcoinOptions = () => {
         setDraftSaveRequest(true);
     };
 
-    const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, network.symbol));
-
-    const [locktimeBlockHeight, locktimeDatetime] = watch([
-        'bitcoinLocktimeBlockHeight',
-        'bitcoinLocktimeDatetime',
-    ]);
-
-    const canLocktimeBeBroadcast = canLocktimeTxBeBroadcast({
-        locktimeBlockHeight: Number(locktimeBlockHeight),
-        locktimeDatetime: datetimeToLocktime(locktimeDatetime),
-        currentBlockHeight: blockchain.blockHeight,
-    });
-
     return (
         <Wrapper>
             <Row>
                 <Left>
-                    {!locktimeEnabled && (
-                        <Tooltip
-                            addon={
-                                <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/locktime.md" />
-                            }
-                            content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
-                            cursor="pointer"
-                        >
-                            <StyledButton
-                                variant="tertiary"
-                                size="small"
-                                icon="calendar"
-                                onClick={() => {
-                                    // open additional form
-                                    toggleOption('bitcoinLocktime');
-                                    composeTransaction();
-                                }}
-                                data-testid="add-locktime-button"
-                            >
-                                <Translation id="LOCKTIME_ADD" />
-                            </StyledButton>
-                        </Tooltip>
-                    )}
-                    <Tooltip
-                        content={
-                            <Translation
-                                id={
-                                    canLocktimeBeBroadcast
-                                        ? 'BROADCAST_TOOLTIP'
-                                        : 'BROADCAST_TOOLTIP_DISABLED_LOCKTIME'
-                                }
-                            />
-                        }
-                    >
-                        <StyledButton
-                            variant="tertiary"
-                            size="small"
-                            icon="broadcast"
-                            onClick={() => {
-                                toggleOption('broadcast');
-                                composeTransaction();
-                            }}
-                            data-testid="broadcast-button"
-                            isDisabled={!canLocktimeBeBroadcast}
-                        >
-                            <Inline>
-                                <Translation id="BROADCAST" />
-                                <OnOffSwitcher isOn={broadcastEnabled} />
-                            </Inline>
-                        </StyledButton>
-                    </Tooltip>
-
                     {!utxoSelectionEnabled && (
                         <Tooltip
                             addon={

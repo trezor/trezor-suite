@@ -1,7 +1,9 @@
+import { useWatch } from 'react-hook-form';
+
 import styled from 'styled-components';
 
 import { sendFormActions } from '@suite-common/wallet-core';
-import { Button, Dropdown, DropdownMenuItemProps } from '@trezor/components';
+import { Button, Dropdown, DropdownMenuItemProps, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { Translation } from 'src/components/suite';
@@ -20,16 +22,34 @@ export const SendHeader = () => {
     const { device } = useDevice();
     const {
         outputs,
+        control,
         account: { networkType },
         formState: { isDirty },
+        toggleOption,
 
         addOpReturn,
         resetContext,
         loadTransaction,
     } = useSendFormContext();
 
+    const enabledFormOptions = useWatch({
+        name: 'options',
+        defaultValue: [],
+        control,
+    });
+
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
+    const locktimeEnabled = enabledFormOptions.includes('bitcoinLocktime');
+    const broadcastEnabled = enabledFormOptions.includes('broadcast');
     const options: Array<DropdownMenuItemProps> = [
+        {
+            'data-testid': '@send/header-dropdown/import',
+            onClick: () => {
+                loadTransaction();
+            },
+            label: <Translation id="IMPORT_CSV" />,
+            isHidden: networkType !== 'bitcoin',
+        },
         {
             'data-testid': '@send/header-dropdown/opreturn',
             onClick: addOpReturn,
@@ -38,11 +58,36 @@ export const SendHeader = () => {
             isHidden: networkType !== 'bitcoin',
         },
         {
-            'data-testid': '@send/header-dropdown/import',
+            'data-testid': '@send/header-dropdown/locktime',
             onClick: () => {
-                loadTransaction();
+                toggleOption('bitcoinLocktime');
+                if (broadcastEnabled) toggleOption('broadcast');
             },
-            label: <Translation id="IMPORT_CSV" />,
+            label: <Translation id="LOCKTIME_ADD" />,
+            isDisabled: !!locktimeEnabled,
+            isHidden: networkType !== 'bitcoin',
+        },
+        {
+            'data-testid': '@send/header-dropdown/broadcast',
+            onClick: () => toggleOption('broadcast'),
+            closeOnClick: false,
+            label: (
+                <Switch
+                    isDisabled={!!locktimeEnabled}
+                    isChecked={broadcastEnabled}
+                    labelPosition="start"
+                    label={
+                        <Text
+                            typographyStyle="hint"
+                            variant={locktimeEnabled ? 'disabled' : 'default'}
+                            textWrap="nowrap"
+                        >
+                            <Translation id="BROADCAST" />
+                        </Text>
+                    }
+                />
+            ),
+            isDisabled: !!locktimeEnabled,
             isHidden: networkType !== 'bitcoin',
         },
         {
