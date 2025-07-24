@@ -73,13 +73,10 @@ describe(`TrezorConnect.discoverAccounts`, () => {
         */
 
         const result = await TrezorConnect.discoverAccounts({
-            accounts: [
-                { symbol: 'btc' },
-                { symbol: 'btc', type: 'legacy' },
-                { symbol: 'btc', type: 'segwit' },
-                { symbol: 'btc', type: 'taproot' },
+            coins: [
+                { symbol: 'btc', known: [{ type: 'legacy' }, { type: 'taproot' }] },
                 { symbol: 'eth' },
-                { symbol: 'etc', type: 'normal', skip: 4 },
+                { symbol: 'etc', known: [{ type: 'normal', skip: 4 }], knownOnly: true },
                 { symbol: 'ltc' },
                 { symbol: 'ada' },
                 { symbol: 'xrp' },

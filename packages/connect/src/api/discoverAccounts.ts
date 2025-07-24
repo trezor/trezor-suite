@@ -67,24 +67,24 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
 
         // validate bundle type
         validateParams(payload, [
-            { name: 'accounts', type: 'array', required: true, allowEmpty: true },
+            { name: 'coins', type: 'array', required: true, allowEmpty: true },
         ]);
 
-        this.params = payload.accounts.flatMap(item => {
+        this.params = payload.coins.flatMap(coin => {
             // validate incoming parameters
-            validateParams(item, [
+            validateParams(coin, [
                 { name: 'symbol', type: 'string', required: true },
-                { name: 'type', type: 'string' },
+                { name: 'known', type: 'array', allowEmpty: true },
+                { name: 'knownOnly', type: 'boolean' },
                 { name: 'identity', type: 'string' },
                 { name: 'details', type: 'string' },
                 { name: 'pageSize', type: 'number' },
-                { name: 'skip', type: 'number' },
             ]);
 
-            const { symbol, type, ...rest } = item;
+            const { symbol, known: knownAccs, knownOnly, ...rest } = coin;
 
             // validate coin info
-            const coinInfo = getCoinInfo(item.symbol);
+            const coinInfo = getCoinInfo(symbol);
             if (!coinInfo) {
                 throw ERRORS.TypedError('Method_UnknownCoin');
             }
@@ -94,19 +94,34 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
 
             const firmwareRange = getFirmwareRange(this.name, coinInfo, DEFAULT_FIRMWARE_RANGE);
 
-            return ACCOUNT_TYPES.filter(a => a.symbol === symbol && (!type || a.type === type)).map(
-                account => ({
+            // Take all the defined account types based on requested coin symbol
+            const symbolAccounts = ACCOUNT_TYPES.filter(a => a.symbol === symbol);
+
+            knownAccs?.forEach(account => {
+                validateParams(account, [
+                    { name: 'type', type: 'string', required: true },
+                    { name: 'skip', type: 'number' },
+                ]);
+                // Do not try to explicitly request account type which doesn't exist for requested coin
+                if (!symbolAccounts.some(a => a.type === account.type)) {
+                    throw new Error(`Unknown account type: ${symbol}/${account.type}`);
+                }
+            });
+
+            return symbolAccounts
+                .map(account => [account, knownAccs?.find(t => t.type === account.type)] as const) // Pair all coin accounts with possibly known account types
+                .filter(([_, known]) => (known ? typeof known.skip === 'number' : !knownOnly)) // Include passed known accounts with skip param (the other ones are known completely) and unpassed accounts if knownOnly wasn't requested
+                .map(([account, known]) => ({
                     pageSize: TXS_PER_PAGE,
                     details: DETAILS,
                     coinInfo,
                     firmwareRange,
-                    skip: 0,
+                    skip: known?.skip ?? 0, // Use the possibly passed skip param or fall back to zero
                     account,
                     ...rest,
                     offset: isEvmLedger(account, coinInfo) ? 1 : 0,
                     derivation: isCardano(account) ? CARDANO_DERIVATIONS[account.type] : undefined,
-                }),
-            );
+                }));
         });
     }
 
