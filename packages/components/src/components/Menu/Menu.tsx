@@ -43,6 +43,7 @@ export type DropdownMenuItemProps = {
     iconRight?: IconName;
     isDisabled?: boolean;
     isHidden?: boolean;
+    closeOnClick?: boolean;
     'data-testid'?: string;
 };
 
@@ -119,7 +120,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
                     const focusedItem = visibleItems[focusedItemIndex];
 
-                    onClose?.();
+                    if (focusedItem.closeOnClick !== false) onClose?.();
                     focusedItem?.onClick?.();
                 }
             };
@@ -188,7 +189,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                                         data-testid={item['data-testid']}
                                         {...item}
                                         onClick={() => {
-                                            onClose?.();
+                                            if (item.closeOnClick !== false) onClose?.();
                                             item.onClick?.();
                                         }}
                                         key={index}
