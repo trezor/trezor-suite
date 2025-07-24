@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { datetimeToLocktime } from '@suite-common/wallet-utils';
-import { Card, IconButton, Row, Select } from '@trezor/components';
+import { Card, IconButton, Row, Select, Tooltip } from '@trezor/components';
 
-import { TextColumn } from 'src/components/suite';
+import { OpenGuideFromTooltip } from 'src/components/guide';
+import { TextColumn, Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -99,7 +100,17 @@ export const Locktime = ({ close }: LocktimeProps) => {
         <Card>
             <Row justifyContent="space-between" alignItems="start">
                 <TextColumn
-                    title={translationString('LOCKTIME_ADD')}
+                    title={
+                        <Tooltip
+                            addon={
+                                <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/locktime.md" />
+                            }
+                            content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
+                            hasIcon
+                        >
+                            <Translation id="LOCKTIME_ADD" />
+                        </Tooltip>
+                    }
                     description={translationString('LOCKTIME_DESCRIPTION')}
                 />
                 <IconButton icon="x" size="small" variant="tertiary" onClick={close} />
