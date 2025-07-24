@@ -33,6 +33,8 @@ import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/Trad
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
 import { TradingFormSwitcherExchangeRates } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherExchangeRates';
 
+import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
+
 const generateFractionButtons = (
     helpers: TradingUseFormActionsReturnProps,
 ): FractionButtonProps[] => [
@@ -141,6 +143,7 @@ export const TradingFormInputs = () => {
                 />
                 <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+                <TradingFormFeesDisclamer tradingType={context.type} />
             </>
         );
     }
@@ -238,6 +241,7 @@ export const TradingFormInputs = () => {
                     trigger={trigger}
                 />
                 <TradingFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
+                <TradingFormFeesDisclamer tradingType={context.type} />
             </>
         );
     }
@@ -265,6 +269,7 @@ export const TradingFormInputs = () => {
             />
             <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
             <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+            <TradingFormFeesDisclamer tradingType={context.type} />
         </>
     );
 };

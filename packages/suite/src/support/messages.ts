@@ -1332,6 +1332,10 @@ export default defineMessages({
             "Some fees may not be included in the displayed price. The final cost will be shown on the provider's website.",
         id: 'TR_TRADING_FEES_ON_WEBSITE',
     },
+    TR_TRADING_FEES_DISCLAIMER: {
+        defaultMessage: 'See how fees are calculated for your {tradingType}.',
+        id: 'TR_TRADING_FEES_DISCLAIMER',
+    },
     TR_TRADING_NETWORK_FEE: {
         defaultMessage: 'Network fee',
         id: 'TR_TRADING_NETWORK_FEE',
