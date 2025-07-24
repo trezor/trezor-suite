@@ -14,7 +14,7 @@ export default [
                         '**/webpack/**',
                         '**/builds/**',
                         '**/configs/**',
-                        '**/vite.config.ts',
+                        '**/vite.config.mts',
                     ],
                 },
             ],

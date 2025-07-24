@@ -2,12 +2,15 @@ import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
 import fs, { readdirSync } from 'fs';
+import { createRequire } from 'module';
 import { resolve } from 'path';
 import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
 import { suiteVersion } from '../suite/package.json';
 import { assetPrefix, project } from './utils/env';
+
+const require = createRequire(import.meta.url);
 
 // Plugin to serve static files with /static prefix
 const staticAliasPlugin = (): Plugin => ({
