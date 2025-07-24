@@ -326,6 +326,8 @@ export const runDiscoveryThunk = createThunk(
 
             assertStaticSessionId(deviceState);
 
+            const { discovered } = device;
+
             if (!isAddingHiddenWallet) {
                 await dispatch(
                     applyDeviceStatesThunk({
@@ -363,13 +365,8 @@ export const runDiscoveryThunk = createThunk(
             const accountsParam = selectDiscoveryAccountsParam(
                 getState(),
                 deviceState.staticSessionId,
+                discovered,
             );
-
-            // no networks to discover, complete discovery
-            if (!accountsParam.length) {
-                // TODO: find out how to early return discovery; calling completeDiscoveryThunk does not work
-                console.warn('No networks to discover, todo: stop discovery');
-            }
 
             // we do not create empty accounts right away, but store the progress events for later
             const accountQueue: CreateAccountActionProps[] = [];
@@ -433,7 +430,7 @@ export const runDiscoveryThunk = createThunk(
                     state: { staticSessionId: deviceState.staticSessionId },
                 },
                 useEmptyPassphrase: !isAddingHiddenWallet,
-                accounts: accountsParam,
+                coins: accountsParam,
             });
 
             TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
@@ -649,13 +646,11 @@ export const runAdditionalDiscoveryThunk = createThunk(
         // NOTE: keep here the previous device as default to prevent TS from screaming
         const updatedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId) ?? device;
 
-        const accountsParam = selectDiscoveryAccountsParam(getState(), staticSessionId);
-
-        if (!accountsParam.length) {
-            console.warn('no rediscovery needed');
-
-            return;
-        }
+        const accountsParam = selectDiscoveryAccountsParam(
+            getState(),
+            staticSessionId,
+            device.discovered,
+        );
 
         const onBundleProgress = (event: ProgressEvent) => {
             const discovery = selectDiscoveryByDevicePath(getState(), device.path);
@@ -678,7 +673,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
         const result = await TrezorConnect.discoverAccounts({
             device: updatedDevice,
             useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
-            accounts: accountsParam,
+            coins: accountsParam,
         });
 
         TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);

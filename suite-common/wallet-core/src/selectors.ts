@@ -1,7 +1,11 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import { ReviewOutput } from '@suite-common/wallet-types';
-import { findAccountsByAddress, sortByCoin } from '@suite-common/wallet-utils';
+import {
+    findAccountsByAddress,
+    isAccountDiscoverable,
+    sortByCoin,
+} from '@suite-common/wallet-utils';
 import { StaticSessionId, type TrezorConnect } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
 
@@ -70,37 +74,43 @@ export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
     },
 );
 
+type DiscoveryAccountsParam = Parameters<TrezorConnect['discoverAccounts']>[0]['coins'];
+
 export const selectDiscoveryAccountsParam = (
     state: CompoundRootState,
     staticSessionId: StaticSessionId,
-): Parameters<TrezorConnect['discoverAccounts']>[0]['accounts'] => {
+    knownOnly?: boolean,
+): DiscoveryAccountsParam => {
     const networks = selectEnabledSupportedNetworks(state);
-    const accounts = selectAccountsByDeviceState(state, staticSessionId);
+    const knownAccounts = selectAccountsByDeviceState(state, staticSessionId);
+    const discoverableAccounts = knownAccounts.filter(isAccountDiscoverable);
 
-    const symbolMap = arrayToDictionary(accounts, acc => acc.symbol, true);
+    const symbolMap = arrayToDictionary(discoverableAccounts, acc => acc.symbol, true);
 
-    return networks.flatMap(symbol => {
+    return networks.map(symbol => {
         const symbolAccounts = symbolMap[symbol];
 
         // undiscovered network; discover as a whole
-        if (!symbolAccounts) return [{ symbol }];
+        if (!symbolAccounts) return { symbol };
 
         // discovered network; separate by account type
         const typeMap = arrayToDictionary(symbolAccounts, acc => acc.accountType, true);
 
-        return Object.entries(typeMap).flatMap(([type, accs]) => {
+        const known = Object.entries(typeMap).map(([type, accs]) => {
             // account with the highest index
             const lastAccount = accs.reduce((last, current) =>
                 current.index > last.index ? current : last,
             );
 
             // last account is a failed one; try to discover it again
-            if (lastAccount.failed) return [{ symbol, type, skip: lastAccount.index }];
+            if (lastAccount.failed) return { type, skip: lastAccount.index };
             // last account is a used one; skip it and try to discover next one
-            else if (!lastAccount.empty) return [{ symbol, type, skip: lastAccount.index + 1 }];
-            // last account is an empty one; no need to discover
-            else return [];
+            else if (!lastAccount.empty) return { type, skip: lastAccount.index + 1 };
+            // last account is an empty one; skip this type completely
+            else return { type };
         });
+
+        return { symbol, known, knownOnly } as DiscoveryAccountsParam[number];
     });
 };
 

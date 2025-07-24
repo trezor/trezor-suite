@@ -58,6 +58,9 @@ export const isAccountSuccessful = (account: Account): account is SuccessfulAcco
 
 export const isAccountFailed = (account: Account): account is FailedAccount => !!account.failed;
 
+export const isAccountDiscoverable = ({ accountType }: Account) =>
+    accountType !== 'imported' && accountType !== 'placeholder' && accountType !== 'coinjoin';
+
 export const getFirstFreshAddress = (
     account: Account,
     receiveAddresses: ReceiveInfo[],
