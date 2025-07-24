@@ -12595,6 +12595,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.14"
     tsx: "npm:^4.20.3"
     webpack: "npm:5.100.0"
+    win-hello: "npm:^1.0.10"
     ws: "npm:^8.18.0"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
@@ -12641,6 +12642,7 @@ __metadata:
     openpgp: "npm:^6.1.1"
     passport-desktop: "npm:^0.1.2"
     usb: "npm:^2.15.0"
+    win-hello: "npm:^1.0.10"
   languageName: unknown
   linkType: soft
 
@@ -32078,6 +32080,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-addon-api@npm:^5.0.0":
+  version: 5.1.0
+  resolution: "node-addon-api@npm:5.1.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10/595f59ffb4630564f587c502119cbd980d302e482781021f3b479f5fc7e41cf8f2f7280fdc2795f32d148e4f3259bd15043c52d4a3442796aa6f1ae97b959636
+  languageName: node
+  linkType: hard
+
 "node-addon-api@npm:^7.0.0":
   version: 7.1.1
   resolution: "node-addon-api@npm:7.1.1"
@@ -42486,6 +42497,16 @@ __metadata:
   version: 2.0.1
   resolution: "wildcard@npm:2.0.1"
   checksum: 10/e0c60a12a219e4b12065d1199802d81c27b841ed6ad6d9d28240980c73ceec6f856771d575af367cbec2982d9ae7838759168b551776577f155044f5a5ba843c
+  languageName: node
+  linkType: hard
+
+"win-hello@npm:^1.0.10":
+  version: 1.0.10
+  resolution: "win-hello@npm:1.0.10"
+  dependencies:
+    node-addon-api: "npm:^5.0.0"
+    node-gyp: "npm:latest"
+  checksum: 10/3d57705a6b02fdca99713dda6cc4d169bc983963903ad2176e8df2c414b7762251639b23dc7319247847bdc641bb7b25537a28c41defaec79a0ce8321d19aa57
   languageName: node
   linkType: hard
 
