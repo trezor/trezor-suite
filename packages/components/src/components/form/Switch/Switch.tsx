@@ -18,7 +18,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedSwitchFrameProps)[numbe
 export type SwitchProps = AllowedFrameProps & {
     isChecked: boolean;
     label?: ReactNode;
-    onChange: (isChecked: boolean) => void;
+    onChange?: (isChecked: boolean) => void;
     isDisabled?: boolean;
     size?: SwitchSize;
     'data-testid'?: string;
@@ -98,7 +98,7 @@ export const Switch = ({
 
     const handleChange = () => {
         if (isDisabled) return;
-        onChange(!isChecked);
+        onChange?.(!isChecked);
     };
 
     const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
