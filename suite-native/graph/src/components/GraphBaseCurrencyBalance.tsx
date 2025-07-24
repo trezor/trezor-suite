@@ -58,7 +58,7 @@ const Balance = ({ selectedPointAtom, latestValue }: BalanceProps) => {
     );
 };
 
-export const GraphFiatBalance = ({
+export const GraphBaseCurrencyBalance = ({
     selectedPointAtom,
     referencePointAtom,
     percentageChangeAtom,

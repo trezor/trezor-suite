@@ -57,3 +57,4 @@ export * from './settings/walletSettingsActions';
 export * from './settings/walletSettingsConstants';
 export * from './settings/walletSettingsReducer';
 export * from './settings/walletSettingsThunks';
+export * from './settings/useDisplayBaseCurrency';

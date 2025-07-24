@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
@@ -28,7 +29,6 @@ import {
     Translation,
 } from 'src/components/suite';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { Account } from 'src/types/wallet';
 
 const getCardanoFingerprint = (

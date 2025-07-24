@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
-import { selectHistoricFiatRatesByTimestamp, selectLocalCurrency } from '@suite-common/wallet-core';
+import {
+    selectHistoricFiatRatesByTimestamp,
+    selectLocalCurrency,
+    useDisplayBaseCurrency
+} from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
@@ -21,7 +25,6 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';

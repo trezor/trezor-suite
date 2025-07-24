@@ -37,9 +37,8 @@ export const FiatBalanceFormatter = ({
 
     const { currencySymbol, wholeNumber, decimalNumber } = parseBalanceAmount(formattedValue);
 
-    return (
-        <Box flexDirection="row" alignItems="flex-end" flexShrink={1} testID={testID}>
-            <Text variant="titleSmall">{currencySymbol}</Text>
+    const valueElement = (
+        <>
             <AmountText
                 value={wholeNumber}
                 variant="titleLarge"
@@ -53,6 +52,26 @@ export const FiatBalanceFormatter = ({
                 isDiscreetText
                 isForcedDiscreetMode={isForcedDiscreetMode}
             />
+        </>
+    );
+
+    const currencyElement = <Text variant="titleSmall">{currencySymbol}</Text>;
+
+    const isBehind = currencySymbol === 'sat';
+
+    return (
+        <Box flexDirection="row" alignItems="flex-end" flexShrink={1} testID={testID}>
+            {isBehind ? (
+                <>
+                    {valueElement}
+                    {currencyElement}
+                </>
+            ) : (
+                <>
+                    {currencyElement}
+                    {valueElement}
+                </>
+            )}
         </Box>
     );
 };

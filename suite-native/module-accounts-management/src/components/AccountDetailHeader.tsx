@@ -10,11 +10,12 @@ import {
     TransactionsRootState,
     selectAccountByKey,
     selectAccountFormattedBalance,
+    useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
-import { GraphFiatBalance } from '@suite-native/graph';
+import { GraphBaseCurrencyBalance } from '@suite-native/graph';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
 import {
     TokensRootState,
@@ -62,6 +63,7 @@ export const AccountDetailHeader = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenAddress),
     );
@@ -87,16 +89,18 @@ export const AccountDetailHeader = ({
 
     return (
         <VStack spacing="sp4" alignItems="center">
-            <CryptoBalance
-                symbol={account.symbol}
-                tokenSymbol={tokenSymbol}
-                totalCryptoBalance={totalCryptoBalance}
-            />
-            <GraphFiatBalance
+            {shallDisplayBaseCurrency && (
+                <CryptoBalance
+                    symbol={account.symbol}
+                    tokenSymbol={tokenSymbol}
+                    totalCryptoBalance={totalCryptoBalance}
+                />
+            )}
+            <GraphBaseCurrencyBalance
                 selectedPointAtom={selectedPointAtom}
                 referencePointAtom={referencePointAtom}
                 percentageChangeAtom={percentageChangeAtom}
-                showChange={isHistoryEnabledAccount}
+                showChange={isHistoryEnabledAccount && shallDisplayBaseCurrency}
                 totalFiatBalance={totalFiatBalance}
                 isHistoryEnabledAccount={isHistoryEnabledAccount}
             />

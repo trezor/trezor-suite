@@ -9,6 +9,7 @@ import {
     selectAccountByKey,
     selectIsPortfolioTrackerDevice,
     selectIsTestnetAccount,
+    useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -90,13 +91,11 @@ export const TransactionListHeader = memo(
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
         );
+        const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
 
         const hasAccountTransactions = useSelector(
             (state: TransactionsRootState & TokensRootState) =>
                 selectHasAccountAnyTransactions(state, accountKey),
-        );
-        const isTestnetAccount = useSelector((state: AccountsRootState) =>
-            selectIsTestnetAccount(state, accountKey),
         );
         const isNetworkSendFlowEnabled = useSelector((state: FeatureFlagsRootState) =>
             selectIsNetworkSendFlowEnabled(state, account?.symbol),
@@ -151,7 +150,7 @@ export const TransactionListHeader = memo(
         };
 
         const isTokenDetail = !!tokenContract;
-        const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
+        const isPriceCardDisplayed = shallDisplayBaseCurrency && !isTokenDetail;
 
         const isSendButtonDisplayed =
             isDeviceConnectEnabled && isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;

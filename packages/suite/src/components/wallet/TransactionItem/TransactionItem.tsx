@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
-import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isStakeTypeTx, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Link, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -18,7 +18,6 @@ import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
-import { useDisplayBaseCurrency } from 'src/hooks/suite/useDisplayBaseCurrency';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -12,7 +12,6 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
 import { useAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
 
-import { useDisplayBaseCurrency } from '../../../../hooks/suite/useDisplayBaseCurrency';
 import { ContextMessage } from '../AccountBanners/ContextMessage';
 
 const Container = styled.div`
