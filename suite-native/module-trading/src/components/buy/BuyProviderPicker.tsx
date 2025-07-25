@@ -68,12 +68,11 @@ export const BuyProviderPicker = () => {
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'quote');
     const { paymentMethod } = selectedValue ?? {};
-    const quotes =
-        useSelector((state: TradingRootState) =>
-            selectBuyQuotesByPaymentMethodNative(state, paymentMethod),
-        ) ?? [];
+    const quotes = useSelector((state: TradingRootState) =>
+        selectBuyQuotesByPaymentMethodNative(state, paymentMethod),
+    );
 
-    const shouldShowPicker = (providers && quotes.length > 0) || isLoading;
+    const shouldShowPicker = (providers && Object.values(quotes).flat().length > 0) || isLoading;
 
     const handleProviderPress = () => {
         if (isLoading) return;
@@ -119,7 +118,7 @@ export const BuyProviderPicker = () => {
             >
                 <BuyProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
             </OverviewRow>
-            <ProviderSheet
+            <ProviderSheet<BuyTrade>
                 quotes={quotes}
                 providerInfos={providers ?? {}}
                 isVisible={isSheetVisible}

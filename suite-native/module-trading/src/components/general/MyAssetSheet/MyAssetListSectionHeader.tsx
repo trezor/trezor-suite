@@ -26,7 +26,8 @@ export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectio
         <HStack
             justifyContent="space-between"
             alignItems="center"
-            paddingTop={isFirst ? undefined : 'sp32'}
+            paddingTop={isFirst ? 'sp12' : 'sp40'}
+            padding="sp12"
         >
             <HStack alignItems="center" spacing="sp8">
                 <Text variant="body" color="textDefault">

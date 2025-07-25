@@ -104,7 +104,7 @@ class TradingBuyActions {
 
     async viewProviders() {
         await element(by.id('@trading/buy/provider-picker')).tap();
-        await this.expectSheetHeaderTitle('Provider');
+        await this.expectSheetHeaderTitle('Providers');
         await element(by.label('Close')).tap();
         await waitForElementByIdToBeVisible('@trading/buy/provider-picker', SHORT_TIMEOUT);
     }

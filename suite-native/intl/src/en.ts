@@ -1947,6 +1947,27 @@ export const en = {
         },
     },
     moduleTrading: {
+        providerSheet: {
+            title: 'Providers',
+            fixed: {
+                title: 'Fixed-rate CEX',
+                description: 'Lock in your rate for 15 minutes by paying a higher fee.',
+            },
+            float: {
+                title: 'Floating-rate CEX',
+                description: 'Get an estimated rate that may adjust with real-time market changes.',
+            },
+            dex: {
+                title: 'DEX',
+                description:
+                    'A decentralized exchange (DEX) allows you to trade crypto directly on the blockchain without the need for a central authority or intermediary.',
+            },
+            filters: {
+                all: 'All',
+                cex: 'CEX',
+                dex: 'DEX',
+            },
+        },
         kyc: {
             dex: 'KYC never required. DEX swaps either succeed or fail.',
             noKyc: 'KYC never required. Exceptional cases automatically refunded.',
