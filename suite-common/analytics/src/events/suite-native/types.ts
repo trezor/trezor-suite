@@ -225,12 +225,8 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
-          type: EventType.ViewOnlyChange;
-          payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
-      }
-    | {
-          type: EventType.ViewOnlySkipped;
-          payload: { action: 'button' | 'close' };
+          type: EventType.AutoEjectChange;
+          payload: { enabled: boolean; origin: 'autoEjectAlert' | 'settingsToggle' };
       }
     | {
           type: EventType.PassphraseMismatch;
