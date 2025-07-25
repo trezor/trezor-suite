@@ -76,5 +76,6 @@ export * from './SwipeableWalkthrough/SwipeableWalkthroughScreenHeader';
 export * from './SwipeableWalkthrough/SwipeableWalkthroughStep';
 export * from './SwipeableWalkthrough/SwipeableWalkthroughStepHeader';
 export * from './SwipeableWalkthrough/SwipeableWalkthroughCloseButton';
+export * from './AnimatedDoubleView/AnimatedDoubleView';
 
 export { useDebugView } from './DebugView';
