@@ -1,7 +1,8 @@
 import { systemPreferences } from 'electron';
-import createWinHello from 'win-hello';
 
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
+import { createWinHello } from '@trezor/suite-desktop-native';
+import { serializeError } from '@trezor/utils';
 
 import { ipcMain } from '../typed-electron';
 
@@ -15,6 +16,7 @@ type BioAuthModule = (dependencies: Dependencies) => {
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
 const loadWin = ({ mainWindowProxy }: Dependencies) => {
+    const { logger } = global;
     const winHello = createWinHello();
 
     ipcMain.on('bio-auth/request', async (_, params) => {
@@ -33,7 +35,7 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
             logger.info('bioAuth', `WIN: bioAuth validation failed: ${error}`);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: false,
-                message: error.message,
+                message: serializeError(error),
             });
         }
     });
@@ -63,7 +65,7 @@ const loadMac = ({ mainWindowProxy }: Dependencies) => {
             logger.info('bioAuth', `MAC: bioAuth canPromptTouchID failed: ${error}`);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: false,
-                message: error.message,
+                message: serializeError(error),
             });
 
             return;
@@ -80,7 +82,7 @@ const loadMac = ({ mainWindowProxy }: Dependencies) => {
             logger.info('bioAuth', `MAC: bioAuth validation failed: ${error}`);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: false,
-                message: error.message,
+                message: serializeError(error),
             });
         }
     });
@@ -120,8 +122,6 @@ export const initBioAuthModule: BioAuthModule = dependencies => {
         if (loaded) return;
         const { logger } = global;
         logger.info('bioAuth', 'Loading');
-
-        loaded = true;
 
         if (isMacOs()) {
             loaded = true;

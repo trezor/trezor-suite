@@ -22,9 +22,9 @@ csstype
 date-fns
 framer-motion
 lottie-react
+node-addon-api
 node-loader
 pako
-passport-desktop
 pdfmake
 polished
 postcss-loader
@@ -58,5 +58,4 @@ ua-parser-js
 vite
 vite-plugin-wasm
 vm-browserify
-win-hello
 zxcvbn
