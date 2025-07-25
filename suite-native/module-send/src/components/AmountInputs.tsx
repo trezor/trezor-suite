@@ -1,22 +1,18 @@
-import { useRef, useState } from 'react';
-import { View } from 'react-native';
-import Animated, { LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { HStack, InputType, Text, VStack } from '@suite-native/atoms';
+import { ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
 import { SendMaxButton } from './SendMaxButton';
-import { SwitchAmountsButton } from './SwitchAmountsButton';
 import { useDisplayBaseCurrency } from '../hooks/useDisplayBaseCurrency';
 
 type AmountInputProps = {
@@ -25,29 +21,9 @@ type AmountInputProps = {
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendOutputs>['route'];
 
-const ANIMATION_DURATION = 300;
-const SCALE_FOCUSED = 1;
-const SCALE_UNFOCUSED = 0.9;
-const TRANSLATE_Y_FOCUSED = 0;
-const TRANSLATE_Y_UNFOCUSED = 55;
-
-const DEFAULT_INPUTS_WRAPPER_HEIGHT = 108;
-const FIATLESS_INPUTS_WRAPPER_HEIGHT = 60;
-
-const inputsWrapperStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>(
-    (_, { isFiatDisplayed }) => ({
-        height: isFiatDisplayed ? DEFAULT_INPUTS_WRAPPER_HEIGHT : FIATLESS_INPUTS_WRAPPER_HEIGHT,
-        justifyContent: 'space-between',
-    }),
-);
-
-const withPredefinedTiming = (toValue: number) =>
-    withTiming(toValue, { duration: ANIMATION_DURATION });
-
 export const AmountInputs = ({ index }: AmountInputProps) => {
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
-    const { applyStyle } = useNativeStyles();
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -55,98 +31,65 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
 
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
-    const [isCryptoSelected, setIsCryptoSelected] = useState(true);
-    const amountInputsWrapperRef = useRef<View>(null);
-
-    const cryptoRef = useRef<InputType | null>(null);
-    const cryptoScale = useSharedValue(SCALE_FOCUSED);
-    const cryptoTranslateY = useSharedValue(TRANSLATE_Y_FOCUSED);
-
-    const fiatScale = useSharedValue(SCALE_UNFOCUSED);
-    const fiatTranslateY = useSharedValue(TRANSLATE_Y_UNFOCUSED);
-    const fiatRef = useRef<InputType | null>(null);
-
-    const handleSwitchInputs = () => {
-        if (isCryptoSelected) {
-            cryptoScale.value = withPredefinedTiming(SCALE_UNFOCUSED);
-            cryptoTranslateY.value = withPredefinedTiming(TRANSLATE_Y_UNFOCUSED);
-            fiatScale.value = withPredefinedTiming(SCALE_FOCUSED);
-            fiatTranslateY.value = withPredefinedTiming(TRANSLATE_Y_FOCUSED);
-
-            setTimeout(() => fiatRef.current?.focus(), ANIMATION_DURATION);
-        } else {
-            cryptoScale.value = withPredefinedTiming(SCALE_FOCUSED);
-            cryptoTranslateY.value = withPredefinedTiming(TRANSLATE_Y_FOCUSED);
-            fiatScale.value = withPredefinedTiming(SCALE_UNFOCUSED);
-            fiatTranslateY.value = withPredefinedTiming(TRANSLATE_Y_UNFOCUSED);
-
-            setTimeout(() => cryptoRef.current?.focus(), ANIMATION_DURATION);
-        }
-
+    const onInputSwitch = (activeView: ActiveView) => {
         analytics.report({
             type: EventType.SendAmountInputSwitched,
-            payload: { changedTo: isCryptoSelected ? 'fiat' : 'crypto' },
+            payload: { changedTo: activeView === 'primary' ? 'crypto' : 'fiat' },
         });
-
-        setIsCryptoSelected(!isCryptoSelected);
     };
 
     if (!symbol) return null;
 
     return (
-        <View ref={amountInputsWrapperRef}>
-            <VStack spacing="sp12">
-                <HStack flex={1} justifyContent="space-between" alignItems="center">
-                    <Animated.View layout={LinearTransition}>
-                        <Text variant="hint">
-                            <Translation id="moduleSend.outputs.recipients.amountLabel" />
-                        </Text>
-                    </Animated.View>
-                    <SendMaxButton
-                        outputIndex={index}
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                    />
-                </HStack>
-                <Animated.View
-                    layout={LinearTransition}
-                    style={applyStyle(inputsWrapperStyle, {
-                        isFiatDisplayed: shallDisplayBaseCurrency,
-                    })}
-                >
-                    <CryptoAmountInput
-                        recipientIndex={index}
-                        scaleValue={cryptoScale}
-                        translateValue={cryptoTranslateY}
-                        inputRef={cryptoRef}
-                        accountKey={accountKey}
-                        isDisabled={!isCryptoSelected}
-                        symbol={symbol}
-                        onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
-                        tokenContract={tokenContract}
-                    />
-                    {shallDisplayBaseCurrency && (
-                        <>
-                            <SwitchAmountsButton onPress={handleSwitchInputs} />
-                            <FiatAmountInput
-                                recipientIndex={index}
-                                scaleValue={fiatScale}
-                                translateValue={fiatTranslateY}
-                                inputRef={fiatRef}
-                                accountKey={accountKey}
-                                isDisabled={isCryptoSelected}
-                                symbol={symbol}
-                                tokenContract={tokenContract}
-                                onPress={isCryptoSelected ? handleSwitchInputs : undefined}
-                            />
-                        </>
-                    )}
+        <VStack spacing="sp12">
+            <HStack flex={1} justifyContent="space-between" alignItems="center">
+                <Animated.View layout={LinearTransition}>
+                    <Text variant="hint">
+                        <Translation id="moduleSend.outputs.recipients.amountLabel" />
+                    </Text>
                 </Animated.View>
-                <AmountErrorMessage
+                <SendMaxButton
                     outputIndex={index}
-                    isFiatDisplayed={shallDisplayBaseCurrency}
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
                 />
-            </VStack>
-        </View>
+            </HStack>
+            {shallDisplayBaseCurrency ? (
+                <AnimatedDoubleInput
+                    renderPrimary={({ onPress, isDisabled, inputRef }) => (
+                        <CryptoAmountInput
+                            recipientIndex={index}
+                            inputRef={inputRef}
+                            accountKey={accountKey}
+                            symbol={symbol}
+                            tokenContract={tokenContract}
+                            isDisabled={isDisabled}
+                            onPress={onPress}
+                        />
+                    )}
+                    renderSecondary={({ onPress, isDisabled, inputRef }) => (
+                        <FiatAmountInput
+                            recipientIndex={index}
+                            inputRef={inputRef}
+                            accountKey={accountKey}
+                            isDisabled={isDisabled}
+                            symbol={symbol}
+                            tokenContract={tokenContract}
+                            onPress={onPress}
+                        />
+                    )}
+                    onInputSwitch={onInputSwitch}
+                />
+            ) : (
+                <CryptoAmountInput
+                    recipientIndex={index}
+                    accountKey={accountKey}
+                    symbol={symbol}
+                    tokenContract={tokenContract}
+                />
+            )}
+
+            <AmountErrorMessage outputIndex={index} isFiatDisplayed={shallDisplayBaseCurrency} />
+        </VStack>
     );
 };

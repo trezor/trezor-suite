@@ -1,6 +1,5 @@
 import { RefObject } from 'react';
 import { TextInputProps } from 'react-native';
-import { SharedValue } from 'react-native-reanimated';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -20,14 +19,11 @@ export type NativeSupportedFeeLevel = Exclude<FeeLevelLabel, 'low'>;
 export type SendAmountInputProps = {
     recipientIndex: number;
     symbol: NetworkSymbol;
-    inputRef: RefObject<InputType | null>;
-    scaleValue: SharedValue<number>;
-    translateValue: SharedValue<number>;
+    inputRef?: RefObject<InputType | null>;
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
     isDisabled?: boolean;
     onPress?: TextInputProps['onPress'];
-    onFocus?: () => void;
 };
 
 export type FeeLevelsMaxAmount = Record<FeeLevelLabel, string | undefined>;
