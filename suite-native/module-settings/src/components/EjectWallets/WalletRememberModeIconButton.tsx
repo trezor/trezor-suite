@@ -26,7 +26,7 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
         };
 
         analytics.report({
-            type: EventType.ViewOnlyChange,
+            type: EventType.AutoEjectChange,
             payload: { enabled: !device.remember, origin: 'settingsToggle' },
         });
 

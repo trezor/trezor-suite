@@ -5,6 +5,7 @@ import { useAtom } from 'jotai';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { selectShouldShowAutoEjectAlert } from '@suite-native/settings';
@@ -55,6 +56,13 @@ export const useShowAutoEjectAlert = () => {
                 onPressSecondaryButton: () => {
                     setHasAutoEjectAlertBeenDisplayed(true);
                     dispatch(toggleAutoEjectThunk());
+                    analytics.report({
+                        type: EventType.AutoEjectChange,
+                        payload: {
+                            enabled: true,
+                            origin: 'autoEjectAlert',
+                        },
+                    });
                     showToast({
                         message: (
                             <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />

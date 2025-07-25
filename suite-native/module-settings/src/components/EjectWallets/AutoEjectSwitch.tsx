@@ -6,6 +6,7 @@ import {
     toggleAutoEjectThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
@@ -33,6 +34,13 @@ export const AutoEjectSwitch = () => {
                 ),
             });
         }
+        analytics.report({
+            type: EventType.AutoEjectChange,
+            payload: {
+                enabled: !isAutoEjectEnabled,
+                origin: 'settingsToggle',
+            },
+        });
         dispatch(toggleAutoEjectThunk());
     };
 
