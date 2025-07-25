@@ -10780,6 +10780,7 @@ __metadata:
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
