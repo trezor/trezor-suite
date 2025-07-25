@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { G } from '@mobily/ts-belt';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 
@@ -10,9 +12,6 @@ export const useDisplayBaseCurrency = (symbol: NetworkSymbol | undefined | null)
 
     return {
         shallDisplayBaseCurrency:
-            symbol !== undefined &&
-            symbol !== null &&
-            !isTestnet(symbol) &&
-            baseCurrencyCode !== symbol,
+            G.isNotNullable(symbol) && !isTestnet(symbol) && baseCurrencyCode !== symbol,
     };
 };

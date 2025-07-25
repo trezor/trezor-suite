@@ -28,7 +28,7 @@ describe(parseBalanceAmount.name, () => {
         });
     });
 
-    it('handles BTC correctly', () => {
+    it('handles BTC BaseCurrency correctly', () => {
         const result = parseBalanceAmount('BTC 0.01');
         expect(result).toEqual({
             currencySymbol: 'BTC',
@@ -37,11 +37,29 @@ describe(parseBalanceAmount.name, () => {
         });
     });
 
-    it('handles sats correctly', () => {
+    it('handles BTC Crypto correctly', () => {
+        const result = parseBalanceAmount('0.00124009 BTC');
+        expect(result).toEqual({
+            currencySymbol: 'BTC',
+            wholeNumber: '0',
+            decimalNumber: '.00124009',
+        });
+    });
+
+    it('handles BaseCurrency sats correctly', () => {
         const result = parseBalanceAmount('1,477,571 sat');
         expect(result).toEqual({
             currencySymbol: 'sat',
             wholeNumber: '1,477,571',
+            decimalNumber: '',
+        });
+    });
+
+    it('handles Crypto Sats correctly', () => {
+        const result = parseBalanceAmount('124009 sat');
+        expect(result).toEqual({
+            currencySymbol: 'sat',
+            wholeNumber: '124009',
             decimalNumber: '',
         });
     });

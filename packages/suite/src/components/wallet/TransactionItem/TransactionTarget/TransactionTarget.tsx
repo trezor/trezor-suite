@@ -4,7 +4,7 @@ import { ToastPayload, notificationsActions } from '@suite-common/toast-notifica
 import {
     selectHistoricFiatRatesByTimestamp,
     selectLocalCurrency,
-    useDisplayBaseCurrency
+    useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
