@@ -128,6 +128,10 @@ module.exports = {
                 from: 'build/static/bin/coinjoin/win-${arch}',
                 to: 'bin/coinjoin',
             },
+            {
+                from: 'build/static/bin/win_hello.node',
+                to: 'bin/win_hello.node',
+            },
         ],
         icon: 'build/static/images/desktop/512x512.png',
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',

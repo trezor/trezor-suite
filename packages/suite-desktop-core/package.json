@@ -38,6 +38,7 @@
         "@trezor/request-manager": "workspace:*",
         "@trezor/suite": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
+        "@trezor/suite-desktop-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",
@@ -49,8 +50,6 @@
         "electron-store": "8.2.0",
         "electron-updater": "6.6.4",
         "openpgp": "^6.1.1",
-        "passport-desktop": "^0.1.2",
-        "win-hello": "^1.1.1",
         "ws": "^8.18.0"
     },
     "devDependencies": {

@@ -1,0 +1,20 @@
+{
+    "name": "@trezor/suite-desktop-native",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "main": "src/index",
+    "type": "module",
+    "scripts": {
+        "build:native": "node scripts/build-native.js",
+        "clean": "node scripts/clean.js",
+        "copy-binary": "node scripts/copy-binary.js"
+    },
+    "dependencies": {
+        "node-addon-api": "^5.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^18.19.26",
+        "node-gyp": "^9.3.1"
+    }
+}
