@@ -4,6 +4,7 @@ import { NativeFont } from './fontFamilies';
 import { FontWeightValue, fontWeights } from './fontWeights';
 
 export const nativeTypographyStyles = [
+    'displayMedium',
     'titleLarge',
     'titleMedium',
     'titleSmall',
@@ -27,6 +28,7 @@ type TypographyStyleDefinition = {
     fontWeight: FontWeightValue;
     letterSpacing: number;
     fontFamily?: string;
+    textTransform?: string;
 };
 
 export type NativeTypographyStyleDefinition = {
@@ -41,6 +43,13 @@ export type NativeTypographyStyles = Record<TypographyStyle, NativeTypographySty
 // we need unit-less typography base because RN is unit-less, we can easily add units later
 // for web we need string instead of object because styled-components syntax
 export const typographyStylesBase: Record<NativeTypographyStyle, TypographyStyleDefinition> = {
+    displayMedium: {
+        fontSize: 84,
+        lineHeight: 84,
+        fontWeight: fontWeights.bold,
+        letterSpacing: -0.04,
+        textTransform: 'uppercase',
+    },
     titleLarge: {
         fontSize: 48,
         lineHeight: 53,
@@ -92,6 +101,7 @@ export const typographyStylesBase: Record<NativeTypographyStyle, TypographyStyle
 };
 
 const nativeFontFamilyStyle = {
+    displayMedium: 'TTSatoshi-DemiBold',
     titleLarge: 'TTSatoshi-Medium',
     titleMedium: 'TTSatoshi-Medium',
     titleSmall: 'TTSatoshi-Medium',
@@ -112,6 +122,7 @@ const prepareTypography = (): TypographyStyles =>
             line-height: ${value.lineHeight}px;
             font-weight: ${value.fontWeight};
             letter-spacing: ${value.letterSpacing}px;
+            text-transform: ${value.textTransform};
             `,
             ]),
         ),
