@@ -37,6 +37,8 @@ global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
+app.setAppUserModelId('io.trezor.TrezorSuite');
+
 const parseRemoveUserDataSwitch = () => {
     if (hasSwitch('remove-user-data-on-start')) {
         removeElectronAppData();
