@@ -1,5 +1,3 @@
-import { Pressable } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -16,27 +14,22 @@ import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { selectAccountTokenDecimals } from '@suite-native/tokens';
-import { useNativeStyles } from '@trezor/styles';
 import { BigNumber } from '@trezor/utils';
 
-import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
+import { SendAmountCurrencyLabelWrapper } from './CryptoAmountInput';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { SendAmountInputProps } from '../types';
 import { getOutputFieldName } from '../utils';
 
 export const FiatAmountInput = ({
     recipientIndex,
-    scaleValue,
-    translateValue,
     inputRef,
     symbol,
     tokenContract,
     onPress,
-    onFocus,
     isDisabled = false,
     accountKey,
 }: SendAmountInputProps) => {
-    const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const baseCurrencyCode = useSelector(selectLocalCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
@@ -50,14 +43,6 @@ export const FiatAmountInput = ({
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');
-
-    const fiatAnimatedStyle = useAnimatedStyle(
-        () => ({
-            transform: [{ scale: scaleValue.value }, { translateY: translateValue.value }],
-            zIndex: isDisabled ? 0 : 1,
-        }),
-        [isDisabled],
-    );
 
     const { onChange, onBlur, value } = useField({
         name: fiatFieldName,
@@ -84,34 +69,26 @@ export const FiatAmountInput = ({
         }
 
         setValue('setMaxOutputId', undefined);
-        onFocus?.();
     };
 
     return (
-        <Animated.View
-            style={[applyStyle(sendAmountInputWrapperStyle, { isDisabled }), fiatAnimatedStyle]}
-        >
-            <Pressable onPress={onPress} /* onPress doesn't work on Android for disabled Input */>
-                <Input
-                    ref={inputRef}
-                    value={value}
-                    placeholder="0"
-                    keyboardType="numeric"
-                    accessibilityLabel="amount to send input"
-                    testID={fiatFieldName}
-                    editable={!isDisabled}
-                    onChangeText={handleChangeValue}
-                    onBlur={onBlur}
-                    onPress={onPress}
-                    onFocus={onFocus}
-                    hasError={!isDisabled && hasError}
-                    rightIcon={
-                        <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                            {isBaseCurrencyInSats ? 'sat' : baseCurrencyCode.toUpperCase()}
-                        </SendAmountCurrencyLabelWrapper>
-                    }
-                />
-            </Pressable>
-        </Animated.View>
+        <Input
+            ref={inputRef}
+            value={value}
+            placeholder="0"
+            keyboardType="numeric"
+            accessibilityLabel="amount to send input"
+            testID={fiatFieldName}
+            editable={!isDisabled}
+            onChangeText={handleChangeValue}
+            onBlur={onBlur}
+            onPress={onPress}
+            hasError={!isDisabled && hasError}
+            rightIcon={
+                <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
+                    {isBaseCurrencyInSats ? 'sat' : baseCurrencyCode.toUpperCase()}
+                </SendAmountCurrencyLabelWrapper>
+            }
+        />
     );
 };
