@@ -2321,6 +2321,11 @@ export const en = {
             confirmButton: 'Got it',
         },
     },
+    atoms: {
+        animatedDoubleView: {
+            defaultSwitchLabel: 'Switch',
+        },
+    },
 };
 
 export type Translations = typeof en;
