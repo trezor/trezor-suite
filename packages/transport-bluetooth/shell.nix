@@ -1,8 +1,9 @@
-# pinned to nixos-24.05 on commit https://github.com/NixOS/nixpkgs/commit/c6ce5bd4ab657df958ebd6f38723f81c5546a661
+# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/8d92119c540d78599ba208010c722a60958810f4
+# we need to use nixos-unstable to be able to use electron_36, once there is a stable release with it we can change.
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/c6ce5bd4ab657df958ebd6f38723f81c5546a661.tar.gz";
-    sha256 = "0i5z7b087kr2hnkgs17d36c54arjbgwlwyxw1ibh03d1k1xfcyf2";
+    url = "https://github.com/NixOS/nixpkgs/archive/8d92119c540d78599ba208010c722a60958810f4.tar.gz";
+    sha256 = "08w0arf23z6mdnipmpspmkwmmvskd9mjq6b5j8070ryqjpzwas05";
   })
 { };
 
