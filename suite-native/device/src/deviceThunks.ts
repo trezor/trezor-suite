@@ -3,14 +3,14 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     ConnectDeviceSettings,
     deviceActions,
+    failEntropyCheckThunk,
     selectDevicePath,
     selectIsDeviceInitialized,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { WalletBackupType, reportCheckFail } from '@suite-native/device';
+import { WalletBackupType } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
@@ -132,24 +132,7 @@ export const createAndBackupWalletThunk = createThunk(
 
         const result = deviceResponse.payload;
         if (!result.success && result.payload.code === 'Failure_EntropyCheck') {
-            const contextData = {
-                model: device?.features?.internal_model,
-                revision: device?.features?.revision,
-                version: getFirmwareVersion(device),
-                vendor: device?.features?.fw_vendor,
-            };
-            reportCheckFail('Entropy', contextData, result.payload.error);
-            const temporarilySkippedErrorsToBeInvestigated = [
-                // These errors show up in Sentry and they probably lead to false positives.
-                // We should improve the logs to include stack traces so that we can investigate and fix this problem, then remove this condition.
-                'unexpected error',
-                'A transfer error has occurred',
-                // This one was not in Sentry but can be triggered by manually disconnecting the device. Investigate. https://github.com/trezor/trezor-suite-private/issues/135
-                'device disconnected during action',
-            ];
-            if (!temporarilySkippedErrorsToBeInvestigated.includes(result.payload.error)) {
-                dispatch(deviceActions.setEntropyCheckFail(device.id));
-            }
+            dispatch(failEntropyCheckThunk({ device, error: result.payload.error }));
         }
 
         return result;

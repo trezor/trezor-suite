@@ -2,12 +2,10 @@ import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { failEntropyCheckThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import * as DEVICE from 'src/constants/suite/device';
 import { Dispatch, GetState } from 'src/types/suite';
 
@@ -120,26 +118,7 @@ export const resetDevice =
 
         if (!result.success) {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
-            if (result.payload.code === 'Failure_EntropyCheck') {
-                reportCheckFail('Entropy', {
-                    model: device?.features?.internal_model,
-                    revision: device?.features?.revision,
-                    version: getFirmwareVersion(device),
-                    vendor: device?.features?.fw_vendor,
-                    error: result.payload.error,
-                });
-                const temporarilySkippedErrorsToBeInvestigated = [
-                    // These errors show up in Sentry and they probably lead to false positives.
-                    // We should improve the logs to include stack traces so that we can investigate and fix this problem, then remove this condition.
-                    'unexpected error',
-                    'A transfer error has occurred',
-                    // This one was not in Sentry but can be triggered by manually disconnecting the device. Investigate. https://github.com/trezor/trezor-suite-private/issues/135
-                    'device disconnected during action',
-                ];
-                if (!temporarilySkippedErrorsToBeInvestigated.includes(result.payload.error)) {
-                    dispatch(deviceActions.setEntropyCheckFail(device.id));
-                }
-            }
+            dispatch(failEntropyCheckThunk({ device, error: result.payload.error }));
         }
 
         return result;

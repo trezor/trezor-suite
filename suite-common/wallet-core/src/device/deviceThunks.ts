@@ -1,6 +1,6 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
@@ -30,6 +30,7 @@ import TrezorConnect, {
     StaticSessionId,
     UI,
 } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { getEnvironment } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
@@ -584,5 +585,35 @@ export const toggleAutoEjectThunk = createThunk(
                 );
             }
         });
+    },
+);
+
+type FailEntropyCheckParams = {
+    device: AcquiredDevice;
+    error: string;
+};
+
+export const failEntropyCheckThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
+    ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
+        const contextData = {
+            model: device?.features?.internal_model,
+            revision: device?.features?.revision,
+            version: getFirmwareVersion(device),
+            vendor: device?.features?.fw_vendor,
+        };
+        extra.utils.reportCheckFail('Entropy', contextData, error);
+
+        const temporarilySkippedErrorsToBeInvestigated = [
+            // These errors show up in Sentry and they probably lead to false positives.
+            // We should improve the logs to include stack traces so that we can investigate and fix this problem, then remove this condition.
+            'unexpected error',
+            'A transfer error has occurred',
+            // This one was not in Sentry but can be triggered by manually disconnecting the device. Investigate. https://github.com/trezor/trezor-suite-private/issues/135
+            'device disconnected during action',
+        ];
+        if (!temporarilySkippedErrorsToBeInvestigated.includes(error)) {
+            dispatch(deviceActions.setEntropyCheckFail(device.id));
+        }
     },
 );
