@@ -22,7 +22,7 @@ export type CryptoAmountFormatterInputValue = string;
 export type CryptoAmountFormatterDataContext = {
     symbol: NetworkSymbol;
     withSymbol?: boolean;
-    isBalance?: boolean;
+    isBalance?: boolean; // This enables the display in Sats if selected in settings // Todo: fix WTF naming
     maxDisplayedDecimals?: number;
     isEllipsisAppended?: boolean;
     smallestUnitsOverride?: boolean;
@@ -45,7 +45,7 @@ const truncateDecimals = (value: string, maxDecimals: number, isEllipsisAppended
 
 const convertToUnit = (
     value: string,
-    isBalance: boolean,
+    isBalance: boolean, // This enables the display in Sats if selected in settings // Todo: fix WTF naming
     config: FormatterConfig,
     symbol?: NetworkSymbol,
     smallestUnitsOverride?: boolean,

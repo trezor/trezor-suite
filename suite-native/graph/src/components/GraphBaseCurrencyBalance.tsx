@@ -7,7 +7,7 @@ import { FiatGraphPoint } from '@suite-common/graph';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
-import { FiatBalanceFormatter } from '@suite-native/formatters';
+import { BaseCurrencyAmountLargeFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { BigNumber } from '@trezor/utils';
 
@@ -24,7 +24,7 @@ type GraphFiatBalanceProps = BalanceProps & {
     percentageChangeAtom: Atom<number>;
     showChange?: boolean;
     isLoading?: boolean;
-    totalFiatBalance: BaseCurrencyAmount;
+    totalBaseCurrencyBalance: BaseCurrencyAmount;
     isHistoryEnabledAccount?: boolean;
 };
 
@@ -50,7 +50,7 @@ const Balance = ({ selectedPointAtom, latestValue }: BalanceProps) => {
 
     return (
         <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
-            <FiatBalanceFormatter
+            <BaseCurrencyAmountLargeFormatter
                 value={baseCurrencyValue}
                 testID="@home/portfolio/fiat-balance-header"
             />
@@ -64,7 +64,7 @@ export const GraphBaseCurrencyBalance = ({
     percentageChangeAtom,
     showChange = true,
     isLoading = false,
-    totalFiatBalance,
+    totalBaseCurrencyBalance,
     isHistoryEnabledAccount = true,
 }: GraphFiatBalanceProps) => {
     const { applyStyle } = useNativeStyles();
@@ -72,7 +72,7 @@ export const GraphBaseCurrencyBalance = ({
     const { DateTimeFormatter } = useFormatters();
 
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
-    const hasBalance = Number(totalFiatBalance) !== 0;
+    const hasBalance = Number(totalBaseCurrencyBalance) !== 0;
     const showLoading = isLoading || !firstGraphPoint;
     const showBalanceFallback =
         !hasDeviceDiscovery && ((hasBalance && showLoading) || !isHistoryEnabledAccount);
@@ -81,7 +81,10 @@ export const GraphBaseCurrencyBalance = ({
     if (showBalanceFallback) {
         return (
             <Box style={applyStyle(wrapperStyle)}>
-                <Balance selectedPointAtom={selectedPointAtom} latestValue={totalFiatBalance} />
+                <Balance
+                    selectedPointAtom={selectedPointAtom}
+                    latestValue={totalBaseCurrencyBalance}
+                />
                 {showChange && (
                     <HStack alignItems="center">
                         {/*  Empty space to prevent layout shift */}

@@ -2,7 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, VStack } from '@suite-native/atoms';
-import { GraphBaseCurrencyBalance, selectHasDeviceHistoryEnabledAccounts } from '@suite-native/graph';
+import {
+    GraphBaseCurrencyBalance,
+    selectHasDeviceHistoryEnabledAccounts,
+} from '@suite-native/graph';
 
 import {
     percentageChangeAtom,
@@ -27,7 +30,7 @@ export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeader
                     percentageChangeAtom={percentageChangeAtom}
                     showChange={hasDeviceHistoryEnabledAccounts}
                     isLoading={isLoading}
-                    totalFiatBalance={totalFiatBalance}
+                    totalBaseCurrencyBalance={totalFiatBalance}
                 />
             </VStack>
         </Box>

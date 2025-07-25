@@ -7,13 +7,16 @@ export const convertTokenValueToDecimal = (value: string | number, decimals: num
     BigNumber(value).div(BigNumber(10).exponentiatedBy(decimals));
 
 const normalizeValueForBtcAndSats = (value: string) => {
-    const [first, second] = value.split(' ');
+    // eslint-disable-next-line no-irregular-whitespace
+    const [first, second] = value.split(/[ \s]/);
 
     if (!second) {
         return first;
     }
 
-    return second === 'sat' ? `${second}${first}` : `${first}${second}`;
+    return second.toLowerCase() === 'sat' || second.toLowerCase() === 'btc'
+        ? `${second}${first}`
+        : `${first}${second}`;
 };
 
 export const parseBalanceAmount = (value: string) => {

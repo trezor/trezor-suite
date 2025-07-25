@@ -9,8 +9,8 @@ import {
 } from '@suite-native/accounts';
 import { RoundedIcon, VStack } from '@suite-native/atoms';
 import {
+    BaseCurrencyAmountLargeFormatter,
     CryptoAmountFormatter,
-    FiatBalanceFormatter,
     useFiatFromCryptoValue,
 } from '@suite-native/formatters';
 import { TextInputField } from '@suite-native/forms';
@@ -51,7 +51,9 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
             }
         >
             <VStack spacing="sp24">
-                {shallDisplayBaseCurrency && <FiatBalanceFormatter value={fiatBalanceValue} />}
+                {shallDisplayBaseCurrency && (
+                    <BaseCurrencyAmountLargeFormatter value={fiatBalanceValue} />
+                )}
                 <VStack spacing="sp8">
                     <TextInputField
                         testID="@account-import/coin-synced/label-input"
