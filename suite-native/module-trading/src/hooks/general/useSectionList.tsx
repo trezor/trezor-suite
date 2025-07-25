@@ -37,9 +37,10 @@ type UseSectionListProps<T, U> = {
     keyExtractor: (item: T, sectionData: U) => string;
     noSingletonSectionHeader: boolean | undefined;
     isLastItemRounded?: boolean;
+    itemStyle?: ReturnType<typeof prepareNativeStyle<ItemRenderConfig<unknown>>>;
 };
 
-const itemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
+const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
     ({ colors, spacings, borders }, { isFirst, isLast, isEnabled }) => ({
         backgroundColor: colors.backgroundSurfaceElevation1,
         paddingHorizontal: spacings.sp12,
@@ -122,11 +123,16 @@ const renderInternalItem = <T, U>(
         | ((label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement)
         | undefined,
     applyStyle: ReturnType<typeof useNativeStyles>['applyStyle'],
+    itemStyle?: ReturnType<typeof prepareNativeStyle<ItemRenderConfig<unknown>>>,
 ): ReactElement => {
     switch (item[0]) {
         case 'sectionHeader':
             return (
-                <AnimatedBox paddingVertical="sp12" entering={FadeIn} exiting={FadeOut}>
+                <AnimatedBox
+                    paddingVertical={renderSectionHeader ? undefined : 'sp12'}
+                    entering={FadeIn}
+                    exiting={FadeOut}
+                >
                     {renderSectionHeader ? (
                         renderSectionHeader(item[1], {
                             sectionData: item[3],
@@ -145,7 +151,7 @@ const renderInternalItem = <T, U>(
                 <AnimatedBox
                     entering={FadeIn}
                     exiting={FadeOut}
-                    style={applyStyle(itemStyle, item[2])}
+                    style={applyStyle(itemStyle ?? defaultItemStyle, item[2])}
                 >
                     {renderItem(item[1], item[2])}
                 </AnimatedBox>
@@ -163,6 +169,7 @@ export const useSectionList = <T, U = undefined>({
     keyExtractor,
     noSingletonSectionHeader,
     isLastItemRounded = true,
+    itemStyle,
 }: UseSectionListProps<T, U>) => {
     const { applyStyle } = useNativeStyles();
     const sectionsCount = data.length;
@@ -194,6 +201,6 @@ export const useSectionList = <T, U = undefined>({
         keyExtractor: (item: ListInternalItemShape<T, U>) =>
             internalKeyExtractor(item, keyExtractor),
         renderItem: ({ item }: { item: ListInternalItemShape<T, U> }) =>
-            renderInternalItem(item, renderItem, renderSectionHeader, applyStyle),
+            renderInternalItem(item, renderItem, renderSectionHeader, applyStyle, itemStyle),
     };
 };

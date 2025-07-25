@@ -342,10 +342,12 @@ describe('buySelectors', () => {
         });
 
         it('should select valid quotes', () => {
-            expect(selectBuyQuotesByPaymentMethodNative(state, 'creditCard')).toEqual([
-                expect.objectContaining({ orderId: 'order_id_1' }),
-                expect.objectContaining({ orderId: 'order_id_3' }),
-            ]);
+            expect(selectBuyQuotesByPaymentMethodNative(state, 'creditCard')).toEqual({
+                fixed: [
+                    expect.objectContaining({ orderId: 'order_id_1' }),
+                    expect.objectContaining({ orderId: 'order_id_3' }),
+                ],
+            });
         });
 
         it('should be stable', () => {

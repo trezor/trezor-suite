@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
 import { BottomSheetGrabber, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -18,7 +18,11 @@ const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     gap: spacings.sp16,
 }));
 
-export const SimpleSheetHeader = ({ onClose, title }: SimpleSheetHeaderProps) => {
+export const SimpleSheetHeader = ({
+    onClose,
+    title,
+    children,
+}: PropsWithChildren<SimpleSheetHeaderProps>) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
@@ -32,6 +36,7 @@ export const SimpleSheetHeader = ({ onClose, title }: SimpleSheetHeaderProps) =>
             >
                 {title}
             </SheetHeaderTitle>
+            {children}
         </VStack>
     );
 };

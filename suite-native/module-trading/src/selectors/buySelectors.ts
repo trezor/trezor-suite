@@ -160,10 +160,11 @@ export const selectBuyQuotesByPaymentMethodNative = createMemoizedSelector(
         (_: TradingRootState, paymentMethod: TradingPaymentMethodProps | undefined) =>
             paymentMethod,
     ],
-    (quotes, paymentMethod) =>
-        paymentMethod
+    (quotes, paymentMethod) => ({
+        fixed: paymentMethod
             ? getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod)?.sort(
                   (a, b) => (a.rate ?? 0) - (b.rate ?? 0),
               )
-            : undefined,
+            : [],
+    }),
 );

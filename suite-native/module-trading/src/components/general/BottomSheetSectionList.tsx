@@ -2,6 +2,7 @@ import { ReactElement, ReactNode } from 'react';
 import { Dimensions } from 'react-native';
 
 import { BottomSheetFlashList, BottomSheetFlashListProps } from '@suite-native/atoms';
+import { NativeStyle } from '@trezor/styles';
 
 import {
     ItemRenderConfig,
@@ -29,6 +30,7 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     keyExtractor: (item: T, sectionData: U) => string;
     estimatedItemSize: number;
     noSingletonSectionHeader?: boolean;
+    itemStyle?: NativeStyle<ItemRenderConfig<unknown>>;
 };
 
 export const BottomSheetSectionList = <T, U = undefined>({
@@ -38,6 +40,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
     estimatedItemSize,
     data,
     noSingletonSectionHeader,
+    itemStyle,
     ...rest
 }: TradingBottomSheetSectionListProps<T, U>) => {
     const {
@@ -50,6 +53,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
         renderItem,
         renderSectionHeader,
         noSingletonSectionHeader,
+        itemStyle,
     });
 
     const listHeight = Dimensions.get('window').height * 0.9;
