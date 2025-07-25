@@ -212,8 +212,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 {
                     action: 'VIEW',
                     autoVerify: true,
-                    data:
-                        buildType === 'production'
+                    data: [
+                        {
+                            scheme: 'https',
+                            host: 'trezor.io',
+                            pathPattern: '/setup/.*',
+                        },
+                        ...(buildType === 'production'
                             ? [
                                   {
                                       scheme: 'https',
@@ -233,7 +238,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                                       // for branches with a slash in the name
                                       pathPattern: '/connect/.*/.*/deeplink/.*',
                                   },
-                              ],
+                              ]),
+                    ],
                     category: ['BROWSABLE', 'DEFAULT'],
                 },
             ],
@@ -270,10 +276,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 },
                 UIRequiredDeviceCapabilities: ['armv7'],
             },
-            associatedDomains:
-                buildType === 'production'
+            associatedDomains: [
+                'applinks:trezor.io',
+                ...(buildType === 'production'
                     ? ['applinks:connect.trezor.io']
-                    : ['applinks:dev.suite.sldev.cz'],
+                    : ['applinks:dev.suite.sldev.cz']),
+            ],
         },
         plugins: getPlugins(),
         extra: {
