@@ -139,8 +139,15 @@ export const createAndBackupWalletThunk = createThunk(
                 vendor: device?.features?.fw_vendor,
             };
             reportCheckFail('Entropy', contextData, result.payload.error);
-            // TODO: temporary exception to avoid false positives, see https://github.com/trezor/trezor-suite-private/issues/135
-            if (result.payload.error !== 'device disconnected during action') {
+            const temporarilySkippedErrorsToBeInvestigated = [
+                // These errors show up in Sentry and they probably lead to false positives.
+                // We should improve the logs to include stack traces so that we can investigate and fix this problem, then remove this condition.
+                'unexpected error',
+                'A transfer error has occurred',
+                // This one was not in Sentry but can be triggered by manually disconnecting the device. Investigate. https://github.com/trezor/trezor-suite-private/issues/135
+                'device disconnected during action',
+            ];
+            if (!temporarilySkippedErrorsToBeInvestigated.includes(result.payload.error)) {
                 dispatch(deviceActions.setEntropyCheckFail(device.id));
             }
         }

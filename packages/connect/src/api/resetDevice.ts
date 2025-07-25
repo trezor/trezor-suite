@@ -62,7 +62,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         const cmd = this.device.getCommands();
         const paths = ["m/84'/0'/0'", "m/44'/60'/0'"] as const;
 
-        // error.message should be one of these https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/transports/abstract.ts#L59
+        // error.message should be one of ERRORS_WITHOUT_DEVICE_INTERACTION, otherwise it could be a fake device's attempt to bypass the entropy check.
         const handleErr = (error: any) => {
             throw error.cause === 'transport-error'
                 ? error
