@@ -18,7 +18,7 @@ export enum Language {
     Spanish = 'es-ES',
 }
 
-const languageMap = {
+export const languageMap = {
     'es-ES': 'Español',
 };
 

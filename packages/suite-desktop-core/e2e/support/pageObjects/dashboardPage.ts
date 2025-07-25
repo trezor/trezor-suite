@@ -47,7 +47,9 @@ export class DashboardPage {
         this.dashboardHeader = this.page.getByRole('heading', { name: 'Dashboard' });
         this.graph = this.page.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
-        this.deviceSwitchingCloseButton = this.page.getByTestId('@switch-device/cancel-button');
+        this.deviceSwitchingCloseButton = this.page
+            .getByTestId('@switch-device/cancel-button')
+            .first();
         this.modal = this.page.getByTestId('@modal');
         this.deviceSwitcherModal = this.page.getByTestId('@modal/switch-device');
         this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
