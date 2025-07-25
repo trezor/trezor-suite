@@ -60,13 +60,17 @@ const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) =>
 
     const { minimumFractionDigits, maximumFractionDigits, style } = dataContext;
 
-    return intl.formatNumber(value.toNumber(), {
+    const result = intl.formatNumber(value.toNumber(), {
         ...dataContext,
         style: style || 'currency',
         currency,
         minimumFractionDigits: minimumFractionDigits ?? 2,
         maximumFractionDigits: maximumFractionDigits ?? 2,
     });
+
+    return currency.toLowerCase() === 'btc' // In the case of Crypto Base-Currency, we always want to have currency ticker as suffix.
+        ? `${result.replace(/(BTC)|btc/, '').trim()} ${currency.toUpperCase()}`
+        : result;
 };
 
 const handleBigNumberFormatting = (
