@@ -125,6 +125,7 @@ export const TradingFormOffer = () => {
         quote &&
         (quote as ExchangeTrade)?.isDex &&
         context.getValues().sendCryptoSelect &&
+        account.networkType === 'ethereum' &&
         !isSendingEvmNativeToken(context.getValues().sendCryptoSelect?.value);
 
     const isQuoteOutdated =
