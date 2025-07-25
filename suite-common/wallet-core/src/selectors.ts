@@ -1,10 +1,11 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
 import { ReviewOutput } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
     sortByCoin,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { StaticSessionId, type TrezorConnect } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
@@ -78,20 +79,22 @@ type DiscoveryAccountsParam = Parameters<TrezorConnect['discoverAccounts']>[0]['
 
 export const selectDiscoveryAccountsParam = (
     state: CompoundRootState,
-    staticSessionId: StaticSessionId,
+    deviceState: StaticSessionId,
     knownOnly?: boolean,
 ): DiscoveryAccountsParam => {
-    const networks = selectEnabledSupportedNetworks(state);
-    const knownAccounts = selectAccountsByDeviceState(state, staticSessionId);
+    const symbols = selectEnabledSupportedNetworks(state);
+    const knownAccounts = selectAccountsByDeviceState(state, deviceState);
     const discoverableAccounts = knownAccounts.filter(isAccountDiscoverable);
 
     const symbolMap = arrayToDictionary(discoverableAccounts, acc => acc.symbol, true);
 
-    return networks.map(symbol => {
+    return symbols.map(symbol => {
         const symbolAccounts = symbolMap[symbol];
+        const { networkType } = networks[symbol];
+        const identity = tryGetAccountIdentity({ networkType, deviceState });
 
         // undiscovered network; discover as a whole
-        if (!symbolAccounts) return { symbol };
+        if (!symbolAccounts) return { symbol, identity };
 
         // discovered network; separate by account type
         const typeMap = arrayToDictionary(symbolAccounts, acc => acc.accountType, true);
@@ -110,7 +113,7 @@ export const selectDiscoveryAccountsParam = (
             else return { type };
         });
 
-        return { symbol, known, knownOnly } as DiscoveryAccountsParam[number];
+        return { symbol, identity, known, knownOnly } as DiscoveryAccountsParam[number];
     });
 };
 
@@ -121,11 +124,11 @@ export const selectShouldRediscoverNetworks = (
     if (!staticSessionId) return false;
     if (selectHasRunningDiscovery(state)) return false;
 
-    const networks = selectEnabledSupportedNetworks(state);
+    const symbols = selectEnabledSupportedNetworks(state);
     const accounts = selectAccountsByDeviceState(state, staticSessionId);
     const discoveredNetworks = new Set(accounts.map(account => account.symbol));
 
-    return networks.some(network => !discoveredNetworks.has(network));
+    return symbols.some(symbol => !discoveredNetworks.has(symbol));
 };
 
 export const selectAccountsToBeForgotten = (
