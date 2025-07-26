@@ -10,6 +10,7 @@ import {
     isSendingEvmNativeToken,
     parseCryptoId,
     tradingExchangeActions,
+    tradingSellActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -145,11 +146,22 @@ export const TradingFormOffer = () => {
             return;
         }
 
-        dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+        if (isTradingSellContext(context)) {
+            const provider = quote.exchange
+                ? context.sellInfo?.providerInfos[quote.exchange]
+                : undefined;
+
+            if (provider?.flow === 'BANK_ACCOUNT') {
+                dispatch(tradingSellActions.setFormStep('BANK_ACCOUNT'));
+            } else {
+                dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
+            }
+        }
 
         if (isTradingExchangeContext(context)) {
             const trade = quote as ExchangeTrade;
             dispatch(tradingExchangeActions.saveSelectedQuote(trade));
+            dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
         }
 
         selectQuote(quote);
