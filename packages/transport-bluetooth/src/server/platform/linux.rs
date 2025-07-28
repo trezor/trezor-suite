@@ -43,6 +43,30 @@ impl PlatformDevice for LinuxDevice {
         discover_services(&ctx).await?;
         verify_connection(&ctx).await
     }
+
+    async fn forget(_id: String) -> Result<(), PlatformError> {
+        // use dbus::arg::{RefArg, Variant};
+        // use tokio::time::Duration;
+        // let device = manager.get_device_or_die(id).await?;
+        // let adapter_proxy = platform::get_device_proxy(device.get_id().clone(), 5 * 1000);
+
+        // this will throw: Forget error D-Bus error: Does Not Exist (org.bluez.Error.DoesNotExist)
+        // the device will be unpaired but only partially and it causes problems after future reconnection
+        // next pairing will most likely throw "le-connection-abort-by-local"
+
+        // let res: Result<(), dbus::Error> = adapter_proxy.method_call("org.bluez.Device1", "CancelPairing", ()).await;
+        // match res {
+        //     Ok(()) => {
+        //         Ok(WsResponsePayload::Success(true))
+        //     }
+        //     Err(err) => {
+        //         println!("Forget error {:?}", err);
+        //         Ok(WsResponsePayload::Success(false))
+        //     }
+        // }
+
+        Err("forget_device is not implemented".into())
+    }
 }
 
 /// get bluez device (proxy) reference
