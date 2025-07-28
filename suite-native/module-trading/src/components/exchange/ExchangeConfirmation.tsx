@@ -16,8 +16,14 @@ const CONFIRMATION_TEST_ID = '@trading/exchange/continue-button';
 export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmationProps) => {
     const form = useExchangeFormContext();
 
-    const { canProceed, selectQuote, isConsentRequested, giveConsent, cancelConsent } =
-        useExchangeFlow(form);
+    const {
+        canProceed,
+        approvalStatus,
+        selectQuote,
+        isConsentRequested,
+        giveConsent,
+        cancelConsent,
+    } = useExchangeFlow(form);
 
     const quote = form.watch('quote');
 
@@ -28,7 +34,11 @@ export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmation
             {canProceed && (
                 <AnimatedBox entering={FadeIn}>
                     <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
-                        <Translation id="moduleTrading.tradingScreen.continueButton" />
+                        {approvalStatus === 'needs_approval' ? (
+                            <Translation id="moduleTrading.tradingScreen.buttons.approveAndSwap" />
+                        ) : (
+                            <Translation id="moduleTrading.tradingScreen.buttons.swap" />
+                        )}
                     </Button>
                 </AnimatedBox>
             )}

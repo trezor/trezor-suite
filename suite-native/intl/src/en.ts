@@ -1996,7 +1996,6 @@ export const en = {
             noCountryOfResidence: 'No country of residence selected',
             selectedCountryOfResidence: 'Selected country of residence',
             provider: 'Provider',
-            continueButton: 'Continue',
             amountEditingDoneButton: 'Done',
             quotesLoadingLabel: 'Fetching offers...',
             rate: 'Rate',
@@ -2015,6 +2014,11 @@ export const en = {
             },
             kycWarning: 'This provider requires to know your identity.',
             warning: 'Warning',
+            buttons: {
+                continue: 'Continue',
+                swap: 'Swap',
+                approveAndSwap: 'Approve and swap',
+            },
         },
         selectFiat: {
             title: 'You pay',

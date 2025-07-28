@@ -16,7 +16,7 @@ import {
 import { PROTO } from '@trezor/connect';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
-import quotes from '../../../__fixtures__/quotes.json';
+import quotes from '../../../__fixtures__/buyQuotes.json';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { buyActions } from '../../../reducers';

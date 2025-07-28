@@ -8,10 +8,11 @@ import {
 } from '@suite-common/trading';
 
 import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
+import buyQuotes from './buyQuotes.json';
 import coins from './coins.json';
 import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
+import { exchangeQuotes } from './exchangeQuotes';
 import platforms from './platforms.json';
-import quotes from './quotes.json';
 import { TradingState, initialState } from '../reducers';
 
 export const getInitializedBuyState = () =>
@@ -105,7 +106,9 @@ export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
 export const getInitializedTradingStateWithQuotes = () => {
     const state = getInitializedTradingState();
 
-    state.buy.quotes = quotes as TradingBuyState['quotes'];
+    state.buy.quotes = buyQuotes as TradingBuyState['quotes'];
+    state.exchange.quotes = exchangeQuotes;
+
     state.info.paymentMethods = [
         {
             value: 'creditCard',

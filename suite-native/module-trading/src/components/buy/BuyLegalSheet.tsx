@@ -108,7 +108,7 @@ export const BuyLegalSheet = memo(
                         isVisible && (
                             <Box paddingVertical="sp20">
                                 <Button onPress={onConsent} testID={CONFIRM_BUTTON_TEST_ID}>
-                                    <Translation id="moduleTrading.tradingScreen.continueButton" />
+                                    <Translation id="moduleTrading.tradingScreen.buttons.continue" />
                                 </Button>
                             </Box>
                         )

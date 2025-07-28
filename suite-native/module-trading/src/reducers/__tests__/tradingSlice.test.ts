@@ -6,8 +6,8 @@ import { tradingBuyActions, tradingExchangeActions } from '@suite-common/trading
 import { deviceActions } from '@suite-common/wallet-core';
 import { Address } from '@trezor/blockchain-link-types';
 
+import quotes from '../../__fixtures__/buyQuotes.json';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
-import quotes from '../../__fixtures__/quotes.json';
 import { adaAsset, btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
 import { buyActions, buyInitialState } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';

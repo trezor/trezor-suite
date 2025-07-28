@@ -2,8 +2,8 @@ import { BuyTrade } from 'invity-api';
 
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
+import quotes from '../../../__fixtures__/buyQuotes.json';
 import coins from '../../../__fixtures__/coins.json';
-import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';

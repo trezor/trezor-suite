@@ -13,7 +13,7 @@ import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount } from '../../__fixtures__/account';
-import quotes from '../../__fixtures__/quotes.json';
+import quotes from '../../__fixtures__/buyQuotes.json';
 import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
