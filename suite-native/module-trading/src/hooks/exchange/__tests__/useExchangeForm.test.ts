@@ -14,7 +14,7 @@ import { getBtcAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { useExchangeForm } from '../useExchangeForm';
+import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 describe('useExchangeForm', () => {
     const renderUseExchangeForm = (store: TestStore) =>
@@ -366,6 +366,29 @@ describe('useExchangeForm', () => {
 
                 expect(result.current.getValues('generalAlert')).toBeUndefined();
             });
+        });
+    });
+
+    describe('clearExchangeFormQuoteData', () => {
+        it('should clear quote, sendCryptoAmount, receiveCryptoAmount and generalAlert data', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseExchangeForm(store);
+
+            act(() => {
+                result.current.setValue('quote', exchangeQuotes[0] as ExchangeTrade);
+                result.current.setValue('sendCryptoAmount', '10');
+                result.current.setValue('receiveCryptoAmount', '10');
+                result.current.setValue('generalAlert', 'test');
+            });
+
+            act(() => {
+                clearExchangeFormQuoteData(result.current);
+            });
+
+            expect(result.current.getValues('quote')).toBeUndefined();
+            expect(result.current.getValues('sendCryptoAmount')).toBeUndefined();
+            expect(result.current.getValues('receiveCryptoAmount')).toBeUndefined();
+            expect(result.current.getValues('generalAlert')).toBeUndefined();
         });
     });
 });

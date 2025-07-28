@@ -197,3 +197,10 @@ export const useExchangeForm = () => {
 
     return form;
 };
+
+export const clearExchangeFormQuoteData = (form: ExchangeFormType) => {
+    form.setValue('quote', undefined);
+    form.setValue('sendCryptoAmount', undefined, { shouldValidate: true });
+    form.setValue('receiveCryptoAmount', undefined, { shouldValidate: true });
+    form.setValue('generalAlert', undefined);
+};

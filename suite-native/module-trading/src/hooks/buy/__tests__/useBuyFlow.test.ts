@@ -11,7 +11,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
-import quotes from '../../../__fixtures__/quotes.json';
+import quotes from '../../../__fixtures__/buyQuotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { BuyFormValues } from '../../../types/buy';
 import { useBuyFlow } from '../useBuyFlow';

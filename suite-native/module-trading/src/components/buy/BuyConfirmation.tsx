@@ -26,7 +26,7 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
             {canProceed && (
                 <AnimatedBox entering={FadeIn}>
                     <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
-                        <Translation id="moduleTrading.tradingScreen.continueButton" />
+                        <Translation id="moduleTrading.tradingScreen.buttons.continue" />
                     </Button>
                 </AnimatedBox>
             )}

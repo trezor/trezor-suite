@@ -2,7 +2,7 @@ import { BuyTrade, CryptoId } from 'invity-api';
 
 import { Address } from '@trezor/blockchain-link-types';
 
-import quotes from '../../__fixtures__/quotes.json';
+import quotes from '../../__fixtures__/buyQuotes.json';
 import { TradingBuyState, buyActions, buyInitialState, buyReducer } from '../buySlice';
 
 describe('buySlice', () => {
