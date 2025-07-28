@@ -17,6 +17,10 @@ use uuid::{uuid, Uuid};
 #[serde(tag = "type", rename_all = "kebab-case")]
 pub enum DeviceConnectionStatus {
     Disconnected,
+    Pairing { pin: Option<String> },
+    Paired,
+    PairingError { error: String },
+    Connecting,
     Connected,
 }
 
@@ -55,6 +59,15 @@ pub struct TrezorDevice {
     /// id changes on second connection after pairing (linux)
     id: String,
     props: Arc<Mutex<TrezorDeviceProps>>,
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum DeviceError {
+    #[error("Properties missing")]
+    PropertiesMissing,
+
+    #[error("BtleplugError: {0}")]
+    Btleplug(#[from] btleplug::Error),
 }
 
 impl serde::Serialize for TrezorDevice {
@@ -166,9 +179,28 @@ impl TrezorDevice {
         }
     }
 
-    pub fn set_connection_status(&self, status: DeviceConnectionStatus) {
+    pub fn set_connection_status(&self, new_status: DeviceConnectionStatus) {
         if let Ok(mut props) = self.props.lock() {
-            props.connection_status = status;
+            props.connection_status =
+                self.update_connection_status(&props.connection_status, new_status);
+            if let DeviceConnectionStatus::Connected = &props.connection_status {
+                props.connected = true;
+            } else if let DeviceConnectionStatus::Disconnected = &props.connection_status {
+                props.connected = false;
+            }
+        }
+    }
+
+    fn update_connection_status(
+        &self,
+        current_status: &DeviceConnectionStatus,
+        new_status: DeviceConnectionStatus,
+    ) -> DeviceConnectionStatus {
+        // do not override status if device pairing failed
+        if let DeviceConnectionStatus::PairingError { error: _ } = &current_status {
+            current_status.clone()
+        } else {
+            new_status
         }
     }
 
@@ -191,5 +223,100 @@ impl TrezorDevice {
             Ok(p) => p.discovery_timestamp,
             Err(_) => 0,
         }
+    }
+
+    pub async fn update_properties(&mut self, peripheral: Peripheral) -> Result<bool, DeviceError> {
+        let mut is_updated = false;
+
+        let PeripheralProperties {
+            local_name,
+            manufacturer_data,
+            rssi,
+            ..
+        } = &peripheral
+            .properties()
+            .await?
+            .ok_or(DeviceError::PropertiesMissing)?;
+
+        let is_connected = peripheral.is_connected().await.unwrap_or(false);
+        let mut props = match self.props.lock() {
+            Ok(p) => p,
+            Err(_) => {
+                return Err(DeviceError::PropertiesMissing);
+            }
+        };
+
+        // manufacturer_data are dynamically changed
+        // linux + windows: manufacturer_data are received after discovery
+        // linux: manufacturer_data are not visible if device is not in pairing mode even if it's already paired
+        // linux uses random mac address to send SCAN_REQ which is not recognized by Trezor while sending SCAN_RES (empty data)
+        if let Some(new_data) = manufacturer_data.get(&MANUFACTURER_DATA) {
+            if !new_data.is_empty() && &props.data != new_data {
+                props.data = new_data.clone();
+                is_updated = true;
+            }
+        }
+
+        // local_name may be changed
+        // examples: bootloader, default label, device label change
+        let name = local_name.clone().unwrap_or("".to_string());
+        if props.name != name {
+            props.name = name;
+            is_updated = true;
+        }
+
+        props.rssi = rssi.unwrap_or(0);
+        if is_connected != props.connected {
+            is_updated = true;
+            props.connected = is_connected;
+
+            if is_connected {
+                #[cfg(target_os = "macos")]
+                {
+                    props.paired = true;
+                }
+                #[cfg(target_os = "linux")]
+                {
+                    props.address = platform::get_device_address(peripheral);
+                    // props.address = BluetoothDevice::get_address(peripheral);
+                }
+            } else {
+                props.connection_status = self.update_connection_status(
+                    &props.connection_status,
+                    DeviceConnectionStatus::Disconnected,
+                );
+            }
+        }
+
+        // throttle update events
+        let timestamp = utils::get_timestamp();
+        if timestamp - props.event_timestamp > 500 {
+            is_updated = true;
+        }
+
+        if is_updated {
+            props.event_timestamp = timestamp;
+        }
+        props.timestamp = timestamp;
+
+        Ok(is_updated)
+    }
+
+    // update connection/paired state
+    pub async fn disconnect(&self) -> Result<(), DeviceError> {
+        let mut props = match self.props.lock() {
+            Ok(p) => p,
+            Err(_) => {
+                return Err(DeviceError::PropertiesMissing);
+            }
+        };
+
+        props.connected = false;
+        props.connection_status = self.update_connection_status(
+            &props.connection_status,
+            DeviceConnectionStatus::Disconnected,
+        );
+
+        Ok(())
     }
 }
