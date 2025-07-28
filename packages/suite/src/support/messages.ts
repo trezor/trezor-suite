@@ -535,7 +535,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SEND_TO',
     },
     TR_EXCHANGE_APPROVAL_ERROR: {
-        defaultMessage: 'Failed to load approval status',
+        defaultMessage: 'Failed to load approval status.',
         id: 'TR_EXCHANGE_APPROVAL_ERROR',
     },
     TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING: {
@@ -7042,7 +7042,7 @@ export default defineMessages({
     },
     TR_CONTRACT_ADDRESS: {
         id: 'TR_CONTRACT_ADDRESS',
-        defaultMessage: 'Contract address',
+        defaultMessage: 'Contract address:',
     },
     TR_POLICY_ID_ADDRESS: {
         id: 'TR_POLICY_ID_ADDRESS',
@@ -9718,7 +9718,7 @@ export default defineMessages({
     TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION: {
         id: 'TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION',
         defaultMessage:
-            "Your funds and transactions won't be visible until you reconnect your device.",
+            'Your funds and transactions won’t be visible until you reconnect your device.',
     },
     TR_DO_NOT_SHOW_AGAIN: {
         id: 'TR_DO_NOT_SHOW_AGAIN',
