@@ -51,9 +51,9 @@ export interface TradingInfo {
     paymentMethods: TradingPaymentMethodListProps[];
 }
 
-export interface TradingPreffiledFromAccount {
+export interface TradingPrefilledFromAccount {
     cryptoId: CryptoId | undefined;
-    descriptor: string | undefined;
+    key: AccountKey | undefined;
 }
 
 export interface TradingState {
@@ -68,7 +68,7 @@ export interface TradingState {
     isLoading: boolean;
     lastLoadedTimestamp: number;
     activeSection: TradingType;
-    prefilledFromAccount: TradingPreffiledFromAccount;
+    prefilledFromAccount: TradingPrefilledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
     settings: TradingSettingsState;
 }
@@ -91,7 +91,7 @@ export const initialState: TradingState = {
     activeSection: 'buy',
     prefilledFromAccount: {
         cryptoId: undefined,
-        descriptor: undefined,
+        key: undefined,
     },
     verifiedAddress: undefined,
     settings: settingsInitialState,
@@ -143,11 +143,11 @@ export const tradingSlice = createSliceWithExtraDeps({
             state,
             action: PayloadAction<{
                 cryptoId: CryptoId | undefined;
-                descriptor: string | undefined;
+                key: string | undefined;
             }>,
         ) {
             state.prefilledFromAccount.cryptoId = action.payload.cryptoId;
-            state.prefilledFromAccount.descriptor = action.payload.descriptor;
+            state.prefilledFromAccount.key = action.payload.key;
         },
         setVerifiedAddress(state, action: PayloadAction<TradingVerifiedAddress>) {
             state.verifiedAddress = action.payload;
