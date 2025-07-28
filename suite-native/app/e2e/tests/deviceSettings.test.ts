@@ -1,13 +1,13 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySuccess';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import {
     PrepareTrezorEmulatorProps,
     appIsFullyLoaded,
@@ -21,9 +21,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     beforeAll(async () => {
         const emulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
         await prepareTrezorEmulator(emulatorOptions);
-        await openApp({ newInstance: true });
-
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');

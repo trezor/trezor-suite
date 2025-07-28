@@ -4,10 +4,10 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     appIsFullyLoaded,
@@ -60,8 +60,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
 
     beforeAll(async () => {
         await prepareTrezorEmulator();
-        await openApp({ newInstance: true });
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',

@@ -9,12 +9,6 @@ class OnOnboardingActions {
 
         await element(by.id('@onboarding/Biometrics/skipBtn')).tap();
     }
-
-    async skipOnboarding() {
-        const testId = '@onboarding/e2eSkipOnboarding';
-        await waitForElementByIdToBeVisible(testId, 20000);
-        await element(by.id(testId)).tap();
-    }
 }
 
 export const onOnboarding = new OnOnboardingActions();

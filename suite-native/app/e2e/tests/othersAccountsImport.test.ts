@@ -1,14 +1,13 @@
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { openApp } from '../utils';
 
 describe('Import accounts of other networks.', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true });
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
         await onTabBar.navigateToMyAssets();
     });
 

@@ -1,16 +1,18 @@
 import { PROTO } from '@trezor/connect';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import btcWalletPreloaded from '../fixtures/walletWithBtcAcc.json';
 import { onHome } from '../pageObjects/homeActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 
 describe('App Settings - without device interactions', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState: btcWalletPreloaded } });
-        await onOnboarding.skipOnboarding();
+        await openApp({
+            newInstance: true,
+            args: { preloadedState: { ...btcWalletPreloaded, ...onboardingCompleted } },
+        });
     });
 
     beforeEach(async () => {

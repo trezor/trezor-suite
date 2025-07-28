@@ -7,9 +7,9 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
@@ -61,8 +61,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
         await device.reverseTcpPort(SERVER_PORT);
 
         await prepareTrezorEmulator();
-        await openApp({ newInstance: true });
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');

@@ -1,19 +1,18 @@
 import { expect as detoxExpect } from 'detox';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 
 describe('Account management', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true });
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
     });
 
     beforeEach(async () => {
