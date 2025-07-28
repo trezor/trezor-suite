@@ -139,13 +139,11 @@ export const prepareGraphDataAsync = ({
     deviceState,
 }: PrepareGraphDataAsyncProps): Promise<ObjectType<'dashboard'>[]> =>
     new Promise(resolve => {
-        console.time('prepareGraphDataAsync');
         window.setTimeout(() => {
             const history = getGraphDataForInterval({ deviceState, graph });
             const { groupBy } = graph.selectedRange;
             const type = 'dashboard';
             const aggregatedData = aggregateBalanceHistory(history, groupBy, type);
             resolve(aggregatedData);
-            console.timeEnd('prepareGraphDataAsync');
         }, 0);
     });
