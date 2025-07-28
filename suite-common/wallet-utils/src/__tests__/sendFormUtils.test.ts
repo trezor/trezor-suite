@@ -1,5 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { networks } from '@suite-common/wallet-config';
+import { FeeLevel } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
 import { getUtxoOutpoint } from '../accountUtils';
@@ -13,6 +15,7 @@ import {
     getExcludedUtxos,
     getExternalComposeOutput,
     getInputState,
+    getLowestFeeFromLevels,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from '../sendFormUtils';
@@ -522,6 +525,20 @@ describe('sendForm utils', () => {
                     }),
                 ).toEqual({ type: 'not_enough' });
             });
+        });
+    });
+    describe(getLowestFeeFromLevels.name, () => {
+        it('should return lowest fee from levels, excluding the custom', () => {
+            const levels = [
+                { label: 'custom', feePerUnit: '1' },
+                { label: 'low', feePerUnit: '300' },
+                { label: 'normal', feePerUnit: '500' },
+                { label: 'high', feePerUnit: '999' },
+            ] as FeeLevel[];
+            expect(getLowestFeeFromLevels(levels)).toEqual(new BigNumber('300'));
+        });
+        it('should return NaN from empty fee levels', () => {
+            expect(getLowestFeeFromLevels([])).toEqual(new BigNumber(NaN));
         });
     });
 });

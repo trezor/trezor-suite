@@ -37,6 +37,7 @@ import {
     ComposeOutput,
     EthereumTransaction,
     EthereumTransactionEIP1559,
+    FeeLevel,
     PROTO,
     TokenInfo,
 } from '@trezor/connect';
@@ -294,6 +295,13 @@ export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransacti
 
     return tx.feePerByte;
 };
+
+export const getLowestFeeFromLevels = (levels: FeeLevel[]): BigNumber =>
+    BigNumber.minimum(
+        ...levels
+            .filter(({ label }) => label !== 'custom')
+            .map(({ feePerUnit }) => BigNumber(feePerUnit)),
+    );
 
 // Find all validation errors set while composing a transaction
 export const findComposeErrors = <T extends FieldValues>(

@@ -22,7 +22,7 @@ import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 import { CurrentFee } from './CurrentFee';
 import { CustomFeeEthereum } from './CustomFeeEthereum';
 import { CustomFeeMisc } from './CustomFeeMisc';
-import { CustomFeeWrapper } from './CustomFeeWrapper';
+import { CustomFeeTooLowBanner } from './CustomFeeTooLowBanner';
 
 export const FEE_PER_UNIT = 'feePerUnit';
 export const FEE_LIMIT = 'feeLimit';
@@ -46,7 +46,7 @@ export type CustomFeeBasicProps<TFieldValues extends FormState> = {
     };
 };
 
-interface CustomFeeProps<TFieldValues extends FormState> {
+type CustomFeeProps<TFieldValues extends FormState> = {
     networkType: NetworkType;
     symbol: NetworkSymbol;
     feeInfo: FeeInfo;
@@ -57,7 +57,7 @@ interface CustomFeeProps<TFieldValues extends FormState> {
     getValues: UseFormGetValues<TFieldValues>;
     trigger: UseFormTrigger<TFieldValues>;
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
-}
+};
 
 export const CustomFee = <TFieldValues extends FormState>({
     networkType,
@@ -91,12 +91,17 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const feeUnits = getFeeUnits(networkType);
 
+    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
+    const getValues = props.getValues as unknown as UseFormGetValues<FormState>;
+    const feePerUnitValue = getValues(FEE_PER_UNIT);
+
     const shouldShowTxSize =
         networkType === 'bitcoin' && cachedBytes !== undefined && cachedBytes !== false;
 
     return (
         <>
-            <CustomFeeWrapper>
+            <Column gap={spacings.xs}>
+                <CustomFeeTooLowBanner feePerUnitValue={feePerUnitValue} feeInfo={feeInfo} />
                 <CurrentFee networkType={networkType} networkSymbol={symbol} feeInfo={feeInfo} />
                 {networkType === 'ethereum' ? (
                     <CustomFeeEthereum
@@ -128,7 +133,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         sharedRules={sharedRules}
                     />
                 )}
-            </CustomFeeWrapper>
+            </Column>
             {cachedNetworkAmount && (
                 <Column>
                     <Row gap={spacings.sm} alignItems="baseline" justifyContent="space-between">
