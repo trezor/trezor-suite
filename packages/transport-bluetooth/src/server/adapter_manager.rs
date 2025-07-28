@@ -17,7 +17,7 @@ use tokio::{
 
 use crate::server::{
     device::{DeviceConnectionStatus, TrezorDevice},
-    types::{AdapterState, ChannelMessage, KnownDevice, NotificationEvent},
+    types::{AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationEvent},
     utils, ConnectionBroadcast,
 };
 
@@ -312,6 +312,7 @@ impl AdapterManager {
                 removed.push(id.clone());
                 // check if device was connected
                 if let DeviceConnectionStatus::Connected = device.get_connection_status() {
+                    let _ = device.disconnect().await;
                     disconnected.push(id);
                 }
             }
@@ -321,7 +322,7 @@ impl AdapterManager {
 
         // notify about each disconnected device
         let devices = self.get_devices().await;
-        for id in removed.iter() {
+        for id in disconnected.iter() {
             self.dispatch_notification(NotificationEvent::DeviceDisconnected {
                 id: id.clone(),
                 devices: devices.clone(),
@@ -421,28 +422,63 @@ impl AdapterManager {
                         }
                     }
                     CentralEvent::DeviceUpdated(id) => {
-                        if let Some(device) = self_ref.get_device(&id).await {
-                            info!("DeviceUpdated {:?} : {:?}", id, device);
-                            let devices = self_ref.get_devices().await;
-                            self_ref
-                                .dispatch_notification(NotificationEvent::DeviceUpdated {
-                                    id: id.to_string(),
-                                    devices,
-                                })
-                                .await;
+                        if let Some(mut device) = self_ref.get_device(&id).await {
+                            let mut emit_update = false;
+                            if let Ok(peripheral) =
+                                self_ref.get_peripheral_or_die(&id.to_string()).await
+                            {
+                                if let Ok(updated) = device.update_properties(peripheral).await {
+                                    emit_update = updated;
+                                }
+                            };
+
+                            if emit_update {
+                                info!("DeviceUpdated {:?} : {:?}", id, device);
+                                let devices = self_ref.get_devices().await;
+                                self_ref
+                                    .dispatch_notification(NotificationEvent::DeviceUpdated {
+                                        id: id.to_string(),
+                                        devices,
+                                    })
+                                    .await;
+                            }
                         }
                     }
                     CentralEvent::DeviceDisconnected(id) => {
-                        if let Some(device) = self_ref.get_device(&id).await {
+                        if let Some(mut device) = self_ref.get_device(&id).await {
                             info!("DeviceDisconnected: {:?} : {:?}", id, device);
-                            // TODO: disconnect TrezorDevice
-                            let devices = self_ref.get_devices().await;
+
                             self_ref
-                                .dispatch_notification(NotificationEvent::DeviceDisconnected {
-                                    id: id.to_string(),
-                                    devices,
-                                })
+                                .send_to_listeners(ChannelMessage::Abort(
+                                    AbortProcess::DeviceDisconnected(id.to_string()),
+                                ))
                                 .await;
+
+                            let mut emit_event = false;
+                            if let Ok(peripheral) =
+                                self_ref.get_peripheral_or_die(&id.to_string()).await
+                            {
+                                if let Ok(updated) = device.update_properties(peripheral).await {
+                                    emit_event = updated;
+                                }
+                            }
+
+                            if let DeviceConnectionStatus::Connected =
+                                device.get_connection_status()
+                            {
+                                let _ = device.disconnect().await;
+                                emit_event = true;
+                            }
+
+                            if emit_event {
+                                let devices = self_ref.get_devices().await;
+                                self_ref
+                                    .dispatch_notification(NotificationEvent::DeviceDisconnected {
+                                        id: id.to_string(),
+                                        devices,
+                                    })
+                                    .await;
+                            }
                         }
                     }
                     // CentralEvent::DeviceConnected fires up too early. Device may be connected but in pairing process
