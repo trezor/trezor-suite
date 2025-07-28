@@ -49,6 +49,8 @@ pub enum WsRequestMethod {
     StartScan,
     StopScan,
     SetState(SetStateParams),
+    ConnectDevice(ConnectDeviceParams),
+    DisconnectDevice(String),
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -131,18 +133,21 @@ pub enum NotificationEvent {
     DeviceRemoved {
         id: String,
     },
+    DeviceConnectionStatus(TrezorDevice),
+    #[allow(dead_code)]
+    DeviceSettingsUi, // only on linux
 }
 
 #[derive(Debug, thiserror::Error)]
 pub enum MethodError {
-    #[error("UnexpectedError: {0}")]
-    Unexpected(String),
-
     #[error("BtleplugError: {0}")]
     Btleplug(#[from] btleplug::Error),
 
     #[error("AdapterError: {0}")]
     Adapter(#[from] AdapterError),
+
+    #[error(transparent)]
+    PlatformError(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
 
 pub type MethodResult = Result<WsResponsePayload, MethodError>;
