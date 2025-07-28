@@ -76,6 +76,7 @@ pub async fn handle_message(
         WsRequestMethod::DisconnectDevice(id) => {
             methods::disconnect_device(manager, broadcast, id).await
         }
+        WsRequestMethod::ForgetDevice(id) => methods::forget_device(manager, broadcast, id).await,
     };
 
     match payload {

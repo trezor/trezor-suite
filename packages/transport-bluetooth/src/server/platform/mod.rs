@@ -19,6 +19,8 @@ pub trait PlatformDevice {
     fn get_address(peripheral: Peripheral) -> String;
 
     async fn connect(ctx: ConnectDeviceContext) -> Result<(), PlatformError>;
+
+    async fn forget(id: String) -> Result<(), PlatformError>;
 }
 
 #[cfg(target_os = "linux")]

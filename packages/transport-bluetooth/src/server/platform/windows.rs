@@ -12,7 +12,7 @@ use windows::{
     core::Ref,
     Devices::Bluetooth::BluetoothLEDevice,
     Devices::Enumeration::{
-        DeviceInformationCustomPairing, DevicePairingKinds, DevicePairingRequestedEventArgs,
+        DeviceInformationCustomPairing, DevicePairingKinds, DevicePairingRequestedEventArgs, DeviceUnpairingResultStatus,
         DevicePairingResultStatus,
     },
     Foundation::TypedEventHandler,
@@ -34,6 +34,21 @@ impl PlatformDevice for WindowsDevice {
         try_to_pair(&ctx).await?;
         discover_services(&ctx).await?;
         verify_connection(&ctx).await
+    }
+
+    async fn forget(id: String) -> Result<(), PlatformError> {
+        let address = BDAddr::from_str_delim(&id)?;
+        let device = BluetoothLEDevice::FromBluetoothAddressAsync(address.into())?.await?;
+        let pairing = device.DeviceInformation()?.Pairing()?;
+
+        let result = pairing.UnpairAsync()?.await?;
+        let status = result.Status()?;
+        if status != DeviceUnpairingResultStatus::Unpaired {
+            Err(format!("Unpair failed: {:?}", status).into())
+        } else {
+            let _ = device.Close();
+            Ok(())
+        }
     }
 }
 

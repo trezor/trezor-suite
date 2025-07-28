@@ -33,6 +33,10 @@ impl PlatformDevice for MacosDevice {
         try_to_subscribe(&ctx).await?;
         verify_connection(&ctx).await
     }
+
+    async fn forget(_id: String) -> Result<(), PlatformError> {
+        Err("forget_device is not implemented".into())
+    }
 }
 
 pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), PlatformError> {

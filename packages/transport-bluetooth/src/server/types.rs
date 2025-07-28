@@ -51,6 +51,7 @@ pub enum WsRequestMethod {
     SetState(SetStateParams),
     ConnectDevice(ConnectDeviceParams),
     DisconnectDevice(String),
+    ForgetDevice(String),
 }
 
 #[derive(serde::Deserialize, Debug)]
