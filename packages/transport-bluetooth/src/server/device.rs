@@ -17,9 +17,14 @@ use uuid::{uuid, Uuid};
 #[serde(tag = "type", rename_all = "kebab-case")]
 pub enum DeviceConnectionStatus {
     Disconnected,
-    Pairing { pin: Option<String> },
-    Paired,
-    PairingError { error: String },
+    Pairing {
+        pin: Option<String>,
+    },
+    #[cfg_attr(target_os = "macos", allow(dead_code))]
+    Paired, // not used in macos
+    PairingError {
+        error: String,
+    },
     Connecting,
     Connected,
 }
@@ -211,10 +216,9 @@ impl TrezorDevice {
         }
     }
 
-    pub fn is_paired(&self) -> bool {
-        match self.props.lock() {
-            Ok(p) => p.paired,
-            Err(_) => false,
+    pub fn set_is_paired(&self, value: bool) {
+        if let Ok(mut props) = self.props.lock() {
+            props.paired = value;
         }
     }
 

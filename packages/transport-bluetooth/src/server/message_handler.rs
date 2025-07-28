@@ -70,6 +70,12 @@ pub async fn handle_message(
         WsRequestMethod::StartScan => methods::start_scan(manager, broadcast).await,
         WsRequestMethod::StopScan => methods::stop_scan(manager, broadcast).await,
         WsRequestMethod::SetState(params) => methods::set_state(manager, params).await,
+        WsRequestMethod::ConnectDevice(params) => {
+            methods::connect_device(manager, broadcast, params).await
+        }
+        WsRequestMethod::DisconnectDevice(id) => {
+            methods::disconnect_device(manager, broadcast, id).await
+        }
     };
 
     match payload {
