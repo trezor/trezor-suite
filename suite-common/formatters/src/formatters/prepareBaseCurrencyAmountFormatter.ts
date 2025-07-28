@@ -69,7 +69,7 @@ const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) =>
     });
 
     return currency.toLowerCase() === 'btc' // In the case of Crypto Base-Currency, we always want to have currency ticker as suffix.
-        ? `${result.replace(/(BTC)|btc/, '').trim()} ${currency.toUpperCase()}`
+        ? `${result.replace(/BTC|btc/, '').trim()} ${currency.toUpperCase()}`
         : result;
 };
 

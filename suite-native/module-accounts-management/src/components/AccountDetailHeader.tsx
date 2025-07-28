@@ -101,7 +101,7 @@ export const AccountDetailHeader = ({
                 <DiscreetTextTrigger>
                     <CryptoAmountLargeFormatter
                         value={
-                            totalCryptoBalance
+                            totalCryptoBalance !== null
                                 ? asAmountUnit(new BigNumber(totalCryptoBalance))
                                 : null
                         }
