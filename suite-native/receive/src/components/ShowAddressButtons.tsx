@@ -24,7 +24,9 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     const [isViewOnlyBottomSheetVisible, setIsViewOnlyBottomSheetVisible] = useState(false);
 
     const handleOpenEduLink = () => {
-        openLink('https://trezor.io/learn/a/verifying-trezor-suite-lite-addresses');
+        openLink(
+            'https://trezor.io/guides/trezor-suite/trezor-suite-lite/verifying-trezor-suite-lite-addresses',
+        );
     };
 
     const handleShowAddress = () => {

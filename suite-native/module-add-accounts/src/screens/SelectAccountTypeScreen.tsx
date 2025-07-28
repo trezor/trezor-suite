@@ -35,7 +35,8 @@ const GRADIENT_HEIGHT = 48;
 // for extra space on the bottom due to android showing odd SafeAreaInsets.bottom
 const EXTRA_BOTTOM_PADDING = 48;
 
-const ACCOUNT_TYPES_URL = 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite';
+const ACCOUNT_TYPES_URL =
+    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/multiple-accounts-in-trezor-suite';
 
 const bulletsForKeyPath = (keyPath: TxKeyPath) => (
     <Box paddingLeft="sp8">

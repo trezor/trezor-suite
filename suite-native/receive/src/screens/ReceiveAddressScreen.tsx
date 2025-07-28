@@ -116,7 +116,7 @@ export const ReceiveAddressScreen = ({
                                             <Link
                                                 label={chunk}
                                                 textVariant="label"
-                                                href="https://trezor.io/learn/a/destination-tags"
+                                                href="https://trezor.io/learn/supported-assets/other-cryptocurrencies/destination-tags"
                                                 isUnderlined
                                                 textColor="textDefault"
                                                 textPressedColor="textSubdued"
