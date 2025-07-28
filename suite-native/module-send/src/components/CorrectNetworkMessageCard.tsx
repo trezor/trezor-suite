@@ -19,7 +19,8 @@ type CorrectNetworkMessageCardProps = {
     symbol: NetworkSymbol;
 };
 
-const LINK_URL = 'https://trezor.io/learn/a/how-to-choose-the-right-network';
+const LINK_URL =
+    'https://trezor.io/guides/sending-receiving-staking-funds/moving-funds-from-exchanges/how-to-choose-the-right-network';
 
 export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardProps) => {
     const { applyStyle } = useNativeStyles();

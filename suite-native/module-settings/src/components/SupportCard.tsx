@@ -11,7 +11,10 @@ export const SupportCard = () => {
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
 
-    const handleOpenSupportLink = () => openLink('https://trezor.io/learn/c/trezor-suite-lite');
+    const handleOpenSupportLink = () =>
+        openLink(
+            'https://trezor.io/guides/trezor-suite/trezor-suite-lite/what-is-trezor-suite-lite',
+        );
 
     return (
         <Card style={applyStyle(supportCardStyle)}>

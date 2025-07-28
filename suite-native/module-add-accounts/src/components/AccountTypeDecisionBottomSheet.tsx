@@ -3,7 +3,8 @@ import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-const ACCOUNT_TYPES_URL = 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite';
+const ACCOUNT_TYPES_URL =
+    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/multiple-accounts-in-trezor-suite';
 
 const descStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
