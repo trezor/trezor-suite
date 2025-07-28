@@ -414,16 +414,18 @@ impl AdapterManager {
                     CentralEvent::DeviceDiscovered(id) => {
                         if let Some(device) = utils::scan_filter(&adapter, &id).await {
                             info!("DeviceDiscovered {:?} : {:?}", id, device);
-                            if let Ok(device) = self_ref.add_device(&id).await {
-                                if let Ok(devices) = self_ref.prune_devices(device).await {
-                                    self_ref
-                                        .dispatch_notification(
-                                            NotificationEvent::DeviceDiscovered {
-                                                id: id.to_string(),
-                                                devices,
-                                            },
-                                        )
-                                        .await;
+                            if self_ref.get_device(&id).await.is_none() {
+                                if let Ok(device) = self_ref.add_device(&id).await {
+                                    if let Ok(devices) = self_ref.prune_devices(device).await {
+                                        self_ref
+                                            .dispatch_notification(
+                                                NotificationEvent::DeviceDiscovered {
+                                                    id: id.to_string(),
+                                                    devices,
+                                                },
+                                            )
+                                            .await;
+                                    }
                                 }
                             }
                         }
