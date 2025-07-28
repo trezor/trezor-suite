@@ -49,18 +49,35 @@ export const tradingMiddleware =
                 activeSection = 'buy';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingBuyActions.saveTransactionId(undefined));
+                if (prefilledFromAccount.descriptor) {
+                    api.dispatch(
+                        tradingBuyActions.setTradingAccountKey(prefilledFromAccount.descriptor),
+                    );
+                }
             }
 
             if (isSell) {
                 activeSection = 'sell';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingSellActions.saveTransactionId(undefined));
+                if (prefilledFromAccount.descriptor) {
+                    api.dispatch(
+                        tradingSellActions.setTradingAccountKey(prefilledFromAccount.descriptor),
+                    );
+                }
             }
 
             if (isExchange) {
                 activeSection = 'exchange';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingExchangeActions.saveTransactionId(undefined));
+                if (prefilledFromAccount.descriptor) {
+                    api.dispatch(
+                        tradingExchangeActions.setTradingAccountKey(
+                            prefilledFromAccount.descriptor,
+                        ),
+                    );
+                }
             }
 
             const wasBuy = state.router.route?.name === 'wallet-trading-buy';
