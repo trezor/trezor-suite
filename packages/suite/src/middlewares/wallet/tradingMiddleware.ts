@@ -49,10 +49,8 @@ export const tradingMiddleware =
                 activeSection = 'buy';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingBuyActions.saveTransactionId(undefined));
-                if (prefilledFromAccount.descriptor) {
-                    api.dispatch(
-                        tradingBuyActions.setTradingAccountKey(prefilledFromAccount.descriptor),
-                    );
+                if (prefilledFromAccount.key) {
+                    api.dispatch(tradingBuyActions.setTradingAccountKey(prefilledFromAccount.key));
                 }
             }
 
@@ -60,10 +58,8 @@ export const tradingMiddleware =
                 activeSection = 'sell';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingSellActions.saveTransactionId(undefined));
-                if (prefilledFromAccount.descriptor) {
-                    api.dispatch(
-                        tradingSellActions.setTradingAccountKey(prefilledFromAccount.descriptor),
-                    );
+                if (prefilledFromAccount.key) {
+                    api.dispatch(tradingSellActions.setTradingAccountKey(prefilledFromAccount.key));
                 }
             }
 
@@ -71,11 +67,9 @@ export const tradingMiddleware =
                 activeSection = 'exchange';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingExchangeActions.saveTransactionId(undefined));
-                if (prefilledFromAccount.descriptor) {
+                if (prefilledFromAccount.key) {
                     api.dispatch(
-                        tradingExchangeActions.setTradingAccountKey(
-                            prefilledFromAccount.descriptor,
-                        ),
+                        tradingExchangeActions.setTradingAccountKey(prefilledFromAccount.key),
                     );
                 }
             }
@@ -92,7 +86,7 @@ export const tradingMiddleware =
             if (cleanupPrefilledFromCryptoId) {
                 api.dispatch(
                     tradingActions.setTradingFromPrefilledAccount({
-                        descriptor: undefined,
+                        key: undefined,
                         cryptoId: undefined,
                     }),
                 );

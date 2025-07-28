@@ -22,6 +22,7 @@ import {
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { FormState, Output } from '@suite-common/wallet-types';
+import { parseAccountKey } from '@suite-common/wallet-utils';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -63,7 +64,8 @@ export const useTradingExchangeFormDefaultValues = (
                 cryptoOptions.find(
                     option =>
                         option.value === prefilledFromAccount.cryptoId &&
-                        option.descriptor === prefilledFromAccount.descriptor,
+                        option.descriptor ===
+                            parseAccountKey(prefilledFromAccount.key || '').accountDescriptor,
                 )) ||
             cryptoOptions.find(
                 option =>

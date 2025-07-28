@@ -164,7 +164,7 @@ describe('tradingMiddleware', () => {
             'should clean prefilledFromCryptoId when route is change from sell to buy',
             {
                 cryptoId: undefined,
-                descriptor: undefined,
+                key: undefined,
             },
             tradingMiddlewareFixtures.TRADING_BUY_ROUTE,
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
@@ -173,7 +173,7 @@ describe('tradingMiddleware', () => {
             'should clean prefilledFromCryptoId when route is change from buy to sell',
             {
                 cryptoId: undefined,
-                descriptor: undefined,
+                key: undefined,
             },
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
             tradingMiddlewareFixtures.TRADING_BUY_ROUTE,
@@ -182,7 +182,7 @@ describe('tradingMiddleware', () => {
             'should clean prefilledFromCryptoId when route is trading abandoned',
             {
                 cryptoId: undefined,
-                descriptor: undefined,
+                key: undefined,
             },
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
             tradingMiddlewareFixtures.DEFAULT_ROUTE,
@@ -191,7 +191,7 @@ describe('tradingMiddleware', () => {
             'should prefilledFromCryptoId stay stable when is page changed to the same',
             {
                 cryptoId: 'bitcoin' as CryptoId,
-                descriptor: 'descriptor',
+                key: 'descriptor',
             },
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
@@ -203,7 +203,7 @@ describe('tradingMiddleware', () => {
                     ...initialState,
                     prefilledFromAccount: {
                         cryptoId: 'bitcoin' as CryptoId,
-                        descriptor: 'descriptor',
+                        key: 'descriptor',
                     },
                 },
                 router: routerReducer(routeDefault, {} as Action),

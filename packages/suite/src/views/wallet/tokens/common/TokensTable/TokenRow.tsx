@@ -173,7 +173,7 @@ export const TokenRow = ({
         dispatch(
             tradingActions.setTradingFromPrefilledAccount({
                 cryptoId: tokenCryptoId,
-                descriptor: account.descriptor,
+                key: account.key,
             }),
         );
 
