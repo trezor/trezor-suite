@@ -1,6 +1,4 @@
-import { xpubs } from '../fixtures/xpubs';
-import { onAccountImport } from '../pageObjects/accountImportActions';
-import { onHome } from '../pageObjects/homeActions';
+import btcWalletPreloaded from '../fixtures/walletWithBtcAcc.json';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/tradingBuyActions';
@@ -9,14 +7,8 @@ import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 
 describe('Trade Buy', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true });
+        await openApp({ newInstance: true, args: { preloadedState: btcWalletPreloaded } });
         await onOnboarding.skipOnboarding();
-        await onHome.tapSyncCoinsButton();
-        await onAccountImport.importAccount({
-            networkSymbol: 'btc',
-            xpub: xpubs.btc.segwit,
-            accountName: 'BTC SegWit',
-        });
     });
 
     afterAll(async () => {
