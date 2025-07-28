@@ -245,6 +245,8 @@ export class TradingPage {
         await this.accountDropdown.click();
         if (isAccountTabFilter(symbol)) {
             await this.accountTabFilter(symbol).click();
+        } else {
+            await this.accountTabFilter('all-networks').click();
         }
         await this.accountSearchInput.fill(cryptoName);
         await this.accountOption(cryptoName, symbol).click();
