@@ -14,6 +14,7 @@ export type LaunchArguments = {
     isCheckBackupsEnabled?: boolean;
     isDeviceConnectEnabled?: boolean;
     isViewOnlyByDefaultEnabled?: boolean;
+    preloadedState?: Record<string, unknown>;
 };
 
 export const launchArguments = LaunchArguments.value<LaunchArguments>();
