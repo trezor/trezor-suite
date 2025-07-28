@@ -4,6 +4,7 @@ use btleplug::api::CentralState;
 #[derive(serde::Serialize, Clone, Debug)]
 pub enum AbortProcess {
     ClientDisconnected(String), // websocket client disconnected
+    DeviceDisconnected(String), // device disconnected
     Scan,                       // stop scan
 }
 
