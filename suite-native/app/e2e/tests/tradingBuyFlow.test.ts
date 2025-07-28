@@ -1,5 +1,5 @@
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import btcWalletPreloaded from '../fixtures/walletWithBtcAcc.json';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/tradingHistoryActions';
@@ -7,8 +7,10 @@ import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 
 describe('Trade Buy', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState: btcWalletPreloaded } });
-        await onOnboarding.skipOnboarding();
+        await openApp({
+            newInstance: true,
+            args: { preloadedState: { ...btcWalletPreloaded, ...onboardingCompleted } },
+        });
     });
 
     afterAll(async () => {

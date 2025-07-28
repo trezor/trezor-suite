@@ -1,13 +1,13 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
 import { FeeValues, onSendFees } from '../pageObjects/send/sendFeesActions';
 import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
@@ -68,8 +68,7 @@ const signTransactionAndSendIt = async () => {
 conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.', () => {
     beforeAll(async () => {
         await prepareTrezorEmulator();
-        await openApp({ newInstance: true });
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',

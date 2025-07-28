@@ -1,10 +1,10 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import {
     disconnectTrezorUserEnv,
     openApp,
@@ -50,8 +50,7 @@ const finishOnboardingFlow = async () => {
 conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator({ seed: '' });
-        await openApp({ newInstance: true });
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
         await proceedToCreateOrRecoverCrossroads();
     });
 

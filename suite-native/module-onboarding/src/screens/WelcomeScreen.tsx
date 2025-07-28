@@ -16,8 +16,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-import { E2ESkipOnboardingButton } from '../components/E2ESkipOnboardingButton';
-
 const GRADIENT_HEIGHT = getWindowHeight() / 3;
 const BLACK_BACKGROUND_COLOR = '#000000';
 
@@ -83,7 +81,6 @@ export const WelcomeScreen = ({
                         </Box>
                     </VStack>
                     <Box style={applyStyle(buttonWrapperStyle)}>
-                        <E2ESkipOnboardingButton />
                         <Button
                             onPress={navigateToAnalyticsConsent}
                             testID="@onboarding/Welcome/nextBtn"

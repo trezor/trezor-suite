@@ -3,9 +3,9 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import {
@@ -23,8 +23,7 @@ conditionalDescribe(
     () => {
         beforeAll(async () => {
             await prepareTrezorEmulator();
-            await openApp({ newInstance: true });
-            await onOnboarding.skipOnboarding();
+            await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
             await onCoinEnabling.waitForInitScreen();
             await onCoinEnabling.toggleNetwork('btc');

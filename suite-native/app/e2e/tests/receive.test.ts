@@ -1,21 +1,20 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import onboardingCompleted from '../fixtures/onboardingCompleted.json';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
 
 conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
     it('Generate device confirmed receive address.', async () => {
         await prepareTrezorEmulator();
-        await openApp({ newInstance: true });
-        await onOnboarding.skipOnboarding();
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
