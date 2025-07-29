@@ -2,6 +2,8 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { Category, MessageSystem } from '@suite-common/suite-types';
 
+import { MessageSystemConfigSource } from './messageSystemTypes';
+
 export type ValidMessagesPayload = { [key in Category]: string[] };
 
 export const ACTION_PREFIX = '@message-system';
@@ -43,6 +45,13 @@ const updateValidExperiments = createAction(
     }),
 );
 
+const setConfigSource = createAction(
+    `${ACTION_PREFIX}/setConfigSource`,
+    (payload: MessageSystemConfigSource) => ({
+        payload,
+    }),
+);
+
 export const messageSystemActions = {
     updateValidMessages,
     updateValidExperiments,
@@ -50,4 +59,5 @@ export const messageSystemActions = {
     fetchSuccess,
     fetchSuccessUpdate,
     fetchError,
+    setConfigSource,
 } as const;

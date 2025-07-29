@@ -24,6 +24,9 @@ export const selectMessageSystemTimestamp = (state: MessageSystemRootState) =>
 export const selectMessageSystemCurrentSequence = (state: MessageSystemRootState) =>
     state.messageSystem.currentSequence;
 
+export const selectMessageSystemConfigSource = (state: MessageSystemRootState) =>
+    state.messageSystem.configSource;
+
 const comparePriority = (a: Message, b: Message) => b.priority - a.priority;
 
 const makeSelectActiveMessagesByCategory = (category: Category) =>

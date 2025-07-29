@@ -7,3 +7,4 @@ export * from './txsPerPage';
 export * from './parseFirmwareChangelog';
 export * from './protocol';
 export * from './invariant';
+export * from './pollingController';
