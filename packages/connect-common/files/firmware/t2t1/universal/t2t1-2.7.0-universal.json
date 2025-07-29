@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 7, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "bootloader_version": [2, 1, 4],
+    "firmware_revision": "45e8a842a31e62a6d43d7f6ccac62a45e1198ef0",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.7.0.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.7.0.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.7.0.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.7.0.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.7.0.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.7.0.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.7.0-universal.bin",
+    "fingerprint": "53a645218792e413ad06c27320b7d1adc944b690ce831301bbf11c30352d3278",
+    "changelog": "* Add translations capability. \n* Allow for going back to previous word in recovery process. \n* Clear sign ETH staking transactions on Everstake pool. [Universal fw only] \n* Display descriptors for BTC Taproot public keys. \n* Fixed blank display delay on startup when display orientation is set to other than north. \n* Multiple Solana instructions improved. [Universal fw only]"
+}

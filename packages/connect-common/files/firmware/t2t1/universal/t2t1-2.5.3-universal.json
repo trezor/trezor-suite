@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 5, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "2f03ace311584988d5aeab58fd1acf24ef54711a",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.5.3.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.5.3.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.5.3.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.5.3.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.5.3.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.5.3.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.5.3-universal.bin",
+    "fingerprint": "4f57dca1abc1a60d82c4fef7c96e86d784fc7a1e5e3da724dd2ae4d14c6350bf",
+    "changelog": "* Add SLIP-0025 CoinJoin accounts. \n* Show red error header when Trezor doesn't see USB data connection. \n* Add support for Zcash unified addresses. \n* Show fee rate when replacing transaction. \n* Optimize the signing of BTC transactions. \n* Support for Cardano CIP-36 governance registration format. \n* Extend decimals of fee rate to 2 digits. \n* Display only “sat” instead of “sat BTC”. \n* Fix sending XMR transaction to an integrated address. \n* Fix XMR primary address display."
+}

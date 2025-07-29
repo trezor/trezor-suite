@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 8, 10],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 6],
+    "min_firmware_version": [2, 7, 2],
+    "bootloader_version": [2, 1, 10],
+    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.8.10.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.8.10.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.8.10.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.8.10.bin",
+        "it-IT": "firmware/translations/t3t1/translation-T3T1-it-IT-2.8.10.bin",
+        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.8.10.bin"
+    },
+    "url": "firmware/t3t1/universal/t3t1-2.8.10-universal.bin",
+    "fingerprint": "f6f50b4a419b041a59620ef681047c27af0902798e0227397c532dd70736694a",
+    "changelog": "* Add Nostr support (in debug mode only!).\n* Visual cues to distinguish unlocked state on Homescreen.\n* Solana: rent fee calculation [#4933]\n* Solana: loadable token definitions [#3541]\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Updated EIP-1559 fee-related labels.\n* Allow firmware upgrade even if language change failed.\n* Solana: fees calculation is now exact [#4965]"
+}

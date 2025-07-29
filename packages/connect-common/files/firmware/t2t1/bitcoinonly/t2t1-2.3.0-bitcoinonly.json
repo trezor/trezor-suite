@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 3, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "0b7a8449f8dd003fc415262b05102d113247d3de",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.3.0.bin",
+        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.3.0.bin",
+        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.3.0.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.3.0.bin",
+        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.3.0.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.3.0.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.3.0-bitcoinonly.bin",
+    "fingerprint": "bddc0fd3b52fd32d94b776048f62b3d03dcb6ab90140e482a042a2863093115f",
+    "changelog": "* Introduce Wipe code\n* Introduce SD card protection\n* Introduce passphrase cache\n* Security fixes"
+}

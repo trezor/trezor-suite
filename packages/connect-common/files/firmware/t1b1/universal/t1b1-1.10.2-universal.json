@@ -1,0 +1,13 @@
+{
+    "required": false,
+    "version": [1, 10, 2],
+    "min_bridge_version": [2, 0, 25],
+    "min_bootloader_version": [1, 5, 0],
+    "min_firmware_version": [1, 6, 2],
+    "bootloader_version": [1, 10, 0],
+    "firmware_revision": "24bb4016388fca4b998285b95dcd408f4ed0bff6",
+    "translations": {},
+    "url": "firmware/t1b1/universal/t1b1-1.10.2-universal.bin",
+    "fingerprint": "99707b90a504f7e402f26c3d59cbbdacbc52754cebcce79cc47be528fc889338",
+    "changelog": "* Security improvements."
+}

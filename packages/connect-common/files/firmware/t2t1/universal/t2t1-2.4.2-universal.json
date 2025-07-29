@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 4, 2],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "9276b1702361f70e094286e2f89e919d8a230d5c",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.4.2.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.4.2.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.4.2.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.4.2.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.4.2.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.4.2.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.4.2-universal.bin",
+    "fingerprint": "54ccf155510b5292bd17ed748409d0d135112e24e62eb74184639460beecb213",
+    "changelog": "* Support for Ethereum EIP1559 transactions.\n* Re-enabled Firo support.\n* Memory optimization of BTC signing and CBOR decoding.\n* Support for large Cardano transactions.\n* Remove Lisk."
+}

@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 0, 6],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 5],
+    "bootloader_version": [2, 0, 0],
+    "firmware_revision": "886888b7750402d9a9e12bd990e75c0a8dc6cc86",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.0.6.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.0.6.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.0.6.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.0.6.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.0.6.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.0.6.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.0.6-universal.bin",
+    "fingerprint": "4eccabf2fd7e121ed0da657c064a65c5694402497e60ea2ac2dcf1e118db9cc6",
+    "changelog": "* Fix layout for Ethereum transactions\n* Fix public key generation for SSH and GPG\n* Add special characters to passphrase keyboard"
+}

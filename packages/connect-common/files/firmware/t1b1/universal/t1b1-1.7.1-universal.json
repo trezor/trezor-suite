@@ -1,0 +1,13 @@
+{
+    "required": false,
+    "version": [1, 7, 1],
+    "min_bridge_version": [2, 0, 25],
+    "min_bootloader_version": [1, 5, 0],
+    "min_firmware_version": [1, 6, 2],
+    "bootloader_version": [1, 6, 0],
+    "firmware_revision": "83f1906cad648c560cd560577317046606398630",
+    "translations": {},
+    "url": "firmware/t1b1/universal/t1b1-1.7.1-universal.bin",
+    "fingerprint": "1c303c50bb45d3f35da9e962d8405d0b8e89cc45e122496a48fce3995fa71d48",
+    "changelog": "* Switch from HID to WebUSB\n* Add support for Stellar\n* Add support for Lisk\n* Add support for Zcash Sapling hardfork\n* Implement seedless setup"
+}

@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 4, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "24bb4016388fca4b998285b95dcd408f4ed0bff6",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.4.1.bin",
+        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.4.1.bin",
+        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.4.1.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.4.1.bin",
+        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.4.1.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.4.1.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.4.1-bitcoinonly.bin",
+    "fingerprint": "fce4503fcadb68dc72144a562ec0a59e7c8d083e403e01bfc4c584161d79f596",
+    "changelog": "* Security and major perfomance improvements.\n* Fix red screen on shutdown."
+}

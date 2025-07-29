@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 5, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "85a26d2c9593bcdf858c2d718d79951ca927a0c3",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.5.1.bin",
+        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.5.1.bin",
+        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.5.1.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.5.1.bin",
+        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.5.1.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.5.1.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.5.1-bitcoinonly.bin",
+    "fingerprint": "db5d7b211532f717a32fe0b1bd3e3df6ad5464079a896a7f7492ab6e9e030bb5",
+    "changelog": "* Support Electrum signatures in VerifyMessage.\n* Bitcoin bech32 addresses QR codes have bigger pixels which are easier to scan.\n* Trezor will refuse to sign UTXOs that do not match the provided derivation path (e.g., transactions belonging to a different wallet, or synthetic transaction inputs)."
+}

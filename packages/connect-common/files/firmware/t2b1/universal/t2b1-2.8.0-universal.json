@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 8, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 1],
+    "min_firmware_version": [2, 6, 1],
+    "bootloader_version": [2, 1, 4],
+    "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2b1/translation-T2B1-cs-CZ-2.8.0.bin",
+        "de-DE": "firmware/translations/t2b1/translation-T2B1-de-DE-2.8.0.bin",
+        "es-ES": "firmware/translations/t2b1/translation-T2B1-es-ES-2.8.0.bin",
+        "fr-FR": "firmware/translations/t2b1/translation-T2B1-fr-FR-2.8.0.bin",
+        "it-IT": "firmware/translations/t2b1/translation-T2B1-it-IT-2.8.0.bin",
+        "pt-BR": "firmware/translations/t2b1/translation-T2B1-pt-BR-2.8.0.bin"
+    },
+    "url": "firmware/t2b1/universal/t2b1-2.8.0-universal.bin",
+    "fingerprint": "cf3ce230a69a681199f74cf6ac8c6c431f8fa7e0d0183437f93c5cc029fbd155",
+    "changelog": "* Removed CoSi functionality. \n* Increased Optiga read timeout to avoid spurious RSODs."
+}

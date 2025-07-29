@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 1, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 5],
+    "firmware_revision": "7af1d5859458e87efd6957885566aed890a9f781",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.1.1.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.1.1.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.1.1.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.1.1.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.1.1.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.1.1.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.1.1-universal.bin",
+    "fingerprint": "1b3166a878658fcd2ff82c7ac9a2587da544fd105f678cc7b4d41cba5a8d4c01",
+    "changelog": "* Hotfix for touchscreen freeze\n* Don't rotate the screen via swipe gesture\n* Set screen rotation via user setting\n* More strict path validations\n* Display non-zero locktime values\n* EOS support\n* Monero UI fixes\n* Speed and memory optimizations"
+}
