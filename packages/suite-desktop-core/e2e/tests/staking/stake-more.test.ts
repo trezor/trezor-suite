@@ -64,7 +64,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await expect(stakingSection.stakedAmount).toHaveText('3,000');
                 await expect(stakingSection.rewardsAmount).toHaveText('234');
                 await expect(stakingSection.unstakingAmount).toHaveText('4,000');
-                await stakingSection.expectStakingLabelToBeInPhase('receivingRewards');
+                await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
             });
 
             await test.step('Open and fill staking form', async () => {
@@ -136,7 +136,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
             await test.step('Verify pending transaction', async () => {
                 await expect(stakingSection.pendingTransactionText).toBeVisible();
                 await expect(stakingSection.transactionStatus).toHaveText('Confirming transaction');
-                await stakingSection.expectStakingLabelToBeInPhase('pendingTransaction');
+                await stakingSection.expectProgressIndicatorsToMatchPhase('pendingTransaction');
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await expect(stakingSection.pendingAmount).toHaveText('0.100204158497493752');
                 await expect(stakingSection.stakedAmount).toHaveText('3,000');
@@ -162,7 +162,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await expect(stakingSection.transactionStatus).toHaveText('Transaction confirmed');
-                await stakingSection.expectStakingLabelToBeInPhase('addingToPool');
+                await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
                 await expect(stakingSection.pendingAmount).toHaveText('0.100204158497493752');
                 await expect(stakingSection.stakedAmount).toHaveText('3,000');
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
@@ -171,8 +171,6 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
 
             await test.step('Wait for staking activation', async () => {
                 blockbookMock.updateAccountState({
-                    transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-                    unconfirmedTxs: 0,
                     stakingPools: [
                         {
                             contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
@@ -190,7 +188,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await expect(stakingSection.pendingAmount).toBeHidden();
                 await expect(stakingSection.stakedAmount).toHaveText('3,000.100204158497493752');
-                await stakingSection.expectStakingLabelToBeInPhase('receivingRewards');
+                await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
             });
 
             await test.step('Verify banner about instant staking', async () => {

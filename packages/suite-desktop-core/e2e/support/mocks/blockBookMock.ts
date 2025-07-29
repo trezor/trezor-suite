@@ -36,7 +36,6 @@ export class BlockbookMock {
     async start(type: 'ltc' | 'doge' | 'eth') {
         this.mockServer = await BackendWebsocketServerMock.create('blockbook');
         const fixtures = this.selectFixture(type);
-
         this.mockServer.setFixtures(fixtures);
     }
 
@@ -62,7 +61,8 @@ export class BlockbookMock {
         const updatedFixtures = currentFixture.map(fixture => {
             if (fixture.method === 'getAccountInfo') {
                 return {
-                    ...fixture,
+                    method: 'getAccountInfo',
+                    default: true,
                     response: ({ params }: any) => {
                         if (params.descriptor === this.accountState.address) {
                             return { data: this.accountState };
