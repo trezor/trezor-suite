@@ -5,11 +5,29 @@ import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/tokenDef
 import { COIN_LIST_URL } from '../constants';
 import { CoinData } from '../types';
 
-const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {
+export const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {
     const address = platforms[assetPlatformId];
     if (address) {
         if (assetPlatformId === 'cardano') {
             return blockfrostUtils.parseAsset(address).policyId;
+        }
+
+        if (assetPlatformId === 'stellar') {
+            // Stellar address format: CODE-ISSUER, CODE:ISSUER, or CODE-ISSUER-NUMBER
+            // CODE: 1-12 alphanumeric characters
+            // ISSUER: 56 characters starting with 'G'
+            // NUMBER: optional numeric suffix
+            const stellarMatch = address.match(
+                /^([A-Za-z0-9]{1,12})[-:]([G][A-Z0-9]{55})(?:-\d+)?$/,
+            );
+            if (stellarMatch) {
+                const code = stellarMatch[1];
+                const issuer = stellarMatch[2];
+
+                return `${code}:${issuer}`; // Return as CODE:ISSUER format
+            } else {
+                return undefined; // Invalid Stellar address format
+            }
         }
 
         return address;

@@ -13,7 +13,7 @@ Scripts:
     - `simple` (used for Suite)
     - `advanced` (planned to be used for Solana token symbols and names)
 - and chain
-    - `ethereum`, `polygon-pos`, `solana`,...
+    - `ethereum`, `polygon-pos`, `solana`, `stellar`...
 - and file type
     - `jws` for signed data
     - `json` for unsigned data
@@ -59,5 +59,5 @@ Scripts:
 ## Naming
 
 - Token definitions: include both coin and nft definitions
-- Coin definitions: contain just tokens ERC20 and SPL
+- Coin definitions: contain just tokens ERC20, SPL and Stellar classic assets (`code:issuer` format)
 - NFT definitions: contain just nfts ERC1155 and ERC721
