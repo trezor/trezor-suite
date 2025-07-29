@@ -11,11 +11,13 @@ import {
     observeSelectedDevice,
     selectAccountsByDeviceState,
     selectDeviceThunk,
+    selectDiscoveryByDevicePath,
     selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { DEVICE } from '@trezor/connect';
 import {
     getFirmwareVersionArray,
@@ -47,9 +49,17 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
         const isDeviceForceRemembered = selectIsDeviceForceRemembered(getState());
 
-        if (isDeviceEventAction(action, DEVICE.DISCONNECT) && !isDeviceForceRemembered) {
-            dispatch(forgetDisconnectedDevices({ device: action.payload }));
+        if (isDeviceEventAction(action, DEVICE.DISCONNECT)) {
+            if (!isDeviceForceRemembered) {
+                dispatch(forgetDisconnectedDevices({ device: action.payload }));
+            }
+
+            const discovery = selectDiscoveryByDevicePath(getState(), action.payload.path);
+            if (discovery?.status === 'complete' && action.payload.mode === 'normal') {
+                dispatch(setShouldShowAutoEjectAlert(true));
+            }
         }
+
         /* The `next` function has to be executed here, because the further dispatched actions of this middleware
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
@@ -103,6 +113,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                     // In case of force remember we don't want to call this thunk because it will change selected device
                     dispatch(handleDeviceDisconnect(action.payload));
                 }
+
                 clearAndUnlockDeviceAccessQueue();
                 break;
 

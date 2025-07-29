@@ -193,6 +193,7 @@ const connectDevice = (
         remember: shouldDeviceBeRemembered({
             isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
             isViewOnlyByDefaultEnabled,
+            device,
         }),
         temporaryRemember: false,
         available: true,
@@ -358,6 +359,7 @@ const setDeviceState = (
     affectedDevice[0].remember = shouldDeviceBeRemembered({
         isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
         isViewOnlyByDefaultEnabled,
+        device,
     });
 };
 
