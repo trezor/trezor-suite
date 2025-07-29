@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 7, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 1],
+    "min_firmware_version": [2, 6, 1],
+    "bootloader_version": [2, 1, 4],
+    "firmware_revision": "45e8a842a31e62a6d43d7f6ccac62a45e1198ef0",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2b1/translation-t2b1-cs-CZ-2.7.0.bin",
+        "de-DE": "firmware/translations/t2b1/translation-t2b1-de-DE-2.7.0.bin",
+        "es-ES": "firmware/translations/t2b1/translation-t2b1-es-ES-2.7.0.bin",
+        "fr-FR": "firmware/translations/t2b1/translation-t2b1-fr-FR-2.7.0.bin",
+        "it-IT": "firmware/translations/t2b1/translation-t2b1-it-IT-2.7.0.bin",
+        "pt-BR": "firmware/translations/t2b1/translation-t2b1-pt-BR-2.7.0.bin"
+    },
+    "url": "firmware/t2b1/universal/t2b1-2.7.0-bitcoinonly.bin",
+    "fingerprint": "bb91489a4790b3668e2f5d574a729a0f43009510550fecb5e04c0937d355b2cf",
+    "changelog": "* Add translations capability. \n* Add loader to homescreen when locking the device. \n* Allow for going back to previous word in recovery process. \n* Display descriptors for BTC Taproot public keys. \n* Add missing semicolon character to the passphrase entry."
+}

@@ -1,0 +1,13 @@
+{
+    "required": false,
+    "version": [1, 10, 4],
+    "min_bridge_version": [2, 0, 25],
+    "min_bootloader_version": [1, 5, 0],
+    "min_firmware_version": [1, 6, 2],
+    "bootloader_version": [1, 10, 0],
+    "firmware_revision": "595b14254c1abb2be3f69e42c7932f1eca8cf1b1",
+    "translations": {},
+    "url": "firmware/t1b1/universal/t1b1-1.10.4-bitcoinonly.bin",
+    "fingerprint": "30d858b022e218f27854f071d568e5a696c937f1316d83b93aadcd178f3b0a38",
+    "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage."
+}

@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "version": [1, 6, 0],
+    "min_bridge_version": [1, 1, 5],
+    "min_bootloader_version": [1, 0, 0],
+    "min_firmware_version": [1, 0, 0],
+    "firmware_revision": "723cf295a72ce07b96047901bb8c2e461a2488f8",
+    "translations": {},
+    "url": "firmware/t1b1/universal/t1b1-1.6.0-universal.bin",
+    "fingerprint": "e40f6ce12724c2d24234a7752953b88fd9ec28b3ec72c0dbfa280095a67a06ca",
+    "changelog": "* Native SegWit (Bech32) address support\n* Show recognized BIP44/BIP49 paths in GetAddress dialog\n* NEM support\n* Expanse and UBIQ chains support\n* Bitcoin Gold, DigiByte, Monacoin support\n* Ed25519 collective signatures (CoSi) support"
+}

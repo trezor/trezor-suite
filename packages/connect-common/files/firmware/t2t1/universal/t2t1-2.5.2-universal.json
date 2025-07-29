@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 5, 2],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "0d87b55ba4fed7eecc72bf2a94ee473830b095e9",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.5.2.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.5.2.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.5.2.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.5.2.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.5.2.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.5.2.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.5.2-universal.bin",
+    "fingerprint": "659b1b698546fa63f24200e148b6f9a7044df31d11a0a5ec7c044f2dd83f4a27",
+    "changelog": "* Add support for Monero HF15 features. \n* Show the fee rate on the signing confirmation screen. \n* Support for Cardano Babbage era transaction items \n* Add \"Show All\"/\"Show Simple\" choice to Cardano transaction signing \n* Show thousands separator when displaying large amounts. \n* Fix Decred transaction weight calculation."
+}

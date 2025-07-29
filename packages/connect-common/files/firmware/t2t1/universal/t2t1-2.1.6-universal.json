@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 1, 6],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "629fa58d396e732f230866ebe733d268370d7879",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.1.6.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.1.6.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.1.6.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.1.6.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.1.6.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.1.6.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.1.6-universal.bin",
+    "fingerprint": "e2032ad84108a85d4014d477b955b9181a1a56e6f222ef21bb7d47b503a02f0b",
+    "changelog": "* Super Shamir (with Groups)\n* FIDO2 support with credential management"
+}

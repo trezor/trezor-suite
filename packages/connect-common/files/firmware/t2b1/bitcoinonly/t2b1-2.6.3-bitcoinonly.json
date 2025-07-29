@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 6, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 1],
+    "min_firmware_version": [2, 6, 1],
+    "bootloader_version": [2, 1, 4],
+    "firmware_revision": "2c7cc6e0255dee2339b445b5551eaffb88dbd1b4",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2b1/translation-t2b1-cs-CZ-2.6.3.bin",
+        "de-DE": "firmware/translations/t2b1/translation-t2b1-de-DE-2.6.3.bin",
+        "es-ES": "firmware/translations/t2b1/translation-t2b1-es-ES-2.6.3.bin",
+        "fr-FR": "firmware/translations/t2b1/translation-t2b1-fr-FR-2.6.3.bin",
+        "it-IT": "firmware/translations/t2b1/translation-t2b1-it-IT-2.6.3.bin",
+        "pt-BR": "firmware/translations/t2b1/translation-t2b1-pt-BR-2.6.3.bin"
+    },
+    "url": "firmware/t2b1/universal/t2b1-2.6.3-bitcoinonly.bin",
+    "fingerprint": "6aecc9d9fd137a661f38ce36713aa0889b77ec4d35d91c68e01bda225cda2850",
+    "changelog": "* QR Code for Extended Public Keys (XPUBs). \n* The new bootloader version 2.1.4 is now included for enhanced system performance and security. \n* The screen will now automatically turn off when the device is locked, helping to extend the life of the OLED display and save energy."
+}

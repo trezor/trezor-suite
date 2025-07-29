@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 0, 9],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 5],
+    "bootloader_version": [2, 0, 0],
+    "firmware_revision": "7c2e9ed5a51dc00dec9d195878c5ad57016b4889",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.0.9.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.0.9.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.0.9.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.0.9.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.0.9.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.0.9.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.0.9-universal.bin",
+    "fingerprint": "87be93d6966e7a9eff78dc7b434d1a138ec8d1ee0300882d16f90b606f3a806b",
+    "changelog": "* Small Monero and Segwit bugfixes"
+}

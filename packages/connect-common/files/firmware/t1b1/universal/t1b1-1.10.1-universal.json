@@ -1,0 +1,13 @@
+{
+    "required": false,
+    "version": [1, 10, 1],
+    "min_bridge_version": [2, 0, 25],
+    "min_bootloader_version": [1, 5, 0],
+    "min_firmware_version": [1, 6, 2],
+    "bootloader_version": [1, 10, 0],
+    "firmware_revision": "3204fd682429eed23a82b748c05ae569c7f4481f",
+    "translations": {},
+    "url": "firmware/t1b1/universal/t1b1-1.10.1-universal.bin",
+    "fingerprint": "36400becf1cdddec22b8150d56ff59eef76d37fef60dc465a6f82b4858903886",
+    "changelog": "* Safety checks setting in T1."
+}

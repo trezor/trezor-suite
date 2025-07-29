@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 7, 2],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "bootloader_version": [2, 1, 4],
+    "firmware_revision": "da75d8f4b67410b40a9cfd2954d183d81dd6e8e8",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.7.2.bin",
+        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.7.2.bin",
+        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.7.2.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.7.2.bin",
+        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.7.2.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.7.2.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.7.2-bitcoinonly.bin",
+    "fingerprint": "cba515383705ec6420c54dd1ffdb33ea7ce4bb04bc6d992c2923880daa53d3e1",
+    "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares."
+}

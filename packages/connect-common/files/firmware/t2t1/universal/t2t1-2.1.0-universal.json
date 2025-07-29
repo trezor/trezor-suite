@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 1, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 5],
+    "bootloader_version": [2, 0, 3],
+    "firmware_revision": "3f0e3a334e03f49ff819d14cbbec00194c586c27",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.1.0.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.1.0.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.1.0.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.1.0.bin",
+        "it-IT": "firmware/translations/t2t1/translation-T2T1-it-IT-2.1.0.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.1.0.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.1.0-universal.bin",
+    "fingerprint": "bb5b0308807b45d41d1e2ab66a468152997ad69a01099789d8a35e464cde999f",
+    "changelog": "* Security improvements\n* Upgraded to new storage format\n* Ripple, Stellar, Cardano and NEM fixes\n* New coins: ATS, AXE, FLO, GIN, KMD, NIX,\n  PIVX, REOSC, XPM, XSN, ZCL\n* New ETH tokens"
+}

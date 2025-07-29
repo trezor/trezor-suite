@@ -1,0 +1,13 @@
+{
+    "required": false,
+    "version": [1, 9, 4],
+    "min_bridge_version": [2, 0, 25],
+    "min_bootloader_version": [1, 5, 0],
+    "min_firmware_version": [1, 6, 2],
+    "bootloader_version": [1, 8, 0],
+    "firmware_revision": "ffa96205fb5e22b43e7b08a3dbc3cdeee0931de3",
+    "translations": {},
+    "url": "firmware/t1b1/universal/t1b1-1.9.4-universal.bin",
+    "fingerprint": "867017bd784cc4e9ce6f0875c61ea86f89b19380d54045c34608b85472998000",
+    "changelog": "* Replacement transaction signing for replace-by-fee.\n* Support for Output Descriptors export.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations."
+}

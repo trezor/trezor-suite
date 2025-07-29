@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 4, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "595b14254c1abb2be3f69e42c7932f1eca8cf1b1",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.4.3.bin",
+        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.4.3.bin",
+        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.4.3.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.4.3.bin",
+        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.4.3.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.4.3.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.4.3-bitcoinonly.bin",
+    "fingerprint": "1744efccabd479526392b281b7e0fc7aa2b4ecb454007dff7ca8c1f8171fad90",
+    "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage."
+}

@@ -1,0 +1,20 @@
+{
+    "required": false,
+    "version": [2, 8, 9],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "bootloader_version": [2, 1, 8],
+    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.8.9.bin",
+        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.8.9.bin",
+        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.8.9.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.8.9.bin",
+        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.8.9.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.8.9.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.8.9-bitcoinonly.bin",
+    "fingerprint": "e5878fa067df9d1256cdcd86f10869930d85e090c39f807c23f8845472e8d995",
+    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+}

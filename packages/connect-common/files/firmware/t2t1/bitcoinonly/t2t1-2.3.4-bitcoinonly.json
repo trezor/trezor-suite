@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 3, 4],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "firmware_revision": "50854b9210f7674262c1541272a8c7fd1767b7a9",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-t2t1-cs-CZ-2.3.4.bin",
+        "de-DE": "firmware/translations/t2t1/translation-t2t1-de-DE-2.3.4.bin",
+        "es-ES": "firmware/translations/t2t1/translation-t2t1-es-ES-2.3.4.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-t2t1-fr-FR-2.3.4.bin",
+        "it-IT": "firmware/translations/t2t1/translation-t2t1-it-IT-2.3.4.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-t2t1-pt-BR-2.3.4.bin"
+    },
+    "url": "firmware/t2t1/universal/t2t1-2.3.4-bitcoinonly.bin",
+    "fingerprint": "085acbba98163284ef86dea637f9442b924e80fea245f5ebb60d5aab3be2b7b6",
+    "changelog": "* Small code improvements."
+}
