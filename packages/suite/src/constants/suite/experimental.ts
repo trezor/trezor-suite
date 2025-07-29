@@ -6,9 +6,8 @@ import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '
 
 import { requestBioAuthChangeThunk } from 'src/actions/suite/bioAuthThunks';
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
-import { selectIsBioAuthAvailable } from 'src/reducers/bioAuth';
 
-import { AppState, Dispatch } from '../../types/suite';
+import { Dispatch } from '../../types/suite';
 
 export type ExperimentalFeature =
     | 'password-manager'
@@ -22,7 +21,7 @@ export type ExperimentalFeatureConfig = {
     description: TranslationKey;
     knowledgeBaseUrl?: Url;
     routeName?: Route['name'];
-    isDisabled?: (context: { isDebug: boolean; state: AppState }) => boolean;
+    isDisabled?: (context: { isDebug: boolean; isBioAuthAvailable: boolean }) => boolean;
     onToggle?: ({
         newValue,
         dispatch,
@@ -71,11 +70,12 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'biometric-authentication': {
         title: 'TR_BIO_AUTH',
         description: 'TR_BIO_AUTH_DESCRIPTION',
-        isDisabled: ({ state }) => !isDesktop() || isLinux() || !selectIsBioAuthAvailable(state),
-        onToggle: async ({ dispatch, translationString }) => {
+        isDisabled: ({ isBioAuthAvailable }) => !isDesktop() || isLinux() || !isBioAuthAvailable,
+        onToggle: async ({ dispatch, translationString, newValue }) => {
             const result = await dispatch(
                 requestBioAuthChangeThunk({
                     translationString,
+                    nextBioAuthEnabledValue: newValue,
                 }),
             ).unwrap();
 
