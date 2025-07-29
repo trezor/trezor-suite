@@ -21,7 +21,7 @@ export const ETH_ACC = {
             depositedBalance: '3000000000000000000000',
             withdrawTotalAmount: '4000000000000000000000',
             claimableAmount: '5000000000000000000000',
-            restakedReward: '1234000000000000000000',
+            restakedReward: '234000000000000000000',
             autocompoundBalance: '7000000000000000000000',
         },
     ],
@@ -80,7 +80,9 @@ export const fixtures = [
     {
         method: 'sendTransaction',
         default: true,
-        response: { result: '0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c' },
+        response: {
+            data: { result: '0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c' },
+        },
     },
     {
         method: 'subscribeAddresses',
