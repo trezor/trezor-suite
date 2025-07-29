@@ -6,6 +6,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
+    setBluetoothDeviceNeedsManualOsRemoval,
     setBluetoothListOpen,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
@@ -13,6 +14,7 @@ import {
 
 type BluetoothConnectDeviceThunkResult = {
     success: boolean;
+    unpaired?: boolean;
 };
 
 export const bluetoothConnectDeviceThunk = createThunk<
@@ -33,12 +35,21 @@ export const bluetoothConnectDeviceThunk = createThunk<
             // This can fail, but we are silent about this as the device may not be there anymore
             await bluetoothIpc.disconnectDevice(deviceId);
 
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: result.error,
-                }),
-            );
+            // linux: emits DeviceDisconnect right after DeviceConnect but before subscription. Operation already in progress is the error from subscription process
+            // macos: connect error Peer removed
+            const isUnpaired =
+                result.error.includes('Operation already in progress') ||
+                result.error.includes('Peer removed pairing information');
+            if (isUnpaired) {
+                dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: true }));
+            } else {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: result.error,
+                    }),
+                );
+            }
 
             dispatch(stopConnectingBluetoothDevice({ deviceId }));
 
