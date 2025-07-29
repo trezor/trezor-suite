@@ -14,6 +14,7 @@ import {
     selectTradingBuyLoadingTimestampAndStatus,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeLoadingTimestampAndStatus,
+    selectTradingSellLoadingTimestampAndStatus,
 } from '@suite-common/trading';
 import { StaticSessionId } from '@trezor/connect';
 
@@ -149,8 +150,8 @@ describe('tradingSelectors', () => {
     const getSellState = () => ({
         ...initialState.sell,
         sellInfo: {
-            providerInfos: {},
-            supportedFiatCurrencies: [] as string[],
+            providerInfos: { test: invityAPIFixtures.sellList[0] },
+            supportedFiatCurrencies: ['usd', 'eur', 'czk'],
             supportedCryptoCurrencies: [
                 'eos',
                 'bitcoin',
@@ -1130,6 +1131,52 @@ describe('tradingSelectors', () => {
                 expect(selectTradingExchangeLoadingTimestampAndStatus(state).isFullyLoaded).toBe(
                     true,
                 );
+            });
+        });
+    });
+
+    describe('selectTradingSellLoadingTimestampAndStatus', () => {
+        it.each<[boolean, number]>([
+            [true, 0],
+            [false, 123456789],
+        ])(
+            'should return values from tradingNew state, case %#',
+            (isLoading, lastLoadedTimestamp) => {
+                state.wallet.tradingNew.isLoading = isLoading;
+                state.wallet.tradingNew.lastLoadedTimestamp = lastLoadedTimestamp;
+
+                expect(selectTradingSellLoadingTimestampAndStatus(state)).toEqual(
+                    expect.objectContaining({
+                        isLoading,
+                        lastLoadedTimestamp,
+                    }),
+                );
+            },
+        );
+
+        describe('isFullyLoaded', () => {
+            it('should be false when trading info is empty', () => {
+                state.wallet.tradingNew.info = {
+                    paymentMethods: [],
+                };
+
+                expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
+            });
+
+            it('should be false when trading sellInfo is empty', () => {
+                state.wallet.tradingNew.sell.sellInfo = undefined;
+
+                expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
+            });
+
+            it('should be false when providers info is empty', () => {
+                state.wallet.tradingNew.sell.sellInfo!.providerInfos = {};
+
+                expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
+            });
+
+            it('should be true otherwise', () => {
+                expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(true);
             });
         });
     });

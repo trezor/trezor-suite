@@ -214,6 +214,21 @@ export const selectTradingExchangeLoadingTimestampAndStatus = createMemoizedSele
     }),
 );
 
+export const selectTradingSellLoadingTimestampAndStatus = createMemoizedSelector(
+    [
+        selectTradingLoadingAndTimestamp,
+        (state: TradingRootState) => state.wallet.tradingNew.info,
+        selectTradingSellInfo,
+    ],
+    (loadingAndTimestamp, info, sellInfo) => ({
+        isLoading: loadingAndTimestamp.isLoading,
+        lastLoadedTimestamp: loadingAndTimestamp.lastLoadedTimestamp,
+        isFullyLoaded:
+            !!(info?.coins && info?.platforms && sellInfo) &&
+            Object.keys(sellInfo.providerInfos).length > 0,
+    }),
+);
+
 export const selectTradingBuyProviders = (state: TradingRootState) =>
     selectTradingBuyInfo(state)?.providerInfos;
 
