@@ -4,6 +4,8 @@ import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-co
 
 export type MessageState = { [key in Category]: boolean };
 
+export type MessageSystemConfigSource = 'remote' | 'local';
+
 export type MessageSystemState = {
     config: MessageSystem | null;
     currentSequence: number;
@@ -13,6 +15,7 @@ export type MessageSystemState = {
         [key: string]: MessageState;
     };
     validExperiments: string[];
+    configSource: MessageSystemConfigSource;
 };
 
 export type MessageSystemRootState = {

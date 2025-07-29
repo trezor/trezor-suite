@@ -138,6 +138,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     messageSystemActions.fetchSuccessUpdate,
                     messageSystemActions.dismissMessage,
+                    messageSystemActions.setConfigSource,
                 )(action)
             ) {
                 api.dispatch(storageActions.saveMessageSystem());

@@ -1,0 +1,60 @@
+import { useCallback } from 'react';
+
+import {
+    MessageSystemConfigSource,
+    initMessageSystemThunk,
+    messageSystemActions,
+    selectMessageSystemConfigSource,
+} from '@suite-common/message-system';
+import { SelectBar } from '@trezor/components';
+
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn } from 'src/components/suite';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+
+type ConfigSourceOption = {
+    label: string;
+    value: MessageSystemConfigSource;
+};
+
+const options: ConfigSourceOption[] = [
+    {
+        label: 'Remote',
+        value: 'remote',
+    },
+    {
+        label: 'Local',
+        value: 'local',
+    },
+];
+
+export const MessageSystemConfigSourceSelect = () => {
+    const selectedConfigSource = useSelector(selectMessageSystemConfigSource);
+    const dispatch = useDispatch();
+
+    const onChange = useCallback(
+        (value: MessageSystemConfigSource) => {
+            dispatch(messageSystemActions.setConfigSource(value));
+            dispatch(initMessageSystemThunk());
+        },
+        [dispatch],
+    );
+
+    return (
+        <SettingsSectionItem anchorId={SettingsAnchor.AddressDisplay}>
+            <TextColumn
+                title="Config Source"
+                description="Load config from remote file or use local override for debugging and testing."
+            />
+            <ActionColumn>
+                <SelectBar
+                    selectedOption={selectedConfigSource}
+                    options={options}
+                    onChange={onChange}
+                    size="small"
+                />
+            </ActionColumn>
+        </SettingsSectionItem>
+    );
+};

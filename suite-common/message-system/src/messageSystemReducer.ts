@@ -19,6 +19,8 @@ const initialState: MessageSystemState = {
     dismissedMessages: {},
 
     validExperiments: [],
+
+    configSource: 'remote',
 };
 
 export const messageSystemInitialState = initialState;
@@ -69,6 +71,9 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
             })
             .addCase(messageSystemActions.updateValidExperiments, (state, { payload }) => {
                 state.validExperiments = payload;
+            })
+            .addCase(messageSystemActions.setConfigSource, (state, { payload }) => {
+                state.configSource = payload;
             })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
