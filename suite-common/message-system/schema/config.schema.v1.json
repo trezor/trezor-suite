@@ -86,6 +86,7 @@
                                 "type": "object",
                                 "properties": {
                                     "action": {
+                                        "title": "CTA Action",
                                         "type": "string",
                                         "enum": ["internal-link", "external-link"]
                                     },
@@ -130,6 +131,9 @@
                                         },
                                         "flag": {
                                             "type": "boolean"
+                                        },
+                                        "visibleBanner": {
+                                            "type": "string"
                                         }
                                     },
                                     "additionalProperties": true

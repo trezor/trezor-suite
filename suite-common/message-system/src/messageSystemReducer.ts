@@ -21,6 +21,8 @@ const initialState: MessageSystemState = {
     validExperiments: [],
 
     configSource: 'remote',
+
+    inAppIds: {},
 };
 
 export const messageSystemInitialState = initialState;
@@ -54,9 +56,18 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
             })
             .addCase(messageSystemActions.fetchSuccessUpdate, (state, { payload }) => {
                 const { timestamp, config } = payload;
+
                 state.timestamp = timestamp;
-                state.config = config;
                 state.currentSequence = config.sequence;
+
+                const prevInAppActions =
+                    state.config?.actions?.filter(a => !!state.inAppIds[a.message.id]) ?? [];
+                const incomingFileActions = config.actions ?? [];
+
+                state.config = {
+                    ...config,
+                    actions: [...prevInAppActions, ...incomingFileActions],
+                };
             })
             .addCase(messageSystemActions.fetchError, state => {
                 state.timestamp = 0;
@@ -74,6 +85,23 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
             })
             .addCase(messageSystemActions.setConfigSource, (state, { payload }) => {
                 state.configSource = payload;
+            })
+            .addCase(messageSystemActions.addMessage, (state, { payload }) => {
+                if (state.config) {
+                    state.config.actions = [payload, ...state.config.actions];
+                    state.inAppIds[payload.message.id] = true;
+                }
+            })
+            .addCase(messageSystemActions.removeMessage, (state, { payload }) => {
+                if (state.config) {
+                    state.config.actions = state.config.actions.filter(
+                        action => action.message.id !== payload,
+                    );
+
+                    if (state.inAppIds[payload]) {
+                        delete state.inAppIds[payload];
+                    }
+                }
             })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,

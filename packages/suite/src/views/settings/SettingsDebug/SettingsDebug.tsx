@@ -18,9 +18,8 @@ import { FirmwareUpdate } from './FirmwareUpdate';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
+import { MessageSystemDebugInfo } from './MessageSystem/MessageSystemDebugInfo';
 import { MessageSystemConfigSourceSelect } from './MessageSystemConfigSourceSelect';
-import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
-import { MessageSystemForm } from './MessageSystemForm';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
@@ -90,7 +89,6 @@ export const SettingsDebug = () => {
             <SettingsSection title="Message system info">
                 <MessageSystemConfigSourceSelect />
                 <MessageSystemDebugInfo />
-                <MessageSystemForm />
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>

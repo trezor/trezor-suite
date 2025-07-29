@@ -9600,6 +9600,7 @@ __metadata:
     react-redux: "npm:9.2.0"
     semver: "npm:^7.7.1"
     tsx: "npm:^4.20.3"
+    uuid: "npm:^11.1.0"
   languageName: unknown
   linkType: soft
 
@@ -12939,6 +12940,7 @@ __metadata:
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^38.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
+    uuid: "npm:^11.1.0"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft

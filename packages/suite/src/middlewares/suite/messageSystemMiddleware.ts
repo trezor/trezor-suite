@@ -18,6 +18,8 @@ const actions = [
     deviceActions.selectDevice.type,
     SUITE.TOR_STATUS,
     messageSystemActions.fetchSuccessUpdate.type,
+    messageSystemActions.addMessage.type,
+    messageSystemActions.removeMessage.type,
     changeNetworks.type,
     TRANSPORT.START,
     DEVICE.CONNECT,

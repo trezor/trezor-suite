@@ -3,6 +3,8 @@ import { Reducer, combineReducers } from '@reduxjs/toolkit';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { messageSystemActions, prepareMessageSystemReducer } from '@suite-common/message-system';
 import * as messageSystemUtils from '@suite-common/message-system/src/messageSystemUtils';
+import { AnyAction } from '@suite-common/redux-utils';
+import { Action } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
@@ -12,8 +14,10 @@ import WalletReducers from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import messageSystemMiddleware from '../messageSystemMiddleware';
-// Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
-const messageSystemReducer: Reducer = prepareMessageSystemReducer(extraDependencies);
+const messageSystemReducer: Reducer<
+    ReturnType<ReturnType<typeof prepareMessageSystemReducer>>,
+    AnyAction
+> = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type WalletsState = ReturnType<typeof WalletReducers>;
@@ -40,6 +44,18 @@ const getInitialState = (
     geolocation: {
         countryCode: null,
     },
+});
+
+const makeTestAction = (id: string): Action => ({
+    message: {
+        id,
+        category: 'banner',
+        priority: 0,
+        dismissible: true,
+        variant: 'info',
+        content: { en: '', es: '', cs: '', de: '', fr: '', pt: '' },
+    },
+    conditions: [],
 });
 
 const reducer = combineReducers({
@@ -155,6 +171,55 @@ describe('Message system middleware', () => {
                 payload: [],
             },
         ]);
+    });
+
+    it('keeps in-app messages when new file config arrives', () => {
+        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
+        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
+
+        const inAppId = 'inapp-1';
+        const fileOldId = 'file-1';
+        const fileNewId = 'file-2';
+
+        const inAppAction = makeTestAction(inAppId);
+        const fileOldAction = makeTestAction(fileOldId);
+        const fileNewAction = makeTestAction(fileNewId);
+
+        const store = initStore(
+            getInitialState(
+                {
+                    config: {
+                        sequence: 1,
+                        version: 1,
+                        timestamp: '123',
+                        actions: [inAppAction, fileOldAction],
+                    },
+                    inAppIds: {
+                        [inAppId]: true,
+                    },
+                },
+                undefined,
+                undefined,
+            ),
+        );
+
+        store.dispatch({
+            type: messageSystemActions.fetchSuccessUpdate.type,
+            payload: {
+                config: {
+                    sequence: 2,
+                    actions: [fileNewAction],
+                },
+                timestamp: 123,
+            },
+        });
+
+        const { messageSystem } = store.getState();
+        const ids = (messageSystem.config?.actions ?? []).map((a: any) => a.message.id);
+
+        expect(ids).toEqual([inAppId, fileNewId]);
+
+        expect(messageSystem.inAppIds[inAppId]).toBe(true);
     });
 
     it('test of experiment action', () => {

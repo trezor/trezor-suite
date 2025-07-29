@@ -1,8 +1,11 @@
 import * as semver from 'semver';
+import { v4 as uuidv4 } from 'uuid';
 
 import type { CountryCode } from '@suite-common/geolocation';
 import { Localization } from '@suite-common/suite-types';
 import type {
+    Action,
+    Category,
     Condition,
     Device,
     Duration,
@@ -326,4 +329,122 @@ export const resolveMessageContent = (localizedMessages: Localization, language:
     const fallbackLanguage = language.split('-')[0];
 
     return localizedMessages[fallbackLanguage] ?? localizedMessages.en;
+};
+
+export const toMessageSystemOptions = <T extends string>(
+    values: readonly T[],
+): ReadonlyArray<{ label: string; value: T }> =>
+    values.map(value => ({
+        value,
+        label: value.replace(/^./, char => char.toUpperCase()),
+    }));
+
+export const getDefaultActionByCategory = (category: Category): Action => {
+    const defaultLocalization = {
+        en: '',
+        cs: '',
+        es: '',
+        de: '',
+        fr: '',
+        pt: '',
+    };
+
+    const baseMessage = {
+        id: uuidv4(),
+        priority: 100,
+        dismissible: true,
+        variant: 'info' as const,
+        category,
+        content: defaultLocalization,
+    };
+
+    const extraFields = (() => {
+        switch (category) {
+            case 'modal':
+                return {
+                    modal: {
+                        title: defaultLocalization,
+                        image: '',
+                    },
+                };
+            case 'context':
+                return {
+                    context: {
+                        domain: '',
+                    },
+                };
+            case 'feature':
+                return {
+                    feature: [
+                        {
+                            domain: '',
+                            flag: true,
+                        },
+                    ],
+                };
+            case 'banner':
+            default:
+                return {};
+        }
+    })();
+
+    return {
+        message: {
+            ...baseMessage,
+            ...extraFields,
+        },
+        conditions: [{}],
+    };
+};
+
+export const getDefaultConditionValue = (key: string) => {
+    switch (key) {
+        case 'duration': {
+            const now = new Date();
+            const from = new Date(now.setHours(0, 0, 0, 0)).toISOString();
+            const to = new Date(now.setFullYear(now.getFullYear() + 1)).toISOString();
+
+            return { from, to };
+        }
+
+        case 'environment':
+            return { desktop: '*', mobile: '*', web: '*' };
+
+        case 'os':
+            return {
+                macos: '*',
+                linux: '*',
+                windows: '*',
+                android: '*',
+                ios: '*',
+                chromeos: '*',
+            };
+
+        case 'browser':
+            return { firefox: '*', chrome: '*', chromium: '*' };
+
+        case 'transport':
+            return { bridge: '*', webusbplugin: '*' };
+
+        case 'settings':
+            return [{ tor: false }];
+
+        case 'devices':
+            return [
+                {
+                    model: 'T3T1',
+                    firmwareRevision: '*',
+                    firmware: '*',
+                    bootloader: '*',
+                    variant: '*',
+                    vendor: '*',
+                },
+            ];
+
+        case 'countryCodes':
+            return ['CZ'];
+
+        default:
+            return {};
+    }
 };

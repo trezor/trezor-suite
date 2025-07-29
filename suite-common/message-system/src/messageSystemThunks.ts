@@ -119,19 +119,15 @@ export const fetchConfigThunk = createThunk(
 
                 const timestampNew = isRemote ? Date.now() : 0;
 
-                const shouldUpdateConfig =
-                    currentSequence < config.sequence ||
-                    useLocalConfig; /* Allow to skip sequence check for local testing */
-
-                if (shouldUpdateConfig) {
-                    await dispatch(
+                if (currentSequence < config.sequence || useLocalConfig) {
+                    dispatch(
                         messageSystemActions.fetchSuccessUpdate({
                             config,
                             timestamp: timestampNew,
                         }),
                     );
                 } else if (currentSequence === config.sequence) {
-                    await dispatch(messageSystemActions.fetchSuccess({ timestamp: timestampNew }));
+                    dispatch(messageSystemActions.fetchSuccess({ timestamp: timestampNew }));
                 } else {
                     throw Error(
                         `Sequence of config (${config.sequence}) is older than the current one (${currentSequence}).`,

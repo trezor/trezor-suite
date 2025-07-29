@@ -274,6 +274,7 @@ export type CountryCode = CountryCodes[];
 export type Conditions = Condition[];
 export type Variant = 'info' | 'warning' | 'critical';
 export type Category = 'banner' | 'context' | 'modal' | 'feature';
+export type CTAAction = 'internal-link' | 'external-link';
 
 /**
  * JSON schema of the Trezor Suite messaging system.
@@ -386,7 +387,7 @@ export interface Localization {
  * Only used for 'banner' and 'context' categories.
  */
 export interface CTA {
-    action: 'internal-link' | 'external-link';
+    action: CTAAction;
     link: string;
     anchor?: string;
     label: Localization;
@@ -404,6 +405,7 @@ export interface Modal {
 export interface Feature {
     domain: string;
     flag: boolean;
+    visibleBanner?: string;
     [k: string]: unknown;
 }
 /**
