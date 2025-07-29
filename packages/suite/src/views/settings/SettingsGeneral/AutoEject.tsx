@@ -6,9 +6,10 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsAutoEjectEnabled } from 'src/reducers/suite/suiteReducer';
 
 export const AutoEject = () => {
-    const isAutoEjectEnabled = useSelector(state => state.suite.settings.autoEject);
+    const isAutoEjectEnabled = useSelector(selectIsAutoEjectEnabled);
     const dispatch = useDispatch();
 
     const handleSwitchClick = () => {

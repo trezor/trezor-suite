@@ -185,7 +185,15 @@ export const forgetDisconnectedDevices = createThunk(
         const settings = extra.selectors.selectSuiteSettings(getState());
 
         deviceInstances.forEach(d => {
-            if (d.features && (forceForget || !d.remember)) {
+            if (
+                d.features &&
+                (forceForget ||
+                    !d.remember ||
+                    // Forget if not in normal state
+                    !d.id ||
+                    !d.state ||
+                    d.mode !== 'normal')
+            ) {
                 dispatch(deviceActions.forgetDevice({ device: d, settings }));
             }
         });
