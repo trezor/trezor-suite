@@ -7743,19 +7743,21 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
-        defaultMessage: 'Use a different USB port',
+        defaultMessage: 'Try a different USB port or computer',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION',
-        defaultMessage: 'Connect your device directly to your computer, without using a USB hub.',
+        defaultMessage:
+            'Connect your device directly to your computer—avoid USB hubs—or try a different computer.',
     },
-    TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE: {
-        id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE',
-        defaultMessage: 'Use a different computer',
+    TR_TROUBLESHOOTING_TIP_PIN_LOST_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_PIN_LOST_TITLE',
+        defaultMessage: 'Forgot your PIN?',
     },
-    TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION: {
-        id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION',
-        defaultMessage: 'Connect your device to a different computer.',
+    TR_TROUBLESHOOTING_TIP_PIN_LOST_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_PIN_LOST_DESCRIPTION',
+        defaultMessage:
+            'Follow the steps in our <a>support article</a> carefully. You’ll need your wallet backup — enter it only on your Trezor device.\n',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',

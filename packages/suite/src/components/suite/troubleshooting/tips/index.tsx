@@ -1,6 +1,6 @@
 import { Text } from '@trezor/components';
 import { isAndroid, isDesktop, isLinux, isWeb } from '@trezor/env-utils';
-import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
+import { TREZOR_SUPPORT_DEVICE_URL, TREZOR_SUPPORT_RESET_PIN } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -71,9 +71,20 @@ export const TROUBLESHOOTING_TIP_USB: TroubleshootingTipsItem = {
 };
 
 export const TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER: TroubleshootingTipsItem = {
-    key: 'differentComputer',
-    heading: <Translation id="TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE" />,
-    description: <Translation id="TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION" />,
+    key: 'lostPin',
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_PIN_LOST_TITLE" />,
+    description: (
+        <Translation
+            id="TR_TROUBLESHOOTING_TIP_PIN_LOST_DESCRIPTION"
+            values={{
+                a: chunks => (
+                    <TrezorLink variant="underline" href={TREZOR_SUPPORT_RESET_PIN}>
+                        {chunks}
+                    </TrezorLink>
+                ),
+            }}
+        />
+    ),
 };
 
 export const TROUBLESHOOTING_TIP_RESTART_COMPUTER: TroubleshootingTipsItem = {

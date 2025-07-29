@@ -42,6 +42,8 @@ export const TREZOR_SUPPORT_IS_MY_DEVICE_SAFE: Url =
     'https://trezor.io/support/troubleshooting/device-issues/is-my-device-safe-to-use';
 export const TREZOR_SUPPORT_DIFFERENT_PACKAGING: Url =
     'https://trezor.io/support/logistics/order-shipping-faq/why-is-my-box-different-from-what-is-shown-on-the-website';
+export const TREZOR_SUPPORT_RESET_PIN: Url =
+    'https://trezor.io/support/troubleshooting/device-issues/how-to-reset-your-pin';
 
 export const HELP_CENTER_PIN_URL: Url =
     'https://trezor.io/guides/trezor-devices/pin-protection-on-trezor-devices#trezor-model-one';
