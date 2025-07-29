@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useStore } from 'react-redux';
 
 import {
     getAccountsByDeviceState,
+    selectAllAccountsToList,
     selectCurrentFiatRates,
     selectDeviceThunk,
     selectLocalCurrency,
@@ -27,7 +29,7 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
@@ -54,6 +56,7 @@ export const WalletInstance = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
+    const store = useStore();
 
     const { defaultAccountLabelString } = useWalletLabeling();
 
@@ -82,17 +85,21 @@ export const WalletInstance = ({
                 ? getAccountsByDeviceState(accounts, instance.state)
                 : [];
 
+            // NOTE: to determine which account is the first one, we need to filter out empty accounts
+            // that are currently displayed in the UI
+            const unfilteredUIAccounGroups = selectAllAccountsToList(store.getState() as AppState);
+            const currentFirstAccount = unfilteredUIAccounGroups[0];
             // NOTE: attempt to determine, if the currently selected account
-            // has a corresponding account in the next device accounts
+            // has a corresponding account in the next wallet accounts
             // if not, enforce switching URL to dashboard
             const nextAccount = nextDeviceAccounts.find(
                 account =>
                     account.symbol === selectedAccount.params?.symbol &&
                     account.index === selectedAccount.params?.accountIndex &&
                     account.accountType === selectedAccount.params?.accountType &&
-                    // NOTE: do not switch to empty accounts, but only if the current account is first or all accounts are empty
+                    // NOTE: do not switch to empty accounts, unless the current account is first and all other accounts in the next wallet are empty
                     (!account.empty ||
-                        (selectedAccount.params.accountIndex === 0 &&
+                        (selectedAccount.account?.descriptor === currentFirstAccount?.descriptor &&
                             nextDeviceAccounts.every(account => account.empty))),
             );
 
