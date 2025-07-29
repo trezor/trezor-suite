@@ -212,38 +212,46 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 <Text>
                     <Translation id="TR_DEFAULT_ACCOUNT" />
                 </Text>
-                <Card paddingType="none">
-                    {/* Wrapped to keep consistent styling */}
-                    <ElevationUp>
-                        <Select
-                            isSearchable={false}
-                            isClearable={false}
-                            isRenderedInModal={true}
-                            size="large"
-                            value={selectedDefaultAccount}
-                            options={selectableAccounts}
-                            formatOptionLabel={(account: Account) => (
-                                <Row gap={spacings.xs}>
-                                    {account.symbol && (
-                                        <CoinLogo type="token" symbol={account.symbol} size={24} />
-                                    )}
-                                    <AccountLabel
-                                        account={{
-                                            ...account,
-                                            accountLabel: accountLabels[account.key],
-                                        }}
-                                        key={account.descriptor}
-                                        showAccountTypeBadge
-                                        accountTypeBadgeSize="small"
-                                    />
-                                </Row>
-                            )}
-                            onChange={(option: Option) => setSelectedDefaultAccount(option)}
-                        />
-                    </ElevationUp>
-                </Card>
+                {selectableAccounts.length > 0 && (
+                    <Card paddingType="none">
+                        {/* Wrapped to keep consistent styling */}
+                        <ElevationUp>
+                            <Select
+                                isSearchable={false}
+                                isClearable={false}
+                                isRenderedInModal={true}
+                                size="large"
+                                value={selectedDefaultAccount}
+                                options={selectableAccounts}
+                                formatOptionLabel={(account: Account) => (
+                                    <Row gap={spacings.xs}>
+                                        {account.symbol && (
+                                            <CoinLogo
+                                                type="token"
+                                                symbol={account.symbol}
+                                                size={24}
+                                            />
+                                        )}
+                                        <AccountLabel
+                                            account={{
+                                                ...account,
+                                                accountLabel: accountLabels[account.key],
+                                            }}
+                                            key={account.descriptor}
+                                            showAccountTypeBadge
+                                            accountTypeBadgeSize="small"
+                                        />
+                                    </Row>
+                                )}
+                                onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                            />
+                        </ElevationUp>
+                    </Card>
+                )}
 
-                {(requiredNetworksNotActivated || noNetworksActivated) && (
+                {(requiredNetworksNotActivated ||
+                    noNetworksActivated ||
+                    selectableAccounts.length === 0) && (
                     <Banner
                         variant="warning"
                         rightContent={
