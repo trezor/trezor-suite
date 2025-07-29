@@ -38,7 +38,7 @@
   "DESTINATION_TAG_BANNER_RECEIVE": "Trezor ne nécessite pas de mémo ou de tag de destination pour recevoir des {displaySymbol}. Saisissez n’importe quelle valeur dans le champ de mémo/tag de destination afin de compléter votre transfert. <a>En savoir plus</a>",
   "DESTINATION_TAG_BANNER_SEND": "Dans le cadre d’échanges en ligne, ces informations sont nécessaires afin d’identifier votre compte. Récupérez votre mémo/tag de destination depuis votre compte {networkName} ou votre plateforme d’échange en ligne.",
   "DESTINATION_TAG_GUIDE_LINK": "Qu'est-ce que c'est ?",
-  "DESTINATION_TAG_IS_NOT_NUMBER": "Le mémo/l’étiquette de destination n’est pas un numéro",
+  "DESTINATION_TAG_IS_NOT_NUMBER": "Le mémo/tag de destination n’est pas un numéro.",
   "DESTINATION_TAG_IS_NOT_VALID": "Le mémo/tag de destination n’est pas valide",
   "DESTINATION_TAG_NOTE": "Les plateformes d'échange en ligne ont besoin de cette information afin d’identifier votre compte. Obtenez votre tag de destination auprès de votre plateforme d’échange.",
   "DESTINATION_TAG_NOT_SET": "Le tag de destination n’est pas défini",
