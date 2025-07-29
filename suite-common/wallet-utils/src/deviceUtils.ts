@@ -1,6 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { Device, StaticSessionId } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
 export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionId) => {
@@ -14,13 +14,17 @@ export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionI
 export const shouldDeviceBeRemembered = ({
     isDeviceAutoEjectEnabled,
     isViewOnlyByDefaultEnabled,
+    device,
 }: {
     isDeviceAutoEjectEnabled: boolean;
     isViewOnlyByDefaultEnabled: boolean;
+    device: TrezorDevice | Device;
 }) => {
     if (!isNative()) return true;
 
     if (!isViewOnlyByDefaultEnabled) return false;
+
+    if (device.mode !== 'normal') return false;
 
     return !isDeviceAutoEjectEnabled;
 };

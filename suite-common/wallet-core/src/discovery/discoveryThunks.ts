@@ -140,6 +140,7 @@ const applyDeviceStatesThunk = createThunk(
                             remember: shouldDeviceBeRemembered({
                                 isDeviceAutoEjectEnabled,
                                 isViewOnlyByDefaultEnabled,
+                                device,
                             }),
                             state: newDeviceState,
                         },

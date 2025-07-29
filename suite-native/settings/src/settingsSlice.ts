@@ -62,15 +62,14 @@ export const appSettingsSlice = createSlice({
         setIsCoinEnablingInitFinished: (state, { payload }: PayloadAction<boolean>) => {
             state.isCoinEnablingInitFinished = payload;
         },
+        setShouldShowAutoEjectAlert: (state, { payload }: PayloadAction<boolean>) => {
+            state.shouldShowAutoEjectAlert = payload;
+        },
     },
     extraReducers: builder => {
-        builder
-            .addCase(DEVICE.DISCONNECT, state => {
-                state.shouldShowAutoEjectAlert = true;
-            })
-            .addCase(DEVICE.CONNECT, state => {
-                state.shouldShowAutoEjectAlert = false;
-            });
+        builder.addCase(DEVICE.CONNECT, state => {
+            state.shouldShowAutoEjectAlert = false;
+        });
     },
 });
 
@@ -105,5 +104,6 @@ export const {
     setCheckFirmwareAuthenticityEnabled,
     toggleAreTestnetsEnabled,
     setIsCoinEnablingInitFinished,
+    setShouldShowAutoEjectAlert,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
