@@ -87,7 +87,7 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             setAmount: (outputIndex: number, amount: string) => void;
             changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
             resetDefaultValue: (field: FieldPath<TFormValues>) => void;
-            setMax: (index: number, active: boolean) => void;
+            setMax: (index: number, active: boolean, clearInput?: boolean) => void;
             getDefaultValue: GetDefaultValue;
             toggleOption: (option: FormOptions) => void;
             // useSendFormOutputs utils:
