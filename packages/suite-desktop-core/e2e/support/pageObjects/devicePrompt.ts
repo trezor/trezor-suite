@@ -209,4 +209,16 @@ export class DevicePrompt {
         await this.modalCloseButton.click();
         await expect(this.modal).toBeHidden();
     }
+
+    @step()
+    async getAddress() {
+        // may not work for multi page addresses
+        await this.confirmOnDevicePromptIsShown();
+        const addressRaw = (await this.getDisplayContent()).body;
+        if (!addressRaw) {
+            throw new Error('No address found on emulator display');
+        }
+
+        return addressRaw[0].join('').replace(/\n/g, '');
+    }
 }

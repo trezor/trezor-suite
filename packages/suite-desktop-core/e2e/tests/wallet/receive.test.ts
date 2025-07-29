@@ -1,0 +1,52 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+
+import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
+
+test.describe('Receive transaction', { tag: ['@group=wallet'] }, () => {
+    test.use({
+        contextOptions: {
+            permissions: ['clipboard-read', 'clipboard-write'],
+        },
+    });
+    test.beforeEach(async ({ onboardingPage }) => {
+        await onboardingPage.completeOnboarding();
+    });
+
+    const testCases: Array<{ coin: NetworkSymbol; category: TestCategory }> = [
+        { coin: 'btc', category: TestCategory.BTC },
+        { coin: 'eth', category: TestCategory.ETH },
+        { coin: 'sol', category: TestCategory.Solana },
+    ];
+    testCases.forEach(({ coin, category }) => {
+        test(
+            `Receive a ${coin.toUpperCase()} transaction`,
+            {
+                annotation: createTestAnnotation({
+                    testCase: `Verifies that a user can receive a ${coin.toUpperCase()} transaction.`,
+                    category,
+                    priority: TestPriority.Critical,
+                    stream: TestStream.Engagement,
+                }),
+            },
+            async ({ page, devicePrompt, settingsPage, walletPage }) => {
+                if (coin !== 'btc') {
+                    await settingsPage.changeNetworks({
+                        enableNetworks: [coin],
+                        disableNetworks: ['btc'],
+                    });
+                }
+                await walletPage.accountButton({ symbol: coin }).click();
+                await walletPage.receiveButton.click();
+                await walletPage.revealAddressButton.click();
+                const address = await devicePrompt.getAddress();
+                await devicePrompt.waitForPromptAndConfirm();
+                await walletPage.copyAddressButton.click();
+                await expect(walletPage.copyToCliboardToast).toBeVisible();
+                const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+                expect(clipboardText).toEqual(address);
+            },
+        );
+    });
+});
