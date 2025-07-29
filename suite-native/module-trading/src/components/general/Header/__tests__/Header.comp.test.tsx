@@ -107,11 +107,6 @@ describe('Header', () => {
         },
         {
             buyEnabled: true,
-            sellEnabled: false,
-            exchangeEnabled: true,
-        },
-        {
-            buyEnabled: true,
             sellEnabled: true,
             exchangeEnabled: false,
         },
@@ -120,11 +115,36 @@ describe('Header', () => {
             sellEnabled: true,
             exchangeEnabled: false,
         },
-    ])('should display Header tabs with Buy and Swap tabs otherwise, case %#', async config => {
-        const { getByText, queryByText } = await renderHeader(config);
+    ])(
+        'should display Header tabs with Buy, Swap and Sell tabs otherwise, case %#',
+        async config => {
+            const { getByText, queryByText } = await renderHeader(config);
 
-        expect(getByText('Buy')).toBeOnTheScreen();
-        expect(getByText('Swap')).toBeOnTheScreen();
+            expect(getByText('Buy')).toBeOnTheScreen();
+            expect(getByText('Swap')).toBeOnTheScreen();
+            expect(queryByText('Sell')).toBeOnTheScreen();
+        },
+    );
+
+    it.each([
+        {
+            buyEnabled: true,
+            sellEnabled: false,
+            exchangeEnabled: true,
+        },
+        {
+            buyEnabled: false,
+            sellEnabled: false,
+            exchangeEnabled: true,
+        },
+        {
+            buyEnabled: false,
+            sellEnabled: false,
+            exchangeEnabled: false,
+        },
+    ])('should display Header tabs without Sell tab, case %#', async config => {
+        const { queryByText } = await renderHeader(config);
+
         expect(queryByText('Sell')).toBeNull();
     });
 

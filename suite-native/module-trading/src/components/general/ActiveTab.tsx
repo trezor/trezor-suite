@@ -5,6 +5,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { selectActiveTradingType } from '../../selectors/commonSelectors';
 import { BuyTab } from '../buy/BuyTab';
 import { ExchangeTab } from '../exchange/ExchangeTab';
+import { SellTab } from '../sell/SellTab';
 
 export const ActiveTab = () => {
     const activeTab = useSelector(selectActiveTradingType);
@@ -17,8 +18,7 @@ export const ActiveTab = () => {
             return <ExchangeTab />;
 
         case 'sell':
-            // Sell is not implemented yet
-            return null;
+            return <SellTab />;
 
         case undefined:
             return null;

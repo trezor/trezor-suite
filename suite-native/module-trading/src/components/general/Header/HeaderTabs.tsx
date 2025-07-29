@@ -9,7 +9,10 @@ import { useTranslate } from '@suite-native/intl';
 
 import { HeaderTab } from './HeaderTab';
 import { tradingActions } from '../../../reducers';
-import { selectActiveTradingType } from '../../../selectors/commonSelectors';
+import {
+    selectActiveTradingType,
+    selectIsTradingSellEnabled,
+} from '../../../selectors/commonSelectors';
 import { AdvancedSettingsSheet } from '../../settings/AdvancedSettingsSheet';
 
 const useSelectedTab = () => {
@@ -29,22 +32,29 @@ const useSelectedTab = () => {
 const useTabsData = () => {
     const { translate } = useTranslate();
 
-    return useMemo(
-        () =>
-            [
-                {
-                    key: 'buy',
-                    label: translate('moduleTrading.tradingScreen.tabs.buy'),
-                    icon: 'plus',
-                },
-                {
-                    key: 'exchange',
-                    label: translate('moduleTrading.tradingScreen.tabs.exchange'),
-                    icon: 'arrowsLeftRight',
-                },
-            ] as { key: TradingType; label: string; icon: IconName }[],
-        [translate],
-    );
+    const isSellEnabled = useSelector(selectIsTradingSellEnabled);
+
+    return useMemo(() => {
+        const tabs = [
+            {
+                key: 'buy',
+                label: translate('moduleTrading.tradingScreen.tabs.buy'),
+                icon: 'plus',
+            },
+            isSellEnabled && {
+                key: 'sell',
+                label: translate('moduleTrading.tradingScreen.tabs.sell'),
+                icon: 'minus',
+            },
+            {
+                key: 'exchange',
+                label: translate('moduleTrading.tradingScreen.tabs.exchange'),
+                icon: 'arrowsLeftRight',
+            },
+        ] as { key: TradingType; label: string; icon: IconName }[];
+
+        return tabs.filter(Boolean);
+    }, [translate, isSellEnabled]);
 };
 
 export const HeaderTabs = () => {
