@@ -16,7 +16,8 @@ hsz3etxANvUgLQ4r0eEhqVUEL5l+dRMgEv4Ycvr3UEcMkSFRPoA8ktxX1A==
 `,
     codesign: `
 -----BEGIN PUBLIC KEY-----
-TODO
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEfEsFXNi5sdMxwiOYh4oRGorCM2RO
+IEsfw3m+vWBrLb/r/GYWUVkVXWsZukLwPRZ8asP+7Ifd2ap7GZ2iQzWKCA==
 -----END PUBLIC KEY-----
 `,
 };
