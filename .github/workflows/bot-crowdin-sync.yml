@@ -55,7 +55,6 @@ jobs:
           yarn workspace @trezor/suite translations:format
           yarn workspace @trezor/suite translations:extract
           cat packages/suite-data/files/translations/master.json
-          yarn workspace @trezor/suite translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
           if [[ "${{ env.SOURCE_BRANCH }}" == release/* ]]; then
             SUFFIX=" [RELEASE ONLY]"
@@ -64,7 +63,7 @@ jobs:
           fi
 
           COMMIT_MSG="chore: crowdin translation update${SUFFIX}"
-          PR_TITLE="Crowdin translations update${SUFFIX}"
+          PR_TITLE="DRAFT: Crowdin translations update${SUFFIX}"
 
           git add .
           git commit -m "$COMMIT_MSG"
