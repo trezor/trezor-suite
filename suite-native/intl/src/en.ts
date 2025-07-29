@@ -1012,6 +1012,9 @@ export const en = {
                 defaultPassphrase: 'Passphrase wallet #{index}',
             },
             autoEject: {
+                title: 'Eject wallets',
+                subtitle:
+                    'Without connected Trezor, your balances remain visible. You always need to connect Trezor to move funds.',
                 switch: {
                     title: 'Auto eject',
                     description: 'Eject all wallets automatically after unplugging Trezor',

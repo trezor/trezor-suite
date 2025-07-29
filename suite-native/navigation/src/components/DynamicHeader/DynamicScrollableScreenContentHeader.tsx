@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
 import { ScreenHeaderProps } from '../ScreenHeader';
@@ -22,11 +22,11 @@ export const DynamicScrollableScreenContentHeader = ({
     };
 
     return (
-        <Box paddingHorizontal="sp16" marginTop="sp16" marginBottom="sp32">
+        <VStack paddingHorizontal="sp16" marginTop="sp16" marginBottom="sp32">
             <Text variant="titleMedium" onLayout={handleLayout}>
                 {title}
             </Text>
             {subtitle && <Text color="textSubdued">{subtitle}</Text>}
-        </Box>
+        </VStack>
     );
 };
