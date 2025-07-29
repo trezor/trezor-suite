@@ -1,6 +1,10 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
+
+import { paletteV1 } from '@trezor/theme';
+import { hexToRgba } from '@trezor/utils';
 
 export class StakingSection {
+    readonly watchPeriod = '01:00';
     // Locators
     readonly stakingTabButton: Locator;
     readonly pendingAmount: Locator;
@@ -20,6 +24,11 @@ export class StakingSection {
     readonly transactionStatus: Locator;
     readonly transactionStatusContainer: Locator;
     readonly addingToPoolStatusContainer: Locator;
+    readonly receivingRewardsContainer: Locator;
+    readonly instantBanner: Locator;
+    readonly instantBannerHeader: Locator;
+    readonly instantBannerParagraph: Locator;
+    readonly instantBannerGotItButton: Locator;
 
     constructor(private readonly page: Page) {
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
@@ -47,6 +56,49 @@ export class StakingSection {
         );
         this.addingToPoolStatusContainer = this.page.getByTestId(
             '@staking/adding-to-pool-status/container',
+        );
+        this.receivingRewardsContainer = this.page.getByTestId('@staking/reward-status/container');
+        this.instantBanner = this.page.getByTestId('@staking/instant-stake-banner');
+        this.instantBannerHeader = this.page.getByTestId('@staking/instant-stake-banner/header');
+        this.instantBannerParagraph = this.page.getByTestId(
+            '@staking/instant-stake-banner/paragraph',
+        );
+        this.instantBannerGotItButton = this.page.getByTestId(
+            '@staking/instant-stake-banner/got-it-button',
+        );
+    }
+
+    async expectStakingLabelToBeInPhase(
+        phase: 'pendingTransaction' | 'addingToPool' | 'receivingRewards',
+    ) {
+        const phaseColors = {
+            pendingTransaction: {
+                transaction: paletteV1.lightAccentYellow300,
+                adding: paletteV1.lightGray100,
+                rewards: paletteV1.lightGray100,
+            },
+            addingToPool: {
+                transaction: paletteV1.lightPrimaryForest200,
+                adding: paletteV1.lightAccentYellow300,
+                rewards: paletteV1.lightGray100,
+            },
+            receivingRewards: {
+                transaction: paletteV1.lightPrimaryForest200,
+                adding: paletteV1.lightPrimaryForest200,
+                rewards: paletteV1.lightAccentYellow300,
+            },
+        };
+        await expect(this.transactionStatusContainer).toHaveCSS(
+            'background-color',
+            hexToRgba(phaseColors[phase].transaction),
+        );
+        await expect(this.addingToPoolStatusContainer).toHaveCSS(
+            'background-color',
+            hexToRgba(phaseColors[phase].adding),
+        );
+        await expect(this.receivingRewardsContainer).toHaveCSS(
+            'background-color',
+            hexToRgba(phaseColors[phase].rewards),
         );
     }
 }

@@ -1,8 +1,9 @@
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 import ETH_UNSTAKE_CONFIRMED_TX from '../../fixtures/staking/eth-unstake-confirmed-tx.json';
 import ETH_UNSTAKE_PENDING_TX from '../../fixtures/staking/eth-unstake-pending-tx.json';
 import { skipFixture } from '../../support/common';
-import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { splitStringByDisplayLimit } from '../../support/testExtends/customMatchers';
@@ -43,13 +44,13 @@ test.describe('ETH unstaking', { tag: ['@group=staking'] }, () => {
         },
         async ({ page, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
             await test.step('Check staking dashboard', async () => {
+                await page.clock.install();
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.pendingAmount).toHaveText('3,000');
                 await expect(stakingSection.stakedAmount).toHaveText('3,000');
-                await expect(stakingSection.rewardsAmount).toHaveText('1,234');
+                await expect(stakingSection.rewardsAmount).toHaveText('234');
                 await expect(stakingSection.unstakingAmount).toHaveText('4,000');
-                // await page.pause();
             });
 
             await test.step('Open unstaking form', async () => {
@@ -100,21 +101,13 @@ test.describe('ETH unstaking', { tag: ['@group=staking'] }, () => {
                             depositedBalance: '3000000000000000000000',
                             withdrawTotalAmount: '4000000000000000000000',
                             claimableAmount: '5000000000000000000000',
-                            restakedReward: '1234000000000000000000',
-                            autocompoundBalance: '1000000000000000000000', // Lowers by 7000
+                            restakedReward: '234000000000000000000',
+                            autocompoundBalance: '0', // Lowers by 7000
                         },
                     ],
                     nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
-            });
-            // await page.pause();
-
-            //TODO: Solve errors and remove following step
-            await test.step('Navigate back to Dashboard', async () => {
-                await devicePrompt.modalCloseButton.click({ timeout: 10_000 });
-                await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
-                await stakingSection.stakingTabButton.click();
             });
 
             await test.step('Verify pending transaction and not being able to unstake more', async () => {
@@ -137,13 +130,12 @@ test.describe('ETH unstaking', { tag: ['@group=staking'] }, () => {
                             depositedBalance: '3000000000000000000000',
                             withdrawTotalAmount: '11000000000000000000000', // Increases by 7000
                             claimableAmount: '5000000000000000000000',
-                            restakedReward: '1234000000000000000000',
+                            restakedReward: '2340000000000000000000',
                             autocompoundBalance: '0',
                         },
                     ],
                 });
-                await page.reload();
-                await expect(stakingSection.unstakingAmount).toBeVisible({ timeout: 15_000 });
+                await page.clock.fastForward(stakingSection.watchPeriod);
                 await expect(stakingSection.unstakingAmount).toHaveText('11,000');
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
                 await expect(stakingSection.speedUpButton).toBeHidden();

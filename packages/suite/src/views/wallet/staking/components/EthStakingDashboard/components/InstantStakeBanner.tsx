@@ -69,16 +69,21 @@ export const InstantStakeBanner = ({
 
     return (
         <Banner
+            data-testid="@staking/instant-stake-banner"
             icon="lightning"
             variant="tertiary"
             rightContent={
-                <Banner.Button onClick={closeBanner} variant="primary">
+                <Banner.Button
+                    data-testid="@staking/instant-stake-banner/got-it-button"
+                    onClick={closeBanner}
+                    variant="primary"
+                >
                     <Translation id="TR_GOT_IT" />
                 </Banner.Button>
             }
         >
             <Column gap={spacings.xxs} alignItems="flex-start">
-                <H3 typographyStyle="highlight">
+                <H3 data-testid="@staking/instant-stake-banner/header" typographyStyle="highlight">
                     <Translation
                         id={getHeadingTranslationId(stakeType)}
                         values={{
@@ -87,7 +92,7 @@ export const InstantStakeBanner = ({
                         }}
                     />
                 </H3>
-                <Paragraph>
+                <Paragraph data-testid="@staking/instant-stake-banner/paragraph">
                     <Translation
                         id={getSubheadingTranslationId(stakeType)}
                         values={{
