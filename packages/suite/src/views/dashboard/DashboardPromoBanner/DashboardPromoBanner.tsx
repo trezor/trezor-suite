@@ -6,7 +6,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { useSelector } from 'src/hooks/suite';
 
 import { TrezorExpertBanner } from './TrezorExpertBanner';
-import { DashboardBannerType } from './dashboardBannerTypes';
+import { isDashboardBannerType } from './dashboardBannerTypes';
 import { selectIsTEXDashboardPromoBannerShown } from '../../../reducers/suite/suiteReducer';
 
 export const DashboardPromoBanner = () => {
@@ -18,7 +18,8 @@ export const DashboardPromoBanner = () => {
         selectFeatureConfig(state, Feature.dashboardPromoBanner),
     );
 
-    const currentBanner = (promoBanner?.visibleBanner ?? null) as DashboardBannerType;
+    const promoBannerPayload = promoBanner?.visibleBanner;
+    const currentBanner = isDashboardBannerType(promoBannerPayload) ? promoBannerPayload : null;
 
     const onCloseBanner = () => {
         analytics.report({
