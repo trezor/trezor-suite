@@ -58,7 +58,7 @@ export const filterSafeListByFirmware = (
         versionUtils.isNewerOrEqual(firmwareVersion, item.min_firmware_version),
     );
 
-export const buildFirmwareFileName = (
+export const buildLocalFirmwareFileName = (
     firmwareType: FirmwareType,
     internalModel: DeviceModelInternal,
     version: VersionArray,
