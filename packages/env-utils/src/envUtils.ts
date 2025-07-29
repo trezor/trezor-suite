@@ -143,12 +143,14 @@ const getOsFamily = () => {
 
 const getDeviceType = () => getUserAgentParser().getDevice().type;
 
-export const getJWSPublicKey = (use: JWSPublicKeyUse) => {
+export const getJWSPublicKey = (use: JWSPublicKeyUse, useCodeSignKey = false) => {
     if (['message-system', 'token-definitions'].includes(use)) {
         return isCodesignBuild() ? publicKey.codesign : publicKey.dev;
     }
 
-    return isCodesignBuild() ? firmwareConfigPublicKey.codesign : firmwareConfigPublicKey.dev;
+    return isCodesignBuild() || useCodeSignKey
+        ? firmwareConfigPublicKey.codesign
+        : firmwareConfigPublicKey.dev;
 };
 
 export const envUtils: EnvUtils = {

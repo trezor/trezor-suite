@@ -35,5 +35,5 @@ export interface EnvUtils {
     getOsName: () => '' | 'android' | 'linux' | 'windows' | 'macos' | 'chromeos' | 'ios';
     getOsNameWeb: () => string | undefined;
     getOsFamily: () => 'Windows' | 'MacOS' | 'Linux';
-    getJWSPublicKey: (use: JWSPublicKeyUse) => string;
+    getJWSPublicKey: (use: JWSPublicKeyUse, useCodeSignKey?: boolean) => string;
 }
