@@ -539,6 +539,8 @@ export const icons = {
     caretUpAltFilled: require('../assets/caretUpAltFilled.svg'),
     caretUpDown: require('../assets/caretUpDown.svg'),
     caretUpDownFilled: require('../assets/caretUpDownFilled.svg'),
+    caretUpDownReverse: require('../assets/caretUpDownReverse.svg'),
+    caretUpDownReverseFilled: require('../assets/caretUpDownReverseFilled.svg'),
     caretUpFilled: require('../assets/caretUpFilled.svg'),
     carrot: require('../assets/carrot.svg'),
     carrotFilled: require('../assets/carrotFilled.svg'),
