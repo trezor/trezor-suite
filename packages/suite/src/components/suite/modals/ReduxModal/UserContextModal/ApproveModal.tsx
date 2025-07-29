@@ -151,7 +151,6 @@ export const ApproveModal = ({
         setIsConfirmButtonLoading(true);
         await sendTransaction();
         setIsConfirmButtonLoading(false);
-        onCancel();
     };
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(selectedQuote.send);
