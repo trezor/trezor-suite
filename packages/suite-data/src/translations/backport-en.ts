@@ -1,14 +1,14 @@
 /**
- * This script takes latest en.json and creates new file messages.ts
+ * This script takes latest en-US.json and creates new file messages.ts
  *
  * Problem ?
  * - messages.ts is created by developers using "developers English" which might be miles away from proper English
- * - en.json is proper English translation by proper translators
- * - en.json is also used by product team to modify meaning of the texts sometimes
- * - when meaning in en.json is different from messages.ts (source strings) it might cause meaning divergence between translations to other languages
+ * - en-US.json is proper English translation by proper translators
+ * - en-US.json is also used by product team to modify meaning of the texts sometimes
+ * - when meaning in en-US.json is different from messages.ts (source strings) it might cause meaning divergence between translations to other languages
  *
  * Solution ?
- * - backport proper English from en.json to messages.ts
+ * - backport proper English from en-US.json to messages.ts
  */
 
 import fs from 'fs';
@@ -19,7 +19,7 @@ import messages from '@trezor/suite/src/support/messages';
 
 const packagesRoot = path.join(__dirname, '../../../');
 const targetPath = path.join(packagesRoot, 'suite/src/support/messages.ts');
-const sourcePath = path.join(packagesRoot, 'suite-data/files/translations/en.json');
+const sourcePath = path.join(packagesRoot, 'suite-data/files/translations/en-US.json');
 
 const source: { [key in keyof typeof messages]: string } = JSON.parse(
     fs.readFileSync(sourcePath, 'utf8'),
