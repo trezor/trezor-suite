@@ -2,6 +2,8 @@
 // If you want to add of modify icons please read README.md to find out how to do it
 
 export const icons = {
+    CaretUpDownReverse: require('../assets/CaretUpDownReverse.svg'),
+    CaretUpDownReverseFilled: require('../assets/CaretUpDownReverseFilled.svg'),
     addressBook: require('../assets/addressBook.svg'),
     addressBookFilled: require('../assets/addressBookFilled.svg'),
     airTrafficControl: require('../assets/airTrafficControl.svg'),
