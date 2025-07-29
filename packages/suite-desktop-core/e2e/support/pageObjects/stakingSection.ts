@@ -68,37 +68,39 @@ export class StakingSection {
         );
     }
 
-    async expectStakingLabelToBeInPhase(
+    async expectProgressIndicatorsToMatchPhase(
         phase: 'pendingTransaction' | 'addingToPool' | 'receivingRewards',
     ) {
-        const phaseColors = {
+        const phaseIndicatorColors = {
             pendingTransaction: {
-                transaction: paletteV1.lightAccentYellow300,
-                adding: paletteV1.lightGray100,
-                rewards: paletteV1.lightGray100,
+                transactionStep: paletteV1.lightAccentYellow300,
+                addingStep: paletteV1.lightGray100,
+                rewardsStep: paletteV1.lightGray100,
             },
             addingToPool: {
-                transaction: paletteV1.lightPrimaryForest200,
-                adding: paletteV1.lightAccentYellow300,
-                rewards: paletteV1.lightGray100,
+                transactionStep: paletteV1.lightPrimaryForest200,
+                addingStep: paletteV1.lightAccentYellow300,
+                rewardsStep: paletteV1.lightGray100,
             },
             receivingRewards: {
-                transaction: paletteV1.lightPrimaryForest200,
-                adding: paletteV1.lightPrimaryForest200,
-                rewards: paletteV1.lightAccentYellow300,
+                transactionStep: paletteV1.lightPrimaryForest200,
+                addingStep: paletteV1.lightPrimaryForest200,
+                rewardsStep: paletteV1.lightAccentYellow300,
             },
         };
+        const currentPhaseColors = phaseIndicatorColors[phase];
+
         await expect(this.transactionStatusContainer).toHaveCSS(
             'background-color',
-            hexToRgba(phaseColors[phase].transaction),
+            hexToRgba(currentPhaseColors.transactionStep),
         );
         await expect(this.addingToPoolStatusContainer).toHaveCSS(
             'background-color',
-            hexToRgba(phaseColors[phase].adding),
+            hexToRgba(currentPhaseColors.addingStep),
         );
         await expect(this.receivingRewardsContainer).toHaveCSS(
             'background-color',
-            hexToRgba(phaseColors[phase].rewards),
+            hexToRgba(currentPhaseColors.rewardsStep),
         );
     }
 }
