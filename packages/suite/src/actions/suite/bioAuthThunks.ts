@@ -63,18 +63,24 @@ export const requestBioAuthChangeThunk = createThunk(
     `${BIO_AUTH_PREFIX}/requestBioAuthChangeThunk`,
     async (
         {
+            nextBioAuthEnabledValue,
             translationString,
         }: {
             translationString: TranslationFunction;
+            nextBioAuthEnabledValue?: boolean;
         },
         { dispatch, getState },
     ) => {
         const prevBioEnabled = selectBioAuthEnabled(getState());
         const isRequestingChange = selectIsRequestingBioAuthChange(getState());
-        const nextBioEnabled = !prevBioEnabled;
+        const nextBioEnabled = nextBioAuthEnabledValue ?? !prevBioEnabled;
+
+        if (nextBioEnabled === prevBioEnabled) {
+            return { success: true };
+        }
 
         if (isRequestingChange || selectIsBioAuthValidationRequested(getState())) {
-            return;
+            return { success: false };
         }
 
         dispatch(bioAuthActions.requestBioAuthChange(nextBioEnabled));
@@ -98,7 +104,7 @@ export const requestBioAuthChangeThunk = createThunk(
             dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
 
-            if (KNOWN_ERROR_MESSAGES.has(error)) {
+            if (KNOWN_ERROR_MESSAGES.has(String(error))) {
                 // NOTE: known error message
                 return;
             }
