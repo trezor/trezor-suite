@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
+    "include": ["schema/**/*.json"],
     "references": [
         { "path": "../geolocation" },
         { "path": "../redux-utils" },
