@@ -592,6 +592,7 @@ const forgetDisconnectedDevices = [
                         path: '1',
                         instance: 2,
                         remember: true,
+                        state: '1stTestnetAddress@device_1_id:0',
                     }),
                     getSuiteDevice({
                         path: '2',
@@ -605,6 +606,25 @@ const forgetDisconnectedDevices = [
             { path: '1', instance: undefined },
             { path: '1', instance: 1 },
         ],
+    },
+    {
+        description: `bootloader mode device`,
+        state: {
+            suite: {},
+            device: {
+                selectedDevice: SUITE_DEVICE,
+                devices: [
+                    getSuiteDevice({
+                        path: '1',
+                        instance: undefined,
+                        remember: true,
+                        mode: 'bootloader',
+                    }),
+                ],
+            },
+        },
+        device: CONNECT_DEVICE,
+        result: [{ path: '1', instance: undefined }],
     },
 ];
 

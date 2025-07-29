@@ -203,7 +203,10 @@ export const getNewWalletNumber = (devices: TrezorDevice[], device: TrezorDevice
  */
 export const findInstanceIndex = (draft: TrezorDevice[], device: AcquiredDevice) =>
     draft.findIndex(
-        d => d.features && d.id && d.id === device.id && d.instance === device.instance,
+        d =>
+            d.features &&
+            d.instance === device.instance &&
+            (d.id ? d.id === device.id : d.path === device.path && d.mode === device.mode), // if id is not present, e.g. in bootloader, fall back to path+mode
     );
 
 /**
