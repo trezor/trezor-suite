@@ -1,5 +1,5 @@
 import { FirmwareType } from '@trezor/connect';
-import { buildFirmwareFileName } from '@trezor/connect/src/utils/firmwareUtils';
+import { buildLocalFirmwareFileName } from '@trezor/connect/src/utils/firmwareUtils';
 import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
 
 import { readDir, save } from '../libs/user-data';
@@ -47,7 +47,7 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
                 firmwareType = FirmwareType.Universal,
             } = event;
 
-            const firmwareBinName = buildFirmwareFileName(
+            const firmwareBinName = buildLocalFirmwareFileName(
                 firmwareType,
                 internalModel,
                 binaryVersion,
