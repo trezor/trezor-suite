@@ -2,13 +2,14 @@
 
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P )
 
-if [[ $# -ne 1 ]]
+if [[ $# -ne 2 ]]
     then
-        echo "must provide 1 argument. $# provided"
+        echo "must provide 2 argument. $# provided"
         exit 1
 fi
 
 DEVICE=$1
+IS_LEGACY=$2
 
 RELEASES_FOLDER="$PARENT_PATH"/../files/firmware
 
@@ -36,7 +37,18 @@ git fetch origin
 git checkout "$BRANCH"
 git reset "origin/$BRANCH" --hard
 
-DATA=$(jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$RELEASES_FOLDER/$DEVICE"/releases.json)
+DATA=""
+
+# When checking legacy "1" and "2" directories we do not check `bitcoinonly` and `universal` directories
+# with new format, we only check it for legacy `releases.json`. For the rest we check it for both formats.
+if [[ "$IS_LEGACY" == "true" ]]; then
+  DATA=$(jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$RELEASES_FOLDER/$DEVICE"/releases.json)
+else
+  DATA=$(
+    jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$RELEASES_FOLDER/$DEVICE"/releases.json
+    jq -r '.version |= join(".") | .firmware_revision + "%" + .version' "$RELEASES_FOLDER/$DEVICE"/{bitcoinonly,universal}/*.json
+  )
+fi
 
 for ROW in $DATA;
 do 
