@@ -16,7 +16,10 @@ const coinsToActivate = [
     'xrp',
     'zec',
 ] as NetworkSymbol[];
+
 test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
+    //TODO: Remove ignoreJSExceptions when bug fixed #19436
+    test.use({ ignoreJSExceptions: ['Device disconnected'] });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });
