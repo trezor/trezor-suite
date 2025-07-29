@@ -18,6 +18,7 @@ type suiteBaseFixture = {
     emulatorStartConf: StartEmuModelRequired;
     emulatorSetupConf: SetupEmu;
     electronConf: ElectronConf;
+    ignoreJSExceptions: Array<string>;
     url: string;
     trezorUserEnvLink: TrezorUserEnvLinkClass;
     page: Page;
@@ -136,6 +137,7 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
     emulatorStartConf: { model: 'T3T1', wipe: true },
     emulatorSetupConf: {},
     electronConf: {},
+    ignoreJSExceptions: [],
 
     url: async ({}, use, testInfo) => {
         await use(getUrl(testInfo));
@@ -189,13 +191,25 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
         );
     },
     exceptionLogger: [
-        async ({ page }, use) => {
+        async ({ page, ignoreJSExceptions }, use, testInfo) => {
             const errors: Error[] = [];
+            const ignored: Error[] = [];
             page.on('pageerror', error => {
-                errors.push(error);
+                if (ignoreJSExceptions.some(exception => error.message.includes(exception))) {
+                    ignored.push(error);
+                } else {
+                    errors.push(error);
+                }
             });
 
             await use();
+
+            if (ignored.length > 0) {
+                testInfo.annotations.push({
+                    type: 'Warning, Ignored JS exceptions',
+                    description: `\n${ignored.map(error => `${error.message}\n${error.stack}`).join('\n-----\n')}`,
+                });
+            }
 
             if (errors.length > 0) {
                 throw new Error(
