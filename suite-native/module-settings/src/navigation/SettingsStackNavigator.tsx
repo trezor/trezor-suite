@@ -6,12 +6,12 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
 import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
-import { SettingsViewOnlyScreen } from '../screens/SettingsViewOnlyScreen';
 import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
 import { TurnOffFirmwareAuthenticityCheckScreen } from '../screens/TurnOffFirmwareAuthenticityCheckScreen';
 
@@ -33,7 +33,7 @@ export const SettingsStackNavigator = () => (
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsViewOnly }}
             name={SettingsStackRoutes.SettingsViewOnly}
-            component={SettingsViewOnlyScreen}
+            component={SettingsAutoEjectScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsSupport }}
