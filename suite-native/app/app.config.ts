@@ -212,18 +212,18 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 {
                     action: 'VIEW',
                     autoVerify: true,
-                    data: [
-                        {
-                            scheme: 'https',
-                            host: 'trezor.io',
-                            pathPattern: '/setup/.*',
-                        },
-                        ...(buildType === 'production'
+                    data:
+                        buildType === 'production'
                             ? [
                                   {
                                       scheme: 'https',
                                       host: 'connect.trezor.io',
                                       pathPattern: '/9/deeplink/.*',
+                                  },
+                                  {
+                                      scheme: 'https',
+                                      host: 'trezor.io',
+                                      pathPattern: '/setup/.*',
                                   },
                               ]
                             : [
@@ -238,8 +238,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                                       // for branches with a slash in the name
                                       pathPattern: '/connect/.*/.*/deeplink/.*',
                                   },
-                              ]),
-                    ],
+                                  {
+                                      scheme: 'https',
+                                      host: 'dev.trezorio.sldev.cz',
+                                      pathPattern: '/setup/.*',
+                                  },
+                              ],
                     category: ['BROWSABLE', 'DEFAULT'],
                 },
             ],
@@ -276,12 +280,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 },
                 UIRequiredDeviceCapabilities: ['armv7'],
             },
-            associatedDomains: [
-                'applinks:trezor.io',
-                ...(buildType === 'production'
-                    ? ['applinks:connect.trezor.io']
-                    : ['applinks:dev.suite.sldev.cz']),
-            ],
+            associatedDomains:
+                buildType === 'production'
+                    ? ['applinks:connect.trezor.io', 'applinks:trezor.io']
+                    : ['applinks:dev.suite.sldev.cz', 'applinks:dev.trezorio.sldev.cz'],
         },
         plugins: getPlugins(),
         extra: {
