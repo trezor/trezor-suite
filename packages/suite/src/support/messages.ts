@@ -2092,7 +2092,7 @@ export default defineMessages({
         id: 'TR_CLOSE_WINDOW',
     },
     TR_COIN_DISCOVERY_LOADER_DESCRIPTION: {
-        defaultMessage: 'Checking passphrase wallet for balances & transactions',
+        defaultMessage: 'Preparing your wallet…',
         id: 'TR_COIN_DISCOVERY_LOADER_DESCRIPTION',
     },
     TR_COINS: {
