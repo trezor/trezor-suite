@@ -1,0 +1,39 @@
+import { useEffect } from 'react';
+
+import { TranslationKey } from '@suite-common/intl-types';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+
+import {
+    RevisionCheckErrorWithNotification,
+    isRevisionCheckErrorWithNotification,
+} from 'src/constants/suite/firmware';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+
+const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
+    'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
+};
+
+/**
+ * Dispatch one-time toast notifications for firmware authenticity check errors.
+ */
+export const useDeviceCompromisedNotification = () => {
+    const { device } = useDevice();
+    const dispatch = useDispatch();
+
+    const revCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareRevision : null;
+    const isError = revCheck && !revCheck.success;
+    const errorType = isError ? revCheck.error : null;
+
+    useEffect(() => {
+        if (errorType === null) return;
+        if (isRevisionCheckErrorWithNotification(errorType)) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'firmware-authenticity-check-error',
+                    translationKey: revisionCheckNotifications[errorType],
+                }),
+            );
+        }
+    }, [dispatch, errorType]);
+};
