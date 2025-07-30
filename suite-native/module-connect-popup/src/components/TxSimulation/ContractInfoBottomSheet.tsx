@@ -49,6 +49,7 @@ export const ContractInfoBottomSheet = ({
             isVisible={isVisible}
             onClose={onClose}
             title={<Translation id="moduleConnectPopup.simulation.contractInfo" />}
+            paddingBottom="sp24"
         >
             <Card>
                 <VStack>
