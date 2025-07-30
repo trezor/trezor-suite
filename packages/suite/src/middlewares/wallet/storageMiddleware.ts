@@ -250,20 +250,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                     api.dispatch(storageActions.saveWalletSettings());
                     break;
-
-                case SUITE.SET_AUTO_EJECT: {
-                    if (action?.payload === true) {
-                        const devices = selectDevices(api.getState());
-
-                        devices.forEach(device => {
-                            if (device.features) {
-                                api.dispatch(storageActions.forgetDevice(device));
-                            }
-                        });
-                    }
-                    api.dispatch(storageActions.saveSuiteSettings());
-                    break;
-                }
                 case SUITE.SET_LANGUAGE:
                 case SUITE.SET_FLAG:
                 case SUITE.SET_DEBUG_MODE:
