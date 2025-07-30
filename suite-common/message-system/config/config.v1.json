@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-07-30T17:00:00+00:00",
-    "sequence": 98,
+    "timestamp": "2025-07-30T17:17:00+00:00",
+    "sequence": 99,
     "actions": [
         {
             "conditions": [
@@ -1166,7 +1166,7 @@
                 "id": "41de1456-f845-4f36-9ec6-9c639a8155b1",
                 "priority": 92,
                 "dismissible": true,
-                "variant": "info",
+                "variant": "warning",
                 "category": ["banner"],
                 "content": {
                     "en": "We are experiencing syncing issues with the Polygon PoS network. This may temporarily result in errors or slow response times on Polygon PoS. This issue does not affect the safety of your Polygon PoS funds in any way. We apologize for the inconvenience.",
