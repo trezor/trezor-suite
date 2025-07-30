@@ -10025,6 +10025,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@walletconnect/core": "npm:^2.21.5"
     "@walletconnect/utils": "npm:^2.21.5"
