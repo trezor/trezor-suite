@@ -1,0 +1,35 @@
+{
+    "name": "@suite-native/transaction-management",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest --coverage",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/formatters": "workspace:*",
+        "@suite-native/helpers": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/tokens": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "expo-linear-gradient": "~14.1.5",
+        "react": "19.0.0",
+        "react-native": "0.79.3",
+        "react-native-reanimated": "^3.18.0",
+        "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
+    }
+}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { AppState, LayoutChangeEvent, View } from 'react-native';
+import { AppState, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
@@ -15,13 +15,16 @@ import {
     StackProps,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { nativeSpacings } from '@trezor/theme';
+import {
+    LIST_VERTICAL_SPACING,
+    SlidingFooterOverlay,
+    useActiveStepOffset,
+} from '@suite-native/transaction-management';
 
+import { AddressOriginHelpButton } from './AddressOriginHelpButton';
+import { AddressReviewStep } from './AddressReviewStep';
+import { CompareAddressHelpButton } from './CompareAddressHelpButton';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
-import { AddressOriginHelpButton } from '../components/AddressOriginHelpButton';
-import { AddressReviewStep } from '../components/AddressReviewStep';
-import { CompareAddressHelpButton } from '../components/CompareAddressHelpButton';
-import { SlidingFooterOverlay } from '../components/SlidingFooterOverlay';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
 import {
     selectIsReceiveAddressOutputConfirmed,
@@ -29,8 +32,6 @@ import {
 } from '../selectors';
 
 const NUMBER_OF_STEPS = 3;
-const OVERLAY_INITIAL_POSITION = 120;
-const LIST_VERTICAL_SPACING = nativeSpacings.sp16;
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -44,8 +45,8 @@ export const AddressReviewStepList = () => {
     const { accountKey, tokenContract, transaction } = route.params;
     const navigation = useNavigation<NavigationProps>();
 
-    const [childHeights, setChildHeights] = useState<number[]>([]);
     const [stepIndex, setStepIndex] = useState(0);
+    const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
     const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview({
         accountKey,
         tokenContract,
@@ -86,16 +87,6 @@ export const AddressReviewStepList = () => {
         }
     }, [isAddressConfirmed, accountKey, navigation, tokenContract]);
 
-    const handleReadItemListHeight = (event: LayoutChangeEvent, index: number) => {
-        const { height } = event.nativeEvent.layout;
-        setChildHeights(prevHeights => {
-            const newHeights = [...prevHeights];
-            newHeights[index] = height + LIST_VERTICAL_SPACING;
-
-            return newHeights;
-        });
-    };
-
     const handleNextStep = () => {
         setStepIndex(prevStepIndex => prevStepIndex + 1);
 
@@ -105,39 +96,32 @@ export const AddressReviewStepList = () => {
     };
 
     return (
-        <>
-            <View>
-                <VStack spacing={LIST_VERTICAL_SPACING}>
-                    <AddressReviewStep
-                        stepNumber={1}
-                        onLayout={event => handleReadItemListHeight(event, 0)}
-                        translationId="moduleSend.review.address.step1"
-                        rightIcon={<AddressOriginHelpButton />}
-                    />
-
-                    <AddressReviewStep
-                        stepNumber={2}
-                        onLayout={event => handleReadItemListHeight(event, 1)}
-                        translationId="moduleSend.review.address.step2"
-                        rightIcon={<CompareAddressHelpButton />}
-                    />
-                    <AddressReviewStep
-                        translationId="moduleSend.review.address.step3"
-                        onLayout={event => handleReadItemListHeight(event, 2)}
-                    />
-                </VStack>
-            </View>
+        <View>
+            <VStack spacing={LIST_VERTICAL_SPACING}>
+                <AddressReviewStep
+                    stepNumber={1}
+                    onLayout={event => handleReadListItemHeight(event, 0)}
+                    translationId="moduleSend.review.address.step1"
+                    rightIcon={<AddressOriginHelpButton />}
+                />
+                <AddressReviewStep
+                    stepNumber={2}
+                    onLayout={event => handleReadListItemHeight(event, 1)}
+                    translationId="moduleSend.review.address.step2"
+                    rightIcon={<CompareAddressHelpButton />}
+                />
+                <AddressReviewStep
+                    translationId="moduleSend.review.address.step3"
+                    onLayout={event => handleReadListItemHeight(event, 2)}
+                />
+            </VStack>
             {!areAllStepsDone && (
-                <SlidingFooterOverlay
-                    currentStepIndex={stepIndex}
-                    stepHeights={childHeights}
-                    initialOffset={OVERLAY_INITIAL_POSITION}
-                >
+                <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset}>
                     <Button onPress={handleNextStep} testID="@send/address-review-continue">
                         <Translation id="generic.buttons.next" />
                     </Button>
                 </SlidingFooterOverlay>
             )}
-        </>
+        </View>
     );
 };

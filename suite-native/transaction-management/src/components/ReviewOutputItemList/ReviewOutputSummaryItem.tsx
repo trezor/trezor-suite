@@ -1,26 +1,26 @@
 import { LayoutChangeEvent, View } from 'react-native';
-import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { isCoinWithTokens } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
-import { selectReviewSummaryOutput } from '../selectors';
 import { ReviewOutputCard } from './ReviewOutputCard';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
+import { ReviewSummaryOutput } from '../../types';
 
-type ReviewOutputSummaryItemProps = {
-    accountKey: AccountKey;
+export type ReviewOutputSummaryItemProps = {
+    accountKey: string;
     symbol: NetworkSymbol;
     onLayout: (event: LayoutChangeEvent) => void;
     tokenContract?: TokenAddress;
+    summaryOutput?: ReviewSummaryOutput;
 };
 
 type BitcoinValuesProps = {
+    accountKey: string;
     totalSpent: string;
     fee: string;
 };
@@ -29,32 +29,41 @@ type TokenEnabledValuesProps = {
     tokenContract?: TokenAddress;
 } & BitcoinValuesProps;
 
-const BitcoinValues = ({ totalSpent, fee }: BitcoinValuesProps) => (
+const BitcoinValues = ({ accountKey, totalSpent, fee }: BitcoinValuesProps) => (
     <>
         <ReviewOutputItemValues
+            accountKey={accountKey}
             value={totalSpent}
-            translationKey="moduleSend.review.outputs.summary.totalAmount"
+            translationKey="transactionManagement.review.outputs.summary.totalAmount"
         />
         <ReviewOutputItemValues
+            accountKey={accountKey}
             value={fee}
-            translationKey="moduleSend.review.outputs.summary.fee"
+            translationKey="transactionManagement.review.outputs.summary.fee"
         />
     </>
 );
 
-const TokenEnabledValues = ({ totalSpent, fee, tokenContract }: TokenEnabledValuesProps) => {
+const TokenEnabledValues = ({
+    accountKey,
+    totalSpent,
+    fee,
+    tokenContract,
+}: TokenEnabledValuesProps) => {
     const amount = tokenContract ? totalSpent : BigNumber(totalSpent).minus(fee).toString();
 
     return (
         <>
             <ReviewOutputItemValues
+                accountKey={accountKey}
                 value={amount}
                 tokenContract={tokenContract}
-                translationKey="moduleSend.review.outputs.summary.amount"
+                translationKey="transactionManagement.review.outputs.summary.amount"
             />
             <ReviewOutputItemValues
+                accountKey={accountKey}
                 value={fee}
-                translationKey="moduleSend.review.outputs.summary.maxFee"
+                translationKey="transactionManagement.review.outputs.summary.maxFee"
             />
         </>
     );
@@ -63,14 +72,11 @@ const TokenEnabledValues = ({ totalSpent, fee, tokenContract }: TokenEnabledValu
 export const ReviewOutputSummaryItem = ({
     accountKey,
     symbol,
-    tokenContract,
     onLayout,
+    tokenContract,
+    summaryOutput,
 }: ReviewOutputSummaryItemProps) => {
     const { translate } = useTranslate();
-    const summaryOutput = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectReviewSummaryOutput(state, accountKey, tokenContract),
-    );
 
     if (!summaryOutput) return null;
 
@@ -81,18 +87,19 @@ export const ReviewOutputSummaryItem = ({
     return (
         <View onLayout={onLayout}>
             <ReviewOutputCard
-                title={translate('moduleSend.review.outputs.summary.label')}
+                title={translate('transactionManagement.review.outputs.summary.label')}
                 outputState={state}
             >
                 <VStack spacing="sp16">
                     {canHaveTokens ? (
                         <TokenEnabledValues
+                            accountKey={accountKey}
                             totalSpent={totalSpent}
                             fee={fee}
                             tokenContract={tokenContract}
                         />
                     ) : (
-                        <BitcoinValues totalSpent={totalSpent} fee={fee} />
+                        <BitcoinValues accountKey={accountKey} totalSpent={totalSpent} fee={fee} />
                     )}
                 </VStack>
             </ReviewOutputCard>

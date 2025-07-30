@@ -1,0 +1,66 @@
+import { ReviewOutputType } from '@suite-common/wallet-types';
+import { Text } from '@suite-native/atoms';
+import { splitAddressToChunks } from '@suite-native/helpers';
+import { Translation } from '@suite-native/intl';
+
+import { ReviewOutputItemValues } from './ReviewOutputItemValues';
+
+export type ReviewOutputItemContentProps = {
+    accountKey: string;
+    outputType: ReviewOutputType;
+    value: string;
+};
+
+export const ReviewOutputItemContent = ({
+    accountKey,
+    outputType,
+    value,
+}: ReviewOutputItemContentProps) => {
+    switch (outputType) {
+        case 'amount':
+            return (
+                <ReviewOutputItemValues
+                    accountKey={accountKey}
+                    value={value}
+                    translationKey="transactionManagement.review.outputs.amountLabel"
+                />
+            );
+
+        case 'destination-tag':
+            return (
+                <Text variant="hint">
+                    {value || (
+                        <Translation id="transactionManagement.review.outputs.destinationTagNotSet" />
+                    )}
+                </Text>
+            );
+
+        case 'address':
+        case 'regular_legacy':
+        case 'contract':
+        case 'signing-with':
+            return <Text variant="hint">{splitAddressToChunks(value).join(' ')}</Text>;
+
+        case 'timebounds':
+            return (
+                <Text variant="hint">
+                    <Translation id="transactionManagement.review.outputs.timeboundsNotSet" />
+                </Text>
+            );
+
+        case 'network':
+            return (
+                <Text variant="hint">
+                    <Translation id="transactionManagement.review.outputs.networkTestnet" />
+                </Text>
+            );
+
+        default:
+            // TODO: handle other output types when are other coins supported (ETH feeGas etc.)
+            console.warn(
+                `ReviewOutputItemContent: Unsupported output type "${outputType}" with value "${value}".`,
+            );
+
+            return null;
+    }
+};

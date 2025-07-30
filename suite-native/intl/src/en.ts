@@ -1806,6 +1806,7 @@ export const en = {
                 },
             },
             error: 'You don’t have enough balance to use this fee.',
+            amount: 'Amount',
             totalAmount: 'Total amount',
             submitButton: 'Review and sign',
             total: 'Total fee',
@@ -1878,23 +1879,6 @@ export const en = {
             },
             outputs: {
                 title: 'Review with Trezor',
-                addressLabel: 'Recipient address',
-                amountLabel: 'Amount',
-                destinationTagLabel: 'Destination tag',
-                timeboundsLabel: 'TimeBounds',
-                timeboundsNotSet: 'No restriction',
-                destinationTagNotSet: "Memo/Destination tag isn't set",
-                networkLabel: 'Network',
-                networkTestnet: 'Transaction is on testnet network',
-                signingWithLabel: 'Signing with',
-                contractLabel: 'Token address',
-                summary: {
-                    label: 'Total including fee',
-                    totalAmount: 'Total amount',
-                    amount: 'Amount',
-                    fee: 'incl. Transaction fee',
-                    maxFee: 'Maximum fee',
-                },
                 successMessage: 'Everything is ready, you can send the transaction now.',
                 submitButton: 'Send transaction',
                 errorAlert: {
@@ -2364,6 +2348,30 @@ export const en = {
     atoms: {
         animatedDoubleView: {
             defaultSwitchLabel: 'Switch',
+        },
+    },
+    transactionManagement: {
+        review: {
+            outputs: {
+                addressLabel: 'Recipient address',
+                amountLabel: 'Amount',
+                destinationTagLabel: 'Destination tag',
+                timeboundsLabel: 'TimeBounds',
+                timeboundsNotSet: 'No restriction',
+                destinationTagNotSet: "Memo/Destination tag isn't set",
+                networkLabel: 'Network',
+                networkTestnet: 'Transaction is on testnet network',
+                signingWithLabel: 'Signing with',
+                contractLabel: 'Token address',
+                summary: {
+                    label: 'Total including fee',
+                    totalAmount: 'Total amount',
+                    amount: 'Amount',
+                    fee: 'incl. Transaction fee',
+                    maxFee: 'Maximum fee',
+                },
+                noAccount: 'Account not found.',
+            },
         },
     },
 };
