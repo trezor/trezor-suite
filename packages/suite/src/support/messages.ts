@@ -405,7 +405,7 @@ export default defineMessages({
         id: 'TR_ALL_NETWORKS_TOOLTIP',
     },
     TR_SELECT_TOKEN: {
-        defaultMessage: 'Select an asset',
+        defaultMessage: 'Select asset',
         id: 'TR_SELECT_TOKEN',
     },
     TR_SELECT_NAME_OR_ADDRESS: {

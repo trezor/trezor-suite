@@ -1679,7 +1679,7 @@
   "TR_SELECT_NUMBER_OF_WORDS": "Select the number of words in your wallet backup",
   "TR_SELECT_PASSPHRASE_SOURCE": "Select where to enter passphrase on {deviceLabel}",
   "TR_SELECT_RECOVERY_METHOD": "Select recovery method",
-  "TR_SELECT_TOKEN": "Select an asset",
+  "TR_SELECT_TOKEN": "Select asset",
   "TR_SELECT_TREZOR": "Select Trezor",
   "TR_SELECT_TREZOR_TO_CONTINUE": "Select your Trezor to continue.",
   "TR_SELECT_TYPE": "Select type",

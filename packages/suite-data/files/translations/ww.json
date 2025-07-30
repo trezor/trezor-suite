@@ -646,6 +646,7 @@
   "TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT": "Trezor 裝置拒絕安裝這個版本的韌體。",
   "TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT": "裝置韌體的雜湊值檢查失敗。",
   "TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT": "裝置韌體的版本檢查失敗。",
+  "TR_DEVICE_COMPROMISED_HEADING": "你的裝置可能已被破解",
   "TR_DEVICE_COMPROMISED_TEXT_SOFT": "在你開始使用之前，我們希望能確定你的裝置是在最佳狀態。請和 Trezor Support 聯絡，了解下一步要做什麼。",
   "TR_DEVICE_CONNECTED": "裝置已接上",
   "TR_DEVICE_CONNECTED_BOOTLOADER": "裝置以 bootloader 模式連接",
