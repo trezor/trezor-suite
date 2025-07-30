@@ -23,7 +23,7 @@ export const BuyFiatAmountInput = () => {
     return (
         <AmountInput
             {...inputControls}
-            accessibilityLabel={translate('moduleTrading.selectFiat.amountLabel')}
+            accessibilityLabel={translate('moduleTrading.selectFiat.buy.amountLabel')}
             inputTransformer={fiatAmountTransformer}
             maxDecimals={MAX_FIAT_DECIMALS}
             testID={FIAT_AMOUNT_TEST_ID}

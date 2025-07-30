@@ -1,9 +1,10 @@
-import { Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
+import { Coins, CryptoId, FiatCurrenciesProps, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import {
     TradingBuyState,
     TradingExchangeState,
     TradingPaymentMethodListProps,
+    TradingSellState,
     TradingType,
 } from '@suite-common/trading';
 
@@ -13,6 +14,7 @@ import coins from './coins.json';
 import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
 import { exchangeQuotes } from './exchangeQuotes';
 import platforms from './platforms.json';
+import { sellCexdirect, sellInvity, sellMercuryo } from './sellProviders';
 import { TradingState, initialState } from '../reducers';
 
 export const getInitializedBuyState = () =>
@@ -84,11 +86,36 @@ export const getInitializedExchangeState = () =>
         },
     }) as TradingExchangeState;
 
+export const getInitializedSellState = () =>
+    ({
+        ...initialState.sell,
+        sellInfo: {
+            providerInfos: {
+                ['invity']: sellInvity,
+                ['mercuryo']: sellMercuryo,
+                ['cexdirect']: sellCexdirect,
+            },
+            supportedFiatCurrencies: ['usd', 'eur', 'czk'] as FiatCurrencyCode[],
+            supportedCryptoCurrencies: [
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                'ethereum',
+                'bitcoin',
+            ] as CryptoId[],
+            country: 'CZ',
+        },
+        amountLimits: {
+            currency: 'BTC',
+            minCrypto: '0.0001',
+            maxCrypto: '50',
+        },
+    }) as TradingSellState;
+
 export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
     ({
         ...initialState,
         buy: getInitializedBuyState(),
         exchange: getInitializedExchangeState(),
+        sell: getInitializedSellState(),
         info: {
             paymentMethods: [
                 {

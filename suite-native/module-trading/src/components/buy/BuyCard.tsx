@@ -52,7 +52,7 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                 >
                     <HStack justifyContent="space-between" alignItems="center">
                         <CardTitle>
-                            <Translation id="moduleTrading.selectFiat.title" />
+                            <Translation id="moduleTrading.selectFiat.buy.title" />
                         </CardTitle>
                         <Box alignItems="flex-end">
                             <BuyFormFieldErrorBadge fieldName="fiatValue" />

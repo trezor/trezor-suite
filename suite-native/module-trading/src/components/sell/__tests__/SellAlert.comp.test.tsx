@@ -5,17 +5,17 @@ import {
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
 
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../types/buy';
-import { BuyAlert } from '../BuyAlert';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
+import { SellFormType } from '../../../types/sell';
+import { SellAlert } from '../SellAlert';
 
-describe('BuyAlert', () => {
-    let form: BuyFormType;
+describe('SellAlert', () => {
+    let form: SellFormType;
 
-    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useSellForm());
 
     const renderTradingAlert = () =>
-        renderWithBasicProvider(<BuyAlert />, {
+        renderWithBasicProvider(<SellAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

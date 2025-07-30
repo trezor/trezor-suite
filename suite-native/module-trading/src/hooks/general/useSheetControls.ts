@@ -5,9 +5,10 @@ import type { Path, UseFormReturn } from '@suite-native/forms';
 import { useBottomSheetControls } from './useBottomSheetControls';
 import { BuyFormValues } from '../../types/buy';
 import { ExchangeFormValues } from '../../types/exchange';
+import { SellFormValues } from '../../types/sell';
 
 export const useSheetControls = <
-    FormValues extends BuyFormValues | ExchangeFormValues,
+    FormValues extends BuyFormValues | ExchangeFormValues | SellFormValues,
     Key extends Path<FormValues>,
 >(
     { setValue, watch }: UseFormReturn<FormValues>,

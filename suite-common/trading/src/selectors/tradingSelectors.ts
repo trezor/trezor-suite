@@ -503,6 +503,9 @@ export const selectBestBuyQuoteByPaymentMethod = createMemoizedSelector(
 export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.isLoading;
 
+export const selectTradingSellIsLoading = (state: TradingRootState) =>
+    state.wallet.tradingNew.sell.isLoading;
+
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.formStep;
 

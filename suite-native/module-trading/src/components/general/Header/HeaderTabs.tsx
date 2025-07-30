@@ -6,6 +6,7 @@ import { TradingType } from '@suite-common/trading';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { HeaderTab } from './HeaderTab';
 import { tradingActions } from '../../../reducers';
@@ -57,7 +58,12 @@ const useTabsData = () => {
     }, [translate, isSellEnabled]);
 };
 
+const tabsStyle = prepareNativeStyle(({ spacings }) => ({
+    gap: spacings.sp12,
+}));
+
 export const HeaderTabs = () => {
+    const { applyStyle } = useNativeStyles();
     const { activeTab, setActiveTab } = useSelectedTab();
     const data = useTabsData();
     const { translate } = useTranslate();
@@ -70,6 +76,7 @@ export const HeaderTabs = () => {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     accessible={true}
+                    contentContainerStyle={applyStyle(tabsStyle)}
                     renderItem={({ item }) => (
                         <HeaderTab
                             icon={item.icon}

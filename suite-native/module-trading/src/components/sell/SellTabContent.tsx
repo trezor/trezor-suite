@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { Text } from '@suite-native/atoms';
-
+import { SellForm } from './SellForm';
+import { SellFormContextProvider } from './SellFormContextProvider';
 import { SellFormSkeleton } from './SellFormSkeleton';
 import { useSellData } from '../../hooks/sell/useSellData';
 import { ServerOffline } from '../general/Error/ServerOffline';
@@ -19,5 +19,9 @@ export const SellTabContent = () => {
         return <SellFormSkeleton />;
     }
 
-    return <Text variant="titleMedium">Sell is not implemented yet</Text>;
+    return (
+        <SellFormContextProvider>
+            <SellForm />
+        </SellFormContextProvider>
+    );
 };
