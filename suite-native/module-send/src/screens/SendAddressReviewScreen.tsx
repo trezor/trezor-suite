@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    Screen,
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
@@ -13,7 +13,6 @@ import {
 } from '@suite-native/navigation';
 
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
-import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import {
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
@@ -23,8 +22,9 @@ export const SendAddressReviewScreen = ({
     route,
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>) => {
+    const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, currentHeaderHeight } =
+        useConfirmOnTrezorController();
     const { accountKey, tokenContract } = route.params;
-
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
             selectIsReceiveAddressOutputConfirmed(state, accountKey, tokenContract),
@@ -37,19 +37,29 @@ export const SendAddressReviewScreen = ({
 
     useEffect(() => {
         if (isAddressConfirmed) {
-            navigation.navigate(SendStackRoutes.SendOutputsReview, { accountKey, tokenContract });
+            navigation.navigate(SendStackRoutes.SendOutputsReview, {
+                accountKey,
+                tokenContract,
+                prevHeaderHeight: currentHeaderHeight,
+                initialSnapIndex: currentHeaderHeight ? 1 : undefined,
+            });
         }
-    }, [isAddressConfirmed, accountKey, navigation, tokenContract]);
+    }, [isAddressConfirmed, accountKey, navigation, tokenContract, currentHeaderHeight]);
+
+    useEffect(() => {
+        if (isTransactionReviewInProgress) {
+            revealConfirmOnTrezorSheet();
+        }
+    }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
 
     return (
-        <Screen
-            header={
-                <ScreenHeader closeActionType={isTransactionReviewInProgress ? 'close' : 'back'} />
-            }
-            // TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965
-            footer={isTransactionReviewInProgress && <SendConfirmOnDeviceImage />}
+        <ConfirmOnTrezorWrapper
+            isManualControlEnabled
+            controlRef={confirmOnTrezorRef}
+            closeActionType="close"
+            defaultHeader={<ScreenHeader closeActionType="back" />}
         >
-            <Box flex={1} justifyContent="space-between" marginTop="sp16">
+            <Box flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
                     <Text variant="titleSmall">
                         <Translation id="moduleSend.review.address.title" />
@@ -57,6 +67,6 @@ export const SendAddressReviewScreen = ({
                     <AddressReviewStepList />
                 </VStack>
             </Box>
-        </Screen>
+        </ConfirmOnTrezorWrapper>
     );
 };

@@ -113,6 +113,8 @@ export type SendStackParamList = {
     [SendStackRoutes.SendOutputsReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
+        prevHeaderHeight?: number;
+        initialSnapIndex?: number;
     };
 };
 

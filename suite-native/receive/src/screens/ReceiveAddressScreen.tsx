@@ -1,7 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+import { FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
+import { useNavigation } from '@react-navigation/native';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -12,20 +14,22 @@ import {
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import {
-    Box,
+    AnimatedBox,
     ErrorMessage,
     InlineAlertBox,
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import {
-    ConfirmOnTrezorImage,
+    ConfirmOnTrezorWrapper,
     selectHasFirmwareAuthenticityCheckHardFailed,
+    useConfirmOnTrezorController,
 } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
-import { CloseActionType, Screen } from '@suite-native/navigation';
+import { CloseActionType, useNavigateToInitialScreen } from '@suite-native/navigation';
+import TrezorConnect from '@trezor/connect';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
 import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
@@ -47,10 +51,16 @@ export const ReceiveAddressScreen = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
+
+    const { revealConfirmOnTrezorSheet, confirmOnTrezorRef, closeSheet } =
+        useConfirmOnTrezorController();
 
     const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const navigation = useNavigation();
 
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
         useAccountReceiveAddress(accountKey);
@@ -63,6 +73,17 @@ export const ReceiveAddressScreen = ({
         }
     }, [handleShowAddress, openModal, isDeviceBackupRequired]);
 
+    const isConfirmOnTrezorReady =
+        isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
+
+    useEffect(() => {
+        if (isConfirmOnTrezorReady) revealConfirmOnTrezorSheet();
+    }, [isConfirmOnTrezorReady, revealConfirmOnTrezorSheet]);
+
+    useEffect(() => {
+        if (isReceiveApproved) closeSheet();
+    }, [isReceiveApproved, closeSheet]);
+
     const closeNoBackupBottomSheet = useCallback(() => {
         closeModal();
     }, [closeModal]);
@@ -70,6 +91,7 @@ export const ReceiveAddressScreen = ({
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
     );
+
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
     const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
@@ -78,69 +100,66 @@ export const ReceiveAddressScreen = ({
         return <ErrorMessage errorMessage={<Translation id="generic.unknownError" />} />;
     }
 
-    const isConfirmOnTrezorReady =
-        isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
+    const onCancel = () => {
+        TrezorConnect.cancel();
+        navigation.goBack();
+    };
 
     const showDestinationTagInfo =
         account.networkType === 'ripple' || account.networkType === 'stellar';
 
     return (
-        <Screen
-            header={
+        <ConfirmOnTrezorWrapper
+            isManualControlEnabled
+            controlRef={confirmOnTrezorRef}
+            closeActionType={isReceiveApproved ? 'close' : closeActionType}
+            closeAction={isReceiveApproved ? navigateToInitialScreen : onCancel}
+            defaultHeader={
                 <ReceiveScreenHeader
                     accountKey={accountKey}
                     tokenContract={tokenContract}
                     closeActionType={isReceiveApproved ? 'close' : closeActionType}
                 />
             }
-            footer={
-                isConfirmOnTrezorReady && (
-                    <ConfirmOnTrezorImage
-                        bottomSheetText={
-                            <Translation id="moduleReceive.bottomSheets.confirmOnDeviceMessage" />
+        >
+            <VStack marginTop="sp8" spacing="sp16" flex={1}>
+                {showDestinationTagInfo && (
+                    <InlineAlertBox
+                        variant="info"
+                        title={
+                            <Translation
+                                id="moduleReceive.destinationTag"
+                                values={{
+                                    link: chunk => (
+                                        <Link
+                                            label={chunk}
+                                            textVariant="label"
+                                            href="https://trezor.io/learn/supported-assets/other-cryptocurrencies/destination-tags"
+                                            isUnderlined
+                                            textColor="textDefault"
+                                            textPressedColor="textSubdued"
+                                        />
+                                    ),
+                                    coinSymbol: getDisplaySymbol(account.symbol),
+                                }}
+                            />
                         }
                     />
-                )
-            }
-        >
-            <Box flex={1}>
-                <VStack marginTop="sp8" spacing="sp16">
-                    {showDestinationTagInfo && (
-                        <InlineAlertBox
-                            variant="info"
-                            title={
-                                <Translation
-                                    id="moduleReceive.destinationTag"
-                                    values={{
-                                        link: chunk => (
-                                            <Link
-                                                label={chunk}
-                                                textVariant="label"
-                                                href="https://trezor.io/learn/supported-assets/other-cryptocurrencies/destination-tags"
-                                                isUnderlined
-                                                textColor="textDefault"
-                                                textPressedColor="textSubdued"
-                                            />
-                                        ),
-                                        coinSymbol: getDisplaySymbol(account.symbol),
-                                    }}
-                                />
-                            }
-                        />
-                    )}
-                    {isAccountDetailVisible && (
+                )}
+                {isAccountDetailVisible && (
+                    <AnimatedBox exiting={FadeOut}>
                         <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
-                    )}
-                    <ReceiveAddressCard
-                        symbol={account.symbol}
-                        address={address}
-                        isTokenAddress={!!tokenContract}
-                        isReceiveApproved={isReceiveApproved}
-                        isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
-                        onShowAddress={handleShowReceiveAddress}
-                    />
-                </VStack>
-            </Box>
+                    </AnimatedBox>
+                )}
+                <ReceiveAddressCard
+                    symbol={account.symbol}
+                    address={address}
+                    isTokenAddress={!!tokenContract}
+                    isReceiveApproved={isReceiveApproved}
+                    isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
+                    onShowAddress={handleShowReceiveAddress}
+                />
+            </VStack>
             {isDeviceBackupRequired && (
                 <WalletBackupNotSetWarningBottomSheet
                     ref={bottomSheetRef}
@@ -148,6 +167,6 @@ export const ReceiveAddressScreen = ({
                     onClose={closeModal}
                 />
             )}
-        </Screen>
+        </ConfirmOnTrezorWrapper>
     );
 };
