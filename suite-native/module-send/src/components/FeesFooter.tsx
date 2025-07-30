@@ -110,7 +110,7 @@ const TokenSummary = ({
         <HStack justifyContent="space-between" alignItems="center">
             <VStack spacing="sp4">
                 <Text variant="callout">
-                    <Translation id="moduleSend.review.outputs.amountLabel" />
+                    <Translation id="moduleSend.fees.amount" />
                 </Text>
                 <Text variant="hint" color="textSubdued">
                     <Translation id="transactions.detail.feeLabel" />

@@ -7,19 +7,17 @@ import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
 
-type SlidingFooterOverlayProps = {
-    currentStepIndex: number;
-    stepHeights: number[];
+export type SlidingFooterOverlayProps = {
+    activeStepOffset: number;
     children?: ReactNode;
-    initialOffset?: number;
 };
 
 const OVERLAY_HEIGHT = 1000;
 const GRADIENT_BACKGROUND_HEIGHT = 50;
+const SLIDING_FOOTER_OVERLAY_TEST_ID = 'sliding-footer-overlay';
 
-const footerOverlayStyle = prepareNativeStyle(utils => ({
+const footerOverlayStyle = prepareNativeStyle(() => ({
     position: 'absolute',
-    paddingTop: utils.spacings.sp24,
     width: '100%',
     height: '100%',
 }));
@@ -36,26 +34,18 @@ const gradientBackgroundStyle = prepareNativeStyle(() => ({
     height: GRADIENT_BACKGROUND_HEIGHT,
 }));
 
-export const SlidingFooterOverlay = ({
-    children,
-    currentStepIndex,
-    stepHeights,
-    initialOffset = 0,
-}: SlidingFooterOverlayProps) => {
+export const SlidingFooterOverlay = ({ children, activeStepOffset }: SlidingFooterOverlayProps) => {
     const { applyStyle, utils } = useNativeStyles();
 
-    const footerAnimatedStyle = useAnimatedStyle(() => {
-        const topOffset =
-            initialOffset +
-            stepHeights.slice(0, currentStepIndex).reduce((acc, height) => acc + height, 0);
-
-        return { transform: [{ translateY: withTiming(topOffset) }] };
-    });
+    const footerAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ translateY: withTiming(activeStepOffset) }],
+    }));
 
     return (
         <Animated.View
             style={[footerAnimatedStyle, applyStyle(footerOverlayStyle)]}
             exiting={SlideOutDown}
+            testID={SLIDING_FOOTER_OVERLAY_TEST_ID}
         >
             <LinearGradient
                 colors={[

@@ -11,6 +11,10 @@ import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+export type ReviewOutputStatusBadgeProps = {
+    status: ReviewOutputState;
+};
+
 const BADGE_SIZE = 14;
 const ANIMATION_DURATION = 550;
 const BORDER_WIDTH_MIN = 3;
@@ -32,7 +36,7 @@ const badgeStyle = prepareNativeStyle<{ isActive: boolean }>((utils, { isActive 
     },
 }));
 
-export const ReviewOutputStatusBadge = ({ status }: { status: ReviewOutputState }) => {
+export const ReviewOutputStatusBadge = ({ status }: ReviewOutputStatusBadgeProps) => {
     const { applyStyle } = useNativeStyles();
 
     const borderWidthValue = useSharedValue(BORDER_WIDTH_MIN);

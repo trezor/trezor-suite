@@ -18,6 +18,7 @@ import {
     getTransactionReviewOutputState,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
+import { ReviewSummaryOutput } from '@suite-native/transaction-management';
 
 import { StatefulReviewOutput } from './types';
 
@@ -146,7 +147,7 @@ export const selectReviewSummaryOutput = (
     state: AccountsRootState & DeviceRootState & SendRootState,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
-) => {
+): ReviewSummaryOutput | null => {
     const precomposedTx = selectSendPrecomposedTx(state);
 
     if (!precomposedTx) return null;

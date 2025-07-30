@@ -39,6 +39,7 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../tokens" },
+        { "path": "../transaction-management" },
         {
             "path": "../../packages/blockchain-link-types"
         },

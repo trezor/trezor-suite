@@ -12,6 +12,8 @@ type ReviewOutputCardProps = {
     outputState: ReviewOutputState;
 };
 
+const REVIEW_OUTPUT_CARD_TEST_ID = 'review-output-card';
+
 const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfirmed }) => ({
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderElevation1,
@@ -38,10 +40,14 @@ export const ReviewOutputCard = ({ children, title, outputState }: ReviewOutputC
             <VStack spacing="sp12">
                 <HStack alignItems="center">
                     <ReviewOutputStatusBadge status={outputState} />
-                    <Text variant="callout">{title}</Text>
+                    <Text variant="callout" testID={REVIEW_OUTPUT_CARD_TEST_ID + '/title'}>
+                        {title}
+                    </Text>
                 </HStack>
                 <CardDivider color={dividerColor} horizontalPadding="sp16" />
-                <Box paddingLeft="sp24">{children}</Box>
+                <Box paddingLeft="sp24" testID={REVIEW_OUTPUT_CARD_TEST_ID + '/content'}>
+                    {children}
+                </Box>
             </VStack>
         </Card>
     );

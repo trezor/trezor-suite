@@ -11128,6 +11128,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/tokens": "workspace:*"
+    "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -11135,7 +11136,6 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
-    expo-linear-gradient: "npm:~14.1.5"
     jotai: "npm:^2.12.5"
     react: "npm:19.0.0"
     react-hook-form: "npm:^7.59.0"
@@ -11537,6 +11537,30 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/transaction-management@workspace:*, @suite-native/transaction-management@workspace:suite-native/transaction-management":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/transaction-management@workspace:suite-native/transaction-management"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    expo-linear-gradient: "npm:~14.1.5"
+    react: "npm:19.0.0"
+    react-native: "npm:0.79.3"
+    react-native-reanimated: "npm:^3.18.0"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
