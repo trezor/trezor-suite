@@ -9,12 +9,13 @@ import {
 } from '@walletconnect/utils';
 
 import { EventType, analytics } from '@suite-common/analytics';
+import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import { CallMethodResponse } from '@trezor/connect';
 
 import { getAdapterByMethod, getNamespaces, processNamespaces } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
@@ -32,7 +33,6 @@ export const sessionAuthenticateThunk = createThunk<
 >(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
     // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
     try {
-        const device = selectSelectedDevice(getState());
         const accounts = selectAllAccountsToList(getState());
         const supportedNamespaces = getNamespaces(accounts);
         const authPayload = populateAuthPayload({
@@ -50,22 +50,34 @@ export const sessionAuthenticateThunk = createThunk<
             iss,
         });
 
-        const signature = await TrezorConnect.ethereumSignMessage({
-            path: ethAccount.path,
-            message,
-            device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
-        });
-
-        if (signature.success === false) {
-            throw new Error('Failed to sign message');
+        dispatch(
+            trezorConnectPopupActions.connectPopupCallThunk({
+                source: {
+                    type: 'walletconnect' as const,
+                    origin: event.verifyContext.verified.origin,
+                    manifest: {
+                        appName: event.params.requester.metadata.name,
+                        appIcon: event.params.requester.metadata.icons?.[0],
+                    },
+                },
+                method: 'ethereumSignMessage',
+                payload: {
+                    path: ethAccount.path,
+                    message,
+                },
+            }),
+        );
+        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+        if (!response.success) {
+            throw new Error('Sign message error');
         }
+        const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
 
         const auth = buildAuthObject(
             authPayload,
             {
                 t: 'eip191',
-                s: `0x${signature.payload.signature}`,
+                s: `0x${typedPayload.signature}`,
             },
             iss,
         );
