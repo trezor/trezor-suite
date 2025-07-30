@@ -2,6 +2,7 @@ import { BLUETOOTH_PREFIX } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { Device } from '@trezor/connect';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
@@ -27,6 +28,9 @@ export const bluetoothConnectDeviceThunk = createThunk<
 
         console.log('_____calling: bluetoothIpc.connectDevice(id)', deviceId);
         const result = await bluetoothIpc.connectDevice(deviceId);
+
+        // restore focus in case if OS bluetooth setting is opened above the app (linux/mac)
+        desktopApi.appFocus();
 
         if (!result.success) {
             // This can fail, but we are silent about this as the device may not be there anymore
