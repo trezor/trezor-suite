@@ -88,6 +88,7 @@ export const TradingFormInputCryptoSelect = <
     supportedCryptoCurrencies,
     methods,
     isDisabled,
+    placeholder,
     'data-testid': dataTestId,
 }: TradingFormInputCryptoSelectProps<TFieldValues>) => {
     const dispatch = useDispatch();
@@ -247,6 +248,7 @@ export const TradingFormInputCryptoSelect = <
                 control={control}
                 render={({ field: { value } }) => (
                     <Select
+                        placeholder={placeholder && !isLoading && translationString(placeholder)}
                         value={value}
                         options={formOptions}
                         labelLeft={label && <Translation id={label} />}

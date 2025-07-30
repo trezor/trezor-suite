@@ -209,7 +209,6 @@ export interface TradingExchangeFormContextProps
     setAmountLimits: (limits?: CryptoAmountLimitProps) => void;
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
     changeFeeLevel: (level: FeeLevel['label']) => void;
-    removeDraft: (key: string) => void;
 
     confirmTrade: ({
         receiveAddress,
@@ -251,6 +250,7 @@ export type TradingFormContextValues<T extends TradingType> = TradingFormMapProp
 
 export interface TradingFormInputDefaultProps {
     label?: TranslationKey;
+    placeholder?: TranslationKey;
     'data-testid'?: string;
 }
 
@@ -297,7 +297,7 @@ export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormPro
     account: Account;
     methods: UseFormReturn<T>;
     pageType: TradingPageType;
-    draftUpdated: TradingSellExchangeFormProps | null;
+    draftUpdated?: TradingSellExchangeFormProps | null;
     type: TradingTradeSellExchangeType;
     handleChange: (offLoading?: boolean) => Promise<void>;
     setAmountLimits: (limits?: AmountLimitProps) => void;

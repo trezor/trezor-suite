@@ -1,11 +1,6 @@
 import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
-import {
-    CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
-    TRADING_DEFAULT_CRYPTO_CURRENCY,
-    TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY,
-    TRADING_EXCHANGE_RATE_FIXED,
-} from '../../constants';
+import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, TRADING_EXCHANGE_RATE_FIXED } from '../../constants';
 import { ExchangeInfo } from '../../reducers/exchangeReducer';
 import { TradingExchangeAmountLimitProps, TradingExchangeRateType } from '../../types';
 import { cryptoIdToNetwork, parseCryptoId } from '../../utils';
@@ -121,23 +116,6 @@ export const getStatusMessage = (status: ExchangeTradeStatus) => {
     }
 };
 
-export const tradingGetExchangeReceiveCryptoId = (
-    sendCryptoId: CryptoId | undefined,
-    receiveCryptoId?: CryptoId | undefined,
-): CryptoId => {
-    const getReceivedDefaultCryptoId = (cryptoId: CryptoId | undefined) => {
-        if (cryptoId === TRADING_DEFAULT_CRYPTO_CURRENCY)
-            return TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY;
-
-        return TRADING_DEFAULT_CRYPTO_CURRENCY;
-    };
-
-    if (sendCryptoId === receiveCryptoId) return getReceivedDefaultCryptoId(receiveCryptoId);
-    if (receiveCryptoId) return receiveCryptoId;
-
-    return getReceivedDefaultCryptoId(sendCryptoId);
-};
-
 export const exchangeUtils = {
     getAmountLimits,
     isQuoteError,
@@ -146,5 +124,4 @@ export const exchangeUtils = {
     getCexQuotesByRateType,
     getSuccessQuotesOrdered,
     getStatusMessage,
-    tradingGetExchangeReceiveCryptoId,
 };

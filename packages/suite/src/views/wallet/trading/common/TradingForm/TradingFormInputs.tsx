@@ -222,6 +222,7 @@ export const TradingFormInputs = () => {
                     )}
                 </Column>
                 <TradingFormInputCryptoSelect<TradingExchangeFormProps>
+                    placeholder="TR_SELECT_TOKEN"
                     label="TR_TO"
                     cryptoSelectName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                     supportedCryptoCurrencies={supportedCryptoCurrencies}

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDebounce } from 'react-use';
 
 import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
-import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -17,7 +17,6 @@ import {
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
     exchangeThunks,
-    exchangeUtils,
     getUnusedAddressFromAccount,
     invityAPI,
     selectTradingComposedTransactionInfo,
@@ -30,14 +29,12 @@ import {
     tradingActions,
     tradingExchangeActions,
     tradingThunks,
-    useTradingInfo,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAndUpdateAccountThunk, selectAccountByKey } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { isChanged } from '@trezor/utils';
 
 import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -51,10 +48,8 @@ import { useTradingExchangeHandleChange } from 'src/hooks/wallet/trading/form/co
 import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/common/useTradingExchangeQuotesFilter';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
-import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import {
     selectIsDebugModeActive,
@@ -73,6 +68,8 @@ import {
 } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
+import { useFormDraft } from '../../useFormDraft';
+import { useTradingPreviousRoute } from './common/useTradingPreviousRoute';
 
 export const useTradingExchangeForm = ({
     selectedAccount,
@@ -98,14 +95,13 @@ export const useTradingExchangeForm = ({
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
 
+    const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
+
     // used for disabling approve/revoke controls when
     // quotes are scheduled to refresh after changing swap form inputs
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
+    const [shouldUseTradingAccountKey, setShouldUseTradingAccountKey] = useState<boolean>(false);
 
-    const { buildDefaultCryptoOption } = useTradingInfo();
-    const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
-    const shouldUseTradingAccountKey =
-        !!tradingAccountKey && selectedAccount.account?.key !== tradingAccountKey;
     const [accountKey, setAccountKey] = useTradingAccountKey({
         type,
         tradingAccountKey,
@@ -152,33 +148,24 @@ export const useTradingExchangeForm = ({
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
 
     const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(account);
+
     const exchangeDraftKey = 'trading-exchange';
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<TradingExchangeFormProps>(exchangeDraftKey);
     const draft = getDraft(exchangeDraftKey);
     const isDraft = !!draft;
+
     const getDraftUpdated = (): TradingExchangeFormProps | null => {
-        if (!draft) return null;
-        if (isPreviousRouteFromTradeSection) return draft;
+        if (draft && isPreviousRouteFromTradeSection) return draft;
 
-        const defaultReceiveCryptoSelect = exchangeUtils.tradingGetExchangeReceiveCryptoId(
-            defaultValues.sendCryptoSelect?.value,
-            draft.receiveCryptoSelect?.value,
-        );
-
-        return {
-            ...defaultValues,
-            amountInCrypto: draft.amountInCrypto,
-            receiveCryptoSelect: buildDefaultCryptoOption(defaultReceiveCryptoSelect),
-            rateType: draft.rateType,
-            exchangeType: draft.exchangeType,
-        };
+        return null;
     };
     const draftUpdated = getDraftUpdated();
     const methods = useForm({
         mode: 'onChange',
         defaultValues: draftUpdated ?? defaultValues,
     });
+
     const { reset, register, getValues, setValue, formState, control } = methods;
     const values = useWatch<TradingExchangeFormProps>({ control });
     const { rateType, exchangeType, sendCryptoSelect, receiveCryptoSelect } = getValues();
@@ -216,12 +203,12 @@ export const useTradingExchangeForm = ({
     });
 
     const {
-        isComposing,
         composedLevels,
         feeInfo,
         changeFeeLevel,
         setComposedLevels,
         composeRequest,
+        isComposing,
     } = useTradingComposeTransaction<TradingExchangeFormProps>({
         account,
         network,
@@ -257,7 +244,6 @@ export const useTradingExchangeForm = ({
         account,
         methods,
         pageType,
-        draftUpdated,
         type,
         handleChange,
         setAmountLimits,
@@ -773,6 +759,12 @@ export const useTradingExchangeForm = ({
         await handleChange();
     };
 
+    useEffect(() => {
+        if (tradingAccountKey) {
+            setShouldUseTradingAccountKey(selectedAccount.account?.key !== tradingAccountKey);
+        }
+    }, [selectedAccount.account?.key, tradingAccountKey]);
+
     // save approval tx data for approval fee estimation
     useEffect(() => {
         if (isApproval && selectedQuote?.status === 'APPROVAL_REQ' && selectedQuote?.dexTx) {
@@ -819,21 +811,10 @@ export const useTradingExchangeForm = ({
     );
 
     useEffect(() => {
-        if (!isChanged(defaultValues, values)) {
-            removeDraft(exchangeDraftKey);
-
-            return;
-        }
-        if (values.sendCryptoSelect && !values.sendCryptoSelect?.value) {
-            removeDraft(exchangeDraftKey);
-
-            return;
-        }
-
-        if (values.receiveCryptoSelect && !values.receiveCryptoSelect?.value) {
+        if (!isPreviousRouteFromTradeSection) {
             removeDraft(exchangeDraftKey);
         }
-    }, [defaultValues, values, removeDraft]);
+    }, [isPreviousRouteFromTradeSection, removeDraft]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -911,7 +892,6 @@ export const useTradingExchangeForm = ({
         setReceiveAccount,
         composeRequest,
         changeFeeLevel,
-        removeDraft,
         setAmountLimits,
         goToOffers,
         sendTransaction,
