@@ -320,6 +320,49 @@ export const fetchTransactionsPageThunk = createThunk(
     },
 );
 
+type FetchUtxoTransactionsForAccountThunkParams = {
+    accountKey: AccountKey;
+};
+
+export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchUtxoTransactionsForAccountThunk`,
+    async (
+        { accountKey }: FetchUtxoTransactionsForAccountThunkParams,
+        { dispatch, getState, signal },
+    ) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account) {
+            throw new Error(`Account not found: ${accountKey}`);
+        }
+
+        if (account.utxo === undefined || account.utxo.length === 0) {
+            return selectAccountTransactions(getState(), accountKey);
+        }
+
+        const result = await TrezorConnect.blockchainGetTransactions({
+            coin: account.symbol,
+            txs: account.utxo.map(utxo => utxo.txid),
+        });
+
+        if (signal.aborted) {
+            throw new Error('Aborted');
+        }
+
+        if (!result.success) {
+            throw new Error(result.payload.error);
+        }
+
+        dispatch(
+            transactionsActions.addTransaction({
+                transactions: result.payload,
+                account,
+            }),
+        );
+
+        return selectAccountTransactions(getState(), accountKey);
+    },
+);
+
 /**
  * @param noLoading - disable loading indicator, it's not used directly in this thunk, but it's used in reducer
  */
