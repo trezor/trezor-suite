@@ -82,6 +82,7 @@ export const FeeInfoBottomSheet = ({
             isVisible={isVisible}
             onClose={onClose}
             title={<Translation id="moduleConnectPopup.simulation.feeInfo" />}
+            paddingBottom="sp24"
         >
             <Card>
                 <VStack>
