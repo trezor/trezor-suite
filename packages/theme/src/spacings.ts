@@ -43,12 +43,30 @@ export const spacingsPx = (Object.keys(spacings) as Array<Spacing>).reduce((resu
     return result;
 }, {} as SpacingPx);
 
-type NativeSpacingValue = 1 | 2 | 4 | 8 | 10 | 12 | 16 | 18 | 20 | 24 | 32 | 36 | 40 | 52 | 56 | 64;
+type NativeSpacingValue =
+    | 1
+    | 2
+    | 4
+    | 6
+    | 8
+    | 10
+    | 12
+    | 16
+    | 18
+    | 20
+    | 24
+    | 32
+    | 36
+    | 40
+    | 52
+    | 56
+    | 64;
 
 export const nativeSpacings = {
     sp1: 1,
     sp2: 2,
     sp4: 4,
+    sp6: 6,
     sp8: 8,
     sp12: 12,
     sp10: 10,

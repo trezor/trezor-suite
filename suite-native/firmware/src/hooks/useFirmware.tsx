@@ -39,6 +39,8 @@ export const useFirmware = (
         targetFirmwareType: firmwareInstallation.targetFirmwareType,
         navigationLocation: params?.navigationLocation,
     });
+    const [isInitialFirmwareInstallationRunning, setIsInitialFirmwareInstallationRunning] =
+        useState<boolean>(false);
 
     const setIsFirmwareInstallationRunning = useCallback(
         (isRunning: boolean) => {
@@ -102,11 +104,12 @@ export const useFirmware = (
     const translatedText = useMemo(() => {
         let text: { title: TxKeyPath; subtitle?: TxKeyPath } = {
             title: 'firmware.firmwareUpdateProgress.initializing.title',
+            subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
         };
 
         const isInitialState = (status === 'started' && operation === null) || status === 'initial';
 
-        if (status === 'error') {
+        if (status === 'error' && !isInitialFirmwareInstallationRunning) {
             text = {
                 title: 'firmware.firmwareUpdateProgress.error.title',
             };
@@ -143,7 +146,15 @@ export const useFirmware = (
             title: translate(text.title),
             subtitle: text.subtitle ? translate(text.subtitle) : error,
         };
-    }, [operation, status, error, confirmOnDevice, translate, originalFirmwareVersion]);
+    }, [
+        status,
+        operation,
+        isInitialFirmwareInstallationRunning,
+        confirmOnDevice,
+        translate,
+        error,
+        originalFirmwareVersion,
+    ]);
 
     return {
         ...firmwareInstallation,
@@ -154,6 +165,8 @@ export const useFirmware = (
         operation,
         status,
         error,
+        isInitialFirmwareInstallationRunning,
+        setIsInitialFirmwareInstallationRunning,
         mayBeStucked,
         progress,
     };

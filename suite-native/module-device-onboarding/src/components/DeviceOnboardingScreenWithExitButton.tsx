@@ -26,7 +26,7 @@ type DeviceOnboardingExitButtonScreenHeaderProps = {
     onAlertContinueButtonPress?: () => void;
 };
 
-const DeviceOnboardingExitButtonScreenHeader = ({
+export const DeviceOnboardingExitButtonScreenHeader = ({
     onAlertContinueButtonPress,
 }: DeviceOnboardingExitButtonScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProps>();

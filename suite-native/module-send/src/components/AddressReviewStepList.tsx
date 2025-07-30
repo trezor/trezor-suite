@@ -1,20 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { AppState, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    RootStackParamList,
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
@@ -26,24 +20,15 @@ import { AddressReviewStep } from './AddressReviewStep';
 import { CompareAddressHelpButton } from './CompareAddressHelpButton';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
-import {
-    selectIsReceiveAddressOutputConfirmed,
-    selectIsTransactionReviewInProgress,
-} from '../selectors';
+import { selectIsTransactionReviewInProgress } from '../selectors';
 
 const NUMBER_OF_STEPS = 3;
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
-type NavigationProps = StackToStackCompositeNavigationProps<
-    SendStackParamList,
-    SendStackRoutes.SendOutputsReview,
-    RootStackParamList
->;
 
 export const AddressReviewStepList = () => {
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract, transaction } = route.params;
-    const navigation = useNavigation<NavigationProps>();
 
     const [stepIndex, setStepIndex] = useState(0);
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
@@ -75,17 +60,6 @@ export const AddressReviewStepList = () => {
     );
 
     const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1 || isTransactionReviewInProgress;
-
-    const isAddressConfirmed = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsReceiveAddressOutputConfirmed(state, accountKey, tokenContract),
-    );
-
-    useEffect(() => {
-        if (isAddressConfirmed) {
-            navigation.navigate(SendStackRoutes.SendOutputsReview, { accountKey, tokenContract });
-        }
-    }, [isAddressConfirmed, accountKey, navigation, tokenContract]);
 
     const handleNextStep = () => {
         setStepIndex(prevStepIndex => prevStepIndex + 1);

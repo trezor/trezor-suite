@@ -3,27 +3,29 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    cancelSignSendFormTransactionThunk,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { Box, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
-    RootStackRoutes,
-    Screen,
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
     StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
-import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
 import { selectIsTransactionAlreadySigned } from '../selectors';
-import { cleanupSendFormThunk } from '../sendFormThunks';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -40,6 +42,10 @@ export const SendOutputsReviewScreen = ({
     const { accountKey, tokenContract } = route.params;
     const navigation = useNavigation<NavigationProps>();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+
+    const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
+
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
 
@@ -54,6 +60,7 @@ export const SendOutputsReviewScreen = ({
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', async e => {
             // We want to modify only behavior of back button actions.
+
             if (e.data.action.type !== 'GO_BACK') return;
 
             e.preventDefault();
@@ -61,28 +68,30 @@ export const SendOutputsReviewScreen = ({
             const { wasReviewCanceled } = await showReviewCancellationAlert();
 
             if (wasReviewCanceled) {
-                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
-                navigation.navigate(RootStackRoutes.AccountDetail, {
-                    accountKey,
-                    tokenContract,
-                    closeActionType: 'back',
-                });
+                dispatch(cancelSignSendFormTransactionThunk());
+                navigateToInitialScreen();
             }
         });
 
         return unsubscribe;
     });
 
+    useEffect(() => {
+        if (showOutputsReviewFooter) {
+            closeSheet();
+        }
+    }, [closeSheet, showOutputsReviewFooter]);
+
     return (
-        <Screen
-            header={
+        <ConfirmOnTrezorWrapper
+            controlRef={confirmOnTrezorRef}
+            closeActionType="close"
+            defaultHeader={
                 <ScreenHeader
                     title={<Translation id="moduleSend.review.outputs.title" />}
                     closeActionType="close"
                 />
             }
-            /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
-            footer={!showOutputsReviewFooter && <SendConfirmOnDeviceImage />}
         >
             <VStack flex={1} spacing="sp16" justifyContent="space-between">
                 <ReviewOutputItemList accountKey={accountKey} tokenContract={tokenContract} />
@@ -92,6 +101,6 @@ export const SendOutputsReviewScreen = ({
                     <Box style={applyStyle(spacerStyle)} />
                 )}
             </VStack>
-        </Screen>
+        </ConfirmOnTrezorWrapper>
     );
 };

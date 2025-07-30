@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Animated, {
-    FadeIn,
     FadeInDown,
     FadeInUp,
     FadeOutDown,
@@ -11,14 +10,16 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
-import { Badge, Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
+import { Badge, Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
-    ConfirmOnTrezorImage,
+    ConfirmOnTrezorWrapper,
     reportCheckFail,
     setTemporaryRememberedDeviceThunk,
+    useConfirmOnTrezorController,
 } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
+import { DynamicScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -36,19 +37,14 @@ const bottomButtonsContainerStyle = prepareNativeStyle<{ isConfirmOnDeviceShown:
     }),
 );
 
-const cancelButtonStyle = prepareNativeStyle(utils => ({
-    position: 'absolute',
-    left: utils.spacings.sp8,
-    top: utils.spacings.sp8,
-}));
-
 type FirmwareInstallationScreenContentProps = {
     onFirmwareInstallationSuccess: () => void;
     onFirmwareInstallationFailure?: () => void;
-    isCancellationAllowed?: boolean;
     isRetryAllowed?: boolean;
     isTemporaryRememeberAllowed?: boolean;
     navigationLocation: 'settings' | 'onboarding';
+    customHeader?: React.ReactNode;
+    onCancelAction?: () => void;
 };
 
 // This component is shared between `module-onboarding` and `module-device-settings`.
@@ -56,7 +52,8 @@ type FirmwareInstallationScreenContentProps = {
 export const FirmwareInstallationScreenContent = ({
     onFirmwareInstallationSuccess,
     onFirmwareInstallationFailure,
-    isCancellationAllowed = true,
+    onCancelAction,
+    customHeader,
     isRetryAllowed = true,
     isTemporaryRememeberAllowed = true,
     navigationLocation,
@@ -79,6 +76,8 @@ export const FirmwareInstallationScreenContent = ({
         translatedText,
         mayBeStucked,
         originalDevice,
+        setIsInitialFirmwareInstallationRunning,
+        isInitialFirmwareInstallationRunning,
         targetFirmwareType,
     } = useFirmware({ navigationLocation });
     const {
@@ -91,6 +90,8 @@ export const FirmwareInstallationScreenContent = ({
         targetFirmwareType,
         navigationLocation,
     });
+    const { revealConfirmOnTrezorSheet, confirmOnTrezorRef, isSheetOpen, closeSheet } =
+        useConfirmOnTrezorController();
     const openLink = useOpenLink();
 
     const deviceInternalModel = originalDevice?.features?.internal_model;
@@ -120,8 +121,10 @@ export const FirmwareInstallationScreenContent = ({
     }, [onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
 
     const handleCancel = useCallback(() => {
+        setIsFirmwareInstallationRunning(false);
+        TrezorConnect.cancel();
         navigation.goBack();
-    }, [navigation]);
+    }, [navigation, setIsFirmwareInstallationRunning]);
 
     const startFirmwareUpdate = useCallback(async () => {
         setIsFirmwareInstallationRunning(true);
@@ -198,16 +201,22 @@ export const FirmwareInstallationScreenContent = ({
     }, [openLink]);
 
     useEffect(() => {
+        // Preventing from triggering the action again
+        setIsInitialFirmwareInstallationRunning(true);
+
         // Small delay to let initial screen animation finish
         const timeout = setTimeout(() => {
             handleAnalyticsReportStarted({ startType: 'normal' });
+
+            setIsInitialFirmwareInstallationRunning(false);
             startFirmwareUpdate();
         }, 2000);
 
         return () => clearTimeout(timeout);
-    }, [startFirmwareUpdate, handleAnalyticsReportStarted]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const isError = status === 'error';
+    const isError = status === 'error' && !isInitialFirmwareInstallationRunning;
     const isDone = status === 'done';
 
     const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
@@ -224,26 +233,33 @@ export const FirmwareInstallationScreenContent = ({
     }, [status, operation, isError]);
 
     const showConfirmOnDevice = confirmOnDevice && !isError && !isDone;
-    const isCancelButtonDisplayed = isCancellationAllowed && isError;
 
     const buttonStyle = applyStyle(bottomButtonsContainerStyle, {
         isConfirmOnDeviceShown: showConfirmOnDevice,
     });
 
+    useEffect(() => {
+        if (isSheetOpen && !showConfirmOnDevice) {
+            closeSheet();
+
+            return;
+        }
+
+        if (showConfirmOnDevice) revealConfirmOnTrezorSheet();
+    }, [closeSheet, isSheetOpen, showConfirmOnDevice, revealConfirmOnTrezorSheet]);
+
     return (
-        <>
-            {isCancelButtonDisplayed && (
-                <Animated.View entering={FadeIn} style={applyStyle(cancelButtonStyle)}>
-                    <IconButton
-                        iconName="x"
-                        size="medium"
-                        colorScheme="tertiaryElevation0"
-                        accessibilityRole="button"
-                        accessibilityLabel="close"
-                        onPress={handleCancel}
-                    />
-                </Animated.View>
-            )}
+        <ConfirmOnTrezorWrapper
+            isManualControlEnabled
+            controlRef={confirmOnTrezorRef}
+            closeAction={onCancelAction ?? handleCancel}
+            closeActionType="close"
+            defaultHeader={
+                customHeader ?? (
+                    <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
+                )
+            }
+        >
             <VStack justifyContent="center" alignItems="center" flex={1}>
                 <UpdateProgressIndicator progress={progress} status={indicatorStatus} />
                 <Animated.View entering={FadeInUp} exiting={FadeOutDown} key={translatedText.title}>
@@ -305,18 +321,12 @@ export const FirmwareInstallationScreenContent = ({
                     </Button>
                 </Animated.View>
             )}
-            {showConfirmOnDevice && (
-                <ConfirmOnTrezorImage
-                    bottomSheetText={
-                        <Translation id="firmware.firmwareUpdateProgress.confirmOnDeviceMessage" />
-                    }
-                />
-            )}
+
             <MayBeStuckedBottomSheet
                 isOpened={isMayBeStuckBottomSheetOpened}
                 onClose={closeMayBeStuckBottomSheet}
                 onAnalyticsReportStucked={handleAnalyticsReportStucked}
             />
-        </>
+        </ConfirmOnTrezorWrapper>
     );
 };
