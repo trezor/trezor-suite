@@ -15,9 +15,7 @@ import {
     TradingExchangeRateType,
     cryptoIdToSymbol,
     enabledTradingCurrencies,
-    exchangeUtils,
     selectTradingPrefilledFromAccount,
-    useTradingInfo,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
@@ -37,7 +35,6 @@ import {
 export const useTradingExchangeFormDefaultValues = (
     account: Account,
 ): TradingExchangeFormDefaultValuesProps => {
-    const { buildDefaultCryptoOption } = useTradingInfo();
     const localCurrency = useSelector(selectLocalCurrency);
     const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
 
@@ -78,14 +75,6 @@ export const useTradingExchangeFormDefaultValues = (
     const { address, token } =
         getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);
 
-    const defaultReceiveCryptoSelect = useMemo(
-        () =>
-            buildDefaultCryptoOption(
-                exchangeUtils.tradingGetExchangeReceiveCryptoId(defaultSendCryptoSelect?.value),
-            ),
-        [buildDefaultCryptoOption, defaultSendCryptoSelect?.value],
-    );
-
     const defaultPayment: Output = useMemo(
         () => ({
             ...DEFAULT_PAYMENT,
@@ -109,7 +98,7 @@ export const useTradingExchangeFormDefaultValues = (
             ...defaultFormState,
             amountInCrypto: true,
             sendCryptoSelect: defaultSendCryptoSelect,
-            receiveCryptoSelect: defaultReceiveCryptoSelect,
+            receiveCryptoSelect: null,
             [TRADING_EXCHANGE_RATE]: TRADING_EXCHANGE_RATE_FIXED as TradingExchangeRateType,
             [TRADING_EXCHANGE_FORM]: TRADING_EXCHANGE_FORM_CEX as TradingExchangeFormType,
             [TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]:
@@ -117,7 +106,7 @@ export const useTradingExchangeFormDefaultValues = (
             [TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]:
                 TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL as TradingExchangeRateFilter,
         }),
-        [defaultFormState, defaultSendCryptoSelect, defaultReceiveCryptoSelect],
+        [defaultFormState, defaultSendCryptoSelect],
     );
 
     return { defaultValues, defaultCurrency };

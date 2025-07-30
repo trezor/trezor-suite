@@ -152,7 +152,7 @@ export interface TradingInfoProps {
         cryptoIds: Set<CryptoId>,
         excludedCryptoIds?: Set<CryptoId>,
     ) => TradingCryptoSelectOptionProps[];
-    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => TradingCryptoSelectItemProps;
+    buildDefaultCryptoOption: (cryptoId?: CryptoId | null) => TradingCryptoSelectItemProps;
 }
 
 export type TradingFiatCurrencyOption = {

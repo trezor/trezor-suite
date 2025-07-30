@@ -10,14 +10,11 @@ import {
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
-    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     cryptoIdToSymbol,
-    exchangeUtils,
     tradingExchangeActions,
-    useTradingInfo,
 } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
@@ -73,8 +70,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     });
     const isNotFormPage = pageType !== 'form';
     const [fractionButton, setFractionButton] = useState<number | undefined>(undefined);
-    const { buildDefaultCryptoOption } = useTradingInfo();
-
     const { getValues, setValue, clearErrors, handleSubmit, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
     const { outputs, sendCryptoSelect } = getValues();
@@ -143,24 +138,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         [getValues, tradingFiatValues, networkDecimals, shouldSendInSats, setValue],
     );
 
-    const setExchangeReceiveCrypto = (selected: TradingAccountOptionsGroupOptionProps) => {
-        if (type !== 'exchange') return;
-
-        const valuesTyped = values as TradingExchangeFormProps;
-
-        if (selected.value === valuesTyped?.receiveCryptoSelect?.value) {
-            const receiveCryptoSelect = exchangeUtils.tradingGetExchangeReceiveCryptoId(
-                selected.value,
-                valuesTyped?.receiveCryptoSelect?.value,
-            );
-
-            setValue(
-                TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-                buildDefaultCryptoOption(receiveCryptoSelect),
-            );
-        }
-    };
-
     const onCryptoCurrencyChange = async (selected: TradingAccountOptionsGroupOptionProps) => {
         const symbol = cryptoIdToSymbol(selected.value);
         const cryptoSelectedCurrent = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
@@ -186,7 +163,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setComposedLevels(undefined);
 
         setAccountOnChange(account);
-        setExchangeReceiveCrypto(selected);
         changeFeeLevel('normal'); // reset fee level
 
         await tradingFiatValues?.fiatRatesUpdater(

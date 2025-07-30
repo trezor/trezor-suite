@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { getNetwork, getNetworkByTradeCryptoId } from '@suite-common/wallet-config';
+import { getNetworkByTradeCryptoId } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
 import { selectTradingInfo } from '../selectors/tradingSelectors';
@@ -170,24 +170,10 @@ export const useTradingInfo = (): TradingInfoProps => {
     );
 
     const buildDefaultCryptoOption = useCallback(
-        (cryptoId: CryptoId | undefined) => {
+        (cryptoId?: CryptoId | null) => {
             const coinInfo = cryptoId && coins[cryptoId];
-            if (coinInfo) {
-                return toCryptoOption(cryptoId, coinInfo);
-            }
 
-            const { coingeckoId, name, symbol } = getNetwork('btc');
-            const item: TradingCryptoSelectItemProps = {
-                type: 'currency',
-                value: coingeckoId as CryptoId,
-                label: symbol.toUpperCase(),
-                symbol,
-                cryptoName: name,
-                coingeckoId,
-                contractAddress: null,
-            };
-
-            return item;
+            return toCryptoOption(cryptoId, coinInfo);
         },
         [coins],
     );

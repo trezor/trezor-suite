@@ -228,7 +228,11 @@ export const TradingFormOffer = () => {
 
     return (
         <Column gap={spacings.lg}>
-            <Column gap={spacings.xs} data-testid="@trading/best-offer">
+            <Column
+                gap={spacings.xs}
+                data-testid="@trading/best-offer"
+                margin={{ bottom: spacings.md }}
+            >
                 {selectedAssetCryptoId && <Translation id={amountLabels.offerLabel} />}
                 {shouldDisplayFiatAmount ? (
                     <TradingFormOfferFiatAmount amount={tradingGetRoundedFiatAmount(sendAmount)} />
@@ -256,7 +260,7 @@ export const TradingFormOffer = () => {
                     </Paragraph>
                 )}
             </Column>
-            <Column gap={spacings.xxs} margin={{ vertical: spacings.md }}>
+            <Column gap={spacings.xxs}>
                 <Row justifyContent="space-between">
                     {showProviderAdjustedAmountTooltip ? (
                         <Tooltip
