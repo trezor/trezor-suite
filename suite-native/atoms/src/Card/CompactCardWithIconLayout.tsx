@@ -53,9 +53,11 @@ const contentStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
 }));
 
-const touchableOpacityStyle = prepareNativeStyle(utils => ({
-    ...utils.boxShadows.small,
-}));
+const touchableOpacityStyle = prepareNativeStyle<Pick<CompactCardWithIconLayoutProps, 'noShadow'>>(
+    (utils, { noShadow }) => ({
+        ...(noShadow ? {} : utils.boxShadows.small),
+    }),
+);
 
 export const CompactCardWithIconLayout = ({
     icon,
@@ -73,7 +75,7 @@ export const CompactCardWithIconLayout = ({
 
     return (
         <TouchableOpacity
-            style={applyStyle(touchableOpacityStyle)}
+            style={applyStyle(touchableOpacityStyle, { noShadow })}
             disabled={isDisabled}
             onPress={onPress}
             {...pressableProps}
