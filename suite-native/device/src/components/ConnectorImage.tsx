@@ -23,7 +23,7 @@ export const ConnectorImage = ({ maxHeight }: ConnectorImageProps) => {
     if (!isDeviceConnectedViaBluetooth) {
         return (
             <Image
-                source={require('../assets/connector.png')}
+                source={require('../assets/connector.webp')}
                 style={applyStyle(imageStyle, { maxHeight })}
             />
         );

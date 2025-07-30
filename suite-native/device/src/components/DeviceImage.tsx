@@ -3,13 +3,13 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const deviceImageMap: Record<DeviceModelInternal, string> = {
-    [DeviceModelInternal.UNKNOWN]: require('../assets/unknown.png'),
-    [DeviceModelInternal.T1B1]: require('../assets/t1b1.png'),
-    [DeviceModelInternal.T2T1]: require('../assets/t2t1.png'),
-    [DeviceModelInternal.T2B1]: require('../assets/t3b1.png'),
-    [DeviceModelInternal.T3B1]: require('../assets/t3b1.png'),
-    [DeviceModelInternal.T3T1]: require('../assets/t3t1.png'),
-    [DeviceModelInternal.T3W1]: require('../assets/t3w1.png'),
+    [DeviceModelInternal.UNKNOWN]: require('../assets/unknown.webp'),
+    [DeviceModelInternal.T1B1]: require('../assets/t1b1.webp'),
+    [DeviceModelInternal.T2T1]: require('../assets/t2t1.webp'),
+    [DeviceModelInternal.T2B1]: require('../assets/t3b1.webp'),
+    [DeviceModelInternal.T3B1]: require('../assets/t3b1.webp'),
+    [DeviceModelInternal.T3T1]: require('../assets/t3t1.webp'),
+    [DeviceModelInternal.T3W1]: require('../assets/t3w1.webp'),
 };
 
 type DeviceImageSize = 'small' | 'normal' | 'large';
