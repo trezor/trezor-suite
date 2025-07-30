@@ -58,6 +58,8 @@ jobs:
           yarn coins simple cardano jws
           yarn coins simple solana jws
           yarn coins advanced solana json
+          yarn coins simple stellar jws
+          yarn coins advanced stellar jws
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.event.inputs.environment == 'production-definitions' && github.ref == 'refs/heads/develop' }}

@@ -10,8 +10,8 @@ Scripts:
 
 - options `yarn nfts` and `yarn coins`
 - has to be called with structure type
-    - `simple` (used for Suite)
-    - `advanced` (planned to be used for Solana token symbols and names)
+    - `simple` (array of contract addresses)
+    - `advanced` (object with token symbols and names per contract address)
 - and chain
     - `ethereum`, `polygon-pos`, `solana`, `stellar`...
 - and file type
