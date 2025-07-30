@@ -65,7 +65,7 @@ export const TransactionGroupedList = ({
                         disableBumpFee={
                             network.networkType === 'ethereum'
                                 ? item.tx.txid !== transactionWithLowestNonce?.txid
-                                : false
+                                : item.tx.type === 'joint'
                         }
                     />
                 ),
