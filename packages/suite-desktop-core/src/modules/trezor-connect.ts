@@ -7,6 +7,7 @@ import { parseElectrumUrl } from '@trezor/utils';
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
 import { APP_NAME } from '../libs/constants';
+import { PowerSaveBlocker } from '../libs/power-save-blocker';
 
 import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
 
@@ -99,6 +100,15 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
 
                 if (method === 'setTransports') {
                     params[0].transports = getTransportsParam(params[0].transports);
+                }
+
+                if (method === 'firmwareUpdate') {
+                    const powerSaveBlocker = new PowerSaveBlocker();
+                    powerSaveBlocker.startBlockingPowerSave();
+                    const response = await TrezorConnect.firmwareUpdate(params[0]);
+                    powerSaveBlocker.stopBlockingPowerSave();
+
+                    return response;
                 }
 
                 return (TrezorConnect[method] as any)(...params);
