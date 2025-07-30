@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
+import { fetchUtxoTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import {
     convertAmountUnitsToSubunits,
     filterAndCategorizeUtxos,
@@ -149,9 +149,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     // fetch all transactions so that we can show a transaction timestamp for each UTXO
     useEffect(() => {
         const promise = dispatch(
-            fetchAllTransactionsForAccountThunk({
+            fetchUtxoTransactionsForAccountThunk({
                 accountKey: account.key,
-                noLoading: true,
             }),
         );
 
