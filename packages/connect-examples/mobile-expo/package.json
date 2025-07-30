@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@trezor/connect-mobile": "workspace:*",
-        "expo": "53.0.11",
+        "expo": "53.0.20",
         "expo-linking": "^7.0.5",
         "expo-status-bar": "^2.0.0",
         "react": "19.0.0",
