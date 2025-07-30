@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "timestamp": "2025-07-30T17:17:00+00:00",
+    "timestamp": "2025-07-31T00:00:00+00:00",
     "sequence": 99,
     "actions": [
         {
@@ -721,7 +721,7 @@
                     "devices": [
                         {
                             "model": "T1B1",
-                            "firmware": "1.12.1",
+                            "firmware": ">=1.12.1 <=1.13.0",
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "*",
@@ -729,7 +729,7 @@
                         },
                         {
                             "model": "1",
-                            "firmware": "1.12.1",
+                            "firmware": ">=1.12.1 <=1.13.0",
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "*",
