@@ -231,7 +231,7 @@ export default defineMessages({
     TR_EXCHANGE_FEES_INFO: {
         id: 'TR_EXCHANGE_FEES_INFO',
         defaultMessage:
-            'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
+            'All fees included. Estimated transaction fee: {feeAmount} ({feeAmountFiat}).',
     },
     TR_TRADING_DISABLED_DEFAULT: {
         defaultMessage: '{type} is currently disabled.',
@@ -453,7 +453,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_STATUS_CONVERTING',
     },
     TR_EXCHANGE_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Swap Successful',
+        defaultMessage: 'Swap successful',
         id: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
     },
     TR_EXCHANGE_DETAIL_SUCCESS_TEXT: {
@@ -499,7 +499,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_DETAIL_KYC_INFO_LINK',
     },
     TR_EXCHANGE_DETAIL_KYC_BUTTON: {
-        defaultMessage: 'Back to Account',
+        defaultMessage: 'Back to account',
         id: 'TR_EXCHANGE_DETAIL_KYC_BUTTON',
     },
     TR_EXCHANGE_DETAIL_SENDING_TITLE: {
@@ -696,7 +696,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage: 'Receive account is outside of Suite.',
+        defaultMessage: 'Receive account is outside of Trezor Suite.',
     },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
@@ -747,7 +747,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
-        defaultMessage: "Use an account ({symbol}) that isn't in Trezor Suite",
+        defaultMessage: "Use an account ({symbol}) that isn't in Trezor Suite.",
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
@@ -788,7 +788,7 @@ export default defineMessages({
         id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL',
     },
     TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC: {
-        defaultMessage: 'KYC never required',
+        defaultMessage: 'KYC is never required',
         id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC',
     },
     TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL: {
@@ -957,7 +957,7 @@ export default defineMessages({
         id: 'TR_SELL_GO_TO_TRANSACTION',
     },
     TR_SELL_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Sell Successful',
+        defaultMessage: 'Sell successful',
         id: 'TR_SELL_DETAIL_SUCCESS_TITLE',
     },
     TR_SELL_DETAIL_SUCCESS_TEXT: {
@@ -1023,7 +1023,7 @@ export default defineMessages({
     },
     TR_BUY_FOOTER_TEXT_2: {
         defaultMessage:
-            "Invity doesn't see any of your payment or KYC information; you share this only with the exchange provider if you choose to finish the transaction.",
+            "Invity doesn't see any of your payment or KYC information; you share this only with the exchange provider if you choose to complete the transaction.",
         id: 'TR_BUY_FOOTER_TEXT_2',
     },
     TR_BUY_MODAL_FOR_YOUR_SAFETY: {
@@ -1164,7 +1164,7 @@ export default defineMessages({
         id: 'TR_BUY_RECEIVING_ACCOUNT',
     },
     TR_BUY_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Buy Successful',
+        defaultMessage: 'Buy successful',
         id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
     },
     TR_BUY_DETAIL_SUCCESS_TEXT: {
@@ -1445,28 +1445,28 @@ export default defineMessages({
         id: 'TR_TRADING_KYC_POLICY',
     },
     TR_TRADING_KYC_POLICY_NEVER_REQUIRED: {
-        defaultMessage: 'KYC never required',
+        defaultMessage: 'KYC is never required',
         id: 'TR_TRADING_KYC_POLICY_NEVER_REQUIRED',
     },
     TR_TRADING_KYC_REQUIRED: {
-        defaultMessage: 'KYC required',
+        defaultMessage: 'KYC is required',
         id: 'TR_TRADING_KYC_REQUIRED',
     },
     TR_TRADING_KYC_NO_REFUND: {
-        defaultMessage: 'KYC is only requested in exceptional cases. KYC required for refunds. 👈',
+        defaultMessage:
+            "KYC is only required in exceptional cases. However, it's required for refunds.",
         id: 'TR_TRADING_KYC_NO_REFUND',
     },
     TR_TRADING_KYC_YES_REFUND: {
-        defaultMessage:
-            "KYC is only requested in exceptional cases. It's not required for refunds. 🤝",
+        defaultMessage: "KYC is only required in exceptional cases. It's not required for refunds.",
         id: 'TR_TRADING_KYC_YES_REFUND',
     },
     TR_TRADING_KYC_NO_KYC: {
-        defaultMessage: 'KYC never required. Exceptional cases automatically refunded. 👍',
+        defaultMessage: 'KYC is never required. Exceptional cases are automatically refunded.',
         id: 'TR_TRADING_KYC_NO_KYC',
     },
     TR_TRADING_KYC_DEX: {
-        defaultMessage: 'KYC never required. DEX swaps either succeed or fail. 👍',
+        defaultMessage: 'KYC is never required. DEX swaps either succeed or fail.',
         id: 'TR_TRADING_KYC_DEX',
     },
     TR_TRADING_DCA_HEADING: {
@@ -1806,7 +1806,7 @@ export default defineMessages({
     },
     TR_BACKUP_FINISHED_TEXT: {
         defaultMessage:
-            "If you've written down your wallet backup, your Trezor is nearly ready. Don't lose your wallet backup, otherwise you won't be able to recover your funds.",
+            'Your Trezor is nearly ready. Just make sure your wallet backup is written down and stored safely—without it, your funds can’t be recovered.',
         description: 'Text that appears after backup is finished',
         id: 'TR_BACKUP_FINISHED_TEXT',
     },
@@ -1822,7 +1822,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP: {
         defaultMessage:
-            "Trezor will display your wallet backup. Write it down accurately and store securely. It's the only way to recover your funds.",
+            "Your Trezor will display the words of your wallet backup. Write them down accurately and store securely. It's the only way to fully recover your funds.",
         id: 'TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP',
     },
     TR_ONBOARDING_BACKUP_SUBHEADING: {
@@ -1880,15 +1880,16 @@ export default defineMessages({
     },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_2: {
         defaultMessage:
-            'Your current wallet backup still allows you to recover your funds. Store it in a safe and secure location, separate from your Multi-share Backup shares.',
+            'Your current wallet backup is still valid and can be used to recover your funds. Store it securely, and keep it separate from your Multi-share Backup shares.',
         id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_2',
     },
     TR_MULTI_SHARE_BACKUP_CHECKBOX_1: {
-        defaultMessage: 'This is an advanced feature, and you accept the increased responsibility.',
+        defaultMessage: 'This is an advanced feature, and I accept the increased responsibility.',
         id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_1',
     },
     TR_MULTI_SHARE_BACKUP_CHECKBOX_2: {
-        defaultMessage: 'Your current wallet backup is still able to recover your wallet.',
+        defaultMessage:
+            'I understand that my current wallet backup is still valid and able to recover my wallet.',
         id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_2',
     },
     TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP: {
@@ -1983,12 +1984,12 @@ export default defineMessages({
         id: 'TR_CREATE_SHARES_EXPLANATION',
     },
     TR_CREATE_SHARES_EXAMPLE: {
-        defaultMessage: 'Example: 5 total shares, any 3 required to recover your wallet',
+        defaultMessage: 'Example: 5 total shares, any 3 required to recover your wallet.',
         id: 'TR_CREATE_SHARES_EXAMPLE',
     },
     TR_CREATE_SHARES_CARD_1: {
         defaultMessage:
-            'Grab a pen & paper, print <cardsLink>backup cards</cardsLink>, or use <keepLink>Trezor Keep Metal</keepLink>',
+            'Get pen & paper, print <cardsLink>wallet backup cards</cardsLink>, or use <keepLink>Trezor Keep Metal</keepLink>',
         id: 'TR_CREATE_SHARES_CARD_1',
     },
     TR_CREATE_SHARES_CARD_2: {
@@ -2337,7 +2338,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION: {
         defaultMessage:
-            "It's possible to install custom firmware on your Trezor device, but doing so will erase its memory and may render it unusable. Only proceed if you are certain of what you're doing.",
+            'Install custom firmware at your own risk—this will erase your device’s memory and could render it unusable. Proceed only if you’re absolutely sure.',
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION',
     },
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
@@ -2388,7 +2389,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC: {
         defaultMessage:
-            'Safety checks protect you from performing non-standard transactions. They can be temporarily disabled in case such a transaction needs to be carried out.',
+            'Use safety checks to prevent non-standard transactions. You can temporarily disable them if you need to proceed with one.',
         id: 'TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC',
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON: {
@@ -2434,7 +2435,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC: {
         defaultMessage:
-            'Setting a strong PIN is one of the best ways to secure your device against unauthorized physical access and protect your funds.',
+            'Set a strong PIN to help protect your device from unauthorized access and keep your assets safe.',
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC',
     },
     TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE: {
@@ -2451,7 +2452,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
     TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC: {
-        defaultMessage: 'Turn on haptic feedback for device interactions',
+        defaultMessage: 'Turn on haptic feedback for device interactions.',
         id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC',
     },
     TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE: {
@@ -2596,7 +2597,7 @@ export default defineMessages({
         id: 'TR_FINAL_HEADING',
     },
     TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
-        defaultMessage: 'Change Homescreen',
+        defaultMessage: 'Change homescreen',
         id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
     },
     TR_ONBOARDING_DEVICE_EDIT_LABEL: {
@@ -2707,7 +2708,7 @@ export default defineMessages({
         id: 'TR_GENERAL',
     },
     TR_CONTINUE_TO_BACKUP: {
-        defaultMessage: 'Continue to backup',
+        defaultMessage: 'Continue to wallet backup',
         id: 'TR_CONTINUE_TO_BACKUP',
     },
     TR_SKIP_PIN: {
@@ -2720,7 +2721,7 @@ export default defineMessages({
         id: 'TR_SKIP_PIN_DESCRIPTION',
     },
     TR_SKIP_BACKUP: {
-        defaultMessage: 'Skip Backup',
+        defaultMessage: 'Skip wallet backup',
         id: 'TR_SKIP_BACKUP',
     },
     TR_SKIP_BACKUP_DESCRIPTION: {
@@ -2802,12 +2803,12 @@ export default defineMessages({
         id: 'TR_PRIVACY',
     },
     TR_AUTO_EJECT: {
-        defaultMessage: 'Auto eject wallets',
+        defaultMessage: 'Auto-eject wallets',
         id: 'TR_AUTO_EJECT',
     },
     TR_AUTO_EJECT_DESCRIPTION: {
         defaultMessage:
-            'Automatically eject all wallets when Trezor device is disconnected. Your visible balances will be removed from Suite until you reconnect your device.',
+            'Automatically eject all wallets when your Trezor is disconnected.\nYour balances will be removed from Trezor Suite until you reconnect your device.',
         id: 'TR_AUTO_EJECT_DESCRIPTION',
     },
     TR_LANGUAGE: {
@@ -3114,13 +3115,12 @@ export default defineMessages({
     },
     TR_PIN_SET_SUCCESS: {
         defaultMessage:
-            'Write your PIN down and keep it safe. Use it to unlock your Trezor when you need to access your funds.',
+            'Write down your PIN and store it in a safe place. You’ll need it to unlock your Trezor and access your funds.',
         description: 'Longer text indicating PIN was set successfully.',
         id: 'TR_PIN_SET_SUCCESS',
     },
     TR_PIN_SUBHEADING: {
-        defaultMessage:
-            'Using a strong PIN protects your Trezor from unauthorized physical access.',
+        defaultMessage: 'Set a strong PIN to keep your Trezor safe from unauthorized access.',
         description: 'Subheading on PIN page',
         id: 'TR_PIN_SUBHEADING',
     },
@@ -3240,7 +3240,7 @@ export default defineMessages({
     },
     TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION: {
         defaultMessage:
-            "Great job! Now let's create a wallet backup. Your wallet backup is the only way to recover access to your wallet.",
+            "Now let's create a wallet backup. Your wallet backup is the only way to recover access to your wallet.",
         id: 'TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION',
     },
     TR_SELECT_DEVICE: {
@@ -3582,7 +3582,7 @@ export default defineMessages({
         id: 'TR_TX_FEE',
     },
     TR_TX_FEE_INCLUDING_RENT: {
-        defaultMessage: 'Fee (incl. rent)',
+        defaultMessage: 'Fee (including rent)',
         id: 'TR_TX_FEE_INCLUDING_RENT',
     },
     TR_UNCONFIRMED_TX: {
@@ -3670,7 +3670,7 @@ export default defineMessages({
         id: 'TR_WALLET_DUPLICATE_TITLE',
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
-        defaultMessage: 'Create a new wallet or recover one using your wallet backup.',
+        defaultMessage: 'Create a new wallet or recover one using your wallet backup',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
     },
     TR_WEST: {
@@ -3752,7 +3752,7 @@ export default defineMessages({
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     },
     TR_YOUR_WALLET_IS_READY_WHAT: {
-        defaultMessage: 'Your wallet is ready.',
+        defaultMessage: 'Your wallet is ready',
         id: 'TR_YOUR_WALLET_IS_READY_WHAT',
     },
     TR_GAS_PRICE: {
@@ -4040,15 +4040,15 @@ export default defineMessages({
     },
     TOAST_RAW_TX_SENT: {
         id: 'TOAST_RAW_TX_SENT',
-        defaultMessage: 'Transaction sent. TXID: {txid}',
+        defaultMessage: 'Transaction sent. Tx ID: {txid}',
     },
     TOAST_TX_RECEIVED: {
         id: 'TOAST_TX_RECEIVED',
-        defaultMessage: '{amount} received on {account}',
+        defaultMessage: '{amount} received in {account}',
     },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction {amount} on {account} confirmed successfully',
+        defaultMessage: 'Transaction {amount} in {account} confirmed successfully',
     },
     TOAST_TX_BUTTON: {
         id: 'TOAST_TX_BUTTON',
@@ -5078,7 +5078,7 @@ export default defineMessages({
     TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE: {
         id: 'TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE',
         defaultMessage:
-            "We've selected the <primary>optimal backup type</primary> for your wallet.",
+            "We've selected the <primary>optimal wallet backup type</primary> for your Trezor.",
     },
     TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE: {
         id: 'TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE',
@@ -5092,7 +5092,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_BACKUP_TYPE: {
         id: 'TR_ONBOARDING_BACKUP_TYPE',
-        defaultMessage: 'Backup type',
+        defaultMessage: 'Wallet backup type',
     },
     TR_ONBOARDING_SEED_TYPE_SINGLE_SEED: {
         id: 'TR_ONBOARDING_SEED_TYPE_SINGLE_SEED',
@@ -5100,8 +5100,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION: {
         id: 'TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION',
-        defaultMessage:
-            'Generates a single set of 20 words that recovers your wallet. This backup type is upgradable to Multi-share Backup whenever you’re ready.',
+        defaultMessage: 'Generates a single set of 20 words that can fully recover your wallet.',
     },
     TR_ONBOARDING_SEED_TYPE_ADVANCED: {
         id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED',
@@ -5110,15 +5109,15 @@ export default defineMessages({
     TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION: {
         id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION',
         defaultMessage:
-            'Generates multiple 20-word shares (wordlists) to recover your wallet. Set a minimum recovery number then distribute shares to trusted individuals or hide them securely. When needed, collect the required number of shares to regain access to your wallet.',
+            'Generates multiple 20-word shares (wordlists). Set the minimum number of shares required to fully recover your wallet.',
     },
     TR_ONBOARDING_SEED_TYPE_12_WORDS: {
         id: 'TR_ONBOARDING_SEED_TYPE_12_WORDS',
-        defaultMessage: '12-word Backup',
+        defaultMessage: '12-word wallet backup',
     },
     TR_ONBOARDING_SEED_TYPE_24_WORDS: {
         id: 'TR_ONBOARDING_SEED_TYPE_24_WORDS',
-        defaultMessage: '24-word Backup',
+        defaultMessage: '24-word wallet backup',
     },
     TR_ONBOARDING_BACKUP_TYPE_DEFAULT: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_DEFAULT',
@@ -5130,11 +5129,11 @@ export default defineMessages({
     },
     TR_ONBOARDING_BACKUP_CATEGORY_20_WORD_BACKUPS: {
         id: 'TR_ONBOARDING_BACKUP_CATEGORY_20_WORD_BACKUPS',
-        defaultMessage: '20-word backup types',
+        defaultMessage: '20-word wallet backup types',
     },
     TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI',
-        defaultMessage: 'Upgradable to Multi-share Backup',
+        defaultMessage: 'Changeable to Multi-share Backup',
     },
     TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE',
@@ -5147,12 +5146,12 @@ export default defineMessages({
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
-        defaultMessage: 'Secure & reliable, not easily upgradable to Multi-share Backup',
+        defaultMessage: 'Secure & reliable—not easily changeable to Multi-share Backup',
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy wallet backups can't easily be upgraded to a Multi-share Backup. <a>Read more</a>",
+            "Generates a single set of 12 or 24 words that can fully recover your wallet. Legacy wallet backup types can't be changed easily to Multi-share Backups. <a>Read more</a>",
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
@@ -5169,7 +5168,7 @@ export default defineMessages({
     TR_ONBOARDING_BACKUP_LEGACY_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_LEGACY_WARNING',
         defaultMessage:
-            "This can't be directly upgraded to Multi-share Backup. To allow for seamless upgrades, use the default Single-share Backup.",
+            "This can't be directly changed to Multi-share Backup. For future flexibility, use the default Single-share Backup.",
     },
     TR_ONBOARDING_BACKUP_SHAMIR_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_SHAMIR_WARNING',
@@ -5321,7 +5320,7 @@ export default defineMessages({
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE',
         defaultMessage:
-            'Get early access to the latest product features before they’re released publicly. ',
+            'Get early access to the latest product features before they’re released publicly.',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION',
@@ -5507,11 +5506,11 @@ export default defineMessages({
     },
     TR_COULD_NOT_RETRIEVE_CHANGELOG: {
         id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
-        defaultMessage: 'Could not retrieve the changelog',
+        defaultMessage: "Couldn't open the changelog",
     },
     TR_CHANGELOG_ON_GITHUB: {
         id: 'TR_CHANGELOG_ON_GITHUB',
-        defaultMessage: 'Show changelog on GitHub',
+        defaultMessage: 'Open the changelog on GitHub',
     },
     TR_NAV_TRADE: {
         id: 'TR_NAV_TRADE',
@@ -5659,7 +5658,8 @@ export default defineMessages({
         id: 'TR_CONVERTED_TO_LOWERCASE',
     },
     TR_ADDED_BITCOINCASH_PREFIX: {
-        defaultMessage: "Prefix 'bitcoincash:' added. Confirm this is a Bitcoin Cash address.",
+        defaultMessage:
+            'We’ve added the prefix bitcoincash: to match the correct format.\nConfirm that this is a valid Bitcoin Cash (BCH) address.',
         id: 'TR_ADDED_BITCOINCASH_PREFIX',
     },
     TR_CONVERT_TO_CHECKSUM_ADDRESS: {
@@ -5668,7 +5668,7 @@ export default defineMessages({
     },
     TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT: {
         defaultMessage:
-            "You're sending funds to a linked account, such as a token or staking account.",
+            "You're sending funds to an associated account, such as a token or staking account.",
         id: 'TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
@@ -5684,7 +5684,7 @@ export default defineMessages({
         defaultMessage: 'Send max',
     },
     AMOUNT_IS_NOT_ENOUGH: {
-        defaultMessage: 'Not enough funds',
+        defaultMessage: "You don't have enough funds.",
         id: 'AMOUNT_IS_NOT_ENOUGH',
     },
     AMOUNT_EXCEEDS_MAX: {
@@ -5773,11 +5773,11 @@ export default defineMessages({
     },
     LOCKTIME_DESCRIPTION: {
         id: 'LOCKTIME_DESCRIPTION',
-        defaultMessage: 'Transition cannot be broadcast until:',
+        defaultMessage: "The transaction can't be broadcasted until:",
     },
     LOCKTIME_CURRENT_UTC: {
         id: 'LOCKTIME_CURRENT_UTC',
-        defaultMessage: 'Current UTC datetime: {datetime}',
+        defaultMessage: 'Current UTC date and time: {datetime}',
     },
     LOCKTIME_CURRENT_BLOCKHEIGHT: {
         id: 'LOCKTIME_CURRENT_BLOCKHEIGHT',
@@ -5801,7 +5801,7 @@ export default defineMessages({
     },
     LOCKTIME_INVALID_DATETIME: {
         id: 'LOCKTIME_INVALID_DATETIME',
-        defaultMessage: 'Invalid date format, use dd/mm/yyyy hh:mm:ss.',
+        defaultMessage: 'Invalid format. Use DD/MM/YYYY HH:MM:SS.',
     },
     LOCKTIME_BLOCKHEIGHT: {
         id: 'LOCKTIME_BLOCKHEIGHT',
@@ -5899,11 +5899,11 @@ export default defineMessages({
     },
     INCLUDING_FEE: {
         id: 'INCLUDING_FEE',
-        defaultMessage: 'Incl. fee',
+        defaultMessage: 'Including fee',
     },
     INCLUDING_FEE_AND_RENT: {
         id: 'INCLUDING_FEE_AND_RENT',
-        defaultMessage: 'Incl. fee & rent',
+        defaultMessage: 'Including fee & rent',
     },
     SEND_TRANSACTION: {
         id: 'SEND_TRANSACTION',
@@ -6075,7 +6075,7 @@ export default defineMessages({
     },
     TR_NOT_ENOUGH_SELECTED: {
         id: 'TR_NOT_ENOUGH_SELECTED',
-        defaultMessage: 'Not enough funds selected',
+        defaultMessage: "You don't have enough funds selected.",
         description: 'Error message for amount field in send form when coin control is on',
     },
     TR_MISSING_TO_INPUT: {
@@ -6085,7 +6085,7 @@ export default defineMessages({
     },
     TR_MISSING_TO_FEE: {
         id: 'TR_MISSING_TO_FEE',
-        defaultMessage: 'Not enough funds selected to cover the fee',
+        defaultMessage: "You don't have enough funds selected to cover the fee.",
         description: 'Info in Coin control section',
     },
     TR_NO_SPENDABLE_UTXOS: {
@@ -6251,7 +6251,7 @@ export default defineMessages({
     TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP',
         defaultMessage:
-            'Firmware update required. You can change your homescreen in the settings page later',
+            'Firmware update required. You can change your homescreen after firmware update.',
     },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
@@ -6347,7 +6347,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend. Reconnect your device, and ensure your internet connection or custom backend URL is correct.',
+            'Not connected to the backend. Reconnect your device and ensure your internet connection or custom backend URL is correct. The selected network might also be disabled in Settings.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -6706,7 +6706,7 @@ export default defineMessages({
     },
     TR_RECOVER_YOUR_WALLET_FROM: {
         id: 'TR_RECOVER_YOUR_WALLET_FROM',
-        defaultMessage: 'Recover wallet using a wallet backup',
+        defaultMessage: 'Recover your wallet using a wallet backup',
     },
     TR_SELECT_RECOVERY_METHOD: {
         id: 'TR_SELECT_RECOVERY_METHOD',
@@ -6935,7 +6935,7 @@ export default defineMessages({
     TR_DECREASE_TX: {
         id: 'TR_DECREASE_TX',
         defaultMessage:
-            'Not enough funds to cover the fee. The final amount needs to be reduced to speed up transaction.',
+            "You don't have enough funds to cover the fee. The final amount needs to be reduced to speed up transaction.",
     },
     TR_RBF_ORIGINAL_AMOUNT: {
         id: 'TR_RBF_ORIGINAL_AMOUNT',
@@ -7078,11 +7078,11 @@ export default defineMessages({
     },
     TR_TXID: {
         id: 'TR_TXID',
-        defaultMessage: 'TX ID',
+        defaultMessage: 'Tx ID',
     },
     TR_TXID_RBF: {
         id: 'TR_TXID_RBF',
-        defaultMessage: 'Original TX ID to be replaced',
+        defaultMessage: 'Original transaction ID to be replaced',
     },
     TR_SIZE: {
         id: 'TR_SIZE',
@@ -7280,7 +7280,7 @@ export default defineMessages({
     },
     TR_DEVICE_CONNECTED_NEW_DEVICE_STATE: {
         id: 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE',
-        defaultMessage: 'New device connected.',
+        defaultMessage: 'New device connected',
     },
     TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE: {
         id: 'TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE',
@@ -7471,7 +7471,7 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION: {
         id: 'TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION',
-        defaultMessage: 'Your {deviceName} is ready to go!',
+        defaultMessage: 'Your {deviceName} is ready to go.',
     },
     TR_CHECK_DEVICE_ORIGIN_TITLE: {
         id: 'TR_CHECK_DEVICE_ORIGIN_TITLE',
@@ -7637,8 +7637,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
-        defaultMessage:
-            'Select which coins to show in Trezor Suite. You can change this setting anytime.',
+        defaultMessage: 'Select which coins to show in Trezor Suite. You can update this anytime.',
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
@@ -7776,7 +7775,8 @@ export default defineMessages({
     },
     TR_ONBOARDING_CLICK_TO_CONFIRM: {
         id: 'TR_ONBOARDING_CLICK_TO_CONFIRM',
-        defaultMessage: 'Click to confirm you understand the instructions below',
+        defaultMessage:
+            'Click to confirm you’ve carefully read and understood the instructions in each box below.',
     },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION',
@@ -7916,7 +7916,7 @@ export default defineMessages({
     },
     TR_STAKING_NOT_ENOUGH_FUNDS: {
         id: 'TR_STAKING_NOT_ENOUGH_FUNDS',
-        defaultMessage: "You don't have enough funds on your account.",
+        defaultMessage: "You don't have enough funds.",
     },
     TR_STAKING_TREZOR_POOL_FAIL: {
         id: 'TR_STAKING_TREZOR_POOL_FAIL',
@@ -8396,13 +8396,13 @@ export default defineMessages({
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
         description: 'Warning in coinjoin send form',
         defaultMessage:
-            'Not enough private funds. You can either make more coins private, manually select UTXOs in Coin Control, or lower the privacy level.',
+            "You don't have enough private funds. Either make more coins private, manually select UTXOs in coin control, or lower the privacy level.",
     },
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING: {
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING',
         description: 'Warning in coinjoin rbf form',
         defaultMessage:
-            'Not enough private funds. You can either make more coins private or lower the privacy level.',
+            "You don't have enough private funds. Either make more coins private or lower the privacy level.",
     },
     TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING: {
         id: 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING',
@@ -8449,7 +8449,7 @@ export default defineMessages({
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS: {
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS',
         description: 'Secondary button text in coinjoin send form',
-        defaultMessage: 'Not enough private funds',
+        defaultMessage: "You don't have enough private funds.",
     },
     TR_SEND_NOT_ANONYMIZED_COINS: {
         id: 'TR_SEND_NOT_ANONYMIZED_COINS',
@@ -8514,7 +8514,7 @@ export default defineMessages({
     },
     TR_LOADING_ACCOUNTS_DESCRIPTION: {
         id: 'TR_LOADING_ACCOUNTS_DESCRIPTION',
-        defaultMessage: 'You can change these settings after accounts have loaded.',
+        defaultMessage: 'You can change settings after accounts have loaded.',
     },
     TR_LOADING_FACT_TITLE: {
         id: 'TR_LOADING_FACT_TITLE',
@@ -8690,7 +8690,7 @@ export default defineMessages({
     TR_UNAVAILABLE_WHILE_LOADING: {
         id: 'TR_UNAVAILABLE_WHILE_LOADING',
         description: 'Coinjoin account navigation button tooltip during discovery',
-        defaultMessage: 'Unavailable while loading',
+        defaultMessage: 'Unavailable while accounts are loading',
     },
     TR_BIO_AUTH_LOCKED_HEADING: {
         id: 'TR_BIO_AUTH_LOCKED_HEADING',
@@ -8954,7 +8954,7 @@ export default defineMessages({
     },
     TR_DESKTOP_APP_PROMO_TEXT: {
         id: 'TR_DESKTOP_APP_PROMO_TEXT',
-        defaultMessage: 'Simple crypto management directly on your desktop',
+        defaultMessage: 'Take control of your crypto—right from your desktop.',
     },
     TR_DESKTOP_APP_PROMO_GET: {
         id: 'TR_DESKTOP_APP_PROMO_GET',
@@ -9007,7 +9007,7 @@ export default defineMessages({
     },
     TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION: {
         id: 'TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION',
-        defaultMessage: 'Learn how to use your device with the help of a short tutorial',
+        defaultMessage: 'Learn how to use your device with a short tutorial.',
     },
     TR_CONTINUE_ON_TREZOR: {
         id: 'TR_CONTINUE_ON_TREZOR',
@@ -9969,7 +9969,7 @@ export default defineMessages({
     },
     TR_SHOW_ON_TRAY_DESCRIPTION: {
         id: 'TR_SHOW_ON_TRAY_DESCRIPTION',
-        defaultMessage: 'Monitor if Trezor Suite is running in the background.',
+        defaultMessage: 'Monitor when Trezor Suite is running in the background.',
     },
     TR_CUSTOM_FEE_WARNING: {
         id: 'TR_CUSTOM_FEE_WARNING',
@@ -10300,7 +10300,8 @@ export default defineMessages({
     },
     TR_NOT_ENOUGH_FUNDS: {
         id: 'TR_NOT_ENOUGH_FUNDS',
-        defaultMessage: 'Not enough funds in this account. Select another to continue.',
+        defaultMessage:
+            "You don't have enough funds in this account. Select another account to continue.",
     },
     TR_SIGN_EIP712_TYPED_DATA: {
         id: 'TR_SIGN_EIP712_TYPED_DATA',
