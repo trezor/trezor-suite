@@ -52,6 +52,7 @@
             pkgs.pango # build dependencies for node-canvas
             pkgs.shellcheck
             pkgs.playwright-test  # From playwright-web-flake
+            pkgs.vips
           ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
             pkgs.nsis
             pkgs.p7zip

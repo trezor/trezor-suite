@@ -40,6 +40,7 @@ in
       pkg-config
       pixman cairo giflib libjpeg libpng librsvg pango            # build dependencies for node-canvas
       shellcheck
+      vips
     ] ++ lib.optionals stdenv.isLinux [
       nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
