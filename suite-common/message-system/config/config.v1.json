@@ -1426,5 +1426,31 @@
                 ]
             }
         }
+    ],
+    "experiments": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "experiment": {
+                "id": "092db279-98dc-418e-bbfa-ef70716fb211",
+                "groups": [
+                    {
+                        "variant": "A",
+                        "percentage": 80
+                    },
+                    {
+                        "variant": "B",
+                        "percentage": 20
+                    }
+                ]
+            }
+        }
     ]
 }
