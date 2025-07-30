@@ -1,14 +1,25 @@
 import { useEffect, useMemo } from 'react';
 
+import { TranslationKey } from '@suite-common/intl-types';
 import { FirmwareCheckType } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/constants/suite/firmware';
-import { useDevice } from 'src/hooks/suite';
+import {
+    RevisionCheckErrorWithNotification,
+    hashCheckErrorScenarios,
+    isRevisionCheckErrorWithNotification,
+    revisionCheckErrorScenarios,
+} from 'src/constants/suite/firmware';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
+
+const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
+    'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
+};
 
 const reportCheck = (
     level: 'error' | 'warning',
@@ -56,6 +67,8 @@ const useCommonData = () => {
 const useReportRevisionCheck = () => {
     const commonData = useCommonData();
     const { device } = useDevice();
+    const dispatch = useDispatch();
+
     const revisionCheck = isDeviceAcquired(device)
         ? device.authenticityChecks.firmwareRevision
         : null;
@@ -64,11 +77,23 @@ const useReportRevisionCheck = () => {
     const errorPayload = isError ? revisionCheck.errorPayload : null;
 
     useEffect(() => {
-        if (!errorType) return;
+        if (errorType === null) return;
         if (revisionCheckErrorScenarios[errorType].shouldReport) {
             reportCheckFail('Firmware revision', { ...commonData, errorType }, errorPayload);
         }
     }, [commonData, errorType, errorPayload]);
+
+    useEffect(() => {
+        if (errorType === null) return;
+        if (isRevisionCheckErrorWithNotification(errorType)) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'firmware-authenticity-check-error',
+                    translationKey: revisionCheckNotifications[errorType],
+                }),
+            );
+        }
+    }, [dispatch, errorType]);
 };
 
 const useReportHashCheck = () => {
@@ -82,7 +107,7 @@ const useReportHashCheck = () => {
     const attemptCount = isError ? hashCheck.attemptCount : null;
 
     useEffect(() => {
-        if (!errorType) return;
+        if (errorType === null) return;
         if (!hashCheckErrorScenarios[errorType].shouldReport) return;
         const willBeRetried =
             isArrayMember(errorType, FIRMWARE.HASH_CHECK_RETRIABLE_ERRORS) &&
@@ -102,6 +127,10 @@ const useReportHashCheck = () => {
     }, [commonData, warningPayload]);
 };
 
+/**
+ * Optionally report both FW authenticity checks (revision and hash) to Sentry and/or show toast notifications,
+ * based on behavior scenarios definitions. This may happen even when no UI is displayed for the checks.
+ */
 export const useReportDeviceCompromised = () => {
     useReportRevisionCheck();
     useReportHashCheck();

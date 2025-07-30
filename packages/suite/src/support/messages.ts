@@ -8129,10 +8129,6 @@ export default defineMessages({
         id: 'TR_CUSTOM_FIRMWARE_GITHUB',
         defaultMessage: 'Find all official releases on',
     },
-    TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS: {
-        id: 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS',
-        defaultMessage: 'Firmware authentic',
-    },
     TR_DEVICE_AUTHENTICITY_SUCCESS: {
         id: 'TR_DEVICE_AUTHENTICITY_SUCCESS',
         defaultMessage: 'Device check passed',

@@ -22,6 +22,7 @@ import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import {
     hashCheckErrorScenarios,
     isSkippedHashCheckError,
+    isSkippedRevisionCheckError,
     revisionCheckErrorScenarios,
 } from 'src/constants/suite/firmware';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
@@ -542,6 +543,8 @@ export const selectFirmwareRevisionCheckError = (state: AppState) => {
 
     // null means not performed, then don't consider it failed
     if (!checkResult || checkResult.success) return null;
+
+    if (isSkippedRevisionCheckError(checkResult.error)) return null;
 
     return checkResult.error;
 };
