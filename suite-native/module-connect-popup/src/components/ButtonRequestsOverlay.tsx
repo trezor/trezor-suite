@@ -1,15 +1,16 @@
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { VStack } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const overlayStyle = prepareNativeStyle(() => ({
     position: 'absolute',
-    bottom: 0,
-    width: '100%',
+    left: 0,
+    right: 0,
+    bottom: 20,
 }));
 
 export const ButtonRequestsOverlay = () => {
@@ -21,17 +22,12 @@ export const ButtonRequestsOverlay = () => {
     }
 
     return (
-        <VStack
-            alignItems="center"
-            justifyContent="center"
-            flex={1}
-            style={applyStyle(overlayStyle)}
-        >
+        <Box style={applyStyle(overlayStyle)}>
             <ConfirmOnTrezorImage
                 bottomSheetText={
                     <Translation id="moduleConnectPopup.bottomSheets.confirmOnDeviceMessage" />
                 }
             />
-        </VStack>
+        </Box>
     );
 };
