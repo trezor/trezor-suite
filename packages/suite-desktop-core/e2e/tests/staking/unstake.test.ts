@@ -47,10 +47,12 @@ test.describe('ETH unstaking', { tag: ['@group=staking'] }, () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
-                await expect(stakingSection.pendingAmount).toHaveText('3,000');
-                await expect(stakingSection.stakedAmount).toHaveText('3,000');
-                await expect(stakingSection.rewardsAmount).toHaveText('234');
-                await expect(stakingSection.unstakingAmount).toHaveText('4,000');
+                await stakingSection.expectStakingAmounts({
+                    pending: '3,000',
+                    staked: '3,000',
+                    rewards: '234',
+                    unstaking: '4,000',
+                });
             });
 
             await test.step('Open unstaking form', async () => {
@@ -113,7 +115,12 @@ test.describe('ETH unstaking', { tag: ['@group=staking'] }, () => {
             await test.step('Verify pending transaction and not being able to unstake more', async () => {
                 await expect(stakingSection.pendingTransactionText).toBeVisible();
                 await expect(stakingSection.speedUpButton).toBeEnabled();
-                await expect(stakingSection.unstakingAmount).toHaveText('4,000');
+                await stakingSection.expectStakingAmounts({
+                    pending: '3,000',
+                    staked: '3,000',
+                    rewards: '234',
+                    unstaking: '4,000',
+                });
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
             });
 
@@ -130,13 +137,18 @@ test.describe('ETH unstaking', { tag: ['@group=staking'] }, () => {
                             depositedBalance: '3000000000000000000000',
                             withdrawTotalAmount: '11000000000000000000000', // Increases by 7000
                             claimableAmount: '5000000000000000000000',
-                            restakedReward: '2340000000000000000000',
+                            restakedReward: '234000000000000000000',
                             autocompoundBalance: '0',
                         },
                     ],
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
-                await expect(stakingSection.unstakingAmount).toHaveText('11,000');
+                await stakingSection.expectStakingAmounts({
+                    pending: '3,000',
+                    staked: '3,000',
+                    rewards: '234',
+                    unstaking: '11,000',
+                });
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
                 await expect(stakingSection.speedUpButton).toBeHidden();
             });

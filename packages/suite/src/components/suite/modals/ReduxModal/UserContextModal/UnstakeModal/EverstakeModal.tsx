@@ -113,6 +113,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
             </Column>
             <Card>
                 <Checkbox
+                    data-testid="@staking/everstake-acknowledge-checkbox"
                     verticalAlignment="center"
                     onClick={() => setHasAgreed(!hasAgreed)}
                     isChecked={hasAgreed}

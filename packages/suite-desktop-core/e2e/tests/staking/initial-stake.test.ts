@@ -18,6 +18,27 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
             await onboardingPage.completeOnboarding();
             await settingsPage.navigateTo('coins');
             await blockbookMock.start('eth');
+            // Set initial empty state for ETH account
+            blockbookMock.updateAccountState({
+                txs: 0,
+                nonTokenTxs: 0,
+                internalTxs: 0,
+                transactions: [],
+                nonce: '0',
+                stakingPools: [
+                    {
+                        contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                        name: 'Everstake',
+                        pendingBalance: '0',
+                        pendingDepositedBalance: '0',
+                        depositedBalance: '0',
+                        withdrawTotalAmount: '0',
+                        claimableAmount: '0',
+                        restakedReward: '0',
+                        autocompoundBalance: '0',
+                    },
+                ],
+            });
 
             await settingsPage.coins.disableNetwork('btc');
             await settingsPage.coins.enableNetwork('eth');
@@ -26,30 +47,15 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
 
             await dashboardPage.dashboardMenuButton.click();
             await page.discoveryShouldFinish();
-
-            blockbookMock.updateAccountState({
-                stakingPools: [
-                    {
-                        contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
-                        name: 'Everstake',
-                        pendingBalance: '0', //sets to zero
-                        pendingDepositedBalance: '0', //sets to zero
-                        depositedBalance: '3000000000000000000000',
-                        withdrawTotalAmount: '4000000000000000000000',
-                        claimableAmount: '5000000000000000000000',
-                        restakedReward: '234000000000000000000',
-                        autocompoundBalance: '7000000000000000000000',
-                    },
-                ],
-            });
         },
     );
 
     test(
-        'stake on ETH account',
+        'first stake on ETH account',
         {
             annotation: createTestAnnotation({
-                testCase: 'Verifies that a user can stake from his Ethereum account.',
+                testCase:
+                    'Verifies that a user can do first stake from his clean Ethereum account.',
                 category: TestCategory.ETH,
                 priority: TestPriority.Critical,
                 stream: TestStream.Trends,
@@ -60,17 +66,18 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
-                await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: '3,000',
-                    rewards: '234',
-                    unstaking: '4,000',
-                });
-                await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
+                await expect(stakingSection.stakingDashboardCard).toBeHidden();
+                await expect(stakingSection.stakingEmptyCard).toBeVisible();
+                await expect(stakingSection.stakingEmptyCard).toContainText('Stake ETH');
             });
 
             await test.step('Open and fill staking form', async () => {
-                await stakingSection.stakeMoreButton.click();
+                await stakingSection.startStakingButton.click();
+                await expect(page.getByTestId('@modal/header')).toHaveText('Staking in a nutshell');
+                await stakingSection.continueButton.click();
+                await expect(page.getByTestId('@modal/header')).toHaveText('Stake ETH');
+                await stakingSection.everstakeAcknowledgeCheckbox.click();
+                await stakingSection.confirmButton.click();
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText('1,234 ETH');
                 await stakingSection.cryptoInput.fill('0.100204158497493752');
             });
@@ -111,24 +118,24 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
             await test.step('Stake', async () => {
                 blockbookMock.updateAccountState({
                     balance: '1233899795841502506248', // lowered by staked amount
-                    transactions: [ETH_STAKE_PENDING_TX, ETH_BASE_TX],
+                    transactions: [ETH_STAKE_PENDING_TX],
                     unconfirmedTxs: 1,
-                    txs: 2,
-                    nonTokenTxs: 2,
+                    txs: 1,
+                    nonTokenTxs: 1,
                     stakingPools: [
                         {
                             contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
                             name: 'Everstake',
                             pendingBalance: '100204158497493752', // increased by staked amount
                             pendingDepositedBalance: '0',
-                            depositedBalance: '3000000000000000000000',
-                            withdrawTotalAmount: '4000000000000000000000',
-                            claimableAmount: '5000000000000000000000',
-                            restakedReward: '234000000000000000000',
-                            autocompoundBalance: '7000000000000000000000',
+                            depositedBalance: '0',
+                            withdrawTotalAmount: '0',
+                            claimableAmount: '0',
+                            restakedReward: '0',
+                            autocompoundBalance: '0',
                         },
                     ],
-                    nonce: '2',
+                    nonce: '1',
                 });
                 await devicePrompt.sendButton.click();
             });
@@ -140,9 +147,9 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
                     pending: '0.100204158497493752',
-                    staked: '3,000',
-                    rewards: '234',
-                    unstaking: '4,000',
+                    staked: '0',
+                    rewards: '0',
+                    unstaking: 'hidden',
                 });
             });
 
@@ -156,11 +163,11 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                             name: 'Everstake',
                             pendingBalance: '0', // lowered by confirmation
                             pendingDepositedBalance: '100204158497493752', // increased by confirmation
-                            depositedBalance: '3000000000000000000000',
-                            withdrawTotalAmount: '4000000000000000000000',
-                            claimableAmount: '5000000000000000000000',
-                            restakedReward: '234000000000000000000',
-                            autocompoundBalance: '7000000000000000000000',
+                            depositedBalance: '0',
+                            withdrawTotalAmount: '0',
+                            claimableAmount: '0',
+                            restakedReward: '0',
+                            autocompoundBalance: '0',
                         },
                     ],
                 });
@@ -169,9 +176,9 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
                 await stakingSection.expectStakingAmounts({
                     pending: '0.100204158497493752',
-                    staked: '3,000',
-                    rewards: '234',
-                    unstaking: '4,000',
+                    staked: '0',
+                    rewards: '0',
+                    unstaking: 'hidden',
                 });
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
                 await expect(stakingSection.speedUpButton).toBeHidden();
@@ -185,33 +192,24 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                             name: 'Everstake',
                             pendingBalance: '0',
                             pendingDepositedBalance: '0', // lowered by activation
-                            depositedBalance: '3000100204158497493752', // increased by activation
-                            withdrawTotalAmount: '4000000000000000000000',
-                            claimableAmount: '5000000000000000000000',
-                            restakedReward: '234000000000000000000',
-                            autocompoundBalance: '7000000000000000000000',
+                            depositedBalance: '100204158497493752', // increased by activation
+                            withdrawTotalAmount: '0',
+                            claimableAmount: '0',
+                            restakedReward: '0',
+                            autocompoundBalance: '0',
                         },
                     ],
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
                     pending: 'hidden',
-                    staked: '3,000.100204158497493752',
-                    rewards: '234',
-                    unstaking: '4,000',
+                    staked: '0.100204158497493752',
+                    rewards: '0',
+                    unstaking: 'hidden',
                 });
                 await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
-            });
-
-            await test.step('Verify banner about instant staking', async () => {
-                await expect(stakingSection.instantBannerHeader).toHaveText(
-                    '0.100204158497493752 ETH staked instantly!',
-                );
-                await expect(stakingSection.instantBannerParagraph).toHaveText(
-                    "You've instantly staked 0.100204158497493752 ETH. The remaining ETH will be staked within 1 day.",
-                );
-                await stakingSection.instantBannerGotItButton.click();
-                await expect(stakingSection.instantBanner).toBeHidden();
+                await expect(stakingSection.stakeMoreButton).toBeEnabled();
+                await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
             });
         },
     );

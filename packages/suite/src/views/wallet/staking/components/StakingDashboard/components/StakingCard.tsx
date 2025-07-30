@@ -194,7 +194,7 @@ export const StakingCard = ({
     const isEthereumNetwork = selectedAccount.networkType === 'ethereum';
 
     return (
-        <Card>
+        <Card data-testid="@wallet/staking/card">
             <Column flex="1" gap={spacings.xxl}>
                 {(isStakeConfirming || isTxStatusShown) && (
                     <ProgressLabels labels={progressLabelsData} />

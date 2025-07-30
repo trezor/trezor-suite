@@ -7,6 +7,8 @@ export class StakingSection {
     readonly watchPeriod = '01:00';
     // Locators
     readonly stakingTabButton: Locator;
+    readonly stakingDashboardCard: Locator;
+    readonly stakingEmptyCard: Locator;
     readonly pendingAmount: Locator;
     readonly stakedAmount: Locator;
     readonly rewardsAmount: Locator;
@@ -18,9 +20,13 @@ export class StakingSection {
     readonly speedUpButton: Locator;
     readonly pendingTransactionText: Locator;
     readonly stakeMoreButton: Locator;
+    readonly startStakingButton: Locator;
     readonly continueButton: Locator;
+    readonly confirmButton: Locator;
     readonly acknowledgeCheckbox: Locator;
+    readonly everstakeAcknowledgeCheckbox: Locator;
     readonly confirmAndStakeButton: Locator;
+    readonly progressLabels: Locator;
     readonly transactionStatus: Locator;
     readonly transactionStatusContainer: Locator;
     readonly addingToPoolStatusContainer: Locator;
@@ -32,6 +38,8 @@ export class StakingSection {
 
     constructor(private readonly page: Page) {
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
+        this.stakingDashboardCard = this.page.getByTestId('@wallet/staking/card');
+        this.stakingEmptyCard = this.page.getByTestId('@wallet/staking/empty-card');
         this.pendingAmount = this.page.getByTestId('@account/staking/pending');
         this.stakedAmount = this.page.getByTestId('@account/staking/staked');
         this.rewardsAmount = this.page.getByTestId('@account/staking/rewards');
@@ -47,9 +55,15 @@ export class StakingSection {
         this.speedUpButton = this.page.getByRole('button', { name: 'Speed up' });
         this.pendingTransactionText = this.page.getByText('Pending transaction•1');
         this.stakeMoreButton = this.page.getByRole('button', { name: 'Stake more' });
+        this.startStakingButton = this.page.getByRole('button', { name: 'Start staking' });
         this.continueButton = this.page.getByRole('button', { name: 'Continue' });
+        this.confirmButton = this.page.getByRole('button', { name: 'Confirm' });
         this.acknowledgeCheckbox = this.page.getByTestId('@staking/acknowledge-checkbox');
+        this.everstakeAcknowledgeCheckbox = this.page.getByTestId(
+            '@staking/everstake-acknowledge-checkbox',
+        );
         this.confirmAndStakeButton = this.page.getByRole('button', { name: 'Confirm & stake' });
+        this.progressLabels = this.page.getByTestId('@staking/progress-labels');
         this.transactionStatus = this.page.getByTestId('@staking/transaction-status');
         this.transactionStatusContainer = this.page.getByTestId(
             '@staking/transaction-status/container',
@@ -102,5 +116,27 @@ export class StakingSection {
             'background-color',
             hexToRgba(currentPhaseColors.rewardsStep),
         );
+    }
+
+    async expectStakingAmounts(options: {
+        pending: string | 'hidden';
+        staked: string | 'hidden';
+        rewards: string | 'hidden';
+        unstaking: string | 'hidden';
+    }) {
+        const amounts = [
+            { locator: this.pendingAmount, value: options.pending },
+            { locator: this.stakedAmount, value: options.staked },
+            { locator: this.rewardsAmount, value: options.rewards },
+            { locator: this.unstakingAmount, value: options.unstaking },
+        ];
+
+        for (const { locator, value } of amounts) {
+            if (value === 'hidden') {
+                await expect(locator).toBeHidden();
+            } else {
+                await expect(locator).toHaveText(value);
+            }
+        }
     }
 }
