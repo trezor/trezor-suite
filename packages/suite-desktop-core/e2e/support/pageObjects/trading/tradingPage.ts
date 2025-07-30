@@ -3,6 +3,7 @@ import { Locator, Page } from '@playwright/test';
 import { TradingCountryCode } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import messages from '@trezor/suite/src/support/messages';
 
 import { Fees } from './fees';
 import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
@@ -293,7 +294,7 @@ export class TradingPage {
         const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
         await this.youPayCryptoInput.fill(amount);
         await expect(
-            this.page.getByText('Not enough funds'),
+            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).toBeHidden();
         await expect(quoteRequestPromise).toHavePayload({
@@ -317,7 +318,7 @@ export class TradingPage {
         await this.youPayCryptoInput.fill(amount);
         await this.page.waitForRequest(invityEndpoint.sellQuotes);
         await expect(
-            this.page.getByText('Not enough funds'),
+            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).toBeHidden();
 

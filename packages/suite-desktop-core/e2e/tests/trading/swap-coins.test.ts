@@ -1,4 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
+import messages from '@trezor/suite/src/support/messages';
 
 import {
     getCompanyNameFromList,
@@ -14,7 +15,10 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 const transactionStates = [
     { transactionStatus: 'CONFIRMING', displayedText: 'Pending' },
     { transactionStatus: 'CONVERTING', displayedText: 'Converting' },
-    { transactionStatus: 'SUCCESS', displayedText: 'Swap Successful' },
+    {
+        transactionStatus: 'SUCCESS',
+        displayedText: messages['TR_EXCHANGE_DETAIL_SUCCESS_TITLE'].defaultMessage,
+    },
 ];
 
 // Expected values based on our mocked responses

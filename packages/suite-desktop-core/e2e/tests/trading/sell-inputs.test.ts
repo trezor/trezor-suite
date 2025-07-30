@@ -1,4 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
+import messages from '@trezor/suite/src/support/messages';
 
 import { expect, test } from '../../support/fixtures';
 
@@ -48,7 +49,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                 await tradingPage.youPayCryptoInput.fill('10');
                 await expect
                     .soft(tradingPage.cryptoInputBottomText)
-                    .toHaveText('Not enough funds', {
+                    .toHaveText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage, {
                         timeout: 15_000,
                     });
             });
