@@ -112,7 +112,7 @@
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING": "Você está usando um Trezor diferente",
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1": "Este dispositivo Trezor não corresponde ao usado anteriormente. Reconecte o dispositivo correto.",
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2": "Se desejar usar este dispositivo mesmo assim, inicie novamente.",
-  "OP_RETURN": "OP RETORNO",
+  "OP_RETURN": "OP RETURN",
   "OP_RETURN_ADD": "Adicionar OP_RETURN",
   "OP_RETURN_TOOLTIP": "Use OP_RETURN para incorporar dados personalizados diretamente em uma transação.",
   "RAW_TRANSACTION": "Transação bruta",
