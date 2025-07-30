@@ -1,29 +1,27 @@
 import { cryptoIdToNetwork, parseCryptoId } from '@suite-common/trading';
+import { Account } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Badge, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { HiddenPlaceholder } from 'src/components/suite';
+import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import {
-    TradingAccountOptionsGroupOptionProps,
-    TradingAccountsOptionsGroupProps,
-} from 'src/types/trading/trading';
+import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import { tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 interface TradingFormInputAccountOptionProps {
+    account: Account;
     option: TradingAccountOptionsGroupOptionProps;
-    optionGroups: TradingAccountsOptionsGroupProps[];
     decimals: number;
     isSelected: boolean;
 }
 
 export const TradingFormInputAccountOption = ({
     option,
-    optionGroups,
     decimals,
     isSelected,
+    account,
 }: TradingFormInputAccountOptionProps) => {
     const { contractAddress } = parseCryptoId(option.value);
     const network = cryptoIdToNetwork(option.value);
@@ -35,12 +33,6 @@ export const TradingFormInputAccountOption = ({
     const balance = shouldSendInSats
         ? convertAmountUnitsToSubunits(option.balance, decimals)
         : option.balance;
-    const accountType = optionGroups.find(group =>
-        group.options.find(
-            groupOption =>
-                groupOption.descriptor === option.descriptor && groupOption.value === option.value,
-        ),
-    )?.label;
 
     return (
         <Row gap={spacings.sm}>
@@ -55,7 +47,11 @@ export const TradingFormInputAccountOption = ({
                         ({balance} {balanceLabel})
                     </HiddenPlaceholder>
                 ) : (
-                    accountType && `(${accountType})`
+                    <AccountLabeling
+                        account={account}
+                        showAccountTypeBadge
+                        accountTypeBadgeSize="small"
+                    />
                 )}
             </Text>
             {option.value && contractAddress && network && (

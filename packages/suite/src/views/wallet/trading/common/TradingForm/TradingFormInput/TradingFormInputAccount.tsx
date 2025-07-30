@@ -39,6 +39,7 @@ export const TradingFormInputAccount = <
 
     const {
         type,
+        account,
         form: {
             helpers: { onCryptoCurrencyChange },
         },
@@ -94,8 +95,8 @@ export const TradingFormInputAccount = <
                         { context },
                     ) => (
                         <TradingFormInputAccountOption
+                            account={account}
                             option={option}
-                            optionGroups={optionGroups}
                             decimals={option.decimals}
                             isSelected={context === 'value'}
                         />
