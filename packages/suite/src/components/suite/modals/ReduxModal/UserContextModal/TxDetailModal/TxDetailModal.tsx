@@ -117,9 +117,10 @@ export const TxDetailModal = ({
         hasRbfParams(tx) &&
         networkFeatures?.includes('rbf') &&
         !tx.deadline &&
+        tx.type !== 'joint' &&
         selectedAccount.status === 'loaded';
 
-    const canCancelTransaction = network.networkType === 'bitcoin';
+    const canCancelTransaction = network.networkType === 'bitcoin' && tx.type !== 'joint';
 
     if (section === 'bump-fee' && canReplaceTransaction) {
         return (
