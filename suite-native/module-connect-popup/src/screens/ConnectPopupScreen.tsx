@@ -92,6 +92,7 @@ export const ConnectPopupScreen = () => {
                         return <Translation id="moduleConnectPopup.errors.versionUnsupported" />;
                     case 'Method_NotAllowed':
                         return <Translation id="moduleConnectPopup.errors.methodNotAllowed" />;
+                    case 'Device_Disconnected':
                     case 'Device_NotFound':
                         return <Translation id="moduleConnectPopup.errors.deviceNotConnected" />;
                     case 'Method_Interrupted':
@@ -101,7 +102,12 @@ export const ConnectPopupScreen = () => {
                     case 'Method_InvalidParameter':
                         return <Translation id="moduleConnectPopup.errors.invalidParams" />;
                     default:
-                        return <Translation id="moduleConnectPopup.errors.unknownError" />;
+                        return (
+                            <Translation
+                                id="moduleConnectPopup.errors.unknownError"
+                                values={{ code: popupCall.error.code }}
+                            />
+                        );
                 }
             };
             const onClose = () => {

@@ -497,7 +497,7 @@ export const en = {
             versionUnsupported: 'Unsupported version. Please update your Trezor Suite app.',
             methodNotAllowed: 'Method not allowed for security reasons.',
             methodCanceled: 'Call canceled by user.',
-            unknownError: 'Unknown error occurred.',
+            unknownError: 'Unknown error occurred ({code}).',
         },
         bottomSheets: {
             confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
