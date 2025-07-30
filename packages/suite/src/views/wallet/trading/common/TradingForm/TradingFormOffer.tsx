@@ -5,6 +5,7 @@ import { CryptoId, ExchangeTrade } from 'invity-api';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_DEX,
+    TRADING_FORM_OUTPUT_ADDRESS,
     type TradingTradeType,
     type TradingType,
     isSendingEvmNativeToken,
@@ -187,19 +188,31 @@ export const TradingFormOffer = () => {
         areSatsUsed = !!shouldSendInSats;
     }
 
-    const onOpenApproveModal = () => {
-        setIsApproveModalOpen(true);
-
+    const onOpenApproveModal = async () => {
         if (isTradingExchangeContext(context)) {
-            context.setIsApproval(true);
+            if (context.selectedQuote?.status === 'APPROVAL_REQ' && context.selectedQuote?.dexTx) {
+                context.setValue('ethereumDataHex', context.selectedQuote?.dexTx.data);
+                context.setValue(TRADING_FORM_OUTPUT_ADDRESS, context.selectedQuote?.dexTx.to);
+            }
+
+            await context.fetchFeesAndCompose();
         }
+
+        setIsApproveModalOpen(true);
     };
 
-    const onCloseApproveModal = () => {
+    const onCloseApproveModal = async () => {
         setIsApproveModalOpen(false);
 
         if (isTradingExchangeContext(context)) {
-            context.setIsApproval(false);
+            if (context.selectedQuote?.receiveAddress) {
+                await context.confirmApproval({
+                    trade: { ...context.selectedQuote, approvalType: undefined },
+                    receiveAddress: context.selectedQuote.receiveAddress,
+                });
+            }
+            context.setValue('ethereumDataHex', '');
+            await context.fetchFeesAndCompose();
         }
     };
 
