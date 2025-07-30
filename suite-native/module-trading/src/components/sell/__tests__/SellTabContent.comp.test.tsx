@@ -36,7 +36,7 @@ describe('SellTabContent', () => {
     };
 
     const expectSellForm = () => {
-        expect(screen.getByText('Sell is not implemented yet')).toBeOnTheScreen();
+        expect(screen.getByText('You pay')).toBeOnTheScreen();
     };
 
     const expectServerOffline = () => {

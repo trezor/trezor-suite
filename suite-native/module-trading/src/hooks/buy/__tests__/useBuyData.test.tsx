@@ -64,7 +64,7 @@ describe('useBuyData', () => {
                     }, 100);
                 }),
         );
-        const store = await getInitializedStore(undefined);
+        const store = await initStore(undefined);
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(true);
@@ -72,7 +72,7 @@ describe('useBuyData', () => {
     });
 
     it('should settle after API queries are resolved', async () => {
-        const store = await getInitializedStore(undefined);
+        const store = await initStore(undefined);
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(false);
@@ -84,7 +84,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = await getInitializedStore(undefined);
+        const store = await initStore(undefined);
         const { rerender } = await renderUseBuyData(0, store);
         rerender({ reloadRequestOrdinal: 0 });
 
@@ -96,7 +96,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = await getInitializedStore(undefined);
+        const store = await initStore(undefined);
         const { rerender } = await renderUseBuyData(0, store);
         rerender({ reloadRequestOrdinal: 1 });
 

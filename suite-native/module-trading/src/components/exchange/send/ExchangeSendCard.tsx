@@ -20,8 +20,8 @@ export const ExchangeSendCard = ({ isAmountInputActive }: ExchangeSendCardProps)
     const asset = watch('sendAsset');
 
     return (
-        <AnimatedCard style={animatedStyle}>
-            <VStack>
+        <AnimatedCard style={animatedStyle} noPadding>
+            <VStack paddingHorizontal="sp12" paddingVertical="sp16">
                 <HStack justifyContent="space-between" alignItems="center">
                     <CardTitle>
                         <Translation id="moduleTrading.selectCoinToSell.title" />

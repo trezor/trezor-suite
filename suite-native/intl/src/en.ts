@@ -2021,9 +2021,15 @@ export const en = {
             },
         },
         selectFiat: {
-            title: 'You pay',
+            sell: {
+                title: 'You get',
+                amountLabel: 'You get',
+            },
+            buy: {
+                title: 'You pay',
+                amountLabel: 'You pay',
+            },
             buttonTitle: 'Select fiat currency',
-            amountLabel: 'You pay',
         },
         selectCoinToSell: {
             title: 'You pay',
