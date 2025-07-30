@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AccountsRootState,
-    fetchAllTransactionsForAccountThunk,
+    fetchUtxoTransactionsForAccountThunk,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { isSameUtxo, useFilteredUtxos } from '@suite-common/wallet-utils';
@@ -45,9 +45,8 @@ export const SendUtxoScreen = ({
     // we need to fetch all transactions for the account to have the additional UTXOs data available
     useEffect(() => {
         const promise = dispatch(
-            fetchAllTransactionsForAccountThunk({
+            fetchUtxoTransactionsForAccountThunk({
                 accountKey,
-                noLoading: true,
             }),
         );
 
