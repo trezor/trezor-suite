@@ -1,26 +1,82 @@
-import { Switch } from '@trezor/components';
+import { useState } from 'react';
+
+import { selectDevices } from '@suite-common/wallet-core';
+import { Modal, Switch } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { setAutoEject } from 'src/actions/suite/suiteActions';
+import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAutoEjectEnabled } from 'src/reducers/suite/suiteReducer';
 
+const AutoEjectConfirmationModal = ({
+    onCancel,
+    onSubmit,
+}: {
+    onCancel: () => void;
+    onSubmit: () => void;
+}) => {
+    const handleConfirmClick = () => {
+        onSubmit();
+        onCancel();
+    };
+
+    return (
+        <Modal
+            heading={<Translation id="TR_AUTO_EJECT_CONFIRMATION_TITLE" />}
+            onCancel={onCancel}
+            size="small"
+            bottomContent={
+                <>
+                    <Modal.Button onClick={handleConfirmClick} data-testid="@log/export-button">
+                        <Translation id="TR_CONFIRM_AUTO_EJECT" />
+                    </Modal.Button>
+                    <Modal.Button onClick={onCancel} variant="tertiary">
+                        <Translation id="TR_CANCEL" />
+                    </Modal.Button>
+                </>
+            }
+        >
+            <Translation id="TR_AUTO_EJECT_CONFIRMATION_DESCRIPTION" />
+        </Modal>
+    );
+};
+
 export const AutoEject = () => {
     const isAutoEjectEnabled = useSelector(selectIsAutoEjectEnabled);
     const dispatch = useDispatch();
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
-    const handleSwitchClick = () => {
-        dispatch(setAutoEject(!isAutoEjectEnabled));
+    const devices = useSelector(selectDevices);
+
+    const disconnectedDevices = devices.filter(device => !device.connected && device.state);
+    const hasAnyDisconnectedWallet = disconnectedDevices.length > 0;
+
+    const toggleAutoEject = () => {
+        const nextIsAutoEjectedEnabled = !isAutoEjectEnabled;
+        dispatch(
+            setAutoEjectEnabledThunk({
+                disconnectedDevices,
+                enabled: nextIsAutoEjectedEnabled,
+            }),
+        );
 
         analytics.report({
             type: EventType.SettingsGeneralAutoEject,
             payload: {
-                value: !isAutoEjectEnabled,
+                value: nextIsAutoEjectedEnabled,
             },
         });
+    };
+
+    const handleSubmit = () => {
+        if (!isAutoEjectEnabled && hasAnyDisconnectedWallet) {
+            setIsConfirmationModalOpen(true);
+        } else {
+            toggleAutoEject();
+        }
     };
 
     return (
@@ -32,10 +88,16 @@ export const AutoEject = () => {
             <ActionColumn>
                 <Switch
                     isChecked={isAutoEjectEnabled}
-                    onChange={handleSwitchClick}
+                    onChange={handleSubmit}
                     data-testid="@settings/auto-eject-switch"
                 />
             </ActionColumn>
+            {isConfirmationModalOpen && (
+                <AutoEjectConfirmationModal
+                    onCancel={() => setIsConfirmationModalOpen(false)}
+                    onSubmit={toggleAutoEject}
+                />
+            )}
         </SettingsSectionItem>
     );
 };
