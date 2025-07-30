@@ -259,12 +259,11 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                 handleSubmit(() => {
                     handleChange();
                 })();
-
-                previousValues.current = values;
             }
+            previousValues.current = values;
         },
         500,
-        [previousValues, pageType, handleChange, handleSubmit],
+        [values, previousValues, pageType],
     );
 
     // call change handler on every change of select inputs
