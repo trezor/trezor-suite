@@ -19,7 +19,7 @@ export type Borders = typeof borders;
 export type BorderRadii = (typeof borders.radii)[keyof typeof borders.radii];
 export type BorderWidths = (typeof borders.widths)[keyof typeof borders.widths];
 
-type NativeRadiusValue = 4 | 8 | 12 | 16 | 20;
+type NativeRadiusValue = 4 | 6 | 8 | 12 | 16 | 20;
 
 export const nativeBorders = {
     widths: {
@@ -29,6 +29,7 @@ export const nativeBorders = {
     },
     radii: {
         r4: 4,
+        r6: 6,
         r8: 8,
         r12: 12,
         r16: 16,

@@ -1,0 +1,28 @@
+import { Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { ConfirmOnTrezorAnimation } from '../ConfirmOnTrezorAnimation';
+
+const containerStyle = prepareNativeStyle(() => ({
+    marginTop: '25%',
+}));
+
+export const ConfirmOnTrezorInstructions = () => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <VStack flex={1} alignItems="center" spacing="sp20" style={applyStyle(containerStyle)}>
+            {/* TODO: Replace with the new animation */}
+            <ConfirmOnTrezorAnimation />
+            <VStack spacing={0}>
+                <Text variant="titleSmall" textAlign="center">
+                    <Translation id="device.continueOnTrezor.title" />
+                </Text>
+                <Text variant="hint" textAlign="center">
+                    <Translation id="device.continueOnTrezor.subtitle" />
+                </Text>
+            </VStack>
+        </VStack>
+    );
+};

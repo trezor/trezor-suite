@@ -1,11 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Box } from '@suite-native/atoms';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
 import {
     FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
-    Screen,
     StackNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
@@ -24,14 +22,10 @@ export const FirmwareInstallationScreen = () => {
     };
 
     return (
-        <Screen>
-            <Box flex={1}>
-                <FirmwareInstallationScreenContent
-                    onFirmwareInstallationSuccess={navigateToInitialScreen}
-                    onFirmwareInstallationFailure={handleFirmwareInstallationFailure}
-                    navigationLocation="settings"
-                />
-            </Box>
-        </Screen>
+        <FirmwareInstallationScreenContent
+            onFirmwareInstallationSuccess={navigateToInitialScreen}
+            onFirmwareInstallationFailure={handleFirmwareInstallationFailure}
+            navigationLocation="settings"
+        />
     );
 };

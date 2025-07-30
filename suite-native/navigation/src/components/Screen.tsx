@@ -1,5 +1,5 @@
 import { ReactNode, useContext } from 'react';
-import { ScrollViewProps, View } from 'react-native';
+import { ScrollViewProps, View, ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { EdgeInsets } from 'react-native-safe-area-context';
@@ -25,6 +25,7 @@ export type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     footer?: ReactNode;
+    systemThemeStyle?: 'dark' | 'light';
     isScrollable?: boolean;
     backgroundColor?: Color;
     noHorizontalPadding?: boolean;
@@ -32,6 +33,7 @@ export type ScreenProps = {
     focusedInputBottomOffset?: number;
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
+    containerStyle?: ViewProps['style'];
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -83,6 +85,8 @@ export const Screen = ({
     header,
     footer,
     refreshControl,
+    containerStyle,
+    systemThemeStyle,
     isScrollable = true,
     backgroundColor = 'backgroundSurfaceElevation0',
     noHorizontalPadding = false,
@@ -123,14 +127,17 @@ export const Screen = ({
     return (
         <DynamicHeaderProvider>
             <View
-                style={applyStyle(screenContainerStyle, {
-                    backgroundColor,
-                    insets,
-                    isMessageBannerDisplayed,
-                })}
+                style={[
+                    applyStyle(screenContainerStyle, {
+                        backgroundColor,
+                        insets,
+                        isMessageBannerDisplayed,
+                    }),
+                    containerStyle,
+                ]}
                 testID={`@screen/${name}`}
             >
-                <SystemBars style={systemBarsStyle} />
+                <SystemBars style={systemThemeStyle ?? systemBarsStyle} />
                 {header}
                 <ScreenContentWrapper
                     isScrollable={isScrollable}

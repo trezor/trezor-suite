@@ -1592,6 +1592,11 @@ export const en = {
         title: {
             continueOnTrezor: 'Continue\non your Trezor',
         },
+        continueOnTrezor: {
+            headerTitle: 'Continue on your Trezor',
+            title: 'Confirm the action on Trezor.',
+            subtitle: 'Follow the instructions there on its screen.',
+        },
     },
     deviceManager: {
         deviceButtons: {

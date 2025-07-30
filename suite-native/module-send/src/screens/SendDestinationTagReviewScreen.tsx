@@ -5,17 +5,11 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorWrapper } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    Screen,
-    ScreenHeader,
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
 import { ReviewDestinationTagCard } from '../components/ReviewDestinationTagCard';
-import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
 import {
     selectIsDestinationTagOutputConfirmed,
@@ -68,21 +62,13 @@ export const SendDestinationTagReviewScreen = ({
     }, [isDestinationTagConfirmed, accountKey, navigation, tokenContract, transaction]);
 
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    title={<Translation id="moduleSend.review.outputs.title" />}
-                    closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
-                />
-            }
-            footer={<SendConfirmOnDeviceImage />}
-        >
+        <ConfirmOnTrezorWrapper closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}>
             <VStack flex={1} spacing="sp24" marginTop="sp16">
                 <Text variant="titleSmall">
                     <Translation id="moduleSend.review.destinationTagTitle" />
                 </Text>
                 <ReviewDestinationTagCard destinationTag={destinationTag} />
             </VStack>
-        </Screen>
+        </ConfirmOnTrezorWrapper>
     );
 };
