@@ -728,8 +728,24 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T1B1",
+                            "firmware": "1.13.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "1",
                             "firmware": ">=1.12.1 <=1.13.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "1.13.0",
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "*",
