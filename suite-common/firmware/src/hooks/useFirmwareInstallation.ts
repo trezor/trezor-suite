@@ -7,7 +7,7 @@ import {
     firmwareUpdate as firmwareUpdateThunk,
     selectFirmware,
 } from '@suite-common/firmware';
-import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, FirmwareType, UI } from '@trezor/connect';
 import {
@@ -56,6 +56,19 @@ export type FirmwareOperationStatus = {
     progress: number;
 };
 
+// T1 emits ButtonRequest_ProtectCall (before bootloader) and ButtonRequest_FirmwareUpdate (in bootloader to confirm the installation) in reboot_and_wait flow:
+const expectedButtonRequestsForT1: ButtonRequest[] = [
+    'ButtonRequest_ProtectCall',
+    'ButtonRequest_FirmwareUpdate',
+];
+
+// T2,T3 devices emit ButtonRequest_Other (before bootloader & also in bootloader before starting the installation)
+// and ButtonRequest_FirmwareUpdate (to confirm the installation) in reboot_and_wait and reboot_and_upgrade flows:
+const expectedButtonRequestsForT2andT3: ButtonRequest[] = [
+    'ButtonRequest_Other',
+    'ButtonRequest_FirmwareUpdate',
+];
+
 export const useFirmwareInstallation = (
     { shouldSwitchFirmwareType }: UseFirmwareInstallationParams = {
         shouldSwitchFirmwareType: false,
@@ -89,14 +102,16 @@ export const useFirmwareInstallation = (
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
 
+    const expectedButtonRequests =
+        originalDevice?.features?.major_version === 1
+            ? expectedButtonRequestsForT1
+            : expectedButtonRequestsForT2andT3;
+
     const showReconnectPrompt =
         // For some magic reason, the `ButtonRequest_Other` is present in FW after THP pairing;
         // This causes the UI to show the reconnect prompt, despite we are already done.
         firmware.status !== 'done' &&
-        // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow,
-        // T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
-        ((buttonEvent?.code &&
-            ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(buttonEvent.code)) ||
+        ((buttonEvent?.code && expectedButtonRequests.includes(buttonEvent.code)) ||
             showManualReconnectPrompt);
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
