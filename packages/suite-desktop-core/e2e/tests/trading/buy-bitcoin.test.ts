@@ -1,4 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
+import messages from '@trezor/suite/src/support/messages';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
@@ -133,7 +134,9 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         await test.step('Wait 30s for watch refresh and status change to Approved', async () => {
             await tradingMock.changeBuyWatchResponseTo('SUCCESS');
             await page.clock.fastForward(tradingMock.watchPeriod);
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Buy Successful');
+            await expect(tradingPage.transactionDetailStatus).toHaveText(
+                messages['TR_BUY_DETAIL_SUCCESS_TITLE'].defaultMessage,
+            );
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
             await expect(tradingPage.confirmationProvider).toHaveText(bestBuyProvider);

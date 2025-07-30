@@ -1,4 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
+import messages from '@trezor/suite/src/support/messages';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { buyQuotesEthereum, buyTradeEthereum, invityEndpoint } from '../../fixtures/invity';
@@ -85,7 +86,9 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] },
         await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify transaction detail', async () => {
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Buy Successful');
+            await expect(tradingPage.transactionDetailStatus).toHaveText(
+                messages['TR_BUY_DETAIL_SUCCESS_TITLE'].defaultMessage,
+            );
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
