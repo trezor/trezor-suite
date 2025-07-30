@@ -1,25 +1,14 @@
 import { useEffect, useMemo } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
 import { FirmwareCheckType } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import {
-    RevisionCheckErrorWithNotification,
-    hashCheckErrorScenarios,
-    isRevisionCheckErrorWithNotification,
-    revisionCheckErrorScenarios,
-} from 'src/constants/suite/firmware';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/constants/suite/firmware';
+import { useDevice } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
-
-const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
-    'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
-};
 
 const reportCheck = (
     level: 'error' | 'warning',
@@ -67,7 +56,6 @@ const useCommonData = () => {
 const useReportRevisionCheck = () => {
     const commonData = useCommonData();
     const { device } = useDevice();
-    const dispatch = useDispatch();
 
     const revisionCheck = isDeviceAcquired(device)
         ? device.authenticityChecks.firmwareRevision
@@ -82,18 +70,6 @@ const useReportRevisionCheck = () => {
             reportCheckFail('Firmware revision', { ...commonData, errorType }, errorPayload);
         }
     }, [commonData, errorType, errorPayload]);
-
-    useEffect(() => {
-        if (errorType === null) return;
-        if (isRevisionCheckErrorWithNotification(errorType)) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'firmware-authenticity-check-error',
-                    translationKey: revisionCheckNotifications[errorType],
-                }),
-            );
-        }
-    }, [dispatch, errorType]);
 };
 
 const useReportHashCheck = () => {
