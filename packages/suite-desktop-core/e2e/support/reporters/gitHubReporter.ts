@@ -1,141 +1,22 @@
-import type { Octokit } from '@octokit/rest';
 import { Reporter, TestCase } from '@playwright/test/reporter';
 
 import {
-    GitHubProject,
-    IssueRequests,
+    GitHubReporterBase,
     LoggingFunctions,
-    ProjectField,
     TestOsEmoticons,
     TestOsMatrix,
-    osMatrixAnnotation,
     statusAnnotation,
 } from '@trezor/e2e-utils';
+import { RETRY_CONF } from '@trezor/e2e-utils/src/githubReporter/gitHubReporterBase';
 import { scheduleAction } from '@trezor/utils';
 
 import { TestReportProvider } from './annotations';
 
-const RETRY_CONF = {
-    attempts: 3,
-    gap: 500,
-};
-
-enum InitializationState {
-    NOT_STARTED = 'NOT_STARTED',
-    IN_PROGRESS = 'IN_PROGRESS',
-    COMPLETED = 'COMPLETED',
-    FAILED = 'FAILED',
-}
-
-class GitHubReporter implements Reporter, LoggingFunctions {
-    private _octokit: Octokit | null = null;
-    private _issueRequests: IssueRequests | null = null;
-    private _gitHubProject: GitHubProject | null = null;
-    private _fieldsInGitHub: ProjectField[] | null = null;
-    private pendingOperations: Promise<any>[] = [];
-    private initState: InitializationState = InitializationState.NOT_STARTED;
-    private createdIssuesMap: Map<string, string> = new Map();
-
-    private initializationPromise: Promise<void> | null = null;
-
-    log(...args: any[]): void {
-        if (process.env.GITHUB_REPORTER_VERBOSE) {
-            console.warn('[GitHub Reporter]', ...args);
-        }
-    }
-
-    logError(...args: any[]): void {
-        console.error('[GitHub Reporter ERROR]', ...args);
-    }
-
-    logResponse(label: string, response: any): void {
-        if (process.env.GITHUB_REPORTER_VERBOSE) {
-            console.warn(`[GitHub Reporter] ${label}:`);
-            console.warn(JSON.stringify(response, null, 2));
-        }
-    }
-
-    private get octokit(): Octokit {
-        if (!this._octokit) {
-            throw new Error(
-                'Octokit instance is not initialized. Ensure onBegin() is called first.',
-            );
-        }
-
-        return this._octokit;
-    }
-
-    private get issueRequests(): IssueRequests {
-        if (!this._issueRequests) {
-            throw new Error('GraphQL client is not initialized. Ensure onBegin() is called first.');
-        }
-
-        return this._issueRequests;
-    }
-
-    private get gitHubProject(): GitHubProject {
-        if (!this._gitHubProject) {
-            throw new Error('GitHub project is not initialized. Ensure onBegin() is called first.');
-        }
-
-        return this._gitHubProject;
-    }
-
-    private get fieldsInGitHub(): ProjectField[] {
-        if (!this._fieldsInGitHub) {
-            throw new Error(
-                'Project fields are not initialized. Ensure onBegin() is called first.',
-            );
-        }
-
-        return this._fieldsInGitHub;
-    }
-
-    // Tracks asynchronous operations and logs their completion
-    // Otherwise, playwright would not wait for them to finish
-    private trackOperation<T>(operation: Promise<T>): Promise<T> {
-        this.pendingOperations.push(operation);
-
-        return operation.finally(() => {
-            const index = this.pendingOperations.indexOf(operation);
-            if (index !== -1) {
-                this.pendingOperations.splice(index, 1);
-                this.log(`Operation completed (${this.pendingOperations.length} remaining)`);
-            }
-        });
-    }
-
+class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunctions {
     // Initializes the reporter when test run begins, creates a GitHub project if it doesn't exist
-    // eslint-disable-next-line require-await
+
     async onBegin() {
-        this.log('GitHub reporter started. Initializing GitHub client...');
-        this.initState = InitializationState.IN_PROGRESS;
-        const initPromise = (async () => {
-            try {
-                const OctokitModule = await import('@octokit/rest');
-                this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
-                this._issueRequests = new IssueRequests(this.octokit);
-                this._gitHubProject = new GitHubProject(this.octokit, this);
-                this.log('GitHub client initialized successfully');
-            } catch (error) {
-                this.initState = InitializationState.FAILED;
-                this.logError('Failed to initialize GitHub reporter.');
-                throw error; // Critical error, rethrow to stop execution
-            }
-
-            try {
-                await this.gitHubProject.init();
-                await scheduleAction(() => this.getProjectFields(), RETRY_CONF);
-                this.initState = InitializationState.COMPLETED;
-            } catch (error) {
-                this.initState = InitializationState.FAILED;
-                this.logError('Failed to initialize GitHub Project.');
-                throw error; // Critical error, rethrow to stop execution
-            }
-        })();
-        this.initializationPromise = initPromise;
-
-        return this.trackOperation(initPromise);
+        await this.init();
     }
 
     // Processes test completion by creating a GitHub issue with test results and metadata
@@ -260,104 +141,6 @@ class GitHubReporter implements Reporter, LoggingFunctions {
             this.log(
                 `[${issueNodeId}] Successfully recorded test result for "(OS ${operationSystem}) ${test.title}"`,
             );
-        }
-    }
-
-    private async getProjectFields() {
-        this.log(`Fetching fields for project ${this.gitHubProject.id}...`);
-        this._fieldsInGitHub = await this.issueRequests.getProjectFields(this.gitHubProject.id);
-        this.log(`Successfully retrieved fields for project ${this.gitHubProject.id}`);
-    }
-
-    // Looks in project for filedId and OptionId for a specific values the test have.
-    // These Ids are used to update the issue with values like status, stream, etc.
-    private resolveFieldAndValue(
-        fieldNameToResolve: string,
-        fieldValueToResolve: string,
-        operationSystem?: string,
-    ): { fieldId: string; valueOrOptionId: string } {
-        const resolvedField = this.fieldsInGitHub.find(f => f.name === fieldNameToResolve);
-
-        if (!resolvedField) {
-            throw new Error(
-                `Field "${fieldNameToResolve}" not found in project fields: \n ${JSON.stringify(this.fieldsInGitHub, null, 2)}`,
-            );
-        }
-
-        // resolve OS Matrix field specifically
-        // When processing OS Matrix values, we need to use the current OS being processed
-        // rather than the general field value from the test report. Since we create a new issue for each OS,
-        const isResolvingOsMatrix =
-            resolvedField.dataType === 'SINGLE_SELECT' &&
-            fieldNameToResolve === osMatrixAnnotation.name;
-        if (isResolvingOsMatrix && resolvedField.options) {
-            const resolvedOsOption = resolvedField.options.find(
-                opt => opt.name === operationSystem,
-            );
-            if (!resolvedOsOption) {
-                throw new Error(
-                    `Value "${operationSystem}" not found in field "${osMatrixAnnotation.name}". Options: \n ${JSON.stringify(resolvedField.options, null, 2)}`,
-                );
-            }
-
-            return {
-                fieldId: resolvedField.id,
-                valueOrOptionId: `{ singleSelectOptionId: "${resolvedOsOption.id}" }`,
-            };
-        }
-
-        // resolve SINGLE_SELECT field and value
-        if (resolvedField.dataType === 'SINGLE_SELECT' && resolvedField.options) {
-            const resolvedOption = resolvedField.options.find(
-                opt => opt.name === fieldValueToResolve,
-            );
-            if (!resolvedOption) {
-                throw new Error(
-                    `Value "${fieldValueToResolve}" not found in field "${fieldNameToResolve}". Options: \n ${JSON.stringify(resolvedField.options, null, 2)}`,
-                );
-            }
-
-            return {
-                fieldId: resolvedField.id,
-                valueOrOptionId: `{ singleSelectOptionId: "${resolvedOption.id}" }`,
-            };
-        }
-
-        // resolve TEXT field. Currently we support only SINGLE_SELECT and TEXT fields. Text values are passed as is.
-        return { fieldId: resolvedField.id, valueOrOptionId: `{ text: "${fieldValueToResolve}" }` };
-    }
-
-    private async waitForOnBeginInit(): Promise<void> {
-        if (this.initState === InitializationState.COMPLETED) {
-            return;
-        }
-
-        if (this.initState === InitializationState.FAILED) {
-            throw new Error('GitHub reporter onBegin initialization failed previously');
-        }
-
-        if (this.initState === InitializationState.NOT_STARTED) {
-            // Wait until state changes from NOT_STARTED to something else
-            await new Promise<void>((resolve, reject) => {
-                const checkInterval = setInterval(() => {
-                    if (this.initState !== InitializationState.NOT_STARTED) {
-                        clearInterval(checkInterval);
-                        resolve();
-                    }
-                }, 100);
-
-                setTimeout(() => {
-                    clearInterval(checkInterval);
-                    reject(new Error('Timed out waiting for onBegin initialization to start'));
-                }, 30_000);
-            });
-
-            // Now state should be changed, call ensureInitialized again to handle the new state
-            return this.waitForOnBeginInit();
-        }
-
-        if (this.initState === InitializationState.IN_PROGRESS && this.initializationPromise) {
-            await this.initializationPromise;
         }
     }
 }

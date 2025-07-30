@@ -10,7 +10,6 @@ module.exports = {
     reporters: [
         'detox/runners/jest/reporter',
         ['jest-junit', { outputDirectory: './reports', outputName: 'junit-report.xml' }],
-        '<rootDir>/e2e/support/reporter/metadataReporter.js'
     ],
     testEnvironment: 'detox/runners/jest/testEnvironment',
     verbose: true,
