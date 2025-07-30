@@ -6,7 +6,6 @@ import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-ap
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     type TradingExchangeAmountLimitProps,
@@ -31,7 +30,11 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { fetchAndUpdateAccountThunk, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    fetchAndUpdateAccountThunk,
+    selectAccountByKey,
+    updateFeeInfoThunk,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -67,8 +70,8 @@ import {
     getTradingNetworkDecimals,
 } from 'src/utils/wallet/trading/tradingUtils';
 
-import { useTradingInitializer } from './common/useTradingInitializer';
 import { useFormDraft } from '../../useFormDraft';
+import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingPreviousRoute } from './common/useTradingPreviousRoute';
 
 export const useTradingExchangeForm = ({
@@ -124,7 +127,6 @@ export const useTradingExchangeForm = ({
         isLoading,
     });
 
-    const [isApproval, setIsApproval] = useState<boolean>(false);
     const [approvalInitiated, setApprovalInitiated] = useState<boolean>(false);
     const [isFetchingApprovalStatus, setIsFetchingApprovalStatus] = useState<boolean>(false);
 
@@ -579,7 +581,7 @@ export const useTradingExchangeForm = ({
             trade = selectedQuote;
         }
 
-        if (!quotesRequest || !trade || !refundAddress || !trade.quoteId) {
+        if (!quotesRequest || !trade || !refundAddress || !trade.quoteId || !receiveAddress) {
             return undefined;
         }
 
@@ -779,21 +781,10 @@ export const useTradingExchangeForm = ({
         tradingAccountKey,
     ]);
 
-    // save approval tx data for approval fee estimation
-    useEffect(() => {
-        if (isApproval && selectedQuote?.status === 'APPROVAL_REQ' && selectedQuote?.dexTx) {
-            setValue('ethereumDataHex', selectedQuote?.dexTx.data);
-            setValue(TRADING_FORM_OUTPUT_ADDRESS, selectedQuote?.dexTx.to);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isApproval, selectedQuote]);
-
-    // refresh fees when user opens/closes approval modal
-    useEffect(() => {
+    const fetchFeesAndCompose = async () => {
+        await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
         composeRequest();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isApproval]);
+    };
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
@@ -921,7 +912,6 @@ export const useTradingExchangeForm = ({
         refreshQuotes,
         isScheduledQuotesRefresh,
         resetSelectedOffer,
-        isApproval,
-        setIsApproval,
+        fetchFeesAndCompose,
     };
 };

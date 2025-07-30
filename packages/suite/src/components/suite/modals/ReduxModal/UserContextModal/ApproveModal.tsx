@@ -75,6 +75,7 @@ export const ApproveModal = ({
         getValues,
         changeFeeLevel,
         trigger,
+        fetchFeesAndCompose,
     } = context;
 
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -108,7 +109,7 @@ export const ApproveModal = ({
     };
 
     const selectApprovalValue = async (type: DexApprovalType) => {
-        if (!selectedQuote.receiveAddress) {
+        if (!selectedQuote.receiveAddress || approvalType === type) {
             return;
         }
 
@@ -132,10 +133,15 @@ export const ApproveModal = ({
 
         dispatch(tradingExchangeActions.saveSelectedQuote(updatedSelectedQuote));
 
-        await confirmApproval({
+        const trade = await confirmApproval({
             trade: updatedSelectedQuote,
             receiveAddress: selectedQuote.receiveAddress,
         });
+
+        setValue('ethereumDataHex', trade?.dexTx?.data);
+
+        await fetchFeesAndCompose();
+
         setIsConfirmButtonLoading(false);
     };
 
@@ -221,6 +227,7 @@ export const ApproveModal = ({
                         </Text>
                         <RadioCard
                             isActive={approvalType === 'INFINITE'}
+                            isDisabled={isConfirmButtonLoading}
                             onClick={() => selectApprovalValue('INFINITE')}
                         >
                             <Row>
@@ -246,6 +253,7 @@ export const ApproveModal = ({
                         </RadioCard>
                         <RadioCard
                             isActive={approvalType === 'MINIMAL'}
+                            isDisabled={isConfirmButtonLoading}
                             onClick={() => selectApprovalValue('MINIMAL')}
                         >
                             <Row>

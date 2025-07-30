@@ -234,8 +234,7 @@ export interface TradingExchangeFormContextProps
     refreshQuotes: () => Promise<void>;
     isScheduledQuotesRefresh: boolean;
     resetSelectedOffer: () => void;
-    isApproval: boolean;
-    setIsApproval: (isApproval: boolean) => void;
+    fetchFeesAndCompose: () => Promise<void>;
 }
 
 export type TradingExchangeApprovalType = 'APPROVE' | 'REVOKE';
