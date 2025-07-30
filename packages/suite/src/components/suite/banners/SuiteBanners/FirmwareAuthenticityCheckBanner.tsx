@@ -6,16 +6,18 @@ import { spacings } from '@trezor/theme';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
-import { SkippedHashCheckError } from 'src/constants/suite/firmware';
+import { SkippedHashCheckError, SkippedRevisionCheckError } from 'src/constants/suite/firmware';
 import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
 } from 'src/reducers/suite/suiteReducer';
 
-const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> = {
+const revisionCheckMessages: Record<
+    Exclude<FirmwareRevisionCheckError, SkippedRevisionCheckError>,
+    TranslationKey
+> = {
     'cannot-perform-check-offline': 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
-    'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
     'revision-mismatch': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
     'firmware-version-unknown': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
 };

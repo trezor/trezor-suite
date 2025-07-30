@@ -67,7 +67,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
-    // report firmware authenticity failures even when the UI is disabled
     useReportDeviceCompromised();
 
     const dispatch = useDispatch();

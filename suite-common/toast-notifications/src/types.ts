@@ -60,7 +60,6 @@ export type ToastPayload = (
               | 'backup-failed'
               | 'sign-message-success'
               | 'verify-message-success'
-              | 'firmware-check-authenticity-success'
               | 'device-authenticity-success'
               | 'clear-storage'
               | 'add-token-success'
@@ -129,6 +128,10 @@ export type ToastPayload = (
     | {
           type: 'tor-toggle-error';
           error: TranslationKey;
+      }
+    | {
+          type: 'firmware-authenticity-check-error';
+          translationKey: TranslationKey;
       }
     | {
           type: 'successful-claim';

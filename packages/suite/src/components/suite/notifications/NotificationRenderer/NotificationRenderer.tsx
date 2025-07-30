@@ -130,8 +130,8 @@ export const NotificationRenderer = ({
             );
         case 'clear-storage':
             return success(render, notification, 'TR_STORAGE_CLEARED');
-        case 'firmware-check-authenticity-success':
-            return success(render, notification, 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS');
+        case 'firmware-authenticity-check-error':
+            return error(render, notification, notification.translationKey);
         case 'device-authenticity-success':
             return success(render, notification, 'TR_DEVICE_AUTHENTICITY_SUCCESS');
         case 'device-authenticity-error':
