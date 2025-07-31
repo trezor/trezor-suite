@@ -814,7 +814,9 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 // compare last transaction signature since the total number of txs may not be fetched fully
                 freshInfo.history.txids?.[0] !== account.history.txids?.[0] ||
                 // compare last epoch
-                freshInfo.misc?.solEpoch !== account.misc?.solEpoch
+                freshInfo.misc?.solEpoch !== account.misc?.solEpoch ||
+                // compare token count (detect added/removed tokens)
+                freshInfo.tokens?.length !== account.tokens?.length
             );
         default:
             return false;
