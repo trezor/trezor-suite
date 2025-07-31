@@ -111,7 +111,7 @@ const getAllSignatures = async (
     let keepFetching = true;
     let allSignatures: SignatureWithSlot[] = [];
 
-    const defaultValueLimit = 1000; // default value of getSignaturesForAddress
+    const defaultValueLimit = 100; // default value of getSignaturesForAddress
     while (keepFetching) {
         const signaturesInfos = await api.rpc
             .getSignaturesForAddress(address(descriptor), {
@@ -245,6 +245,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         .getAccountInfo(publicKey, { encoding: 'base64' })
         .send();
 
+    const tokenMetadata = await request.getTokenMetadata();
+
     const getAllTxIds = async (tokenAccountPubkeys: string[]) => {
         const sortedTokenAccountPubkeys = tokenAccountPubkeys.sort();
 
@@ -334,8 +336,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
-        const tokenMetadata = await request.getTokenMetadata();
-
         const page = transactionsPage
             .filter(isValidTransaction)
             .map(tx =>
@@ -398,7 +398,20 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         .map(res => res.value)
         .flat();
 
-    const allTxIds = await getAllTxIds(tokenAccounts.map(a => a.pubkey));
+    const recognisedWithBalance = tokenAccounts.filter(acc => {
+        const info = acc.account.data.parsed?.info;
+        const mint = info?.mint;
+        const amount = info?.tokenAmount?.amount;
+
+        return mint && tokenMetadata[mint] && amount !== '0';
+    });
+
+    const allAccounts =
+        tokenAccounts.length > 100
+            ? recognisedWithBalance.map(a => a.pubkey)
+            : [payload.descriptor, ...recognisedWithBalance.map(a => a.pubkey)];
+
+    const allTxIds = await getAllTxIds(allAccounts);
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
@@ -421,8 +434,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.length > 0) {
-        const tokenMetadata = await request.getTokenMetadata();
-
         tokens = transformTokenInfo(tokenAccounts, tokenMetadata);
     }
 
@@ -622,19 +633,22 @@ const unsubscribeBlock = ({ state }: Context) => {
     state.removeSubscription('block');
 };
 
-const extractTokenAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] =>
-    accounts
-        .map(account =>
-            (
-                account.tokens?.map(
-                    token =>
-                        token.accounts?.map(tokenAccount => ({
-                            descriptor: tokenAccount.publicKey,
-                        })) || [],
-                ) || []
-            ).flat(),
-        )
-        .flat();
+const extractTokenAccounts = (
+    accounts: SubscriptionAccountInfo[],
+    tokenMetadata: TokenDetailByMint,
+): SubscriptionAccountInfo[] =>
+    accounts.flatMap(
+        account =>
+            account.tokens?.flatMap(
+                token =>
+                    token.accounts
+                        ?.filter(
+                            tokenAccount =>
+                                tokenAccount.balance !== '0' && tokenMetadata[token.contract],
+                        )
+                        .map(tokenAccount => ({ descriptor: tokenAccount.publicKey })) || [],
+            ) || [],
+    );
 
 const findTokenAccountOwner = (
     accounts: SubscriptionAccountInfo[],
@@ -725,7 +739,8 @@ const subscribeAccounts = async (context: Context, accounts: SubscriptionAccount
     const { connect, state } = context;
     const api = await connect();
     const subscribedAccounts = state.getAccounts();
-    const tokenAccounts = extractTokenAccounts(accounts);
+    const tokenMetadata = await context.getTokenMetadata();
+    const tokenAccounts = extractTokenAccounts(accounts, tokenMetadata);
     // we have to subscribe to both system and token accounts
     const newAccounts = [...accounts, ...tokenAccounts].filter(
         account =>
@@ -733,6 +748,7 @@ const subscribeAccounts = async (context: Context, accounts: SubscriptionAccount
                 subscribedAccount => account.descriptor === subscribedAccount.descriptor,
             ),
     );
+
     await Promise.all(
         newAccounts.map(async a => {
             const abortController = new AbortController();
