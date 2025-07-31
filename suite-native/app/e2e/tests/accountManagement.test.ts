@@ -1,6 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import onboardingCompleted from '../fixtures/onboardingCompleted.json';
+import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';

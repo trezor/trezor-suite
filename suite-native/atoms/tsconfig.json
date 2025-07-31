@@ -11,7 +11,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        { "path": "../config" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../../packages/env-utils" },
