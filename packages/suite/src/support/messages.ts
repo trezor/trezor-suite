@@ -9876,6 +9876,31 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_EXAMPLES',
         defaultMessage: 'Examples',
     },
+    TR_PASSPHRASE_EXAMPLES_ITEM1_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_EXAMPLES_ITEM1_DESCRIPTION',
+        defaultMessage: 'freeway oppose spinout managing',
+    },
+    TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING: {
+        id: 'TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING',
+        defaultMessage: 'A few uncommon random words',
+    },
+    TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION',
+        defaultMessage: 'aM7xQ9zLpV',
+    },
+    TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING: {
+        id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING',
+        defaultMessage: 'Use 10+ characters: mix uppercase, lowercase, and numbers.',
+    },
+    TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION',
+        defaultMessage: 'Red clouds drifted above the silent forest as shadows stretched.',
+    },
+    TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING: {
+        id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING',
+        defaultMessage:
+            'Create a sentence only you would come up with—avoid quotes and famous lines.',
+    },
     TR_UNRECOGNIZED: {
         id: 'TR_UNRECOGNIZED',
         defaultMessage: 'Unrecognized',
