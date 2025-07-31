@@ -92,27 +92,26 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
     });
 
-    test('Bitcoin sell fees', async ({ walletPage, tradingPage, devicePrompt }) => {
+    test.skip('Bitcoin sell fees', async ({ walletPage, tradingPage, devicePrompt }) => {
         const testCases: FeeSwitchTestCase[] = [
-            // TODO: #18316 Uncomment and update when bug is fixed
-            // {
-            //     feeType: 'economy',
-            //     feeSwitchFunction: async () => {
-            //         await tradingPage.fees.bitcoinCard('economy').click();
-            //     },
-            // },
-            // {
-            //     feeType: 'normal',
-            //     feeSwitchFunction: async () => {
-            //         await tradingPage.fees.bitcoinCard('normal').click();
-            //     },
-            // },
-            // {
-            //     feeType: 'high',
-            //     feeSwitchFunction: async () => {
-            //         await tradingPage.fees.bitcoinCard('high').click();
-            //     },
-            // },
+            {
+                feeType: 'economy',
+                feeSwitchFunction: async () => {
+                    await tradingPage.fees.card('economy').click();
+                },
+            },
+            {
+                feeType: 'normal',
+                feeSwitchFunction: async () => {
+                    await tradingPage.fees.card('normal').click();
+                },
+            },
+            {
+                feeType: 'high',
+                feeSwitchFunction: async () => {
+                    await tradingPage.fees.card('high').click();
+                },
+            },
             {
                 feeType: 'custom',
                 feeSwitchFunction: async () => {
