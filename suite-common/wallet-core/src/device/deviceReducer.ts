@@ -217,8 +217,18 @@ const changeDevice = (
     device: Device | TrezorDevice,
     extended: Partial<AcquiredDevice>,
 ) => {
-    // change only acquired devices
-    if (!device.features) return;
+    // change only acquired and THP devices
+    if (!device.features) {
+        if (device.thp) {
+            const affectedDevice = draft.devices.find(d => !d.features && d.path === device.path);
+            if (affectedDevice) {
+                affectedDevice.status = device.status;
+                affectedDevice.thp = device.thp;
+            }
+        }
+
+        return;
+    }
 
     // this is not nice - during passphrase/discovery refactor, I made a decision that we are not going to update device.state in reducer
     // in any other case than as a result of device authorization (passphrase+discovery). But later we realized that we need to update device.state.sessionId

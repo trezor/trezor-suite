@@ -189,7 +189,8 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
             label: 'Unacquired device',
             name: 'name of unacquired device',
             transportSessionOwner: 'another app name',
-            thp,
+            thp: dev.thp,
+            status: dev.status,
         };
     }
 
