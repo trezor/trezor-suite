@@ -24,7 +24,7 @@ export function createWinHello() {
 
     if (isWindows) {
         try {
-            const localRequiredBinary = require('./win_hello.node');
+            const localRequiredBinary = require('../../suite-data/files/bin/win_hello.node');
             winHello = localRequiredBinary as typeof WinHelloTypes | null;
         } catch (err) {
             console.warn(`Failed to load local Windows Hello native module: ${err.message}`);
