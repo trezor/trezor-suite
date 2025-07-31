@@ -1,4 +1,7 @@
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
 
 import {
     selectDeviceInternalModel,
@@ -10,12 +13,38 @@ import { Button } from '@suite-native/atoms';
 import { setInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import {
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import TrezorConnect, { UI } from '@trezor/connect';
+
+type NavigationProp = StackToStackCompositeNavigationProps<
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor,
+    RootStackParamList
+>;
 
 export const EnterPassphraseOnTrezorButton = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
 
     const deviceModel = useSelector(selectDeviceInternalModel);
+
+    const navigation = useNavigation<NavigationProp>();
+
+    const handleRedirectToEnterOnTrezor = useCallback(() => {
+        navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor);
+    }, [navigation]);
+
+    useEffect(() => {
+        TrezorConnect.on(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRedirectToEnterOnTrezor);
+
+        return () =>
+            TrezorConnect.off(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRedirectToEnterOnTrezor);
+    }, [handleRedirectToEnterOnTrezor]);
 
     const handleSubmitOnDevice = () => {
         analytics.report({ type: EventType.PassphraseEnterOnTrezor });
