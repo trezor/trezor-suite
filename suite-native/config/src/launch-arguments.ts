@@ -15,6 +15,7 @@ export type LaunchArguments = {
     isDeviceConnectEnabled?: boolean;
     isViewOnlyByDefaultEnabled?: boolean;
     preloadedState?: Record<string, unknown>;
+    isFirmwareUpdateEnabled?: boolean;
 };
 
 export const launchArguments = LaunchArguments.value<LaunchArguments>();

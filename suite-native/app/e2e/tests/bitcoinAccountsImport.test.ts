@@ -1,4 +1,4 @@
-import onboardingCompleted from '../fixtures/onboardingCompleted.json';
+import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';

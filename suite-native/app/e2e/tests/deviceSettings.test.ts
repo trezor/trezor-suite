@@ -1,7 +1,7 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import onboardingCompleted from '../fixtures/onboardingCompleted.json';
+import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
@@ -36,11 +36,14 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 
     describe('Tests with T3T1 device model', () => {
-        const emulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
+        const emulatorOptions: PrepareTrezorEmulatorProps = {
+            seed: MNEMONICS.mnemonic_all,
+            version: '2.8.7-arm',
+        };
 
         beforeEach(async () => {
             await prepareTrezorEmulator(emulatorOptions);
-            await restartApp();
+            await restartApp({ args: { isFirmwareUpdateEnabled: true } });
             await appIsFullyLoaded();
 
             await onConnectingDevice.waitForScreen();
@@ -123,7 +126,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             expect(element(by.label('Your backup is valid'))).toBeVisible();
         });
 
-        test.skip('Device Check Backup is possible from firmware update', async () => {
+        test('Device Check Backup is possible from firmware update', async () => {
             await onDeviceSettings.tapUpdateFirmwareButton();
             await onDeviceSettings.tapUpdateFirmwareBottomSheet();
             await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();

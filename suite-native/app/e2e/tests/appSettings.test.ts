@@ -1,7 +1,7 @@
 import { PROTO } from '@trezor/connect';
 
-import onboardingCompleted from '../fixtures/onboardingCompleted.json';
-import btcWalletPreloaded from '../fixtures/walletWithBtcAcc.json';
+import { onboardingCompleted } from '../fixtures/onboardingCompleted';
+import { btcWalletPreloaded } from '../fixtures/walletWithBtcAcc';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';

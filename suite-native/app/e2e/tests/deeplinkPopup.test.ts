@@ -7,7 +7,7 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import onboardingCompleted from '../fixtures/onboardingCompleted.json';
+import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import {

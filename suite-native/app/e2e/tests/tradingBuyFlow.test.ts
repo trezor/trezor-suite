@@ -1,5 +1,5 @@
-import onboardingCompleted from '../fixtures/onboardingCompleted.json';
-import btcWalletPreloaded from '../fixtures/walletWithBtcAcc.json';
+import { onboardingCompleted } from '../fixtures/onboardingCompleted';
+import { btcWalletPreloaded } from '../fixtures/walletWithBtcAcc';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/tradingHistoryActions';

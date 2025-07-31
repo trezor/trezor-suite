@@ -2,11 +2,16 @@ import { expect as detoxExpect } from 'detox';
 import { resolveConfig } from 'detox/internals';
 
 import { LaunchArguments } from '@suite-native/config';
+import { PreloadedState } from '@suite-native/state';
 import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const platform = device.getPlatform();
 
-const INITIAL_LAUNCH_ARGS: LaunchArguments = {
+type LaunchArgumentsWithPreloadedState = Omit<LaunchArguments, 'preloadedState'> & {
+    preloadedState?: PreloadedState;
+};
+
+const INITIAL_LAUNCH_ARGS: LaunchArgumentsWithPreloadedState = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
     // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
     detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*"\\)',
@@ -38,7 +43,7 @@ const openExpoDevClientApp = async ({
     launchArgs,
 }: {
     newInstance: boolean;
-    launchArgs: LaunchArguments;
+    launchArgs: LaunchArgumentsWithPreloadedState;
 }) => {
     const deepLinkUrl = getExpoDeepLinkUrl();
 
@@ -75,7 +80,7 @@ export const openApp = async ({
     args = {},
 }: {
     newInstance: boolean;
-    args?: LaunchArguments;
+    args?: LaunchArgumentsWithPreloadedState;
 }) => {
     const launchArgs = {
         ...INITIAL_LAUNCH_ARGS,
@@ -93,7 +98,7 @@ export const openApp = async ({
 };
 
 type RestartAppProps = {
-    args?: LaunchArguments;
+    args?: LaunchArgumentsWithPreloadedState;
 };
 
 export const restartApp = async ({ args = {} }: RestartAppProps = {}) => {
@@ -130,19 +135,21 @@ export type PrepareTrezorEmulatorProps = {
     seed?: string;
     passphrase_protection?: boolean;
     model?: Model;
+    version?: string;
 };
 
 export const prepareTrezorEmulator = async ({
     seed = MNEMONICS.mnemonic_immune,
     passphrase_protection = false,
     model = 'T3T1',
+    version = '2-latest',
 }: PrepareTrezorEmulatorProps = {}) => {
     if (platform === 'android') {
         // Prepare Trezor device for test scenario
         await TrezorUserEnvLink.disconnect();
         await TrezorUserEnvLink.connect();
         // start with latest officially released firmware (necessary to pass the firmware checks)
-        await TrezorUserEnvLink.startEmu({ model, version: '2-latest', wipe: true });
+        await TrezorUserEnvLink.startEmu({ model, version, wipe: true });
 
         if (seed) {
             await TrezorUserEnvLink.setupEmu({

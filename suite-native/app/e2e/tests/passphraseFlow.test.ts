@@ -4,7 +4,7 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import onboardingCompleted from '../fixtures/onboardingCompleted.json';
+import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
