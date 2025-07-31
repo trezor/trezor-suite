@@ -1,17 +1,12 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
-import { selectIsFirmwareAuthenticityCheckDismissed } from '@suite-common/wallet-core';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
-import {
-    selectIsEntropyCheckEnabledAndFailed,
-    selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
-} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import {
     selectIsLoggedOut,
     selectIsTransportInitialized,
@@ -24,7 +19,7 @@ import { ErrorPage } from 'src/views/suite/ErrorPage';
 
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
-import { RouterAppWithParams } from '../../../constants/suite/routes';
+import { selectShouldDisplayDeviceCompromised } from './selectShouldDisplayDeviceCompromised';
 import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScreen';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
@@ -33,13 +28,6 @@ import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceComp
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
-
-const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
-    'settings',
-    'firmware',
-    'firmware-type',
-    'firmware-custom',
-];
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
@@ -60,14 +48,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
-    const isFirmwareCheckEnabledAndFailed = useSelector(
-        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
-    );
-    const isFirmwareAuthenticityCheckDismissed = useSelector(
-        selectIsFirmwareAuthenticityCheckDismissed,
-    );
-    // Entropy check won't be performed if disabled but we must also check it here to avoid showing the UI when the failed state is stored in database.
-    const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
+    const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     useReportDeviceCompromised();
@@ -110,12 +91,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         return <InitialLoading timeout={90 * 5} />;
     }
 
-    if (
-        (router.route?.app === undefined ||
-            !ROUTES_TO_SKIP_FIRMWARE_CHECK.includes(router.route?.app)) &&
-        ((!isFirmwareAuthenticityCheckDismissed && isFirmwareCheckEnabledAndFailed) ||
-            isEntropyCheckEnabledAndFailed)
-    ) {
+    if (shouldDisplayDeviceCompromised) {
         return <DeviceCompromised />;
     }
 
