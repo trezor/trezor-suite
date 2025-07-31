@@ -87,6 +87,7 @@ export interface Flags {
     isBluetoothEnabled: boolean;
     showBluetoothDebugInfo: boolean;
     stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
+    solanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
     hasSeenDisconnectTooltip: boolean; // tooltip shown when device disconnects - show only once ever
 }
 
@@ -174,6 +175,7 @@ const initialState: SuiteState = {
         isBluetoothEnabled: false,
         showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
+        solanaLimitedHistoryBannerClosed: false,
         hasSeenDisconnectTooltip: false,
     },
     evmSettings: {

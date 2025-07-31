@@ -9715,6 +9715,15 @@ export default defineMessages({
         defaultMessage:
             'Due to Solana network limits, you have less than a minute to confirm and send your transaction before it expires.',
     },
+    TR_SOLANA_LIMIT_HISTORY_TITLE: {
+        id: 'TR_SOLANA_LIMIT_HISTORY_TITLE',
+        defaultMessage: 'Transaction history is limited to the last 100 transactions per token',
+    },
+    TR_SOLANA_LIMIT_HISTORY_DESCRIPTION: {
+        id: 'TR_SOLANA_LIMIT_HISTORY_DESCRIPTION',
+        defaultMessage:
+            'This view shows only the most recent 100 transactions for each token. To see the full history, please use the blockchain explorer.',
+    },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
         defaultMessage: 'Got it',
