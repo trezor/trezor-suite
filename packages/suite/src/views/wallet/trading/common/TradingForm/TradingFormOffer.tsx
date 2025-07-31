@@ -221,10 +221,15 @@ export const TradingFormOffer = () => {
         ? state.isFormLoading || isFetchingApprovalStatus || isQuoteOutdated
         : state.isFormLoading;
 
+    const selectedAssetCryptoId =
+        !state.isLoadingOrInvalid && receiveCurrency
+            ? receiveCurrency
+            : (selectedCrypto?.value as CryptoId);
+
     return (
         <Column gap={spacings.lg}>
             <Column gap={spacings.xs} data-testid="@trading/best-offer">
-                <Translation id={amountLabels.offerLabel} />
+                {selectedAssetCryptoId && <Translation id={amountLabels.offerLabel} />}
                 {shouldDisplayFiatAmount ? (
                     <TradingFormOfferFiatAmount amount={tradingGetRoundedFiatAmount(sendAmount)} />
                 ) : (
@@ -237,11 +242,7 @@ export const TradingFormOffer = () => {
                                 ? bestScoredQuoteAmounts.receiveAmount
                                 : '0'
                         }
-                        cryptoId={
-                            !state.isLoadingOrInvalid && receiveCurrency
-                                ? receiveCurrency
-                                : (selectedCrypto?.value as CryptoId)
-                        }
+                        cryptoId={selectedAssetCryptoId}
                     />
                 )}
                 {isTradingExchangeContext(context) && contractAddress && network && (

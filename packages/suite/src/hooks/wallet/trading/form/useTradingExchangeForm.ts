@@ -195,7 +195,7 @@ export const useTradingExchangeForm = ({
         : null;
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = !!output?.amount;
+    const hasValues = !!output?.amount && !!values.receiveCryptoSelect;
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
