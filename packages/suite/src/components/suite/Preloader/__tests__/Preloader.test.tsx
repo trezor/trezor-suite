@@ -139,6 +139,7 @@ const getInitialState = ({
             isBluetoothEnabled: false,
             showBluetoothDebugInfo: false,
             stellarLimitedHistoryBannerClosed: false,
+            solanaLimitedHistoryBannerClosed: false,
             hasSeenDisconnectTooltip: false,
         },
         torStatus: 'Disabled' as TorStatus.Disabled,

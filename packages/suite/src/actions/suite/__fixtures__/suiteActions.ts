@@ -188,6 +188,7 @@ const initialRun = [
                 isBluetoothEnabled: false,
                 showBluetoothDebugInfo: false,
                 stellarLimitedHistoryBannerClosed: false,
+                solanaLimitedHistoryBannerClosed: false,
                 hasSeenDisconnectTooltip: false,
             },
         },
