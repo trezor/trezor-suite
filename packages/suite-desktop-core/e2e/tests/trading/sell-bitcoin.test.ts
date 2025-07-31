@@ -92,7 +92,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
     });
 
-    test.skip('Bitcoin sell fees', async ({ walletPage, tradingPage, devicePrompt }) => {
+    test('Bitcoin sell fees', async ({ walletPage, tradingPage, devicePrompt }) => {
         const testCases: FeeSwitchTestCase[] = [
             {
                 feeType: 'economy',

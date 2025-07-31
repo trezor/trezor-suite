@@ -35,6 +35,11 @@ export class StakingSection {
     readonly instantBannerHeader: Locator;
     readonly instantBannerParagraph: Locator;
     readonly instantBannerGotItButton: Locator;
+    readonly claimCard: Locator;
+    readonly claimBalanceWithSymbol: Locator;
+    readonly claimButton: Locator;
+    readonly claimModalAmount: Locator;
+    readonly claimModalButton: Locator;
 
     constructor(private readonly page: Page) {
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
@@ -80,6 +85,13 @@ export class StakingSection {
         this.instantBannerGotItButton = this.page.getByTestId(
             '@staking/instant-stake-banner/got-it-button',
         );
+        this.claimCard = this.page.getByTestId('@staking/can-claim-card');
+        this.claimBalanceWithSymbol = this.page.getByTestId('@staking/can-claim-with-symbol');
+        this.claimButton = this.page.getByRole('button', { name: 'Claim', exact: true });
+        this.claimModalAmount = this.page.getByTestId('@staking/claim-modal/amount-with-symbol');
+        this.claimModalButton = this.page
+            .getByTestId('@staking/claim-modal')
+            .getByRole('button', { name: 'Claim', exact: true });
     }
 
     async expectProgressIndicatorsToMatchPhase(
