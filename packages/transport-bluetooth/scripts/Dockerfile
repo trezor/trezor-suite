@@ -8,6 +8,7 @@ WORKDIR /app
 
 COPY ./src ./src
 COPY ./Cargo.toml ./Cargo.toml
+COPY ./Cargo.lock ./Cargo.lock
 
 # Build for Windows x64
 RUN rustup target add x86_64-pc-windows-gnu && \
