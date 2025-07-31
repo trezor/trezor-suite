@@ -24,7 +24,7 @@ export const getContractAddress = (assetPlatformId: string, platforms: CoinData[
                 const code = stellarMatch[1];
                 const issuer = stellarMatch[2];
 
-                return `${code}:${issuer}`; // Return as CODE:ISSUER format
+                return `${code}-${issuer}`; // Return as CODE-ISSUER format
             } else {
                 return undefined; // Invalid Stellar address format
             }
