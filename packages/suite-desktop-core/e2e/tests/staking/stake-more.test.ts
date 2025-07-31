@@ -35,10 +35,10 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                         pendingBalance: '0', //sets to zero
                         pendingDepositedBalance: '0', //sets to zero
                         depositedBalance: '3000000000000000000000',
-                        withdrawTotalAmount: '4000000000000000000000',
-                        claimableAmount: '5000000000000000000000',
+                        withdrawTotalAmount: '0',
+                        claimableAmount: '0',
                         restakedReward: '234000000000000000000',
-                        autocompoundBalance: '7000000000000000000000',
+                        autocompoundBalance: '3234000000000000000000',
                     },
                 ],
             });
@@ -49,7 +49,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
         'stake on ETH account',
         {
             annotation: createTestAnnotation({
-                testCase: 'Verifies that a user can stake from his Ethereum account.',
+                testCase: 'Verifies that a user can stake more from his Ethereum account.',
                 category: TestCategory.ETH,
                 priority: TestPriority.Critical,
                 stream: TestStream.Trends,
@@ -64,7 +64,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     pending: 'hidden',
                     staked: '3,000',
                     rewards: '234',
-                    unstaking: '4,000',
+                    unstaking: 'hidden',
                 });
                 await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
             });
@@ -122,10 +122,10 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                             pendingBalance: '100204158497493752', // increased by staked amount
                             pendingDepositedBalance: '0',
                             depositedBalance: '3000000000000000000000',
-                            withdrawTotalAmount: '4000000000000000000000',
-                            claimableAmount: '5000000000000000000000',
+                            withdrawTotalAmount: '0',
+                            claimableAmount: '0',
                             restakedReward: '234000000000000000000',
-                            autocompoundBalance: '7000000000000000000000',
+                            autocompoundBalance: '3234000000000000000000',
                         },
                     ],
                     nonce: '2',
@@ -142,7 +142,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     pending: '0.100204158497493752',
                     staked: '3,000',
                     rewards: '234',
-                    unstaking: '4,000',
+                    unstaking: 'hidden',
                 });
             });
 
@@ -157,10 +157,10 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                             pendingBalance: '0', // lowered by confirmation
                             pendingDepositedBalance: '100204158497493752', // increased by confirmation
                             depositedBalance: '3000000000000000000000',
-                            withdrawTotalAmount: '4000000000000000000000',
-                            claimableAmount: '5000000000000000000000',
+                            withdrawTotalAmount: '0',
+                            claimableAmount: '0',
                             restakedReward: '234000000000000000000',
-                            autocompoundBalance: '7000000000000000000000',
+                            autocompoundBalance: '3234000000000000000000',
                         },
                     ],
                 });
@@ -171,7 +171,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     pending: '0.100204158497493752',
                     staked: '3,000',
                     rewards: '234',
-                    unstaking: '4,000',
+                    unstaking: 'hidden',
                 });
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
                 await expect(stakingSection.speedUpButton).toBeHidden();
@@ -186,10 +186,10 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                             pendingBalance: '0',
                             pendingDepositedBalance: '0', // lowered by activation
                             depositedBalance: '3000100204158497493752', // increased by activation
-                            withdrawTotalAmount: '4000000000000000000000',
-                            claimableAmount: '5000000000000000000000',
+                            withdrawTotalAmount: '0',
+                            claimableAmount: '0',
                             restakedReward: '234000000000000000000',
-                            autocompoundBalance: '7000000000000000000000',
+                            autocompoundBalance: '3234000000000000000000',
                         },
                     ],
                 });
@@ -198,7 +198,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     pending: 'hidden',
                     staked: '3,000.100204158497493752',
                     rewards: '234',
-                    unstaking: '4,000',
+                    unstaking: 'hidden',
                 });
                 await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
             });

@@ -70,7 +70,11 @@ export const ClaimCard = () => {
     const content = (
         <>
             <Paragraph typographyStyle="titleSmall" variant="primary">
-                <FormattedCryptoAmount value={claimableAmount} symbol={selectedAccount?.symbol} />
+                <FormattedCryptoAmount
+                    data-testid="@staking/can-claim"
+                    value={claimableAmount}
+                    symbol={selectedAccount?.symbol}
+                />
             </Paragraph>
             <Paragraph typographyStyle="hint" variant="tertiary">
                 <BaseCurrencyValue
@@ -83,13 +87,13 @@ export const ClaimCard = () => {
     );
 
     return isClaimPending ? (
-        <Card>
+        <Card data-testid="@staking/can-claim-card">
             <InfoItem label={<Translation id="TR_STAKE_CLAIM_PENDING" />} iconName="spinnerGap">
                 {content}
             </InfoItem>
         </Card>
     ) : (
-        <Card variant="primary">
+        <Card data-testid="@staking/can-claim-card" variant="primary">
             <Column flex="1" gap={spacings.xl}>
                 <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM" />}

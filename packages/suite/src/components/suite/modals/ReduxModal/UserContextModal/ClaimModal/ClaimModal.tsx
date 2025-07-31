@@ -90,6 +90,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
 
     return (
         <Modal
+            data-testid="@staking/claim-modal"
             heading={<Translation id="TR_STAKE_CLAIM" />}
             description={
                 <Translation
@@ -129,6 +130,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                     <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
                         <Paragraph typographyStyle="titleSmall">
                             <FormattedCryptoAmount
+                                data-testid="@staking/claim-modal/amount"
                                 value={claimableAmount}
                                 symbol={account.symbol}
                             />
