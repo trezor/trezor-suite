@@ -23,7 +23,7 @@ export const TradingFormInputFiatCrypto = <
     const {
         type,
         form: {
-            state: { isFormLoading, toggleAmountInCrypto },
+            state: { toggleAmountInCrypto },
         },
     } = useTradingFormContext();
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
@@ -50,7 +50,6 @@ export const TradingFormInputFiatCrypto = <
         labelRight: showLabel ? (
             <TradingFormSwitcherCryptoFiat
                 currency={!amountInCrypto ? displaySymbol : (currencySelectLabel ?? '')}
-                isDisabled={isFormLoading}
                 toggleAmountInCrypto={toggleAmountInCrypto}
             />
         ) : undefined,

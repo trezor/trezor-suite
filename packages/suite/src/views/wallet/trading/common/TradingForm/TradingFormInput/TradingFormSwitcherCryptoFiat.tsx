@@ -5,13 +5,13 @@ import { Translation } from 'src/components/suite';
 interface TradingFormSwitcherCryptoFiatProps {
     // displaySymbol or fiat currency
     currency?: string;
-    isDisabled: boolean;
+    isDisabled?: boolean;
     toggleAmountInCrypto: () => void;
 }
 
 export const TradingFormSwitcherCryptoFiat = ({
     currency,
-    isDisabled,
+    isDisabled = false,
     toggleAmountInCrypto,
 }: TradingFormSwitcherCryptoFiatProps) => (
     <TextButton
