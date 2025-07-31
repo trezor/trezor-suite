@@ -152,6 +152,7 @@ const getInitialState = ({
         countryCode: null,
         prefillFields: {},
         recentlyDisconnectedDevice: null,
+        seenDisconnectNotificationForDeviceIds: [],
         ...suite,
     },
     device: {

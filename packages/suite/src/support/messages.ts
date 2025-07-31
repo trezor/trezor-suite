@@ -4127,6 +4127,10 @@ export default defineMessages({
         id: 'TOAST_VERIFY_MESSAGE_ERROR',
         defaultMessage: 'Message verification error: {error}',
     },
+    TOAST_AUTO_EJECT_SETTINGS: {
+        id: 'TOAST_AUTO_EJECT_SETTINGS',
+        defaultMessage: 'Wallet balances stay visible',
+    },
     TOAST_AUTO_UPDATER_ERROR: {
         id: 'TOAST_AUTO_UPDATER_ERROR',
         defaultMessage: 'Update error ({state})',

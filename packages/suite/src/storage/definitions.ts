@@ -66,6 +66,7 @@ export interface SuiteDBSchema extends DBSchema {
             flags: SuiteState['flags'];
             evmSettings: SuiteState['evmSettings'];
             dismissedTradingTerms: SuiteState['dismissedTradingTerms'];
+            seenDisconnectNotificationForDeviceIds: SuiteState['seenDisconnectNotificationForDeviceIds'];
         };
     };
     historicRates: {

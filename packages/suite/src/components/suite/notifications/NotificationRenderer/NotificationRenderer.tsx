@@ -11,6 +11,7 @@ import { NotificationViewProps } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 import { ActionRenderer } from './ActionRenderer';
+import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
 
@@ -156,6 +157,8 @@ export const NotificationRenderer = ({
             });
         case 'add-token-success':
             return success(render, notification, 'TR_ADD_TOKEN_TOAST_SUCCESS');
+        case 'auto-eject-settings':
+            return <AutoEjectRenderer render={render} notification={notification} />;
         case 'user-feedback-send-success':
             return success(render, notification, 'TR_GUIDE_FEEDBACK_SENT');
         case 'user-feedback-send-error':

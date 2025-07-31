@@ -28,6 +28,7 @@ import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
 import { TrezorConnectLogs } from './TrezorConnectLogs';
 import { TriggerHighlight } from './TriggerHighlight';
+import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
@@ -41,6 +42,7 @@ export const SettingsDebug = () => {
                 <GithubIssue />
                 {!isWeb() && <WipeData />}
                 <TriggerHighlight />
+                <TriggerToast />
             </SettingsSection>
             <SettingsSection title="Invity">
                 <InvityApi />
