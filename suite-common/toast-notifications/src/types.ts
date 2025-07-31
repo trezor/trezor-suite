@@ -64,6 +64,7 @@ export type ToastPayload = (
               | 'clear-storage'
               | 'add-token-success'
               | 'auto-updater-no-new'
+              | 'auto-eject-settings'
               | 'qr-incorrect-address'
               | 'copy-to-clipboard'
               | 'tor-is-slow'

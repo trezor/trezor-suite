@@ -143,6 +143,7 @@ export interface SuiteState {
     prefillFields: PrefillFields;
     settings: SuiteSettings;
     recentlyDisconnectedDevice: string | null;
+    seenDisconnectNotificationForDeviceIds: string[];
 }
 
 const initialState: SuiteState = {
@@ -220,6 +221,7 @@ const initialState: SuiteState = {
         autoEject: false,
     },
     recentlyDisconnectedDevice: null,
+    seenDisconnectNotificationForDeviceIds: [],
 };
 
 const changeLock = (
@@ -250,6 +252,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.dismissedTradingTerms,
                     ...action.payload.suiteSettings?.dismissedTradingTerms,
                 };
+                draft.seenDisconnectNotificationForDeviceIds = [
+                    ...draft.seenDisconnectNotificationForDeviceIds,
+                    ...(action.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ?? []),
+                ];
                 draft.settings = {
                     ...draft.settings,
                     ...action.payload.suiteSettings?.settings,
@@ -287,6 +293,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_RECENTLY_DISCONNECTED_DEVICE:
                 draft.recentlyDisconnectedDevice = action.payload;
+                break;
+            case SUITE.SET_SEEN_DISCONNECT_NOTIFICATION_FOR_DEVICE_IDS:
+                draft.seenDisconnectNotificationForDeviceIds = action.payload;
                 break;
 
             case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:

@@ -97,6 +97,8 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
             flags: state.suite.flags,
             evmSettings: state.suite.evmSettings,
             dismissedTradingTerms: state.suite.dismissedTradingTerms,
+            seenDisconnectNotificationForDeviceIds:
+                state.suite.seenDisconnectNotificationForDeviceIds,
         },
         'suite',
         true,
@@ -385,6 +387,7 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
             flags: suite.flags,
             evmSettings: suite.evmSettings,
             dismissedTradingTerms: suite.dismissedTradingTerms,
+            seenDisconnectNotificationForDeviceIds: suite.seenDisconnectNotificationForDeviceIds,
         },
         'suite',
         true,

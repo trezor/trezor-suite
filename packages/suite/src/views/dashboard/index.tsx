@@ -14,6 +14,7 @@ import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanne
 import { DesktopSuitePromoBanner } from './DesktopSuitePromoBanner';
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { StakeEthCard } from './StakeEthCard/StakeEthCard';
+import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
 
 const Container = styled.div`
     display: flex;
@@ -23,6 +24,7 @@ const Container = styled.div`
 
 export const Dashboard = () => {
     useLayout('Home', <PageHeader />);
+    useNotificationForDisconnectedDevice();
 
     return (
         <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
