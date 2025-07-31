@@ -240,6 +240,8 @@ impl TrezorDevice {
             .ok_or(DeviceError::PropertiesMissing)?;
 
         let is_connected = peripheral.is_connected().await.unwrap_or(false);
+        let is_paired = BluetoothDevice::is_paired(&peripheral).await.unwrap_or(false);
+
         let mut props = match self.props.lock() {
             Ok(p) => p,
             Err(_) => {
@@ -272,6 +274,7 @@ impl TrezorDevice {
             props.connected = is_connected;
 
             if is_connected {
+                props.paired = is_paired;
                 #[cfg(target_os = "macos")]
                 {
                     props.paired = true;
