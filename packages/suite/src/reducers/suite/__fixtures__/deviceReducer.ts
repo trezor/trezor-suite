@@ -468,6 +468,53 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         ],
     },
     {
+        description: `Change unacquired (busy) THP device`,
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    type: 'unacquired',
+                    path: '2',
+                    status: 'busy',
+                }),
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: getConnectDevice({
+                    type: 'unacquired',
+                    path: '2',
+                    thp: {
+                        channel: '00',
+                        credentials: [],
+                        expectedResponses: [],
+                        recvBit: 0,
+                        recvNonce: 0,
+                        sendBit: 0,
+                        sendNonce: 0,
+                    },
+                }),
+            },
+        ],
+        result: [
+            {
+                status: undefined,
+                thp: {
+                    channel: '00',
+                },
+            },
+            {
+                status: 'available',
+                features: {
+                    device_id: 'ignored-device-id',
+                },
+            },
+        ],
+    },
+    {
         description: `Change unacquired device`,
         initialState: { devices: [] },
         actions: [
