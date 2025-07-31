@@ -1,3 +1,4 @@
+import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
@@ -76,27 +77,29 @@ const parseParamValue = <T>(value: string, defaultValue?: T) => {
 };
 
 export type ModalAppParams = {
-    cancelable: boolean;
-    variant?: string;
+    [key in (typeof modalAppParams)[number]]: string | boolean | undefined;
+};
+
+const modalAppParamsDefaultValues: ModalAppParams = {
+    cancelable: true,
+    variant: undefined,
 };
 
 const validateModalAppParams = (url: string, params?: Route['params']): ModalAppParams | null => {
     const [, hash] = stripPrefixedURL(url).split('#');
-    if (!hash) return null;
-    const splitted = hash.split('/').filter(p => p.length > 0);
-    if (splitted.length === 0) return null;
-
-    const defaults: ModalAppParams = { cancelable: true };
-
-    if (params === undefined) return defaults;
+    const splitted = hash?.split('/').filter(p => p.length > 0);
+    if (!splitted || splitted.length === 0) return modalAppParamsDefaultValues;
 
     return {
-        ...defaults,
+        ...modalAppParamsDefaultValues,
         ...Object.fromEntries(
-            params.map((param, index) => [
+            params?.map((param, index) => [
                 param,
-                parseParamValue(splitted[index], defaults[param as keyof ModalAppParams]),
-            ]),
+                parseParamValue(
+                    splitted[index],
+                    modalAppParamsDefaultValues[param as keyof ModalAppParams],
+                ),
+            ]) ?? [],
         ),
     } as ModalAppParams;
 };
@@ -137,7 +140,9 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
 };
 
 export type WalletParams = CommonWalletParams;
-export type RouteParams = WalletParams | ModalAppParams;
+export type RouteParams = {
+    [K in keyof (WalletParams & ModalAppParams)]?: (WalletParams & ModalAppParams)[K];
+};
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);

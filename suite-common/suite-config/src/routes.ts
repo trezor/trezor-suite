@@ -4,8 +4,8 @@
 // 3. implement validation function in @suite-utils/router:getAppWithParams
 // 4. add params types to RouteParamsTypes (@suite-constants/routes)
 
-const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
-const modalAppParams = ['cancelable', 'variant'] as const;
+export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
+export const modalAppParams = ['cancelable', 'variant'] as const;
 
 export const routes = [
     {

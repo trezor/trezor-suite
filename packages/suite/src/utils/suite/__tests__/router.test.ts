@@ -79,7 +79,6 @@ describe('router', () => {
                 }),
             ).toEqual('/accounts#/btc/0/normal');
             expect(
-                // @ts-expect-error: invalid params
                 getRoute('wallet-index', {
                     accountIndex: 1,
                     symbol: 'btc',
@@ -87,7 +86,6 @@ describe('router', () => {
             ).toEqual('/accounts#/btc/1');
             // route shouldn't have params
             expect(
-                // @ts-expect-error: invalid params
                 getRoute('onboarding-index', {
                     symbol: 'btc',
                 }),
