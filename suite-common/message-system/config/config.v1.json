@@ -1091,6 +1091,56 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": "*",
+                        "mobile": ">25.3.1",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "b17c6c44-b3dd-4018-9260-6fb162afa873",
+                "priority": 93,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en": "We've seen an increase in phishing attempts targeting users to access their wallet backup (recovery seed). Never enter your wallet backup online — Trezor support will NEVER ask for it.",
+                    "es": "Hemos visto un aumento en los intentos de phishing dirigidos a los usuarios para acceder a su copia de seguridad de la cartera (semilla de recuperación). Nunca introduzcas tu copia de seguridad de la cartera en línea: el soporte de Trezor NUNCA te lo pedirá.",
+                    "cs": "Zaznamenali jsme nárůst phishingových pokusů zaměřených na uživatele s cílem získat jejich zálohu peněženky (recovery seed). Nikdy nezadávejte svou zálohu peněženky online – Trezor Support o ni NIKDY žádat nebude.",
+                    "ru": "Мы наблюдаем рост попыток фишинга, нацеленных на пользователей для доступа к их резервной копии кошелька (seed восстановления). Никогда не вводите свою резервную копию кошелька в интернете — поддержка Trezor НИКОГДА не попросит вас об этом.",
+                    "ja": "ウォレットのバックアップ（リカバリーシード）にアクセスするためのフィッシング試行が増加しています。ウォレットのバックアップをオンラインで入力しないでください—Trezorサポートは絶対にそれを要求しません。",
+                    "hu": "A pénztárca biztonsági mentéséhez (helyreállítási mag) való hozzáférés céljából növekvő számú adathalászati kísérletet észleltünk. Soha ne adja meg a pénztárca biztonsági mentését online - a Trezor támogatás SOHA nem fogja kérni.",
+                    "it": "Abbiamo visto un aumento dei tentativi di phishing mirati agli utenti per accedere al backup del portafoglio (seme di ripristino). Non inserire mai il backup del portafoglio online: il supporto Trezor NON lo chiederà MAI.",
+                    "fr": "Nous avons constaté une augmentation des tentatives de phishing visant les utilisateurs pour accéder à leur sauvegarde de portefeuille (seed de récupération). Ne saisissez jamais votre sauvegarde de portefeuille en ligne - le support Trezor ne vous le demandera JAMAIS.",
+                    "de": "Wir haben einen Anstieg von Phishing-Versuchen festgestellt, die darauf abzielen, Benutzern den Zugriff auf ihre Wallet-Sicherung (Wiederherstellungsphrase) zu ermöglichen. Geben Sie Ihre Wallet-Sicherung niemals online ein – der Trezor-Support wird Sie NIEMALS danach fragen.",
+                    "tr": "Cüzdan yedeğinize (kurtarma tohumuna) erişmek için kullanıcıları hedef alan artan kimlik avı girişimleri gördük. Cüzdan yedeğinizi asla çevrimiçi olarak girmeyin - Trezor desteği ASLA bunu istemez.",
+                    "pt": "Vimos um aumento nas tentativas de phishing direcionadas a usuários para acessar o backup da carteira (semente de recuperação). Nunca insira o backup da sua carteira online - o suporte Trezor NUNCA pedirá isso.",
+                    "uk": "Ми спостерігаємо збільшення спроб фішингу, спрямованих на користувачів для доступу до їх резервної копії гаманця (seed відновлення). Ніколи не вводьте резервну копію гаманця в Інтернеті — підтримка Trezor НІКОЛИ не попросить вас про це."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/security-privacy/personal-security-standards/scams-and-phishing",
+                    "label": {
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": ">23.10.1",
                         "mobile": "!",
                         "web": ">23.10.1"
