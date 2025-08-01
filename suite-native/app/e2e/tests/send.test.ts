@@ -98,8 +98,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
         await onSendOutputsForm.waitForScreen();
     });
 
-    afterAll(() => {
-        disconnectTrezorUserEnv();
+    afterAll(async () => {
+        await disconnectTrezorUserEnv();
+        await device.terminateApp();
     });
 
     it('Compose and dispatch a regtest transaction.', async () => {

@@ -31,7 +31,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 
     afterAll(async () => {
-        disconnectTrezorUserEnv();
+        await disconnectTrezorUserEnv();
         await device.terminateApp();
     });
 

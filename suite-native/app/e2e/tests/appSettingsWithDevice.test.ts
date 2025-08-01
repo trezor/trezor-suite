@@ -40,8 +40,8 @@ conditionalDescribe(
         });
 
         afterAll(async () => {
-            await device.terminateApp();
             await disconnectTrezorUserEnv();
+            await device.terminateApp();
         });
 
         it('Coin Enabling', async () => {

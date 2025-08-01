@@ -19,7 +19,7 @@ conditionalDescribe(
         });
 
         afterAll(async () => {
-            disconnectTrezorUserEnv();
+            await disconnectTrezorUserEnv();
             await device.terminateApp();
         });
 
