@@ -1,5 +1,5 @@
 import { connectInitThunk } from '@suite-common/connect-init';
-import { initialState as messageSystemInitialState } from '@suite-common/message-system';
+import { messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';

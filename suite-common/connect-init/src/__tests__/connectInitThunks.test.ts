@@ -1,4 +1,4 @@
-import { initialState as messageSystemInitialState } from '@suite-common/message-system';
+import { messageSystemInitialState } from '@suite-common/message-system';
 import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
