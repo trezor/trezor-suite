@@ -1,27 +1,18 @@
 import { fireEvent, screen } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics';
-import { FirmwareUpdateState } from '@suite-common/firmware';
-import { MetadataState } from '@suite-common/metadata-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceReducerState } from '@suite-common/wallet-core';
 import { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
-import { TorStatus } from '@trezor/suite-desktop-api';
 import { DeepPartial } from '@trezor/type-utils';
 
-import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
+import { AppState } from 'src/reducers/store';
+import { RouterState } from 'src/reducers/suite/routerReducer';
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { LOCK_TYPE } from '../../../../actions/suite/constants/suiteConstants';
-import { BackupState } from '../../../../reducers/backup/backupReducer';
-import { OnboardingState } from '../../../../reducers/onboarding/onboardingReducer';
-import { AppState } from '../../../../reducers/store';
-import { ProtocolState } from '../../../../reducers/suite/protocolReducer';
-import { RouterState } from '../../../../reducers/suite/routerReducer';
-import { SuiteState } from '../../../../reducers/suite/suiteReducer';
-import WalletReducers from '../../../../reducers/wallet';
 import { Preloader } from '../Preloader';
 import * as selectShouldDisplayDeviceCompromisedModule from '../selectShouldDisplayDeviceCompromised';
 
@@ -79,195 +70,18 @@ const getInitialState = ({
     device,
     analytics,
 }: GetInitialStateProps = {}): AppState => ({
+    ...initialAppState,
+    router: { ...initialAppState.router, ...router } as unknown as RouterState,
+    device: { ...initialAppState.device, ...device } as DeviceReducerState,
+    analytics: { ...initialAppState.analytics, ...analytics },
+
     suite: {
+        ...initialAppState.suite,
         lifecycle: {
             status: 'ready',
         },
         transport: { transports: [] },
-        settings: {
-            debug: {
-                showDebugMenu: false,
-                transports: [],
-                isUnlockedBootloaderAllowed: false,
-                showConnectLogs: false,
-            },
-            theme: { variant: 'light' },
-            enabledSecurityChecks: {
-                deviceAuthenticity: true,
-                entropy: true,
-                firmwareRevision: true,
-                firmwareHash: true,
-            },
-            language: 'id-ID',
-            torOnionLinks: false,
-            isCoinjoinReceiveWarningHidden: false,
-            isDesktopSuitePromoHidden: false,
-            autodetect: {
-                language: true,
-                theme: true,
-            },
-            addressDisplayType: 'original',
-            defaultWalletLoading: 'passphrase',
-            sidebarWidth: 0,
-            isCoinsFilterVisible: false,
-            autoEject: false,
-        },
-        online: true,
-        locks: {
-            [LOCK_TYPE.UI]: 0,
-            [LOCK_TYPE.ROUTER]: 0,
-            [LOCK_TYPE.DEVICE]: 0,
-        },
-        flags: {
-            initialRun: false,
-            taprootBannerClosed: false,
-            firmwareTypeBannerClosed: false,
-            discreetModeCompleted: false,
-            securityStepsHidden: false,
-            dashboardGraphHidden: false,
-            dashboardAssetsGridMode: false,
-            showTEXDashboardPromoBanner: false,
-            showSettingsDesktopAppPromoBanner: false,
-            stakeEthBannerClosed: false,
-            stakeSolBannerClosed: false,
-            showDashboardStakingPromoBanner: false,
-            isDashboardPassphraseBannerVisible: false,
-            suspiciousTransactionsTooltipClosed: false,
-            showUnhideTokenModal: false,
-            showCopyAddressModal: false,
-            enableAutoupdateOnNextRun: false,
-            isBluetoothEnabled: false,
-            showBluetoothDebugInfo: false,
-            stellarLimitedHistoryBannerClosed: false,
-            solanaLimitedHistoryBannerClosed: false,
-            hasSeenDisconnectTooltip: false,
-        },
-        torStatus: 'Disabled' as TorStatus.Disabled,
-        torBootstrap: null,
-        evmSettings: {
-            confirmExplanationModalClosed: {},
-            explanationBannerClosed: {},
-        },
-        dismissedTradingTerms: {},
-        countryCode: null,
-        prefillFields: {},
-        recentlyDisconnectedDevice: null,
-        seenDisconnectNotificationForDeviceIds: [],
         ...suite,
-    },
-    device: {
-        devices: [],
-        ...device,
-    } as DeviceReducerState, // Todo: maybe one day, fix types
-    bluetooth: {
-        unpairedDeviceNeedsManualOsRemoval: false,
-        isBluetoothListOpen: false,
-        connectingDeviceIds: [],
-        isUnpairingDevice: false,
-        adapterStatus: 'unknown',
-        scanStatus: 'error',
-        nearbyDevices: null,
-        knownDevices: [],
-    },
-    thp: {
-        step: null,
-        lastThpCode: undefined,
-        credentials: [],
-    },
-    window: {
-        isVisible: true,
-        isBelowMobile: false,
-        isBelowTablet: false,
-        isBelowLaptop: false,
-        isBelowDesktop: false,
-        isAboveMobile: false,
-        isAboveTablet: false,
-        isAboveLaptop: false,
-        isAboveDesktop: false,
-    },
-    guide: {
-        open: false,
-        view: 'GUIDE_DEFAULT',
-        indexNode: null,
-        currentNode: null,
-    },
-    messageSystem: {
-        config: {
-            actions: [],
-            version: 0,
-            timestamp: '',
-            sequence: 0,
-        },
-        validMessages: {
-            banner: [],
-            context: [],
-            modal: [],
-            feature: [],
-        },
-        currentSequence: 0,
-        timestamp: 0,
-        dismissedMessages: {},
-        validExperiments: [],
-    },
-    modal: {
-        context: '@modal/context-none',
-    },
-    notifications: [],
-    wallet: {
-        discovery: {},
-        accountSearch: {},
-        settings: {
-            enabledNetworks: [] as NetworkSymbol[],
-        },
-        blockchain: {},
-    } as ReturnType<typeof WalletReducers>, // Todo: maybe one day, fix types
-    desktopUpdate: desktopUpdateInitialState,
-    router: {
-        app: 'suite-index',
-        loaded: true,
-        route: '/dashboard',
-        ...router,
-    } as RouterState, // Todo: maybe one day, fix types
-    recovery: {
-        advancedRecovery: false,
-        wordsCount: 12,
-        status: 'initial',
-    },
-    analytics: { confirmed: true, ...analytics },
-    onboarding: {} as OnboardingState, // Todo: maybe one day, fix types
-    firmware: {} as FirmwareUpdateState, // Todo: maybe one day, fix types
-    backup: {} as BackupState, // Todo: maybe one day, fix types
-    desktop: null,
-    tokenDefinitions: {},
-    geolocation: {
-        countryCode: null,
-    },
-    logs: {
-        logEntries: [],
-    },
-    metadata: {} as MetadataState, // Todo: maybe one day, fix types
-    protocol: {} as ProtocolState, // Todo: maybe one day, fix types
-    connectPopup: {
-        activeCall: undefined,
-        permissions: [],
-    },
-    walletConnect: {
-        sessions: [],
-        pendingProposal: undefined,
-    },
-    bioAuth: {
-        initialNow: 0,
-        bioAuthEnabled: false,
-        blurTimeoutId: null,
-        bioAuthEnabledNextValue: null,
-        lastBioAuthValidatedTimestamp: null,
-        lastWindowBlurTimestamp: null,
-        bioAuthValidationInProgress: false,
-        bioAuthValidationRequested: false,
-        bioAuthValidationRequired: false,
-        windowBlurred: false,
-        bioAuthAvailable: null,
-        hasEverValidatedBioAuth: false,
     },
 });
 
