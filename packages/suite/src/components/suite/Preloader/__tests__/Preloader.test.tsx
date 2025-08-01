@@ -22,8 +22,8 @@ import { ProtocolState } from '../../../../reducers/suite/protocolReducer';
 import { RouterState } from '../../../../reducers/suite/routerReducer';
 import { SuiteState } from '../../../../reducers/suite/suiteReducer';
 import WalletReducers from '../../../../reducers/wallet';
-import { TranslationKey } from '../../Translation';
 import { Preloader } from '../Preloader';
+import * as selectShouldDisplayDeviceCompromisedModule from '../selectShouldDisplayDeviceCompromised';
 
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({
@@ -277,87 +277,7 @@ const initStore = (state: AppState) => mockStore(state);
 
 const Index = ({ app }: any) => <Preloader>{app || 'foo'}</Preloader>;
 
-const deviceCompromisedFixtures: Array<{
-    description: string;
-    device: DeepPartial<DeviceReducerState>;
-    result: TranslationKey;
-}> = [
-    {
-        description: 'Failed entropy check',
-        device: {
-            devicesWithFailedEntropyCheck: ['deviceId'],
-            selectedDevice: {
-                id: 'deviceId',
-            },
-        },
-        result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
-    },
-    {
-        description: 'Failed firmware hash check',
-        device: {
-            selectedDevice: {
-                authenticityChecks: {
-                    firmwareHash: {
-                        error: 'hash-mismatch',
-                    },
-                },
-                features: {},
-            },
-        },
-        result: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
-    },
-    {
-        description: 'Firmware hash check other-error (1st occurrence)',
-        device: {
-            selectedDevice: {
-                connected: true,
-                authenticityChecks: {
-                    firmwareHash: {
-                        error: 'other-error',
-                    },
-                },
-                features: {},
-            },
-        },
-        result: 'TR_FAILED_VERIFY_DEVICE_TEXT',
-    },
-    {
-        description: 'Firmware hash check other-error (2nd occurrence)',
-        device: {
-            selectedDevice: {
-                connected: true,
-                authenticityChecks: {
-                    firmwareHash: {
-                        error: 'other-error',
-                    },
-                },
-                features: {},
-            },
-            lastConnectedAuthenticityChecks: {
-                firmwareHash: {
-                    error: 'other-error',
-                },
-            },
-        },
-        result: 'TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT',
-    },
-    {
-        description: 'Failed firmware revision check',
-        device: {
-            selectedDevice: {
-                authenticityChecks: {
-                    firmwareRevision: {
-                        error: 'revision-mismatch',
-                    },
-                },
-                features: {},
-            },
-        },
-        result: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
-    },
-];
-
-describe('Preloader component', () => {
+describe(`${Preloader.name} component`, () => {
     beforeAll(() => {
         const originalWarn = console.warn;
 
@@ -743,6 +663,22 @@ describe('Preloader component', () => {
         unmount();
     });
 
+    it('displays DeviceCompromised when shouldDisplayDeviceCompromised is true', () => {
+        const spy = jest
+            .spyOn(
+                selectShouldDisplayDeviceCompromisedModule,
+                'selectShouldDisplayDeviceCompromised',
+            )
+            .mockImplementation(() => true);
+
+        const store = initStore(getInitialState());
+        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        expect(findByTestId('@device-compromised')).not.toBeNull();
+
+        unmount();
+        spy.mockRestore();
+    });
+
     it('Required FW update device', () => {
         const device: DeepPartial<AppState['device']> = {
             selectedDevice: {
@@ -767,19 +703,5 @@ describe('Preloader component', () => {
         expect(findByTestId('TR_SEE_DETAILS')).not.toBeNull();
 
         unmount();
-    });
-
-    deviceCompromisedFixtures.forEach(({ description, device, result }) => {
-        it(description, () => {
-            const store = initStore(getInitialState({ device }));
-            const { getByText, unmount } = renderWithProviders(
-                store,
-                <Index app={store.getState().router.app} />,
-            );
-
-            expect(getByText(result)).not.toBeNull();
-
-            unmount();
-        });
     });
 });
