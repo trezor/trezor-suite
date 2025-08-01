@@ -7,14 +7,14 @@ import { BigNumber } from '@trezor/utils';
 
 import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
 import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
-import { selectExchangeAccountsWithTokensSectionList } from '../../../../selectors/exchangeSelectors';
+import { selectAccountsWithTokensToSellSectionListByTradingType } from '../../../../selectors/commonSelectors';
 import { MyAsset } from '../../../../types/general';
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
 import { MyAssetSheet, MyAssetSheetProps } from '../MyAssetSheet';
 
-jest.mock('../../../../selectors/exchangeSelectors');
-const mockedSelectExchangeAccountsWithTokensSectionList =
-    selectExchangeAccountsWithTokensSectionList as unknown as jest.Mock;
+jest.mock('../../../../selectors/commonSelectors');
+const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
+    selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 
 // Mock the selectFormattedAccountType selector
 jest.mock('@suite-common/wallet-core', () => ({
@@ -61,7 +61,13 @@ describe('MyAssetSheet', () => {
 
     const renderMyAssetsSheet = (props?: Partial<MyAssetSheetProps>) =>
         renderWithStoreProviderAsync(
-            <MyAssetSheet onAssetSelect={jest.fn} onClose={jest.fn} isVisible={true} {...props} />,
+            <MyAssetSheet
+                onAssetSelect={jest.fn}
+                onClose={jest.fn}
+                isVisible={true}
+                tradingType="exchange"
+                {...props}
+            />,
             { preloadedState: getPreloadedState() },
         );
 
@@ -72,7 +78,9 @@ describe('MyAssetSheet', () => {
     });
 
     it('should render account information correctly', async () => {
-        mockedSelectExchangeAccountsWithTokensSectionList.mockReturnValue(defaultAccounts);
+        mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
+            defaultAccounts,
+        );
 
         const { getByText } = await renderMyAssetsSheet();
 
@@ -81,7 +89,7 @@ describe('MyAssetSheet', () => {
     });
 
     it('should render correct empty component', async () => {
-        mockedSelectExchangeAccountsWithTokensSectionList.mockReturnValue([]);
+        mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue([]);
         const { getByText } = await renderMyAssetsSheet();
 
         expect(getByText('No assets found')).toBeTruthy();
@@ -89,7 +97,9 @@ describe('MyAssetSheet', () => {
     });
 
     it('should select asset and close on asset item press', async () => {
-        mockedSelectExchangeAccountsWithTokensSectionList.mockReturnValue(defaultAccounts);
+        mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
+            defaultAccounts,
+        );
         const onAssetSelect = jest.fn();
         const onClose = jest.fn();
 
@@ -108,7 +118,9 @@ describe('MyAssetSheet', () => {
     });
 
     it('should render formatted account type badge when defined', async () => {
-        mockedSelectExchangeAccountsWithTokensSectionList.mockReturnValue(defaultAccounts);
+        mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
+            defaultAccounts,
+        );
 
         // Mock the selector to return a formatted account type for the first account
         mockedSelectFormattedAccountType.mockImplementation((_state, accountKey) =>
@@ -121,7 +133,9 @@ describe('MyAssetSheet', () => {
     });
 
     it('should not render badge when formatted account type is null', async () => {
-        mockedSelectExchangeAccountsWithTokensSectionList.mockReturnValue(defaultAccounts);
+        mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
+            defaultAccounts,
+        );
 
         // Mock the selector to return null for all accounts
         mockedSelectFormattedAccountType.mockReturnValue(null);

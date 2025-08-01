@@ -1,13 +1,17 @@
 import { Action, Feature, Message } from '@suite-common/suite-types';
 import { InvityServerEnvironment } from '@suite-common/trading';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { BigNumber } from '@trezor/utils';
 
+import { getBtcAccount, getEthAccount } from '../../__fixtures__/account';
 import { btcAsset } from '../../__fixtures__/tradeableAssets';
+import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState, initialState } from '../../reducers';
 import { TradeableAsset } from '../../types/general';
 import {
+    selectAccountsWithTokensToSellSectionListByTradingType,
     selectActiveTradingType,
     selectAmountInBaseFiatCurrency,
     selectEnabledTradingTypes,
@@ -297,6 +301,384 @@ describe('commonSelectors', () => {
             expect(selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, '0')).toEqual(
                 new BigNumber('0'),
             );
+        });
+    });
+
+    describe('selectAccountsWithTokensToSellSectionListByTradingType', () => {
+        let state: TradingRootState & AccountsRootState;
+
+        beforeEach(() => {
+            state = {
+                wallet: getWalletState({ tradeType: 'exchange' }),
+            };
+        });
+
+        it('should return empty array when no accounts', () => {
+            const stateWithDevice = {
+                ...state,
+                device: { selectedDevice: null },
+            } as any;
+
+            expect(
+                selectAccountsWithTokensToSellSectionListByTradingType(stateWithDevice, 'exchange'),
+            ).toEqual([]);
+        });
+
+        it('should return sections for accounts with positive balance', () => {
+            const testDeviceState = 'test-device';
+            const btcAccount = {
+                ...getBtcAccount(),
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [btcAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBeGreaterThan(0);
+            expect(result[0]).toEqual(
+                expect.objectContaining({
+                    key: expect.stringContaining('section_'),
+                    label: expect.any(String),
+                    sectionData: expect.any(Object),
+                    data: expect.any(Array),
+                }),
+            );
+        });
+
+        it('should filter out accounts with zero balance', () => {
+            const testDeviceState = 'test-device';
+            const zeroBalanceAccount = {
+                ...getBtcAccount(),
+                balance: '0',
+                formattedBalance: '0',
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [zeroBalanceAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            expect(
+                selectAccountsWithTokensToSellSectionListByTradingType(stateWithDevice, 'exchange'),
+            ).toEqual([]);
+        });
+
+        it('should handle accounts with tokens and include only tokens with positive balance', () => {
+            const testDeviceState = 'test-device';
+            const ethAccount = {
+                ...getEthAccount(),
+                balance: '1000000000000000000', // 1 ETH
+                formattedBalance: '1',
+                visible: true,
+                deviceState: testDeviceState,
+                tokens: [
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'USDC',
+                        contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        transfers: 1,
+                        symbol: 'usdc',
+                        decimals: 6,
+                        balance: '1000000', // 1 USDC
+                    },
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'Zero Token',
+                        contract: '0x0000000000000000000000000000000000000000',
+                        transfers: 0,
+                        symbol: 'zero',
+                        decimals: 18,
+                        balance: '0', // Zero balance token
+                    },
+                ],
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [ethAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {
+                    eth: {
+                        coin: {
+                            data: [
+                                '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                                '0x0000000000000000000000000000000000000000',
+                            ],
+                            error: false,
+                            isLoading: false,
+                            hide: [],
+                            show: [],
+                        },
+                    },
+                },
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
+            expect(result[0].data[0].symbol).toBe('eth'); // Account asset
+            expect(result[0].data[1].contract).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'); // USDC
+        });
+
+        it('should handle accounts with zero balance but tokens with positive balance', () => {
+            const testDeviceState = 'test-device';
+            const ethAccount = {
+                ...getEthAccount(),
+                balance: '0',
+                formattedBalance: '0',
+                visible: true,
+                deviceState: testDeviceState,
+                tokens: [
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'Token Only',
+                        contract: '0x4444444444444444444444444444444444444444',
+                        transfers: 1,
+                        symbol: 'token',
+                        decimals: 18,
+                        balance: '1000000000000000000', // 1 token
+                    },
+                ],
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [ethAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {
+                    eth: {
+                        coin: {
+                            data: ['0x4444444444444444444444444444444444444444'],
+                            error: false,
+                            isLoading: false,
+                            hide: [],
+                            show: [],
+                        },
+                    },
+                },
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].data.length).toBe(1); // Only token, no account asset
+            expect(result[0].data[0].contract).toBe('0x4444444444444444444444444444444444444444');
+        });
+
+        it('should filter out sections with no assets', () => {
+            const testDeviceState = 'test-device';
+            const ethAccount = {
+                ...getEthAccount(),
+                balance: '0',
+                formattedBalance: '0',
+                visible: true,
+                deviceState: testDeviceState,
+                tokens: [
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'Zero Token',
+                        contract: '0x5555555555555555555555555555555555555555',
+                        transfers: 0,
+                        symbol: 'zero',
+                        decimals: 18,
+                        balance: '0', // Zero balance
+                    },
+                ],
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [ethAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {
+                    eth: {
+                        coin: {
+                            data: ['0x5555555555555555555555555555555555555555'],
+                            error: false,
+                            isLoading: false,
+                            hide: [],
+                            show: [],
+                        },
+                    },
+                },
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result).toEqual([]); // No sections with assets
+        });
+
+        it('should handle accounts with missing token definitions', () => {
+            const testDeviceState = 'test-device';
+            const ethAccount = {
+                ...getEthAccount(),
+                balance: '1000000000000000000', // 1 ETH
+                formattedBalance: '1',
+                visible: true,
+                deviceState: testDeviceState,
+                tokens: [
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'Unknown Token',
+                        contract: '0x6666666666666666666666666666666666666666',
+                        transfers: 1,
+                        symbol: 'unknown',
+                        decimals: 18,
+                        balance: '1000000000000000000', // 1 token
+                    },
+                ],
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [ethAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {}, // No token definitions
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].data.length).toBe(1); // Only account asset, no tokens
+            expect(result[0].data[0].symbol).toBe('eth');
+        });
+
+        it('should return empty array for buy trading type', () => {
+            const testDeviceState = 'test-device';
+            const btcAccount = {
+                ...getBtcAccount(),
+                balance: '100000000', // 1 BTC
+                formattedBalance: '1',
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('buy');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [btcAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'buy',
+            );
+
+            expect(result).toEqual([]);
+        });
+
+        it('should return sections for sell trading type', () => {
+            const testDeviceState = 'test-device';
+            const btcAccount = {
+                ...getBtcAccount(),
+                balance: '100000000', // 1 BTC
+                formattedBalance: '1',
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('sell');
+
+            const stateWithDevice = {
+                wallet: {
+                    tradingNew: cleanState,
+                    accounts: [btcAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'sell',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0]).toEqual(
+                expect.objectContaining({
+                    key: expect.stringContaining('section_'),
+                    label: expect.any(String),
+                    sectionData: expect.any(Object),
+                    data: expect.any(Array),
+                }),
+            );
+            expect(result[0].data[0].symbol).toBe('btc');
         });
     });
 });

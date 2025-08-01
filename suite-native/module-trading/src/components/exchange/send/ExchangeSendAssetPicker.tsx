@@ -53,6 +53,7 @@ export const ExchangeSendAssetPicker = () => {
                 <ExchangeSendAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
             </HStack>
             <MyAssetSheet
+                tradingType="exchange"
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onAssetSelect={onAssetSelect}

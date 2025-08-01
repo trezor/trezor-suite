@@ -1,26 +1,57 @@
+import { CryptoId } from 'invity-api';
+
 import {
     Feature,
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { TradingType } from '@suite-common/trading';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
+    TokenDefinitionsRootState,
+    filterKnownTokens,
+    getSimpleCoinDefinitionsByNetwork,
+    selectTokenDefinitions,
+} from '@suite-common/token-definitions';
+import {
+    TradingType,
+    selectTradingExchangeSellCryptoIds,
+    selectTradingSellSellCryptoIds,
+    toTokenCryptoId,
+} from '@suite-common/trading';
+import { getNetwork } from '@suite-common/wallet-config';
+import {
+    AccountsRootState,
+    DeviceRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
     selectCurrentFiatRates,
     selectLocalCurrency,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { getAccountFiatBalance, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
+import { TokensRootState } from '@suite-native/tokens';
 
+import { SectionListData } from '../hooks/general/useSectionList';
 import { TradingRootState } from '../reducers';
-import { TradeableAsset } from '../types/general';
+import { MyAsset, TradeableAsset } from '../types/general';
 import { getSymbolFromTradeableAsset } from '../utils/general/tradeableAssetUtils';
+
+export type CombinedSelectorsRootState = TradingRootState &
+    AccountsRootState &
+    DeviceRootState &
+    TokenDefinitionsRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState &
+    TokensRootState;
+
+const createCombinedMemoizedSelector =
+    createWeakMapSelector.withTypes<CombinedSelectorsRootState>();
 
 const createFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
     MessageSystemRootState & FeatureFlagsRootState
@@ -112,3 +143,123 @@ export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
         return toFiatCurrency({ amount, rate }) || undefined;
     },
 );
+
+export const selectAccountsWithTokensToSellSectionListByTradingType =
+    createCombinedMemoizedSelector(
+        [
+            selectVisibleDeviceAccounts,
+            selectTokenDefinitions,
+            selectCurrentFiatRates,
+            selectLocalCurrency,
+            selectTradingSellSellCryptoIds,
+            selectTradingExchangeSellCryptoIds,
+            (_state, tradingType: TradingType) => tradingType,
+        ],
+        (
+            accounts,
+            tokenDefinitions,
+            fiatRates,
+            localCurrency,
+            sellSellCryptoIds,
+            exchangeSellCryptoIds,
+            tradingType,
+        ) => {
+            if (tradingType === 'buy') {
+                return returnStableArrayIfEmpty([]);
+            }
+
+            const sellCryptoIds =
+                tradingType === 'sell' ? sellSellCryptoIds : exchangeSellCryptoIds;
+
+            return accounts
+                .map<SectionListData<MyAsset, Account>[number]>((account: Account) => {
+                    const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
+                        tokenDefinitions,
+                        account.symbol,
+                    );
+
+                    const knownTokens = filterKnownTokens(
+                        networkTokenDefinitions,
+                        account.symbol,
+                        account.tokens ?? [],
+                    );
+
+                    const tokensWithBalance = knownTokens.filter(
+                        token => parseFloat(token?.balance ?? '0') > 0,
+                    );
+
+                    const tokens: MyAsset[] = tokensWithBalance
+                        .map(token => {
+                            const fiatRateKey = getFiatRateKey(
+                                account.symbol,
+                                localCurrency,
+                                token.contract as TokenAddress,
+                            );
+                            const rate = fiatRates?.[fiatRateKey]?.rate;
+                            const fiatBalance =
+                                rate && token.balance
+                                    ? toFiatCurrency({ amount: token.balance, rate })
+                                    : null;
+
+                            const tokenSymbol =
+                                (token.symbol?.toUpperCase() as TokenSymbol) ?? null;
+                            const cryptoId = toTokenCryptoId(account.symbol, token.contract);
+
+                            return {
+                                symbol: account.symbol,
+                                name: token.name ?? token.symbol ?? '',
+                                balance: token.balance ?? '0',
+                                fiatBalance,
+                                tokenSymbol,
+                                contract: token.contract as TokenAddress,
+                                cryptoId,
+                                isEnabled: sellCryptoIds.includes(cryptoId),
+                                fiatRateKey,
+                                rate,
+                            };
+                        })
+                        .sort((a, b) => {
+                            // sellable (isEnabled) assets first
+                            if (a.isEnabled !== b.isEnabled) {
+                                return a.isEnabled ? -1 : 1;
+                            }
+
+                            // bigger fiatBalance first
+                            const aFiatBalance = a.fiatBalance ? Number(a.fiatBalance) : 0;
+                            const bFiatBalance = b.fiatBalance ? Number(b.fiatBalance) : 0;
+
+                            return bFiatBalance - aFiatBalance;
+                        });
+
+                    const cryptoId = getNetwork(account.symbol).tradeCryptoId as CryptoId;
+
+                    const accountAsset = {
+                        symbol: account.symbol,
+                        name: account.accountLabel || '',
+                        balance: account.formattedBalance,
+                        fiatBalance: getAccountFiatBalance({
+                            account,
+                            localCurrency,
+                            rates: fiatRates,
+                            shouldIncludeStaking: false,
+                            shouldIncludeTokens: false,
+                        }),
+                        cryptoId,
+                        isEnabled: sellCryptoIds.includes(cryptoId),
+                    };
+
+                    const assets: MyAsset[] = [
+                        ...(parseFloat(account.balance) > 0 ? [accountAsset] : []),
+                        ...tokens,
+                    ];
+
+                    return {
+                        key: `section_${account.key}`,
+                        label: account.accountLabel ?? '',
+                        sectionData: account,
+                        data: assets,
+                    };
+                })
+                .filter(section => section.data.length > 0);
+        },
+    );
