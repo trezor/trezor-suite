@@ -38,6 +38,8 @@ const initialState: RouterState = {
     },
 };
 
+export const routerInitialState = initialState;
+
 const routerReducer = (state: RouterState = initialState, action: Action): RouterState => {
     switch (action.type) {
         case ROUTER.LOCATION_CHANGE: {
