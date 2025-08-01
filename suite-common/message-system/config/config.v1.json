@@ -1166,7 +1166,7 @@
                 "id": "c5b85f25-7d59-428a-9742-78df00a53577",
                 "priority": 92,
                 "dismissible": true,
-                "variant": "info",
+                "variant": "warning",
                 "category": ["banner"],
                 "content": {
                     "en": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
