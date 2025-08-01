@@ -12,10 +12,17 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
 
 conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
-    it('Generate device confirmed receive address.', async () => {
+    beforeAll(async () => {
         await prepareTrezorEmulator();
         await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
+    });
 
+    afterAll(async () => {
+        await disconnectTrezorUserEnv();
+        await device.terminateApp();
+    });
+
+    it('Generate device confirmed receive address.', async () => {
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
         await onCoinEnabling.clickOnConfirmButton();
@@ -32,7 +39,5 @@ conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
         await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
         await onAccountReceive.verifyReceiveAddress('bc1qa55m6kz3crfse5xg2rukulyap4eyp75w0puawz');
-
-        disconnectTrezorUserEnv();
     });
 });

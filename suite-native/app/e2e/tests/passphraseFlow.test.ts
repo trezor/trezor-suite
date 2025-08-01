@@ -80,7 +80,10 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
         await onAlertSheet.skipViewOnlyMode();
     });
 
-    afterAll(disconnectTrezorUserEnv);
+    afterAll(async () => {
+        await disconnectTrezorUserEnv();
+        await device.terminateApp();
+    });
 
     // TODO #16495 - currently not working
     describe.skip('with passphrase not allowed on Trezor', () => {

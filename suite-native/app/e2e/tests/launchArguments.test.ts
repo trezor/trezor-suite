@@ -29,7 +29,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Launch Arguments', () =
     });
 
     afterAll(async () => {
-        disconnectTrezorUserEnv();
+        await disconnectTrezorUserEnv();
         await device.terminateApp();
     });
 

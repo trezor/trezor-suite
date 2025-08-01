@@ -23,6 +23,7 @@ describe('Import invalid accounts', () => {
         await appIsFullyLoaded();
         await goToBtcImportXpubScreen();
     });
+
     it('Import an already imported XPUB', async () => {
         // add first account
         await onAccountImport.importAccount({

@@ -60,8 +60,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () 
     });
 
     afterAll(async () => {
-        disconnectTrezorUserEnv();
-
+        await disconnectTrezorUserEnv();
         await device.terminateApp();
     });
 
