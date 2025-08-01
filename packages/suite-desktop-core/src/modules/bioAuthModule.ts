@@ -1,7 +1,7 @@
 import { systemPreferences } from 'electron';
 
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
-import { createWinHello } from '@trezor/suite-desktop-native';
+import { createWinHelloManager } from '@trezor/suite-desktop-native';
 import { serializeError } from '@trezor/utils';
 
 import { ipcMain } from '../typed-electron';
@@ -15,9 +15,14 @@ type BioAuthModule = (dependencies: Dependencies) => {
 
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
-const loadWin = ({ mainWindowProxy }: Dependencies) => {
+const loadWin = async ({ mainWindowProxy }: Dependencies) => {
     const { logger } = global;
-    const winHello = createWinHello();
+    const winHello = await createWinHelloManager({
+        resourcesPath: process.resourcesPath,
+        logger,
+    });
+
+    logger.info('bioAuth', 'WIN: bioAuth loaded');
 
     ipcMain.on('bio-auth/request', async (_, params) => {
         try {
@@ -54,6 +59,10 @@ const loadWin = ({ mainWindowProxy }: Dependencies) => {
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', false);
         }
     });
+
+    return {
+        destroy: () => winHello.destroy(),
+    };
 };
 
 const loadMac = ({ mainWindowProxy }: Dependencies) => {
@@ -117,8 +126,9 @@ const loadLinux = ({ mainWindowProxy }: Dependencies) => {
 
 export const initBioAuthModule: BioAuthModule = dependencies => {
     let loaded = false;
+    let destroy: null | (() => void) = null;
 
-    const onLoad = () => {
+    const onLoad = async () => {
         if (loaded) return;
         const { logger } = global;
         logger.info('bioAuth', 'Loading');
@@ -131,7 +141,8 @@ export const initBioAuthModule: BioAuthModule = dependencies => {
 
         if (isWindows()) {
             loaded = true;
-            loadWin(dependencies);
+            const { destroy: destroyWin } = await loadWin(dependencies);
+            destroy = destroyWin;
             logger.info('bioAuth', 'Loaded for Windows');
         }
 
@@ -141,12 +152,13 @@ export const initBioAuthModule: BioAuthModule = dependencies => {
         }
     };
 
-    const onQuit = () => {
+    const onQuit = async () => {
         const { logger } = global;
         logger.info('bioAuth', 'Stopping (app quit)');
         ipcMain.removeAllListeners('bio-auth/request');
         ipcMain.removeAllListeners('bio-auth/is-available');
         loaded = false;
+        await destroy?.();
     };
 
     return { onLoad, onQuit };
