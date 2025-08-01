@@ -18,7 +18,7 @@ import {
 import { CardButton } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
+import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDeviceOrUiLocked } from 'src/reducers/suite/suiteReducer';
@@ -62,6 +62,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 isAddingHiddenWalletWithRespectToSettings,
             }),
         );
+        dispatch(goto('suite-index'));
     };
 
     const ExpandedPassphraseContainer = () => (
