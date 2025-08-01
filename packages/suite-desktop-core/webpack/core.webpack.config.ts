@@ -52,6 +52,12 @@ const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
     return path.join(`threads`, relPath.replace('.ts', ''));
 });
 
+// Add Windows Hello child process to the build
+const winHelloChildProcessPath = path.join(
+    __dirname,
+    '../../suite-desktop-native/src/winHelloChildProcess.ts',
+);
+
 /* **** RUNTIME REQUIRE DEPENDENCIES ****
  a.k.a. externals
  Any package that needs a runtime require() call in electron-main or electron-preload
@@ -70,10 +76,13 @@ const config: webpack.Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
     devtool: 'source-map',
-    entry: ['app', 'preload', ...threads].reduce(
+    entry: ['app', 'preload', ...threads, 'winHelloChildProcess'].reduce(
         (prev, cur) => ({
             ...prev,
-            [cur]: path.resolve(__dirname, `../src/${cur}.ts`),
+            [cur]:
+                cur === 'winHelloChildProcess'
+                    ? winHelloChildProcessPath
+                    : path.resolve(__dirname, `../src/${cur}.ts`),
         }),
         {},
     ),
