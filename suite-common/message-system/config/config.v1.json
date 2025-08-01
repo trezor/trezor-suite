@@ -645,6 +645,73 @@
         {
             "conditions": [
                 {
+                    "settings": [
+                        {
+                            "dash": true
+                        },
+                        {
+                            "btg": true
+                        },
+                        {
+                            "nmc": true
+                        },
+                        {
+                            "vtc": true
+                        },
+                        {
+                            "dgb": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<25.2.1",
+                        "mobile": "<25.2.1",
+                        "web": "<25.2.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "243b15fc-027c-409b-855e-73a98b631af0",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en": "Important: The backends for Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte were deactivated as of August 1, 2025. To access or manage your assets, use a compatible third-party wallet app.",
+                    "es": "Importante: Los sistemas backend de Dash, Bitcoin Gold, Namecoin, Vertcoin y DigiByte fueron desactivados a partir del 1 de agosto de 2025. Para acceder o gestionar sus activos, utilice una aplicación de billetera de terceros compatible.",
+                    "cs": "Důležité: Backendové služby pro Dash, Bitcoin Gold, Namecoin, Vertcoin a DigiByte byly k 1. srpnu 2025 deaktivovány. Pro přístup ke svým prostředkům nebo jejich správu použijte kompatibilní aplikaci peněženky třetí strany.",
+                    "ru": "Важно: Бэкэнды для Dash, Bitcoin Gold, Namecoin, Vertcoin и DigiByte были отключены с 1 августа 2025 года. Для доступа к активам или их управления используйте совместимое стороннее приложение-кошелек.",
+                    "ja": "重要：Dash、Bitcoin Gold、Namecoin、Vertcoin、およびDigiByteのバックエンドは2025年8月1日をもって無効化されました。資産にアクセスまたは管理するには、互換性のあるサードパーティ製ウォレットアプリをご利用ください。",
+                    "hu": "Fontos: A Dash, Bitcoin Gold, Namecoin, Vertcoin és DigiByte háttérrendszerei 2025. augusztus 1-jén deaktiválva lettek. Az eszközeid eléréséhez vagy kezeléséhez használj kompatibilis, harmadik féltől származó pénztárcaalkalmazást.",
+                    "it": "Importante: I backend per Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte sono stati disattivati a partire dal 1° agosto 2025. Per accedere o gestire i tuoi asset, utilizza un'app di portafoglio di terze parti compatibile.",
+                    "fr": "Important : Les backends pour Dash, Bitcoin Gold, Namecoin, Vertcoin et DigiByte ont été désactivés à partir du 1er août 2025. Pour accéder à vos actifs ou les gérer, utilisez une application de portefeuille tierce compatible.",
+                    "de": "Wichtig: Die Backends für Dash, Bitcoin Gold, Namecoin, Vertcoin und DigiByte wurden zum 1. August 2025 deaktiviert. Um auf Ihre Vermögenswerte zuzugreifen oder diese zu verwalten, verwenden Sie eine kompatible Wallet-App eines Drittanbieters.",
+                    "tr": "Önemli: Dash, Bitcoin Gold, Namecoin, Vertcoin ve DigiByte için arka uçlar 1 Ağustos 2025 itibarıyla devre dışı bırakıldı. Varlıklarınıza erişmek veya onları yönetmek için uyumlu bir üçüncü taraf cüzdan uygulaması kullanın.",
+                    "pt": "Importante: Os backends para Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte foram desativados a partir de 1º de agosto de 2025. Para acessar ou gerenciar seus ativos, use um aplicativo de carteira de terceiros compatível.",
+                    "uk": "Увага: Сервери для Dash, Bitcoin Gold, Namecoin, Vertcoin та DigiByte були деактивовані з 1 серпня 2025 року. Щоб отримати доступ до своїх активів або керувати ними, скористайтеся сумісним стороннім додатком-гаманцем."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/deprecated-coins",
+                    "label": {
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
                     "environment": {
                         "desktop": ">=25.2.1",
                         "mobile": "!",
