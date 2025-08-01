@@ -46,10 +46,19 @@ export const BigAmountValue = ({
 }: BigAmountValueProps) => {
     const language = useSelector(selectLanguage);
 
-    // Todo: this is ugly hack, shall be refactored to some more safe alternative
-    const [whole, separator, fractional] = ['en', 'ja', 'zh'].includes(language)
-        ? formattedStringAmount.split(/(\.)/)
-        : formattedStringAmount.split(/(,)/);
+    // Use Intl to correctly extract integer & fraction regardless of locale
+    const number = Number(formattedStringAmount.replace(/[^\d.-]/g, '')); // strip formatting to get raw number
+    const parts = new Intl.NumberFormat(language, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 20,
+    }).formatToParts(number);
+
+    const whole = parts
+        .filter(p => p.type !== 'fraction' && p.type !== 'decimal')
+        .map(p => p.value)
+        .join('');
+    const separator = parts.find(p => p.type === 'decimal')?.value || '';
+    const fractional = parts.find(p => p.type === 'fraction')?.value || '';
 
     return (
         <ValueWrapper data-testid={dataTestId}>
@@ -57,10 +66,12 @@ export const BigAmountValue = ({
                 <RedactNumericalValue value={whole} />
             </WholeValue>
             <HideRedactedValue>
-                <DecimalValue $size={size}>
-                    {separator}
-                    {fractional}
-                </DecimalValue>
+                {separator && fractional && (
+                    <DecimalValue $size={size}>
+                        {separator}
+                        {fractional}
+                    </DecimalValue>
+                )}
             </HideRedactedValue>
         </ValueWrapper>
     );
