@@ -8,7 +8,7 @@ export const isZero = (value: string) => {
     return valueBig.isZero();
 };
 
-export const formatCoinBalance = (value: string, locale = 'en') => {
+export const formatCoinBalance = (value: string, locale = 'en-US') => {
     const MAX_NUMBERS = 9;
     const balanceBig = new BigNumber(value);
 

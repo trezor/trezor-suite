@@ -3,7 +3,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const localizeNumber = (
     value: number | string | BigNumber,
-    locale = 'en',
+    locale = 'en-US',
     minDecimals = 0,
     maxDecimals?: number,
 ) => {
