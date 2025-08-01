@@ -10,6 +10,7 @@ import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
+import { LOCK_TYPE } from 'src/actions/suite/constants/suiteConstants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
@@ -133,7 +134,11 @@ const initialState: SuiteState = {
     torStatus: TorStatus.Disabled,
     torBootstrap: null,
     lifecycle: { status: 'initial' },
-    locks: { device: 0, router: 0, ui: 0 },
+    locks: {
+        [LOCK_TYPE.UI]: 0,
+        [LOCK_TYPE.ROUTER]: 0,
+        [LOCK_TYPE.DEVICE]: 0,
+    },
     flags: {
         initialRun: true,
         // recoveryCompleted: false;
@@ -205,6 +210,8 @@ const initialState: SuiteState = {
     recentlyDisconnectedDevice: null,
     seenDisconnectNotificationForDeviceIds: [],
 };
+
+export const suiteInitialState = initialState;
 
 const changeLock = (
     draft: SuiteState,

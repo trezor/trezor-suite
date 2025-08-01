@@ -33,6 +33,8 @@ const initialState: DeviceReducerState = {
     isDeviceAutoEjectEnabled: false,
 };
 
+export const deviceReducerInitialState = initialState;
+
 export type DeviceRootState = {
     device: DeviceReducerState;
 };
