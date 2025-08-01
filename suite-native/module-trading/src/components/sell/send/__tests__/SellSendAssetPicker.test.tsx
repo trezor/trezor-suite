@@ -14,17 +14,17 @@ import { BigNumber } from '@trezor/utils';
 import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
 import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { selectExchangeAccountsWithTokensSectionList } from '../../../../selectors/exchangeSelectors';
+import { selectAccountsWithTokensToSellSectionListByTradingType } from '../../../../selectors/commonSelectors';
 import { MyAsset } from '../../../../types/general';
 import { SellFormType } from '../../../../types/sell';
 import { SellSendAssetPicker } from '../SellSendAssetPicker';
 
-jest.mock('../../../../selectors/exchangeSelectors', () => ({
-    ...jest.requireActual('../../../../selectors/exchangeSelectors'),
-    selectExchangeAccountsWithTokensSectionList: jest.fn(),
+jest.mock('../../../../selectors/commonSelectors', () => ({
+    ...jest.requireActual('../../../../selectors/commonSelectors'),
+    selectAccountsWithTokensToSellSectionListByTradingType: jest.fn(),
 }));
-const mockedSelectExchangeAccountsWithTokensSectionList =
-    selectExchangeAccountsWithTokensSectionList as unknown as jest.Mock;
+const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
+    selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 
 describe('SellSendAssetPicker', () => {
     let form: SellFormType;
@@ -77,7 +77,9 @@ describe('SellSendAssetPicker', () => {
         const { result } = await renderSellForm();
         form = result.current;
 
-        mockedSelectExchangeAccountsWithTokensSectionList.mockReturnValue(defaultAccounts);
+        mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
+            defaultAccounts,
+        );
     });
 
     it('should select asset on item press', async () => {

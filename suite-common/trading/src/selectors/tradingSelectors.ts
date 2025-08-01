@@ -470,6 +470,20 @@ const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') 
 export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
 export const selectTradingExchangeBuyCryptoIds = createExchangeCryptoIdsSelector('buyCryptoIds');
 
+export const selectTradingSellSellCryptoIds = createMemoizedSelector(
+    [
+        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.tradingNew.info.platforms,
+        ({ wallet }) => wallet.tradingNew.sell.sellInfo?.supportedCryptoCurrencies,
+    ],
+    (coins, platforms, supportedCryptoIds) =>
+        getFilteredCryptoIds(
+            returnStableArrayIfEmpty<CryptoId>(supportedCryptoIds),
+            coins,
+            platforms,
+        ),
+);
+
 export const selectTradingBuyIsLoading = (state: TradingRootState) =>
     state.wallet.tradingNew.buy.isLoading;
 
