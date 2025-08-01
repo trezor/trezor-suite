@@ -40,6 +40,7 @@ export const useShowAutoEjectAlert = () => {
     const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const isViewOnlyByDefaultEnabled = useFeatureFlag(FeatureFlag.IsViewOnlyByDefaultEnabled);
 
@@ -113,38 +114,59 @@ export const useShowAutoEjectAlert = () => {
                 appendix: (
                     <VStack alignItems="center" spacing="sp24" testID="@home/alert/view-only">
                         <LottieAnimation source={viewOnlyLottie} />
+                        {/*// TODO: different animation when discovery is running*/}
                         <CenteredTitleHeader
                             title={
-                                <Translation id="moduleSettings.viewOnly.autoEject.alert.title" />
+                                isDiscoveryRunning ? (
+                                    'Reconnect your Trezor to finish loading assets '
+                                ) : (
+                                    <Translation id="moduleSettings.viewOnly.autoEject.alert.title" />
+                                )
                             }
                             subtitle={
-                                <Translation id="moduleSettings.viewOnly.autoEject.alert.subtitle" />
+                                isDiscoveryRunning ? undefined : (
+                                    <Translation id="moduleSettings.viewOnly.autoEject.alert.subtitle" />
+                                )
                             }
                         />
                     </VStack>
                 ),
-                primaryButtonTitle: (
+                primaryButtonTitle: isDiscoveryRunning ? (
+                    'Connect'
+                ) : (
                     <Translation id="moduleSettings.viewOnly.autoEject.alert.primaryButtonTitle" />
                 ),
-                onPressPrimaryButton: () => setHasAutoEjectAlertBeenDisplayed(true),
-                secondaryButtonTitle: (
+                onPressPrimaryButton: () => {
+                    if (isDiscoveryRunning) {
+                        // navigate to connect screen
+                    } else {
+                        setHasAutoEjectAlertBeenDisplayed(true);
+                    }
+                },
+                secondaryButtonTitle: isDiscoveryRunning ? (
+                    'Cancel'
+                ) : (
                     <Translation id="moduleSettings.viewOnly.autoEject.alert.secondaryButtonTitle" />
                 ),
                 onPressSecondaryButton: () => {
-                    setHasAutoEjectAlertBeenDisplayed(true);
-                    dispatch(toggleAutoEjectThunk());
-                    showToast({
-                        message: (
-                            <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />
-                        ),
-                        variant: 'default',
-                    });
+                    if (!isDiscoveryRunning) {
+                        setHasAutoEjectAlertBeenDisplayed(true);
+                        showToast({
+                            message: (
+                                <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />
+                            ),
+                            variant: 'default',
+                        });
+                    }
+                    dispatch(toggleAutoEjectThunk(!isDiscoveryRunning));
                 },
             });
         }
         if (isViewOnlyByDefaultEnabled && !shouldShowAutoEjectAlert) {
             hideAlert();
         }
+        // we do not want to listen to discovery state changes here
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         dispatch,
         hasAutoEjectAlertBeenDisplayed,

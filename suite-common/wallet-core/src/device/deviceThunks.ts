@@ -573,9 +573,12 @@ export const wipeDeviceThunk = createThunk(
 
 export const toggleAutoEjectThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
-    (_, { dispatch, getState }) => {
+    (enableAutoEject: boolean, { dispatch, getState }) => {
         const physicalDevices = selectPhysicalDevices(getState());
-        dispatch(deviceActions.toggleIsDeviceAutoEjectEnabled());
+
+        if (enableAutoEject) {
+            dispatch(deviceActions.toggleIsDeviceAutoEjectEnabled());
+        }
 
         physicalDevices.forEach(wallet => {
             if (!wallet.connected && wallet.remember) {
