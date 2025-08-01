@@ -1,8 +1,97 @@
 {
     "version": 1,
-    "timestamp": "2025-08-01T00:00:00+00:00",
-    "sequence": 99,
+    "timestamp": "2025-08-04T15:00:00+00:00",
+    "sequence": 100,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.5.1",
+                        "mobile": ">=25.5.1",
+                        "web": "*"
+                    },
+                    "duration": {
+                        "from": "2025-08-05T06:30:00+00:00",
+                        "to": "2025-08-05T14:30:00+00:00"
+                    }
+                }
+            ],
+            "message": {
+                "id": "8de95655-8800-45b8-9054-6563273d8f72",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["feature"],
+                "content": {
+                    "en": "Trading is currently unavailable due to planned system maintenance. Your funds remain accessible and no action is needed.",
+                    "es": "Actualmente, el comercio no está disponible debido a un mantenimiento programado del sistema. Sus fondos siguen siendo accesibles y no se requiere ninguna acción.",
+                    "cs": "V současné době není obchodování k dispozici kvůli plánované údržbě systému. Vaše prostředky zůstávají přístupné a nevyžaduje se žádná akce.",
+                    "ru": "В настоящее время торговля недоступна из-за запланированного обслуживания системы. Ваши средства остаются доступными, и никакие действия не требуются.",
+                    "ja": "現在、システムの定期メンテナンスのためトレードは利用できません。資金は引き続きアクセス可能であり、特に対応する必要はありません。",
+                    "hu": "A kereskedelem jelenleg nem elérhető a rendszer tervezett karbantartása miatt. Az öntökei továbbra is hozzáférhetők és nem kell semmi teendő.",
+                    "it": "Al momento, il trading non è disponibile a causa di una manutenzione programmata del sistema. I tuoi fondi rimangono accessibili e non è necessaria alcuna azione.",
+                    "fr": "Actuellement, le trading n'est pas disponible en raison d'une maintenance planifiée du système. Vos fonds restent accessibles et aucune action n'est nécessaire.",
+                    "de": "Derzeit ist der Handel aufgrund einer geplanten Systemwartung nicht verfügbar. Ihre Mittel bleiben zugänglich und es ist keine Aktion erforderlich.",
+                    "tr": "Sistem bakımından planlanan bakım nedeniyle şu anda ticaret mevcut değil. Fonlarınız erişilebilir kalmaktadır ve herhangi bir eylem gerektirmiyor.",
+                    "pt": "Atualmente, o comércio não está disponível devido à manutenção programada do sistema. Seus fundos permanecem acessíveis e nenhuma ação é necessária.",
+                    "uk": "Зараз торгівля недоступна через заплановане обслуговування системи. Ваші кошти залишаються доступними, і жодних дій не потрібно."
+                },
+                "feature": [
+                    {
+                        "domain": "trading.buy",
+                        "flag": false
+                    },
+                    {
+                        "domain": "trading.sell",
+                        "flag": false
+                    },
+                    {
+                        "domain": "trading.exchange",
+                        "flag": false
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.5.1",
+                        "mobile": ">=25.5.1",
+                        "web": "*"
+                    },
+                    "duration": {
+                        "from": "2025-08-04T07:00:00+00:00",
+                        "to": "2025-08-05T06:29:59+00:00"
+                    }
+                }
+            ],
+            "message": {
+                "id": "8e5e7026-ee66-4042-95c0-04f3a532dc5a",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["context"],
+                "content": {
+                    "en": "Trading will be unavailable due to planned system maintenance on August 5, 2025, from 6:30 to 14:30 UTC. Your funds will remain accessible and no action is needed.",
+                    "es": "El comercio no estará disponible debido al mantenimiento programado del sistema el 5 de agosto de 2025, desde las 6:30 hasta las 14:30 UTC. Sus fondos seguirán accesibles y no será necesaria ninguna acción.",
+                    "cs": "Obchodování nebude k dispozici kvůli plánované údržbě systému 5. srpna 2025 od 6:30 do 14:30 UTC. Vaše prostředky zůstanou přístupné a nevyžaduje se žádná akce.",
+                    "ru": "Торговля не будет доступна из-за запланированного обслуживания системы 5 августа 2025 года с 6:30 до 14:30 UTC. Ваши средства останутся доступными, и никакие действия не требуются.",
+                    "ja": "8月5日2025年、6:30から14:30 UTCの間に予定されたシステムメンテナンスのため、トレードは利用できません。資金は引き続きアクセス可能であり、特に対応する必要はありません。",
+                    "hu": "A kereskedelem nem lesz elérhető a rendszer tervezett karbantartása miatt 2025. augusztus 5-én, 6:30 és 14:30 UTC között. Az öntökei továbbra is hozzáférhetők lesznek, és nem kell semmi teendő.",
+                    "it": "Il trading non sarà disponibile a causa di una manutenzione programmata del sistema il 5 agosto 2025, dalle 6:30 alle 14:30 UTC. I tuoi fondi rimarranno accessibili e non sarà necessaria alcuna azione.",
+                    "fr": "Le trading ne sera pas disponible en raison d'une maintenance planifiée du système le 5 août 2025, de 6:30 à 14:30 UTC. Vos fonds resteront accessibles et aucune action ne sera nécessaire.",
+                    "de": "Der Handel wird aufgrund einer geplanten Systemwartung am 5. August 2025 zwischen 6:30 und 14:30 UTC nicht verfügbar sein. Ihre Mittel bleiben zugänglich und es ist keine Aktion erforderlich.",
+                    "tr": "Sistem bakımından planlanan bakım nedeniyle 5 Ağustos 2025 tarihinde saat 6:30 ile 14:30 UTC arasında ticaret mevcut olmayacaktır. Fonlarınız erişilebilir kalacak ve herhangi bir eylem gerektirmeyecektir.",
+                    "pt": "O comércio não estará disponível devido à manutenção programada do sistema em 5 de agosto de 2025, das 6:30 às 14:30 UTC. Seus fundos permanecerão acessíveis e nenhuma ação será necessária.",
+                    "uk": "Торгівля не буде доступна через заплановане обслуговування системи 5 серпня 2025 року між 6:30 і 14:30 UTC. Ваші кошти залишаться доступними, і жодних дій не потрібно."
+                },
+                "context": {
+                    "domain": ["trading.buy", "trading.sell", "trading.exchange"]
+                }
+            }
+        },
         {
             "conditions": [
                 {
