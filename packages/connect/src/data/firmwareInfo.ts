@@ -21,13 +21,6 @@ import {
     isStrictFeatures,
 } from '../utils/firmwareUtils';
 
-let firmwareReleasesConfig: Partial<
-    Record<keyof typeof DeviceModelInternal, Record<FirmwareType, ConditionalRelease>>
-> = {};
-let firmwareIntermediaryReleasesConfig:
-    | Record<keyof typeof DeviceModelInternal, IntermediaryReleaseConfig[]>
-    | undefined;
-
 export type FirmwareUpdateSource =
     | 'production'
     | 'test-unsigned'
@@ -88,7 +81,7 @@ const getBundledFirmwareVersion = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
 ) => {
-    const localFirmwareReleaseConfig = getOnlyLocalFirmwareReleaseConfig();
+    const { config: localFirmwareReleaseConfig } = getOnlyLocalFirmwareReleaseConfig();
     const modelReleases = localFirmwareReleaseConfig.releases[deviceModel];
     const bundledRelease = modelReleases[firmwareType];
     // Extracts the version from the filename, 't2b1-2.6.3-bitcoinonly.json' -> '2.6.3'.
@@ -148,11 +141,12 @@ export const getReleaseConfig = (features: Features, firmwareType: FirmwareType)
     if (internal_model === DeviceModelInternal.UNKNOWN) {
         return undefined;
     }
+    const firmwareReleaseConfig = DataManager.getFirmwareReleaseConfig();
 
-    if (!firmwareReleasesConfig) {
+    if (!firmwareReleaseConfig) {
         throw new Error('Firmware release config not loaded.');
     }
-    const deviceMessageRelease = firmwareReleasesConfig[internal_model];
+    const deviceMessageRelease = firmwareReleaseConfig[internal_model];
     if (!deviceMessageRelease) {
         throw new Error(`No firmware release config found for device model ${internal_model}`);
     }
@@ -262,7 +256,10 @@ export const createRemoteFirmwareConfig = async (config: FirmwareReleaseConfig) 
     return Object.fromEntries(validEntries);
 };
 
-const initializeFirmwareConfig = async (config: FirmwareReleaseConfig, isRemote: boolean) => {
+export const initializeFirmwareConfig = async (
+    config: FirmwareReleaseConfig,
+    isRemote: boolean,
+) => {
     if (isRemote) {
         try {
             const remoteReleases = await createRemoteFirmwareConfig(config);
@@ -277,23 +274,13 @@ const initializeFirmwareConfig = async (config: FirmwareReleaseConfig, isRemote:
     }
 
     // We had some issue getting remote so we use local data.
-    const localFirmwareReleaseConfig = getOnlyLocalFirmwareReleaseConfig();
+    const { config: localFirmwareReleaseConfig } = getOnlyLocalFirmwareReleaseConfig();
     const localReleases = createLocalFirmwareConfig(localFirmwareReleaseConfig);
 
     return {
         releases: localReleases,
         intermediaries: localFirmwareReleaseConfig.intermediaries,
     };
-};
-
-export const parseFirmwareReleaseConfig = async (
-    config: FirmwareReleaseConfig,
-    isRemote: boolean,
-) => {
-    const firmwareconfig = await initializeFirmwareConfig(config, isRemote);
-
-    firmwareReleasesConfig = firmwareconfig.releases;
-    firmwareIntermediaryReleasesConfig = firmwareconfig.intermediaries;
 };
 
 export const getLanguage = (languageBinPath: string) => {
@@ -352,6 +339,7 @@ const getCurrentVersion = (
 
 const getIntermediaryMessageRelease = (features: Features) => {
     const { internal_model } = features;
+    const firmwareIntermediaryReleasesConfig = DataManager.getFirmwareIntermediaryReleaseConfig();
 
     if (!firmwareIntermediaryReleasesConfig) {
         throw new Error('Firmware release config not loaded.');
@@ -387,10 +375,12 @@ const getIsBitcoinOnlyAvailable = (features: Features) => {
         return false;
     }
 
-    if (!firmwareReleasesConfig) {
+    const firmwareReleaseConfig = DataManager.getFirmwareReleaseConfig();
+
+    if (!firmwareReleaseConfig) {
         throw new Error('Firmware release config not loaded.');
     }
-    const deviceMessageRelease = firmwareReleasesConfig[internal_model];
+    const deviceMessageRelease = firmwareReleaseConfig[internal_model];
 
     return !!deviceMessageRelease && !!deviceMessageRelease[FirmwareType.BitcoinOnly];
 };

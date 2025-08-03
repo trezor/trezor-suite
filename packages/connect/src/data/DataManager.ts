@@ -2,12 +2,22 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
+import {
+    ConditionalRelease,
+    DeviceModelInternal,
+    FirmwareType,
+    IntermediaryReleaseConfig,
+    ReleasesConfig,
+} from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmwareReleaseConfig } from './firmwareInfo';
+import { initializeFirmwareConfig } from './firmwareInfo';
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
-import { getFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
+import {
+    getFirmwareReleaseConfig,
+    getOnlyLocalFirmwareReleaseConfig,
+} from '../utils/firmwareReleaseConfigUtils';
 
 type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
 type AssetCollection = {
@@ -20,8 +30,18 @@ export class DataManager {
     private static settings: ConnectSettings;
     private static messages: Record<string, any> = messages;
     private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
+    private static firmwareReleasesConfig: Partial<
+        Record<keyof typeof DeviceModelInternal, Record<FirmwareType, ConditionalRelease>>
+    > = {};
+    private static firmwareIntermediaryReleasesConfig:
+        | Record<keyof typeof DeviceModelInternal, IntermediaryReleaseConfig[]>
+        | undefined;
 
-    static async load(settings: ConnectSettings, withAssets = true) {
+    static async load(
+        settings: ConnectSettings,
+        withAssets = true,
+        onlyLocalFirmwareConfig = false,
+    ) {
         this.settings = settings;
 
         if (!withAssets) return;
@@ -38,8 +58,20 @@ export class DataManager {
             ...this.assets.coinsEth,
         });
 
-        const { config, isRemote } = await getFirmwareReleaseConfig();
-        await parseFirmwareReleaseConfig(config, isRemote);
+        await this.loadFirmwareRelaseConfig(onlyLocalFirmwareConfig);
+    }
+
+    static async loadFirmwareRelaseConfig(onlyLocal: boolean): Promise<void> {
+        let firmwareRelaseConfig;
+        if (onlyLocal) {
+            firmwareRelaseConfig = getOnlyLocalFirmwareReleaseConfig();
+        } else {
+            firmwareRelaseConfig = await getFirmwareReleaseConfig();
+        }
+        const { config, isRemote } = firmwareRelaseConfig;
+        const firmwareconfig = await initializeFirmwareConfig(config, isRemote);
+        this.setFirmwareReleaseConfig(firmwareconfig.releases);
+        this.setFirmwareIntermediaryReleaseConfig(firmwareconfig.intermediaries);
     }
 
     static getProtobufMessages() {
@@ -62,5 +94,20 @@ export class DataManager {
     }
     static getLocalFirmwares(): LocalFirmwares {
         return this.localFirmwares;
+    }
+
+    static setFirmwareReleaseConfig(releaseConfig: ReleasesConfig): void {
+        this.firmwareReleasesConfig = releaseConfig;
+    }
+    static getFirmwareReleaseConfig() {
+        return this.firmwareReleasesConfig;
+    }
+    static setFirmwareIntermediaryReleaseConfig(
+        intermediariesConfig: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>,
+    ) {
+        this.firmwareIntermediaryReleasesConfig = intermediariesConfig;
+    }
+    static getFirmwareIntermediaryReleaseConfig() {
+        return this.firmwareIntermediaryReleasesConfig;
     }
 }

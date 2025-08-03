@@ -111,6 +111,19 @@ export const getFirmwareReleaseConfig = async () => {
     };
 };
 
-export const getOnlyLocalFirmwareReleaseConfig = (): FirmwareReleaseConfig =>
+export const getOnlyLocalFirmwareReleaseConfig = (): {
+    config: FirmwareReleaseConfig;
+    isRemote: false;
+} => {
     // The bundled local is always the production one so hard-code production env here.
-    verifyFirmwareRelease(firmwareReleaseConfigAssets.jws, false, 'production');
+    const config: FirmwareReleaseConfig = verifyFirmwareRelease(
+        firmwareReleaseConfigAssets.jws,
+        false,
+        'production',
+    );
+
+    return {
+        config,
+        isRemote: false,
+    };
+};
