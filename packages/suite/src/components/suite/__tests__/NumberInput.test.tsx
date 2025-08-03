@@ -5,10 +5,10 @@ import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Store } from 'redux';
 
+import { Locale } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
 import { NumberInput } from '@trezor/product-components';
 
-import { Locale } from 'src/config/suite/languages';
 import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 

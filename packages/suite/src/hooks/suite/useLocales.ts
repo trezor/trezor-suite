@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 import type { Locale as DateFnsLocale } from 'date-fns';
 
-import type { Locale as SuiteLocale } from 'src/config/suite/languages';
+import { Locale as SuiteLocale } from '@suite-common/suite-types';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 

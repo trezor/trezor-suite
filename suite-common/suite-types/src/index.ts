@@ -10,6 +10,7 @@ export * from './route';
 export * from './walletBackupType';
 export * from './sign';
 export * from './thp';
+export * from './languages';
 
 export type Selector<TReturnValue> = (state: any) => TReturnValue;
 export type SuiteCompatibleAction<TPayload> = (

@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import type { Locale } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TradingType } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
@@ -9,7 +10,6 @@ import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { TranslationKey } from 'src/components/suite/Translation';
-import type { Locale } from 'src/config/suite/languages';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import {
     AutodetectSettings,

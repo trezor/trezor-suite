@@ -36,7 +36,7 @@ test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
                 );
                 const rawIncreasedBalance = originalBalance.plus(1).toString();
                 const expectedIncreasedBalance =
-                    localizeNumber(rawIncreasedBalance, 'en', 0, 8) + (hasEllipsis ? '…' : '');
+                    localizeNumber(rawIncreasedBalance, 'en-US', 0, 8) + (hasEllipsis ? '…' : '');
 
                 await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
                 await expect(firstAccountBalanceLocator).toHaveText(expectedIncreasedBalance);

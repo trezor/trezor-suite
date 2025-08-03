@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
 
+import { LANGUAGES, Locale } from '@suite-common/suite-types';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { setLanguage } from 'src/actions/settings/languageActions';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
-import LANGUAGES, { Locale } from 'src/config/suite/languages';
 import { selectIsDebugModeActive, selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 import { useDispatch } from './useDispatch';

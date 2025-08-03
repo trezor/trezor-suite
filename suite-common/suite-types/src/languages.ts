@@ -1,4 +1,4 @@
-const LANGUAGES = {
+const languages = {
     'en-US': { name: 'English', en: 'English', type: 'official' },
     'es-ES': { name: 'Español', en: 'Spanish', type: 'official' },
     'af-ZA': { name: 'Afrikaans', en: 'Afrikaans' },
@@ -34,7 +34,7 @@ const LANGUAGES = {
     'zh-TW': { name: '中文(繁體)', en: 'Chinese Traditional', type: 'community' },
 } as const;
 
-export type Locale = keyof typeof LANGUAGES;
+export type Locale = keyof typeof languages;
 
 export type LocaleInfo = {
     name: string;
@@ -42,4 +42,4 @@ export type LocaleInfo = {
     type?: 'official' | 'community';
 };
 
-export default LANGUAGES as { [code in Locale]: LocaleInfo };
+export const LANGUAGES = languages as { [code in Locale]: LocaleInfo };

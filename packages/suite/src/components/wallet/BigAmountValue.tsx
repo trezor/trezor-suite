@@ -2,10 +2,9 @@ import { PropsWithChildren } from 'react';
 
 import styled from 'styled-components';
 
+import { Locale } from '@suite-common/suite-types';
 import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
-
-import { Locale } from 'src/config/suite/languages';
 
 import { useSelector } from '../../hooks/suite';
 import { selectLanguage } from '../../reducers/suite/suiteReducer';

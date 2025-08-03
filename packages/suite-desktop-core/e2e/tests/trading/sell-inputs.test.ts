@@ -85,7 +85,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                             parseFloat(bitcoinBalance!) - parseFloat(resultingFee)
                         ).toString();
                         await expect(tradingPage.youPayCryptoInput).toHaveValue(
-                            localizeNumber(maxValue, 'en', 0, 8),
+                            localizeNumber(maxValue, 'en-US', 0, 8),
                         );
                     })
                     .toPass({ timeout: 15_000 });
@@ -114,7 +114,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                 const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
                 await expect
                     .soft(tradingPage.youPayCryptoInput)
-                    .toHaveValue(localizeNumber(maxValue, 'en', 0, 9));
+                    .toHaveValue(localizeNumber(maxValue, 'en-US', 0, 9));
             });
         });
     });

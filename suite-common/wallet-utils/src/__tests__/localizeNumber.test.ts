@@ -8,9 +8,9 @@ describe('localizeNumber', () => {
         expect(localizeNumber(1.234832924423748)).toStrictEqual('1.234832924423748');
     });
 
-    it('formats with cs locale', () => {
-        expect(localizeNumber(123456789, 'cs')).toStrictEqual('123 456 789');
-        expect(localizeNumber(1.234832924423748, 'cs')).toStrictEqual('1,234832924423748');
+    it('formats with cs-CZ locale', () => {
+        expect(localizeNumber(123456789, 'cs-CZ')).toStrictEqual('123 456 789');
+        expect(localizeNumber(1.234832924423748, 'cs-CZ')).toStrictEqual('1,234832924423748');
     });
 
     it('fails with wrong values', () => {
@@ -20,19 +20,19 @@ describe('localizeNumber', () => {
     });
 
     it('formats decimals', () => {
-        expect(localizeNumber(123456789, 'en', 0, 2)).toStrictEqual('123,456,789');
-        expect(localizeNumber(123456789.101, 'en', 0, 2)).toStrictEqual('123,456,789.1');
-        expect(localizeNumber(123456789.123, 'en', 0, 2)).toStrictEqual('123,456,789.12');
+        expect(localizeNumber(123456789, 'en-US', 0, 2)).toStrictEqual('123,456,789');
+        expect(localizeNumber(123456789.101, 'en-US', 0, 2)).toStrictEqual('123,456,789.1');
+        expect(localizeNumber(123456789.123, 'en-US', 0, 2)).toStrictEqual('123,456,789.12');
 
         expect(localizeNumber(Number.MAX_SAFE_INTEGER + 1)).toStrictEqual('9,007,199,254,740,992');
         expect(localizeNumber(Number.MIN_SAFE_INTEGER - 1)).toStrictEqual('-9,007,199,254,740,992');
 
-        expect(localizeNumber(123456789, 'en', 1, 2)).toStrictEqual('123,456,789.0');
-        expect(localizeNumber(123456789.111, 'en', 1, 2)).toStrictEqual('123,456,789.11');
+        expect(localizeNumber(123456789, 'en-US', 1, 2)).toStrictEqual('123,456,789.0');
+        expect(localizeNumber(123456789.111, 'en-US', 1, 2)).toStrictEqual('123,456,789.11');
 
-        expect(localizeNumber(123456789.111, 'en', 2, 2)).toStrictEqual('123,456,789.11');
+        expect(localizeNumber(123456789.111, 'en-US', 2, 2)).toStrictEqual('123,456,789.11');
 
-        expect(() => localizeNumber(123456789, 'en', 3, 2)).toThrow();
+        expect(() => localizeNumber(123456789, 'en-US', 3, 2)).toThrow();
     });
 
     it('formats negative numbers', () => {

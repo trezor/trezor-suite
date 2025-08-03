@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { Control, FieldValues, UseControllerProps, useController } from 'react-hook-form';
 
+import { Locale } from '@suite-common/suite-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Input, InputProps } from '@trezor/components';
 import { getLocaleSeparators } from '@trezor/utils';
@@ -70,8 +71,7 @@ export type NumberInputProps<TFieldValues extends FieldValues> = Omit<
         decimalScale?: number;
         onChange?: (value: string) => void;
         rules?: UseControllerProps['rules'];
-        // TODO: locale should be of type Locale
-        locale: string;
+        locale: Locale;
     };
 
 export const NumberInput = <TFieldValues extends FieldValues>({
