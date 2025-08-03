@@ -41,13 +41,13 @@ const fiatAmount = buyQuotesBTC[0].fiatStringAmount;
 const bestBuyProvider = capitalizeFirstLetter(buyQuotesBTC[0].exchange);
 const bestBuyCryptoAmount = `${buyQuotesBTC[0].receiveStringAmount} BTC`;
 const formattedFiatWithoutSymbol = localizeNumber(fiatAmount);
-const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
+const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 // secondOffer via Bank Transfer that matches input criteria has index 5
 const updateFiatAmount = buyQuotesBTCUpdate[5].fiatStringAmount;
 const secondOfferProvider = capitalizeFirstLetter(buyQuotesBTCUpdate[5].exchange);
 const secondOfferCryptoAmount = `${buyQuotesBTCUpdate[5].receiveStringAmount} BTC`;
-const formattedUpdateFiatAmount = `CZK ${localizeNumber(updateFiatAmount, 'en', 2)}`;
+const formattedUpdateFiatAmount = `CZK ${localizeNumber(updateFiatAmount, 'en-US', 2)}`;
 
 test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage }) => {

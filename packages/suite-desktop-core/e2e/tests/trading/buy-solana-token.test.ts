@@ -11,7 +11,7 @@ import {
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = localizeNumber(buyQuotesSolanaToken[0].fiatStringAmount, 'en', 2);
+const fiatAmount = localizeNumber(buyQuotesSolanaToken[0].fiatStringAmount, 'en-US', 2);
 const cryptoAmount = buyQuotesSolanaToken[0].receiveStringAmount;
 const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0].exchange);
 const formattedCryptoAmount = `${cryptoAmount} JUP`;

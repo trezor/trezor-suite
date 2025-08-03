@@ -10,7 +10,7 @@ import { expect, test } from '../../support/fixtures';
 const fiatAmount = buyQuotesEthereum[3].fiatStringAmount;
 const provider = capitalizeFirstLetter(buyQuotesEthereum[3].exchange);
 const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3].receiveStringAmount)} ETH`;
-const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
+const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeEthereum.trade;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
