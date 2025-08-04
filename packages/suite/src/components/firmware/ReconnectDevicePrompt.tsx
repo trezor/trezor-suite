@@ -2,6 +2,7 @@ import * as semver from 'semver';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, DeviceAnimation, H2, Modal, Paragraph } from '@trezor/components';
 import { Device } from '@trezor/connect';
@@ -18,7 +19,7 @@ const RebootDeviceGraphics = ({
     device,
     isManualRebootRequired,
 }: {
-    device?: Device;
+    device?: Device | TrezorDevice;
     isManualRebootRequired: boolean;
 }) => {
     if (!isManualRebootRequired) {
@@ -68,7 +69,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const { showManualReconnectPrompt, status, reconnectEvent, buttonEvent } =
         useFirmwareInstallation();
     const { device } = useDevice();
-    const eventDevice = buttonEvent?.device;
+    const eventDevice = buttonEvent?.device || device;
 
     const isManualRebootRequired =
         // Automatic reboot isn't supported:
