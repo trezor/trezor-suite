@@ -27,6 +27,7 @@ import {
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
+import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
@@ -191,6 +192,7 @@ export const TransactionListHeader = memo(
                     )}
                     {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
                     {account.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
+                    {account.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
                 </VStack>
                 {hasAccountTransactions && (
                     <Box marginTop="sp52" marginHorizontal="sp32">

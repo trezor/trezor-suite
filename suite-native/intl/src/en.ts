@@ -2344,6 +2344,12 @@ export const en = {
                 'Only transactions from the past 12 months are available in this view. To explore older activity, use the blockchain explorer.',
             confirmButton: 'Got it',
         },
+        solanaLimitedHistoryBanner: {
+            title: 'Transaction history is limited to the last 100 transactions per token',
+            description:
+                'This view shows only the most recent 100 transactions for each token. To see the full history, please use the blockchain explorer.',
+            confirmButton: 'Got it',
+        },
     },
     atoms: {
         animatedDoubleView: {
