@@ -58,6 +58,7 @@ export const enhanceTokensWithRates = (
             ...token,
             fiatRate,
             fiatValue,
+            accountSymbol: symbol,
         };
     });
 

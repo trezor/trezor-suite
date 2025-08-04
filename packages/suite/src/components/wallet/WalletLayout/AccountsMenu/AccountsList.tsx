@@ -8,6 +8,7 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
+import { AccountItemType } from 'src/types/wallet';
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
@@ -19,23 +20,27 @@ import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 interface AccountListProps {
-    onItemClick?: () => void;
+    forceOnlyItemClick?: boolean;
+    onItemClick?: (account: Account, type: AccountItemType) => void;
 }
 
 type AccountsProps = {
     accounts: Account[];
-    onItemClick?: () => void;
     coinjoinIsPreloading?: boolean;
     discoveryInProgress?: boolean;
     type: AccountType;
+    // NOTE: this is to disable completely default click behavior of the item
+    forceOnlyItemClick?: boolean;
+    onItemClick?: (account: Account, type: AccountItemType) => void;
 };
 
 const Accounts = ({
     accounts,
-    onItemClick,
+    forceOnlyItemClick,
     coinjoinIsPreloading,
     discoveryInProgress,
     type,
+    onItemClick,
 }: AccountsProps) => {
     const accountLabels = useSelector(selectAccountLabels);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -56,6 +61,7 @@ const Accounts = ({
                 return (
                     <AccountSection
                         key={account.key}
+                        forceOnlyItemClick={forceOnlyItemClick}
                         account={{
                             ...account,
                             accountLabel: accountLabels[account.key],
@@ -70,7 +76,7 @@ const Accounts = ({
     );
 };
 
-export const AccountsList = ({ onItemClick }: AccountListProps) => {
+export const AccountsList = ({ forceOnlyItemClick, onItemClick }: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -131,6 +137,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         }
 
         const accountProps = {
+            forceOnlyItemClick,
             accounts,
             onItemClick,
             coinjoinIsPreloading,

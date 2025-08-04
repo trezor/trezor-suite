@@ -21,7 +21,7 @@ import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 import { setCoinFilter } from './accountSearchActions';
 
 // move to selector!!!!
-const getAccountState = (state: AppState): SelectedAccountStatus => {
+export const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
 
     // waiting for device
