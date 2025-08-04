@@ -26,7 +26,6 @@ import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 
 // reexport
-export type { Icon } from './iconTypes';
 export type { CustomBackend } from './backend';
 export type { TickerId } from 'src/types/wallet/fiatRates';
 export type { Discovery } from '@suite-common/wallet-types';
