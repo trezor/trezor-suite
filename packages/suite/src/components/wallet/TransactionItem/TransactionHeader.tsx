@@ -9,6 +9,7 @@ import { Row } from '@trezor/components';
 import { AccountTransaction } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { useTranslation } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -83,6 +84,10 @@ const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
+
+    if (isPending && transaction.ethereumSpecific) {
+        return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
+    }
 
     if (
         transaction?.ethereumSpecific?.parsedData?.name &&

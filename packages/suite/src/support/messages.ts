@@ -3630,6 +3630,10 @@ export default defineMessages({
         defaultMessage: 'Unconfirmed',
         id: 'TR_UNCONFIRMED_TX',
     },
+    TR_UNCONFIRMED_TX_LONG: {
+        defaultMessage: 'Unconfirmed transaction',
+        id: 'TR_UNCONFIRMED_TX_LONG',
+    },
     TR_UNKNOWN_CONFIRMATION_TIME: {
         defaultMessage: 'unknown',
         id: 'TR_UNKNOWN_CONFIRMATION_TIME',
