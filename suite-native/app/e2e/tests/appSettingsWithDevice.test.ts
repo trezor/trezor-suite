@@ -34,6 +34,7 @@ conditionalDescribe(
         });
 
         beforeEach(async () => {
+            await prepareTrezorEmulator();
             await restartApp();
             await appIsFullyLoaded();
             await wait(5000); // wait for trezor device to start communicating with the app
