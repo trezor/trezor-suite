@@ -147,7 +147,6 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.WalletCreation]: {
         walletBackupType: BackupType;
     };
-    [DeviceOnboardingStackRoutes.RecoveryUnsupported]: undefined;
     [DeviceOnboardingStackRoutes.RecoveryInstructions]: undefined;
     [DeviceOnboardingStackRoutes.WalletRecovery]: undefined;
     [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: {

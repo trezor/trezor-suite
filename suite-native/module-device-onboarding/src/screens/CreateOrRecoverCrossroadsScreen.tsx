@@ -1,12 +1,5 @@
-import { useSelector } from 'react-redux';
-
 import { useSetAtom } from 'jotai';
 
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureEnabled,
-} from '@suite-common/message-system';
 import { Box, Button, Card, CenteredTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -35,10 +28,6 @@ export const CreateOrRecoverCrossroadsScreen = ({
     const { applyStyle } = useNativeStyles();
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
-    const isDeviceOnboardingRecoveryEnabled = useSelector((state: MessageSystemRootState) =>
-        selectIsFeatureEnabled(state, Feature.deviceOnboardingMobileRecovery, true),
-    );
-
     const handleCreateButtonPress = () => {
         updateOnboardingAnalytics({
             seed: 'create',
@@ -51,11 +40,7 @@ export const CreateOrRecoverCrossroadsScreen = ({
             seed: 'recovery',
         });
 
-        if (isDeviceOnboardingRecoveryEnabled) {
-            navigation.navigate(DeviceOnboardingStackRoutes.RecoveryInstructions);
-        } else {
-            navigation.navigate(DeviceOnboardingStackRoutes.RecoveryUnsupported);
-        }
+        navigation.navigate(DeviceOnboardingStackRoutes.RecoveryInstructions);
     };
 
     return (
