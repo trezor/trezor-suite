@@ -6,8 +6,9 @@ import {
 } from '@suite-common/trading';
 import { useTimer } from '@trezor/react-utils';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
+import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { UseTradingCommonProps, UseTradingCommonReturnProps } from 'src/types/trading/trading';
 
 export const useTradingInitializer = ({
@@ -19,6 +20,8 @@ export const useTradingInitializer = ({
     const timer = useTimer();
     const { account } = selectedAccount;
     const { device } = useDevice();
+
+    const isWindowVisible = useSelector(selectIsWindowVisible);
 
     const checkQuotesTimer = useCallback(
         (callback: () => Promise<void>) => {
@@ -35,13 +38,16 @@ export const useTradingInitializer = ({
                     return;
                 }
 
-                if (timer.timeSpent.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {
+                if (
+                    isWindowVisible &&
+                    timer.timeSpent.seconds >= INVITY_API_RELOAD_QUOTES_AFTER_SECONDS
+                ) {
                     dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
                     callback();
                 }
             }
         },
-        [timer, pageType, isLoading, dispatch],
+        [timer, isWindowVisible, pageType, isLoading, dispatch],
     );
 
     useServerEnvironment();
