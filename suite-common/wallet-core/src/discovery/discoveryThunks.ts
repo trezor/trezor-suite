@@ -703,9 +703,32 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-        const result = await TrezorConnect.discoverAccounts({
-            device,
+        // NOTE: prepare the device to the corresponding state eg. insert the passphrase
+        const stateResult = await TrezorConnect.getDeviceState({
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: device.state.staticSessionId,
+            },
             useEmptyPassphrase: device.useEmptyPassphrase,
+        });
+
+        if (stateResult.success) {
+            dispatch(
+                applyDeviceStatesThunk({
+                    newDeviceState: stateResult.payload._state,
+                    isAddingHiddenWallet: !device.useEmptyPassphrase,
+                    devicePath: device.path,
+                }),
+            );
+        }
+
+        // NOTE: keep here the previous device as default to prevent TS from screeming
+        const updatedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId) ?? device;
+
+        const result = await TrezorConnect.discoverAccounts({
+            device: updatedDevice,
+            useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
             accounts: accountsParam,
         });
 
@@ -721,14 +744,14 @@ export const runAdditionalDiscoveryThunk = createThunk(
                         error: result.payload.error,
                         errorCode: result.payload.code,
                     },
-                    device.path,
+                    updatedDevice.path,
                 ),
             );
 
             return;
         }
 
-        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
+        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, updatedDevice.path));
     },
 );
 
