@@ -109,23 +109,6 @@ export type CreateDeviceInstanceError = {
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
-export const handleDeviceConnect = createThunk(
-    `${DEVICE_MODULE_PREFIX}/handleDeviceConnect`,
-    (device: Device, { dispatch, getState }) => {
-        const selectedDevice = selectSelectedDevice(getState());
-
-        if (!selectedDevice) {
-            dispatch(selectDeviceThunk({ device }));
-        } else {
-            // TODO: show some nice notification/tooltip in DeviceMenu
-        }
-    },
-);
-
-/**
- * Triggered by `@trezor/connect DEVICE_EVENT`
- * @param {Device} device
- */
 export const handleDeviceDisconnect = createThunk(
     `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
     (device: Device | TrezorDevice, { dispatch, getState, extra }) => {

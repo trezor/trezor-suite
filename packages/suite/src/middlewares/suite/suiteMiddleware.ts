@@ -7,7 +7,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     deviceActions,
     forgetDisconnectedDevices,
-    handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
     restartDiscoveryThunk,
@@ -18,6 +17,7 @@ import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { appChanged, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
+import { handleDeviceConnect } from 'src/actions/wallet/handleDeviceConnectThunk';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
