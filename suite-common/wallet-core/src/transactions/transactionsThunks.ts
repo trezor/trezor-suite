@@ -1,8 +1,11 @@
+import { toWei } from 'web3-utils';
+
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     Account,
     AccountKey,
+    FormState,
     PrecomposedTransactionCardanoFinal,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalBumpFeeRbf,
@@ -11,17 +14,20 @@ import {
 } from '@suite-common/wallet-types';
 import {
     enhanceTransaction,
+    ensureHexPrefix,
     findAccountsByAddress,
     findTransactions,
     getPendingAccount,
     getRbfParams,
+    isEip1559,
     isRbfBumpFeeTransaction,
     isTrezorConnectBackendType,
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import TrezorConnect, { AccountInfo, AccountTransaction, TokenTransfer } from '@trezor/connect';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
@@ -35,6 +41,8 @@ import {
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsSelectors';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
+import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
 
 /**
@@ -187,6 +195,187 @@ export const addFakePendingTxThunk = createThunk(
                 dispatch(accountsActions.updateAccount(pendingAccount));
             }
         });
+    },
+);
+
+const buildFakePendingEvmTx = ({
+    precomposedTransaction,
+    precomposedForm,
+    txid,
+    account,
+    nonce,
+    blockHeight,
+    deadline,
+    token,
+}: {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    precomposedForm: FormState;
+    txid: string;
+    account: Account;
+    nonce: string;
+    blockHeight: number;
+    deadline: number;
+    token?: TokenInfo;
+}): AccountTransaction & Partial<WalletAccountTransaction> => {
+    const output = precomposedTransaction.outputs[0];
+    const fromAddress = account.descriptor;
+    const toAddress = output.address!;
+    const amount = output.amount.toString();
+    const isLegacyTx = !isEip1559(precomposedTransaction);
+
+    const blockTime = Math.floor(Date.now() / 1000);
+    const common = {
+        descriptor: account.descriptor,
+        deviceState: account.deviceState,
+        symbol: account.symbol,
+        type: 'sent' as const,
+        txid,
+        blockTime,
+        blockHash: undefined,
+        deadline: blockHeight + deadline,
+        fee: precomposedTransaction.fee,
+        rbf: false,
+        internalTransfers: [],
+        ethereumSpecific: {
+            status: -1,
+            nonce: parseInt(nonce),
+            gasLimit: parseInt(precomposedTransaction.feeLimit ?? '0'),
+            gasPrice: isLegacyTx ? toWei(precomposedTransaction.feePerByte, 'gwei') : undefined,
+            maxFeePerGas: isLegacyTx
+                ? undefined
+                : toWei(precomposedTransaction.maxFeePerGas ?? '0', 'gwei'),
+            maxPriorityFeePerGas: isLegacyTx
+                ? undefined
+                : toWei(precomposedTransaction.maxPriorityFeePerGas ?? '0', 'gwei'),
+            data: ensureHexPrefix(precomposedForm?.ethereumDataHex),
+        },
+        details: {
+            vin: [
+                {
+                    n: 0,
+                    addresses: [fromAddress],
+                    isAddress: true,
+                    isOwn: true,
+                    isAccountOwned: true,
+                },
+            ],
+            vout: [],
+            size: 0,
+            totalInput: '0',
+            totalOutput: token ? '0' : amount,
+        },
+        // rbf not yet available for fake pending txs
+        // rbfParams: getRbfParams(tx, account),
+    };
+
+    if (token) {
+        const tokenTransfer: TokenTransfer = {
+            type: 'sent',
+            standard: token.standard as TokenStandard,
+            amount,
+            from: fromAddress,
+            to: toAddress,
+            contract: token.contract,
+            name: token.name,
+            symbol: token.symbol,
+            decimals: token.decimals,
+            multiTokenValues: token.multiTokenValues,
+        };
+
+        return {
+            ...common,
+            amount: '0',
+            targets: [],
+            tokens: [tokenTransfer],
+            details: {
+                ...common.details,
+                vout: [
+                    {
+                        value: '0',
+                        n: 0,
+                        addresses: [token.contract],
+                        isAddress: true,
+                    },
+                ],
+            },
+        };
+    }
+
+    return {
+        ...common,
+        amount,
+        targets: [
+            {
+                n: 0,
+                addresses: [toAddress],
+                isAddress: true,
+                amount,
+            },
+        ],
+        tokens: [],
+        details: {
+            ...common.details,
+            vout: [
+                {
+                    value: amount,
+                    n: 0,
+                    addresses: [toAddress],
+                    isAddress: true,
+                },
+            ],
+        },
+    };
+};
+
+export const addFakePendingEvmTxThunk = createThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    async (
+        {
+            precomposedTransaction,
+            precomposedForm,
+            txid,
+            account,
+        }: {
+            precomposedTransaction: PrecomposedTransactionFinal;
+            precomposedForm?: FormState;
+            txid: string;
+            account: Account;
+        },
+        { dispatch, getState },
+    ) => {
+        if (
+            account.networkType !== 'ethereum' ||
+            !precomposedForm ||
+            !precomposedTransaction.outputs.length
+        ) {
+            return;
+        }
+
+        const { nonce } = await dispatch(
+            ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+        ).unwrap();
+
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
+        const rawFeeInfo = selectRawNetworkFeeInfo(getState(), account.symbol);
+
+        const FAKE_TX_TTL_MS = 15 * 60 * 1000; // keep fake tx for 15 minutes
+        const deadline = FAKE_TX_TTL_MS / rawFeeInfo!.blockTime;
+
+        const fakeTx = buildFakePendingEvmTx({
+            precomposedTransaction,
+            precomposedForm,
+            token:
+                precomposedTransaction.token && !precomposedForm.ethereumDataHex
+                    ? precomposedTransaction.token
+                    : undefined,
+            txid,
+            account,
+            nonce,
+            blockHeight,
+            deadline,
+        });
+
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
 );
 
