@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { HStack, Text } from '@suite-native/atoms';
+import { Box, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
@@ -38,7 +38,7 @@ export const WalletDetailDeviceItemContent = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <>
+        <Box>
             <HStack style={applyStyle(headerStyle)}>
                 <Text
                     variant={headerTextVariant}
@@ -61,6 +61,6 @@ export const WalletDetailDeviceItemContent = ({
                 )}
                 {!isPortfolioTrackerDevice && subHeader}
             </Text>
-        </>
+        </Box>
     );
 };

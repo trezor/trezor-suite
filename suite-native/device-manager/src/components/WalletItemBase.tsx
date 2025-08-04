@@ -27,7 +27,7 @@ const walletItemBaseStyle = prepareNativeStyle<WalletItemBaseStyleProps>(
         height: 60,
         gap: utils.spacings.sp12,
         borderRadius: utils.borders.radii.r12,
-        borderColor: utils.colors.borderElevation1,
+        borderColor: utils.colors.borderOnElevation1,
         flex: 1,
         extend: [
             {
