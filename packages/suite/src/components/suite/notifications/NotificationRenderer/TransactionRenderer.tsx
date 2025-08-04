@@ -42,6 +42,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const currentDevice = useSelector(selectDeviceSelector);
     const routeName = useSelector(selectRouteName);
     const dispatch = useDispatch();
+
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
     const found = findAccountsByDescriptor(descriptor, networkAccounts);
 
@@ -57,6 +58,42 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
         ? 'wallet-staking'
         : 'wallet-index';
 
+    const handleTransactionClick = () => {
+        const isTradingRoute = !!routeName?.includes('wallet-trading');
+
+        if (!isTradingRoute) {
+            const deviceToSelect = accountDevice || device;
+            if (deviceToSelect?.id !== currentDevice?.id) {
+                dispatch(selectDeviceThunk({ device: deviceToSelect }));
+            }
+
+            const txAnchor = getTxAnchor(tx?.txid);
+            dispatch(
+                goto(destinationRoute, {
+                    params: {
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                        symbol: account.symbol,
+                    },
+                    anchor: txAnchor,
+                }),
+            );
+        }
+
+        if (tx?.txid) {
+            dispatch(
+                openModal({
+                    type: 'transaction-detail',
+                    txid: tx.txid,
+                    descriptor: account.descriptor,
+                    symbol: account.symbol,
+                    deviceState: account.deviceState,
+                    flow: 'detail',
+                }),
+            );
+        }
+    };
+
     return (
         <View
             {...props}
@@ -71,44 +108,14 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                 ),
                 confirmations,
             }}
-            action={{
-                onClick: () => {
-                    const isTradingRoute = !!routeName?.includes('wallet-trading');
-
-                    // in trading, we do not want to take user to tx history
-                    if (!isTradingRoute) {
-                        const deviceToSelect = accountDevice || device;
-                        if (deviceToSelect?.id !== currentDevice?.id) {
-                            dispatch(selectDeviceThunk({ device: deviceToSelect }));
-                        }
-                        const txAnchor = getTxAnchor(tx?.txid);
-                        dispatch(
-                            goto(destinationRoute, {
-                                params: {
-                                    accountIndex: account.index,
-                                    accountType: account.accountType,
-                                    symbol: account.symbol,
-                                },
-                                anchor: txAnchor,
-                            }),
-                        );
-                    }
-
-                    if (tx?.txid) {
-                        dispatch(
-                            openModal({
-                                type: 'transaction-detail',
-                                txid: tx.txid,
-                                descriptor: account.descriptor,
-                                symbol: account.symbol,
-                                deviceState: account.deviceState,
-                                flow: 'detail',
-                            }),
-                        );
-                    }
-                },
-                label: 'TOAST_TX_BUTTON',
-            }}
+            action={
+                tx
+                    ? {
+                          onClick: handleTransactionClick,
+                          label: 'TOAST_TX_BUTTON',
+                      }
+                    : undefined
+            }
         />
     );
 };
