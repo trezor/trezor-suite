@@ -124,7 +124,6 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.BootloaderMode}
                 component={BootloaderModeScreen}
             />
-
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
                 <RootStack.Screen
