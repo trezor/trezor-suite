@@ -6,8 +6,6 @@ import { useOpenLink } from '@suite-native/link';
 import {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     Screen,
@@ -22,9 +20,9 @@ type RouteProps = RouteProp<
 >;
 
 type NavigationProps = StackToStackCompositeNavigationProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.RecoveryUnsupported,
-    DeviceSettingsStackParamList
+    DeviceSettingsStackParamList,
+    DeviceCheckBackupStackRoutes.UnsupportedModel,
+    DeviceCheckBackupStackParamList
 >;
 
 export const DeviceCheckBackupUnsupportedModelScreen = () => {

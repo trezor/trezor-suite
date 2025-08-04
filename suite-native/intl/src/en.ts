@@ -1368,16 +1368,6 @@ export const en = {
                 holdToConfirmButton: 'Hold to continue',
             },
         },
-        recoveryUnsupportedScreen: {
-            title: 'For recovery, continue to web application.',
-            subtitle:
-                'We’re currently working on allowing recovery in mobile app as soon as possible',
-            redirectButton: 'Continue to Trezor Suite Web',
-            laterButton: 'I’ll do it later',
-            step1: 'Go to Trezor Suite for Web using the button below.',
-            step2: 'Complete recovery in your browser.',
-            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
-        },
         recoveryInstructionsScreen: {
             callout: 'Recover assets',
             title: 'Get your wallet backup',

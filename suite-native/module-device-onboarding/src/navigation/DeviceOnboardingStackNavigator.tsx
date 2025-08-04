@@ -16,7 +16,6 @@ import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySu
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { RecoveryInstructionsScreen } from '../screens/RecoveryInstructionsScreen';
-import { RecoveryUnsupportedScreen } from '../screens/RecoveryUnsupportedScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
 import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
@@ -105,10 +104,6 @@ export const DeviceOnboardingStackNavigator = () => (
             options={{
                 animation: 'fade',
             }}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.RecoveryUnsupported}
-            component={RecoveryUnsupportedScreen}
         />
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.RecoveryInstructions}

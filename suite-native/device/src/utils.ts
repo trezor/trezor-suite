@@ -43,9 +43,9 @@ export const isDeviceSetupSupported = (model: DeviceModelInternal) => {
         case DeviceModelInternal.T2B1:
         case DeviceModelInternal.T3B1:
         case DeviceModelInternal.T3T1:
+        case DeviceModelInternal.T2T1:
             return true;
         case DeviceModelInternal.T1B1:
-        case DeviceModelInternal.T2T1:
         case DeviceModelInternal.T3W1:
         case DeviceModelInternal.UNKNOWN:
             return false;

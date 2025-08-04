@@ -49,7 +49,6 @@ import {
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { isDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
@@ -247,18 +246,8 @@ export const selectIsDeviceAuthenticityCheckFailed = createMemoizedSelector(
 );
 
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
-    [
-        selectDeviceModel,
-        (state: MessageSystemRootState) =>
-            selectIsFeatureEnabled(state, Feature.deviceOnboardingMobile, true),
-        (state: NativeDeviceRootState) =>
-            selectIsFeatureEnabled(state, Feature.deviceOnboardingMobileT2T1, true),
-    ],
-    (model, isDeviceOnboardingFeatureFlagEnabled, isModelTDeviceOnboardingFeatureFlagEnabled) =>
-        isDeviceOnboardingFeatureFlagEnabled &&
-        G.isNotNullable(model) &&
-        (isDeviceSetupSupported(model) ||
-            (isModelTDeviceOnboardingFeatureFlagEnabled && model === DeviceModelInternal.T2T1)),
+    [selectDeviceModel],
+    model => G.isNotNullable(model) && isDeviceSetupSupported(model),
 );
 
 export const selectShouldFactoryResetBeVisible = createMemoizedSelector(

@@ -1,4 +1,3 @@
-import { Action, Feature, Message } from '@suite-common/suite-types';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/wallet-core';
 import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -59,51 +58,6 @@ describe('EmptyHomeRenderer', () => {
             });
 
             expectUninitializedConnectedDeviceState();
-        });
-
-        it('should not display UninitializedConnectedDeviceState when device is connected, not initialized, but device onboarding is disabled via message system.', async () => {
-            await renderEmptyHomeRenderer({
-                featureFlags: { isDeviceConnectEnabled: true },
-                messageSystem: {
-                    config: {
-                        version: 1,
-                        timestamp: '2023-01-01',
-                        sequence: 1,
-                        actions: [
-                            {
-                                message: {
-                                    id: '1',
-                                    priority: 1,
-                                    category: ['feature'],
-                                    feature: [
-                                        { domain: 'device.onboarding.mobile', flag: false },
-                                    ] as Feature[],
-                                } as Message,
-                            } as Action,
-                        ],
-                        experiments: [],
-                    },
-                    currentSequence: 1,
-                    timestamp: 0,
-                    validMessages: {
-                        banner: [],
-                        context: [],
-                        modal: [],
-                        feature: ['1'],
-                    },
-                    dismissedMessages: {},
-                    validExperiments: [],
-                },
-                device: {
-                    selectedDevice: {
-                        connected: true,
-                        features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
-                    },
-                    devices: [{ id: 'device_id' }],
-                },
-            });
-
-            expectEmptyPortfolioCrossroadsState();
         });
 
         it('should not display UninitializedConnectedDeviceState when device is connected, not initialized, but model does not support setup', async () => {
