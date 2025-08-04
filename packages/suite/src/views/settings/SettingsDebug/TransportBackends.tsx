@@ -1,4 +1,3 @@
-import { isDevEnv } from '@suite-common/suite-utils';
 import { Checkbox } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
@@ -47,7 +46,7 @@ export const TransportBackends = () => {
             <SectionItem data-testid="@settings/debug/processes/bridgeLegacy">
                 <TextColumn
                     title="Use legacy Bridge"
-                    description="Legacy trezord-go will be spawned as a subprocess"
+                    description="Legacy trezord-go will be spawned as a subprocess. This is useful to interact with older (HID) devices."
                 />
                 <ActionColumn>
                     <Checkbox
@@ -78,14 +77,6 @@ export const TransportBackends = () => {
                     />
                 </ActionColumn>
             </SectionItem>
-            {!isDevEnv && (
-                <SectionItem data-testid="@settings/debug/processes/newBridgeRollout">
-                    <TextColumn
-                        title="New bridge rollout"
-                        description={`Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`}
-                    />
-                </SectionItem>
-            )}
         </>
     );
 };

@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react';
 
+import { Locale } from '@suite-common/suite-types';
+
 import * as languageActions from 'src/actions/settings/languageActions';
 import { setTheme as setThemeAction } from 'src/actions/suite/suiteActions';
-import { Locale } from 'src/config/suite/languages';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from 'src/utils/suite/l10n';

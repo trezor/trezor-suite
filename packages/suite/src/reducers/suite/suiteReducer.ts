@@ -2,6 +2,7 @@ import { produce } from 'immer';
 
 import type { CountryCode } from '@suite-common/geolocation';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { Locale } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -17,7 +18,6 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { versionUtils } from '@trezor/utils';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import type { Locale } from 'src/config/suite/languages';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import {
     hashCheckErrorScenarios,

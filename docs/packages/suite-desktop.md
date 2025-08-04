@@ -104,7 +104,6 @@ Available flags:
 | `--bridge-legacy`             | Use Legacy (trezord-go) Bridge implementation                                                                                                                                          |
 | `--bridge-test`               | Use Legacy (trezord-go) Bridge implementation in Testing mode                                                                                                                          |
 | `--bridge-dev`                | Instruct Bridge to support emulator on port 21324                                                                                                                                      |
-| `--skip-new-bridge-rollout`   | Always use Node Bridge if applicable to your environment (skip random assignment into test/control group)                                                                              |
 | `--bridge-daemon`             | Start Suite in daemon mode (no UI initially)                                                                                                                                           |
 | `--bridge-daemon-show-ui`     | Start Suite in daemon mode with UI right away                                                                                                                                          |
 | `--log-level=NAME`            | Set the logging level. Available levels are [name (value)]: error (1), warn (2), info(3), debug (4). All logs with a value equal or lower to the selected log level will be displayed. |

@@ -57,7 +57,7 @@ const buildArgs = (params: LaunchSuiteParams) => {
     ];
 
     if (params.bridgeDaemon) {
-        args.push('--bridge-daemon', '--skip-new-bridge-rollout');
+        args.push('--bridge-daemon');
     } else {
         args.push('--bridge-legacy', '--bridge-test');
     }

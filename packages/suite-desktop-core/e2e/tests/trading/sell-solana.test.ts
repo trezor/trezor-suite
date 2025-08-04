@@ -13,7 +13,7 @@ import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en', 2, 2);
+const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en-US', 2, 2);
 const cryptoAmount = sellQuotesSolana[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList');
 // This address belongs to second account in this wallet.

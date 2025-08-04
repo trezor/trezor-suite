@@ -131,7 +131,7 @@ export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) 
     const fraction = (parseFloat(params.balance) * params.percentage) / 100;
     const maxDecimals = getAccountDecimals(params.symbol);
 
-    return localizeNumber(fraction, 'en', 0, maxDecimals);
+    return localizeNumber(fraction, 'en-US', 0, maxDecimals);
 };
 
 export const countDecimalPlaces = (value: string | number) => {
