@@ -1,11 +1,12 @@
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions } from '@suite-common/wallet-core';
-import { DEVICE, TRANSPORT } from '@trezor/connect';
+import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { TorStatus } from 'src/types/suite';
+import { AppState, TorStatus } from 'src/types/suite';
 
+import { openSwitchDeviceDialog } from '../../wallet/addWalletThunk';
 import * as suiteActions from '../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = testMocks;
@@ -302,23 +303,43 @@ const selectDevice = [
     },
 ];
 
-const handleDeviceConnect = [
+type DeviceConnectFixture = {
+    description: string;
+    state: {
+        suite: Partial<AppState['suite']>;
+        device: Partial<AppState['device']>;
+    };
+    device: Device;
+    expectedNextActionType: string;
+};
+
+const handleDeviceConnect: DeviceConnectFixture[] = [
     {
-        description: `select connected device`,
+        description: `selects a newly connected device if there are none`,
         state: {
             device: { devices: [SUITE_DEVICE] },
             suite: {},
         },
         device: CONNECT_DEVICE,
-        result: deviceActions.selectDevice.type,
+        expectedNextActionType: deviceActions.selectDevice.type,
     },
     {
-        description: `ignore`,
+        description: `selects a newly connected physical device corresponding to selected remembered wallet `,
         state: {
             device: { selectedDevice: SUITE_DEVICE },
             suite: {},
         },
         device: CONNECT_DEVICE,
+        expectedNextActionType: deviceActions.selectDevice.type,
+    },
+    {
+        description: `opens the wallet switcher when newly connected physical not seen before`,
+        state: {
+            device: { selectedDevice: SUITE_DEVICE },
+            suite: {},
+        },
+        device: { ...CONNECT_DEVICE, id: 'a-different-id' } as Device,
+        expectedNextActionType: openSwitchDeviceDialog.pending.type,
     },
 ];
 

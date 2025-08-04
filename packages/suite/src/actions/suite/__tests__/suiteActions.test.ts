@@ -8,7 +8,6 @@ import {
     acquireDevice,
     deviceActions,
     forgetDisconnectedDevices,
-    handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
     prepareDeviceReducer,
@@ -16,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
+import { handleDeviceConnect } from 'src/actions/wallet/handleDeviceConnectThunk';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -155,12 +155,8 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state.suite, f.state.device, undefined);
             const store = initStore(state);
             await store.dispatch(handleDeviceConnect(f.device));
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
-                expect(action?.type).toEqual(f.result);
-            }
+            // a lot of actions may get called, and the one we are interested in may not be the last one
+            expect(store.getActions().some(a => a?.type === f.expectedNextActionType)).toBe(true);
         });
     });
 
