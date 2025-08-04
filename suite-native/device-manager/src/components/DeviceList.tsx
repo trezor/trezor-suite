@@ -1,109 +1,24 @@
-import { Platform, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    selectHasRunningDiscovery,
-    selectInstacelessUnselectedDevices,
-    selectIsDeviceConnected,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
-import {
-    ACCESSIBILITY_FONTSIZE_MULTIPLIER,
-    Box,
-    Button,
-    TextDivider,
-    VStack,
-} from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import {
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { selectInstacelessUnselectedDevices } from '@suite-common/wallet-core';
+import { AnimatedBox, Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
-
-type NavigationProp = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.AppTabs,
-    RootStackParamList
->;
 
 type DeviceListProps = {
     isVisible: boolean;
     onSelectDevice: (device: TrezorDevice) => void;
 };
 
-type ConnectButtonProps = {
-    isDividerVisible: boolean;
-    isOnlyBluetoothSupported: boolean;
-    onPress: () => void;
-};
-
-const ANIMATION_DURATION = 300;
+export const ANIMATION_DURATION = 300;
 
 const DEVICE_LIST_TOP_MARGIN = 300; // This is so the bg is consistent even if the device list is dragged down while scrolling
-const ITEM_HEIGHT = 66 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
-const BUTTON_HEIGHT = 48 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
-const BUTTON_PADDING_TOP = 8;
 const PADDING_TOP = 12;
 const PADDING_BOTTOM = 16;
-const SEPARATOR_VERTICAL_PADDING = 4;
-const SEPARATOR_HEIGHT = 26;
-
-const buttonWrapperStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
-    paddingTop: utils.spacings.sp8,
-}));
-
-const ConnectButton = ({
-    isDividerVisible,
-    isOnlyBluetoothSupported,
-    onPress,
-}: ConnectButtonProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    let buttonText: TxKeyPath = 'deviceManager.connectButton.first';
-    let buttonViewLeft: IconName | undefined;
-    if (isOnlyBluetoothSupported) {
-        buttonText = 'deviceManager.connectButton.bluetooth';
-        buttonViewLeft = 'bluetooth';
-    } else if (isDividerVisible) {
-        buttonText = 'deviceManager.connectButton.another';
-    }
-
-    return isDividerVisible ? (
-        <VStack spacing="sp4" paddingTop="sp4">
-            <TextDivider title="generic.orSeparator" />
-            <Box style={applyStyle(buttonWrapperStyle)}>
-                <Button
-                    viewLeft={buttonViewLeft}
-                    colorScheme="tertiaryElevation0"
-                    onPress={onPress}
-                >
-                    <Translation id={buttonText} />
-                </Button>
-            </Box>
-        </VStack>
-    ) : (
-        <Box style={applyStyle(buttonWrapperStyle)}>
-            <Button viewLeft={buttonViewLeft} colorScheme="tertiaryElevation0" onPress={onPress}>
-                <Translation id={buttonText} />
-            </Button>
-        </Box>
-    );
-};
 
 const listStaticStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -121,107 +36,30 @@ const listStaticStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.small,
 }));
 
-const calculateHeight = (deviceCount: number, isConnectButtonVisible: boolean) => {
-    'worklet';
-
-    const otherDevicesHeight = deviceCount * ITEM_HEIGHT;
-
-    const separatorHeight =
-        deviceCount > 0 && isConnectButtonVisible
-            ? 2 * SEPARATOR_VERTICAL_PADDING + SEPARATOR_HEIGHT
-            : 0;
-
-    const buttonHeight = isConnectButtonVisible ? BUTTON_PADDING_TOP + BUTTON_HEIGHT : 0;
-
-    const h =
-        MANAGER_MODAL_BOTTOM_RADIUS + //top margin for radius
-        PADDING_TOP +
-        otherDevicesHeight + // all other device
-        separatorHeight + // separator if there is one
-        buttonHeight +
-        PADDING_BOTTOM -
-        MANAGER_MODAL_BOTTOM_RADIUS;
-
-    return h;
-};
-
-export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
+export const DeviceList = ({ onSelectDevice }: DeviceListProps) => {
     const { applyStyle } = useNativeStyles();
-    const navigation = useNavigation<NavigationProp>();
-    const { setIsDeviceManagerVisible } = useDeviceManager();
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
-    const device = useSelector(selectSelectedDevice);
     const notSelectedInstancelessDevices = useSelector(selectInstacelessUnselectedDevices);
-    const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
-    const opacity = useSharedValue(0);
-    const height = useSharedValue(0);
 
-    const isIosWithBluetoothEnabled = Platform.OS === 'ios' && isBluetoothEnabled;
-    const hasUnselectedDevices = notSelectedInstancelessDevices.length > 0;
-    const isConnectButtonVisible = !hasDiscovery && !isDeviceConnected;
-
-    const handleConnectDevice = () => {
-        if (device) {
-            onSelectDevice(device);
-        }
-        setIsDeviceManagerVisible(false);
-        if (isIosWithBluetoothEnabled) {
-            // make sure the device manager is already hidden before navigating to prevent app freezing
-            // TODO: might be fixed by https://github.com/trezor/trezor-suite/issues/17968
-            setTimeout(
-                () =>
-                    navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                        screen: AuthorizeDeviceStackRoutes.ConnectBluetoothDevice,
-                    }),
-                2 * ANIMATION_DURATION,
-            );
-        } else {
-            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
-            });
-        }
-        analytics.report({
-            type: EventType.DeviceManagerClick,
-            payload: { action: 'connectDeviceButton' },
-        });
-    };
-
-    const listAnimatedStyle = useAnimatedStyle(() => {
-        const h = calculateHeight(notSelectedInstancelessDevices.length, isConnectButtonVisible);
-
-        height.value = isVisible ? h : 0;
-        opacity.value = isVisible ? 1 : 0;
-
-        return {
-            opacity: withTiming(opacity.value, { duration: ANIMATION_DURATION }),
-            height: withTiming(height.value, { duration: ANIMATION_DURATION }),
-        };
-    }, [isVisible, isConnectButtonVisible]);
+    if (notSelectedInstancelessDevices.length < 1) return;
 
     return (
-        <Animated.View style={listAnimatedStyle}>
-            <View style={applyStyle(listStaticStyle)}>
-                <Box>
-                    {notSelectedInstancelessDevices.map(
-                        d =>
-                            d.state && (
-                                <DeviceItem
-                                    key={d.state.staticSessionId}
-                                    deviceState={d.state}
-                                    onPress={() => onSelectDevice(d)}
-                                />
-                            ),
-                    )}
-                </Box>
-                {isConnectButtonVisible && (
-                    <ConnectButton
-                        isDividerVisible={hasUnselectedDevices}
-                        isOnlyBluetoothSupported={isIosWithBluetoothEnabled}
-                        onPress={handleConnectDevice}
-                    />
+        <AnimatedBox
+            style={applyStyle(listStaticStyle)}
+            entering={FadeInUp.duration(ANIMATION_DURATION)}
+            exiting={FadeOutUp.duration(ANIMATION_DURATION)}
+        >
+            <Box>
+                {notSelectedInstancelessDevices.map(
+                    d =>
+                        d.state && (
+                            <DeviceItem
+                                key={d.state.staticSessionId}
+                                deviceState={d.state}
+                                onPress={() => onSelectDevice(d)}
+                            />
+                        ),
                 )}
-            </View>
-        </Animated.View>
+            </Box>
+        </AnimatedBox>
     );
 };

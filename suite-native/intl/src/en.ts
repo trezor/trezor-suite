@@ -1589,8 +1589,8 @@ export const en = {
             devices: 'Change',
         },
         connectButton: {
-            another: 'Connect another device',
-            first: 'Connect your device',
+            another: 'Connect a different Trezor',
+            first: 'Connect Trezor',
             bluetooth: 'Connect via Bluetooth',
         },
         portfolioTracker: {

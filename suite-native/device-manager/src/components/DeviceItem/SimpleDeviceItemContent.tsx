@@ -42,7 +42,7 @@ export const SimpleDeviceItemContent = React.memo(
         const isConnectionStateVisible = !isPortfolioTrackerDevice && !hasOnlyEmptyPortfolioTracker;
 
         return (
-            <>
+            <Box>
                 <Text
                     variant={headerTextVariant}
                     ellipsizeMode="tail"
@@ -68,7 +68,7 @@ export const SimpleDeviceItemContent = React.memo(
                         />
                     )}
                 </Box>
-            </>
+            </Box>
         );
     },
 );
