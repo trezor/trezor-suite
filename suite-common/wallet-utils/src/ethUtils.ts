@@ -82,3 +82,9 @@ export const isEvmApprovalTx = (data?: string): boolean => {
 
     return result !== null;
 };
+
+export const ensureHexPrefix = (hex?: string): string => {
+    if (!hex) return '';
+
+    return hex.startsWith('0x') ? hex : `0x${hex}`;
+};

@@ -53,6 +53,7 @@ import {
     signRippleStellarSendFormTransactionThunk,
 } from './sendFormRippleStellarThunks';
 import {
+    selectPrecomposedSendForm,
     selectSendFormDrafts,
     selectSendPrecomposedTx,
     selectSendSerializedTx,
@@ -78,6 +79,7 @@ import {
 } from '../settings/walletSettingsReducer';
 import {
     addFakePendingCardanoTxThunk,
+    addFakePendingEvmTxThunk,
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
 
@@ -227,17 +229,18 @@ const synchronizeSentTransactionThunk = createThunk(
         {
             selectedAccount,
             precomposedTransaction,
+            precomposedForm,
             txid,
         }: {
             selectedAccount: Account;
             precomposedTransaction: GeneralPrecomposedTransactionFinal;
+            precomposedForm?: FormState;
             txid: string;
         },
         { dispatch },
     ) => {
         // notification from the backend may be delayed.
         // modify affected account balance.
-        // TODO: make it work with ETH accounts
         if (isCardanoTx(selectedAccount, precomposedTransaction)) {
             const pendingAccount = getPendingAccount({
                 account: selectedAccount,
@@ -262,6 +265,24 @@ const synchronizeSentTransactionThunk = createThunk(
                     account: selectedAccount,
                 }),
             );
+        } else if (selectedAccount.networkType === 'ethereum') {
+            const pendingAccount = getPendingAccount({
+                account: selectedAccount,
+                tx: precomposedTransaction,
+                txid,
+            });
+            if (pendingAccount) {
+                // manually add fake pending tx as we don't have the data about mempool txs
+                dispatch(
+                    addFakePendingEvmTxThunk({
+                        precomposedTransaction,
+                        precomposedForm,
+                        txid,
+                        account: selectedAccount,
+                    }),
+                );
+                dispatch(accountsActions.updateAccount(pendingAccount));
+            }
         } else {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
@@ -283,6 +304,7 @@ export const pushSendFormTransactionThunk = createThunk<
         const {
             actions: { onModalCancel },
         } = extra;
+        const precomposedForm = selectPrecomposedSendForm(getState());
         const precomposedTransaction = selectSendPrecomposedTx(getState());
         const serializedTx = selectSendSerializedTx(getState());
         const device = selectSelectedDevice(getState());
@@ -338,6 +360,7 @@ export const pushSendFormTransactionThunk = createThunk<
                 synchronizeSentTransactionThunk({
                     selectedAccount,
                     precomposedTransaction,
+                    precomposedForm,
                     txid,
                 }),
             );
