@@ -3,12 +3,7 @@ import { usePrevious } from 'react-use';
 
 import styled, { DefaultTheme, keyframes } from 'styled-components';
 
-import {
-    TradingExchangeType,
-    cryptoIdToNetwork,
-    tradingExchangeActions,
-} from '@suite-common/trading';
-import { getExplorerUrl } from '@suite-common/wallet-config';
+import { TradingExchangeType, tradingExchangeActions } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Card, Column, Icon, IconVariant, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -120,6 +115,7 @@ export const TradingFormApproval = ({
         form: {
             state: { isFormLoading },
         },
+        account,
     } = context;
 
     const currentQuoteStatus = selectedQuote?.status;
@@ -132,11 +128,6 @@ export const TradingFormApproval = ({
     const [isRefreshButtonLoading, setIsRefreshButtonLoading] = useState(false);
 
     const [approvalStep, setApprovalStep] = useState<ApprovalStep>();
-
-    const explorers = useSelector(state => state.wallet.explorer);
-    const network = selectedQuote?.send && cryptoIdToNetwork(selectedQuote.send);
-    const explorer =
-        network?.symbol && (explorers[network.symbol].custom ?? explorers[network.symbol].default);
 
     useTradingExchangeWatchApproval({
         selectedQuote,
@@ -348,10 +339,8 @@ export const TradingFormApproval = ({
                                                         variant="primary"
                                                         typographyStyle="body"
                                                         txAddress={selectedQuote.approvalSendTxHash}
-                                                        explorerUrl={getExplorerUrl(explorer, 'tx')}
-                                                        explorerUrlQueryString={
-                                                            explorer?.queryString
-                                                        }
+                                                        account={account}
+                                                        shouldAllowCopy={false}
                                                     />
                                                 )}
                                                 <Translation id="TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX" />
