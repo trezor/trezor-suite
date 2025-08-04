@@ -56,8 +56,8 @@ export type SuiteAction =
           payload: string | null;
       }
     | {
-          type: typeof SUITE.SET_SEEN_DISCONNECT_NOTIFICATION_FOR_DEVICE_IDS;
-          payload: string[];
+          type: typeof SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION;
+          payload: { deviceId: string };
       }
     | {
           type: typeof SUITE.EVM_CONFIRM_EXPLANATION_MODAL;
@@ -155,9 +155,9 @@ export const setRecentlyDisconnectedDevice = (payload: string | null): SuiteActi
     type: SUITE.SET_RECENTLY_DISCONNECTED_DEVICE,
     payload,
 });
-export const setSeenDisconnectNotificationForDeviceIds = (payload: string[]): SuiteAction => ({
-    type: SUITE.SET_SEEN_DISCONNECT_NOTIFICATION_FOR_DEVICE_IDS,
-    payload,
+export const addDeviceIdToSeenDisconnectNotification = (deviceId: string): SuiteAction => ({
+    type: SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION,
+    payload: { deviceId },
 });
 
 export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState) => {

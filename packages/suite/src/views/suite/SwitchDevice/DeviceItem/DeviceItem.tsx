@@ -19,9 +19,9 @@ import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import {
+    addDeviceIdToSeenDisconnectNotification,
     setFlag,
     setRecentlyDisconnectedDevice,
-    setSeenDisconnectNotificationForDeviceIds,
 } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -59,9 +59,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
     const [showTooltip, setShowTooltip] = useState(false);
     const deviceModelInternal = device.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const instancesWithState = instances.filter(i => i.state);
-    const seenDisconnectNotificationForDeviceIds = useSelector(
-        state => state.suite.seenDisconnectNotificationForDeviceIds,
-    );
 
     useEffect(() => {
         if (recentlyDisconnectedDevice === device.id) {
@@ -88,13 +85,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
         dispatch(setFlag('hasSeenDisconnectTooltip', true));
 
         if (deviceId) {
-            dispatch(
-                // simplify setSeenDisconnectNotificationForDeviceIds
-                setSeenDisconnectNotificationForDeviceIds([
-                    ...seenDisconnectNotificationForDeviceIds,
-                    deviceId,
-                ]),
-            );
+            dispatch(addDeviceIdToSeenDisconnectNotification(deviceId));
         }
     };
 
