@@ -39,6 +39,7 @@ interface AddAccountProps {
     noRedirect?: boolean;
     isCoinjoinDisabled?: boolean;
     isBackClickDisabled?: boolean;
+    onAddAccount?: (account: Account) => void;
 }
 
 export const AddAccountModal = ({
@@ -46,6 +47,7 @@ export const AddAccountModal = ({
     onCancel,
     symbol,
     noRedirect,
+    onAddAccount,
     isCoinjoinDisabled,
     isBackClickDisabled,
 }: AddAccountProps) => {
@@ -177,6 +179,7 @@ export const AddAccountModal = ({
     const addAccount = (account: Account) => {
         onCancel();
         dispatch(accountsActions.changeAccountVisibility(account));
+        onAddAccount?.(account);
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             dispatch(

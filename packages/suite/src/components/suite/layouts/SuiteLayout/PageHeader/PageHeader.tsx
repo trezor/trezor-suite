@@ -6,15 +6,16 @@ import { Route } from '@suite-common/suite-types';
 import { Row } from '@trezor/components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
-import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
+import { GlobalSendReceiveButtons } from './GlobalSendReceiveButtons';
 import { HeaderActions } from './HeaderActions';
 import { HeaderDropdown } from './HeaderDropdown';
 import { PageName } from './PageNames/PageName';
+import { TradeActions } from './TradeActions';
 
 const Container = styled.div`
     position: sticky;
@@ -56,6 +57,8 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
                 <Row gap={spacings.xxs}>
                     <HeaderDropdown />
                     <TradeActions />
+
+                    <GlobalSendReceiveButtons />
                 </Row>
             )}
             {!!selectedAccount && isAccountTabPage && <HeaderActions />}

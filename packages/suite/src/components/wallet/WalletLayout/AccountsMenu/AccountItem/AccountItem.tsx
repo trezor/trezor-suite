@@ -35,6 +35,8 @@ export const Left = styled.div`
 
 interface AccountItemProps {
     account: Account;
+    // NOTE: disables the default item click behavior
+    forceOnlyItemClick?: boolean;
     type: AccountItemType;
     isSelected: boolean;
     isGroupSelected?: boolean;
@@ -44,7 +46,7 @@ interface AccountItemProps {
     tokens?: Account['tokens'];
     dataTestKey?: string;
     isFiatLoading?: boolean;
-    onClick?: () => void;
+    onClick?: (account: Account, type: AccountItemType) => void;
 }
 
 // Using `forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
@@ -52,6 +54,7 @@ export const AccountItem = forwardRef(
     (
         {
             account,
+            forceOnlyItemClick,
             type,
             isSelected,
             isGroupSelected,
@@ -88,7 +91,13 @@ export const AccountItem = forwardRef(
         };
 
         const handleHeaderClick = () => {
-            onClick?.();
+            onClick?.(account, type);
+
+            // NOTE: disable default behavior useful eg in global send modal - when picking account
+            // from which to send
+            if (forceOnlyItemClick) {
+                return;
+            }
             goToWithAnalytics(getRoute(), { params: accountRouteParams });
 
             if (type === 'staking') {

@@ -12,7 +12,7 @@ import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Account } from 'src/types/wallet';
+import { Account, AccountItemType } from 'src/types/wallet';
 
 import { AccountItem } from './AccountItem/AccountItem';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
@@ -40,18 +40,22 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
 
 interface AccountItemsGroupProps {
     account: Account;
+    forceOnlyItemClick?: boolean;
     selected: boolean;
     showStaking: boolean;
     tokens?: Account['tokens'];
     dataTestKey?: string;
+    onItemClick?: (account: Account, type: AccountItemType) => void;
 }
 
 export const AccountItemsGroup = ({
     account,
+    forceOnlyItemClick,
     selected,
     showStaking,
     tokens,
     dataTestKey,
+    onItemClick,
 }: AccountItemsGroupProps) => {
     const isSidebarCollapsed = useIsSidebarCollapsed();
     const stakingBalance = getAccountTotalStakingBalance(account);
@@ -73,6 +77,7 @@ export const AccountItemsGroup = ({
                 <AccountItem
                     type="coin"
                     account={account}
+                    forceOnlyItemClick={forceOnlyItemClick}
                     isSelected={
                         selected &&
                         (routeName === 'wallet-index' ||
@@ -82,21 +87,25 @@ export const AccountItemsGroup = ({
                     isGroup
                     isGroupSelected={selected}
                     dataTestKey={dataTestKey}
+                    onClick={onItemClick}
                 />
                 {showStaking && (
                     <AccountItem
                         account={account}
+                        forceOnlyItemClick={forceOnlyItemClick}
                         type="staking"
                         isSelected={selected && routeName === 'wallet-staking'}
                         formattedBalance={stakingBalance ?? '0'}
                         isGroup
                         isGroupSelected={selected}
                         dataTestKey={`${dataTestKey}/staking`}
+                        onClick={onItemClick}
                     />
                 )}
                 {!!tokens?.length && (
                     <AccountItem
                         account={account}
+                        forceOnlyItemClick={forceOnlyItemClick}
                         type="tokens"
                         isSelected={selected && tokensRoutes.includes(routeName || '')}
                         formattedBalance={account.formattedBalance}
@@ -106,6 +115,7 @@ export const AccountItemsGroup = ({
                         tokens={tokens}
                         dataTestKey={`${dataTestKey}/tokens`}
                         isFiatLoading={isFiatLoading}
+                        onClick={onItemClick}
                     />
                 )}
             </Column>

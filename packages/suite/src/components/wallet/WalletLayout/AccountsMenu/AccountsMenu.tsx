@@ -8,6 +8,7 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { ReduxAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
 
 import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
@@ -54,7 +55,9 @@ export const AccountsMenu = () => {
             <ShadowContainer>
                 <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
                 <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
-                    <AccountsList />
+                    <ReduxAccountSearchProvider>
+                        <AccountsList />
+                    </ReduxAccountSearchProvider>
                     <RefreshAfterDiscoveryNeeded />
                 </ScrollContainer>
                 <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
