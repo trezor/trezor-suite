@@ -405,7 +405,7 @@ export default defineMessages({
         id: 'TR_ALL_NETWORKS_TOOLTIP',
     },
     TR_SELECT_TOKEN: {
-        defaultMessage: 'Select an asset',
+        defaultMessage: 'Select asset',
         id: 'TR_SELECT_TOKEN',
     },
     TR_SELECT_NAME_OR_ADDRESS: {
@@ -551,11 +551,11 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_LIMIT',
     },
     TR_EXCHANGE_APPROVAL_LIMIT_MINIMAL: {
-        defaultMessage: 'Minimal',
+        defaultMessage: 'Minimum',
         id: 'TR_EXCHANGE_APPROVAL_LIMIT_MINIMAL',
     },
     TR_EXCHANGE_APPROVAL_LIMIT_INFINITE: {
-        defaultMessage: 'Infinite',
+        defaultMessage: 'Unlimited',
         id: 'TR_EXCHANGE_APPROVAL_LIMIT_INFINITE',
     },
     TR_EXCHANGE_APPROVAL_FORM_REQUIRED: {
@@ -1031,7 +1031,7 @@ export default defineMessages({
     },
     TR_BUY_FOOTER_TEXT_2: {
         defaultMessage:
-            "Invity doesn't see any of your payment or KYC information; you share this only with the exchange provider if you choose to complete the transaction.",
+            "Invity doesn't see any of your payment or KYC information. You share this only with the exchange provider if you choose to complete the transaction.",
         id: 'TR_BUY_FOOTER_TEXT_2',
     },
     TR_BUY_MODAL_FOR_YOUR_SAFETY: {
@@ -1588,7 +1588,7 @@ export default defineMessages({
         id: 'TR_TRADING_REVOKE_TOKEN_BUTTON',
     },
     TR_TRADING_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
+        defaultMessage: 'Tx ID:',
         id: 'TR_TRADING_TRANS_ID',
     },
     TR_TRADING_VIEW_DETAILS: {
@@ -1757,7 +1757,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH_DESCRIPTION',
     },
     TR_BIO_AUTH_FAILED: {
-        defaultMessage: 'Biometric authentication failed',
+        defaultMessage: 'Access authentication failed',
         id: 'TR_BIO_AUTH_FAILED',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_MAC: {
@@ -1765,7 +1765,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_WIN: {
-        defaultMessage: 'Trezor Suite is trying to verify your identity.',
+        defaultMessage: 'Use your fingerprint or enter your PIN to access Trezor Suite.',
         id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
     },
     TR_ADDRESS_DISPLAY: {
@@ -2129,7 +2129,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
         defaultMessage:
-            'Use only  <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> and <code>these special characters</code>',
+            'Use only  <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code>, and <code>these special characters</code>.',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
@@ -2255,15 +2255,15 @@ export default defineMessages({
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
     },
     TR_NONCE_ERROR: {
-        defaultMessage: 'Nonce could not be generated. Please try again.',
+        defaultMessage: "Nonce couldn't be generated. Try again.",
         id: 'TR_NONCE_ERROR',
     },
     TR_VERIFY_ERROR: {
-        defaultMessage: 'Address could not be verified. Please try again.',
+        defaultMessage: "Address couldn't be verified. Try again.",
         id: 'TR_VERIFY_ERROR',
     },
     TR_PAYMENT_REQUESTS_ERROR: {
-        defaultMessage: 'Payment request could not be created. Please try again.',
+        defaultMessage: "Payment request couldn't be created. Try again.",
         id: 'TR_PAYMENT_REQUESTS_ERROR',
     },
     TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
@@ -2417,7 +2417,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC: {
         defaultMessage:
-            'Use safety checks to prevent non-standard transactions. You can temporarily disable them if you need to proceed with one.',
+            'Use safety checks to prevent non-standard transactions. You can temporarily disable them if needed.',
         id: 'TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC',
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON: {
@@ -2831,7 +2831,7 @@ export default defineMessages({
         id: 'TR_PRIVACY',
     },
     TR_CONFIRM_AUTO_EJECT: {
-        defaultMessage: 'Enable auto eject',
+        defaultMessage: 'Enable auto-eject',
         id: 'TR_CONFIRM_AUTO_EJECT',
     },
     TR_AUTO_EJECT: {
@@ -2840,16 +2840,16 @@ export default defineMessages({
     },
     TR_AUTO_EJECT_DESCRIPTION: {
         defaultMessage:
-            'Automatically eject all wallets when your Trezor is disconnected.\nYour balances will be removed from Trezor Suite until you reconnect your device.',
+            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances will be removed from Trezor Suite until you reconnect your device.',
         id: 'TR_AUTO_EJECT_DESCRIPTION',
     },
     TR_AUTO_EJECT_CONFIRMATION_DESCRIPTION: {
         defaultMessage:
-            'Your wallets and their balances will disappear from Suite. They will reappear only when you reconnect your Trezor.',
+            "Your wallets and balances won't be visible in Trezor Suite until you reconnect your device.",
         id: 'TR_AUTO_EJECT_CONFIRMATION_DESCRIPTION',
     },
     TR_AUTO_EJECT_CONFIRMATION_TITLE: {
-        defaultMessage: 'Are you sure you want to enable auto eject?',
+        defaultMessage: 'Enable auto-eject?',
         id: 'TR_AUTO_EJECT_CONFIRMATION_TITLE',
     },
     TR_LANGUAGE: {
@@ -3191,7 +3191,7 @@ export default defineMessages({
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
-            "You may be asked to type some words that aren't part of your wallet backup",
+            "You may be asked to type some words that aren't part of your wallet backup as an additional security measure.",
         description:
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
@@ -3421,7 +3421,7 @@ export default defineMessages({
         id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
     },
     TR_SIGN_TRANSACTION_TIMEOUT: {
-        defaultMessage: 'Signing transaction timed out',
+        defaultMessage: 'Transaction signing has timed out.',
         id: 'TR_SIGN_TRANSACTION_TIMEOUT',
     },
     TR_THP_ENTER_ONE_TIME_CODE: {
@@ -3711,7 +3711,7 @@ export default defineMessages({
         id: 'TR_WALLET_DUPLICATE_TITLE',
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
-        defaultMessage: 'Create a new wallet or recover one using your wallet backup',
+        defaultMessage: 'Create a new wallet or recover one using a wallet backup',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
     },
     TR_WEST: {
@@ -3748,7 +3748,7 @@ export default defineMessages({
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage:
-            "You're offline. Some features will be available again once you're back online.",
+            "You're offline. Some features will be available once you're connected again.",
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
     TR_YOUR_FIRMWARE_VERSION: {
@@ -4497,8 +4497,7 @@ export default defineMessages({
     },
     TR_SEED_WORDS_ENTER_TOUCHSCREEN: {
         id: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
-        defaultMessage:
-            'Using the touchscreen display, enter all the words in the correct order until completed.',
+        defaultMessage: 'Using the touchscreen display, enter all the words in the correct order.',
         dynamic: true,
     },
     TR_SEED_WORDS_ENTER_BUTTONS: {
@@ -4654,12 +4653,12 @@ export default defineMessages({
     TR_VIEW_ONLY_CALL_TO_ACTION: {
         id: 'TR_VIEW_ONLY_CALL_TO_ACTION',
         defaultMessage:
-            'Enable view-only to check balances <primary>after you disconnect your Trezor</primary>',
+            'Enable view-only to see your balances <primary>after you disconnect your Trezor</primary>',
     },
     TR_VIEW_ONLY_EXPLANATION: {
         id: 'TR_VIEW_ONLY_EXPLANATION',
         defaultMessage:
-            'To send or swap coins, <secondLine>simply reconnect your device</secondLine>',
+            'To send or swap assets, <secondLine>simply reconnect your device</secondLine>',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -5430,7 +5429,7 @@ export default defineMessages({
     LOG_INCLUDE_BALANCE_DESCRIPTION: {
         id: 'LOG_INCLUDE_BALANCE_DESCRIPTION',
         defaultMessage:
-            'Enabling this option includes sensitive information such as balance, transaction IDs, device labels, device ID, and public addresses in the application log. If your issue is unrelated, disable it.',
+            'Enabling this option adds sensitive info—like balances, transaction IDs, device labels, device ID, and public addresses—to the application log. If your issue isn’t related, you can safely keep it off.',
     },
     LOG_DESCRIPTION: {
         id: 'LOG_DESCRIPTION',
@@ -6306,7 +6305,7 @@ export default defineMessages({
     SETTINGS_BACKEND_SETTINGS_DESCRIPTION: {
         id: 'SETTINGS_BACKEND_SETTINGS_DESCRIPTION',
         defaultMessage:
-            'Connects to trusted backend servers to load your account data. You can also use a custom backend and set a different blockchain explorer.',
+            'Connect to trusted backend servers to securely load your account data. Customize the experience by using your own backend and choosing a different blockchain explorer.',
     },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
@@ -6388,7 +6387,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend. Reconnect your device and ensure your internet connection or custom backend URL is correct. The selected network might also be disabled in Settings.',
+            'Unable to connect to the backend. Reconnect your device and check your internet connection or custom backend URL. Also, make sure the selected network is enabled in Settings.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -6976,7 +6975,7 @@ export default defineMessages({
     TR_DECREASE_TX: {
         id: 'TR_DECREASE_TX',
         defaultMessage:
-            "You don't have enough funds to cover the fee. The final amount needs to be reduced to speed up transaction.",
+            "You don't have enough funds to cover the fee. The final amount needs to be reduced to speed up the transaction.",
     },
     TR_RBF_ORIGINAL_AMOUNT: {
         id: 'TR_RBF_ORIGINAL_AMOUNT',
@@ -7436,7 +7435,7 @@ export default defineMessages({
     },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT',
-        defaultMessage: 'Your device firmware hash check timed out.',
+        defaultMessage: 'Your device firmware hash check has timed out.',
     },
     TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
@@ -7640,7 +7639,8 @@ export default defineMessages({
     },
     TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG: {
         id: 'TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG',
-        defaultMessage: 'Firmware hash check timed out. Your Trezor might be counterfeit.',
+        defaultMessage:
+            'Your device firmware hash check has timed out. Your Trezor might be counterfeit.',
     },
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
@@ -7783,12 +7783,11 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
-        defaultMessage: 'Try a different USB port or computer',
+        defaultMessage: 'Use a different USB port',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION',
-        defaultMessage:
-            'Connect your device directly to your computer—avoid USB hubs—or try a different computer.',
+        defaultMessage: 'Connect your device directly to your computer, without using a USB hub.',
     },
     TR_TROUBLESHOOTING_TIP_PIN_LOST_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_PIN_LOST_TITLE',
@@ -7797,7 +7796,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_PIN_LOST_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_PIN_LOST_DESCRIPTION',
         defaultMessage:
-            'Follow the steps in our <a>support article</a> carefully. You’ll need your wallet backup — enter it only on your Trezor device.\n',
+            'Follow our <a>support article</a> step by step. Enter your wallet backup only on your Trezor.',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
@@ -9768,7 +9767,7 @@ export default defineMessages({
     TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION: {
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION',
         defaultMessage:
-            "Your funds and transactions won't be visible until you reconnect your device.",
+            "Your assets and transactions won't be visible until you reconnect your device.",
     },
     TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON: {
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON',
@@ -9781,7 +9780,7 @@ export default defineMessages({
     TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION: {
         id: 'TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION',
         defaultMessage:
-            "Your funds and transactions won't be visible until you reconnect your device.",
+            "Your assets and transactions won't be visible until you reconnect your device.",
     },
     TR_DO_NOT_SHOW_AGAIN: {
         id: 'TR_DO_NOT_SHOW_AGAIN',
@@ -9932,23 +9931,23 @@ export default defineMessages({
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE',
-        defaultMessage: 'Your balances are still visible even when your Trezor is disconnected.',
+        defaultMessage: 'Your balances remain visible even after you disconnect your Trezor.',
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1',
-        defaultMessage: 'You can always eject your wallets at any time.',
+        defaultMessage: 'Eject your wallets at any time.',
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2',
-        defaultMessage: "Funds can't be moved without a connected device.",
+        defaultMessage: "Assets can't be moved without a connected device.",
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY',
-        defaultMessage: 'OK, got it',
+        defaultMessage: 'Got it',
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY',
-        defaultMessage: 'Auto eject wallets',
+        defaultMessage: 'Auto-eject wallets',
     },
     TR_CONNECT_DEVICE_GENERIC_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_GENERIC_PROMO_TITLE',
@@ -10613,7 +10612,7 @@ export default defineMessages({
     },
     TR_CONNECT_POPUP_SUCCESS: {
         id: 'TR_CONNECT_POPUP_SUCCESS',
-        defaultMessage: 'Success! {appName} request completed',
+        defaultMessage: '{appName} request successful',
     },
     TR_CONNECT_EXPORT_ACCOUNTS: {
         id: 'TR_CONNECT_EXPORT_ACCOUNTS',
