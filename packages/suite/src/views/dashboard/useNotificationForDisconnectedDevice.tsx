@@ -9,32 +9,32 @@ import { useDispatch, useSelector } from '../../hooks/suite';
 export const useNotificationForDisconnectedDevice = () => {
     const dispatch = useDispatch();
 
+    const selectedDevice = useSelector(selectSelectedDevice);
     const seenDisconnectNotificationForDeviceIds = useSelector(
         state => state.suite.seenDisconnectNotificationForDeviceIds,
     );
+    const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
     const hasSeenDisconnectTooltip = useSelector(
         state => state.suite.flags.hasSeenDisconnectTooltip,
     );
-    const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const selectedDevice = useSelector(selectSelectedDevice);
 
     useEffect(() => {
         const deviceId = selectedDevice?.id;
-        const shouldShowNotification =
-            deviceId && seenDisconnectNotificationForDeviceIds
-                ? seenDisconnectNotificationForDeviceIds.every(id => id !== selectedDevice?.id)
+
+        if (deviceId) {
+            const isNotificationSeenOnThisDevice = seenDisconnectNotificationForDeviceIds
+                ? seenDisconnectNotificationForDeviceIds.some(id => id === selectedDevice?.id)
                 : false;
 
-        const isNotificationVisible =
-            deviceId &&
-            recentlyDisconnectedDevice === deviceId &&
-            shouldShowNotification &&
-            hasSeenDisconnectTooltip;
+            const isNotificationVisible =
+                recentlyDisconnectedDevice === deviceId &&
+                !isNotificationSeenOnThisDevice &&
+                hasSeenDisconnectTooltip;
 
-        if (isNotificationVisible) {
-            dispatch(notificationsActions.addToast({ type: 'auto-eject-settings' }));
-
-            dispatch(addDeviceIdToSeenDisconnectNotification(deviceId));
+            if (isNotificationVisible) {
+                dispatch(notificationsActions.addToast({ type: 'auto-eject-settings' }));
+                dispatch(addDeviceIdToSeenDisconnectNotification(deviceId));
+            }
         }
     }, [
         dispatch,
@@ -42,6 +42,5 @@ export const useNotificationForDisconnectedDevice = () => {
         recentlyDisconnectedDevice,
         seenDisconnectNotificationForDeviceIds,
         selectedDevice?.id,
-        selectedDevice?.state,
     ]);
 };
