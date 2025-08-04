@@ -56,6 +56,41 @@ const deviceCompromisedFixtures: Array<{
         result: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
     },
     {
+        description: 'Firmware hash check other-error (1st occurrence)',
+        device: {
+            selectedDevice: {
+                connected: true,
+                authenticityChecks: {
+                    firmwareHash: {
+                        error: 'other-error',
+                    },
+                },
+                features: {},
+            },
+        },
+        result: 'TR_FAILED_VERIFY_DEVICE_TEXT',
+    },
+    {
+        description: 'Firmware hash check other-error (2nd occurrence)',
+        device: {
+            selectedDevice: {
+                connected: true,
+                authenticityChecks: {
+                    firmwareHash: {
+                        error: 'other-error',
+                    },
+                },
+                features: {},
+            },
+            lastConnectedAuthenticityChecks: {
+                firmwareHash: {
+                    error: 'other-error',
+                },
+            },
+        },
+        result: 'TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT',
+    },
+    {
         description: 'Failed firmware revision check',
         device: {
             selectedDevice: {
