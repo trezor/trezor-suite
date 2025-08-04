@@ -2,14 +2,18 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
+import { Account } from '@suite-common/wallet-types';
 import { Icon, Text, TextVariant } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { TypographyStyle } from '@trezor/theme';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+
+type DisplayMode = 'copy' | 'modal' | 'static';
 
 const IconWrapper = styled.div`
     display: none;
@@ -35,17 +39,17 @@ const onHoverTextOverflowContainerHover = css`
     }
 `;
 
-const TextOverflowContainer = styled.div<{ $shouldAllowCopy?: boolean }>`
+const TextOverflowContainer = styled.div<{ $displayMode: DisplayMode }>`
     position: relative;
     display: inline-flex;
     align-items: center;
     max-width: 100%;
     overflow: hidden;
-    cursor: ${({ $shouldAllowCopy }) => ($shouldAllowCopy ? 'pointer' : 'cursor')};
+    cursor: ${({ $displayMode }) => ($displayMode === 'static' ? 'default' : 'pointer')};
     user-select: none;
 
-    ${({ $shouldAllowCopy }) =>
-        $shouldAllowCopy &&
+    ${({ $displayMode }) =>
+        $displayMode !== 'static' &&
         css`
             @media (hover: none) {
                 ${onHoverTextOverflowContainerHover}
@@ -58,7 +62,18 @@ const TextOverflowContainer = styled.div<{ $shouldAllowCopy?: boolean }>`
         `}
 `;
 
-interface IOAddressProps {
+const getDisplayMode = (
+    shouldAllowCopy: boolean,
+    account?: Account,
+    txAddress?: string,
+): DisplayMode => {
+    if (shouldAllowCopy) return 'copy';
+    if (account && txAddress) return 'modal';
+
+    return 'static';
+};
+
+interface TxAddressProps {
     explorerUrl?: string;
     txAddress?: string;
     explorerUrlQueryString?: string;
@@ -66,6 +81,7 @@ interface IOAddressProps {
     shouldChunk?: boolean;
     variant?: TextVariant;
     typographyStyle?: TypographyStyle;
+    account?: Account;
 }
 
 export const TxAddress = ({
@@ -76,31 +92,40 @@ export const TxAddress = ({
     shouldChunk = false,
     variant = 'default',
     typographyStyle = 'label',
-}: IOAddressProps) => {
+    account,
+}: TxAddressProps) => {
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const [isClicked, setIsClicked] = useState(false);
     const theme = useTheme();
+    const dispatch = useDispatch();
 
-    const copy = () => {
-        if (!shouldAllowCopy) {
-            return;
-        }
+    if (!txAddress) return null;
 
-        copyToClipboard(txAddress || '');
-
-        setIsClicked(true);
-    };
-
-    const addSpacing = (value: string) => value.match(/.{1,4}/g)?.join(' ') || value;
-
-    if (!txAddress) {
-        return null;
-    }
+    const displayMode = getDisplayMode(shouldAllowCopy, account, txAddress);
 
     const formattedTxAddress =
-        shouldChunk && isChunkedSettings === 'chunked' ? addSpacing(txAddress) : txAddress;
+        shouldChunk && isChunkedSettings === 'chunked'
+            ? txAddress.match(/.{1,4}/g)?.join(' ') || txAddress
+            : txAddress;
 
-    // HiddenPlaceholder disableKeepingWidth: it isn't needed (no numbers to redact), but inline-block disrupts overflow behavior
+    const handleClick = () => {
+        if (displayMode === 'copy') {
+            copyToClipboard(txAddress);
+            setIsClicked(true);
+        } else if (displayMode === 'modal') {
+            dispatch(
+                openModal({
+                    type: 'transaction-detail',
+                    txid: txAddress,
+                    descriptor: account!.descriptor,
+                    symbol: account!.symbol,
+                    deviceState: account!.deviceState,
+                    flow: 'detail',
+                }),
+            );
+        }
+    };
+
     return (
         <Text typographyStyle={typographyStyle} variant={variant}>
             <HiddenPlaceholder disableKeepingWidth>
@@ -108,21 +133,23 @@ export const TxAddress = ({
                     onMouseLeave={() => setIsClicked(false)}
                     data-testid="@tx-detail/txid-value"
                     id={txAddress}
-                    $shouldAllowCopy={shouldAllowCopy}
+                    $displayMode={displayMode}
                 >
-                    <Text wordBreak="break-all" onClick={copy}>
+                    <Text wordBreak="break-all" onClick={handleClick}>
                         {formattedTxAddress}
                     </Text>
-                    {shouldAllowCopy ? (
-                        <IconWrapper onClick={copy}>
+
+                    {displayMode === 'copy' && (
+                        <IconWrapper onClick={handleClick}>
                             <Icon
                                 name={isClicked ? 'check' : 'copy'}
                                 size={12}
                                 color={theme.iconOnPrimary}
                             />
                         </IconWrapper>
-                    ) : null}
-                    {explorerUrl ? (
+                    )}
+
+                    {explorerUrl && (
                         <IconWrapper>
                             <TrezorLink
                                 typographyStyle="label"
@@ -132,7 +159,7 @@ export const TxAddress = ({
                                 <Icon name="arrowUpRight" size={12} color={theme.iconOnPrimary} />
                             </TrezorLink>
                         </IconWrapper>
-                    ) : null}
+                    )}
                 </TextOverflowContainer>
             </HiddenPlaceholder>
         </Text>

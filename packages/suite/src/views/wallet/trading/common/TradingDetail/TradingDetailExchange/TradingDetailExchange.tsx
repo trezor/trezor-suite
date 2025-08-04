@@ -4,9 +4,8 @@ import { usePrevious } from 'react-use';
 import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { type TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
-import { getExplorerUrl } from '@suite-common/wallet-config';
-import { selectAccounts, selectExplorer } from '@suite-common/wallet-core';
+import { type TradingExchangeType } from '@suite-common/trading';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, InfoItem } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -59,9 +58,6 @@ export const TradingDetailExchange = () => {
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
     const previousTradeStatus = usePrevious(tradeStatus);
     const tradeStatusStep = getTradeStatusStep(tradeStatus);
-
-    const network = trade?.data.send && cryptoIdToNetwork(trade.data.send);
-    const explorer = useSelector(state => selectExplorer(state, network?.symbol));
 
     const exchange = trade?.data?.exchange;
     const provider =
@@ -119,8 +115,8 @@ export const TradingDetailExchange = () => {
                         <InfoItem label={<Translation id="TR_TXID" />}>
                             <TxAddress
                                 txAddress={trade.data.receiveTxHash}
-                                explorerUrl={getExplorerUrl(explorer, 'tx')}
-                                explorerUrlQueryString={explorer?.queryString}
+                                account={sendAccount}
+                                shouldAllowCopy={false}
                             />
                         </InfoItem>
                     )}
