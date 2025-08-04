@@ -8,8 +8,14 @@ test.describe(
             await onboardingPage.completeOnboarding();
         });
 
-        test('Settings navigation', async ({ page, walletPage, trezorUserEnvLink }) => {
+        test('Settings navigation', async ({
+            page,
+            walletPage,
+            trezorUserEnvLink,
+            emulatorStartConf,
+        }) => {
             await test.step('Go to send form and verify Trezor disconnected warning', async () => {
+                await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
                 await walletPage.openAccount();
                 await page.getByTestId('@wallet/menu/wallet-send').click();
                 await trezorUserEnvLink.stopEmu();
@@ -25,7 +31,7 @@ test.describe(
             });
 
             await test.step('Reconnect trezor and verify warning is gone', async () => {
-                await trezorUserEnvLink.startEmu();
+                await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
                 await page.getByTestId('@suite/menu/suite-index').click();
                 await walletPage.openAccount();
                 await page.getByTestId('@wallet/menu/wallet-send').click();
