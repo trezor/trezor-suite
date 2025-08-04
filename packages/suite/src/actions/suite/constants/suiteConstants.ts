@@ -13,8 +13,8 @@ export const SET_LANGUAGE = '@suite/set-language';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';
 export const SET_FLAG = '@suite/set-flag';
 export const SET_RECENTLY_DISCONNECTED_DEVICE = '@suite/set-recently-disconnected-device';
-export const SET_SEEN_DISCONNECT_NOTIFICATION_FOR_DEVICE_IDS =
-    '@suite/set-seen-disconnect-notification-for-device-ids';
+export const ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION =
+    '@suite/add-device-id-to-seen-disconnect-notification';
 export const ONLINE_STATUS = '@suite/online-status';
 export const TOR_STATUS = '@suite/tor-status';
 export const TOR_BOOTSTRAP = '@suite/tor-bootstrap';

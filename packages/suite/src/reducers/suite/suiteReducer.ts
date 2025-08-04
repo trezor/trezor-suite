@@ -294,8 +294,11 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.SET_RECENTLY_DISCONNECTED_DEVICE:
                 draft.recentlyDisconnectedDevice = action.payload;
                 break;
-            case SUITE.SET_SEEN_DISCONNECT_NOTIFICATION_FOR_DEVICE_IDS:
-                draft.seenDisconnectNotificationForDeviceIds = action.payload;
+            case SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION:
+                draft.seenDisconnectNotificationForDeviceIds = [
+                    ...draft.seenDisconnectNotificationForDeviceIds,
+                    action.payload.deviceId,
+                ];
                 break;
 
             case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:

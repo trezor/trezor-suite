@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { setSeenDisconnectNotificationForDeviceIds } from '../../actions/suite/suiteActions';
+import { addDeviceIdToSeenDisconnectNotification } from '../../actions/suite/suiteActions';
 import { useDispatch, useSelector } from '../../hooks/suite';
 
 export const useNotificationForDisconnectedDevice = () => {
@@ -34,12 +34,7 @@ export const useNotificationForDisconnectedDevice = () => {
         if (isNotificationVisible) {
             dispatch(notificationsActions.addToast({ type: 'auto-eject-settings' }));
 
-            dispatch(
-                setSeenDisconnectNotificationForDeviceIds([
-                    ...seenDisconnectNotificationForDeviceIds,
-                    deviceId,
-                ]),
-            );
+            dispatch(addDeviceIdToSeenDisconnectNotification(deviceId));
         }
     }, [
         dispatch,
