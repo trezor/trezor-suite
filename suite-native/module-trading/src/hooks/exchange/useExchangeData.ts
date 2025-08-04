@@ -6,19 +6,23 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 
+import { selectExchangeSelectedSendAccount } from '../../selectors/exchangeSelectors';
 import { getRandomAccountDescriptor } from '../../utils/general/utils';
 
 export const useExchangeData = (reloadRequestOrdinal: number) => {
     const dispatch = useDispatch();
+    const account = useSelector(selectExchangeSelectedSendAccount);
+
+    const descriptor = account?.descriptor;
 
     useEffect(() => {
         dispatch(
             tradingThunks.loadInitialDataThunk({
                 activeSection: 'exchange',
-                forcedApiKey: getRandomAccountDescriptor(),
+                forcedApiKey: descriptor ? undefined : getRandomAccountDescriptor(),
             }),
         );
-    }, [dispatch, reloadRequestOrdinal]);
+    }, [descriptor, dispatch, reloadRequestOrdinal]);
 
     return useSelector(selectTradingExchangeLoadingTimestampAndStatus);
 };

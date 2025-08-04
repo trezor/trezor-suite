@@ -2,9 +2,14 @@ import { FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { TradingCountryCode, regional, selectTradingSellInfo } from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { supportedFiatCurrenciesMap } from '../consts/general/supportedFiatCurrencies';
-import { TradingRootState, createMemoizedSelector } from '../reducers';
+import {
+    TradingRootState,
+    createMemoizedSelector,
+    createMemoizedSelectorWithAccounts,
+} from '../reducers';
 import { FiatCurrencyItem } from '../types/general';
 import { SellFormValues } from '../types/sell';
 
@@ -57,4 +62,9 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
             amountInCrypto: false,
         } as Partial<SellFormValues>;
     },
+);
+
+export const selectSellSelectedSendAccount = createMemoizedSelectorWithAccounts(
+    [state => state, selectTradingSell],
+    (state, { tradingAccountKey }) => selectAccountByKey(state, tradingAccountKey) || undefined,
 );

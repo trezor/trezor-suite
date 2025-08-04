@@ -1,10 +1,13 @@
 import { AccountsRootState } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 
+import { getBtcAccount } from '../../__fixtures__/account';
 import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
     selectSellAmountLimits,
     selectSellFormDefaultValues,
+    selectSellSelectedSendAccount,
     selectSellSupportedFiatCurrencies,
     selectSellSupportedFiatCurrenciesList,
     selectTradingSell,
@@ -203,6 +206,35 @@ describe('sellSelectors', () => {
 
         it('should be stable', () => {
             expect(selectSellFormDefaultValues(state)).toBe(selectSellFormDefaultValues(state));
+        });
+    });
+
+    describe('selectSellSelectedSendAccount', () => {
+        let account: Account;
+
+        beforeEach(() => {
+            account = getBtcAccount();
+            state.wallet.tradingNew.sell.tradingAccountKey = account.key;
+        });
+
+        it('should be undefined when no tradingAccountKey is defined', () => {
+            state.wallet.tradingNew.sell.tradingAccountKey = undefined;
+
+            expect(selectSellSelectedSendAccount(state)).toBeUndefined();
+        });
+
+        it('should select receiveAccount and receiveAddress', () => {
+            expect(selectSellSelectedSendAccount(state)).toEqual(account);
+        });
+
+        it('should be stable', () => {
+            expect(selectSellSelectedSendAccount(state)).toBe(selectSellSelectedSendAccount(state));
+        });
+
+        it('should return undefined when no account with given key exists', () => {
+            state.wallet.tradingNew.sell.tradingAccountKey = 'unknown_account_key';
+
+            expect(selectSellSelectedSendAccount(state)).toBeUndefined();
         });
     });
 });

@@ -1,14 +1,47 @@
-import { tradingThunks } from '@suite-common/trading';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { tradingExchangeActions, tradingThunks } from '@suite-common/trading';
+import {
+    PreloadedState,
+    TestStore,
+    act,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils';
 
+import { getBtcAccount } from '../../../__fixtures__/account';
+import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useExchangeData } from '../useExchangeData';
 
+jest.mock('../../../utils/general/utils', () => ({
+    ...jest.requireActual('../../../utils/general/utils'),
+    getRandomAccountDescriptor: () => 'random_string',
+}));
+
 describe('useExchangeData', () => {
-    const renderUseExchangeData = (reloadRequestOrdinalInitialValue: number = 0) =>
+    const getInitializedStore = async (tradingAccountKey: string | undefined) => {
+        const preloadedState: PreloadedState = {
+            wallet: {
+                tradingNew: getInitializedTradingState('exchange'),
+                accounts: [
+                    getBtcAccount('btc-account-1'),
+                    getBtcAccount('btc-account-2'),
+                    { ...getBtcAccount('btc-account-3'), descriptor: '' },
+                ],
+            },
+        };
+        preloadedState.wallet!.tradingNew!.exchange!.tradingAccountKey = tradingAccountKey;
+
+        return await initStore(preloadedState);
+    };
+
+    const renderUseExchangeData = (
+        reloadRequestOrdinalInitialValue: number = 0,
+        store?: TestStore,
+    ) =>
         renderHookWithStoreProviderAsync(
             ({ reloadRequestOrdinal }) => useExchangeData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
+                store,
             },
         );
 
@@ -67,5 +100,102 @@ describe('useExchangeData', () => {
         rerender({ reloadRequestOrdinal: 1 });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
+    });
+
+    describe('on send account descriptor change', () => {
+        let initialThunkLoadActionSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            initialThunkLoadActionSpy = jest
+                .spyOn(tradingThunks, 'loadInitialDataThunk')
+                .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
+        });
+
+        it('should dispatch loadInitialDataThunk when account is changed with descriptor', async () => {
+            const store = await getInitializedStore(undefined);
+            await renderUseExchangeData(0, store);
+
+            // Clear the initial call
+            initialThunkLoadActionSpy.mockClear();
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-2'));
+            });
+
+            // Wait for the effect to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
+                activeSection: 'exchange',
+                forcedApiKey: undefined,
+            });
+        });
+
+        it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
+            const store = await getInitializedStore('btc-account-2');
+            await renderUseExchangeData(0, store);
+
+            // Clear the initial call
+            initialThunkLoadActionSpy.mockClear();
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-2'));
+            });
+
+            // Wait for effects to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(0);
+        });
+
+        it('should dispatch loadInitialDataThunk with random string when descriptor is empty string', async () => {
+            const store = await getInitializedStore('btc-account-1');
+            await renderUseExchangeData(0, store);
+
+            // Clear the initial call
+            initialThunkLoadActionSpy.mockClear();
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-3'));
+            });
+
+            // Wait for the effect to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
+            expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
+                activeSection: 'exchange',
+                forcedApiKey: 'random_string',
+            });
+        });
+
+        it('should dispatch loadInitialDataThunk with random string when descriptor is undefined', async () => {
+            const store = await getInitializedStore('btc-account-1');
+            await renderUseExchangeData(0, store);
+
+            // Clear the initial call
+            initialThunkLoadActionSpy.mockClear();
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
+            });
+
+            // Wait for the effect to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
+            expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
+                activeSection: 'exchange',
+                forcedApiKey: 'random_string',
+            });
+        });
     });
 });
