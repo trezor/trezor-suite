@@ -32,7 +32,7 @@ FROM ${CI_DOCKER_PROXY}node:lts-bullseye
 
 RUN apt-get update && apt-get install -y \
     build-essential \
-    # required by cypress and node
+    # required by playwright and node
     xvfb \
     libgtk2.0-0 \
     libnotify-dev \

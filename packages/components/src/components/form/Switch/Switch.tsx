@@ -117,7 +117,7 @@ export const Switch = ({
             margin={margin}
         >
             <Container
-                // @ts-expect-error - needed for cypress retry-ability
+                // @ts-expect-error - needed for playwright retry-ability
                 disabled={isDisabled}
                 $isChecked={isChecked}
                 $isDisabled={isDisabled}
