@@ -10,6 +10,7 @@ interface GetTransactionReviewModalActionTranslationParams {
     isBumpFeeRbfAction: boolean;
     isCancelRbfAction: boolean;
     isSending?: boolean;
+    source: 'heading' | 'button';
 }
 
 export const getTransactionReviewModalActionTranslation = ({
@@ -19,6 +20,7 @@ export const getTransactionReviewModalActionTranslation = ({
     isBumpFeeRbfAction,
     isCancelRbfAction,
     isSending,
+    source,
 }: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
     switch (stakeType) {
         case 'stake':
@@ -40,12 +42,18 @@ export const getTransactionReviewModalActionTranslation = ({
         switch (transactionPurpose) {
             case 'approval':
                 return {
-                    id: 'TR_TRADING_APPROVE_TOKEN',
+                    id:
+                        source === 'heading'
+                            ? 'TR_TRADING_APPROVE_TOKEN'
+                            : 'TR_TRADING_APPROVE_TOKEN_BUTTON',
                     values: { tokenSymbol: tradingToken?.symbol?.toUpperCase() },
                 };
             case 'revoke':
                 return {
-                    id: 'TR_TRADING_REVOKE_TOKEN',
+                    id:
+                        source === 'heading'
+                            ? 'TR_TRADING_REVOKE_TOKEN'
+                            : 'TR_TRADING_REVOKE_TOKEN_BUTTON',
                     values: { tokenSymbol: tradingToken?.symbol?.toUpperCase() },
                 };
             default:

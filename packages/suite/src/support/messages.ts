@@ -539,7 +539,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_ERROR',
     },
     TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING: {
-        defaultMessage: 'Approve token spending',
+        defaultMessage: 'Set {displaySymbol} spending',
         id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING',
     },
     TR_EXCHANGE_APPROVAL_APPROVE_TOKEN: {
@@ -607,21 +607,21 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_VALUE',
     },
     TR_EXCHANGE_APPROVAL_VALUE_MINIMAL: {
-        defaultMessage: 'Necessary value of {value} {send}',
+        defaultMessage: '{value} {send}',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_MINIMAL',
     },
     TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO: {
         defaultMessage:
-            'Approve only the exact amount required for this swap. You will need to pay an additional fee if you want to make a similar swap again.',
+            "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
         id: 'TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO',
     },
     TR_EXCHANGE_APPROVAL_VALUE_INFINITE: {
-        defaultMessage: 'Infinite value',
+        defaultMessage: 'Unlimited',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE',
     },
     TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO: {
         defaultMessage:
-            'Create a single approval transaction to simplify multiple exchanges of {send} with {provider}. This saves on fees but carries a risk to your funds in the unlikely case of a flaw in {provider}’s contract.',
+            'Approve unlimited {send} to skip future approval requests and reduce fees. Only use this option if you trust {provider}, as it will have access to all your {send}.',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO',
     },
     TR_EXCHANGE_APPROVAL_VALUE_ZERO: {
@@ -640,6 +640,14 @@ export default defineMessages({
     TR_EXCHANGE_APPROVAL_NOT_REQUIRED: {
         defaultMessage: 'No approval transaction needed for {send}.',
         id: 'TR_EXCHANGE_APPROVAL_NOT_REQUIRED',
+    },
+    TR_EXCHANGE_APPROVAL_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_EXCHANGE_APPROVAL_PROVIDER',
+    },
+    TR_EXCHANGE_APPROVAL_SET_LIMIT: {
+        defaultMessage: 'Set limit',
+        id: 'TR_EXCHANGE_APPROVAL_SET_LIMIT',
     },
     TR_EXCHANGE_SWAP_SEND_TO: {
         defaultMessage: '{provider} contract address',
@@ -1564,12 +1572,20 @@ export default defineMessages({
         id: 'TR_TRADING_SWAP_UNAVAILABLE',
     },
     TR_TRADING_APPROVE_TOKEN: {
-        defaultMessage: 'Approve {tokenSymbol}',
+        defaultMessage: 'Approve {tokenSymbol} spending',
         id: 'TR_TRADING_APPROVE_TOKEN',
     },
+    TR_TRADING_APPROVE_TOKEN_BUTTON: {
+        defaultMessage: 'Approve {tokenSymbol}',
+        id: 'TR_TRADING_APPROVE_TOKEN_BUTTON',
+    },
     TR_TRADING_REVOKE_TOKEN: {
-        defaultMessage: 'Revoke {tokenSymbol}',
+        defaultMessage: 'Revoke {tokenSymbol} spending',
         id: 'TR_TRADING_REVOKE_TOKEN',
+    },
+    TR_TRADING_REVOKE_TOKEN_BUTTON: {
+        defaultMessage: 'Revoke {tokenSymbol}',
+        id: 'TR_TRADING_REVOKE_TOKEN_BUTTON',
     },
     TR_TRADING_TRANS_ID: {
         defaultMessage: 'Trans. ID:',

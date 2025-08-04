@@ -183,14 +183,16 @@ export const TransactionReviewModalBodyInner = ({
         isTrading: !!precomposedForm.trading?.activeSection,
     });
 
-    const actionTranslation = getTransactionReviewModalActionTranslation({
-        stakeType,
-        precomposedForm,
-        tradingToken,
-        isBumpFeeRbfAction,
-        isCancelRbfAction,
-        isSending,
-    });
+    const actionTranslation = (source: 'heading' | 'button') =>
+        getTransactionReviewModalActionTranslation({
+            stakeType,
+            precomposedForm,
+            tradingToken,
+            isBumpFeeRbfAction,
+            isCancelRbfAction,
+            isSending,
+            source,
+        });
 
     const isBroadcastEnabled = options.includes('broadcast');
 
@@ -223,7 +225,9 @@ export const TransactionReviewModalBodyInner = ({
             <Modal.ModalBase
                 heading={
                     <Translation
-                        {...(areDetailsVisible ? { id: 'TR_DETAIL' } : actionTranslation)}
+                        {...(areDetailsVisible
+                            ? { id: 'TR_DETAIL' }
+                            : actionTranslation('heading'))}
                     />
                 }
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
@@ -259,7 +263,7 @@ export const TransactionReviewModalBodyInner = ({
                         handleTryAgain={handleTryAgain}
                         txInfoState={txInfoState}
                         areDetailsVisible={areDetailsVisible}
-                        actionTranslation={actionTranslation}
+                        actionTranslation={actionTranslation('button')}
                         isTxExpired={isTxExpired}
                         hasTxExpired={hasTxExpired}
                         stakeType={stakeType || undefined}

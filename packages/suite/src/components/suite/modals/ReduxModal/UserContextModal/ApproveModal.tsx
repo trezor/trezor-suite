@@ -6,30 +6,30 @@ import styled from 'styled-components';
 import {
     TradingExchangeType,
     invityAPI,
-    parseCryptoId,
     tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Badge,
-    Card,
+    Box,
     CollapsibleBox,
     Column,
-    Divider,
     Modal,
     Paragraph,
-    Radio,
+    RadioCard,
     Row,
     Text,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { CoinLogo } from '@trezor/product-components';
+import { borders, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
@@ -77,6 +77,8 @@ export const ApproveModal = ({
         trigger,
     } = context;
 
+    const isDebug = useSelector(selectIsDebugModeActive);
+
     const { cryptoIdToSymbolAndContractAddress, cryptoIdToCoinSymbol } = useTradingInfo();
 
     const [approvalType, setApprovalType] = useState<DexApprovalType>('MINIMAL');
@@ -97,20 +99,10 @@ export const ApproveModal = ({
 
     const providerName = exchangeInfo?.providerInfos[quoteExchange]?.companyName || quoteExchange;
 
-    const isFullApproval = !(Number(selectedQuote.preapprovedStringAmount) > 0);
-
     if (!selectedQuote.send) return null;
-
-    const isToken = parseCryptoId(selectedQuote.send)?.contractAddress !== undefined;
 
     const translationValues = {
         value: selectedQuote.approvalStringAmount,
-        send: cryptoIdToCoinSymbol(selectedQuote.send),
-        provider: providerName,
-    };
-
-    const preapprovedTranslationValues = {
-        value: selectedQuote.preapprovedStringAmount,
         send: cryptoIdToCoinSymbol(selectedQuote.send),
         provider: providerName,
     };
@@ -167,7 +159,12 @@ export const ApproveModal = ({
             onCancel={onCancel}
             variant="primary"
             size="small"
-            heading={<Translation id="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING" />}
+            heading={
+                <Translation
+                    id="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING"
+                    values={{ displaySymbol }}
+                />
+            }
             bottomContent={
                 <>
                     {selectedQuote.status === 'APPROVAL_REQ' && (
@@ -177,7 +174,7 @@ export const ApproveModal = ({
                             isDisabled={!device?.connected}
                             onClick={confirmAndSend}
                         >
-                            <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
+                            <Translation id="TR_CONTINUE" />
                         </Modal.Button>
                     )}
 
@@ -186,153 +183,128 @@ export const ApproveModal = ({
                     </Modal.Button>
                 </>
             }
+            description={
+                <Row margin={{ top: spacings.xs }} gap={spacings.xxs}>
+                    <CoinLogo size={20} symbol={account.symbol} />
+                    <AccountLabeling
+                        account={account}
+                        showAccountTypeBadge
+                        accountTypeBadgeSize="small"
+                    />
+                </Row>
+            }
         >
             <Column gap={spacings.sm}>
-                <Card>
-                    <Row gap={spacings.sm}>
-                        <TradingCoinLogo cryptoId={selectedQuote.send} size={24} />
-                        <Column>
-                            <Translation
-                                id="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN"
-                                values={{ displaySymbol }}
-                            />
-                            <Paragraph typographyStyle="label" variant="default" align="start">
-                                <AccountLabeling
-                                    account={account}
-                                    showAccountTypeBadge={true}
-                                    accountTypeBadgeSize="small"
+                <Box padding={spacings.sm} borderWidth={borders.widths.large} borderRadius="12px">
+                    <Column gap={spacings.sm}>
+                        <Text>
+                            <Translation id="TR_EXCHANGE_APPROVAL_PROVIDER" />
+                        </Text>
+                        <Row gap={spacings.xs}>
+                            {provider?.logo && (
+                                <Icon src={invityAPI.getProviderLogoUrl(provider.logo)} alt="" />
+                            )}
+                            <Column>
+                                {provider?.companyName && <Text>{provider.companyName}</Text>}
+                                <Text typographyStyle="hint" variant="tertiary">
+                                    {contractAddress}
+                                </Text>
+                            </Column>
+                        </Row>
+                    </Column>
+                </Box>
+
+                <Box borderWidth={borders.widths.large} padding={spacings.sm} borderRadius="12px">
+                    <Column gap={spacings.sm}>
+                        <Text>
+                            <Translation id="TR_EXCHANGE_APPROVAL_SET_LIMIT" />
+                        </Text>
+                        <RadioCard
+                            isActive={approvalType === 'INFINITE'}
+                            onClick={() => selectApprovalValue('INFINITE')}
+                        >
+                            <Row>
+                                <TradingCoinLogo
+                                    cryptoId={selectedQuote.send}
+                                    size={20}
+                                    margin={{ right: spacings.xxs }}
+                                />
+                                <Text>
+                                    <Translation id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE" />
+                                </Text>
+                            </Row>
+                            <Paragraph
+                                margin={{ top: spacings.xxs }}
+                                typographyStyle="hint"
+                                variant="tertiary"
+                            >
+                                <Translation
+                                    id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
+                                    values={translationValues}
                                 />
                             </Paragraph>
-                        </Column>
-                    </Row>
-
-                    <Divider />
-
-                    <Row gap={spacings.sm}>
-                        {provider?.logo && (
-                            <Icon src={invityAPI.getProviderLogoUrl(provider.logo)} alt="" />
-                        )}
-
-                        {provider?.companyName}
-                    </Row>
-                </Card>
-
-                <CollapsibleBox
-                    heading={
-                        <Row gap={spacings.sm}>
-                            <Translation id="TR_EXCHANGE_APPROVAL_LIMIT" />
-                            {approvalType === 'MINIMAL' && (
-                                <Badge variant="primary">
-                                    <Translation id="TR_EXCHANGE_APPROVAL_LIMIT_MINIMAL" />
-                                </Badge>
-                            )}
-                            {approvalType === 'INFINITE' && (
-                                <Badge variant="warning">
-                                    <Translation id="TR_EXCHANGE_APPROVAL_LIMIT_INFINITE" />
-                                </Badge>
-                            )}
-                        </Row>
-                    }
-                >
-                    <Column gap={spacings.md}>
-                        <Card>
-                            <Radio
-                                isChecked={approvalType === 'MINIMAL'}
-                                onClick={() => selectApprovalValue('MINIMAL')}
-                                verticalAlignment="center"
-                                isDisabled={isFormLoading || isConfirmButtonLoading}
+                        </RadioCard>
+                        <RadioCard
+                            isActive={approvalType === 'MINIMAL'}
+                            onClick={() => selectApprovalValue('MINIMAL')}
+                        >
+                            <Row>
+                                <TradingCoinLogo
+                                    cryptoId={selectedQuote.send}
+                                    size={20}
+                                    margin={{ right: spacings.xxs }}
+                                />
+                                <Text>
+                                    <Translation
+                                        id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL"
+                                        values={translationValues}
+                                    />
+                                </Text>
+                            </Row>
+                            <Paragraph
+                                margin={{ top: spacings.xxs }}
+                                typographyStyle="hint"
+                                variant="tertiary"
                             >
-                                <Column alignItems="flex-start">
-                                    <Text typographyStyle="highlight">
-                                        <Translation
-                                            id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL"
-                                            values={translationValues}
-                                        />
-                                    </Text>
-                                    <Paragraph typographyStyle="hint">
-                                        <Translation
-                                            id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"
-                                            values={translationValues}
-                                        />
-                                    </Paragraph>
-                                </Column>
-                            </Radio>
-                        </Card>
-                        <Card>
-                            <Radio
-                                isChecked={approvalType === 'INFINITE'}
-                                onClick={() => selectApprovalValue('INFINITE')}
-                                verticalAlignment="center"
-                                isDisabled={isFormLoading || isConfirmButtonLoading}
-                            >
-                                <Column alignItems="flex-start">
-                                    <Text typographyStyle="highlight">
-                                        <Translation
-                                            id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE"
-                                            values={translationValues}
-                                        />
-                                    </Text>
-                                    <Paragraph typographyStyle="hint">
-                                        <Translation
-                                            id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
-                                            values={translationValues}
-                                        />
-                                    </Paragraph>
-                                </Column>
-                            </Radio>
-                        </Card>
-
-                        {isToken && !isFullApproval && (
-                            <Card>
-                                <Radio
-                                    isChecked={approvalType === 'ZERO'}
-                                    onClick={() => selectApprovalValue('ZERO')}
-                                    verticalAlignment="center"
-                                    isDisabled={isFormLoading || isConfirmButtonLoading}
-                                >
-                                    <Column alignItems="flex-start">
-                                        <Text typographyStyle="highlight">
-                                            <Translation
-                                                id="TR_EXCHANGE_APPROVAL_VALUE_ZERO"
-                                                values={preapprovedTranslationValues}
-                                            />
-                                        </Text>
-                                        <Paragraph typographyStyle="hint">
-                                            <Translation
-                                                id="TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO"
-                                                values={preapprovedTranslationValues}
-                                            />
-                                        </Paragraph>
-                                    </Column>
-                                </Radio>
-                            </Card>
-                        )}
-
-                        {dexTx.data && (
+                                <Translation
+                                    id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"
+                                    values={translationValues}
+                                />
+                            </Paragraph>
+                        </RadioCard>
+                        {isDebug && dexTx.data ? (
                             <CollapsibleBox
-                                heading={<Translation id="TR_EXCHANGE_APPROVAL_DATA" />}
+                                heading={
+                                    <Row gap={spacings.xs}>
+                                        <Translation id="TR_EXCHANGE_APPROVAL_DATA" />
+                                        <Badge variant="warning" size="small">
+                                            <Translation id="TR_DEBUG_ONLY" />
+                                        </Badge>
+                                    </Row>
+                                }
                             >
                                 <BreakableValue>{dexTx.data}</BreakableValue>
                             </CollapsibleBox>
-                        )}
+                        ) : null}
                     </Column>
-                </CollapsibleBox>
+                </Box>
 
-                <Divider margin={{ top: spacings.xxs, bottom: spacings.xxs }} />
-
-                <Fees
-                    control={control}
-                    feeInfo={feeInfo}
-                    account={account}
-                    composedLevels={composedLevels}
-                    errors={errors}
-                    isDirty={isDirty}
-                    register={register}
-                    setValue={setValue}
-                    getValues={getValues}
-                    changeFeeLevel={changeFeeLevel}
-                    trigger={trigger}
-                />
+                <Box padding={spacings.sm} borderWidth={borders.widths.large} borderRadius="12px">
+                    <Fees
+                        label="TR_TX_FEE"
+                        control={control}
+                        feeInfo={feeInfo}
+                        account={account}
+                        composedLevels={composedLevels}
+                        errors={errors}
+                        isDirty={isDirty}
+                        register={register}
+                        setValue={setValue}
+                        getValues={getValues}
+                        changeFeeLevel={changeFeeLevel}
+                        trigger={trigger}
+                    />
+                </Box>
             </Column>
         </Modal>
     );
