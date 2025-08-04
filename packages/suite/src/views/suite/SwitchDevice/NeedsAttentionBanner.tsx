@@ -97,13 +97,14 @@ export const NeedsAttentionBanner = ({
 
     const onSolveIssueClick = (): void => {
         switch (deviceStatus) {
-            // wiped device - should pass through Manual Device Check before starting onboarding
-            case 'initialize':
+            // If onboarding is pending, then it should pass through Manual Device Check.
+            case 'initialize': // Wiped device with firmware present.
+            case 'bootloader': // Fresh or factory-reset device? Can also be initalized device manually put into BL,
+                // but we cannot tell (device.features.initialized is null)
                 selectDevice();
                 dispatch(goto('suite-start'));
                 break;
 
-            case 'bootloader': // device without firmware or in the bootloader mode
             case 'seedless':
             case 'firmware-required':
             case 'unavailable':
