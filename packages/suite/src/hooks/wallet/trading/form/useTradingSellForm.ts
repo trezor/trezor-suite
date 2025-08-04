@@ -245,7 +245,16 @@ export const useTradingSellForm = ({
         const orderId = provider.flow === 'PAYMENT_GATE' ? quote.orderId : undefined;
 
         const returnUrl = await createQuoteLink(
-            { ...quotesRequest, paymentMethod: quote.paymentMethod },
+            {
+                ...quotesRequest,
+                country: quotesRequest.country ?? quote.country,
+                fiatCurrency: quotesRequest.fiatCurrency ?? quote.fiatCurrency,
+                amountInCrypto: quotesRequest.amountInCrypto ?? quote.amountInCrypto,
+                cryptoStringAmount: quotesRequest.cryptoStringAmount ?? quote.cryptoStringAmount,
+                fiatStringAmount: quotesRequest.fiatStringAmount ?? quote.fiatStringAmount,
+                cryptoCurrency: quotesRequest.cryptoCurrency ?? quote.cryptoCurrency,
+                paymentMethod: quote.paymentMethod,
+            },
             account,
             { selectedFee, composed },
             orderId,
