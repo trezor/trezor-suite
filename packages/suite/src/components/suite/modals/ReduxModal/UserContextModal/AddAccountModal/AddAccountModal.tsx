@@ -195,6 +195,10 @@ export const AddAccountModal = ({
         const isAccountTypeSelectionStep =
             !!selectedNetwork && accountTypes && accountTypes.length > 1;
 
+        const isAccountActivated =
+            preselectedNetwork &&
+            enabledNetworks.some(enabledNetwork => enabledNetwork.symbol === symbol);
+
         return isAccountTypeSelectionStep
             ? {
                   heading: (
@@ -233,7 +237,13 @@ export const AddAccountModal = ({
                                   />
                               )}
                               <SelectNetwork
-                                  heading={<Translation id="TR_INACTIVE_COINS" />}
+                                  heading={
+                                      isAccountActivated ? (
+                                          <Translation id="TR_ACTIVATED_COINS" />
+                                      ) : (
+                                          <Translation id="TR_INACTIVE_COINS" />
+                                      )
+                                  }
                                   networks={symbol ? visibleNetworks : disabledMainnetNetworks}
                                   selectedNetworks={selectedNetworks}
                                   handleNetworkSelection={selectNetwork}
