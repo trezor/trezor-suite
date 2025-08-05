@@ -1,7 +1,10 @@
 import { ReactNode, memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectTradingBuyProviders } from '@suite-common/trading';
+import {
+    TradingRootState as CommonTradingRootState,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
 import {
     BottomSheetModal,
     Box,
@@ -39,8 +42,10 @@ const Info = ({ children }: { children: ReactNode }) => (
 export const BuyLegalSheet = memo(
     ({ isVisible, onConsent, onDismiss, tradeProvider }: BuyLegalSheetProps) => {
         const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-        const providers = useSelector(selectTradingBuyProviders);
-        const { companyName } = providers?.[tradeProvider] ?? {};
+        const { companyName } =
+            useSelector((state: CommonTradingRootState) =>
+                selectTradingProviderByNameAndTradeType(state, tradeProvider, 'buy'),
+            ) ?? {};
         const { translate } = useTranslate();
 
         useEffect(() => {

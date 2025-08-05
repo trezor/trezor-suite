@@ -12,11 +12,6 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const mockedProviders = {
-    invity: { companyName: 'Invity Finance' },
-    changelly: { companyName: 'Changelly' },
-};
-
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     useTradingInfo: () => ({
@@ -25,7 +20,6 @@ jest.mock('@suite-common/trading', () => ({
             contractAddress: undefined,
         }),
     }),
-    selectTradingExchangeProviders: () => mockedProviders,
 }));
 
 describe('ExchangeLegalSheet', () => {
@@ -80,9 +74,9 @@ describe('ExchangeLegalSheet', () => {
     });
 
     it('should handle different providers', async () => {
-        const { getByText } = await renderLegalSheet({ provider: 'changelly' });
+        const { getByText } = await renderLegalSheet({ provider: 'cexdirect' });
 
         // Check that the different provider name is included
-        expect(getByText(/Changelly/)).toBeTruthy();
+        expect(getByText(/Cexdirect/)).toBeTruthy();
     });
 });

@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux';
 import { CryptoId } from 'invity-api';
 
 import {
+    TradingRootState as CommonTradingRootState,
     TradingExchangeUserConsentProps,
-    selectTradingExchangeProviders,
+    selectTradingProviderByNameAndTradeType,
     useTradingInfo,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -36,8 +37,10 @@ const useLegalSheetTradeInfoData = ({
     receive,
 }: Omit<TradingExchangeUserConsentProps, 'isDex'>) => {
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
-    const providers = useSelector(selectTradingExchangeProviders);
-    const { companyName } = providers?.[provider] ?? {};
+    const { companyName } =
+        useSelector((state: CommonTradingRootState) =>
+            selectTradingProviderByNameAndTradeType(state, provider, 'exchange'),
+        ) ?? {};
 
     const { coinSymbol: sendCoinSymbol, contractAddress: sendContractAddress } =
         cryptoIdToSymbolAndContractAddress(send as CryptoId);

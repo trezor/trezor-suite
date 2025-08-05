@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { ExchangeTrade } from 'invity-api';
+import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
-import { invariant } from '@suite-common/suite-utils';
-import { selectTradingExchangeProviders } from '@suite-common/trading';
+import {
+    TradingRootState as CommonTradingRootState,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -21,16 +23,15 @@ export type ExchangeRatePickerProps = ExchangeRatePickerRightProps & {
 
 const ExchangeRatePickerRight = ({ isLoading, selectedValue }: ExchangeRatePickerRightProps) => {
     const { translate } = useTranslate();
-    const providers = useSelector(selectTradingExchangeProviders);
+    const { isFixedRate } = (useSelector((state: CommonTradingRootState) =>
+        selectTradingProviderByNameAndTradeType(state, selectedValue?.exchange, 'exchange'),
+    ) ?? {}) as ExchangeProviderInfo;
 
     if (isLoading) {
         return <OverviewValueSkeleton />;
     }
 
-    const { exchange = '' } = selectedValue ?? {};
-    const selectedProvider = providers?.[exchange];
-    invariant(selectedProvider, 'Selected provider should be defined');
-    const rate = selectedProvider.isFixedRate
+    const rate = isFixedRate
         ? translate('moduleTrading.selectRate.fixed')
         : translate('moduleTrading.selectRate.floating');
 
