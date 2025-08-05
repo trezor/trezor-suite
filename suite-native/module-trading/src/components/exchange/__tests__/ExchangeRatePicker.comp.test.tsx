@@ -1,61 +1,58 @@
-import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../types/exchange';
-import { ExchangeRatePicker } from '../ExchangeRatePicker';
+import { getWalletState } from '../../../__fixtures__/walletState';
+import { ExchangeRatePicker, ExchangeRatePickerProps } from '../ExchangeRatePicker';
 
 describe('ExchangeRatePicker', () => {
-    let exchangeForm: ExchangeFormType;
     let preloadedState: PreloadedState;
 
-    const renderExchangeForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderExchangeRatePicker = (props: Partial<ExchangeRatePickerProps>) =>
+        renderWithStoreProviderAsync(
+            <ExchangeRatePicker
+                isLoading={false}
+                selectedValue={undefined}
+                handleRatePress={jest.fn()}
+                {...props}
+            />,
+            {
+                preloadedState,
+            },
+        );
 
-    const renderExchangeRatePicker = () =>
-        renderWithStoreProviderAsync(<ExchangeRatePicker />, {
-            preloadedState,
-            wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
-        });
-
-    beforeEach(async () => {
-        const { result } = await renderExchangeForm();
-        exchangeForm = result.current;
-
-        preloadedState = {
-            wallet: { tradingNew: getInitializedTradingState() },
-        };
+    beforeEach(() => {
+        preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
     });
 
-    it('should render nothing when no quote is selected', async () => {
-        const { toJSON } = await renderExchangeRatePicker();
+    it('should render nothing when no quote is selected and isLoading is false', async () => {
+        const { toJSON } = await renderExchangeRatePicker({});
 
         expect(toJSON()).toBeNull();
     });
 
     it('should render skeleton when quotes are being fetched', async () => {
-        preloadedState!.wallet!.tradingNew!.exchange!.isLoading = true;
+        const { getByText, getByLabelText } = await renderExchangeRatePicker({
+            isLoading: true,
+        });
 
-        const { getByText, getByLabelText } = await renderExchangeRatePicker();
-
-        expect(getByText('Rate')).toBeDefined();
+        expect(getByText('Rate')).toBeOnTheScreen();
         expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
     });
 
     it('should render rate when quote is selected', async () => {
-        act(() => {
-            exchangeForm.setValue('quote', exchangeQuotes[0]);
+        const { getByText } = await renderExchangeRatePicker({
+            selectedValue: exchangeQuotes[0],
         });
 
-        const { getByText } = await renderExchangeRatePicker();
+        expect(getByText('Rate')).toBeOnTheScreen();
+        expect(getByText('Fixed')).toBeOnTheScreen();
+    });
 
-        expect(getByText('Rate')).toBeDefined();
-        expect(getByText('Fixed')).toBeDefined();
+    it('should render correct value for floating quote', async () => {
+        const { getByText } = await renderExchangeRatePicker({
+            selectedValue: exchangeQuotes[2],
+        });
+
+        expect(getByText('Floating')).toBeOnTheScreen();
     });
 });

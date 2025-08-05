@@ -41,6 +41,6 @@ export const exchangeCexdirect: ExchangeProviderInfo = {
     supportUrl: 'https://cexdirect.io/#support',
     isDex: false,
     isFixedRate: false,
-    kycPolicyType: 'noKYC',
+    kycPolicyType: 'KYC-required',
     addressFormats: {},
 };

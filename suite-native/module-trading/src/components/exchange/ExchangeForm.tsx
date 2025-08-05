@@ -5,8 +5,7 @@ import { AnimatedBox, Card, VStack } from '@suite-native/atoms';
 
 import { ExchangeAlert } from './ExchangeAlert';
 import { ExchangeConfirmation } from './ExchangeConfirmation';
-import { ExchangeProviderPicker } from './ExchangeProviderPicker';
-import { ExchangeRatePicker } from './ExchangeRatePicker';
+import { ExchangeRateAndProviderPicker } from './ExchangeRateAndProviderPicker';
 import { ExchangeReceiveAccountPicker } from './receive/ExchangeReceiveAccountPicker';
 import { ExchangeReceiveCard } from './receive/ExchangeReceiveCard';
 import { ExchangeSendCard } from './send/ExchangeSendCard';
@@ -36,8 +35,7 @@ const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoized
                 <>
                     <Card noPadding>
                         <ExchangeReceiveAccountPicker />
-                        <ExchangeRatePicker />
-                        <ExchangeProviderPicker />
+                        <ExchangeRateAndProviderPicker />
                     </Card>
                     <ExchangeConfirmation enteringAnimation={LinearTransition} />
                 </>

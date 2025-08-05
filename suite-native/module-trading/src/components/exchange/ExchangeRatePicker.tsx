@@ -3,14 +3,10 @@ import { useSelector } from 'react-redux';
 import { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import {
-    selectTradingExchangeIsLoading,
-    selectTradingExchangeProviders,
-} from '@suite-common/trading';
+import { selectTradingExchangeProviders } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
-import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { OverviewRow } from '../general/OverviewRow';
 import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
 
@@ -18,7 +14,10 @@ type ExchangeRatePickerRightProps = {
     isLoading: boolean;
     selectedValue: ExchangeTrade | undefined;
 };
-const noop = () => {};
+
+export type ExchangeRatePickerProps = ExchangeRatePickerRightProps & {
+    handleRatePress: () => void;
+};
 
 const ExchangeRatePickerRight = ({ isLoading, selectedValue }: ExchangeRatePickerRightProps) => {
     const { translate } = useTranslate();
@@ -48,12 +47,12 @@ const ExchangeRatePickerRight = ({ isLoading, selectedValue }: ExchangeRatePicke
     );
 };
 
-export const ExchangeRatePicker = () => {
+export const ExchangeRatePicker = ({
+    isLoading,
+    selectedValue,
+    handleRatePress,
+}: ExchangeRatePickerProps) => {
     const { translate } = useTranslate();
-    const { watch } = useExchangeFormContext();
-    const isLoading = useSelector(selectTradingExchangeIsLoading);
-
-    const selectedValue = watch('quote');
 
     if (!selectedValue && !isLoading) {
         return null;
@@ -62,7 +61,7 @@ export const ExchangeRatePicker = () => {
     return (
         <OverviewRow
             title={translate('moduleTrading.tradingScreen.rate')}
-            onPress={noop}
+            onPress={handleRatePress}
             noCaret={isLoading}
         >
             <ExchangeRatePickerRight isLoading={isLoading} selectedValue={selectedValue} />
