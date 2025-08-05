@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { percentageDiff } from '@suite-native/graph';
+import { BigNumber } from '@trezor/utils';
 
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
