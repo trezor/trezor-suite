@@ -69,7 +69,8 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         deviceState: device?.state?.staticSessionId,
     });
     const isNotFormPage = pageType !== 'form';
-    const [fractionButton, setFractionButton] = useState<number | undefined>(undefined);
+    const [fractionButtonState, setFractionButtonState] = useState<number | undefined>(undefined);
+
     const { getValues, setValue, clearErrors, handleSubmit, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
     const { outputs, sendCryptoSelect } = getValues();
@@ -87,6 +88,14 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const networkDecimals = getTradingNetworkDecimals({
         sendCryptoSelect,
     });
+
+    const setFractionButton = (fraction: number | undefined) => {
+        if (fraction !== 1) {
+            setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
+        }
+
+        setFractionButtonState(fraction);
+    };
 
     // on manual change of crypto amount, set fiat amount
     const onFiatCurrencyChange = async (value: FiatCurrencyCode) => {
@@ -186,7 +195,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             : amount;
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
         setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
-        setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
         setFractionButton(divisor);
     };
 
@@ -239,7 +247,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             // this will also update crypto amount
             // controlling setMaxOutputId prevents from double request
-            if (fiatChanged && fractionButton === undefined) {
+            if (fiatChanged && fractionButtonState === undefined) {
                 calculateCryptoAmountFromFiat(fiatValue);
             }
 
@@ -305,7 +313,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setRatioAmount,
         setAllAmount,
 
-        fractionButton,
+        fractionButton: fractionButtonState,
         setFractionButton,
     };
 };
