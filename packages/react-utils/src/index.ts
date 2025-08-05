@@ -8,4 +8,5 @@ export { useTimer } from './hooks/useTimer';
 export { useWindowFocus } from './hooks/useWindowFocus';
 export { useClickCooldown } from './hooks/useClickCooldown';
 export { useAsyncClickHandler } from './hooks/useAsyncClickHandler';
+export { usePreviousDefined } from './hooks/usePreviousDefined';
 export type { Timer } from './hooks/useTimer';
