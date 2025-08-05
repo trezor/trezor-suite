@@ -1,6 +1,6 @@
 services:
   trezor-user-env-unix:
-    image: ghcr.io/trezor/trezor-user-env:b3b12fac7bcb069ebcb8f29135e5baae73af722d
+    image: ghcr.io/trezor/trezor-user-env:2dca76d07aa037e459db11325b7587684de18f58
     environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
