@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 
 import { selectActiveBannerMessages } from '@suite-common/message-system';
-import { VStack } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { MessageBanner } from './MessageBanner';
 
 const messageBannerContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (_, { topSafeAreaInset }) => ({
@@ -16,6 +14,9 @@ const messageBannerContainerStyle = prepareNativeStyle<{ topSafeAreaInset: numbe
 
 type MessageSystemBannerRendererProps = { topSafeAreaInset: number };
 
+// This component ignores banner for message system
+/// but keeps insets to avoid layout shift in E2E tests
+// FIXME: #18775
 export const MessageSystemBannerRenderer = ({
     topSafeAreaInset,
 }: MessageSystemBannerRendererProps) => {
@@ -26,11 +27,5 @@ export const MessageSystemBannerRenderer = ({
         return null;
     }
 
-    return (
-        <VStack spacing="sp4" style={applyStyle(messageBannerContainerStyle, { topSafeAreaInset })}>
-            {activeBannerMessages.map(message => (
-                <MessageBanner key={message.id} message={message} />
-            ))}
-        </VStack>
-    );
+    return <Box style={applyStyle(messageBannerContainerStyle, { topSafeAreaInset })} />;
 };
