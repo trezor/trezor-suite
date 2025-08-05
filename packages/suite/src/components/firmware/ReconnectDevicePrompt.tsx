@@ -8,6 +8,7 @@ import { BulletList, Column, DeviceAnimation, H2, Modal, Paragraph } from '@trez
 import { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { usePreviousDefined } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { Translation, WebUsbButton } from 'src/components/suite';
@@ -69,7 +70,8 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const { showManualReconnectPrompt, status, reconnectEvent, buttonEvent } =
         useFirmwareInstallation();
     const { device } = useDevice();
-    const eventDevice = buttonEvent?.device || device;
+
+    const eventDevice = usePreviousDefined(buttonEvent?.device || device);
 
     const isManualRebootRequired =
         // Automatic reboot isn't supported:
