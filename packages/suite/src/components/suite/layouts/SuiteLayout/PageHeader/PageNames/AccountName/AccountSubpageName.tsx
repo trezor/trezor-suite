@@ -16,6 +16,7 @@ const Container = styled.div`
     gap: ${spacingsPx.md};
 `;
 
+// NOTE: change for E2E
 interface AccountSubpageNameProps {
     selectedAccount: Account;
     backRoute?: Route['name'];
