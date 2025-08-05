@@ -11,6 +11,7 @@ import { Backends } from './Backends';
 import { Bluetooth } from './Bluetooth';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
+import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { GithubIssue } from './GithubIssue';
@@ -94,6 +95,7 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="TrezorConnect">
                 <TrezorConnectLogs />
+                {isDesktop() && <ConnectPopup />}
             </SettingsSection>
         </SettingsLayout>
     );
