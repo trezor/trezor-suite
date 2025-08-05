@@ -103,7 +103,8 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         await expect(settingsPage.analyticsSwitch.locator('input')).toBeChecked();
 
         await analyticsSection.continueButton.click(); // Click the button and trigger the request
-        await analytics.waitForAnalyticsRequests(2);
+        // 3 requests are expected: "suite/ready", "analytics/enable", and "connect-popup/init"
+        await analytics.waitForAnalyticsRequests(3);
 
         // assert that more than 1 event was fired and it was "suite/ready" and "analytics/enable" for sure
         expect(analytics.requests.length).toBeGreaterThan(1);

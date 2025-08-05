@@ -6,8 +6,7 @@ import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
+import { useDispatch } from 'src/hooks/suite';
 
 import { ConnectPermissions } from './ConnectPermissions';
 import { WalletConnectButton } from './WalletConnectButton';
@@ -15,7 +14,6 @@ import { WalletConnectList } from './WalletConnectList';
 
 export const SettingsConnectedApps = () => {
     const dispatch = useDispatch();
-    const connectFeatureFlag = useSelector(selectHasExperimentalFeature('trezor-connect-ws'));
 
     const tabs = [
         {
@@ -30,7 +28,7 @@ export const SettingsConnectedApps = () => {
             icon: 'trezorLogo' as const,
             title: <Translation id="TR_TREZOR_CONNECT" />,
             component: <ConnectPermissions />,
-            isEnabled: connectFeatureFlag && isDesktop(),
+            isEnabled: isDesktop(),
         },
     ].filter(tab => tab.isEnabled);
     const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id ?? 0);

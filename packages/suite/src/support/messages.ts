@@ -10475,19 +10475,6 @@ export default defineMessages({
         id: 'TR_QUIT_NOW',
         defaultMessage: 'Quit now',
     },
-    TR_EXPERIMENTAL_TREZORCONNECT_WS: {
-        id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS',
-        defaultMessage: 'Trezor Connect',
-    },
-    TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION',
-        defaultMessage:
-            'Connect with third-party apps directly from Trezor Suite for a smoother, more integrated experience. Enabling this feature will restart the app.',
-    },
-    TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
-        defaultMessage: 'Use WalletConnect to connect your Trezor to Ethereum or Solana dApps.',
-    },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',
         defaultMessage: 'Switch account',
