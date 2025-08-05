@@ -36,14 +36,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 
     describe('Tests with T3T1 device model', () => {
-        const emulatorOptions: PrepareTrezorEmulatorProps = {
-            seed: MNEMONICS.mnemonic_all,
-            version: '2.8.7-arm',
-        };
-
         beforeEach(async () => {
-            await prepareTrezorEmulator(emulatorOptions);
-            await restartApp({ args: { isFirmwareUpdateEnabled: true } });
+            await prepareTrezorEmulator();
+            await restartApp();
             await appIsFullyLoaded();
 
             await onConnectingDevice.waitForScreen();
@@ -124,6 +119,23 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceSettings.passCheckBackupFlow();
 
             expect(element(by.label('Your backup is valid'))).toBeVisible();
+        });
+    });
+
+    describe('Tests with FW update required', () => {
+        const emulatorOptions: PrepareTrezorEmulatorProps = {
+            seed: MNEMONICS.mnemonic_all,
+            version: '2.8.9',
+        };
+
+        beforeEach(async () => {
+            await prepareTrezorEmulator(emulatorOptions);
+            await restartApp({ args: { isFirmwareUpdateEnabled: true } });
+            await appIsFullyLoaded();
+
+            await onConnectingDevice.waitForScreen();
+            await onDeviceManager.tapDeviceSwitch();
+            await onDeviceManager.tapDeviceSettingsButton();
         });
 
         test('Device Check Backup is possible from firmware update', async () => {
