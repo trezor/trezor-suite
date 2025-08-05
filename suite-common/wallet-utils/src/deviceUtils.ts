@@ -26,6 +26,8 @@ export const shouldDeviceBeRemembered = ({
 
     if (device.mode !== 'normal') return false;
 
+    if (device.type !== 'acquired') return false;
+
     return !isDeviceAutoEjectEnabled;
 };
 
