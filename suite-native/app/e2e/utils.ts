@@ -139,17 +139,22 @@ export type PrepareTrezorEmulatorProps = {
 };
 
 export const prepareTrezorEmulator = async ({
+    version,
     seed = MNEMONICS.mnemonic_immune,
     passphrase_protection = false,
     model = 'T3T1',
-    version = '2-latest',
 }: PrepareTrezorEmulatorProps = {}) => {
     if (platform === 'android') {
         // Prepare Trezor device for test scenario
+        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+
+        const fwVersion =
+            version && modelSupportedFirmwares.includes(version) ? version : '2-latest';
+
         await TrezorUserEnvLink.disconnect();
         await TrezorUserEnvLink.connect();
         // start with latest officially released firmware (necessary to pass the firmware checks)
-        await TrezorUserEnvLink.startEmu({ model, version, wipe: true });
+        await TrezorUserEnvLink.startEmu({ model, version: fwVersion, wipe: true });
 
         if (seed) {
             await TrezorUserEnvLink.setupEmu({
