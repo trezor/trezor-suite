@@ -75,7 +75,6 @@ export const connectPopupCallThunkInner = createThunk<
             );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
-                dispatch(extra.actions.lockDevice(true));
                 dispatch(connectPopupActions.requestPermissions());
                 await getPermissionDeferred(true).promise;
             }

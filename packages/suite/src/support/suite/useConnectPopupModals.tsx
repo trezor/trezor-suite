@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { CONTEXT_NONE, CONTEXT_USER } from 'src/actions/suite/constants/modalConstants';
@@ -13,6 +14,12 @@ import { selectRouteName } from 'src/reducers/suite/routerReducer';
 export const useConnectPopupModals = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
+    const discovery = useSelector(selectDiscoveryForSelectedDevice);
+    const isInDiscoveryFlow =
+        discovery &&
+        discovery.status !== 'failed' &&
+        discovery.status !== 'complete' &&
+        discovery.status !== 'cancelled';
 
     // Modal opening control
     const modalContext = useSelector(state => state.modal.context);
@@ -67,7 +74,7 @@ export const useConnectPopupModals = () => {
                 return;
             }
             case 'switch-device': {
-                if (modalContext !== CONTEXT_NONE) {
+                if (modalContext !== CONTEXT_NONE && !isInDiscoveryFlow) {
                     TrezorConnect.cancel('switching-device');
                     dispatch(cancelModal());
                     dispatch(
@@ -90,15 +97,17 @@ export const useConnectPopupModals = () => {
                 return;
             }
         }
-    }, [popupCall?.state, modalType, modalContext, activeRoute, dispatch]);
+    }, [popupCall?.state, modalType, modalContext, activeRoute, dispatch, isInDiscoveryFlow]);
 
     // Restart thunk once device is selected
     useEffect(() => {
         if (
             popupCall?.state === 'switch-device' &&
             activeRoute !== 'suite-switch-device' &&
-            // this check prevents restarting the call immediately after it was created, since the route may not be updated yet
-            popupCall?.timestamp < Date.now() - 500
+            // This check prevents restarting the call immediately after it was created, since the route may not be updated yet
+            popupCall?.timestamp < Date.now() - 500 &&
+            // Wait for discovery user flow to finish
+            !isInDiscoveryFlow
         ) {
             dispatch(
                 connectPopupCallThunkInner({
@@ -106,5 +115,5 @@ export const useConnectPopupModals = () => {
                 }),
             );
         }
-    }, [popupCall, activeRoute, dispatch]);
+    }, [popupCall, activeRoute, dispatch, isInDiscoveryFlow]);
 };
