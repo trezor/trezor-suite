@@ -119,10 +119,10 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
             await tradingPage.finishTransactionButton.click();
-            await expect(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
+            await expect.soft(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
             });
-            await expect(watchRequestPromise).toHavePayload(invityRequest.buyWatchPayload, {
+            await expect.soft(watchRequestPromise).toHavePayload(invityRequest.buyWatchPayload, {
                 omit: ['partnerData', 'orderId', 'paymentId'],
             });
             await expect(tradingPage.transactionDetailStatus).toHaveText(

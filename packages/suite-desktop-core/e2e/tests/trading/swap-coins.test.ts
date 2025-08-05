@@ -40,6 +40,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 });
                 await tradingMock.routeSwapTrade(swapTradeSolanaBTC);
                 await tradingMock.routeSolanaSendRequests();
+                await tradingMock.routeDummyProviderSupportPage();
                 await page.route(invityEndpoint.swapWatch, async route => {
                     await route.fulfill({ json: { status: 'SENDING', sendAddress } });
                 });
