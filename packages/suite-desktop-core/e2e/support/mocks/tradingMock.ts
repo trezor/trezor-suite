@@ -135,4 +135,25 @@ export class TradingMock {
             );
         }
     };
+
+    @step()
+    async routeDummyProviderSupportPage() {
+        await this.page.route(/https:\/\/example\.org\/orders\/.*/, async route => {
+            const html = `
+            <!DOCTYPE html>
+            <html>
+            <head><title>Provider Support</title></head>
+            <body>
+                <h1>Provider Support Page</h1>
+                <p>Order ID: ${route.request().url().split('/').pop()}</p>
+            </body>
+            </html>
+        `;
+            await route.fulfill({
+                status: 200,
+                contentType: 'text/html',
+                body: html,
+            });
+        });
+    }
 }

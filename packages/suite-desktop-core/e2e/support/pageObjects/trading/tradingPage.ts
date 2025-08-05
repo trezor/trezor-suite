@@ -263,7 +263,7 @@ export class TradingPage {
         amount: string,
         cryptoCurrency: string = 'bitcoin',
         wantCrypto: boolean = false,
-        fiatCurrencyCode: BaseCurrencyCode = 'czk',
+        fiatCurrencyCode: BaseCurrencyCode = 'usd',
         country: TradingCountryCode = 'CZ',
     ) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
@@ -273,7 +273,7 @@ export class TradingPage {
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.buyQuotes);
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
         await inputField.fill(amount);
-        await expect(quotesRequestPromise).toHavePayload({
+        await expect.soft(quotesRequestPromise).toHavePayload({
             wantCrypto,
             fiatCurrency: fiatCurrencyCode.toUpperCase(),
             receiveCurrency: cryptoCurrency,
@@ -289,7 +289,7 @@ export class TradingPage {
     async fillSellForm(
         amount: string,
         cryptoCurrency: string = 'bitcoin',
-        fiatCurrencyCode: BaseCurrencyCode = 'eur',
+        fiatCurrencyCode: BaseCurrencyCode = 'usd',
         country: TradingCountryCode = 'CZ',
     ) {
         await this.selectCountryOfResidence(country);
@@ -299,7 +299,7 @@ export class TradingPage {
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).toBeHidden();
-        await expect(quoteRequestPromise).toHavePayload({
+        await expect.soft(quoteRequestPromise).toHavePayload({
             amountInCrypto: true,
             cryptoCurrency,
             fiatCurrency: fiatCurrencyCode.toUpperCase(),
@@ -348,7 +348,7 @@ export class TradingPage {
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
         await expect(this.bestOfferAmount).toHaveText(/0 \w+/);
         await this.youPayCryptoInput.fill(params.amount);
-        await expect(quotesRequestPromise).toHavePayload({
+        await expect.soft(quotesRequestPromise).toHavePayload({
             receive: params.receiveNetwork,
             send: params.sendCurrency,
             sendStringAmount: params.amount,

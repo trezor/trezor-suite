@@ -154,7 +154,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
             await tradingPage.selectThisQuoteButton.nth(1).click();
             const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
             await tradingPage.termsConfirmButton.click();
-            await expect(sellTradePromise).toHavePayload(
+            await expect.soft(sellTradePromise).toHavePayload(
                 {
                     // the second chosen offer via Bank Transfer that matches input criteria has index 3
                     trade: sellQuotesSolana[3],

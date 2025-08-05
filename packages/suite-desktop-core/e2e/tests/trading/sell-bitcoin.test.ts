@@ -62,7 +62,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
             await tradingPage.sellBestOfferButton.click();
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.sellTrade);
             await tradingPage.termsConfirmButton.click();
-            await expect(tradeRequestPromise).toHavePayload(invityRequest.sellTradePayload, {
+            await expect.soft(tradeRequestPromise).toHavePayload(invityRequest.sellTradePayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],
             });
         });

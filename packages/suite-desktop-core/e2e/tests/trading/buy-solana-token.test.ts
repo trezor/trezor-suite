@@ -15,7 +15,7 @@ const fiatAmount = localizeNumber(buyQuotesSolanaToken[0].fiatStringAmount, 'en-
 const cryptoAmount = buyQuotesSolanaToken[0].receiveStringAmount;
 const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0].exchange);
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
-const formattedFiatAmount = `CZK ${fiatAmount}`;
+const formattedFiatAmount = `USD ${fiatAmount}`;
 const { receiveAddress, paymentMethodName } = buyTradeSolanaToken.trade;
 
 test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
@@ -59,9 +59,11 @@ test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, (
             await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             await tradingPage.finishTransactionButton.click();
-            await expect(tradeRequestPromise).toHavePayload(invityRequest.buyTradeSolanaPayload, {
-                omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
-            });
+            await expect
+                .soft(tradeRequestPromise)
+                .toHavePayload(invityRequest.buyTradeSolanaPayload, {
+                    omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
+                });
         });
 
         await tradingPage.waitForRedirectCompletion();
