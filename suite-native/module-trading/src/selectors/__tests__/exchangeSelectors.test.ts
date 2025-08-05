@@ -183,6 +183,9 @@ describe('exchangeSelectors', () => {
                     expect.objectContaining({
                         quoteId: 'invity-dex',
                     }),
+                    expect.objectContaining({
+                        quoteId: 'mercuryo-dex',
+                    }),
                 ],
             });
         });

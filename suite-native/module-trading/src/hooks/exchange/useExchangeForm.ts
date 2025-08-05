@@ -36,33 +36,50 @@ import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormV
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
 
-const useExchangeQuotesChangeEffect = ({ setValue }: ExchangeFormType) => {
+const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType) => {
     const providers = useSelector(selectTradingExchangeProviders);
     const quoteGroups = useSelector(selectGroupedExchangeQuotes);
 
     useEffect(() => {
         const setQuote = (quote: ExchangeTrade | undefined) => setValue('quote', quote);
 
-        if (quoteGroups.fixed.length > 0) {
-            setQuote(quoteGroups.fixed[0]);
+        const currentQuote = getValues('quote');
 
-            return;
+        let bestQuote: ExchangeTrade | undefined;
+
+        if (currentQuote) {
+            const { exchange = '', isDex } = currentQuote;
+            const { isFixedRate } = providers?.[exchange] || {};
+
+            let candidateQuotes: ExchangeTrade[];
+
+            if (isDex) {
+                candidateQuotes = quoteGroups.dex;
+            } else if (isFixedRate) {
+                candidateQuotes = quoteGroups.fixed;
+            } else {
+                candidateQuotes = quoteGroups.float;
+            }
+
+            bestQuote = candidateQuotes.find(quote => quote.exchange === exchange);
+
+            if (!bestQuote) {
+                bestQuote = candidateQuotes[0];
+            }
         }
 
-        if (quoteGroups.float.length > 0) {
-            setQuote(quoteGroups.float[0]);
-
-            return;
+        if (!bestQuote) {
+            if (quoteGroups.fixed.length > 0) {
+                bestQuote = quoteGroups.fixed[0];
+            } else if (quoteGroups.float.length > 0) {
+                bestQuote = quoteGroups.float[0];
+            } else if (quoteGroups.dex.length > 0) {
+                bestQuote = quoteGroups.dex[0];
+            }
         }
 
-        if (quoteGroups.dex.length > 0) {
-            setQuote(quoteGroups.dex[0]);
-
-            return;
-        }
-
-        setQuote(undefined);
-    }, [providers, quoteGroups, setValue]);
+        setQuote(bestQuote);
+    }, [providers, quoteGroups, setValue, getValues]);
 };
 
 const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => {
