@@ -943,7 +943,7 @@
   "TR_EXCHANGE_APPROVAL_VALUE": "Genehmigungswert",
   "TR_EXCHANGE_APPROVAL_VALUE_INFINITE": "Unendlicher Wert",
   "TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO": "Erstelle eine einzige Genehmigungstransaktion, um den wiederholten Handel von {send} mit {provider} zu vereinfachen. Dies spart zwar Gebühren, birgt aber im unwahrscheinlichen Fall eines Fehlers im Kontrakt von {provider} ein Risiko für deine Assets.",
-  "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL": "Erforderlicher Wert von {value} {send}",
+  "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL": "Notwendigen Wert von {value} {send}",
   "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO": "Genehmige nur den Betrag, der für diesen Swap erforderlich ist. Du musst eine zusätzliche Gebühr zahlen, wenn du einen ähnlichen Swap erneut durchführen möchtest.",
   "TR_EXCHANGE_APPROVAL_VALUE_ZERO": "Vorherige Genehmigung von {value} {send} widerrufen",
   "TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO": "Führe eine Transaktion durch, die die vorherige Genehmigung des Kontrakts mit {provider} entfernt.",

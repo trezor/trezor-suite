@@ -943,7 +943,7 @@
   "TR_EXCHANGE_APPROVAL_VALUE": "Valeur d’approbation",
   "TR_EXCHANGE_APPROVAL_VALUE_INFINITE": "Valeur infinie",
   "TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO": "Créez une seule transaction d’approbation pour simplifier plusieurs échanges de {send} avec {provider}. Cela permet d’économiser des frais, mais comporte un risque pour vos fonds dans le cas peu probable d’un défaut dans le contrat de {provider}.",
-  "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL": "Valeur nécessaire de {value} {send}",
+  "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL": "Valeur requise de {value} {send}",
   "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO": "Approuvez uniquement le montant exact requis pour cet échange. Vous devrez payer des frais supplémentaires si vous souhaitez effectuer à nouveau un échange similaire.",
   "TR_EXCHANGE_APPROVAL_VALUE_ZERO": "Révoquer l’approbation précédente de {value} {send}",
   "TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO": "Effectuer une transaction qui supprimera l’approbation préalable du contrat avec {provider}.",
