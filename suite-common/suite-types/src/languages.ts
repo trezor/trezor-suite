@@ -31,8 +31,7 @@ const languages = {
     'uk-UA': { name: 'Українська', en: 'Ukrainian', type: 'community' },
     'vi-VN': { name: 'Tiếng Việt', en: 'Vietnamese' },
     'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified', type: 'community' },
-    'zh-TW': { name: '中文(繁體)', en: 'Chinese Traditional', type: 'community' },
-    ww: { name: '臺語', en: 'Hokkien', type: 'community' },
+    ww: { name: '臺語', en: 'Taiwanese Mandarin', type: 'community' },
 } as const;
 
 export type Locale = keyof typeof languages;
