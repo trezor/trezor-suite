@@ -21,9 +21,10 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ page }) => {
+        async ({ onboardingPage, page }) => {
             await test.step(`Load suite in old version ${migrateFromVersion}`, async () => {
                 await page.goto(`${suiteDevInstance}/${migrateFromVersion}`);
+                await onboardingPage.disableNecessaryFirmwareChecks();
                 await page.locator('[data-testid="@analytics/toggle-switch"]').click();
                 await page.locator('[data-testid="@analytics/continue-button"]').click();
                 await page.locator('[data-testid="@onboarding/exit-app-button"]').click();
@@ -39,6 +40,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
 
             await test.step(`Navigate to new version ${migrateToVersion} and check locale status`, async () => {
                 await page.goto(`${suiteDevInstance}/${migrateToVersion}`);
+                await onboardingPage.disableNecessaryFirmwareChecks();
 
                 await page.locator('[data-testid="@suite/menu/settings"]').click();
                 await expect(
