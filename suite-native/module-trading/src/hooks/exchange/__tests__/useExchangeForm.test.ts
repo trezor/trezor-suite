@@ -14,6 +14,7 @@ import { getBtcAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../__fixtures__/walletState';
+import { ExchangeFormType } from '../../../types/exchange';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 describe('useExchangeForm', () => {
@@ -108,6 +109,80 @@ describe('useExchangeForm', () => {
             });
 
             expect(result.current.getValues('receiveCryptoAmount')).toBe('89537');
+        });
+
+        describe('when quote is selected and new quotes are fetched', () => {
+            let store: TestStore;
+            let form: ExchangeFormType;
+
+            beforeEach(async () => {
+                store = await getInitializedStore();
+                const { result } = await renderUseExchangeForm(store);
+                form = result.current;
+
+                act(() => {
+                    store.dispatch(tradingExchangeActions.saveQuotes([...exchangeQuotes]));
+                });
+            });
+
+            it('should select quote with same Rate and Provider', () => {
+                act(() => {
+                    form.setValue('quote', {
+                        ...exchangeQuotes[3],
+                        quoteId: 'invity-dex-outdated',
+                    });
+                });
+
+                act(() => {
+                    store.dispatch(tradingExchangeActions.saveQuotes([...exchangeQuotes]));
+                });
+
+                expect(form.getValues('quote')).toEqual(
+                    expect.objectContaining({
+                        quoteId: 'invity-dex',
+                    }),
+                );
+            });
+
+            it('should select quote with same Rate when same provider is not available', () => {
+                act(() => {
+                    form.setValue('quote', {
+                        ...exchangeQuotes[3],
+                        quoteId: 'invity-dex-outdated',
+                    });
+                });
+
+                act(() => {
+                    store.dispatch(
+                        tradingExchangeActions.saveQuotes(exchangeQuotes.toSpliced(3, 1)),
+                    );
+                });
+
+                expect(form.getValues('quote')).toEqual(
+                    expect.objectContaining({
+                        quoteId: 'mercuryo-dex',
+                    }),
+                );
+            });
+
+            it('should select floating quote when floating quote was previously selected', () => {
+                act(() => {
+                    form.setValue('quote', {
+                        ...exchangeQuotes[2],
+                        quoteId: 'cexdirect-floating-outdated',
+                    });
+                });
+
+                act(() => {
+                    store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
+                });
+
+                expect(form.getValues('quote')).toEqual(
+                    expect.objectContaining({
+                        quoteId: 'cexdirect-floating',
+                    }),
+                );
+            });
         });
     });
 
