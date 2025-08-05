@@ -1,8 +1,9 @@
-import test, { Locator, TestInfo } from '@playwright/test';
+import test, { Locator, Page, TestInfo } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
+import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -157,3 +158,11 @@ export const getBigNumberFromBalance = async (locator: Locator) => {
 
     return { originalBalance, hasEllipsis };
 };
+
+/**
+ * Mocks remote message-system with an empty JWS config signed by develop key.
+ */
+export const mockRemoteMessageSystem = async (page: Page): Promise<void> =>
+    await page.route('**/config.v1.jws', async route => {
+        await route.fulfill({ status: 200, body: validJws });
+    });

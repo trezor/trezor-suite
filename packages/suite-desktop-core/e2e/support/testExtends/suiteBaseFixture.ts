@@ -4,7 +4,13 @@ import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 import { TestAnnotationType } from '@trezor/e2e-utils';
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
-import { TrezorUserEnvLinkProxy, getUrl, getVideoPath, isDesktopProject } from '../common';
+import {
+    TrezorUserEnvLinkProxy,
+    getUrl,
+    getVideoPath,
+    isDesktopProject,
+    mockRemoteMessageSystem,
+} from '../common';
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { enhancePage } from './enhancePage';
 
@@ -84,6 +90,7 @@ const webSetup = async (browserContext: BrowserContext) => {
         window.Playwright = true;
     });
     await page.goto('./');
+    await mockRemoteMessageSystem(page);
 
     return page;
 };
