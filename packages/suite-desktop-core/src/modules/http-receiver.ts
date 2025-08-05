@@ -6,7 +6,6 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { restartApp } from '../libs/app-utils';
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
-import { hasSwitch } from '../libs/process-switches';
 import { app, ipcMain } from '../typed-electron';
 
 import type { ModuleInitBackground } from './index';
@@ -74,8 +73,7 @@ export const initBackground: ModuleInitBackground = ({
             }
         });
 
-        const connectPopupEnabled = () =>
-            hasSwitch('expose-connect-ws') || store.getConnectSettings().enableWs;
+        const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
         ipcMain.handle('connect-popup/enabled', ipcEvent => {
             validateIpcMessage(ipcEvent);
 
@@ -84,7 +82,7 @@ export const initBackground: ModuleInitBackground = ({
         ipcMain.handle('connect-popup/set-enabled', (ipcEvent, enabled: boolean) => {
             validateIpcMessage(ipcEvent);
 
-            store.setConnectSettings({ enableWs: enabled });
+            store.setConnectSettings({ disableWs: !enabled });
             restartApp();
         });
         if (connectPopupEnabled()) {

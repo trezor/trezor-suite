@@ -12,14 +12,12 @@ import TrezorConnect from '@trezor/connect';
 import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { SUITE } from 'src/actions/suite/constants';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
-    const experimentalFeatures = useSelector(state => state.suite.settings.experimental);
     const initialized = useRef(false);
 
     useEffect(() => {
@@ -62,20 +60,6 @@ export const useConnectPopupDesktop = () => {
                     analytics.report({
                         type: EventTypeShared.ConnectPopupInit,
                     });
-
-                    // Update experimental features value
-                    // TODO: remove this when out of experimental
-                    if (!experimentalFeatures?.includes('trezor-connect-ws')) {
-                        dispatch({
-                            type: SUITE.SET_EXPERIMENTAL_FEATURES,
-                            payload: {
-                                enabledFeatures: [
-                                    ...(experimentalFeatures ?? []),
-                                    'trezor-connect-ws',
-                                ],
-                            },
-                        });
-                    }
                 }
             }
         };
@@ -88,7 +72,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [dispatch, experimentalFeatures]);
+    }, [dispatch]);
 
     // App focus control
     const [currentlyOngoing, setCurrentlyOngoing] = useState(false);

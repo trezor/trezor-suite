@@ -103,7 +103,7 @@ export class Store {
 
     public getConnectSettings() {
         return this.store.get('connectSettings', {
-            enableWs: false,
+            disableWs: false,
             autoStartDontAskAgain: false,
             hasUsedConnectWs: false,
         });

@@ -13,7 +13,6 @@ export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
     | 'nft-section'
-    | 'trezor-connect-ws'
     | 'biometric-authentication';
 
 export type ExperimentalFeatureConfig = {
@@ -58,14 +57,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'nft-section': {
         title: 'TR_EXPERIMENTAL_NFT_SECTION',
         description: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION',
-    },
-    'trezor-connect-ws': {
-        title: 'TR_EXPERIMENTAL_TREZORCONNECT_WS',
-        description: 'TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION',
-        isDisabled: () => !isDesktop(),
-        onToggle: async ({ newValue }) => {
-            await desktopApi.connectPopupSetEnabled(newValue);
-        },
     },
     'biometric-authentication': {
         title: 'TR_BIO_AUTH',
