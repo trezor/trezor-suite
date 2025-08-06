@@ -2074,6 +2074,7 @@
   "TR_TOKENS": "crwdns24929:0crwdne24929:0",
   "TR_TOKENS_EMPTY": "crwdns24935:0crwdne24935:0",
   "TR_TOKENS_EMPTY_CHECK_HIDDEN": "crwdns35772:0crwdne35772:0",
+  "TR_TOKEN_ADDRESS": "crwdns148437:0crwdne148437:0",
   "TR_TOKEN_ID_COLON": "crwdns90032:0crwdne90032:0",
   "TR_TOKEN_NOT_FOUND": "crwdns36674:0crwdne36674:0",
   "TR_TOKEN_NOT_FOUND_ON_NETWORK": "crwdns36676:0{networkName}crwdne36676:0",
