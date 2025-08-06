@@ -1963,6 +1963,7 @@ export const en = {
                 cex: 'CEX',
                 dex: 'DEX',
             },
+            noProviders: 'No offers available.',
         },
         kyc: {
             dex: 'KYC never required. DEX swaps either succeed or fail.',

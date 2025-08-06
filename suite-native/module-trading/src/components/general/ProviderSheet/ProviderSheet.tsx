@@ -1,6 +1,11 @@
-import { useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
-import { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
+import {
+    TradingProviderInfo,
+    TradingTradeMapProps,
+    TradingTradeType,
+    TradingType,
+} from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle } from '@trezor/styles';
 import { exhaustive } from '@trezor/type-utils';
@@ -8,25 +13,29 @@ import { exhaustive } from '@trezor/type-utils';
 import { FilterItem, FilterTabs } from '../FilterTabs';
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
+import { NoProvidersPlaceholder } from './NoProvidersPlaceholder';
 import { PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT, ProviderListItem } from './ProviderListItem';
-import { SectionListData } from '../../../hooks/general/useSectionList';
+import {
+    SectionHeaderRenderConfig,
+    SectionListData,
+    SectionListDataArray,
+} from '../../../hooks/general/useSectionList';
 import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 import { CexFixedSectionHeader } from './CexFixedSectionHeader';
 import { CexFloatSectionHeader } from './CexFloatSectionHeader';
 import { DexSectionHeader } from './DexSectionHeader';
 
-export type ProvidersSheetProps<T extends TradingTradeType> = {
-    quotes: {
-        fixed?: T[];
-        float?: T[];
-        dex?: T[];
-    };
+type QuoteCategory = 'fixed' | 'float' | 'dex';
+
+export type ProvidersSheetProps<K extends TradingType, T extends TradingTradeType> = {
+    quotes: { [Q in QuoteCategory]?: T[] };
     isVisible: boolean;
     onClose: () => void;
     onQuoteSelect: (quote: T) => void;
     selectedQuote?: T;
     providerInfos: { [name: string]: TradingProviderInfo };
+    tradingType: K;
 };
 
 type FilterValue = 'all' | 'cex' | 'dex';
@@ -35,23 +44,43 @@ const keyExtractor = <T extends TradingTradeType>(item: T) => item.orderId ?? ''
 
 const getProviderInfo = (
     id: string | undefined,
-    providerInfos: ProvidersSheetProps<TradingTradeType>['providerInfos'],
+    providerInfos: ProvidersSheetProps<TradingType, TradingTradeType>['providerInfos'],
 ) =>
     providerInfos[id ?? ''] ?? {
         companyName: '',
         logo: '',
     };
 
+const renderSectionHeader = (
+    _label: ReactNode,
+    { sectionData }: SectionHeaderRenderConfig<QuoteCategory>,
+) => {
+    switch (sectionData) {
+        case 'fixed':
+            return <CexFixedSectionHeader />;
+        case 'float':
+            return <CexFloatSectionHeader />;
+        case 'dex':
+            return <DexSectionHeader />;
+        default:
+            return exhaustive(sectionData);
+    }
+};
+
 const EMPTY_ITEM_STYLE = prepareNativeStyle(() => ({}));
 
-export const ProviderSheet = <T extends TradingTradeType>({
+export const ProviderSheet = <
+    K extends TradingType,
+    T extends TradingTradeType = TradingTradeMapProps[K],
+>({
     quotes,
     isVisible,
     onClose,
     onQuoteSelect,
     selectedQuote,
     providerInfos,
-}: ProvidersSheetProps<T>) => {
+    tradingType,
+}: ProvidersSheetProps<K, T>) => {
     const { translate } = useTranslate();
 
     const [selectedFilter, setSelectedFilter] = useState<FilterValue>('all');
@@ -61,13 +90,7 @@ export const ProviderSheet = <T extends TradingTradeType>({
         onClose();
     };
 
-    const hasFixedProviders = quotes.fixed && quotes.fixed.length > 0;
-    const hasFloatProviders = quotes.float && quotes.float.length > 0;
-    const hasDexProviders = quotes.dex && quotes.dex.length > 0;
-    const hasCexProviders = hasFixedProviders || hasFloatProviders;
-    const shouldShowFilters = hasCexProviders && hasDexProviders;
-    const shouldShowCategories =
-        [hasFixedProviders, hasFloatProviders, hasDexProviders].filter(Boolean).length > 1;
+    const shouldShowFilters = tradingType === 'exchange';
 
     const filterItems: FilterItem<FilterValue>[] = useMemo(
         () => [
@@ -78,15 +101,13 @@ export const ProviderSheet = <T extends TradingTradeType>({
         [translate],
     );
 
-    type QuoteCategory = keyof typeof quotes;
-
     const filteredSections: SectionListData<T, QuoteCategory> = useMemo(() => {
         const allSections = Object.entries(quotes).map(([category, items]) => {
             const typedCategory = category as QuoteCategory;
 
             return {
                 key: category,
-                data: items,
+                data: items as SectionListDataArray<T>,
                 label: '',
                 sectionData: typedCategory,
             };
@@ -149,23 +170,11 @@ export const ProviderSheet = <T extends TradingTradeType>({
             estimatedItemSize={PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT}
             keyExtractor={keyExtractor}
             extraData={selectedQuote?.orderId}
-            renderSectionHeader={(_label, { sectionData }) => {
-                if (!shouldShowCategories) {
-                    return <></>;
-                }
-
-                switch (sectionData) {
-                    case 'fixed':
-                        return <CexFixedSectionHeader />;
-                    case 'float':
-                        return <CexFloatSectionHeader />;
-                    case 'dex':
-                        return <DexSectionHeader />;
-                    default:
-                        return exhaustive(sectionData);
-                }
-            }}
+            renderSectionHeader={renderSectionHeader}
             itemStyle={EMPTY_ITEM_STYLE}
+            noSingletonSectionHeader={tradingType !== 'exchange'}
+            SectionEmptyComponent={<NoProvidersPlaceholder />}
+            ListEmptyComponent={<NoProvidersPlaceholder />}
         />
     );
 };
