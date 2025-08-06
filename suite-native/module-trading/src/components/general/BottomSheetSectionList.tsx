@@ -31,6 +31,7 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     estimatedItemSize: number;
     noSingletonSectionHeader?: boolean;
     itemStyle?: NativeStyle<ItemRenderConfig<unknown>>;
+    SectionEmptyComponent?: ReactElement;
 };
 
 export const BottomSheetSectionList = <T, U = undefined>({
@@ -41,6 +42,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
     data,
     noSingletonSectionHeader,
     itemStyle,
+    SectionEmptyComponent,
     ...rest
 }: TradingBottomSheetSectionListProps<T, U>) => {
     const {
@@ -54,6 +56,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
         renderSectionHeader,
         noSingletonSectionHeader,
         itemStyle,
+        SectionEmptyComponent,
     });
 
     const listHeight = Dimensions.get('window').height * 0.9;

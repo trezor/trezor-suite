@@ -51,13 +51,14 @@ export const ExchangeRateAndProviderPicker = () => {
                 selectedValue={selectedValue}
                 handleProviderPress={handleItemPress}
             />
-            <ProviderSheet<ExchangeTrade>
+            <ProviderSheet
                 quotes={quotes}
                 providerInfos={providers ?? {}}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onQuoteSelect={handleQuoteSelect}
                 selectedQuote={selectedValue}
+                tradingType="exchange"
             />
         </>
     );
