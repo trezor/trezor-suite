@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery, selectIsDeviceInitialized } from '@suite-common/wallet-core';
 import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { useIsMultiline } from '@suite-native/helpers';
@@ -35,6 +35,7 @@ export const DeviceInfo = ({ deviceModel, deviceName }: DeviceInfoProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { applyStyle } = useNativeStyles();
     const { onTextLayout, isMultiline } = useIsMultiline();
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
 
     const navigateToDeviceNameStack = () => {
         navigation.navigate(DeviceSettingsStackRoutes.DeviceNameStack, {
@@ -51,14 +52,16 @@ export const DeviceInfo = ({ deviceModel, deviceName }: DeviceInfoProps) => {
                 <Text style={applyStyle(textStyle)} variant="titleMedium" onLayout={onTextLayout}>
                     {name}
                 </Text>
-                <IconButton
-                    onPress={navigateToDeviceNameStack}
-                    isLoading={isDiscoveryRunning}
-                    testID="@device-name/change-button"
-                    size="extraSmall"
-                    iconName="pencilSimpleLine"
-                    colorScheme="tertiaryElevation0"
-                />
+                {isDeviceInitialized && (
+                    <IconButton
+                        onPress={navigateToDeviceNameStack}
+                        isLoading={isDiscoveryRunning}
+                        testID="@device-name/change-button"
+                        size="extraSmall"
+                        iconName="pencilSimpleLine"
+                        colorScheme="tertiaryElevation0"
+                    />
+                )}
             </HStack>
         </VStack>
     );
