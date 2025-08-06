@@ -1,17 +1,16 @@
 import React, { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { getNetworkType } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     FeesRootState,
     SendRootState,
     selectAccountByKey,
     selectAreFeesLoading,
-    selectConvertedNetworkFeeInfo,
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectSendFormDraftByKey,
     useFetchFeesOnce,
@@ -23,8 +22,9 @@ import {
     PrecomposedTransactionFinal,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
-import { Form, useForm } from '@suite-native/forms';
+import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
@@ -34,22 +34,23 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { BigNumber } from '@trezor/utils';
-
-import { SendFeesFormValues, sendFeesFormValidationSchema } from '../sendFeesFormSchema';
-import { CustomFee } from './CustomFee';
-import { FeeOptionsList } from './FeeOptionsList';
-import { FeesFooter } from './FeesFooter';
-import { RecipientsSummary } from './RecipientsSummary';
-import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
-import { useRequestDelayedNavigationToOutputsReview } from '../hooks/useRequestDelayedNavigationToOutputsReview';
 import {
+    CustomFee,
+    FeeOptionsList,
+    FeesFooter,
     NativeSendRootState,
+    NativeSupportedFeeLevel,
     selectDestinationTagFromDraft,
     selectFeeLevels,
-} from '../sendFormSlice';
-import { NativeSupportedFeeLevel } from '../types';
-import { getFeeValue } from '../utils';
+    useFeesForm,
+} from '@suite-native/transaction-management';
+import { BigNumber } from '@trezor/utils';
+
+import { RecipientsSummary } from './RecipientsSummary';
+import { useCustomFee } from '../hooks/useCustomFee';
+import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
+import { useRequestDelayedNavigationToOutputsReview } from '../hooks/useRequestDelayedNavigationToOutputsReview';
+import { UpdateSelectedFeeLevelThunkParams, updateSelectedFeeLevelThunk } from '../sendFormThunks';
 
 type SendFormProps = {
     accountKey: AccountKey;
@@ -62,7 +63,44 @@ type SendFeesNavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+// CustomFeeWrapper component that uses useCustomFee hook and renders CustomFee
+// useCustomFee is not working with Form component, so we need to wrap it in a component that has access to the form context
+const CustomFeeWrapper = ({
+    accountKey,
+    tokenContract,
+    symbol,
+    onCustomFeeSet,
+}: {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+    symbol: NetworkSymbol;
+    onCustomFeeSet: (customFeePerUnit: string, customFeeLimit?: string) => void;
+}) => {
+    const {
+        feeValue: feeValueCustomFee,
+        isFeeLoading: isFeeLoadingCustomFee,
+        isSubmittable: isSubmittableCustomFee,
+        isErrorBoxVisible: isErrorBoxVisibleCustomFee,
+    } = useCustomFee({
+        accountKey,
+        tokenContract,
+    });
+
+    return (
+        <CustomFee
+            symbol={symbol}
+            accountKey={accountKey}
+            feeValue={feeValueCustomFee}
+            isFeeLoading={isFeeLoadingCustomFee}
+            isSubmittable={isSubmittableCustomFee}
+            isErrorBoxVisible={isErrorBoxVisibleCustomFee}
+            onCustomFeeSet={onCustomFeeSet}
+        />
+    );
+};
+
 export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
+    const dispatch = useDispatch();
     const navigation = useNavigation<SendFeesNavigationProps>();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -75,18 +113,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
 
     const feeLevels = useSelector(selectFeeLevels);
 
-    const networkFeeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, account?.symbol),
-    );
-
     const formDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
     const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
-
-    const minimalFeeLimit =
-        'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
 
     const destinationTag = useSelector((state: NativeSendRootState) =>
         selectDestinationTagFromDraft(state, accountKey, tokenContract),
@@ -94,22 +125,10 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
 
     const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
 
-    const trimmedFeePerUnit = getFeeValue({
-        feeRate: formDraft?.feePerUnit,
-        symbol: account?.symbol,
-    });
-    const form = useForm<SendFeesFormValues>({
-        validation: sendFeesFormValidationSchema,
-        defaultValues: {
-            feeLevel: formDraft?.selectedFee as NativeSupportedFeeLevel,
-            customFeePerUnit: trimmedFeePerUnit,
-            customFeeLimit: normalFee?.feeLimit,
-        },
-        context: {
-            networkFeeInfo,
-            symbol: account?.symbol,
-            minimalFeeLimit,
-        },
+    const form = useFeesForm({
+        accountKey,
+        defaultFeeLevel: formDraft?.selectedFee as NativeSupportedFeeLevel,
+        defaultFeePerUnit: formDraft?.feePerUnit,
     });
     const { handleSubmit, control } = form;
 
@@ -157,6 +176,36 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     });
 
     if (!account) return;
+
+    const handleFeeLevelChange = (
+        feeLevel: NativeSupportedFeeLevel,
+        customFeePerUnit?: string,
+        customFeeLimit?: string,
+    ) => {
+        analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeLevel } });
+
+        let params: UpdateSelectedFeeLevelThunkParams;
+        if (feeLevel === 'custom') {
+            params = {
+                accountKey,
+                tokenContract,
+                feeLevelLabel: 'custom',
+                feePerUnit: customFeePerUnit!,
+                feeLimit: customFeeLimit,
+            };
+        } else {
+            params = {
+                accountKey,
+                tokenContract,
+                feeLevelLabel: feeLevel,
+            };
+        }
+        dispatch(updateSelectedFeeLevelThunk(params));
+    };
+
+    const handleCustomFeeSet = (customFeePerUnit: string, customFeeLimit?: string) => {
+        handleFeeLevelChange('custom', customFeePerUnit, customFeeLimit);
+    };
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
         if (networkType === 'ripple' && destinationTag) {
@@ -220,12 +269,16 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                                 <FeeOptionsList
                                     feeLevels={feeLevels}
                                     symbol={account.symbol}
-                                    accountKey={accountKey}
-                                    tokenContract={tokenContract}
                                     isLoading={areFeesLoading}
+                                    onSelectedFeeLevel={handleFeeLevelChange}
                                 />
                             )}
-                            <CustomFee symbol={account.symbol} />
+                            <CustomFeeWrapper
+                                symbol={account.symbol}
+                                accountKey={accountKey}
+                                tokenContract={tokenContract}
+                                onCustomFeeSet={handleCustomFeeSet}
+                            />
                         </VStack>
                     </VStack>
                     <FeesFooter

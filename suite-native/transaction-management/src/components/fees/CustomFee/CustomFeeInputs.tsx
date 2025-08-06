@@ -11,9 +11,9 @@ import { integerTransformer, useAmountInputTransformers } from '@suite-native/he
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 
-import { SendFeesFormValues } from '../sendFeesFormSchema';
+import { FeesFormValues } from '../../../feesFormSchema';
 
-type CustomFeeInputsProps = {
+export type CustomFeeInputsProps = {
     symbol: NetworkSymbol;
 };
 
@@ -28,7 +28,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
         formState: { errors },
         setValue,
         trigger,
-    } = useFormContext<SendFeesFormValues>();
+    } = useFormContext<FeesFormValues>();
 
     const customFeeLimitName = 'customFeeLimit';
     const feePerUnitFieldName = 'customFeePerUnit';
@@ -39,7 +39,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
     const formattedFeePerUnit = `${feeInfo?.minFee} ${feeUnits}`;
 
     const handleFieldChangeValue =
-        (fieldName: keyof SendFeesFormValues, transformer: (value: string) => string) =>
+        (fieldName: keyof FeesFormValues, transformer: (value: string) => string) =>
         (value: string) => {
             const transformedValue = transformer(value);
             setValue(fieldName, transformedValue);
@@ -51,9 +51,11 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
         <VStack spacing="sp8">
             {networkType === 'ethereum' && (
                 <TextInputField
-                    label={translate('moduleSend.fees.custom.bottomSheet.label.gasLimit')}
+                    label={translate(
+                        'transactionManagement.fees.custom.bottomSheet.label.gasLimit',
+                    )}
                     name={customFeeLimitName}
-                    testID={`@send/${customFeeLimitName}-input`}
+                    testID={`@transactionManagement/${customFeeLimitName}-input`}
                     accessibilityLabel="address input"
                     keyboardType="number-pad"
                     onChangeText={handleFieldChangeValue(customFeeLimitName, integerTransformer)}
@@ -62,11 +64,11 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
             <TextInputField
                 label={
                     networkType === 'ethereum'
-                        ? translate('moduleSend.fees.custom.bottomSheet.label.gasPrice')
-                        : translate('moduleSend.fees.custom.bottomSheet.label.feeRate')
+                        ? translate('transactionManagement.fees.custom.bottomSheet.label.gasPrice')
+                        : translate('transactionManagement.fees.custom.bottomSheet.label.feeRate')
                 }
                 name={feePerUnitFieldName}
-                testID={`@send/${feePerUnitFieldName}-input`}
+                testID={`@transactionManagement/${feePerUnitFieldName}-input`}
                 accessibilityLabel="address input"
                 keyboardType="number-pad"
                 rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
@@ -75,7 +77,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
             {networkType !== 'ethereum' && !hasFeePerByteError && (
                 <Hint variant="info">
                     <Translation
-                        id="moduleSend.fees.custom.bottomSheet.minimumLabel"
+                        id="transactionManagement.fees.custom.bottomSheet.minimumLabel"
                         values={{ feePerUnit: formattedFeePerUnit }}
                     />
                 </Hint>

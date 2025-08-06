@@ -20,7 +20,7 @@ import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
     RootStackParamList,
@@ -100,6 +100,7 @@ export const OutputsReviewFooter = ({
     const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
     const { setSelectedUtxos } = useUtxoSelection(accountKey);
+    const { translate } = useTranslate();
 
     const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
@@ -224,7 +225,7 @@ export const OutputsReviewFooter = ({
                 <Button
                     isLoading={isSendInProgress}
                     accessibilityRole="button"
-                    accessibilityLabel="validate send form"
+                    accessibilityLabel={translate('generic.validateForm')}
                     testID="@send/send-transaction-button"
                     onPress={handleSendTransaction}
                 >

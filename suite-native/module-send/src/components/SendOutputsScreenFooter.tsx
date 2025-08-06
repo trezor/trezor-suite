@@ -1,7 +1,7 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { Box, Button } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { ScreenFooterGradient } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -19,6 +19,7 @@ export const SendOutputsScreenFooter = ({
     handleNavigateToReviewScreen: () => void;
 }) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
@@ -26,7 +27,7 @@ export const SendOutputsScreenFooter = ({
             <Box style={applyStyle(screenFooterStyle)}>
                 <Button
                     accessibilityRole="button"
-                    accessibilityLabel="validate send form"
+                    accessibilityLabel={translate('generic.validateForm')}
                     testID="@send/form-submit-button"
                     onPress={handleNavigateToReviewScreen}
                     isDisabled={isSubmitting}

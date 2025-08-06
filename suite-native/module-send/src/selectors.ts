@@ -1,5 +1,6 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -18,9 +19,13 @@ import {
     getTransactionReviewOutputState,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
-import { ReviewSummaryOutput } from '@suite-native/transaction-management';
 
 import { StatefulReviewOutput } from './types';
+
+// Create memoized selector for complex computations
+const createSendMemoizedSelector = createWeakMapSelector.withTypes<
+    SendRootState & AccountsRootState & DeviceRootState
+>();
 
 export const selectIsTransactionAlreadySigned = (state: SendRootState) => {
     const serializedTx = selectSendSerializedTx(state);
@@ -28,151 +33,172 @@ export const selectIsTransactionAlreadySigned = (state: SendRootState) => {
     return G.isNotNullable(serializedTx);
 };
 
-export const selectTransactionReviewOutputs = (
-    state: SendRootState & AccountsRootState & DeviceRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-): StatefulReviewOutput[] | null => {
-    const precomposedForm = selectSendFormDraftByKey(state, accountKey, tokenContract);
-    const precomposedTx = selectSendPrecomposedTx(state);
+export const selectTransactionReviewOutputs = createSendMemoizedSelector(
+    [
+        (state: SendRootState & AccountsRootState & DeviceRootState) => state,
+        (_state, accountKey: AccountKey) => accountKey,
+        (_state, _accountKey: AccountKey, tokenContract?: TokenAddress) => tokenContract,
+    ],
+    (state, accountKey, tokenContract) => {
+        const precomposedForm = selectSendFormDraftByKey(state, accountKey, tokenContract);
+        const precomposedTx = selectSendPrecomposedTx(state);
 
-    const decreaseOutputId =
-        precomposedTx !== undefined &&
-        isRbfBumpFeeTransaction(precomposedTx) &&
-        precomposedTx.useNativeRbf
-            ? precomposedForm?.setMaxOutputId
-            : undefined;
+        const decreaseOutputId =
+            precomposedTx !== undefined &&
+            isRbfBumpFeeTransaction(precomposedTx) &&
+            precomposedTx.useNativeRbf
+                ? precomposedForm?.setMaxOutputId
+                : undefined;
 
-    const account = selectAccountByKey(state, accountKey);
-    const device = selectSelectedDevice(state);
+        const account = selectAccountByKey(state, accountKey);
+        const device = selectSelectedDevice(state);
 
-    const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
+        const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
-    const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
-        state,
-        account?.symbol,
-        decreaseOutputId,
-    );
-    if (!account || !device || !precomposedForm || !precomposedTx) return null;
+        const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
+            state,
+            account?.symbol,
+            decreaseOutputId,
+        );
+        if (!account || !device || !precomposedForm || !precomposedTx) return null;
 
-    const outputs = constructTransactionReviewOutputs({
-        account,
-        decreaseOutputId,
-        device,
-        precomposedForm,
-        precomposedTx,
-    });
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            decreaseOutputId,
+            device,
+            precomposedForm,
+            precomposedTx,
+        });
 
-    const newFlowOutputs = getIsUpdatedSendFlow(device)
-        ? outputs
-        : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
+        const newFlowOutputs = getIsUpdatedSendFlow(device)
+            ? outputs
+            : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
 
-    return newFlowOutputs.map(
-        (output, outputIndex) =>
-            ({
-                ...output,
-                state: isTransactionAlreadySigned
-                    ? 'success'
-                    : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
-            }) as StatefulReviewOutput,
-    );
-};
+        return newFlowOutputs.map(
+            (output, outputIndex) =>
+                ({
+                    ...output,
+                    state: isTransactionAlreadySigned
+                        ? 'success'
+                        : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
+                }) as StatefulReviewOutput,
+        );
+    },
+);
 
-export const selectIsTransactionReviewInProgress = (
-    state: SendRootState & AccountsRootState & DeviceRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-): boolean => {
-    const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
+export const selectIsTransactionReviewInProgress = createSendMemoizedSelector(
+    [
+        (state: SendRootState & AccountsRootState & DeviceRootState) => state,
+        (_state, accountKey: AccountKey) => accountKey,
+        (_state, _accountKey: AccountKey, tokenContract?: TokenAddress) => tokenContract,
+    ],
+    (state, accountKey, tokenContract) => {
+        const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
 
-    return G.isNotNullable(outputs) && A.isNotEmpty(outputs);
-};
+        return G.isNotNullable(outputs) && A.isNotEmpty(outputs);
+    },
+);
 
-export const selectIsDestinationTagOutputConfirmed = (
-    state: SendRootState & AccountsRootState & DeviceRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-): boolean => {
-    const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
-    if (!outputs) return false;
+export const selectIsDestinationTagOutputConfirmed = createSendMemoizedSelector(
+    [
+        (state: SendRootState & AccountsRootState & DeviceRootState) => state,
+        (_state, accountKey: AccountKey) => accountKey,
+        (_state, _accountKey: AccountKey, tokenContract?: TokenAddress) => tokenContract,
+    ],
+    (state, accountKey, tokenContract) => {
+        const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
+        if (!outputs) return false;
 
-    return pipe(
-        outputs,
-        A.find(output => output.type === 'destination-tag' && output.state === 'success'),
-        G.isNotNullable,
-    );
-};
+        return pipe(
+            outputs,
+            A.find(output => output.type === 'destination-tag' && output.state === 'success'),
+            G.isNotNullable,
+        );
+    },
+);
 
-export const selectIsReceiveAddressOutputConfirmed = (
-    state: SendRootState & AccountsRootState & DeviceRootState,
-    accountKey: string,
-    tokenContract?: TokenAddress,
-): boolean => {
-    const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
-    if (!outputs) return false;
+export const selectIsReceiveAddressOutputConfirmed = createSendMemoizedSelector(
+    [
+        (state: SendRootState & AccountsRootState & DeviceRootState) => state,
+        (_state, accountKey: string) => accountKey,
+        (_state, _accountKey: string, tokenContract?: TokenAddress) => tokenContract,
+    ],
+    (state, accountKey, tokenContract) => {
+        const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
+        if (!outputs) return false;
 
-    return pipe(
-        outputs,
-        A.find(
-            output =>
-                // 'regular_legacy' is address of BTC accounts used in older firmware versions.
-                (output.type === 'address' || output.type === 'regular_legacy') &&
-                output.state === 'success',
-        ),
-        G.isNotNullable,
-    );
-};
+        return pipe(
+            outputs,
+            A.find(
+                output =>
+                    // 'regular_legacy' is address of BTC accounts used in older firmware versions.
+                    (output.type === 'address' || output.type === 'regular_legacy') &&
+                    output.state === 'success',
+            ),
+            G.isNotNullable,
+        );
+    },
+);
 
-export const selectReviewSummaryOutputState = (
-    state: SendRootState & AccountsRootState & DeviceRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-): ReviewOutputState => {
-    const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
+export const selectReviewSummaryOutputState = createSendMemoizedSelector(
+    [
+        (state: SendRootState & AccountsRootState & DeviceRootState) => state,
+        (_state, accountKey: AccountKey) => accountKey,
+        (_state, _accountKey: AccountKey, tokenContract?: TokenAddress) => tokenContract,
+    ],
+    (state, accountKey, tokenContract) => {
+        const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
-    if (isTransactionAlreadySigned) {
-        return 'success';
-    }
+        if (isTransactionAlreadySigned) {
+            return 'success';
+        }
 
-    const reviewOutputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
+        const reviewOutputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
 
-    if (reviewOutputs && A.all(reviewOutputs, output => output.state === 'success')) {
-        return 'active';
-    }
+        if (reviewOutputs && A.all(reviewOutputs, output => output.state === 'success')) {
+            return 'active';
+        }
 
-    return undefined;
-};
+        return undefined;
+    },
+);
 
-export const selectReviewSummaryOutput = (
-    state: AccountsRootState & DeviceRootState & SendRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-): ReviewSummaryOutput | null => {
-    const precomposedTx = selectSendPrecomposedTx(state);
+export const selectReviewSummaryOutput = createSendMemoizedSelector(
+    [
+        (state: AccountsRootState & DeviceRootState & SendRootState) => state,
+        (_state, accountKey: AccountKey) => accountKey,
+        (_state, _accountKey: AccountKey, tokenContract?: TokenAddress) => tokenContract,
+    ],
+    (state, accountKey, tokenContract) => {
+        const precomposedTx = selectSendPrecomposedTx(state);
 
-    if (!precomposedTx) return null;
+        if (!precomposedTx) return null;
 
-    const { totalSpent, fee } = precomposedTx;
+        const { totalSpent, fee } = precomposedTx;
 
-    const outputState = selectReviewSummaryOutputState(state, accountKey, tokenContract);
+        const outputState = selectReviewSummaryOutputState(state, accountKey, tokenContract);
 
-    return {
-        state: outputState,
-        totalSpent,
-        fee,
-    };
-};
+        return {
+            state: outputState as ReviewOutputState,
+            totalSpent,
+            fee,
+        };
+    },
+);
 
-export const selectTransactionReviewActiveStepIndex = (
-    state: AccountsRootState & DeviceRootState & SendRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-) => {
-    const reviewOutputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
+export const selectTransactionReviewActiveStepIndex = createSendMemoizedSelector(
+    [
+        (state: AccountsRootState & DeviceRootState & SendRootState) => state,
+        (_state, accountKey: AccountKey) => accountKey,
+        (_state, _accountKey: AccountKey, tokenContract?: TokenAddress) => tokenContract,
+    ],
+    (state, accountKey, tokenContract) => {
+        const reviewOutputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
 
-    if (!reviewOutputs) return 0;
+        if (!reviewOutputs) return 0;
 
-    const activeIndex = reviewOutputs.findIndex(output => output.state === 'active');
+        const activeIndex = reviewOutputs.findIndex(output => output.state === 'active');
 
-    return activeIndex === -1 ? reviewOutputs.length : activeIndex;
-};
+        return activeIndex === -1 ? reviewOutputs.length : activeIndex;
+    },
+);

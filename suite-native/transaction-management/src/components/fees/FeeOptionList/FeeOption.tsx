@@ -6,7 +6,7 @@ import Animated, {
     useDerivedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -15,14 +15,11 @@ import {
     selectConvertedNetworkFeeLevelTimeEstimate,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
     GeneralPrecomposedTransaction,
     GeneralPrecomposedTransactionFinal,
-    TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { getFeeUnits } from '@suite-common/wallet-utils';
-import { EventType, analytics } from '@suite-native/analytics';
 import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { EmptyAmountSkeleton } from '@suite-native/formatters/src/components/EmptyAmountSkeleton';
@@ -31,27 +28,24 @@ import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { SendFeesFormValues } from '../sendFeesFormSchema';
-import { NativeSupportedFeeLevel } from '../types';
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
-import { updateSelectedFeeLevelThunk } from '../sendFormThunks';
+import { NativeSupportedPredefinedFeeLevel } from '../../../types';
 
-type FeeOptionProps = {
-    feeKey: Exclude<SendFeesFormValues['feeLevel'], 'custom'>;
+export type FeeOptionProps = {
+    feeKey: NativeSupportedPredefinedFeeLevel;
     feeLevel: GeneralPrecomposedTransactionFinal;
     symbol: NetworkSymbol;
     transactionBytes: number;
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
     isInteractive?: boolean;
     isLoading?: boolean;
+    onSelectedFeeLevel: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
 };
 
 const feeLabelsMap = {
-    economy: 'moduleSend.fees.levels.low',
-    normal: 'moduleSend.fees.levels.normal',
-    high: 'moduleSend.fees.levels.high',
-} as const satisfies Record<Exclude<NativeSupportedFeeLevel, 'custom'>, TxKeyPath>;
+    economy: 'transactionManagement.fees.levels.low',
+    normal: 'transactionManagement.fees.levels.normal',
+    high: 'transactionManagement.fees.levels.high',
+} as const satisfies Record<NativeSupportedPredefinedFeeLevel, TxKeyPath>;
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
@@ -92,14 +86,12 @@ export const FeeOption = ({
     feeLevel,
     symbol,
     transactionBytes,
-    accountKey,
-    tokenContract,
     isInteractive = true,
     isLoading = false,
+    onSelectedFeeLevel,
 }: FeeOptionProps) => {
     const { utils, applyStyle } = useNativeStyles();
     const { watch, setValue } = useContext(FormContext);
-    const dispatch = useDispatch();
 
     const feeTimeEstimate = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeLevelTimeEstimate(state, symbol, feeKey),
@@ -156,19 +148,14 @@ export const FeeOption = ({
         setValue('feeLevel', feeKey, {
             shouldValidate: true,
         });
-        analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeKey } });
-        dispatch(
-            updateSelectedFeeLevelThunk({
-                accountKey,
-                tokenContract,
-                feeLevelLabel: feeKey,
-            }),
-        );
+
+        onSelectedFeeLevel(feeKey);
 
         // Update also custom fee form so user can see the current values there.
         setValue('customFeePerUnit', feePerUnit, {
             shouldValidate: true,
         });
+
         setValue('customFeeLimit', feeLevel.feeLimit, {
             shouldValidate: true,
         });
@@ -235,7 +222,7 @@ export const FeeOption = ({
                                         : 'iconAlertRed'
                                 }
                                 onPress={handleSelectFeeLevel}
-                                testID={`@send/fees-level-${feeKey}`}
+                                testID={`@transactionManagement/fees-level-${feeKey}`}
                             />
                         )}
                     </HStack>

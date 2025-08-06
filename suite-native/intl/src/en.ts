@@ -29,6 +29,7 @@ export const en = {
             understand: 'I understand',
             goBack: 'Go back',
         },
+        validateForm: 'Validate form',
         savedToClipboard: 'Saved to clipboard',
         unknownError: 'Something went wrong',
         default: 'Default',
@@ -1765,11 +1766,6 @@ export const en = {
                 title: 'Transaction fee',
                 body: 'Fees are paid directly to network miners for processing your transactions.',
             },
-            levels: {
-                low: 'Low',
-                normal: 'Normal',
-                high: 'High',
-            },
             custom: {
                 addButton: 'Add custom fee',
                 bottomSheet: {
@@ -1794,7 +1790,6 @@ export const en = {
             amount: 'Amount',
             totalAmount: 'Total amount',
             submitButton: 'Review and sign',
-            total: 'Total fee',
         },
         coinControl: {
             cta: 'Coin control',
@@ -2344,6 +2339,38 @@ export const en = {
         },
     },
     transactionManagement: {
+        fees: {
+            levels: {
+                low: 'Low',
+                normal: 'Normal',
+                high: 'High',
+            },
+            custom: {
+                addButton: 'Add custom fee',
+                bottomSheet: {
+                    title: 'Custom fee',
+                    minimumLabel: 'The minimum fee rate is {feePerUnit}',
+                    label: {
+                        feeRate: 'Fee rate',
+                        gasLimit: 'Gas limit',
+                        gasPrice: 'Gas price',
+                        maxFeePerGas: 'Max fee per gas',
+                        maxPriorityFeePerGas: 'Max priority fee per gas',
+                    },
+                    total: 'Total fee',
+                    confirmButton: 'Confirm custom fee',
+                },
+                card: {
+                    label: 'Custom',
+                    ethereumValues: 'Limit: {gasLimit} • Price: {gasPrice}',
+                },
+            },
+            error: 'You don’t have enough balance to use this fee.',
+            amount: 'Amount',
+            totalAmount: 'Total amount',
+            submitButton: 'Review and sign',
+            total: 'Total fee',
+        },
         review: {
             outputs: {
                 addressLabel: 'Recipient address',
