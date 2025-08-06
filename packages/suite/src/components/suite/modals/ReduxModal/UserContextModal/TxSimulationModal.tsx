@@ -46,6 +46,7 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
+import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 const TxSimulationAsset = ({
     assetDiff,
@@ -455,7 +456,11 @@ export const TxSimulationModal = () => {
                                                     },
                                                     {
                                                         label: (
-                                                            <Translation id="TR_CONTRACT_ADDRESS" />
+                                                            <Translation
+                                                                id={getTokenAddressTranslationId(
+                                                                    network.networkType,
+                                                                )}
+                                                            />
                                                         ),
                                                         value: (
                                                             <TxAddress
