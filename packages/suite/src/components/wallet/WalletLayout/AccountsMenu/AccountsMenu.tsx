@@ -50,18 +50,19 @@ export const AccountsMenu = () => {
     }
 
     return (
-        <Wrapper>
-            <AccountsMenuHeader />
-            <ShadowContainer>
-                <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
-                <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
-                    <ReduxAccountSearchProvider>
+        <ReduxAccountSearchProvider>
+            <Wrapper>
+                <AccountsMenuHeader />
+                <ShadowContainer>
+                    <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
+                    <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
                         <AccountsList />
-                    </ReduxAccountSearchProvider>
-                    <RefreshAfterDiscoveryNeeded />
-                </ScrollContainer>
-                <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
-            </ShadowContainer>
-        </Wrapper>
+
+                        <RefreshAfterDiscoveryNeeded />
+                    </ScrollContainer>
+                    <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
+                </ShadowContainer>
+            </Wrapper>
+        </ReduxAccountSearchProvider>
     );
 };

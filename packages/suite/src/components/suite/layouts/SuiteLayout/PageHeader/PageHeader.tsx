@@ -11,7 +11,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { GlobalSendReceiveButtons } from './GlobalSendReceiveButtons';
+import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';
 import { HeaderDropdown } from './HeaderDropdown';
 import { PageName } from './PageNames/PageName';
@@ -58,7 +58,7 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
                     <HeaderDropdown />
                     <TradeActions />
 
-                    <GlobalSendReceiveButtons />
+                    <GlobalSendReceive />
                 </Row>
             )}
             {!!selectedAccount && isAccountTabPage && <HeaderActions />}
