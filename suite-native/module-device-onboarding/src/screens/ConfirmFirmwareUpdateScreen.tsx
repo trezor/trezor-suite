@@ -26,6 +26,7 @@ export const ConfirmFirmwareUpdateScreen = ({
 >) => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
+
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
     const { navigateToNextScreenAfterFirmwareInstallation } =

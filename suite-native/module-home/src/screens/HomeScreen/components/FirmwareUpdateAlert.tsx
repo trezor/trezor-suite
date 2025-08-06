@@ -13,6 +13,7 @@ import {
     selectIsDeviceConnected,
     selectIsFirmwareUpgradable,
     selectIsPortfolioTrackerDevice,
+    selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
@@ -52,6 +53,7 @@ const closeStateAtom = atom<CloseStateItem[]>([]);
 export const FirmwareUpdateAlert = () => {
     const { applyStyle } = useNativeStyles();
     const updateFirmwareVersion = useSelector(selectDeviceUpdateFirmwareVersion);
+    const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceId = useSelector(selectDeviceId);
     const isConnected = useSelector(selectIsDeviceConnected);
@@ -97,6 +99,7 @@ export const FirmwareUpdateAlert = () => {
 
     if (
         !isFirmwareUpgradable ||
+        !shouldOfferUpdateFirmware ||
         isPortfolioTrackerDevice ||
         isDiscoveryRunning ||
         !isConnected ||

@@ -7,7 +7,7 @@ import { useSetAtom } from 'jotai';
 import {
     selectDeviceModel,
     selectHasDeviceFirmwareInstalled,
-    selectIsLatestFirmwareInstalled,
+    selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Image, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
@@ -89,7 +89,7 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding
 >) => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
-    const isLatestFirmwareInstalled = useSelector(selectIsLatestFirmwareInstalled);
+    const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
     const deviceModel = useSelector(selectDeviceModel);
     const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
@@ -97,15 +97,15 @@ export const UninitializedDeviceLandingScreen = ({
         useNavigateToNextScreenAfterFirmwareInstallation();
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
-            if (isLatestFirmwareInstalled) {
+            if (shouldOfferUpdateFirmware) {
+                navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
+            } else {
                 // If user already has the latest firmware installed, skip this update screen and navigate to device auth-check directly.
                 updateOnboardingAnalytics({
                     firmware: 'up-to-date',
                 });
 
                 navigateToNextScreenAfterFirmwareInstallation();
-            } else {
-                navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
             }
         } else {
             // Security check is relevant for brand new devices without FW only.
