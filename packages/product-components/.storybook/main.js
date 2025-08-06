@@ -57,7 +57,7 @@ module.exports = {
 
         // Configure SVG files to match the main project's webpack config
         config.module.rules.push({
-            test: /\.(gif|jpe?g|png|svg)$/,
+            test: /\.(gif|jpe?g|png|svg|webp)$/,
             type: 'asset/resource',
         });
 
