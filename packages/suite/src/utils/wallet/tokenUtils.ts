@@ -4,7 +4,7 @@ import {
     TokenDefinitionsState,
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { NetworkSymbol, NetworkType, getNetworkFeatures } from '@suite-common/wallet-config';
 import { Account, Rate, RatesByKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
@@ -181,4 +181,15 @@ export const hasVisibleTokens = (
         currentTokens.shownWithBalance.length + currentTokens.shownWithoutBalance.length;
 
     return visibleTokenCount > 0;
+};
+
+export const getTokenAddressTranslationId = (networkType: NetworkType) => {
+    switch (networkType) {
+        case 'solana':
+            return 'TR_TOKEN_ADDRESS';
+        case 'cardano':
+            return 'TR_POLICY_ID_ADDRESS';
+        default:
+            return 'TR_CONTRACT_ADDRESS';
+    }
 };

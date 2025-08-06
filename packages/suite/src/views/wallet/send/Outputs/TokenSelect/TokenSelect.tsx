@@ -54,6 +54,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
 import {
     enhanceTokensWithRates,
+    getTokenAddressTranslationId,
     getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
@@ -367,14 +368,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 <Row justifyContent="flex-start">
                                     <Text variant="tertiary" typographyStyle="hint">
                                         <Row gap={spacings.xxs}>
-                                            {account.networkType === 'cardano' ? (
-                                                <Translation id="TR_POLICY_ID_ADDRESS" />
-                                            ) : (
-                                                <>
-                                                    <Translation id="TR_CONTRACT_ADDRESS" />
-                                                    {': '}
-                                                </>
-                                            )}
+                                            <Translation
+                                                id={getTokenAddressTranslationId(
+                                                    account.networkType,
+                                                )}
+                                            />
                                             <TokenAddressRow
                                                 typographyStyle="hint"
                                                 variant="tertiary"

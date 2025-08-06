@@ -61,7 +61,7 @@ import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
-import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
+import { formatTokenSymbol, getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { BlurUrls } from '../BlurUrls';
 
@@ -257,10 +257,11 @@ export const TokenRow = ({
                                 <Column maxWidth={200} gap={spacings.md}>
                                     <TokenAddressItem
                                         label={
-                                            <>
-                                                <Translation id="TR_CONTRACT_ADDRESS" />
-                                                {': '}
-                                            </>
+                                            <Translation
+                                                id={getTokenAddressTranslationId(
+                                                    network.networkType,
+                                                )}
+                                            />
                                         }
                                         address={token.contract}
                                         type="contract"

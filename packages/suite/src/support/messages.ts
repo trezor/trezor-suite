@@ -7092,13 +7092,17 @@ export default defineMessages({
         id: 'TR_CONTRACT_ADDRESS',
         defaultMessage: 'Contract address',
     },
+    TR_TOKEN_ADDRESS: {
+        id: 'TR_TOKEN_ADDRESS',
+        defaultMessage: 'Token address',
+    },
     TR_POLICY_ID_ADDRESS: {
         id: 'TR_POLICY_ID_ADDRESS',
-        defaultMessage: 'Policy ID:',
+        defaultMessage: 'Policy ID',
     },
     TR_FINGERPRINT_ADDRESS: {
         id: 'TR_FINGERPRINT_ADDRESS',
-        defaultMessage: 'Fingerprint:',
+        defaultMessage: 'Fingerprint',
     },
     TR_ANALYZE_IN_EXPLORER: {
         id: 'TR_ANALYZE_IN_EXPLORER',
