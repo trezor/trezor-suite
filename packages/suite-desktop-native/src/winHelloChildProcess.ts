@@ -1,14 +1,8 @@
-/**
- * Worker thread module for Windows Hello native binary operations
- * This runs in a separate worker thread to isolate the dlopen operations
- */
-
 import fs from 'fs';
 import * as os from 'os';
 import path from 'path';
-import { isMainThread, parentPort, workerData } from 'worker_threads';
 
-import type { IPCMessage, IPCRequest, IPCResponse } from './types';
+import type { IPCRequest, IPCResponse } from './types';
 import type * as WinHelloTypes from './win_hello.d';
 
 const errorMessageToStandardError = (errorMessage: string) => {
@@ -20,34 +14,44 @@ const errorMessageToStandardError = (errorMessage: string) => {
     }
 };
 
+const serializeError = (error: unknown): string => {
+    if (error instanceof Error) {
+        return error.message;
+    }
+
+    return String(error);
+};
+
 class WinHelloChildProcess {
     private winHello: typeof WinHelloTypes | null = null;
     private isWindows: boolean;
 
     constructor() {
         this.isWindows = os.platform() === 'win32';
-        this.initialize();
+        const resourcesPath = process.env.RESOURCES_PATH;
+        if (!resourcesPath) {
+            console.error(
+                '[WinHelloChildProcess] resourcesPath not provided in environment variable',
+            );
+            throw new Error('resourcesPath not provided in environment variable');
+        }
+
+        this.initialize(resourcesPath);
     }
 
-    private initialize() {
+    private initialize(resourcesPath: string) {
         if (!this.isWindows) {
             return;
         }
 
-        const resourcesPath = workerData?.resourcesPath;
-        if (!resourcesPath) {
-            console.error('[WinHelloChildProcess] resourcesPath not provided in workerData');
-            throw new Error('resourcesPath not provided in workerData');
-        }
-
-        const binaryPath = path.join(resourcesPath, 'bin/win_hello.node');
+        const binaryPath = path.join(resourcesPath, 'bin', 'win_hello.node');
 
         try {
             const localRequiredBinary = require('../../suite-data/files/bin/win_hello.node');
             this.winHello = localRequiredBinary as typeof WinHelloTypes | null;
         } catch (err) {
             console.warn(
-                `[WinHelloChildProcess] Failed to load local Windows Hello native module: ${(err as Error).message}`,
+                `[WinHelloChildProcess] Failed to load local Windows Hello native module: ${serializeError(err)}`,
             );
         }
 
@@ -63,7 +67,7 @@ class WinHelloChildProcess {
                 this.winHello = module.exports as typeof WinHelloTypes | null;
             } catch (err) {
                 console.warn(
-                    `[WinHelloChildProcess] Failed to load Windows Hello native module with dlopen: ${(err as Error).message}`,
+                    `[WinHelloChildProcess] Failed to load Windows Hello native module with dlopen: ${serializeError(err)}`,
                 );
             }
         } else {
@@ -141,34 +145,29 @@ class WinHelloChildProcess {
     }
 
     public start() {
-        if (!parentPort) {
-            throw new Error('This script must be run as a worker thread');
+        const processSend = process.send?.bind(process);
+        if (!processSend) {
+            throw new Error('This script must be run as a child process');
         }
 
-        parentPort.on('message', async (message: IPCMessage) => {
-            if ('method' in message) {
-                const response = await this.handleRequest(message);
-                parentPort!.postMessage(response);
-            }
+        process.on('message', async (message: IPCRequest) => {
+            const response = await this.handleRequest(message);
+            processSend(response);
         });
 
-        parentPort.postMessage({ ready: true });
+        processSend({ ready: true });
     }
 }
 
-if (!isMainThread) {
-    try {
-        const workerProcess = new WinHelloChildProcess();
-        workerProcess.start();
-    } catch (error) {
-        console.error(
-            `[WinHelloChildProcess] Error starting worker: ${error instanceof Error ? error.message : String(error)}`,
-        );
-        if (error instanceof Error && error.stack) {
-            console.error(`[WinHelloChildProcess] Stack trace: ${error.stack}`);
-        }
-        // Re-throw to make sure the error is propagated
-        throw error;
-    }
+// Initialize the child process when this module is executed
+try {
+    const childProcess = new WinHelloChildProcess();
+    childProcess.start();
+} catch (error) {
+    console.error(
+        `[WinHelloChildProcess] Error starting child process: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    // Re-throw to make sure the error is propagated
+    throw error;
 }
 export { WinHelloChildProcess };
