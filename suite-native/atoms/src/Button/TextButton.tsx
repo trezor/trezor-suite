@@ -13,7 +13,7 @@ import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } fro
 import { BUTTON_PRESS_ANIMATION_DURATION } from './useButtonPressAnimatedStyle';
 import { HStack } from '../Stack';
 
-export type TextButtonVariant = 'primary' | 'tertiary';
+export type TextButtonVariant = 'primary' | 'tertiary' | 'blue';
 
 type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
     isUnderlined?: boolean;
@@ -29,6 +29,10 @@ const variantToColorsMap = {
     tertiary: {
         color: 'textOnTertiary',
         pressedColor: 'textSubdued',
+    },
+    blue: {
+        color: 'textAlertBlue',
+        pressedColor: 'textAlertBlue',
     },
 } as const satisfies Record<TextButtonVariant, { color: Color; pressedColor: Color }>;
 

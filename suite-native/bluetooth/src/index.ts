@@ -3,6 +3,7 @@ export * from './bluetoothSlice';
 export * from './selectors';
 export * from './hooks/useBluetoothAdapter';
 export * from './hooks/useBluetoothDevice';
+export * from './hooks/useBluetoothManager';
 export * from './hooks/useBluetoothPermissions';
 export * from './hooks/useBluetoothSettings';
-export * from './components/BluetoothDeviceManager';
+export * from './components/BluetoothDeviceList';

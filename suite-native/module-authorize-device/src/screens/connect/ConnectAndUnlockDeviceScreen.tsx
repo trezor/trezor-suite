@@ -36,8 +36,8 @@ export const ConnectAndUnlockDeviceScreen = ({
         }
     }, [navigation]);
 
-    const navigateToConnectBluetoothDeviceScreen = () => {
-        navigation.replace(AuthorizeDeviceStackRoutes.ConnectBluetoothDevice);
+    const navigateToTurnOnAndUnlockDeviceScreen = () => {
+        navigation.replace(AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice);
     };
 
     useEffect(() => {
@@ -69,7 +69,7 @@ export const ConnectAndUnlockDeviceScreen = ({
         >
             <ConnectAndUnlockDeviceScreenContent
                 onConnectViaBluetooth={
-                    isBluetoothEnabled ? navigateToConnectBluetoothDeviceScreen : undefined
+                    isBluetoothEnabled ? navigateToTurnOnAndUnlockDeviceScreen : undefined
                 }
             />
         </Screen>

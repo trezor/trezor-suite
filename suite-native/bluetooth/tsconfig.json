@@ -11,7 +11,6 @@
         { "path": "../intl" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         {
             "path": "../../packages/transport-native-bluetooth"

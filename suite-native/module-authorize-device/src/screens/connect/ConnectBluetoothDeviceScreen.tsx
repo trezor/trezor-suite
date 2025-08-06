@@ -1,8 +1,48 @@
-import { BluetoothDeviceManager } from '@suite-native/bluetooth';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-export const ConnectBluetoothDeviceScreen = () => (
-    <Screen header={<ScreenHeader closeActionType="close" />}>
-        <BluetoothDeviceManager />
-    </Screen>
-);
+import { useNavigation } from '@react-navigation/native';
+
+import {
+    BluetoothDeviceList,
+    selectNearbyBluetoothDevices,
+    selectUnknownNearbyBluetoothDevices,
+    useBluetoothDevice,
+} from '@suite-native/bluetooth';
+import {
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    Screen,
+    StackNavigationProps,
+} from '@suite-native/navigation';
+
+import { BluetoothDeviceScreenHeader } from '../../components/connect/BluetoothDeviceScreenHeader';
+
+type NavigationProps = StackNavigationProps<
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.ConnectBluetoothDevice
+>;
+
+export const ConnectBluetoothDeviceScreen = () => {
+    const { connectBluetoothDevice } = useBluetoothDevice();
+    const navigation = useNavigation<NavigationProps>();
+
+    const nearbyBluetoothDevices = useSelector(selectNearbyBluetoothDevices);
+    const unknownNearbyBluetoothDevices = useSelector(selectUnknownNearbyBluetoothDevices);
+
+    useEffect(() => {
+        if (nearbyBluetoothDevices.length === 0) {
+            navigation.goBack();
+        }
+    }, [nearbyBluetoothDevices, navigation]);
+
+    return (
+        <Screen header={<BluetoothDeviceScreenHeader />}>
+            <BluetoothDeviceList
+                variant="connect"
+                devices={unknownNearbyBluetoothDevices}
+                onDeviceButtonPress={connectBluetoothDevice}
+            />
+        </Screen>
+    );
+};
