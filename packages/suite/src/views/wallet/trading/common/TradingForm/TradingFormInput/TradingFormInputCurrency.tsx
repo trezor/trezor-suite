@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 import {
@@ -64,6 +64,17 @@ export const TradingFormInputCurrency = ({
             context.refreshQuotes();
         }
     };
+
+    // update defaultCurrency in select only on mount
+    useEffect(() => {
+        if (isTradingBuyContext(context)) {
+            context.setValue(TRADING_FORM_FIAT_CURRENCY_SELECT, defaultCurrency);
+            context.setValue(
+                TRADING_FORM_FIAT_INPUT,
+                fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(defaultCurrency.value) ?? '',
+            );
+        }
+    }, [fiatCurrencies?.defaultAmountsOfFiatCurrencies]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Controller
