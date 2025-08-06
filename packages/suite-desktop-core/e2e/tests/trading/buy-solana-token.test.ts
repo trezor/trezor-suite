@@ -15,7 +15,7 @@ const fiatAmount = localizeNumber(buyQuotesSolanaToken[0].fiatStringAmount, 'en-
 const cryptoAmount = buyQuotesSolanaToken[0].receiveStringAmount;
 const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0].exchange);
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
-const formattedFiatAmount = `USD ${fiatAmount}`;
+const formattedFiatAmount = `CZK ${fiatAmount}`;
 const { receiveAddress, paymentMethodName } = buyTradeSolanaToken.trade;
 
 test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, () => {

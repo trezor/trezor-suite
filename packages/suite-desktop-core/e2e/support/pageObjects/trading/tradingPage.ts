@@ -236,8 +236,10 @@ export class TradingPage {
         if (currentCurrency === currencyCode.toUpperCase()) {
             return;
         }
-        await this.youPayCurrencyDropdown.click();
-        await this.youPayCurrencyOption(currencyCode).click();
+        await this.page.selectDropdownOptionWithRetry(
+            this.youPayCurrencyDropdown,
+            this.youPayCurrencyOption(currencyCode),
+        );
     }
 
     @step()
@@ -263,11 +265,16 @@ export class TradingPage {
         amount: string,
         cryptoCurrency: string = 'bitcoin',
         wantCrypto: boolean = false,
-        fiatCurrencyCode: BaseCurrencyCode = 'usd',
+        fiatCurrencyCode: BaseCurrencyCode = 'czk',
         country: TradingCountryCode = 'CZ',
     ) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
         await expect(inputField).not.toHaveValue('');
+        if (wantCrypto) {
+            // The desired value is already set due to sideeffect of mocked response,
+            // We clear it so we can intercept and verify request payload that is triggered by filling value.
+            await inputField.fill('');
+        }
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(fiatCurrencyCode);
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.buyQuotes);
@@ -289,10 +296,11 @@ export class TradingPage {
     async fillSellForm(
         amount: string,
         cryptoCurrency: string = 'bitcoin',
-        fiatCurrencyCode: BaseCurrencyCode = 'usd',
+        fiatCurrencyCode: BaseCurrencyCode = 'eur',
         country: TradingCountryCode = 'CZ',
     ) {
         await this.selectCountryOfResidence(country);
+        await this.selectFiatCurrency(fiatCurrencyCode);
         const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
         await this.youPayCryptoInput.fill(amount);
         await expect(
