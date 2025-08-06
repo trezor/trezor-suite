@@ -57,28 +57,25 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const destinationRoute = isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId)
         ? 'wallet-staking'
         : 'wallet-index';
+    const isTradingRoute = !!routeName?.includes('wallet-trading');
 
     const handleTransactionClick = () => {
-        const isTradingRoute = !!routeName?.includes('wallet-trading');
-
-        if (!isTradingRoute) {
-            const deviceToSelect = accountDevice || device;
-            if (deviceToSelect?.id !== currentDevice?.id) {
-                dispatch(selectDeviceThunk({ device: deviceToSelect }));
-            }
-
-            const txAnchor = getTxAnchor(tx?.txid);
-            dispatch(
-                goto(destinationRoute, {
-                    params: {
-                        accountIndex: account.index,
-                        accountType: account.accountType,
-                        symbol: account.symbol,
-                    },
-                    anchor: txAnchor,
-                }),
-            );
+        const deviceToSelect = accountDevice || device;
+        if (deviceToSelect?.id !== currentDevice?.id) {
+            dispatch(selectDeviceThunk({ device: deviceToSelect }));
         }
+
+        const txAnchor = getTxAnchor(tx?.txid);
+        dispatch(
+            goto(destinationRoute, {
+                params: {
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                    symbol: account.symbol,
+                },
+                anchor: txAnchor,
+            }),
+        );
 
         if (tx?.txid) {
             dispatch(
@@ -109,7 +106,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                 confirmations,
             }}
             action={
-                tx
+                tx && !isTradingRoute
                     ? {
                           onClick: handleTransactionClick,
                           label: 'TOAST_TX_BUTTON',
