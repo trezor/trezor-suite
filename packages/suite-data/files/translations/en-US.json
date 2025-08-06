@@ -171,6 +171,7 @@
   "TOAST_AUTH_CONFIRM_ERROR": "Passphrase confirmation error: {error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "Invalid passphrase",
   "TOAST_AUTH_FAILED": "Authorization error: {error}",
+  "TOAST_AUTO_EJECT_SETTINGS": "Wallet balances stay visible",
   "TOAST_AUTO_UPDATER_ERROR": "Update error ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "New version ({version}) installed successfully",
   "TOAST_AUTO_UPDATER_NO_NEW": "No updates available",
