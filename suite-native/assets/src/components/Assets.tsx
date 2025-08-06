@@ -20,6 +20,7 @@ import {
 import { selectDeviceNetworksWithAssets } from '../assetsSelectors';
 import { AssetItem } from './AssetItem';
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
+import { EjectedDuringDiscoveryWarning } from './EjectedDuringDiscoveryWarning';
 import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
 
 type NavigationProp = TabToStackCompositeNavigationProp<
@@ -64,6 +65,7 @@ export const Assets = () => {
     return (
         <>
             <AnimatedCard noPadding layout={LinearTransition}>
+                <EjectedDuringDiscoveryWarning />
                 {deviceNetworks.map(symbol => (
                     <Animated.View
                         entering={isLoading ? FadeInDown : undefined}

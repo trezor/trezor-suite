@@ -148,6 +148,7 @@ export const en = {
     },
     assets: {
         dashboard: {
+            ejectedDuringDiscovery: 'Reconnect your trezor to load all assets.',
             discoveryProgress: { loading: 'Loading...', stillWorking: 'Retrieving balances' },
         },
     },

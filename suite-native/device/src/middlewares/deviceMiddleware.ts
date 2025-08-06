@@ -12,12 +12,19 @@ import {
     selectAccountsByDeviceState,
     selectDeviceThunk,
     selectDiscoveryByDevicePath,
+    selectIsDeviceAutoEjectEnabled,
     selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
+import {
+    removeDeviceFromEjectedList,
+    selectHasDeviceBeenEjectedDuringDiscovery,
+    selectShouldShowAutoEjectAlert,
+    setDeviceHasBeenEjectedDuringDiscovery,
+    setShouldShowAutoEjectAlert,
+} from '@suite-native/settings';
 import { DEVICE } from '@trezor/connect';
 import {
     getFirmwareVersionArray,
@@ -54,9 +61,19 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 dispatch(forgetDisconnectedDevices({ device: action.payload }));
             }
 
-            const discovery = selectDiscoveryByDevicePath(getState(), action.payload.path);
-            if (discovery?.status === 'complete' && action.payload.mode === 'normal') {
+            if (!selectShouldShowAutoEjectAlert(getState())) {
                 dispatch(setShouldShowAutoEjectAlert(true));
+            }
+
+            const discovery = selectDiscoveryByDevicePath(getState(), action.payload.path);
+            if (discovery?.status === 'complete') {
+                if (selectHasDeviceBeenEjectedDuringDiscovery(getState(), action.payload.id)) {
+                    dispatch(removeDeviceFromEjectedList(action.payload.id));
+                }
+            } else {
+                if (!selectIsDeviceAutoEjectEnabled(getState())) {
+                    dispatch(setDeviceHasBeenEjectedDuringDiscovery(action.payload.id));
+                }
             }
         }
 

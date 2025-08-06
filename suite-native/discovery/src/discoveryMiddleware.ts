@@ -8,16 +8,20 @@ import {
     deviceActions,
     discoveryActions,
     restartDiscoveryThunk,
+    runAdditionalDiscoveryThunk,
     selectSelectedDevice,
     selectShouldRediscoverNetworks,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import {
     createAndBackupWalletThunk,
+    isDeviceEventAction,
     recoverWalletThunk,
     selectIsDeviceFirmwareSupported,
 } from '@suite-native/device';
 import {
+    removeDeviceFromEjectedList,
+    selectHasDeviceBeenEjectedDuringDiscovery,
     selectIsCoinEnablingInitFinished,
     setIsCoinEnablingInitFinished,
 } from '@suite-native/settings';
@@ -31,6 +35,14 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             action.payload.device.state?.staticSessionId
         ) {
             dispatch(discoveryActions.deleteDiscovery(action.payload.device.path));
+        }
+
+        if (
+            startDiscoveryThunk.pending.match(action) ||
+            runAdditionalDiscoveryThunk.pending.match(action)
+        ) {
+            const selectedDevice = selectSelectedDevice(getState());
+            dispatch(removeDeviceFromEjectedList(selectedDevice?.id));
         }
 
         // We need to wait until `authorizeDeviceThunk` action is fulfilled, because we need
@@ -56,7 +68,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (
-            action.type === DEVICE.CONNECT ||
+            isDeviceEventAction(action, DEVICE.CONNECT) ||
             deviceActions.selectDevice.match(action) ||
             changeCoinVisibility.fulfilled.match(action) ||
             setIsCoinEnablingInitFinished.match(action) ||
@@ -80,7 +92,12 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                         device.state.staticSessionId,
                     );
 
-                    if (shouldRediscover) {
+                    // If device is reconnected after ejecting during discovery, restart the discovery process
+                    const isConnectActionAndHasBeenEjectedDuringDiscovery =
+                        isDeviceEventAction(action, DEVICE.CONNECT) &&
+                        selectHasDeviceBeenEjectedDuringDiscovery(getState(), action.payload.id);
+
+                    if (shouldRediscover || isConnectActionAndHasBeenEjectedDuringDiscovery) {
                         dispatch(restartDiscoveryThunk());
                     }
                 }

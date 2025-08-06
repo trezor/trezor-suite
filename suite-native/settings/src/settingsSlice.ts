@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { isDetoxTestBuild } from '@suite-native/config';
-import { DEVICE } from '@trezor/connect';
+import { Device } from '@trezor/connect';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -12,6 +12,7 @@ export interface AppSettingsState {
     isFirmwareHashCheckEnabled: boolean;
     areTestnetsEnabled: boolean;
     shouldShowAutoEjectAlert: boolean;
+    disconnectedDevicesDuringDiscovery: Device['id'][];
 }
 
 export type SettingsSliceRootState = {
@@ -27,6 +28,7 @@ export const appSettingsInitialState: AppSettingsState = {
     isFirmwareHashCheckEnabled: true,
     areTestnetsEnabled: isDetoxTestBuild(),
     shouldShowAutoEjectAlert: false,
+    disconnectedDevicesDuringDiscovery: [],
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -37,6 +39,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isFirmwareRevisionCheckEnabled',
     'isFirmwareHashCheckEnabled',
     'areTestnetsEnabled',
+    'disconnectedDevicesDuringDiscovery',
 ];
 
 export const appSettingsSlice = createSlice({
@@ -62,14 +65,21 @@ export const appSettingsSlice = createSlice({
         setIsCoinEnablingInitFinished: (state, { payload }: PayloadAction<boolean>) => {
             state.isCoinEnablingInitFinished = payload;
         },
+        setDeviceHasBeenEjectedDuringDiscovery: (
+            state,
+            { payload }: PayloadAction<Device['id']>,
+        ) => {
+            if (!state.disconnectedDevicesDuringDiscovery.some(id => id === payload) && !!payload) {
+                state.disconnectedDevicesDuringDiscovery.push(payload);
+            }
+        },
+        removeDeviceFromEjectedList: (state, { payload }: PayloadAction<Device['id']>) => {
+            state.disconnectedDevicesDuringDiscovery =
+                state.disconnectedDevicesDuringDiscovery.filter(id => id !== payload);
+        },
         setShouldShowAutoEjectAlert: (state, { payload }: PayloadAction<boolean>) => {
             state.shouldShowAutoEjectAlert = payload;
         },
-    },
-    extraReducers: builder => {
-        builder.addCase(DEVICE.CONNECT, state => {
-            state.shouldShowAutoEjectAlert = false;
-        });
     },
 });
 
@@ -89,6 +99,11 @@ export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
 export const selectIsCoinEnablingInitFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isCoinEnablingInitFinished;
 
+export const selectHasDeviceBeenEjectedDuringDiscovery = (
+    state: SettingsSliceRootState,
+    deviceId: Device['id'],
+) => state.appSettings.disconnectedDevicesDuringDiscovery.some(id => id === deviceId);
+
 /**
  * Determine if either FW revision or FW hash check is disabled
  * (both are controlled by the same setting, see setCheckFirmwareAuthenticityEnabled reducer)
@@ -105,5 +120,7 @@ export const {
     toggleAreTestnetsEnabled,
     setIsCoinEnablingInitFinished,
     setShouldShowAutoEjectAlert,
+    setDeviceHasBeenEjectedDuringDiscovery,
+    removeDeviceFromEjectedList,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
