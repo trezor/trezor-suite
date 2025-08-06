@@ -96,4 +96,47 @@ export const fixtures = [
         default: true,
         response: [],
     },
+    {
+        method: 'getCurrentFiatRates',
+        default: true,
+        response: {
+            data: {
+                ts: 1752167345,
+                rates: {
+                    usd: 0.5,
+                },
+            },
+        },
+    },
+    {
+        method: 'getFiatRatesForTimestamps',
+        default: true,
+        response: ({ params }: any) => {
+            if (params.token && params.timestamps.length > 0) {
+                return {
+                    data: {
+                        tickers: params.timestamps.map((ts: number) => ({
+                            ts,
+                            rates: {
+                                usd: 0.5,
+                            },
+                        })),
+                    },
+                };
+            }
+
+            if (params.timestamps.length > 0) {
+                return {
+                    data: {
+                        tickers: params.timestamps.map((ts: number) => ({
+                            ts,
+                            rates: {
+                                usd: 2000,
+                            },
+                        })),
+                    },
+                };
+            }
+        },
+    },
 ];

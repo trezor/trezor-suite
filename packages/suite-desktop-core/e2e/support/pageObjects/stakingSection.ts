@@ -16,6 +16,7 @@ export class StakingSection {
     readonly unstakeToClaimButton: Locator;
     readonly availableBalanceWithSymbol: Locator;
     readonly cryptoInput: Locator;
+    readonly fiatInput: Locator;
     readonly unstakeButton: Locator;
     readonly speedUpButton: Locator;
     readonly pendingTransactionText: Locator;
@@ -40,6 +41,13 @@ export class StakingSection {
     readonly claimButton: Locator;
     readonly claimModalAmount: Locator;
     readonly claimModalButton: Locator;
+    readonly fractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
+        this.page.getByRole('button', { name: amount });
+    readonly cryptoInputBottomText: Locator;
+    readonly switchInputs: Locator;
+    readonly withdrawalWarning: Locator;
+    readonly fiatTicker: Locator;
+    readonly cryptoTicker: Locator;
 
     constructor(private readonly page: Page) {
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
@@ -54,6 +62,7 @@ export class StakingSection {
             '@staking/available-balance-with-symbol',
         );
         this.cryptoInput = this.page.getByTestId('@staking/form/crypto-input');
+        this.fiatInput = this.page.getByTestId('@staking/form/fiat-input');
         this.unstakeButton = this.page
             .getByTestId('@modal')
             .getByRole('button', { name: 'Unstake' });
@@ -92,6 +101,13 @@ export class StakingSection {
         this.claimModalButton = this.page
             .getByTestId('@staking/claim-modal')
             .getByRole('button', { name: 'Claim', exact: true });
+        this.cryptoInputBottomText = this.page.getByTestId(
+            '@staking/form/crypto-input/bottom-text',
+        );
+        this.switchInputs = this.page.getByTestId('@staking/form/switch-inputs');
+        this.withdrawalWarning = this.page.getByTestId('@staking/form/withdrawal-warning');
+        this.fiatTicker = this.page.getByTestId('@staking/form/fiat-input/input-addon');
+        this.cryptoTicker = this.page.getByTestId('@staking/form/crypto-input/input-addon');
     }
 
     async expectProgressIndicatorsToMatchPhase(
