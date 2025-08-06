@@ -1,6 +1,14 @@
 import { Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { TradingProviderInfo, TradingTradeType, isBuyTrade } from '@suite-common/trading';
+import {
+    TradingProviderInfo,
+    TradingRootState,
+    TradingTradeType,
+    TradingType,
+    isBuyTrade,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -14,7 +22,7 @@ export type ProviderListItemProps<T extends TradingTradeType> = {
     isSelected: boolean;
     onPress: (quote: T) => void;
     quote: T;
-    provider: TradingProviderInfo;
+    tradingType: TradingType;
 };
 
 export const PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT = 160 as const;
@@ -27,11 +35,16 @@ export const ProviderListItem = <T extends TradingTradeType>({
     isSelected,
     onPress,
     quote,
-    provider,
+    tradingType,
 }: ProviderListItemProps<T>) => {
     const { applyStyle } = useNativeStyles();
 
     const { toStringValue, formattedRate } = useChangeStringsExtractor(quote);
+
+    const provider =
+        useSelector((state: TradingRootState) =>
+            selectTradingProviderByNameAndTradeType(state, quote.exchange, tradingType),
+        ) ?? ({ companyName: '', logo: '' } as TradingProviderInfo);
 
     const { orderId } = quote;
     const { companyName, logo } = provider;

@@ -78,39 +78,84 @@ describe('useSectionList', () => {
             });
 
             const expectedTransformedData = [
-                ['sectionHeader', 'Section 1', 'section1', { id: 's1' }],
-                [
-                    'item',
-                    'item1',
-                    { isFirst: true, isLast: false, sectionData: { id: 's1' }, isEnabled: true },
-                ],
-                [
-                    'item',
-                    'item2',
-                    { isFirst: false, isLast: true, sectionData: { id: 's1' }, isEnabled: true },
-                ],
-                ['sectionHeader', 'Section 2', 'section2', { id: 's2' }],
-                [
-                    'item',
-                    'item3',
-                    { isFirst: true, isLast: false, sectionData: { id: 's2' }, isEnabled: true },
-                ],
-                [
-                    'item',
-                    'item4',
-                    { isFirst: false, isLast: false, sectionData: { id: 's2' }, isEnabled: true },
-                ],
-                [
-                    'item',
-                    'item5',
-                    { isFirst: false, isLast: true, sectionData: { id: 's2' }, isEnabled: true },
-                ],
-                ['sectionHeader', 'Section 3', 'section3', { id: 's3' }],
-                [
-                    'item',
-                    'item6',
-                    { isFirst: true, isLast: true, sectionData: { id: 's3' }, isEnabled: true },
-                ],
+                {
+                    type: 'sectionHeader',
+                    title: 'Section 1',
+                    key: 'section1',
+                    sectionData: { id: 's1' },
+                },
+                {
+                    type: 'item',
+                    item: 'item1',
+                    config: {
+                        isFirst: true,
+                        isLast: false,
+                        sectionData: { id: 's1' },
+                        isEnabled: true,
+                    },
+                },
+                {
+                    type: 'item',
+                    item: 'item2',
+                    config: {
+                        isFirst: false,
+                        isLast: true,
+                        sectionData: { id: 's1' },
+                        isEnabled: true,
+                    },
+                },
+                {
+                    type: 'sectionHeader',
+                    title: 'Section 2',
+                    key: 'section2',
+                    sectionData: { id: 's2' },
+                },
+                {
+                    type: 'item',
+                    item: 'item3',
+                    config: {
+                        isFirst: true,
+                        isLast: false,
+                        sectionData: { id: 's2' },
+                        isEnabled: true,
+                    },
+                },
+                {
+                    type: 'item',
+                    item: 'item4',
+                    config: {
+                        isFirst: false,
+                        isLast: false,
+                        sectionData: { id: 's2' },
+                        isEnabled: true,
+                    },
+                },
+                {
+                    type: 'item',
+                    item: 'item5',
+                    config: {
+                        isFirst: false,
+                        isLast: true,
+                        sectionData: { id: 's2' },
+                        isEnabled: true,
+                    },
+                },
+                {
+                    type: 'sectionHeader',
+                    title: 'Section 3',
+                    key: 'section3',
+                    sectionData: { id: 's3' },
+                },
+                {
+                    type: 'item',
+                    item: 'item6',
+                    config: {
+                        isFirst: true,
+                        isLast: true,
+                        sectionData: { id: 's3' },
+                        isEnabled: true,
+                    },
+                },
             ];
 
             expect(result.current.data).toEqual(expectedTransformedData);
@@ -124,26 +169,26 @@ describe('useSectionList', () => {
                 });
 
                 const expectedTransformedData = [
-                    [
-                        'item',
-                        'item1',
-                        {
+                    {
+                        type: 'item',
+                        item: 'item1',
+                        config: {
                             isFirst: true,
                             isLast: false,
                             sectionData: { id: 's1' },
                             isEnabled: true,
                         },
-                    ],
-                    [
-                        'item',
-                        'item2',
-                        {
+                    },
+                    {
+                        type: 'item',
+                        item: 'item2',
+                        config: {
                             isFirst: false,
                             isLast: true,
                             sectionData: { id: 's1' },
                             isEnabled: true,
                         },
-                    ],
+                    },
                 ];
 
                 expect(result.current.data).toEqual(expectedTransformedData);
@@ -185,18 +230,33 @@ describe('useSectionList', () => {
                 });
 
                 expect(result.current.data).toEqual([
-                    ['sectionHeader', 'Section 3', 'section3', { id: 's3' }],
-                    [
-                        'item',
-                        'item6',
-                        { isFirst: true, isLast: true, sectionData: { id: 's3' }, isEnabled: true },
-                    ],
-                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
-                    [
-                        'emptySection',
-                        'section4-empty-section',
-                        expect.objectContaining({ sectionData: { id: 's4' } }),
-                    ],
+                    {
+                        type: 'sectionHeader',
+                        title: 'Section 3',
+                        key: 'section3',
+                        sectionData: { id: 's3' },
+                    },
+                    {
+                        type: 'item',
+                        item: 'item6',
+                        config: {
+                            isFirst: true,
+                            isLast: true,
+                            sectionData: { id: 's3' },
+                            isEnabled: true,
+                        },
+                    },
+                    {
+                        type: 'sectionHeader',
+                        title: 'Section 4',
+                        key: 'section4',
+                        sectionData: { id: 's4' },
+                    },
+                    {
+                        type: 'emptySection',
+                        key: 'section4-empty-section',
+                        config: expect.objectContaining({ sectionData: { id: 's4' } }),
+                    },
                 ]);
             });
         });
@@ -208,27 +268,32 @@ describe('useSectionList', () => {
                 });
 
                 const expectedTransformedData = [
-                    ['sectionHeader', 'Section 1', 'section1', { id: 's1' }],
-                    [
-                        'item',
-                        'item1',
-                        {
+                    {
+                        type: 'sectionHeader',
+                        title: 'Section 1',
+                        key: 'section1',
+                        sectionData: { id: 's1' },
+                    },
+                    {
+                        type: 'item',
+                        item: 'item1',
+                        config: {
                             isFirst: true,
                             isLast: false,
                             sectionData: { id: 's1' },
                             isEnabled: true,
                         },
-                    ],
-                    [
-                        'item',
-                        'item2',
-                        {
+                    },
+                    {
+                        type: 'item',
+                        item: 'item2',
+                        config: {
                             isFirst: false,
                             isLast: true,
                             sectionData: { id: 's1' },
                             isEnabled: true,
                         },
-                    ],
+                    },
                 ];
 
                 expect(result.current.data).toEqual(expectedTransformedData);
@@ -248,7 +313,12 @@ describe('useSectionList', () => {
                 });
 
                 expect(result.current.data).toEqual([
-                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
+                    {
+                        type: 'sectionHeader',
+                        title: 'Section 4',
+                        key: 'section4',
+                        sectionData: { id: 's4' },
+                    },
                 ]);
             });
 
@@ -259,17 +329,22 @@ describe('useSectionList', () => {
                 });
 
                 expect(result.current.data).toEqual([
-                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
-                    [
-                        'emptySection',
-                        'section4-empty-section',
-                        {
+                    {
+                        type: 'sectionHeader',
+                        title: 'Section 4',
+                        key: 'section4',
+                        sectionData: { id: 's4' },
+                    },
+                    {
+                        type: 'emptySection',
+                        key: 'section4-empty-section',
+                        config: {
                             sectionData: { id: 's4' },
                             isFirst: true,
                             isLast: true,
                             isEnabled: false,
                         },
-                    ],
+                    },
                 ]);
             });
 
@@ -280,18 +355,33 @@ describe('useSectionList', () => {
                 });
 
                 expect(result.current.data).toEqual([
-                    ['sectionHeader', 'Section 3', 'section3', { id: 's3' }],
-                    [
-                        'item',
-                        'item6',
-                        { isFirst: true, isLast: true, sectionData: { id: 's3' }, isEnabled: true },
-                    ],
-                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
-                    [
-                        'emptySection',
-                        'section4-empty-section',
-                        expect.objectContaining({ sectionData: { id: 's4' } }),
-                    ],
+                    {
+                        type: 'sectionHeader',
+                        title: 'Section 3',
+                        key: 'section3',
+                        sectionData: { id: 's3' },
+                    },
+                    {
+                        type: 'item',
+                        item: 'item6',
+                        config: {
+                            isFirst: true,
+                            isLast: true,
+                            sectionData: { id: 's3' },
+                            isEnabled: true,
+                        },
+                    },
+                    {
+                        type: 'sectionHeader',
+                        title: 'Section 4',
+                        key: 'section4',
+                        sectionData: { id: 's4' },
+                    },
+                    {
+                        type: 'emptySection',
+                        key: 'section4-empty-section',
+                        config: expect.objectContaining({ sectionData: { id: 's4' } }),
+                    },
                 ]);
             });
         });
@@ -316,11 +406,11 @@ describe('useSectionList', () => {
             const { result } = renderUseSectionListHook({ data: [sectionWithDisabledItems] });
 
             const transformedData = result.current.data;
-            const items = transformedData.filter(item => item[0] === 'item');
+            const items = transformedData.filter(item => item.type === 'item');
 
-            expect((items[0][2] as any).isEnabled).toBe(true); // item6
-            expect((items[1][2] as any).isEnabled).toBe(false); // item7
-            expect((items[2][2] as any).isEnabled).toBe(true); // item8 (default)
+            expect((items[0] as any).config.isEnabled).toBe(true); // item6
+            expect((items[1] as any).config.isEnabled).toBe(false); // item7
+            expect((items[2] as any).config.isEnabled).toBe(true); // item8 (default)
         });
     });
 });
