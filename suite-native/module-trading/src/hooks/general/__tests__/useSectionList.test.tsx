@@ -1,27 +1,32 @@
-import { ReactElement, ReactNode } from 'react';
+import { Text } from 'react-native';
 
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { SectionHeaderRenderConfig, SectionListData, useSectionList } from '../useSectionList';
+import { UseSectionListProps, useSectionList } from '../useSectionList';
 
-const renderUseSectionListHook = (
-    data: SectionListData<any, any>,
-    noSingletonSectionHeader: boolean = false,
-    isLastItemRounded: boolean = true,
-    renderSectionHeader?: (
-        label: ReactNode,
-        config: SectionHeaderRenderConfig<any>,
-    ) => ReactElement,
+const renderUseSectionListHook = <T, U = undefined>(
+    initialProps: Partial<UseSectionListProps<T, U>>,
 ) =>
-    renderHookWithBasicProvider(() =>
-        useSectionList({
-            data,
-            renderItem: jest.fn(),
-            keyExtractor: jest.fn(),
-            noSingletonSectionHeader,
-            isLastItemRounded,
+    renderHookWithBasicProvider(
+        ({
+            data = [],
+            noSingletonSectionHeader = false,
+            isLastItemRounded = true,
             renderSectionHeader,
-        }),
+            SectionEmptyComponent,
+        }: Partial<UseSectionListProps<T, U>>) =>
+            useSectionList({
+                data,
+                renderItem: jest.fn(),
+                keyExtractor: jest.fn(),
+                noSingletonSectionHeader,
+                isLastItemRounded,
+                renderSectionHeader,
+                SectionEmptyComponent,
+            }),
+        {
+            initialProps,
+        },
     );
 
 describe('useSectionList', () => {
@@ -46,11 +51,31 @@ describe('useSectionList', () => {
         data: ['item6'],
     };
 
+    const section4 = {
+        key: 'section4',
+        label: 'Section 4',
+        sectionData: { id: 's4' },
+        data: [],
+    };
+
+    const sectionWithDisabledItems = {
+        key: 'section3',
+        label: 'Section 3',
+        sectionData: { id: 's3' },
+        data: [
+            { id: 'item6', isEnabled: true },
+            { id: 'item7', isEnabled: false },
+            { id: 'item8' }, // undefined isEnabled should default to true
+        ],
+    };
+
     const mockData = [section1, section2, section3];
 
     describe('data transformation', () => {
         it('should correctly transform data with section headers', () => {
-            const { result } = renderUseSectionListHook(mockData);
+            const { result } = renderUseSectionListHook({
+                data: mockData,
+            });
 
             const expectedTransformedData = [
                 ['sectionHeader', 'Section 1', 'section1', { id: 's1' }],
@@ -91,65 +116,204 @@ describe('useSectionList', () => {
             expect(result.current.data).toEqual(expectedTransformedData);
         });
 
-        it('should handle single section with noSingletonSectionHeader=true', () => {
-            const { result } = renderUseSectionListHook([section1], true);
+        describe('with noSingletonSectionHeader', () => {
+            it('should handle single section', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section1],
+                    noSingletonSectionHeader: true,
+                });
 
-            const expectedTransformedData = [
-                [
-                    'item',
-                    'item1',
-                    { isFirst: true, isLast: false, sectionData: { id: 's1' }, isEnabled: true },
-                ],
-                [
-                    'item',
-                    'item2',
-                    { isFirst: false, isLast: true, sectionData: { id: 's1' }, isEnabled: true },
-                ],
-            ];
+                const expectedTransformedData = [
+                    [
+                        'item',
+                        'item1',
+                        {
+                            isFirst: true,
+                            isLast: false,
+                            sectionData: { id: 's1' },
+                            isEnabled: true,
+                        },
+                    ],
+                    [
+                        'item',
+                        'item2',
+                        {
+                            isFirst: false,
+                            isLast: true,
+                            sectionData: { id: 's1' },
+                            isEnabled: true,
+                        },
+                    ],
+                ];
 
-            expect(result.current.data).toEqual(expectedTransformedData);
+                expect(result.current.data).toEqual(expectedTransformedData);
+            });
+
+            it('should handle empty data', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [],
+                    noSingletonSectionHeader: true,
+                });
+
+                expect(result.current.data).toEqual([]);
+            });
+
+            it('should handle empty sections', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section4],
+                    noSingletonSectionHeader: true,
+                });
+
+                expect(result.current.data).toEqual([]);
+            });
+
+            it('should handle empty section even with renderEmptySectionContent specified', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section4],
+                    noSingletonSectionHeader: true,
+                    SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
+                });
+
+                expect(result.current.data).toEqual([]);
+            });
+
+            it('should handle multiple sections with SectionEmptyComponent specified', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section3, section4],
+                    SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
+                    noSingletonSectionHeader: true,
+                });
+
+                expect(result.current.data).toEqual([
+                    ['sectionHeader', 'Section 3', 'section3', { id: 's3' }],
+                    [
+                        'item',
+                        'item6',
+                        { isFirst: true, isLast: true, sectionData: { id: 's3' }, isEnabled: true },
+                    ],
+                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
+                    [
+                        'emptySection',
+                        'section4-empty-section',
+                        expect.objectContaining({ sectionData: { id: 's4' } }),
+                    ],
+                ]);
+            });
         });
 
-        it('should handle empty data', () => {
-            const { result } = renderUseSectionListHook([], true);
+        describe('without noSingletonSectionHeader', () => {
+            it('should handle single section', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section1],
+                });
 
-            expect(result.current.data).toEqual([]);
-        });
-        it('should handle empty sections', () => {
-            const { result } = renderUseSectionListHook([{ ...section1, data: [] }], true);
+                const expectedTransformedData = [
+                    ['sectionHeader', 'Section 1', 'section1', { id: 's1' }],
+                    [
+                        'item',
+                        'item1',
+                        {
+                            isFirst: true,
+                            isLast: false,
+                            sectionData: { id: 's1' },
+                            isEnabled: true,
+                        },
+                    ],
+                    [
+                        'item',
+                        'item2',
+                        {
+                            isFirst: false,
+                            isLast: true,
+                            sectionData: { id: 's1' },
+                            isEnabled: true,
+                        },
+                    ],
+                ];
 
-            expect(result.current.data).toEqual([]);
+                expect(result.current.data).toEqual(expectedTransformedData);
+            });
+
+            it('should handle empty data', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [],
+                });
+
+                expect(result.current.data).toEqual([]);
+            });
+
+            it('should handle empty sections', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section4],
+                });
+
+                expect(result.current.data).toEqual([
+                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
+                ]);
+            });
+
+            it('should handle empty section even with SectionEmptyComponent specified', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section4],
+                    SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
+                });
+
+                expect(result.current.data).toEqual([
+                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
+                    [
+                        'emptySection',
+                        'section4-empty-section',
+                        {
+                            sectionData: { id: 's4' },
+                            isFirst: true,
+                            isLast: true,
+                            isEnabled: false,
+                        },
+                    ],
+                ]);
+            });
+
+            it('should handle multiple sections with SectionEmptyComponent specified', () => {
+                const { result } = renderUseSectionListHook({
+                    data: [section3, section4],
+                    SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
+                });
+
+                expect(result.current.data).toEqual([
+                    ['sectionHeader', 'Section 3', 'section3', { id: 's3' }],
+                    [
+                        'item',
+                        'item6',
+                        { isFirst: true, isLast: true, sectionData: { id: 's3' }, isEnabled: true },
+                    ],
+                    ['sectionHeader', 'Section 4', 'section4', { id: 's4' }],
+                    [
+                        'emptySection',
+                        'section4-empty-section',
+                        expect.objectContaining({ sectionData: { id: 's4' } }),
+                    ],
+                ]);
+            });
         });
     });
 
     describe('sections and items count', () => {
         it('should correctly calculate sectionsCount', () => {
-            const { result } = renderUseSectionListHook(mockData);
+            const { result } = renderUseSectionListHook({ data: mockData });
 
             expect(result.current.sectionsCount).toBe(3);
         });
 
         it('should correctly calculate itemsCount', () => {
-            const { result } = renderUseSectionListHook(mockData);
+            const { result } = renderUseSectionListHook({ data: mockData });
 
             expect(result.current.itemsCount).toBe(6);
         });
     });
 
     describe('isEnabled property handling', () => {
-        const sectionWithDisabledItems = {
-            key: 'section3',
-            label: 'Section 3',
-            sectionData: { id: 's3' },
-            data: [
-                { id: 'item6', isEnabled: true },
-                { id: 'item7', isEnabled: false },
-                { id: 'item8' }, // undefined isEnabled should default to true
-            ],
-        };
-
         it('should correctly handle items with explicit or undefined isEnabled property', () => {
-            const { result } = renderUseSectionListHook([sectionWithDisabledItems]);
+            const { result } = renderUseSectionListHook({ data: [sectionWithDisabledItems] });
 
             const transformedData = result.current.data;
             const items = transformedData.filter(item => item[0] === 'item');

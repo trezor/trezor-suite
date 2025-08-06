@@ -12,11 +12,13 @@ export type ItemRenderConfig<U> = {
     isEnabled?: boolean;
 };
 
+export type SectionListDataArray<T> = (T & { isEnabled?: boolean })[];
+
 export type SectionListData<T, U = undefined> = {
     key: string;
     label: ReactNode;
     sectionData: U;
-    data: (T & { isEnabled?: boolean })[];
+    data: SectionListDataArray<T>;
 }[];
 
 export type SectionHeaderRenderConfig<U> = {
@@ -28,12 +30,15 @@ export type ListInternalItemShape<T, U> =
     // [type, text, key, sectionData]
     | ['sectionHeader', ReactNode, string, U]
     // [type, data, config]
-    | ['item', T, ItemRenderConfig<U>];
+    | ['item', T, ItemRenderConfig<U>]
+    // [type, key, sectionData]
+    | ['emptySection', string, ItemRenderConfig<U>];
 
-type UseSectionListProps<T, U> = {
+export type UseSectionListProps<T, U> = {
     data: SectionListData<T, U>;
     renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
     renderSectionHeader?: (label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement;
+    SectionEmptyComponent?: ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
     noSingletonSectionHeader: boolean | undefined;
     isLastItemRounded?: boolean;
@@ -72,6 +77,7 @@ const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
 const transformToInternalFlatListData = <T, U = undefined>(
     inputData: SectionListData<T, U>,
     noSingletonSectionHeader: boolean | undefined,
+    withEmptySectionPlaceholder: boolean,
     isLastItemRounded: boolean,
 ): ListInternalItemShape<T, U>[] =>
     inputData.reduce(
@@ -91,6 +97,19 @@ const transformToInternalFlatListData = <T, U = undefined>(
 
             if (!noSingletonSectionHeader || inputData.length > 1) {
                 acc.push(['sectionHeader', label, key, sectionData]);
+
+                if (withEmptySectionPlaceholder && itemsData.length === 0) {
+                    acc.push([
+                        'emptySection',
+                        key + '-empty-section',
+                        {
+                            isFirst: true,
+                            isLast: true,
+                            sectionData,
+                            isEnabled: false,
+                        },
+                    ]);
+                }
             }
 
             acc.push(...itemsData);
@@ -111,6 +130,9 @@ const internalKeyExtractor = <T, U>(
         case 'item':
             return itemKeyExtractor(item[1], item[2].sectionData);
 
+        case 'emptySection':
+            return item[1];
+
         default:
             return exhaustive(item[0]);
     }
@@ -122,6 +144,7 @@ const renderInternalItem = <T, U>(
     renderSectionHeader:
         | ((label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement)
         | undefined,
+    SectionEmptyComponent: ReactElement | undefined,
     applyStyle: ReturnType<typeof useNativeStyles>['applyStyle'],
     itemStyle?: ReturnType<typeof prepareNativeStyle<ItemRenderConfig<unknown>>>,
 ): ReactElement => {
@@ -157,6 +180,22 @@ const renderInternalItem = <T, U>(
                 </AnimatedBox>
             );
 
+        case 'emptySection':
+            return (
+                <AnimatedBox
+                    entering={FadeIn}
+                    exiting={FadeOut}
+                    style={applyStyle(itemStyle ?? defaultItemStyle, {
+                        isFirst: true,
+                        isLast: true,
+                        sectionData: item[2],
+                        isEnabled: false,
+                    })}
+                >
+                    {SectionEmptyComponent}
+                </AnimatedBox>
+            );
+
         default:
             return exhaustive(item[0]);
     }
@@ -170,9 +209,11 @@ export const useSectionList = <T, U = undefined>({
     noSingletonSectionHeader,
     isLastItemRounded = true,
     itemStyle,
+    SectionEmptyComponent,
 }: UseSectionListProps<T, U>) => {
     const { applyStyle } = useNativeStyles();
     const sectionsCount = data.length;
+    const isEmptySectionPlaceholderDefined = !!SectionEmptyComponent;
 
     const itemsCount = useMemo(
         () =>
@@ -189,9 +230,10 @@ export const useSectionList = <T, U = undefined>({
             transformToInternalFlatListData<T, U>(
                 data,
                 noSingletonSectionHeader,
+                isEmptySectionPlaceholderDefined,
                 isLastItemRounded,
             ),
-        [data, noSingletonSectionHeader, isLastItemRounded],
+        [data, noSingletonSectionHeader, isLastItemRounded, isEmptySectionPlaceholderDefined],
     );
 
     return {
@@ -201,6 +243,13 @@ export const useSectionList = <T, U = undefined>({
         keyExtractor: (item: ListInternalItemShape<T, U>) =>
             internalKeyExtractor(item, keyExtractor),
         renderItem: ({ item }: { item: ListInternalItemShape<T, U> }) =>
-            renderInternalItem(item, renderItem, renderSectionHeader, applyStyle, itemStyle),
+            renderInternalItem(
+                item,
+                renderItem,
+                renderSectionHeader,
+                SectionEmptyComponent,
+                applyStyle,
+                itemStyle,
+            ),
     };
 };
