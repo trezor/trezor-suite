@@ -20,6 +20,7 @@ import {
 import {
     getStakeType,
     getTxValidityTimeoutInMs,
+    isEvmApprovalTx,
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
 } from '@suite-common/wallet-utils';
@@ -110,6 +111,8 @@ export const TransactionReviewModalBodyInner = ({
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
+    const isApprovalTx = isEvmApprovalTx(precomposedForm.ethereumDataHex);
+
     const totalRecipients = outputs.filter(({ type }) => type === 'address').length;
     const hasOpReturn = outputs.some(output => output.type === 'opreturn');
 
@@ -140,14 +143,22 @@ export const TransactionReviewModalBodyInner = ({
                 reviewStep === 1 &&
                 totalRecipients === 1 && // Currently we only support going bak for =1
                 lastButtonRequestCode === 'ButtonRequest_ConfirmOutput' &&
-                !hasOpReturn
+                !hasOpReturn &&
+                !isApprovalTx
             ) {
                 setReviewStep(prev => prev - 1);
             } else {
                 setReviewStep(prev => prev + 1);
             }
         }
-    }, [buttonRequestsCount, lastButtonRequestCode, reviewStep, totalRecipients, hasOpReturn]);
+    }, [
+        buttonRequestsCount,
+        lastButtonRequestCode,
+        reviewStep,
+        totalRecipients,
+        hasOpReturn,
+        isApprovalTx,
+    ]);
 
     const isInternalTransfer = useSelector(state =>
         selectIsTxOutputInternal(state, account?.symbol, outputs[0]),

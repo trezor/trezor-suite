@@ -58,8 +58,6 @@ const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number
     </H4>
 );
 
-const TOTAL_STEPS_PER_RECIPIENT = 2; // 1 for address, 1 for amount
-
 export const TransactionReviewOutputList = ({
     account,
     precomposedTx,
@@ -86,11 +84,8 @@ export const TransactionReviewOutputList = ({
         selectSendFormReviewLastButtonCode(state, symbol),
     );
 
-    const totalRecipients = outputs.filter(({ type }) => type === 'address').length;
-    const hasOpReturn = outputs.some(output => output.type === 'opreturn');
-
     const reviewState = getTransactionReviewState({
-        index: totalRecipients * TOTAL_STEPS_PER_RECIPIENT + (hasOpReturn ? 1 : 0),
+        index: outputs.length,
         currentStep: reviewStep,
         hasSignedTx: !!signedTx,
         lastButtonRequestCode,
