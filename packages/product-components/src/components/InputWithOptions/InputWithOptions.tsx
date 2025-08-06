@@ -46,6 +46,7 @@ export const InputWithOptions = <TFieldValues extends FieldValues>({
     const labelRight =
         canSwitchInputs && switchTranslation != null ? (
             <TextButton
+                data-testid={`${dataTest}/switch-inputs`}
                 size="small"
                 onClick={() => setAmountInCrypto(prevValue => !prevValue)}
                 type="button"

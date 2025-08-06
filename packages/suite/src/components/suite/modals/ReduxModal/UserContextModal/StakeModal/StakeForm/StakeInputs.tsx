@@ -209,7 +209,7 @@ export const StakeInputs = () => {
                 ]}
             />
             {shouldShowAmountForWithdrawalWarning && (
-                <Banner variant="info" width="100%">
+                <Banner data-testid="@staking/form/withdrawal-warning" variant="info" width="100%">
                     <Translation
                         id={
                             isLessAmountForWithdrawalWarningShown

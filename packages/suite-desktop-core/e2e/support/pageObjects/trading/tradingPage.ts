@@ -57,9 +57,6 @@ export class TradingPage {
     readonly youPayFiatCryptoSwitchButton: Locator;
     readonly youPayCryptoInput: Locator;
     readonly cryptoInputBottomText: Locator;
-    readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
-        this.page.getByRole('button', { name: amount });
-
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
