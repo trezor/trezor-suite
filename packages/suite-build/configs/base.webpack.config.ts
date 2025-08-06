@@ -154,7 +154,7 @@ const config: webpack.Configuration = {
             },
             // Images
             {
-                test: /\.(gif|jpe?g|png|svg)$/,
+                test: /\.(gif|jpe?g|png|svg|webp)$/,
                 type: 'asset/resource',
             },
         ],
