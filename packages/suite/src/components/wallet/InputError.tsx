@@ -18,10 +18,10 @@ export const InputError = ({ buttonProps, learnMoreUrl, message }: InputErrorPro
     <Row gap={spacings.xs} justifyContent="space-between" flex="1">
         <Row gap={spacings.xs}>
             <Paragraph>{message}</Paragraph>
-            {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
+            {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} textWrap={false} />}
         </Row>
         {buttonProps?.text && (
-            <Button size="tiny" variant="tertiary" onClick={buttonProps.onClick}>
+            <Button size="tiny" variant="tertiary" onClick={buttonProps.onClick} textWrap={false}>
                 {buttonProps.text}
             </Button>
         )}
