@@ -88,6 +88,7 @@ At the moment, there are the following tags:
 - @group=[string]
 - @desktopOnly
 - @webOnly
+- @nightlyOnly
 - @snapshot
 
 #### @group
@@ -105,7 +106,13 @@ Assigning a @group allows filtering based on logical test category
 
 #### @desktopOnly or @webOnly
 
-Some tests are only applicable for Desktop app or Web and you can use this tag to notify the runner, that the test should be ignored when running against opposite Suite.
+Some tests are only applicable for Desktop app or Web and you can use this tag to notify the runner, that the test should be ignored when running against opposite Suite. This negative filtering is done on playwright-config level.
+
+Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in Web PR workflow definition. Meaning, Web PR runs execute only tests with @WebOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000.
+
+#### @nightlyOnly
+
+Some tests should run on nighty runs only for specific reasons. This tags is used for reversed filtering in PR and release workflows definitions. This means tests with this tags will run only on nightly and canary runs.
 
 #### @snapshot
 
