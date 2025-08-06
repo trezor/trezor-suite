@@ -47,7 +47,7 @@ const config: webpack.Configuration = {
                 },
             },
             {
-                test: /\.(gif|jpe?g|png|svg)$/,
+                test: /\.(gif|jpe?g|png|svg|webp)$/,
                 type: 'asset/resource',
                 generator: {
                     filename: './images/[name][contenthash][ext]',
