@@ -1,8 +1,9 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import { SelectItem, SelectItemValue } from './SelectItem';
 import { SelectTrigger } from './SelectTrigger';
-import { BottomSheet } from '../Sheet/BottomSheet';
+import { BottomSheetModal } from '../Sheet/BottomSheetModal';
+import { useBottomSheetModal } from '../Sheet/hooks/useBottomSheetModal';
 
 export type SelectItemType<TItemValue extends SelectItemValue> = {
     value: TItemValue;
@@ -24,7 +25,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     onSelectItem,
     testID,
 }: SelectProps<TItemValue>) => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const selectedItem = useMemo(
         () => items.find(item => item.value === selectValue),
@@ -32,12 +33,12 @@ export const Select = <TItemValue extends SelectItemValue>({
     );
     const handleSelectItem = (itemValue: TItemValue) => {
         onSelectItem(itemValue);
-        setIsOpen(false);
+        closeModal();
     };
 
     return (
         <>
-            <BottomSheet isVisible={isOpen} onClose={setIsOpen} title={selectLabel}>
+            <BottomSheetModal ref={bottomSheetRef} title={selectLabel} isCloseDisplayed>
                 {items.map(({ value, label }, index) => (
                     <SelectItem
                         key={value}
@@ -48,10 +49,10 @@ export const Select = <TItemValue extends SelectItemValue>({
                         onSelect={() => handleSelectItem(value)}
                     />
                 ))}
-            </BottomSheet>
+            </BottomSheetModal>
             <SelectTrigger
                 value={selectedItem?.label ?? null}
-                handlePress={() => setIsOpen(true)}
+                handlePress={openModal}
                 testID={testID}
             />
         </>
