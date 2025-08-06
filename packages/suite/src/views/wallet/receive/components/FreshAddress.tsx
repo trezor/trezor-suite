@@ -178,7 +178,7 @@ export const FreshAddress = ({
                     )}
                 </Tooltip>
             </Row>
-            {account.networkType === 'ethereum' && (
+            {account.networkType === 'ethereum' && account.symbol !== 'eth' && (
                 <Banner icon variant="info" margin={{ top: spacings.xxl }}>
                     <H4>
                         <Translation
