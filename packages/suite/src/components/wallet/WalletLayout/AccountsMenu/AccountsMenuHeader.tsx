@@ -100,6 +100,7 @@ export const AccountsMenuHeader = () => {
 
                                 <AddAccountButton
                                     isFullWidth={isEmpty}
+                                    isIconOnly={!isEmpty}
                                     data-testid="@account-menu/add-account"
                                     device={device}
                                 />
@@ -112,6 +113,7 @@ export const AccountsMenuHeader = () => {
                     <Column alignItems="center" margin={{ bottom: spacings.sm }}>
                         <AddAccountButton
                             isFullWidth={false}
+                            isIconOnly={true}
                             data-testid="@account-menu/add-account"
                             device={device}
                         />
