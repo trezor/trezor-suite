@@ -24,13 +24,18 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedRadioCardFrameProps)[nu
 
 export type RadioCardProps = {
     isActive: boolean;
+    isDisabled?: boolean;
     children: ReactNode;
     onClick?: () => void;
     dataTestId?: string;
 } & AllowedFrameProps;
 
 const Wrapper = styled.div<
-    { $isActive: boolean; $elevation: Elevation } & TransientProps<AllowedFrameProps>
+    {
+        $isActive: boolean;
+        $isDisabled: boolean;
+        $elevation: Elevation;
+    } & TransientProps<AllowedFrameProps>
 >`
     position: relative;
     width: 100%;
@@ -42,15 +47,26 @@ const Wrapper = styled.div<
     background: ${({ theme }) => theme.baseFillSurfacePage};
     ${({ onClick }) => onClick && 'cursor: pointer;'}
 
-    &:hover,
-    &:focus {
-        outline-color: ${({ theme }) => theme.baseContentEmphasis};
-    }
+    ${({ $isDisabled }) =>
+        !$isDisabled &&
+        css`
+            &:hover,
+            &:focus {
+                outline-color: ${({ theme }) => theme.baseContentEmphasis};
+            }
+        `}
 
     ${({ $isActive }) =>
         $isActive &&
         css`
             outline-color: ${({ theme }) => theme.baseContentBrand} !important;
+        `}
+
+    ${({ $isDisabled }) =>
+        $isDisabled &&
+        css`
+            opacity: 0.5;
+            cursor: not-allowed;
         `}
 
     ${withFrameProps}
@@ -61,7 +77,14 @@ const IconBackground = styled.div`
     background: ${({ theme }) => theme.baseFillSurfacePage};
 `;
 
-export const RadioCard = ({ isActive, onClick, children, dataTestId, ...rest }: RadioCardProps) => {
+export const RadioCard = ({
+    isActive,
+    isDisabled = false,
+    onClick,
+    children,
+    dataTestId,
+    ...rest
+}: RadioCardProps) => {
     const { elevation } = useElevation();
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps);
@@ -69,7 +92,8 @@ export const RadioCard = ({ isActive, onClick, children, dataTestId, ...rest }: 
     return (
         <Wrapper
             $isActive={isActive}
-            onClick={onClick}
+            $isDisabled={isDisabled}
+            onClick={!isDisabled ? onClick : undefined}
             $elevation={elevation}
             {...frameProps}
             data-testid={dataTestId}
