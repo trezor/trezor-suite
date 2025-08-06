@@ -129,7 +129,7 @@ jobs:
           project: "web"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: "(?=.*@webOnly)"
+          additional-grep: "(?=.*@webOnly)(?!.*@nightlyOnly)"
           fail-fast: 7
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
