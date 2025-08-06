@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     selectDeviceModel,
-    selectDeviceReleaseInfo,
+    selectFirmwareReleaseConfig,
     selectHasRunningDiscovery,
     selectIsDeviceBackedUp,
     selectIsFirmwareUpgradable,
@@ -33,7 +33,7 @@ type NavigationProp = StackNavigationProps<
 export const DeviceFirmwareCard = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
-    const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
+    const deviceReleaseInfo = useSelector(selectFirmwareReleaseConfig);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
