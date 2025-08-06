@@ -2612,6 +2612,10 @@ export default defineMessages({
         defaultMessage: 'Wallet backup failed. Wipe your Trezor and start the setup process again.',
         id: 'TR_FAILED_BACKUP',
     },
+    TR_RECEIVE_ADDRESS_FAILED_BACKUP: {
+        defaultMessage: 'Wallet backup failed. Sending funds to this wallet is not secure.',
+        id: 'TR_RECEIVE_ADDRESS_FAILED_BACKUP',
+    },
     TR_FIAT_RATES_NOT_AVAILABLE: {
         defaultMessage: 'Rate not available.',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',

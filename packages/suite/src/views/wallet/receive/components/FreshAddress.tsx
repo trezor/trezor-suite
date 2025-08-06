@@ -22,7 +22,7 @@ import { spacings } from '@trezor/theme';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { ReadMoreLink, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
-import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
+import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { AppState } from 'src/types/suite';
 
 const FreshAddressWrapper = styled.div`
@@ -93,9 +93,7 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account?.key ?? ''),
     );
-    const isAuthenticityCheckFailed = useSelector(
-        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
-    );
+    const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const dispatch = useDispatch();
 
     const firstFreshAddress = useMemo(() => {
@@ -127,8 +125,8 @@ export const FreshAddress = ({
         if (!firstFreshAddress) {
             return <Translation id="RECEIVE_ADDRESS_LIMIT_REACHED" />;
         }
-        if (isAuthenticityCheckFailed) {
-            return <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />;
+        if (receiveDisabledTooltipContent !== null) {
+            return receiveDisabledTooltipContent;
         }
 
         return null;
@@ -138,11 +136,7 @@ export const FreshAddress = ({
         'data-testid': '@wallet/receive/reveal-address-button',
         onClick: handleAddressReveal,
         isDisabled:
-            disabled ||
-            locked ||
-            coinjoinDisallowReveal ||
-            !firstFreshAddress ||
-            isAuthenticityCheckFailed,
+            disabled || locked || coinjoinDisallowReveal || !firstFreshAddress || isReceiveDisabled,
         isLoading: locked,
     };
 

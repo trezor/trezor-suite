@@ -4,24 +4,15 @@ import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import {
-    Button,
-    Card,
-    Column,
-    GradientOverlay,
-    Row,
-    Table,
-    Text,
-    Tooltip,
-} from '@trezor/components';
+import { Button, Card, Column, GradientOverlay, Row, Table, Text } from '@trezor/components';
 import { AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { FormattedCryptoAmount, MetadataLabeling, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
+import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
@@ -49,18 +40,13 @@ type ItemProps = {
 };
 
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
-    const isAuthenticityCheckFailed = useSelector(
-        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
-    );
+    const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
     const [isHovered, setIsHovered] = useState(false);
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
-    const isDisabled = locked || isAuthenticityCheckFailed;
-    const tooltipContent = isAuthenticityCheckFailed ? (
-        <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />
-    ) : null;
+    const isDisabled = locked || isReceiveDisabled;
 
     return (
         <Table.Row onHover={setIsHovered}>
@@ -83,7 +69,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
             </Table.Cell>
             <Table.Cell align="end">
                 <AddressActions $isVisible={isHovered}>
-                    <Tooltip content={tooltipContent}>
+                    <ReceiveDisabledWrapper>
                         <Button
                             data-testid={`@wallet/receive/reveal-address-button/${index}`}
                             variant="tertiary"
@@ -94,7 +80,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                         >
                             <Translation id="TR_REVEAL_ADDRESS" />
                         </Button>
-                    </Tooltip>
+                    </ReceiveDisabledWrapper>
                 </AddressActions>
             </Table.Cell>
 
