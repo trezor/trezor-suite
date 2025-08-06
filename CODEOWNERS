@@ -50,7 +50,7 @@
 
 /packages/icons @trezor/suite-mobile
 
-/suite-common/message-system @tomasklim @matejkriz
+/suite-common/message-system @tomasklim @matejkriz @MiroslavProchazka @pavelmario
 
 /suite-common/token-definitions @tomasklim
 
@@ -80,7 +80,7 @@
 
 /packages/theme @trezor/suite-engagement
 
-/packages/urls @marekrjpolak
+/packages/urls @marekrjpolak @pavelmario
 
 /packages/utils @karliatto
 
@@ -90,11 +90,11 @@
 
 /packages/styles @trezor/suite-engagement
 
-/packages/suite/src/support/messages.ts @MiroslavProchazka
+/packages/suite/src/support/messages.ts @pavelmario
 
 /suite-common/graph @trezor/suite-mobile
 
-/packages/connect/src/data/deviceAuthenticityConfig.ts @tsusanka
+/packages/connect/src/data/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka
 
 /packages/schema-utils @martykan
 
