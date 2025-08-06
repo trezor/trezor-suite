@@ -1,5 +1,4 @@
 import {
-    prepareSelectAllDevices,
     selectAdapterStatus,
     selectKnownDevices,
     selectNearbyDevices,
@@ -7,7 +6,6 @@ import {
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { NativeBluetoothRootState } from './bluetoothSlice';
-import { BluetoothDevice } from './types';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeBluetoothRootState>();
 
@@ -20,14 +18,22 @@ export const selectBluetoothAdapterStatus = (state: NativeBluetoothRootState) =>
 export const selectKnownBluetoothDevices = (state: NativeBluetoothRootState) =>
     selectKnownDevices(state);
 
-export const selectIsKnownBluetoothDevice = createMemoizedSelector(
-    [selectKnownBluetoothDevices, (_, device: BluetoothDevice) => device],
-    (knownBluetoothDevices, device) => knownBluetoothDevices.some(d => d.id === device.id),
+export const selectHasKnownBluetoothDevices = createMemoizedSelector(
+    [selectKnownBluetoothDevices],
+    knownBluetoothDevices => knownBluetoothDevices.length > 0,
 );
 
 export const selectNearbyBluetoothDevices = createMemoizedSelector(
     [selectNearbyDevices],
     nearbyDevices => nearbyDevices ?? [],
+);
+
+export const selectUnknownNearbyBluetoothDevices = createMemoizedSelector(
+    [selectNearbyBluetoothDevices, selectKnownBluetoothDevices],
+    (nearbyBluetoothDevices, knownBluetoothDevices) =>
+        nearbyBluetoothDevices.filter(nearbyDevice =>
+            knownBluetoothDevices.every(knownDevice => nearbyDevice.id !== knownDevice.id),
+        ),
 );
 
 export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
@@ -41,5 +47,3 @@ export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
             ),
         ),
 );
-
-export const selectAllBluetoothDevices = prepareSelectAllDevices<BluetoothDevice>();

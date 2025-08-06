@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -26,6 +26,7 @@ import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 type ConnectDeviceScreenHeaderProps = {
     shouldDisplayCancelButton?: boolean;
     onCancelNavigationTarget?: NavigateParameters<RootStackParamList>;
+    helpButton?: ReactNode;
 };
 
 type NavigationProp = StackToTabCompositeProps<
@@ -37,6 +38,7 @@ type NavigationProp = StackToTabCompositeProps<
 export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
     onCancelNavigationTarget,
+    helpButton = <ConnectingTrezorHelp />,
 }: ConnectDeviceScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
@@ -110,7 +112,7 @@ export const ConnectDeviceScreenHeader = ({
                     onPress={handleCancel}
                 />
             )}
-            <ConnectingTrezorHelp />
+            {helpButton}
         </ScreenHeaderWrapper>
     );
 };

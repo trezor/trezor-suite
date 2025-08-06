@@ -38,6 +38,7 @@ const usedIcons = [
     'bookmarkSimple',
     'browsers',
     'bugBeetle',
+    'cableUsbC',
     'calendar',
     'cameraSlash',
     'caretCircleRight',

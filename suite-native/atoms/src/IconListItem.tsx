@@ -9,7 +9,7 @@ import { OrderedListIcon } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type Variant = 'default' | 'red' | 'yellow' | 'primary';
+type Variant = 'default' | 'blue' | 'red' | 'yellow' | 'primary';
 type IconColors = {
     iconColor: Color;
     iconBorderColor: Color;
@@ -21,6 +21,11 @@ const iconColorsMap = {
         iconColor: 'iconDefault',
         iconBorderColor: 'borderElevation0',
         iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
+    },
+    blue: {
+        iconColor: 'iconAlertBlue',
+        iconBorderColor: 'backgroundAlertBlueSubtleOnElevation0',
+        iconBackgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
     },
     red: {
         iconColor: 'iconAlertRed',

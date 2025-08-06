@@ -14,6 +14,8 @@ import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnloc
 import { ConnectBluetoothDeviceScreen } from '../screens/connect/ConnectBluetoothDeviceScreen';
 import { ConnectingDeviceScreen } from '../screens/connect/ConnectingDeviceScreen';
 import { PinScreen } from '../screens/connect/PinScreen';
+import { RemoveBluetoothDeviceScreen } from '../screens/connect/RemoveBluetoothDeviceScreen';
+import { TurnOnAndUnlockDeviceScreen } from '../screens/connect/TurnOnAndUnlockDeviceScreen';
 import { PassphraseConfirmFeatureUnlockEnterOnTrezoreScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockEnterOnTrezoreScreen';
 import { PassphraseConfirmFeatureUnlockOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockOnTrezorScreen';
 import { PassphraseFeatureUnlockFormScreen } from '../screens/passphrase/PassphraseFeatureUnlockFormScreen';
@@ -45,12 +47,21 @@ export const AuthorizeDeviceStackNavigator = () => {
                             component={ConnectingDeviceScreen}
                         />
                         <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice}
+                            component={TurnOnAndUnlockDeviceScreen}
+                        />
+                        <AuthorizeDeviceStack.Screen
                             name={AuthorizeDeviceStackRoutes.ConnectBluetoothDevice}
                             component={ConnectBluetoothDeviceScreen}
                         />
                         <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.RemoveBluetoothDevice}
+                            component={RemoveBluetoothDeviceScreen}
+                        />
+                        <AuthorizeDeviceStack.Screen
                             name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
                             component={ConnectAndUnlockDeviceScreen}
+                            options={{ animationTypeForReplace: 'pop' }}
                         />
                     </AuthorizeDeviceStack.Group>
                 )

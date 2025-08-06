@@ -10354,14 +10354,12 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
     expo-constants: "npm:17.0.3"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
     react-native-permissions: "npm:5.2.5"
-    react-native-reanimated: "npm:^3.18.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft

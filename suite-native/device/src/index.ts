@@ -14,6 +14,7 @@ export * from './components/DeviceImage';
 export * from './components/BootloaderModeScreen';
 export * from './components/ContinueOnTrezorScreenContent';
 export * from './components/ConnectAndUnlockDeviceScreenContent';
+export * from './components/TurnOnAndUnlockDeviceScreenContent';
 export * from './components/DeviceDangerBanner';
 export * from './utils';
 export * from './selectors';

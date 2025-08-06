@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { openSettings } from 'react-native-permissions';
 import { useSelector } from 'react-redux';
 
@@ -22,6 +22,8 @@ export const useBluetoothAlerts = () => {
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
 
+    const [isBluetoothAlertShown, setIsBluetoothAlertShown] = useState(false);
+
     const showOrHideBluetoothAlert = useCallback(() => {
         if (bluetoothPermissionStatus === 'denied') {
             showAlert({
@@ -32,6 +34,7 @@ export const useBluetoothAlerts = () => {
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
                 onPressSecondaryButton: navigation.goBack,
             });
+            setIsBluetoothAlertShown(true);
         } else if (bluetoothPermissionStatus === 'blocked') {
             showAlert({
                 title: translate('bluetooth.alerts.permissionBlocked.title'),
@@ -41,6 +44,7 @@ export const useBluetoothAlerts = () => {
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
                 onPressSecondaryButton: navigation.goBack,
             });
+            setIsBluetoothAlertShown(true);
         } else if (bluetoothAdapterStatus === 'disabled') {
             showAlert({
                 title: translate('bluetooth.alerts.adapterDisabled.title'),
@@ -50,13 +54,18 @@ export const useBluetoothAlerts = () => {
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
                 onPressSecondaryButton: navigation.goBack,
             });
+            setIsBluetoothAlertShown(true);
         } else if (bluetoothAdapterStatus === 'enabled') {
-            hideAlert();
+            if (isBluetoothAlertShown) {
+                hideAlert();
+                setIsBluetoothAlertShown(false);
+            }
         }
     }, [
         bluetoothPermissionStatus,
         requestBluetoothPermission,
         bluetoothAdapterStatus,
+        isBluetoothAlertShown,
         openBluetoothSettings,
         navigation,
         translate,

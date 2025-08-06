@@ -176,29 +176,20 @@ export const en = {
         toasts: {
             pairingCanceled: 'Bluetooth pairing canceled.',
         },
-        deviceManager: {
-            title: 'Connect your Trezor',
-            subtitle:
-                'Turn on and unlock your Trezor. To connect a new device, set it to pairing mode.',
-            troubleshootingTipsLink: 'Troubleshooting tips',
+        deviceList: {
+            connect: {
+                title: 'Connect your Trezor',
+                subtitle: 'Choose the Trezor that you want to connect.',
+            },
+            remove: {
+                title: 'Pair your Trezor again',
+                subtitle:
+                    'If your device is not visible in your phone’s Bluetooth  settings, it’s best to pair it again.',
+            },
         },
         deviceCard: {
-            connectButton: 'Connect',
-            knownDeviceHint: 'Turn on and unlock your Trezor',
-            removeConfirmation: {
-                title: 'Remove this Trezor?',
-                description:
-                    'This will remove your Trezor from the list of known devices. To reconnect, set your Trezor to pairing mode after removing it.',
-                primaryButton: 'Remove',
-            },
-        },
-        noTrezorNearbyCard: {
-            title: 'No Trezor nearby',
-            hints: {
-                1: 'Make sure your Trezor is powered on and unlocked',
-                2: 'Try setting your Trezor to pairing mode if it isn’t already',
-            },
-            scanAgainButton: 'Scan again',
+            connect: { actionButton: 'Connect' },
+            remove: { actionButton: 'Pair again' },
         },
     },
     moduleAccountImport: {
@@ -389,6 +380,10 @@ export const en = {
             title: 'Connect & unlock\nyour Trezor',
             connectViaBluetoothButton: 'Connect via Bluetooth',
         },
+        turnOnAndUnlockScreen: {
+            title: 'Turn on & unlock\nyour Trezor',
+            connectViaCableButton: 'Connect via cable',
+        },
         pinScreen: {
             title: 'Enter PIN\non your Trezor',
             form: {
@@ -418,12 +413,28 @@ export const en = {
         helpModal: {
             connect: {
                 title: 'Connect my Trezor',
-                subtitle: "Don't see your Trezor?",
+                subtitle: 'Don’t see your Trezor?',
                 stepsTitle: 'Try these steps',
                 step1: '1. Reconnect your Trezor',
                 step2: '2. Use a different USB data cable',
                 step3: '3. Use a different mobile device',
                 step4: '4. Enable connection for Trezor Suite Lite via phone system message',
+            },
+            pairing: {
+                hints: {
+                    title: 'Unable to pair your Trezor?',
+                    altTitle: 'We couldn’t find your Trezor',
+                    hint1: 'Make sure your Trezor is turned on and unlocked.',
+                    hint2: 'Try manually pairing your Trezor:\nGo to your Trezor’s Menu > Pair & Connect > Pair new device',
+                    scanAgainButton: 'Scan again',
+                    stillNotWorkingButton: 'It’s still not working',
+                },
+                settings: {
+                    title: 'Make sure that the Trezor you’re trying to connect is visible in your phone’s settings.',
+                    subtitle: 'If not, you can pair your Trezor again.',
+                    goToSettingsButton: 'Go to Bluetooth settings',
+                    pairAgainButton: 'Pair again',
+                },
             },
             pinMatrix: {
                 title: 'Enter PIN',

@@ -124,7 +124,9 @@ export enum DeviceNameStackRoutes {
 
 export enum AuthorizeDeviceStackRoutes {
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    TurnOnAndUnlockDevice = 'TurnOnAndUnlockDevice',
     ConnectBluetoothDevice = 'ConnectBluetoothDevice',
+    RemoveBluetoothDevice = 'RemoveBluetoothDevice',
     PinMatrix = 'PinMatrix',
     ConnectingDevice = 'ConnectingDevice',
 
