@@ -2,12 +2,13 @@ import { yup } from '@suite-common/validators';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { FeeInfo } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
+import type { UseFormReturn } from '@suite-native/forms';
 import { BigNumber } from '@trezor/utils';
 
 import { NativeSupportedFeeLevel } from './types';
 import { getFeeDecimals } from './utils';
 
-type SendFeesFormContext = {
+export type FeesFormContext = {
     symbol?: NetworkSymbol;
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
@@ -20,7 +21,7 @@ const nativeSupportedFeeLevels: Array<NativeSupportedFeeLevel> = [
     'custom',
 ];
 
-export const sendFeesFormValidationSchema = yup.object({
+export const feesFormValidationSchema = yup.object({
     feeLevel: yup.string().oneOf(nativeSupportedFeeLevels).required('Fee level is required'),
     customFeePerUnit: yup
         .string()
@@ -28,7 +29,7 @@ export const sendFeesFormValidationSchema = yup.object({
         .test(
             'too-many-decimals',
             'Too many decimals.',
-            (value, { options: { context } }: yup.TestContext<SendFeesFormContext>) => {
+            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
                 if (!value) return true;
 
                 const { networkFeeInfo, symbol } = context!;
@@ -49,7 +50,7 @@ export const sendFeesFormValidationSchema = yup.object({
         .test(
             'fee-too-low',
             'Fee is too low.',
-            (value, { options: { context } }: yup.TestContext<SendFeesFormContext>) => {
+            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
                 if (!value) return true;
                 const { networkFeeInfo } = context!;
 
@@ -62,7 +63,7 @@ export const sendFeesFormValidationSchema = yup.object({
         .test(
             'fee-too-high',
             'Fee is too high.',
-            (value, { options: { context } }: yup.TestContext<SendFeesFormContext>) => {
+            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
                 if (!value) return true;
 
                 const { networkFeeInfo } = context!;
@@ -80,7 +81,7 @@ export const sendFeesFormValidationSchema = yup.object({
         .test(
             'fee-limit-too-low',
             'Value is too low.',
-            (value, { options: { context } }: yup.TestContext<SendFeesFormContext>) => {
+            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
                 const { symbol, minimalFeeLimit } = context!;
                 if (!symbol) return true;
 
@@ -98,4 +99,6 @@ export const sendFeesFormValidationSchema = yup.object({
         ),
 });
 
-export type SendFeesFormValues = yup.InferType<typeof sendFeesFormValidationSchema>;
+export type FeesFormValues = yup.InferType<typeof feesFormValidationSchema>;
+
+export type FeesFormType = UseFormReturn<FeesFormValues>;

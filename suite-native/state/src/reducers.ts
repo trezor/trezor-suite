@@ -33,7 +33,6 @@ import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
-import { sendFormSlice } from '@suite-native/module-send';
 import { tradingSlice } from '@suite-native/module-trading';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
@@ -52,6 +51,7 @@ import {
     walletPersistTransform,
     walletStopPersistTransform,
 } from '@suite-native/storage';
+import { sendFormSlice } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
 import { extraDependencies } from './extraDependencies';

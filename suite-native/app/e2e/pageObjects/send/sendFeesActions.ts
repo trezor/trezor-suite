@@ -11,13 +11,15 @@ class SendFeesActions {
     }
 
     async setCustomFee(customFeePerUnit: string) {
-        await element(by.id('@send/fees-level-custom')).tap();
-        await waitFor(element(by.id('@send/custom-fee-bottom-sheet')))
+        await element(by.id('@transactionManagement/fees-level-custom')).tap();
+        await waitFor(element(by.id('@transactionManagement/custom-fee-bottom-sheet')))
             .toBeVisible()
             .withTimeout(5000);
-        await element(by.id(`@send/customFeePerUnit-input`)).replaceText(customFeePerUnit);
+        await element(by.id(`@transactionManagement/customFeePerUnit-input`)).replaceText(
+            customFeePerUnit,
+        );
 
-        const submitButton = element(by.id('@send/custom-fee-submit-button'));
+        const submitButton = element(by.id('@transactionManagement/custom-fee-submit-button'));
         await waitFor(submitButton).toBeVisible().withTimeout(5000);
         await submitButton.tap();
     }
@@ -26,13 +28,13 @@ class SendFeesActions {
 
         switch (feeType) {
             case 'low':
-                await element(by.id('@send/fees-level-low')).tap();
+                await element(by.id('@transactionManagement/fees-level-low')).tap();
                 break;
             case 'normal':
-                await element(by.id('@send/fees-level-normal')).tap();
+                await element(by.id('@transactionManagement/fees-level-normal')).tap();
                 break;
             case 'high':
-                await element(by.id('@send/fees-level-high')).tap();
+                await element(by.id('@transactionManagement/fees-level-high')).tap();
                 break;
             case 'custom':
                 await this.setCustomFee(customFeePerUnit);
@@ -43,7 +45,7 @@ class SendFeesActions {
     }
 
     async submitFee() {
-        await element(by.id('@send/fees-submit-button')).tap();
+        await element(by.id('@transactionManagement/fees-submit-button')).tap();
     }
 }
 

@@ -17,7 +17,7 @@ import {
     TokenAmountFormatter,
 } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     TokensRootState,
     selectAccountTokenDecimals,
@@ -61,7 +61,7 @@ type MainnetSummaryProps = {
 const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
     <HStack justifyContent="space-between" alignItems="center">
         <Text variant="callout">
-            <Translation id="moduleSend.fees.totalAmount" />
+            <Translation id="transactionManagement.fees.totalAmount" />
         </Text>
         <VStack spacing="sp4" alignItems="flex-end">
             <CryptoToFiatAmountFormatter
@@ -110,7 +110,7 @@ const TokenSummary = ({
         <HStack justifyContent="space-between" alignItems="center">
             <VStack spacing="sp4">
                 <Text variant="callout">
-                    <Translation id="moduleSend.fees.amount" />
+                    <Translation id="transactionManagement.fees.amount" />
                 </Text>
                 <Text variant="hint" color="textSubdued">
                     <Translation id="transactions.detail.feeLabel" />
@@ -147,6 +147,7 @@ export const FeesFooter = ({
     tokenContract,
 }: FeesFooterProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
 
     const form = useContext(FormContext);
     const {
@@ -194,12 +195,12 @@ export const FeesFooter = ({
                 >
                     <Button
                         accessibilityRole="button"
-                        accessibilityLabel="validate send form"
-                        testID="@send/fees-submit-button"
+                        accessibilityLabel={translate('generic.validateForm')}
+                        testID="@transactionManagement/fees-submit-button"
                         onPress={onSubmit}
                         isDisabled={isSubmitting || areFeesLoading}
                     >
-                        <Translation id="moduleSend.fees.submitButton" />
+                        <Translation id="transactionManagement.fees.submitButton" />
                     </Button>
                 </Animated.View>
             )}

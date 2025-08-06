@@ -1,53 +1,48 @@
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { useRoute } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { BottomSheet, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { FormSubmitButton, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
-import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { CustomFeeInputs } from './CustomFeeInputs';
-import { useCustomFee } from '../hooks/useCustomFee';
-import { updateSelectedFeeLevelThunk } from '../sendFormThunks';
+import { FeesFormValues } from '../../../feesFormSchema';
 
 type CustomFeeBottomSheetProps = {
     isVisible: boolean;
     onClose: () => void;
+    accountKey: AccountKey;
+    feeValue: string;
+    isFeeLoading: boolean;
+    isSubmittable: boolean;
+    isErrorBoxVisible: boolean;
+    onCustomFeeSet: (feePerUnit: string, feeLimit?: string) => void;
 };
 
-type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
-
-export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomSheetProps) => {
-    const route = useRoute<RouteProps>();
-    const dispatch = useDispatch();
-    const { accountKey, tokenContract } = route.params;
-
-    const { feeValue, isFeeLoading, isSubmittable, isErrorBoxVisible } = useCustomFee({
-        accountKey,
-        tokenContract,
-    });
-
+export const CustomFeeBottomSheet = ({
+    isVisible,
+    onClose,
+    accountKey,
+    feeValue,
+    isFeeLoading,
+    isSubmittable,
+    isErrorBoxVisible,
+    onCustomFeeSet,
+}: CustomFeeBottomSheetProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const { setValue, handleSubmit, getValues } = useFormContext<SendFeesFormValues>();
+    const { setValue, handleSubmit, getValues } = useFormContext<FeesFormValues>();
 
     const handleSetCustomFee = handleSubmit(() => {
         setValue('feeLevel', 'custom');
-        dispatch(
-            updateSelectedFeeLevelThunk({
-                accountKey,
-                feeLevelLabel: 'custom',
-                feePerUnit: getValues('customFeePerUnit'),
-                feeLimit: getValues('customFeeLimit'),
-            }),
-        );
+        const feePerUnit = getValues('customFeePerUnit');
+        const feeLimit = getValues('customFeeLimit');
+        onCustomFeeSet(feePerUnit, feeLimit);
         onClose();
     });
 
@@ -57,8 +52,8 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
         <BottomSheet
             isVisible={isVisible}
             onClose={onClose}
-            title={<Translation id="moduleSend.fees.custom.bottomSheet.title" />}
-            testID="@send/custom-fee-bottom-sheet"
+            title={<Translation id="transactionManagement.fees.custom.bottomSheet.title" />}
+            testID="@transactionManagement/custom-fee-bottom-sheet"
         >
             <VStack spacing="sp24" justifyContent="space-between" flex={1}>
                 <CustomFeeInputs symbol={symbol} />
@@ -69,7 +64,7 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
                     paddingHorizontal="sp1"
                 >
                     <Text variant="highlight">
-                        <Translation id="moduleSend.fees.custom.bottomSheet.total" />
+                        <Translation id="transactionManagement.fees.custom.bottomSheet.total" />
                     </Text>
                     <VStack alignItems="flex-end">
                         <CryptoToFiatAmountFormatter
@@ -90,16 +85,16 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
                     <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
                         <InlineAlertBox
                             variant="critical"
-                            title={<Translation id="moduleSend.fees.error" />}
+                            title={<Translation id="transactionManagement.fees.error" />}
                         />
                     </Animated.View>
                 )}
                 <FormSubmitButton
                     onPress={handleSetCustomFee}
                     isVisible={isSubmittable && isVisible}
-                    testID="@send/custom-fee-submit-button"
+                    testID="@transactionManagement/custom-fee-submit-button"
                 >
-                    <Translation id="moduleSend.fees.custom.bottomSheet.confirmButton" />
+                    <Translation id="transactionManagement.fees.custom.bottomSheet.confirmButton" />
                 </FormSubmitButton>
             </VStack>
         </BottomSheet>

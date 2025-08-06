@@ -12,9 +12,8 @@ import {
     isDecimalsValid,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
+import { FeeLevelsMaxAmount } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
-
-import { FeeLevelsMaxAmount } from './types';
 
 export type SendFormFormContext = {
     symbol?: NetworkSymbol;

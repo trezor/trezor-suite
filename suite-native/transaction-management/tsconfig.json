@@ -3,18 +3,31 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/validators"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../atoms" },
         { "path": "../formatters" },
+        { "path": "../forms" },
         { "path": "../helpers" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }
     ]

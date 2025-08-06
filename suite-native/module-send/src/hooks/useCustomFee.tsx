@@ -12,15 +12,15 @@ import {
 } from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useDebounce } from '@trezor/react-utils';
-import { BigNumber } from '@trezor/utils';
-
-import { SendFeesFormValues } from '../sendFeesFormSchema';
 import {
+    FeesFormValues,
     NativeSendRootState,
     selectCustomFeeLevel,
     selectFeeLevelTransactionBytes,
-} from '../sendFormSlice';
+} from '@suite-native/transaction-management';
+import { useDebounce } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
+
 import { calculateCustomFeeLevelThunk } from '../sendFormThunks';
 
 type UseCustomFeeProps = {
@@ -47,7 +47,7 @@ export const useCustomFee = ({ accountKey, tokenContract }: UseCustomFeeProps) =
         trigger,
         getValues,
         watch,
-    } = useFormContext<SendFeesFormValues>();
+    } = useFormContext<FeesFormValues>();
 
     const feePerUnitFieldName = 'customFeePerUnit';
     const feeLimitFieldName = 'customFeeLimit';

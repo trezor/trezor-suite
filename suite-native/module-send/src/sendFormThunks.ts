@@ -26,10 +26,12 @@ import {
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import {
+    FeeLevelsMaxAmount,
+    NativeSupportedFeeLevel,
+    storeFeeLevels,
+} from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-
-import { storeFeeLevels } from './sendFormSlice';
-import { FeeLevelsMaxAmount, NativeSupportedFeeLevel } from './types';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
@@ -173,7 +175,7 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
     },
 );
 
-type UpdateSelectedFeeLevelThunkParams = {
+export type UpdateSelectedFeeLevelThunkParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 } & (

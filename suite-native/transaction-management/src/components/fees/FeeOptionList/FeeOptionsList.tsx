@@ -3,18 +3,17 @@ import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { D, pipe } from '@mobily/ts-belt';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, GeneralPrecomposedLevels, TokenAddress } from '@suite-common/wallet-types';
+import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 
 import { FeeOption } from './FeeOption';
-import { NativeSupportedFeeLevel } from '../types';
+import { NativeSupportedPredefinedFeeLevel } from '../../../types';
 
-type FeeOptionsListProps = {
+export type FeeOptionsListProps = {
     feeLevels: GeneralPrecomposedLevels;
     symbol: NetworkSymbol;
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
     isLoading?: boolean;
+    onSelectedFeeLevel: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
 };
 
 // User is not able to enter the fees screen if there is not normal fee or at least the economy fee (in final state) present.
@@ -33,13 +32,12 @@ const getTransactionBytes = (feeLevels: Partial<GeneralPrecomposedLevels>) => {
 export const FeeOptionsList = ({
     feeLevels,
     symbol,
-    accountKey,
-    tokenContract,
     isLoading,
+    onSelectedFeeLevel,
 }: FeeOptionsListProps) => {
     const predefinedFeeLevels = pipe(
         feeLevels,
-        D.filterWithKey(key => key !== 'custom'),
+        D.filterWithKey(key => key !== 'custom' && key !== 'low'),
     );
 
     const transactionBytes = getTransactionBytes(predefinedFeeLevels);
@@ -52,14 +50,13 @@ export const FeeOptionsList = ({
                 {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
                     <FeeOption
                         key={feeKey}
-                        feeKey={feeKey as Exclude<NativeSupportedFeeLevel, 'custom'>}
+                        feeKey={feeKey as NativeSupportedPredefinedFeeLevel}
                         feeLevel={feeLevel}
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
                         symbol={symbol}
                         transactionBytes={transactionBytes}
                         isInteractive={isMultipleOptionsDisplayed}
                         isLoading={isLoading}
+                        onSelectedFeeLevel={onSelectedFeeLevel}
                     />
                 ))}
             </VStack>
