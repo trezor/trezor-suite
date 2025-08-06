@@ -40,3 +40,7 @@ export type BaseFormValues<FocusedValue extends string, Quote extends TradingTra
     generalAlert: string | undefined;
     focusedValue: FocusedValue | undefined;
 } & Record<FocusedValue, string | undefined>;
+
+export type QuotesCategory = 'fixed' | 'float' | 'dex';
+
+export type QuotesByCategories<T extends TradingTradeType> = { [Q in QuotesCategory]?: T[] };

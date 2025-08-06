@@ -120,7 +120,6 @@ export const BuyProviderPicker = () => {
             </OverviewRow>
             <ProviderSheet
                 quotes={quotes}
-                providerInfos={providers ?? {}}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onQuoteSelect={handleQuoteSelect}

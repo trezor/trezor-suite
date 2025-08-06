@@ -2,10 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { ExchangeTrade } from 'invity-api';
 
-import {
-    selectTradingExchangeIsLoading,
-    selectTradingExchangeProviders,
-} from '@suite-common/trading';
+import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
 import { ExchangeRatePicker } from './ExchangeRatePicker';
@@ -16,7 +13,6 @@ import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 
 export const ExchangeRateAndProviderPicker = () => {
     const isLoading = useSelector(selectTradingExchangeIsLoading);
-    const providers = useSelector(selectTradingExchangeProviders);
     const quotes = useSelector(selectGroupedExchangeQuotes);
 
     const form = useExchangeFormContext();
@@ -53,7 +49,6 @@ export const ExchangeRateAndProviderPicker = () => {
             />
             <ProviderSheet
                 quotes={quotes}
-                providerInfos={providers ?? {}}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onQuoteSelect={handleQuoteSelect}
