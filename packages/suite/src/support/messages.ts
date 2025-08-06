@@ -4774,11 +4774,11 @@ export default defineMessages({
     },
     TR_CHANGE_WIPE_CODE: {
         id: 'TR_CHANGE_WIPE_CODE',
-        defaultMessage: 'Change wipe code',
+        defaultMessage: 'Change',
     },
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
-        defaultMessage: 'Remove wipe code',
+        defaultMessage: 'Remove',
     },
     TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
@@ -9744,12 +9744,12 @@ export default defineMessages({
     },
     TR_SOLANA_LIMIT_HISTORY_TITLE: {
         id: 'TR_SOLANA_LIMIT_HISTORY_TITLE',
-        defaultMessage: 'Transaction history is limited to the last 100 transactions per token',
+        defaultMessage: 'Only the most recent 100 transactions per token are shown',
     },
     TR_SOLANA_LIMIT_HISTORY_DESCRIPTION: {
         id: 'TR_SOLANA_LIMIT_HISTORY_DESCRIPTION',
         defaultMessage:
-            'This view shows only the most recent 100 transactions for each token. To see the full history, please use the blockchain explorer.',
+            'Shows the latest 100 transactions per token. For the full history, view on the blockchain explorer.',
     },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',

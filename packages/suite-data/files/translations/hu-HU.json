@@ -1001,8 +1001,6 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION": "Csatlakozz a 9050-es porton futó Tor daemonhoz, a Trezor Suite-ba csomagolt használata helyett.",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor külső port",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Egy külső folyamatban és nem a Trezor Suite-ba csomagolt Tor Daemon használata.",
-  "TR_EXPERIMENTAL_TREZORCONNECT_WS": "Trezor Connect és WalletConnect integráció a Trezor Suite-ban",
-  "TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION": "Használd a WalletConnect-t, hogy csatlakoztathatod a Trezorodat Ethereum dAppokhoz.",
   "TR_EXPLORER": "Böngésző",
   "TR_EXPLORER_ACCOUNT": "Fiók",
   "TR_EXPLORER_ADDRESS": "Cím",
