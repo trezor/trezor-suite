@@ -11,19 +11,40 @@ export interface IPCRequest {
     };
 }
 
-export interface IPCResponse {
+export interface IPCSuccessResponse {
     id: string;
-    success: boolean;
-    result?: any;
-    error?: string;
+    success: true;
+    result: boolean | string; // isHelloAvailable returns boolean, requestHello returns string
 }
 
-export interface IPCError {
+export interface IPCErrorResponse {
     id: string;
+    success: false;
     error: string;
 }
 
-export type IPCMessage = IPCRequest | IPCResponse | IPCError;
+export type IPCResponse = IPCSuccessResponse | IPCErrorResponse;
+
+export interface IPCReadyMessage {
+    ready: true;
+}
+
+export type IPCMessage = IPCRequest | IPCResponse | IPCReadyMessage;
+
+/**
+ * Logger interface
+ */
+export interface Logger {
+    info: (topic: string, message: string) => void;
+}
+
+/**
+ * Manager creation options
+ */
+export interface WinHelloManagerOptions {
+    resourcesPath: string;
+    logger: Logger;
+}
 
 /**
  * Public API interface that matches the original createWinHello return type

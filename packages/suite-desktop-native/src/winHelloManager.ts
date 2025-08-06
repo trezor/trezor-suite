@@ -1,139 +1,124 @@
+import { ChildProcess, fork } from 'child_process';
 import { randomUUID } from 'crypto';
 import path from 'path';
-import { Worker } from 'worker_threads';
 
-import type { IPCRequest, IPCResponse, WinHelloManager } from './types';
+import type {
+    IPCReadyMessage,
+    IPCRequest,
+    IPCResponse,
+    WinHelloManager,
+    WinHelloManagerOptions,
+} from './types';
+
+// Constants
+const REQUEST_TIMEOUT_MS = 30000; // 30 second timeout
+const INITIALIZATION_TIMEOUT_MS = 30000; // 30 second initialization timeout
+const GRACEFUL_SHUTDOWN_TIMEOUT_MS = 5000; // 5 second graceful shutdown timeout
 
 export class WinHelloProcessManager implements WinHelloManager {
-    private worker: Worker | null = null;
+    private childProcess: ChildProcess | null = null;
     private pendingRequests = new Map<
         string,
         { resolve: (value: any) => void; reject: (error: Error) => void }
     >();
     private isReady = false;
 
-    /**
-     * Creates and initializes the worker thread
-     */
-    public create({
-        resourcesPath,
-        logger,
-    }: {
-        resourcesPath: string;
-        logger: {
-            info: (topic: string, message: string) => void;
-        };
-    }): Promise<void> {
-        if (this.worker) {
-            throw new Error('Worker thread already exists. Call destroy() first.');
+    public create({ resourcesPath, logger }: WinHelloManagerOptions): Promise<void> {
+        if (this.childProcess) {
+            throw new Error('Child process already exists. Call destroy() first.');
         }
 
         return new Promise((resolve, reject) => {
-            const workerPath = path.join(__dirname, 'winHelloChildProcess.js');
+            const childPath = path.join(__dirname, 'winHelloChildProcess.js');
 
             logger.info('win-hello', `resource path: ${resourcesPath}`);
-            logger.info('win-hello', `Worker path: ${workerPath}`);
+            logger.info('win-hello', `Child process path: ${childPath}`);
 
             try {
-                logger.info('win-hello', 'Creating worker thread...');
-                this.worker = new Worker(workerPath, {
-                    workerData: {
-                        resourcesPath,
+                logger.info('win-hello', 'Creating child process...');
+                this.childProcess = fork(childPath, [], {
+                    env: {
+                        ...process.env,
+                        RESOURCES_PATH: resourcesPath,
                     },
                 });
-                logger.info('win-hello', 'Worker thread created');
+                logger.info('win-hello', 'Child process created');
 
-                this.worker.on('message', (message: any) => {
+                this.childProcess.on('message', (message: IPCResponse | IPCReadyMessage) => {
                     logger.info(
                         'win-hello',
-                        `Received message from worker: ${JSON.stringify(message)}`,
+                        `Received message from child: ${JSON.stringify(message)}`,
                     );
-                    if (message.ready) {
+                    if ('ready' in message) {
                         this.isReady = true;
-                        logger.info('win-hello', 'Worker is ready');
+                        logger.info('win-hello', 'Child process is ready');
                         resolve();
 
                         return;
                     }
 
-                    this.handleResponse(message as IPCResponse);
+                    this.handleResponse(message);
                 });
 
-                this.worker.on('error', error => {
-                    logger.info('win-hello', `Worker error: ${error.message}`);
+                this.childProcess.on('error', (error: Error) => {
+                    logger.info('win-hello', `Child process error: ${error.message}`);
                     if (error.stack) {
-                        logger.info('win-hello', `Worker error stack: ${error.stack}`);
+                        logger.info('win-hello', `Error stack: ${error.stack}`);
                     }
-                    reject(new Error(`Worker thread error: ${error.message}`));
+
+                    this.cleanup();
+                    reject(new Error(`Child process error: ${error.message}`));
                 });
 
-                this.worker.on('exit', code => {
-                    logger.info('win-hello', `Worker exited with code: ${code}`);
+                this.childProcess.on('exit', (code: number | null) => {
+                    logger.info('win-hello', `Child process exited with code: ${code}`);
                     this.cleanup();
 
-                    // If the worker exits before it's ready, it's an error regardless of exit code
                     if (!this.isReady) {
-                        logger.info('win-hello', 'Worker exited before signaling ready state');
+                        logger.info(
+                            'win-hello',
+                            'Child process exited before signaling ready state',
+                        );
                         reject(
                             new Error(
-                                `Worker thread exited before initialization was complete (code: ${code})`,
+                                `Child process exited before initialization was complete (code: ${code})`,
                             ),
                         );
 
                         return;
                     }
 
-                    // Even with code 0, if it's unexpected, log it as a warning
-                    if (code === 0) {
-                        logger.info(
-                            'win-hello',
-                            'Worker exited normally, but this might be unexpected during operation',
-                        );
-                    } else {
-                        reject(new Error(`Worker thread exited with code ${code}`));
+                    if (code !== 0) {
+                        reject(new Error(`Child process exited with code ${code}`));
                     }
-                });
-
-                // Add online event to see when worker is actually running
-                this.worker.on('online', () => {
-                    logger.info('win-hello', 'Worker thread is now online');
                 });
             } catch (error) {
                 logger.info(
                     'win-hello',
-                    `Error creating worker: ${error instanceof Error ? error.message : String(error)}`,
+                    `Error creating child process: ${error instanceof Error ? error.message : String(error)}`,
                 );
                 if (error instanceof Error && error.stack) {
                     logger.info('win-hello', `Error stack: ${error.stack}`);
                 }
                 reject(
                     new Error(
-                        `Failed to create worker thread: ${error instanceof Error ? error.message : String(error)}`,
+                        `Failed to create child process: ${error instanceof Error ? error.message : String(error)}`,
                     ),
                 );
             }
 
             setTimeout(() => {
-                this.isReady = true;
-                logger.info('win-hello', 'Worker thread initialized manuallz after timeout');
-                resolve();
-            }, 10000);
-
-            // Set a timeout for initialization
-            setTimeout(() => {
                 if (!this.isReady) {
                     this.destroy();
-                    reject(new Error('Worker thread initialization timeout'));
+                    reject(new Error('Child process initialization timeout'));
                 }
-            }, 30000); // 30 second timeout
+            }, INITIALIZATION_TIMEOUT_MS);
         });
     }
 
-    /**
-     * Destroys the worker thread
-     */
     public destroy(): Promise<void> {
-        if (!this.worker) {
+        const { childProcess } = this;
+        if (!childProcess) {
             return Promise.resolve();
         }
 
@@ -143,34 +128,22 @@ export class WinHelloProcessManager implements WinHelloManager {
                 resolve();
             };
 
-            // Try graceful shutdown first
-            this.worker!.once('exit', cleanup);
-            this.worker!.terminate()
-                .then(() => {
-                    cleanup();
-                })
-                .catch(() => {
-                    // Force cleanup even if termination fails
-                    cleanup();
-                });
+            childProcess.once('exit', cleanup);
 
-            // Force cleanup after timeout
+            const killed = childProcess.kill();
+            if (!killed) {
+                cleanup();
+            }
+
             setTimeout(() => {
                 cleanup();
-            }, 5000);
+            }, GRACEFUL_SHUTDOWN_TIMEOUT_MS);
         });
     }
 
-    /**
-     * Checks if Windows Hello is available on the system
-     */
     public isHelloAvailable(): Promise<boolean> {
         return this.sendRequest('isHelloAvailable');
     }
-
-    /**
-     * Requests Windows Hello authentication
-     */
     public requestHello(
         message: string = 'Verify your identity',
         windowHandle: Buffer | null = null,
@@ -178,9 +151,14 @@ export class WinHelloProcessManager implements WinHelloManager {
         return this.sendRequest('requestHello', { message, windowHandle });
     }
 
-    private sendRequest(method: 'isHelloAvailable' | 'requestHello', params?: any): Promise<any> {
-        if (!this.worker || !this.isReady) {
-            throw new Error('Worker thread not initialized. Call create() first.');
+    private sendRequest<T extends 'isHelloAvailable' | 'requestHello'>(
+        method: T,
+        params?: T extends 'requestHello'
+            ? { message?: string; windowHandle?: Buffer | null }
+            : undefined,
+    ): Promise<T extends 'isHelloAvailable' ? boolean : string> {
+        if (!this.childProcess || !this.isReady) {
+            throw new Error('Child process not initialized. Call create() first.');
         }
 
         const id = randomUUID();
@@ -197,7 +175,7 @@ export class WinHelloProcessManager implements WinHelloManager {
             const timeout = setTimeout(() => {
                 this.pendingRequests.delete(id);
                 reject(new Error(`Request timeout for method: ${method}`));
-            }, 30000); // 30 second timeout
+            }, REQUEST_TIMEOUT_MS);
 
             // Clear timeout when request completes
             const originalResolve = resolve;
@@ -214,7 +192,7 @@ export class WinHelloProcessManager implements WinHelloManager {
                 },
             });
 
-            this.worker!.postMessage(request);
+            this.childProcess!.send(request);
         });
     }
 
@@ -234,28 +212,21 @@ export class WinHelloProcessManager implements WinHelloManager {
     }
 
     private cleanup() {
-        this.worker = null;
+        this.childProcess = null;
         this.isReady = false;
 
-        // Reject all pending requests
         for (const [_id, { reject }] of this.pendingRequests) {
-            reject(new Error('Worker thread terminated'));
+            reject(new Error('Child process terminated'));
         }
         this.pendingRequests.clear();
     }
 }
 
-export async function createWinHelloManager({
-    resourcesPath,
-    logger,
-}: {
-    resourcesPath: string;
-    logger: {
-        info: (topic: string, message: string) => void;
-    };
-}): Promise<WinHelloManager> {
+export async function createWinHelloManager(
+    options: WinHelloManagerOptions,
+): Promise<WinHelloManager> {
     const manager = new WinHelloProcessManager();
-    await manager.create({ resourcesPath, logger });
+    await manager.create(options);
 
     return manager;
 }
