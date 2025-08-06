@@ -3,16 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
-import {
-    Button,
-    Card,
-    Column,
-    InfoItem,
-    Paragraph,
-    Row,
-    Tooltip,
-    variables,
-} from '@trezor/components';
+import { Button, Card, Column, InfoItem, Paragraph, Row, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
 
@@ -24,7 +15,7 @@ import { TranslationKey } from 'src/components/suite/Translation';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
+import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
@@ -69,14 +60,9 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
 
 const Details = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const isAuthenticityCheckFailed = useSelector(
-        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
-    );
-    const dispatch = useDispatch();
+    const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
-    const tooltipContent = isAuthenticityCheckFailed ? (
-        <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />
-    ) : null;
+    const dispatch = useDispatch();
 
     const { device, isLocked } = useDevice();
 
@@ -86,7 +72,7 @@ const Details = () => {
 
     const { account } = selectedAccount;
     const locked = isLocked(true);
-    const disabled = locked || isAuthenticityCheckFailed;
+    const disabled = locked || isReceiveDisabled;
 
     const accountTypeTech = getAccountTypeTech(account.path);
 
@@ -147,7 +133,7 @@ const Details = () => {
                                 description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
                                 learnMoreUrl={HELP_CENTER_XPUB_URL}
                             >
-                                <Tooltip content={tooltipContent}>
+                                <ReceiveDisabledWrapper>
                                     <Button
                                         variant="tertiary"
                                         data-testid="@wallets/details/show-xpub-button"
@@ -159,7 +145,7 @@ const Details = () => {
                                     >
                                         <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
                                     </Button>
-                                </Tooltip>
+                                </ReceiveDisabledWrapper>
                             </DetailsRow>
                         )
                     ) : (

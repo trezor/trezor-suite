@@ -1,0 +1,41 @@
+import { FC, PropsWithChildren, ReactNode } from 'react';
+
+import { selectIsDeviceBackupUnfinished } from '@suite-common/wallet-core';
+import { Tooltip } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
+import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
+
+import { useSelector } from './useSelector';
+
+export const useReceiveDisabled = () => {
+    const isAuthenticityCheckFailed = useSelector(
+        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
+    );
+    const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
+
+    const isReceiveDisabled: boolean = isAuthenticityCheckFailed || isDeviceBackupUnfinished;
+
+    const getTooltipContent = (): ReactNode => {
+        if (isAuthenticityCheckFailed) {
+            return <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />;
+        }
+        if (isDeviceBackupUnfinished) {
+            return <Translation id="TR_RECEIVE_ADDRESS_FAILED_BACKUP" />;
+        }
+
+        return null;
+    };
+    const tooltipContent = getTooltipContent();
+
+    const ReceiveDisabledWrapper: FC<PropsWithChildren> =
+        tooltipContent !== null
+            ? ({ children }) => <Tooltip content={tooltipContent}>{children}</Tooltip>
+            : ({ children }) => children;
+
+    return {
+        isReceiveDisabled,
+        ReceiveDisabledWrapper,
+        receiveDisabledTooltipContent: tooltipContent,
+    };
+};
