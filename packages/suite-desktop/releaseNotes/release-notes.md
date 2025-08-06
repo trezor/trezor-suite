@@ -1,17 +1,21 @@
 ### 🚀 New features
 
-- Stellar (XLM) support is now available to all users, moving from experimental to fully integrated and accessible via the Coins menu.
-- Solana address validation has been introduced, warning users when sending to system-derived token or staking addresses for added clarity and security.
+- Bitcoin can now be set as the primary currency unit.
+- “View only” wallets are now enabled by default.
+- Biometric authentication with auto-lock has been added to experimental features for enhanced security and convenience.
+- WalletConnect is now officially supported – connect your Trezor to dApps safely, with transaction simulations included.
+- TrezorConnect is out of experimental – connect your Trezor to supported apps through a secure Trezor Suite interface (availability depends on third-party wallet updates).
 
 ### 🎨 Improvements
 
-- The passphrase wallet flow has been refined with clearer guidance when opening existing wallets or creating new ones, improving user confidence and understanding.
-- Account discovery speed has been boosted by up to 50%, offering a noticeably faster and more responsive experience.
-- Transaction history navigation has been improved with smoother pagination, making it easier to browse past transactions.
-- The trading interface has been polished with updated modal headers and a restructured swap flow that moves DEX approvals to the start for better usability.
-- Fee rate updates now occur every minute, ensuring more accurate estimates when sending transactions.
-- WalletConnect transaction previews are now shown before confirmation, adding transparency to EVM-based transactions.
-- EIP-712 messages and 1inch Fusion swap details have been made easier to read, enhancing clarity during the signing process.
+- Minimum Bitcoin fee rate has been lowered to 0.1 sat/vB, giving more flexibility in choosing low-cost transaction options
+- Improved speed up transaction
+- Enhanced locktime functionality
+- Streamlined send options – Locktime and Broadcast settings have been moved under Advanced Send options
+- EVM token approvals aligned – Compatibility updates for new firmware ensure seamless token approval on EVM chains
+- Token approval upgraded – A cleaner and more intuitive flow when interacting with token approval
+- SLIP-0024 transaction review modal added
+- Adding a disclaimer informing the user about our fee structure (on buy / sell / swap )
 
 ### 🔧 Bug fixes
 
