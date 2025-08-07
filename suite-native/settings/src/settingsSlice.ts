@@ -69,6 +69,9 @@ export const appSettingsSlice = createSlice({
             state,
             { payload }: PayloadAction<Device['id']>,
         ) => {
+            if (!state.disconnectedDevicesDuringDiscovery) {
+                state.disconnectedDevicesDuringDiscovery = [];
+            }
             if (!state.disconnectedDevicesDuringDiscovery.some(id => id === payload) && !!payload) {
                 state.disconnectedDevicesDuringDiscovery.push(payload);
             }
@@ -102,7 +105,7 @@ export const selectIsCoinEnablingInitFinished = (state: SettingsSliceRootState) 
 export const selectHasDeviceBeenEjectedDuringDiscovery = (
     state: SettingsSliceRootState,
     deviceId: Device['id'],
-) => state.appSettings.disconnectedDevicesDuringDiscovery.some(id => id === deviceId);
+) => state.appSettings.disconnectedDevicesDuringDiscovery?.some(id => id === deviceId);
 
 /**
  * Determine if either FW revision or FW hash check is disabled
