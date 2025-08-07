@@ -362,18 +362,6 @@ export const setDebugMode = (payload: Partial<DebugModeOptions>): SuiteAction =>
 });
 
 /**
- * Triggered by user action in:
- * - Debug Settings
- * Set `firmwareUpdateSource` field in suite reducer
- * @param {FirmwareUpdateSource} payload
- * @returns {SuiteAction}
- */
-export const setFirmwareUpdateSource = (payload: FirmwareUpdateSource): SuiteAction => ({
-    type: SUITE.SET_FIRMWARE_UPDATE_SOURCE,
-    payload,
-});
-
-/**
  * Called from multiple places before and after TrezorConnect call
  * Prevent from mad clicking
  * Set `lock` field in suite reducer

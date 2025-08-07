@@ -540,6 +540,20 @@ export const saveConnectSettings = () => async (_dispatch: Dispatch, getState: G
     );
 };
 
+export const saveFirmwareSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { firmware } = getState();
+
+    db.addItem(
+        'firmware',
+        {
+            firmwareUpdateSource: firmware.firmwareUpdateSource,
+        },
+        'firmware',
+        true,
+    );
+};
+
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 

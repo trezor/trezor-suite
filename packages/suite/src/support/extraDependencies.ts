@@ -86,7 +86,6 @@ export const extraDependencies: ExtraDependencies = {
             staticKey: state.thp?.staticKey,
             knownCredentials: state.thp?.credentials,
         }),
-        selectFirmwareUpdateSource: (state: AppState) => state.suite.settings.firmwareUpdateSource,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
