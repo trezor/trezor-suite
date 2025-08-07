@@ -38,6 +38,7 @@ const initialFirmwareState: FirmwareUpdateState = {
     targetType: undefined,
     uiEvent: undefined,
     useDevkit: false,
+    firmwareUpdateSource: 'production',
 };
 
 const device: Pick<Device, 'thp'> = {

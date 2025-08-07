@@ -1,3 +1,5 @@
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -9,6 +11,7 @@ import {
     FirmwareType,
     UI,
 } from '@trezor/connect';
+import { FirmwareUpdateSource } from '@trezor/connect/src/data/firmwareInfo';
 
 import { firmwareActions } from './firmwareActions';
 
@@ -24,6 +27,7 @@ type FirmwareUpdateCommon = {
     targetType?: FirmwareType;
     useDevkit: boolean;
     uiEvent?: FirmwwareUpdateUiEvent;
+    firmwareUpdateSource: FirmwareUpdateSource;
 };
 
 export type FirmwareUpdateState =
@@ -43,14 +47,28 @@ const initialState: FirmwareUpdateState = {
     targetType: undefined,
     useDevkit: false,
     uiEvent: undefined,
+    firmwareUpdateSource: 'production',
 };
 
 type RootState = {
     firmware: typeof initialState;
 };
 
-export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, builder => {
+type StorageActionPayload = {
+    firmware: {
+        firmwareUpdateSource: FirmwareUpdateSource;
+    };
+};
+
+export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
+        .addCase(
+            extra.actionTypes.storageLoad,
+            (state, { payload }: PayloadAction<StorageActionPayload>) => {
+                if (payload.firmware)
+                    state.firmwareUpdateSource = payload.firmware.firmwareUpdateSource;
+            },
+        )
         .addCase(firmwareActions.setStatus, (state, { payload }) => {
             state.status = payload;
         })
@@ -74,6 +92,9 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
         .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
             state.cachedDevice = payload;
         })
+        .addCase(firmwareActions.setFirmwareUpdateSource, (state, { payload }) => {
+            state.firmwareUpdateSource = payload;
+        })
         .addMatcher<FirmwwareUpdateUiEvent>(
             (action: FirmwwareUpdateUiEvent) =>
                 action.type === UI.FIRMWARE_RECONNECT ||
@@ -92,3 +113,4 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
 
 export const selectFirmware = (state: RootState) => state.firmware;
 export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
+export const selectFirmwareUpdateSource = (state: RootState) => state.firmware.firmwareUpdateSource;
