@@ -139,11 +139,12 @@ export const VersionWithUpdate = () => {
                             <Translation id="SETTINGS_UPDATE_CHECKING" />
                         </ActionButton>
                     )}
-                    {desktopUpdateState.state === UpdateState.NotAvailable && (
-                        <ActionButton onClick={checkForUpdates} variant="primary">
-                            <Translation id="SETTINGS_UPDATE_CHECK" />
-                        </ActionButton>
-                    )}
+                    {desktopUpdateState.state === UpdateState.NotAvailable ||
+                        (desktopUpdateState.state === UpdateState.EarlyAccessDisable && (
+                            <ActionButton onClick={checkForUpdates} variant="primary">
+                                <Translation id="SETTINGS_UPDATE_CHECK" />
+                            </ActionButton>
+                        ))}
                     {desktopUpdateState.state === UpdateState.Available && (
                         <ActionButton onClick={maximizeUpdateModal} variant="primary">
                             <Translation id="SETTINGS_UPDATE_AVAILABLE" />
