@@ -159,7 +159,12 @@ export const Pagination = ({
     return (
         <Wrapper $hasPages={hasPages} {...rest}>
             <Actions $isActive={showPrev}>
-                <PageItem onClick={() => onPageSelected(currentPage - 1)}>‹</PageItem>
+                <PageItem
+                    onClick={() => onPageSelected(currentPage - 1)}
+                    data-testid="@wallet/pagination/go-to-previous-page-button"
+                >
+                    ‹
+                </PageItem>
             </Actions>
 
             {pageNumbers.map((page, index) =>
@@ -179,17 +184,29 @@ export const Pagination = ({
             )}
 
             <Actions $isActive={showNext}>
-                <PageItem onClick={() => onPageSelected(currentPage + 1)}>›</PageItem>
+                <PageItem
+                    onClick={() => onPageSelected(currentPage + 1)}
+                    data-testid="@wallet/pagination/go-to-next-page-button"
+                >
+                    ›
+                </PageItem>
             </Actions>
 
             {explicitNavigation && (
                 <Row alignItems="center" gap={spacings.sm} maxWidth="140px">
-                    <NumberInput name="pageInput" control={control} locale={locale} size="small" />
+                    <NumberInput
+                        name="pageInput"
+                        control={control}
+                        locale={locale}
+                        size="small"
+                        data-testid="@wallet/pagination/go-to-page-input"
+                    />
                     <Button
                         intent="neutral"
                         priority="secondary"
                         onClick={goToPage}
                         isDisabled={isPageInputInvalid}
+                        data-testid="@wallet/pagination/go-to-page-button"
                     >
                         <Translation id="TR_PAGINATION_GO" />
                     </Button>
