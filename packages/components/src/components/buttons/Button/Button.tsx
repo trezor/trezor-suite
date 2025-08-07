@@ -1,8 +1,8 @@
-import { ButtonHTMLAttributes, JSX } from 'react';
+import React, { ButtonHTMLAttributes, JSX } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { CSSColor, Elevation, borders, spacingsPx, typography } from '@trezor/theme';
+import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -13,7 +13,6 @@ import {
 import { TransientProps } from '../../../utils/transientProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -24,6 +23,7 @@ import {
     getPadding,
     useVariantStyle,
 } from '../buttonStyleUtils';
+import { Icon, IconProps } from '../../Icon/Icon';
 
 export const allowedButtonFrameProps = [
     'margin',
@@ -32,8 +32,8 @@ export const allowedButtonFrameProps = [
     'flex',
 ] as const satisfies FramePropsKeys[];
 export type AllowedButtonFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
-
-export type IconOrComponent = IconName | JSX.Element;
+//todo
+export type IconOrComponent = JSX.Element;
 
 type ButtonContainerProps = TransientProps<AllowedButtonFrameProps> & {
     $elevation: Elevation;
@@ -122,7 +122,7 @@ export type ButtonProps = SelectedHTMLButtonProps &
         isDisabled?: boolean;
         isLoading?: boolean;
         isFullWidth?: boolean;
-        icon?: IconOrComponent;
+        icon?: React.ReactElement<IconProps> | IconProps['name'];
         iconSize?: number;
         iconAlignment?: IconAlignment;
         children: React.ReactNode;
@@ -131,21 +131,6 @@ export type ButtonProps = SelectedHTMLButtonProps &
         'data-testid'?: string;
         textWrap?: boolean;
     };
-
-type GetIconProps = {
-    icon?: IconName | React.ReactElement;
-    size?: number;
-    color?: CSSColor;
-};
-
-export const getIcon = ({ icon, size, color }: GetIconProps) => {
-    if (!icon) return null;
-    if (typeof icon === 'string') {
-        return <Icon name={icon as IconName} size={size} color={color} />;
-    }
-
-    return icon;
-};
 
 export const Button = ({
     'data-testid': dataTestId,
@@ -173,12 +158,6 @@ export const Button = ({
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
     const theme = useTheme();
-
-    const IconComponent = getIcon({
-        icon,
-        size: iconSize || getIconSize(size),
-        color: getIconColor({ variant, isDisabled, theme, isSubtle }),
-    });
 
     const Loader = <Spinner size={getIconSize(size)} data-testid={`${dataTestId}/spinner`} />;
 
@@ -210,7 +189,18 @@ export const Button = ({
             type={type}
             {...frameProps}
         >
-            {!isLoading && icon && IconComponent}
+            {!isLoading && typeof icon === 'string' ? (
+                <Icon
+                    name={icon}
+                    size={iconSize || getIconSize(size)}
+                    color={getIconColor({ variant, isDisabled, theme, isSubtle })}
+                />
+            ) : typeof icon === 'object' ? (
+                React.cloneElement(icon, {
+                    size: iconSize || getIconSize(size),
+                    color: getIconColor({ variant, isDisabled, theme, isSubtle }),
+                })
+            ) : null}
             {isLoading && Loader}
 
             {children && (

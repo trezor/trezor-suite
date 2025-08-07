@@ -10,6 +10,7 @@ import {
     Card,
     H3,
     IconButton,
+    Icon,
     Row,
     Button as TrezorButton,
     variables,
@@ -330,7 +331,7 @@ export const Method = () => {
                             <SubmitButton {...buttonProps} isFullWidth />
                             {buttonProps.isLoading && (
                                 <IconButton
-                                    icon="x"
+                                    icon={<Icon name="x" />}
                                     variant="tertiary"
                                     onClick={() => actions.onCancelCall()}
                                 />
@@ -354,7 +355,7 @@ export const Method = () => {
                                 <SubmitButton {...buttonProps} isFullWidth />
                                 {buttonProps.isLoading && (
                                     <IconButton
-                                        icon="x"
+                                        icon={<Icon name="x" />}
                                         variant="tertiary"
                                         onClick={() => actions.onCancelCall()}
                                     />

@@ -1,8 +1,11 @@
+import React from 'react';
+
 import styled from 'styled-components';
 
 import { useCollapsible } from './Collapsible';
 import { motionEasing } from '../../config/motion';
-import { Icon, IconName, IconProps } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 
 const ANIMATION_DURATION = 0.4;
 
@@ -14,20 +17,24 @@ const IconWrapper = styled.div<{ $isCollapsed?: boolean }>`
 
 type ToggleProps = {
     size?: IconProps['size'];
-    iconName?: IconName;
+    icon?: React.ReactElement<IconProps>;
     'data-testid'?: string;
 };
 
 export const CollapsibleToggleIcon = ({
     size,
-    iconName = 'caretDown',
+    icon = <Icon name="caretDown" />,
     'data-testid': dataTestId,
 }: ToggleProps) => {
     const { isOpen } = useCollapsible();
 
     return (
         <IconWrapper $isCollapsed={!isOpen}>
-            <Icon name={iconName} size={size} data-testid={dataTestId} variant="tertiary" />
+            {React.cloneElement(icon, {
+                size,
+                'data-testid': dataTestId,
+                variant: 'tertiary',
+            })}
         </IconWrapper>
     );
 };

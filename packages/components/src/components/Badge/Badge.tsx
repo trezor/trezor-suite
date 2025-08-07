@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 import styled, { DefaultTheme, css, useTheme } from 'styled-components';
 
@@ -13,7 +13,7 @@ import {
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, IconProps } from '../Icon/Icon';
 
 export const badgeSizes = ['medium', 'small', 'tiny'] as const satisfies UISize[];
 export type BadgeSize = Extract<UISize, (typeof badgeSizes)[number]>;
@@ -31,7 +31,7 @@ export type BadgeProps = AllowedFrameProps & {
     variant?: BadgeVariant;
     onElevation?: boolean;
     isDisabled?: boolean;
-    icon?: IconName;
+    icon?: ReactElement<IconProps> | IconProps['name'];
     hasAlert?: boolean;
     className?: string;
     children?: React.ReactNode;
@@ -159,6 +159,17 @@ export const Badge = ({
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedBadgeFrameProps);
 
+    const IconComponent = !icon ? null : typeof icon === 'string' ? (
+        <Icon name={icon} />
+    ) : (
+        React.cloneElement(icon, {
+            color: isDisabled
+                ? theme.iconDisabled
+                : mapVariantToIconColor({ $variant: variant, theme }),
+            size: mapSizeToIconSize({ $size: size }),
+        })
+    );
+
     return (
         <Container
             $size={size}
@@ -169,17 +180,7 @@ export const Badge = ({
             $inline={inline === true}
             {...frameProps}
         >
-            {icon && (
-                <Icon
-                    name={icon}
-                    color={
-                        isDisabled
-                            ? theme.iconDisabled
-                            : mapVariantToIconColor({ $variant: variant, theme })
-                    }
-                    size={mapSizeToIconSize({ $size: size })}
-                />
-            )}
+            {IconComponent}
 
             <Content
                 $size={size}

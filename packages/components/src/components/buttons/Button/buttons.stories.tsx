@@ -5,6 +5,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { Button } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
+import { IconStories } from '../../Icon/IconStories';
 import { ButtonVariant } from '../buttonStyleUtils';
 
 const variants: Array<ButtonVariant> = ['primary', 'tertiary', 'info', 'warning', 'destructive'];
@@ -31,10 +32,10 @@ export const AllButtons: StoryFn = () => (
                     <Button {...commonProps} size="small">
                         {capitalizeFirstLetter(variant)} small
                     </Button>
-                    <Button {...commonProps} icon="palette">
+                    <Button {...commonProps} icon={<IconStories name="palette" />}>
                         {capitalizeFirstLetter(variant)} icon
                     </Button>
-                    <Button {...commonProps} iconAlignment="end" icon="plus">
+                    <Button {...commonProps} iconAlignment="end" icon={<IconStories name="plus" />}>
                         {capitalizeFirstLetter(variant)} icon right
                     </Button>
                     <Button {...commonProps} isLoading>
@@ -43,7 +44,7 @@ export const AllButtons: StoryFn = () => (
                     <Button {...commonProps} isFullWidth>
                         {capitalizeFirstLetter(variant)} full width
                     </Button>
-                    <Button {...commonProps} isSubtle icon="palette">
+                    <Button {...commonProps} isSubtle icon={<IconStories name="palette" />}>
                         {capitalizeFirstLetter(variant)} subtle
                     </Button>
                     <Button {...commonProps} isDisabled>

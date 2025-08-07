@@ -2,10 +2,6 @@ import React from 'react';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
-
 import {
     IconCircle as IconCircleComponent,
     IconCircleProps,
@@ -13,6 +9,8 @@ import {
 } from './IconCircle';
 import { iconCirclePaddingTypes, iconCircleVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { iconNames } from '../Icon/constants';
+import { IconStories } from '../Icon/IconStories';
 
 const meta: Meta = {
     title: 'IconCircle',
@@ -23,7 +21,7 @@ export const IconCircle: StoryObj<IconCircleProps> = {
     render: props => <IconCircleComponent {...(props as IconCircleProps)} />,
     args: {
         variant: 'primary',
-        name: 'butterfly',
+        icon: <IconStories name="butterfly" />,
         paddingType: 'large',
         size: 60,
         hasBorder: true,
@@ -52,11 +50,12 @@ export const IconCircle: StoryObj<IconCircleProps> = {
                 type: 'boolean',
             },
         },
-        name: {
+        icon: {
             control: {
                 type: 'select',
             },
-            options: Object.keys(icons) as IconName[],
+            // todo: aha, this won't be avaiable :thinking_face:
+            options: iconNames,
         },
         ...getFramePropsStory(allowedIconCircleFrameProps).argTypes,
     },

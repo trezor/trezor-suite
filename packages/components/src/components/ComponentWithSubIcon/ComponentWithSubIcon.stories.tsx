@@ -6,7 +6,8 @@ import {
     allowedComponentWithSubIconFrameProps,
 } from './ComponentWithSubIcon';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { Icon, iconVariants } from '../Icon/Icon';
+import { iconVariants } from '../Icon/Icon';
+import { IconStories } from '../Icon/IconStories';
 
 const meta: Meta = {
     title: 'ComponentWithSubIcon',
@@ -16,11 +17,9 @@ export default meta;
 
 export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
     args: {
-        subIconProps: {
-            name: 'check',
-        },
+        subIcon: <IconStories name="check" />,
         variant: 'destructive',
-        children: <Icon name="torBrowser" />,
+        children: <IconStories name="torBrowser" />,
         ...getFramePropsStory(allowedComponentWithSubIconFrameProps).args,
     },
     argTypes: {

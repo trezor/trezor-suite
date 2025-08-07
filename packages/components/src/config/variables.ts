@@ -1,6 +1,5 @@
 // TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { icons } from '@suite-common/icons/src/icons';
+ 
 import { aboveBreakpoint, belowBreakpoint, breakpoints } from '@trezor/theme';
 
 /**
@@ -58,5 +57,3 @@ export const FONT_WEIGHT = {
     DEMI_BOLD: 600,
     BOLD: 700,
 } as const;
-
-export const ICONS = Object.keys(icons).sort();

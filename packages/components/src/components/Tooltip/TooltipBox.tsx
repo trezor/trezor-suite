@@ -1,10 +1,10 @@
-import { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { borders, paletteV1, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Icon, IconName } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
 
 export const TOOLTIP_BORDER_RADIUS = borders.radii.sm;
 
@@ -69,7 +69,7 @@ export type TooltipBoxProps = {
      */
     isLarge?: boolean;
     addon?: ReactNode;
-    headerIcon?: IconName;
+    headerIcon?: ReactElement<IconProps>;
     title?: ReactElement;
 };
 
@@ -97,7 +97,7 @@ export const TooltipBox = ({
                 <HeaderContainer>
                     {title && (
                         <TooltipTitle $isLarge={isLarge}>
-                            {headerIcon && <Icon name={headerIcon} size={spacings.md} />}
+                            {headerIcon && React.cloneElement(headerIcon, { size: spacings.md })}
                             {title}
                         </TooltipTitle>
                     )}

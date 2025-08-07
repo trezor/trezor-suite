@@ -3,7 +3,6 @@ import { DefaultTheme } from 'styled-components';
 import { CSSColor, Color, Elevation, mapElevationToBackgroundToken } from '@trezor/theme';
 
 import { BannerVariant } from './types';
-import { IconName } from '../Icon/Icon';
 
 type MapArgs = {
     $variant: BannerVariant;
@@ -46,14 +45,16 @@ export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor =>
     return theme[colorMap[$variant]];
 };
 
-export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconName => {
-    const iconMap: Record<BannerVariant, IconName> = {
+export const mapVariantToIcon = ({
+    $variant,
+}: Pick<MapArgs, '$variant'>): 'lightbulb' | 'info' | 'warning' => {
+    const iconMap: Record<BannerVariant, any> = {
         primary: 'lightbulb',
         info: 'info',
         warning: 'warning',
         destructive: 'warning',
         tertiary: 'info',
-    };
+    } as const;
 
     return iconMap[$variant];
 };

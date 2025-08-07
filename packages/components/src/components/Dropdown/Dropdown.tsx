@@ -1,7 +1,8 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
-import { IconName } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { DropdownMenuItemProps, Menu, MenuProps } from '../Menu/Menu';
 import { Popover, PopoverRef } from '../Popover/Popover';
 import { PopoverPlacement } from '../Popover/utils';
@@ -15,7 +16,7 @@ export type DropdownProps = Omit<MenuProps, 'onClose'> &
         placement?: PopoverPlacement;
         isDisabled?: boolean;
         isLoading?: boolean;
-        iconName?: IconName;
+        icon?: React.ReactElement<IconProps>;
         className?: string;
         'data-testid'?: string;
     };
@@ -35,7 +36,7 @@ export const Dropdown = forwardRef(
             isDisabled,
             isLoading,
             placement,
-            iconName = 'dotsThree',
+            icon = <Icon name="dotsThree" />,
             'data-testid': dataTest,
             minWidth,
             maxWidth,
@@ -74,7 +75,7 @@ export const Dropdown = forwardRef(
                 <IconButton
                     size="small"
                     variant="tertiary"
-                    icon={iconName}
+                    icon={icon}
                     tabIndex={-1}
                     isDisabled={isDisabled}
                     isLoading={isLoading}

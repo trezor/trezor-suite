@@ -3,13 +3,12 @@ import React, { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import styled, { useTheme } from 'styled-components';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
 import { typography } from '@trezor/theme';
 
-import { Icon, IconProps, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
+import { IconProps, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
+import { IconStories } from './IconStories';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { iconNames } from '../Icon/constants';
 import { Input } from '../form/Input/Input';
 
 const CopiedText = styled.div`
@@ -98,14 +97,14 @@ const Render = (props: IconProps) => {
                 />
             </FloatingWrapper>
             <Wrapper>
-                {(Object.keys(icons) as IconName[])
+                {iconNames
                     .filter(iconKey => new RegExp(search, 'i').test(iconKey))
                     .map(iconKey =>
                         copied === iconKey ? (
                             <CopiedText key={iconKey}>Copied to clipboard!</CopiedText>
                         ) : (
                             <IconWrapper key={iconKey} onClick={() => copy(iconKey)}>
-                                <Icon {...props} name={iconKey} />
+                                <IconStories {...props} name={iconKey} />
                                 <IconText>{iconKey}</IconText>
                             </IconWrapper>
                         ),

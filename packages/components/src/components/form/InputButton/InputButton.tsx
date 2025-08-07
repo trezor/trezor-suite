@@ -17,7 +17,7 @@ import { motionEasing } from '../../../config/motion';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Row } from '../../Flex/Flex';
-import { IconName } from '../../Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { mapElevationToButtonOnBackground } from '../../buttons/buttonStyleUtils';
 
@@ -56,7 +56,7 @@ const InputWrapper = styled(motion.div)`
 `;
 
 export type InputButtonProps = {
-    iconName?: IconName;
+    icon?: React.ReactElement;
     isExpanded: boolean;
     value: string;
     setExpanded: Dispatch<SetStateAction<boolean>>;
@@ -68,7 +68,7 @@ export type InputButtonProps = {
 
 export const InputButton = ({
     placeholder,
-    iconName = 'magnifyingGlass',
+    icon = <Icon name="magnifyingGlass" />,
     isExpanded,
     value,
     setExpanded,
@@ -139,7 +139,7 @@ export const InputButton = ({
             </HiddenPlaceholder>
             <Row alignItems="stretch">
                 <IconButton
-                    icon={isDirty ? 'xCircleFilled' : iconName}
+                    icon={isDirty ? <Icon name="xCircleFilled" /> : icon}
                     size="small"
                     onClick={isDirty ? clear : toggle}
                     variant="tertiary"

@@ -1,10 +1,11 @@
 import { JSX, ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { Center, Column, Icon, List, Row, Text } from '@trezor/components';
+import { Center, Column, List, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Card } from './Card/Card';
+import { Icon } from './Icon/Icon';
 import { Button } from './buttons/Button/Button';
 import { Switch } from './form/Switch/Switch';
 

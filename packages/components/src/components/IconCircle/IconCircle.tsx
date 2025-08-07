@@ -13,7 +13,8 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { Icon, IconName, IconSize, getIconSize } from '../Icon/Icon';
+import { IconProps, IconSize, getIconSize } from '../Icon/Icon';
+import React from 'react';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;
@@ -48,7 +49,7 @@ const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
 `;
 
 export type IconCircleProps = {
-    name: IconName;
+    icon: React.ReactElement<IconProps>;
     size?: IconSize | number;
     paddingType?: IconCirclePaddingType;
     hasBorder?: boolean;
@@ -56,7 +57,7 @@ export type IconCircleProps = {
 } & AllowedFrameProps;
 
 export const IconCircle = ({
-    name,
+    icon,
     size = 60,
     hasBorder = true,
     paddingType = 'large',
@@ -74,7 +75,10 @@ export const IconCircle = ({
             $variant={variant}
             {...frameProps}
         >
-            <Icon name={name} variant={variant} />
+            {React.cloneElement(icon, {
+                size: iconSize,
+                variant,
+            })}
         </IconCircleWrapper>
     );
 };

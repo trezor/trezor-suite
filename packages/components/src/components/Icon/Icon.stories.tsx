@@ -1,11 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { icons } from '@suite-common/icons/src/icons';
-
-import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
+import { allowedIconFrameProps, iconSizes, iconVariants } from './IconBase';
+import { IconStories as IconComponent } from './IconStories';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { iconNames } from '../Icon/constants';
 
 const meta: Meta = {
     title: 'Icons',
@@ -23,7 +21,7 @@ export const Icon: StoryObj<typeof IconComponent> = {
     },
     argTypes: {
         name: {
-            options: Object.keys(icons),
+            options: iconNames,
             control: {
                 type: 'select',
             },

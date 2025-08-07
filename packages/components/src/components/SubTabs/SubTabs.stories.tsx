@@ -6,10 +6,10 @@ import { spacings } from '@trezor/theme';
 
 import { SubTabs as SubTabsComponent, SubTabsProps, allowedSubTabsFrameProps } from './SubTabs';
 import { subtabsSizes } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Column } from '../Flex/Flex';
-import { IconName } from '../Icon/Icon';
+import { IconName } from '../Icon/types';
+import { iconNames } from '../Icon/constants';
 
 const meta: Meta = {
     title: 'SubTabs',
@@ -25,7 +25,8 @@ const SubTabsApp = (props: Partial<SubTabsProps>) => {
         onClick: () => {
             setSelectedTab(index);
         },
-        iconName: variables.ICONS[index * 2] as IconName,
+        // toodo: huh?
+        iconName: iconNames[index * 2] as IconName,
         'data-testid': title.toLowerCase(),
     }));
 

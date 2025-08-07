@@ -3,7 +3,6 @@ import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { FormCell as FormCellComponent, allowedFormCellFrameProps } from './FormCell';
-import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { SkeletonRectangle } from '../../skeletons/SkeletonRectangle';
 
@@ -24,7 +23,6 @@ export const FormCell: StoryObj<typeof FormCellComponent> = {
         labelRight: 'Label right',
         labelHoverRight: 'Label hover right',
         bottomText: 'Bottom text',
-        bottomTextIconName: 'info',
         ...getFramePropsStory(allowedFormCellFrameProps).args,
     },
     argTypes: {
@@ -33,16 +31,7 @@ export const FormCell: StoryObj<typeof FormCellComponent> = {
         labelLeft: { control: 'text' },
         labelRight: { control: 'text' },
         inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
-        bottomTextIconName: {
-            options: ['none', ...variables.ICONS],
-            mapping: {
-                ...variables.ICONS,
-                none: undefined,
-            },
-            control: {
-                type: 'select',
-            },
-        },
+
         ...getFramePropsStory(allowedFormCellFrameProps).argTypes,
     },
 };

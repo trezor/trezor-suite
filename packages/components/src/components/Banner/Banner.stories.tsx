@@ -2,14 +2,10 @@ import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { allowedBannerFrameProps } from './Banner';
-import {
-    Banner as BannerComponent,
-    BannerProps,
-    Row,
-    iconVerticalAlignments,
-    variables,
-} from '../../index';
+import { Banner as BannerComponent, BannerProps, Row, iconVerticalAlignments } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { Icon } from '../Icon/Icon';
+import { iconNames } from '../Icon/constants';
 
 const Wrapper = styled.div`
     display: flex;
@@ -59,7 +55,7 @@ export const Banner: StoryObj<BannerProps> = {
             control: false,
         },
         icon: {
-            options: [undefined, true, ...variables.ICONS],
+            options: [undefined, true, ...iconNames],
             control: {
                 type: 'select',
             },
@@ -83,14 +79,14 @@ export const Banner: StoryObj<BannerProps> = {
                 combinedButtons: (
                     <Row gap={8}>
                         <BannerComponent.Button>Button 1</BannerComponent.Button>
-                        <BannerComponent.IconButton icon="x" isSubtle />
+                        <BannerComponent.IconButton icon={<Icon name="x" />} isSubtle />
                     </Row>
                 ),
-                iconButton: <BannerComponent.IconButton icon="x" />,
+                iconButton: <BannerComponent.IconButton icon={<Icon name="x" />} />,
                 iconButtons: (
                     <Row gap={8}>
-                        <BannerComponent.IconButton icon="x" />
-                        <BannerComponent.IconButton icon="asterisk" isSubtle />
+                        <BannerComponent.IconButton icon={<Icon name="x" />} />
+                        <BannerComponent.IconButton icon={<Icon name="asterisk" />} isSubtle />
                     </Row>
                 ),
             },

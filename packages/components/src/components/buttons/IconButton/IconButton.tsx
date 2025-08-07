@@ -7,8 +7,9 @@ import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonContainer, ButtonProps, IconOrComponent, getIcon } from '../Button/Button';
+import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize } from '../buttonStyleUtils';
+import { Icon, IconProps } from '../../Icon/Icon';
 
 export const allowedIconButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconButtonFrameProps)[number]>;
@@ -18,7 +19,7 @@ export type IconButtonProps = AllowedFrameProps &
         ButtonProps,
         'icon' | 'isFullWidth' | 'iconAlignment' | 'iconSize' | 'variant' | 'children'
     > & {
-        icon: IconOrComponent;
+        icon: React.ReactElement<IconProps> | IconProps['name'];
         label?: React.ReactNode;
         iconSize?: number;
         variant?: ButtonVariant;
@@ -39,11 +40,14 @@ export const IconButton = ({
 }: IconButtonProps) => {
     const theme = useTheme();
 
-    const IconComponent = getIcon({
-        icon,
-        size: iconSize || getIconSize(size),
-        color: getIconColor({ variant, isDisabled, theme, isSubtle }),
-    });
+    const IconComponent = !icon ? null : typeof icon === 'string' ? (
+        <Icon name={icon} />
+    ) : (
+        React.cloneElement(icon, {
+            size: iconSize || getIconSize(size),
+            color: getIconColor({ variant, isDisabled, theme, isSubtle }),
+        })
+    );
 
     const Loader = <Spinner size={getIconSize(size)} />;
 

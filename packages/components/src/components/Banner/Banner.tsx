@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
@@ -28,7 +28,8 @@ import { TransientProps } from '../../utils/transientProps';
 import { useMediaQuery } from '../../utils/useMediaQuery';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Column, FlexAlignItems, Row } from '../Flex/Flex';
-import { Icon, IconName, IconSize } from '../Icon/Icon';
+import { Icon, IconProps } from '../Icon/Icon';
+import { IconSize } from '../Icon/IconBase';
 import { Spinner } from '../loaders/Spinner/Spinner';
 
 export const allowedBannerFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
@@ -43,7 +44,7 @@ export type BannerProps = AllowedFrameProps & {
     variant?: BannerVariant;
     rightContent?: ReactNode;
     iconAlignment?: IconVerticalAlignment;
-    icon?: IconName | true;
+    icon?: IconProps['name'] | React.ReactElement<IconProps> | true;
     width?: string;
     iconSize?: IconSize | number;
     filled?: boolean;
@@ -148,16 +149,30 @@ export const Banner = ({
         >
             {isLoading && <Spinner size={22} />}
             {!isLoading && withIcon && (
-                <Icon
-                    size={iconSize}
-                    name={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}
-                    // Todo: unify variants
-                    color={mapVariantToIconColor({
-                        $variant: variant,
-                        theme,
-                        $elevation: elevation,
-                    })}
-                />
+                <>
+                    {icon === true ? (
+                        <Icon name={mapVariantToIcon({ $variant: variant })} />
+                    ) : typeof icon === 'string' ? (
+                        <Icon
+                            name={icon}
+                            size={iconSize}
+                            color={mapVariantToIconColor({
+                                $variant: variant,
+                                theme,
+                                $elevation: elevation,
+                            })}
+                        />
+                    ) : (
+                        React.cloneElement(icon, {
+                            size: iconSize,
+                            color: mapVariantToIconColor({
+                                $variant: variant,
+                                theme,
+                                $elevation: elevation,
+                            }),
+                        })
+                    )}
+                </>
             )}
 
             <ContentComponent>

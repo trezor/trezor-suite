@@ -6,8 +6,11 @@ import { FontAssetType, OtherAssetType, generateFonts } from 'fantasticon';
 import fs, { constants } from 'fs';
 import path from 'path';
 
+import { type IconName as AllAvailableIcons } from '@trezor/components/src/components/Icon/types';
+
 import { MOBILE_ICON_FONT_NAME } from './src/constants';
-import { type IconName as AllAvailableIcons } from './src/icons';
+
+// todo: temporary (circular dependency)
 
 const usedIcons = [
     'arrowDown',

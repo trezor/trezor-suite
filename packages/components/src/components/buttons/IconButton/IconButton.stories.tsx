@@ -1,7 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton';
-import { variables } from '../../../config';
+import { Icon } from '../../Icon/Icon';
+import { iconNames } from '../../Icon/constants';
 import { buttonSizes, buttonVariants, subtleButtonVariants } from '../buttonStyleUtils';
 
 const meta: Meta = {
@@ -13,7 +14,7 @@ export default meta;
 export const IconButton: StoryObj<IconButtonProps> = {
     args: {
         label: 'label',
-        icon: 'arrowRight',
+        icon: <Icon name="arrowRight" />,
         variant: 'primary',
         size: 'large',
         isDisabled: false,
@@ -25,7 +26,7 @@ export const IconButton: StoryObj<IconButtonProps> = {
             type: 'string',
         },
         icon: {
-            options: variables.ICONS,
+            options: iconNames,
             control: {
                 type: 'select',
             },

@@ -10,9 +10,9 @@ import {
     allowedInfoItemTextProps,
 } from './InfoItem';
 import { infoItemVariants, infoItemVerticalAlignments } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { flexDirection } from '../Flex/Flex';
+import { iconNames } from '../Icon/constants';
 import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta = {
@@ -42,10 +42,10 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
                 type: 'text',
             },
         },
-        iconName: {
-            options: ['none', ...variables.ICONS],
+        icon: {
+            options: ['none', ...iconNames],
             mapping: {
-                ...variables.ICONS,
+                ...iconNames,
                 none: undefined,
             },
             control: {

@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { InputButton as InputButtonComponent, InputButtonProps } from './InputButton';
-import { variables } from '../../../config';
+import { Icon } from '../../Icon/Icon';
+import { iconNames } from '../../Icon/constants';
 
 const meta: Meta = {
     title: 'Form',
@@ -11,14 +12,14 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-const Controller = ({ placeholder, iconName }: Partial<InputButtonProps>) => {
+const Controller = ({ placeholder, icon }: Partial<InputButtonProps>) => {
     const [isExpanded, setExpanded] = useState(false);
     const [value, setValue] = useState('');
 
     return (
         <InputButtonComponent
             placeholder={placeholder ?? ''}
-            iconName={iconName ?? 'magnifyingGlass'}
+            icon={icon ?? <Icon name="magnifyingGlass" />}
             isExpanded={isExpanded}
             value={value}
             setExpanded={setExpanded}
@@ -32,7 +33,7 @@ export const InputButton: StoryObj<typeof InputButtonComponent> = {
     render: props => <Controller {...props} />,
     args: {
         placeholder: 'Token, symbol or contract address',
-        iconName: 'magnifyingGlass',
+        icon: <Icon name="magnifyingGlass" />,
     },
     argTypes: {
         placeholder: {
@@ -40,8 +41,8 @@ export const InputButton: StoryObj<typeof InputButtonComponent> = {
                 type: 'text',
             },
         },
-        iconName: {
-            options: variables.ICONS,
+        icon: {
+            options: iconNames,
             control: {
                 type: 'select',
             },

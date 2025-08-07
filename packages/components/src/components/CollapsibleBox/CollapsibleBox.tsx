@@ -21,7 +21,8 @@ import {
 } from './utils';
 import { Collapsible } from '../Collapsible/Collapsible';
 import { Column, Row } from '../Flex/Flex';
-import { IconName } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
@@ -59,7 +60,7 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     fillType?: FillType;
     toggleLabel?: ReactNode;
     toggleComponent?: ReactNode;
-    toggleIconName?: IconName;
+    toggleIcon?: React.ReactElement<IconProps>;
     children?: ReactNode;
     hasDivider?: boolean;
     onAnimationComplete?: (isOpen: boolean) => void;
@@ -127,7 +128,7 @@ const Content = styled.div<ContentProps>`
 export const CollapsibleBox = ({
     defaultIsOpen = false,
     toggleLabel,
-    toggleIconName = 'caretCircleDown',
+    toggleIcon = <Icon name="caretCircleDown" />,
     paddingType = 'normal',
     heading,
     subHeading,
@@ -174,7 +175,7 @@ export const CollapsibleBox = ({
                         </Text>
                     )}
                     <Collapsible.ToggleIcon
-                        iconName={toggleIconName}
+                        icon={toggleIcon}
                         size={mapSizeToIconSize({ $headingSize: headingSize })}
                         data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
                     />

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Button, Checkbox, Input, Radio, Range, Select, Switch, Textarea } from '../../index';
 import { StoryColumn } from '../../support/Story';
+import { IconStories } from '../Icon/IconStories';
 
 const Heading = styled.h2``;
 
@@ -97,7 +98,11 @@ export const AllForms: StoryObj = {
                     data-testid="input-warning-label"
                     bottomText="bottom text"
                     labelHoverRight={
-                        <Button variant="tertiary" icon="qrCode" onClick={() => {}}>
+                        <Button
+                            variant="tertiary"
+                            icon={<IconStories name="qrCode" />}
+                            onClick={() => {}}
+                        >
                             Scan QR code
                         </Button>
                     }

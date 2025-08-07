@@ -1,3 +1,5 @@
+import React from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { Elevation, borders, mapElevationToBackground, spacings } from '@trezor/theme';
@@ -6,7 +8,7 @@ import { useSubTabsContext } from './SubTabsContext';
 import { mapSizeToIconSize, mapSizeToTypography } from './utils';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`
@@ -36,7 +38,7 @@ const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`
 export type SubTabsItemProps = {
     id: string;
     onClick: () => void;
-    iconName?: IconName;
+    icon?: React.ReactElement<IconProps>;
     count?: number;
     children: React.ReactNode;
     'data-testid'?: string;
@@ -45,7 +47,7 @@ export type SubTabsItemProps = {
 export const SubTabsItem = ({
     id,
     onClick,
-    iconName,
+    icon,
     count = 0,
     'data-testid': dataTestId,
     children,
@@ -62,7 +64,7 @@ export const SubTabsItem = ({
             data-testid={dataTestId}
         >
             <Row gap={spacings.xs} padding={{ vertical: spacings.xs, horizontal: spacings.md }}>
-                {iconName && <Icon name={iconName} size={mapSizeToIconSize(size)} />}
+                {icon && React.cloneElement(icon, { size: mapSizeToIconSize(size) })}
                 <Text as="div" typographyStyle={mapSizeToTypography(size)}>
                     {children}
                 </Text>

@@ -30,7 +30,7 @@ export default withNextra({
     webpack: (config, { webpack }) => {
         // Image loader
         config.module.rules.push({
-            test: /\.(svg)$/,
+            test: /\.svg$/,
             type: 'asset/resource',
         });
 

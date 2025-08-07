@@ -13,7 +13,6 @@ import {
 import { TransientProps } from '../../utils/transientProps';
 import {
     ExclusiveColorOrVariant,
-    Icon,
     IconProps,
     getColorForIconVariant,
     getIconSize,
@@ -53,7 +52,7 @@ const SubIconWrapper = styled.div<SubIconWrapperProps>`
 
 export type ComponentWithSubIconProps = AllowedFrameProps &
     ExclusiveColorOrVariant & {
-        subIconProps?: IconProps;
+        subIcon?: React.ReactElement<IconProps>;
         children: ReactNode;
     };
 
@@ -61,13 +60,13 @@ export const ComponentWithSubIcon = ({
     variant,
     color,
     children,
-    subIconProps,
+    subIcon,
     ...rest
 }: ComponentWithSubIconProps) => {
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedComponentWithSubIconFrameProps);
 
-    if (subIconProps === undefined) {
+    if (subIcon === undefined) {
         return <Container {...frameProps}>{children}</Container>;
     }
 
@@ -79,11 +78,11 @@ export const ComponentWithSubIcon = ({
 
     const iconColor = getColorForIconVariant({
         theme,
-        color: subIconProps.color,
-        variant: subIconProps.variant,
+        color: subIcon.props.color,
+        variant: subIcon.props.variant,
     });
 
-    const subIconSize = getIconSize(subIconProps.size ?? 12);
+    const subIconSize = getIconSize(subIcon.props.size ?? 12);
 
     return (
         <Container {...frameProps}>
@@ -93,7 +92,7 @@ export const ComponentWithSubIcon = ({
                 $subIconColor={iconColor}
                 $subIconSize={subIconSize}
             >
-                <Icon {...subIconProps} size={subIconSize} />
+                {subIcon}
             </SubIconWrapper>
         </Container>
     );

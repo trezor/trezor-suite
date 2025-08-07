@@ -8,12 +8,7 @@ import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/framePr
 import { TransientProps } from '../../../utils/transientProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import {
-    AllowedButtonFrameProps,
-    ButtonProps,
-    allowedButtonFrameProps,
-    getIcon,
-} from '../Button/Button';
+import { AllowedButtonFrameProps, ButtonProps, allowedButtonFrameProps } from '../Button/Button';
 import {
     ButtonSize,
     ButtonVariant,
@@ -21,6 +16,7 @@ import {
     getIconColor,
     getIconSize,
 } from '../buttonStyleUtils';
+import { Icon } from '../../Icon/Icon';
 
 const mapVariantToColor: Record<ButtonVariant, string> = {
     primary: 'textPrimaryDefault',
@@ -108,11 +104,20 @@ export const TextButton = ({
 }: TextButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
     const theme = useTheme();
-    const IconComponent = getIcon({
-        icon,
-        size: getIconSize(size),
-        color: getIconColor({ variant, isDisabled, theme, isSubtle: true }),
-    });
+
+    const IconComponent =
+        typeof icon === 'string' ? (
+            <Icon
+                name={icon}
+                size={getIconSize(size)}
+                color={getIconColor({ variant, isDisabled, theme, isSubtle: true })}
+            />
+        ) : typeof icon === 'object' ? (
+            React.cloneElement(icon, {
+                size: getIconSize(size),
+                color: getIconColor({ variant, isDisabled, theme, isSubtle: true }),
+            })
+        ) : null;
 
     const Loader = <Spinner size={getIconSize(size)} />;
 

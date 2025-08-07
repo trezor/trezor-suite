@@ -4,6 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { IconButton } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
+import { IconStories } from '../../Icon/IconStories';
 import { ButtonVariant } from '../buttonStyleUtils';
 
 const variants: Array<Exclude<ButtonVariant, 'danger'>> = ['primary', 'tertiary'];
@@ -19,7 +20,7 @@ export const IconButtons: StoryObj = {
             {variants.map(variant => (
                 <StoryColumn key={variant} minWidth={350} maxWidth={420}>
                     <IconButton
-                        icon="palette"
+                        icon={<IconStories name="palette" />}
                         variant={variant}
                         data-testid={`button-${variant}`}
                         onClick={() => {
@@ -27,7 +28,7 @@ export const IconButtons: StoryObj = {
                         }}
                     />
                     <IconButton
-                        icon="palette"
+                        icon={<IconStories name="palette" />}
                         variant={variant}
                         size="medium"
                         data-testid={`button-${variant}`}
@@ -37,7 +38,7 @@ export const IconButtons: StoryObj = {
                     />
 
                     <IconButton
-                        icon="palette"
+                        icon={<IconStories name="palette" />}
                         variant={variant}
                         size="small"
                         data-testid={`button-${variant}`}
@@ -49,7 +50,7 @@ export const IconButtons: StoryObj = {
                     <IconButton
                         variant={variant}
                         data-testid={`button-${variant}-icon`}
-                        icon="palette"
+                        icon={<IconStories name="palette" />}
                         label={<span>Label</span>}
                         onClick={() => {
                             console.log('click');
@@ -57,14 +58,14 @@ export const IconButtons: StoryObj = {
                     />
 
                     <IconButton
-                        icon="palette"
+                        icon={<IconStories name="palette" />}
                         variant={variant}
                         data-testid={`button-${variant}-loading`}
                         isLoading
                     />
 
                     <IconButton
-                        icon="palette"
+                        icon={<IconStories name="palette" />}
                         variant={variant}
                         isDisabled
                         data-testid={`button-${variant}-disabled`}

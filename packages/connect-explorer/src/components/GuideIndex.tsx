@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { getPagesUnderRoute } from 'nextra/context';
 import styled from 'styled-components';
 
-import { Button, H3, Paragraph, Card as TrezorCard } from '@trezor/components';
+import { Button, H3, Icon, Paragraph, Card as TrezorCard } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -42,7 +42,12 @@ export default function GuideIndex(): ReactNode {
                 <H3>{page.meta?.title || page.frontMatter?.title || page.name}</H3>
                 <Paragraph>{page.frontMatter?.description}</Paragraph>
                 <BottomRow>
-                    <Button variant="primary" size="tiny" icon="arrowRight" iconAlignment="end">
+                    <Button
+                        variant="primary"
+                        size="tiny"
+                        icon={<Icon name="arrowRight" />}
+                        iconAlignment="end"
+                    >
                         Read more
                     </Button>
                 </BottomRow>

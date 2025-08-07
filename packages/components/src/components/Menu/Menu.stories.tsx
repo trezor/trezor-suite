@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Menu as MenuComponent, MenuProps, allowedMenuFrameProps } from './Menu';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { IconStories } from '../Icon/IconStories';
 
 const meta: Meta = {
     title: 'Menu',
@@ -14,12 +15,12 @@ export const Menu: StoryObj<MenuProps> = {
         items: [
             {
                 label: 'Light mode',
-                icon: 'sun',
+                icon: <IconStories name="sun" />,
                 onClick: () => {},
             },
             {
                 label: 'Dark mode',
-                icon: 'moon',
+                icon: <IconStories name="moon" />,
                 onClick: () => {},
             },
         ],

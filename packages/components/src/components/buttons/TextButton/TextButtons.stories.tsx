@@ -4,6 +4,7 @@ import { Meta, StoryFn } from '@storybook/react';
 
 import { TextButton } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
+import { IconStories } from '../../Icon/IconStories';
 
 const meta: Meta = {
     title: 'Buttons',
@@ -43,7 +44,7 @@ export const AllTextButtons: StoryFn = () => (
 
             <TextButton
                 data-testid="text-button-icon"
-                icon="ghost"
+                icon={<IconStories name="ghost" />}
                 onClick={() => {
                     console.log('click');
                 }}
@@ -51,12 +52,16 @@ export const AllTextButtons: StoryFn = () => (
                 Text Button Icon
             </TextButton>
 
-            <TextButton icon="ghost" data-testid="text-button-loading" isLoading>
+            <TextButton
+                icon={<IconStories name="ghost" />}
+                data-testid="text-button-loading"
+                isLoading
+            >
                 Text Button loading
             </TextButton>
 
             <TextButton
-                icon="ghost"
+                icon={<IconStories name="ghost" />}
                 isDisabled
                 data-testid="text-button-disabled"
                 onClick={() => {

@@ -15,7 +15,7 @@ import { TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
 import { ElevationUp } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const allowedMenuFrameProps = [
@@ -39,8 +39,8 @@ const MenuList = styled.ul`
 export type DropdownMenuItemProps = {
     label: React.ReactNode;
     onClick?: () => any | Promise<any>;
-    icon?: IconName;
-    iconRight?: IconName;
+    icon?: React.ReactElement<IconProps>;
+    iconRight?: React.ReactElement<IconProps>;
     isDisabled?: boolean;
     isHidden?: boolean;
     'data-testid'?: string;
@@ -71,24 +71,20 @@ const MenuItem = ({
         onMouseEnter={onMouseEnter}
     >
         <Row gap={spacings.sm} padding={{ vertical: spacings.xs, horizontal: spacings.sm }}>
-            {icon && (
-                <Icon
-                    name={icon}
-                    size={spacings.md}
-                    variant={isDisabled ? 'disabled' : 'default'}
-                />
-            )}
+            {icon &&
+                React.cloneElement(icon, {
+                    size: spacings.md,
+                    variant: isDisabled ? 'disabled' : 'default',
+                })}
             <Text variant={isDisabled ? 'disabled' : 'default'} textWrap="nowrap">
                 {label}
             </Text>
-            {iconRight && (
-                <Icon
-                    margin={{ left: 'auto' }}
-                    name={iconRight}
-                    size={spacings.md}
-                    variant={isDisabled ? 'disabled' : 'default'}
-                />
-            )}
+            {iconRight &&
+                React.cloneElement(iconRight, {
+                    size: spacings.md,
+                    variant: isDisabled ? 'disabled' : 'default',
+                    margin: { left: 'auto' },
+                })}
         </Row>
     </Box>
 );

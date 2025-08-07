@@ -5,8 +5,8 @@ import {
     allowedCollapsibleBoxFrameProps,
 } from './CollapsibleBox';
 import { fillTypes, headingSizes, paddingTypes } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { iconNames } from '../Icon/constants';
 
 const meta: Meta = {
     title: 'CollapsibleBox',
@@ -62,9 +62,9 @@ export const CollapsibleBox: StoryObj = {
         },
         toggleComponent: { control: { disable: true } },
         toggleIconName: {
-            options: ['none', ...variables.ICONS],
+            options: ['none', ...iconNames],
             mapping: {
-                ...variables.ICONS,
+                ...iconNames,
                 none: undefined,
             },
             control: {

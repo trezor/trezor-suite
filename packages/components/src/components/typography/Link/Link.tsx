@@ -1,11 +1,11 @@
-import { MouseEvent, ReactNode } from 'react';
+import React, { MouseEvent, ReactElement, ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { spacingsPx, typographyStylesBase } from '@trezor/theme';
 
 import { TransientProps } from '../../../utils/transientProps';
-import { Icon, IconName } from '../../Icon/Icon';
+import { IconProps } from '../../Icon/Icon';
 import { allowedTextTextProps } from '../Text/Text';
 import {
     TextProps as TextPropsCommon,
@@ -68,7 +68,7 @@ type LinkProps = AllowedLinkTextProps & {
     children?: ReactNode;
     className?: string;
     variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
-    icon?: IconName;
+    icon?: ReactElement<IconProps>;
     color?: string;
     'data-testid'?: string;
 };
@@ -108,7 +108,7 @@ const Link = ({
             $color={color}
         >
             {children}
-            {icon && <Icon size={iconSize} name={icon} />}
+            {icon && React.cloneElement(icon, { size: iconSize })}
         </A>
     );
 };

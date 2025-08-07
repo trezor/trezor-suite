@@ -12,7 +12,6 @@ import {
 } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 import { Column } from '../../Flex/Flex';
-import { IconName } from '../../Icon/Icon';
 import { BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 import { InputState } from '../types';
@@ -54,7 +53,6 @@ export type FormCellProps = AllowedFrameProps & {
     labelRight?: React.ReactNode;
     bottomText?: ReactNode;
     bottomTextIconComponent?: ReactNode;
-    bottomTextIconName?: IconName;
     inputState?: InputState;
     isDisabled?: boolean;
     children: ReactNode;
@@ -69,7 +67,6 @@ export const FormCell = ({
     labelHoverRight,
     bottomText,
     bottomTextIconComponent,
-    bottomTextIconName,
     inputState,
     isDisabled,
     className,
@@ -99,7 +96,6 @@ export const FormCell = ({
                         inputState={inputState}
                         isDisabled={isDisabled}
                         iconComponent={bottomTextIconComponent}
-                        iconName={bottomTextIconName}
                         data-testid={dataTestId ? `${dataTestId}/bottom-text` : undefined}
                     >
                         {bottomText}

@@ -5,8 +5,9 @@ import {
     DropdownProps,
     allowedDropdownFrameProps,
 } from './Dropdown';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { IconStories } from '../Icon/IconStories';
+import { iconNames } from '../Icon/constants';
 
 const meta: Meta = {
     title: 'Dropdown',
@@ -47,7 +48,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 onClick: () => {
                     console.log('item 4 clicked - disabled');
                 },
-                icon: 'lightbulb',
+                icon: <IconStories name="lightbulb" />,
                 isDisabled: true,
             },
             {
@@ -55,7 +56,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 onClick: () => {
                     console.log('item 5 clicked - disabled');
                 },
-                iconRight: 'caretRight',
+                iconRight: <IconStories name="caretRight" />,
                 isDisabled: true,
             },
             {
@@ -69,14 +70,14 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 onClick: () => {
                     console.log('item 7 clicked');
                 },
-                iconRight: 'caretRight',
+                iconRight: <IconStories name="caretRight" />,
             },
         ],
         ...getFramePropsStory(allowedDropdownFrameProps).args,
     },
     argTypes: {
-        iconName: {
-            options: variables.ICONS,
+        icon: {
+            options: iconNames,
             control: {
                 type: 'select',
             },

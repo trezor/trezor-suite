@@ -5,6 +5,7 @@ import { SpacingValues, borders, typography } from '@trezor/theme';
 import { useBulletList } from './BulletList';
 import { BulletListItemState, BulletSize } from './types';
 import { mapSizeToDimension, mapStateToColor } from './utils';
+import { Icon } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';
 
@@ -108,7 +109,7 @@ export const BulletListItem = ({
             <BulletWrapper>
                 {state === 'done' ? (
                     <IconCircle
-                        name="check"
+                        icon={<Icon name="check" />}
                         size={mapSizeToDimension({ $size: bulletSize })}
                         hasBorder={false}
                         variant="primary"

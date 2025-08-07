@@ -4,6 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { ButtonGroup } from './ButtonGroup';
 import { StoryColumn } from '../../../support/Story';
+import { IconStories } from '../../Icon/IconStories';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button } from '../Button/Button';
 import { IconButton } from '../IconButton/IconButton';
@@ -39,20 +40,20 @@ export const ButtonGroups: StoryObj = {
             </ButtonGroup>
 
             <ButtonGroup>
-                <IconButton icon="pencil" />
-                <IconButton icon="clock" />
+                <IconButton icon={<IconStories name="pencil" />} />
+                <IconButton icon={<IconStories name="clock" />} />
             </ButtonGroup>
 
             <ButtonGroup isDisabled>
-                <IconButton icon="pencil" />
-                <IconButton icon="clock" />
-                <IconButton icon="users" />
+                <IconButton icon={<IconStories name="pencil" />} />
+                <IconButton icon={<IconStories name="clock" />} />
+                <IconButton icon={<IconStories name="users" />} />
             </ButtonGroup>
 
             <ButtonGroup variant="tertiary" size="medium">
-                <IconButton icon="pencil" />
-                <IconButton icon="clock" />
-                <IconButton icon="users" />
+                <IconButton icon={<IconStories name="pencil" />} />
+                <IconButton icon={<IconStories name="clock" />} />
+                <IconButton icon={<IconStories name="users" />} />
             </ButtonGroup>
 
             <ButtonGroup>

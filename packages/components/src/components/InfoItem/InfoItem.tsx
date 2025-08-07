@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -19,7 +19,7 @@ import {
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { Flex, FlexDirection, Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 import { TextProps, TextPropsKeys } from '../typography/utils';
 
@@ -49,7 +49,8 @@ export type InfoItemProps = AllowedFrameProps &
     AllowedTextProps & {
         children?: ReactNode;
         direction?: FlexDirection;
-        iconName?: IconName;
+        icon?: React.ReactElement<IconProps>;
+        // icon?: IconType;
         label: ReactNode;
         variant?: InfoItemVariant;
         labelWidth?: string | number;
@@ -63,7 +64,7 @@ export const InfoItem = ({
     children,
     label,
     direction = 'column',
-    iconName,
+    icon,
     typographyStyle = 'hint',
     variant = 'tertiary',
     gap,
@@ -88,13 +89,11 @@ export const InfoItem = ({
                     flex={labelWidth ? '0 0 auto' : '1 0 auto'}
                     height={24}
                 >
-                    {iconName && (
-                        <Icon
-                            name={iconName}
-                            size={mapTypographyStyleToIconSize(typographyStyle)}
-                            variant={variant}
-                        />
-                    )}
+                    {icon &&
+                        React.cloneElement(icon, {
+                            size: mapTypographyStyleToIconSize(typographyStyle),
+                            variant,
+                        })}
                     <Text
                         variant={variant}
                         typographyStyle={typographyStyle}

@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Note as NoteComponent, NoteProps, allowedNoteFrameProps } from './Note';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { iconNames } from '../Icon/constants';
 
 const meta: Meta = {
     title: 'Note',
@@ -12,13 +12,13 @@ export default meta;
 
 export const Note: StoryObj<NoteProps> = {
     args: {
-        iconName: 'info',
+        icon: 'info',
         children: 'Example tooltip',
         ...getFramePropsStory(allowedNoteFrameProps).args,
     },
     argTypes: {
-        iconName: {
-            options: variables.ICONS,
+        icon: {
+            options: iconNames,
             control: {
                 type: 'select',
             },

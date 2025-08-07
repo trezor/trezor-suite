@@ -10,9 +10,9 @@ import {
     ModalProps,
     allowedModalFrameProps,
     intermediaryTheme,
-    variables,
 } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { iconNames } from '../Icon/constants';
 
 const Buttons = () => (
     <>
@@ -50,7 +50,7 @@ export default meta;
 export const Modal: StoryObj<ModalProps> = {
     args: {
         variant: 'primary',
-        iconName: undefined,
+        icon: undefined,
         heading: 'Modal heading',
         description: 'Modal description',
         children:
@@ -117,10 +117,10 @@ export const Modal: StoryObj<ModalProps> = {
                 },
             },
         },
-        iconName: {
-            options: ['none', ...variables.ICONS],
+        icon: {
+            options: ['none', ...iconNames],
             mapping: {
-                ...variables.ICONS,
+                ...iconNames,
                 none: undefined,
             },
             control: {

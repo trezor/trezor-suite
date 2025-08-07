@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { TextButton as TextButtonComponent, TextButtonProps } from './TextButton';
-import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
+import { iconNames } from '../../Icon/constants';
 import { allowedButtonFrameProps } from '../Button/Button';
 import { buttonSizes, buttonVariants, iconAlignments } from '../buttonStyleUtils';
 
@@ -38,12 +38,12 @@ export const TextButton: StoryObj<TextButtonProps> = {
             options: buttonVariants,
         },
         icon: {
-            options: [null, ...variables.ICONS],
+            options: [null, ...iconNames],
             control: {
                 type: 'select',
                 labels: {
                     'No icon': null,
-                    ...variables.ICONS.reduce((acc, icon) => ({ ...acc, [icon]: icon }), {}),
+                    ...iconNames.reduce((acc, icon) => ({ ...acc, [icon]: icon }), {}),
                 },
             },
         },

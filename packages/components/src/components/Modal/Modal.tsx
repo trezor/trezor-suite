@@ -24,7 +24,8 @@ import { Box } from '../Box/Box';
 import { Divider } from '../Divider/Divider';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
-import { IconName } from '../Icon/Icon';
+import { IconProps } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';
@@ -62,7 +63,7 @@ type ModalProps = AllowedFrameProps & {
     isBackdropCancelable?: boolean;
     alignment?: ModalAlignment;
     size?: ModalSize;
-    iconName?: IconName;
+    icon?: React.ReactElement<IconProps>;
     'data-testid'?: string;
 };
 
@@ -73,7 +74,7 @@ const InnerModalBase = ({
     heading,
     description,
     bottomContent,
-    iconName,
+    icon,
     onBackClick,
     onCancel,
     isBackdropCancelable,
@@ -107,7 +108,7 @@ const InnerModalBase = ({
                                 {onBackClick && (
                                     <IconButton
                                         variant="tertiary"
-                                        icon="caretLeft"
+                                        icon={<Icon name="caretLeft" />}
                                         data-testid="@modal/back-button"
                                         onClick={onBackClick}
                                         size="small"
@@ -138,7 +139,7 @@ const InnerModalBase = ({
                                 {onCancel && (
                                     <IconButton
                                         variant="tertiary"
-                                        icon="x"
+                                        icon={<Icon name="x" />}
                                         data-testid="@modal/close-button"
                                         onClick={onCancel}
                                         size="small"
@@ -152,14 +153,14 @@ const InnerModalBase = ({
                         <ShadowTop />
                         <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                             <Column padding={spacings.md}>
-                                {iconName && (
+                                {icon && (
                                     <Box
                                         margin={{
                                             bottom: spacings.md,
                                             top: isIconPushedTop ? negativeSpacings.md : 0,
                                         }}
                                     >
-                                        <IconCircle name={iconName} size={110} variant={variant} />
+                                        <IconCircle icon={icon} size={110} variant={variant} />
                                     </Box>
                                 )}
                                 <ElevationUp>{children}</ElevationUp>
