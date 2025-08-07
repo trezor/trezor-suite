@@ -33,7 +33,7 @@ class TrezordNodeProcess implements BridgeInterface {
 
     private async startProxy(mode: 'start' | 'startDev' | 'startTest') {
         if (this.proxy.running) return;
-        await this.proxy.run({ port: 21325, api: bridgeDev || bridgeTest ? 'udp' : 'usb' });
+        await this.proxy.run({ api: bridgeDev || bridgeTest ? 'udp' : 'usb' });
         // Call `start` again in case of respawning due to keepAlive
         this.proxy.watch('started', () => this.proxy.request(mode, []));
         await this.proxy.request(mode, []);
