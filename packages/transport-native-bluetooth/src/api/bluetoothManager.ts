@@ -12,7 +12,7 @@ import {
 
 import { EventEmitter } from 'events';
 
-import { IntervalId } from '@trezor/type-utils';
+import type { IntervalId } from '@trezor/type-utils';
 
 import { BluetoothDevice, DeviceConnectionStatusChangeEvent } from './types';
 
