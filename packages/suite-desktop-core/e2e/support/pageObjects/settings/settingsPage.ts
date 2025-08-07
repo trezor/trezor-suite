@@ -19,12 +19,14 @@ export enum Language {
     Spanish = 'es-ES',
     Czech = 'cs-CZ',
     English = 'en-US',
+    System = 'system',
 }
 
 export const languageMap = {
     'es-ES': 'Español',
     'cs-CZ': 'Čeština',
     'en-US': 'English',
+    'system': 'System',
 };
 
 const backgroundImages = {
