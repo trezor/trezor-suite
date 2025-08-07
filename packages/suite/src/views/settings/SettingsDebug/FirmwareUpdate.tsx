@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
+import { firmwareActions, selectFirmwareUpdateSource } from '@suite-common/firmware';
 import { FirmwareUpdateSource } from '@trezor/connect/src/data/firmwareInfo';
 
-import { setFirmwareUpdateSource } from 'src/actions/suite/suiteActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -11,7 +11,7 @@ const StyledActionSelect = styled(ActionSelect)`
 `;
 
 export const FirmwareUpdate = () => {
-    const firmwareUpdateSource = useSelector(state => state.suite.settings.firmwareUpdateSource);
+    const firmwareUpdateSource = useSelector(selectFirmwareUpdateSource);
     const dispatch = useDispatch();
 
     const options: { label: string; value: FirmwareUpdateSource }[] = [
@@ -25,8 +25,7 @@ export const FirmwareUpdate = () => {
         options.find(option => option.value === firmwareUpdateSource) || options[0];
 
     const handleChange = (item: { value: FirmwareUpdateSource }) => {
-        console.log('handleChange');
-        dispatch(setFirmwareUpdateSource(item.value));
+        dispatch(firmwareActions.setFirmwareUpdateSource(item.value));
     };
 
     return (
