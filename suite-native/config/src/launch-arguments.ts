@@ -13,7 +13,6 @@ export type LaunchArguments = {
     isTradingSellEnabled?: boolean;
     isCheckBackupsEnabled?: boolean;
     isDeviceConnectEnabled?: boolean;
-    isViewOnlyByDefaultEnabled?: boolean;
     preloadedState?: Record<string, unknown>;
     isFirmwareUpdateEnabled?: boolean;
 };

@@ -13,8 +13,6 @@ export type ConnectDeviceSettings = {
 export type DeviceConnectActionPayload = {
     device: Device;
     settings: ConnectDeviceSettings;
-    // Note: temporary condition until view only by default is not controlled by feature flag on native
-    isViewOnlyByDefaultEnabled: boolean;
 };
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
@@ -41,7 +39,6 @@ const setDeviceState = createAction(
         device: TrezorDevice;
         state: DeviceState & { staticSessionId: StaticSessionId };
         useEmptyPassphrase: boolean;
-        isViewOnlyByDefaultEnabled: boolean;
     }) => ({
         payload,
     }),

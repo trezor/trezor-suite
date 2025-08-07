@@ -38,7 +38,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -68,7 +67,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -104,7 +102,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -135,7 +132,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -172,7 +168,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -212,7 +207,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -250,7 +244,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -291,7 +284,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],
@@ -323,7 +315,6 @@ const connect: Fixture<
                     settings: {
                         defaultWalletLoading: 'standard',
                     },
-                    isViewOnlyByDefaultEnabled: true,
                 },
             },
         ],

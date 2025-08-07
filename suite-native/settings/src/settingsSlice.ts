@@ -6,7 +6,6 @@ import { DEVICE } from '@trezor/connect';
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
     isCoinEnablingInitFinished: boolean;
-    viewOnlyCancelationTimestamp?: number;
     isDeviceAuthenticityCheckEnabled: boolean;
     isFirmwareRevisionCheckEnabled: boolean;
     isFirmwareHashCheckEnabled: boolean;
@@ -21,7 +20,6 @@ export type SettingsSliceRootState = {
 export const appSettingsInitialState: AppSettingsState = {
     isOnboardingFinished: false,
     isCoinEnablingInitFinished: false,
-    viewOnlyCancelationTimestamp: undefined,
     isDeviceAuthenticityCheckEnabled: true,
     isFirmwareRevisionCheckEnabled: true,
     isFirmwareHashCheckEnabled: true,
@@ -32,7 +30,6 @@ export const appSettingsInitialState: AppSettingsState = {
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isOnboardingFinished',
     'isCoinEnablingInitFinished',
-    'viewOnlyCancelationTimestamp',
     'isDeviceAuthenticityCheckEnabled',
     'isFirmwareRevisionCheckEnabled',
     'isFirmwareHashCheckEnabled',
@@ -45,9 +42,6 @@ export const appSettingsSlice = createSlice({
     reducers: {
         setIsOnboardingFinished: state => {
             state.isOnboardingFinished = true;
-        },
-        setViewOnlyCancelationTimestamp: (state, { payload }: PayloadAction<number>) => {
-            state.viewOnlyCancelationTimestamp = payload;
         },
         setCheckFirmwareAuthenticityEnabled: (state, { payload }: PayloadAction<boolean>) => {
             state.isFirmwareRevisionCheckEnabled = payload;
@@ -75,8 +69,6 @@ export const appSettingsSlice = createSlice({
 
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
-export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState) =>
-    state.appSettings.viewOnlyCancelationTimestamp;
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isDeviceAuthenticityCheckEnabled;
 
@@ -99,7 +91,6 @@ export const selectIsFirmwareAuthenticityCheckEnabled = (state: SettingsSliceRoo
 
 export const {
     setIsOnboardingFinished,
-    setViewOnlyCancelationTimestamp,
     setDeviceAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticityEnabled,
     toggleAreTestnetsEnabled,

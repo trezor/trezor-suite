@@ -42,7 +42,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
                 <Text variant="callout">{walletNameLabel}</Text>
             </HStack>
             {showToggleButton ? (
-                <WalletRememberModeIconButton device={device} walletNameLabel={walletNameLabel} />
+                <WalletRememberModeIconButton device={device} />
             ) : (
                 <Loader size="small" />
             )}
