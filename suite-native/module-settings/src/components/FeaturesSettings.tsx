@@ -41,9 +41,11 @@ export const FeaturesSettings = () => {
                 <>
                     <AppSettingsCardWithIconLayout
                         icon="bookmarkSimple"
-                        title={<Translation id="moduleSettings.items.features.viewOnly.title" />}
+                        title={
+                            <Translation id="moduleSettings.items.features.ejectWallets.title" />
+                        }
                         subtitle={
-                            <Translation id="moduleSettings.items.features.viewOnly.subtitle" />
+                            <Translation id="moduleSettings.items.features.ejectWallets.subtitle" />
                         }
                         onPress={() => navigateTo(SettingsStackRoutes.SettingsViewOnly)}
                         testID="@settings/view-only"

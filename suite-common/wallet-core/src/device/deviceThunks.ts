@@ -467,14 +467,10 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
     ({ type, device }, { dispatch, getState, extra }) => {
         const settings = extra.selectors.selectSuiteSettings(getState());
-        const isViewOnlyByDefaultEnabled =
-            extra.selectors.selectIsViewOnlyByDefaultEnabled(getState());
 
         switch (type) {
             case DEVICE.CONNECT:
-                dispatch(
-                    deviceActions.connectDevice({ device, settings, isViewOnlyByDefaultEnabled }),
-                );
+                dispatch(deviceActions.connectDevice({ device, settings }));
                 dispatch(connectThpDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
@@ -482,7 +478,6 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                     deviceActions.connectUnacquiredDevice({
                         device,
                         settings,
-                        isViewOnlyByDefaultEnabled,
                     }),
                 );
                 dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));

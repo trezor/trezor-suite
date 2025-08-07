@@ -832,9 +832,9 @@ export const en = {
                     title: 'Privacy & Security',
                     subtitle: 'Analytics, Discreet mode, Biometrics',
                 },
-                viewOnly: {
-                    title: 'View-only',
-                    subtitle: 'See your balances without your Trezor',
+                ejectWallets: {
+                    title: 'Eject wallets',
+                    subtitle: 'Hide wallet without connected Trezor',
                 },
                 coinEnabling: {
                     title: 'Coins',
@@ -992,36 +992,12 @@ export const en = {
             },
         },
         viewOnly: {
-            title: 'View-only',
-            emptyTitle: 'Connect your device to enable view-only',
-            subtitle:
-                'Check balances without connecting your Trezor.\n<about>See how it works</about>',
-            button: { enable: 'Enable', disable: 'Disable' },
-            about: {
-                title: 'View-only',
-                subtitle: 'Stay on top of your balances without connecting your Trezor.',
-                contentTitle: 'How it works',
-                content:
-                    '<li>Enable view-only to keep balances visible when your Trezor device is disconnected.</li><li>Your funds remain secure.</li><li>Your data remains private.</li><li>Stay updated on all transactions.</li><li>Create a new receive address.</li><li>To verify receive addresses or sign transactions, simply reconnect your device.</li><li>Save time when assets are loading.</li>',
-            },
-            toast: {
-                disabled: 'View-only disabled',
-                enabled: 'View-only enabled',
-            },
-            disableDialog: {
-                title: 'Disable view-only access to {name}?',
-                subtitle: 'You can always enable view-only again when you reconnect {device}. ',
-                buttons: {
-                    primary: 'Disable',
-                    secondary: 'Back',
-                },
-            },
-            connected: 'Connected',
-            disconnected: 'Disconnected',
             wallet: {
                 standard: 'Standard wallet',
                 defaultPassphrase: 'Passphrase wallet #{index}',
             },
+            connected: 'Connected',
+            disconnected: 'Disconnected',
             autoEject: {
                 title: 'Eject wallets',
                 subtitle:

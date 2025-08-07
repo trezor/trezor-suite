@@ -6,7 +6,6 @@ import {
     toggleAutoEjectThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
@@ -22,11 +21,6 @@ export const AutoEjectSwitch = () => {
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
 
     const isAutoEjectEnabled = useSelector(selectIsDeviceAutoEjectEnabled);
-    const isViewOnlyByDefaultFeatureFlagEnabled = useFeatureFlag(
-        FeatureFlag.IsViewOnlyByDefaultEnabled,
-    );
-
-    if (!isViewOnlyByDefaultFeatureFlagEnabled) return null;
 
     const onToggleAutoEject = () => {
         if (!isAutoEjectEnabled) {

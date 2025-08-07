@@ -127,7 +127,6 @@ const connectDevice = (
     draft: DeviceReducerState,
     device: Device,
     settings: ConnectDeviceSettings,
-    isViewOnlyByDefaultEnabled: boolean,
 ) => {
     const currentTime = new Date().getTime();
 
@@ -194,7 +193,6 @@ const connectDevice = (
         useEmptyPassphrase,
         remember: shouldDeviceBeRemembered({
             isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
-            isViewOnlyByDefaultEnabled,
             device,
         }),
         temporaryRemember: false,
@@ -328,7 +326,6 @@ const setDeviceState = (
     device: TrezorDevice,
     state: DeviceState,
     useEmptyPassphrase: boolean,
-    isViewOnlyByDefaultEnabled: boolean,
 ) => {
     // change only acquired devices
     if (!device.features) return;
@@ -360,7 +357,6 @@ const setDeviceState = (
 
     affectedDevice[0].remember = shouldDeviceBeRemembered({
         isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
-        isViewOnlyByDefaultEnabled,
         device,
     });
 };
@@ -639,13 +635,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             changeDevice(state, payload, { connected: true, available: true });
         })
         .addCase(deviceActions.setDeviceState, (state, { payload }) => {
-            setDeviceState(
-                state,
-                payload.device,
-                payload.state,
-                payload.useEmptyPassphrase,
-                payload.isViewOnlyByDefaultEnabled,
-            );
+            setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
         })
         .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
             addAuthorizedDevice(state, payload.device);
@@ -717,8 +707,8 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addMatcher(
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
-            (state, { payload: { device, settings, isViewOnlyByDefaultEnabled } }) => {
-                connectDevice(state, device, settings, isViewOnlyByDefaultEnabled);
+            (state, { payload: { device, settings } }) => {
+                connectDevice(state, device, settings);
             },
         );
 });

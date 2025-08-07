@@ -81,7 +81,7 @@ const applyDeviceStatesThunk = createThunk(
             newDeviceState: DeviceState;
             devicePath: DeviceUniquePath;
         },
-        { dispatch, getState, extra },
+        { dispatch, getState },
     ) => {
         try {
             const devices = selectDevices(getState());
@@ -121,13 +121,9 @@ const applyDeviceStatesThunk = createThunk(
                         device,
                         state: newDeviceState,
                         useEmptyPassphrase: !isAddingHiddenWallet,
-                        isViewOnlyByDefaultEnabled:
-                            extra.selectors.selectIsViewOnlyByDefaultEnabled(getState()),
                     }),
                 );
             } else {
-                const isViewOnlyByDefaultEnabled =
-                    extra.selectors.selectIsViewOnlyByDefaultEnabled(getState());
                 const isDeviceAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
 
                 dispatch(
@@ -139,7 +135,6 @@ const applyDeviceStatesThunk = createThunk(
                             useEmptyPassphrase: !isAddingHiddenWallet,
                             remember: shouldDeviceBeRemembered({
                                 isDeviceAutoEjectEnabled,
-                                isViewOnlyByDefaultEnabled,
                                 device,
                             }),
                             state: newDeviceState,
