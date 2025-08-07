@@ -115,7 +115,7 @@ describe('http', () => {
                 ...params,
             });
             await trezordNode.start();
-            const url = trezordNode.server?.getRouteAddress('/') || '/';
+            const url = trezordNode.server[0]!.getRouteAddress('/') || '/';
 
             await bridgeApiCall({
                 url: `${url}enumerate`,
@@ -422,7 +422,7 @@ describe('http', () => {
 
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
-                const url = trezordNode.server!.getRouteAddress('/')!;
+                const url = trezordNode.server[0]!.getRouteAddress('/') || '/';
                 const response = await bridgeApiCall({
                     url,
                     method: 'GET',
@@ -447,7 +447,7 @@ describe('http', () => {
 
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            const url = trezordNode.server!.getRouteAddress('/')!;
+            const url = trezordNode.server[0]!.getRouteAddress('/') || '/';
 
             await bridgeApiCall({
                 url: url + 'enumerate',
@@ -482,7 +482,7 @@ describe('http', () => {
 
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            const url = trezordNode.server!.getRouteAddress('/')!;
+            const url = trezordNode.server[0]!.getRouteAddress('/')!;
             const response = await bridgeApiCall({
                 url,
                 method: 'POST',
@@ -503,7 +503,7 @@ describe('http', () => {
 
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            const url = trezordNode.server!.getRouteAddress('/enumerate')!;
+            const url = trezordNode.server[0]!.getRouteAddress('/enumerate') || '/';
             const response = await bridgeApiCall({
                 url,
                 method: 'POST',
@@ -538,7 +538,7 @@ describe('http', () => {
             await new Promise(resolve => setTimeout(resolve, 100));
 
             const abortController = new AbortController();
-            const url = trezordNode.server!.getRouteAddress('/enumerate')!;
+            const url = trezordNode.server[0]!.getRouteAddress('/enumerate')!;
             const enumeratePromise = bridgeApiCall({
                 url,
                 method: 'POST',
@@ -588,7 +588,7 @@ describe('http', () => {
             await new Promise(resolve => setTimeout(resolve, 100));
 
             const abortController = new AbortController();
-            const url = trezordNode.server!.getRouteAddress('/')!;
+            const url = trezordNode.server[0]!.getRouteAddress('/')!;
             await bridgeApiCall({
                 url: url + 'enumerate',
                 method: 'POST',
@@ -695,7 +695,7 @@ describe('http', () => {
 
                 await server.start();
 
-                const url = server.server!.getRouteAddress('/listen')!;
+                const url = server.server[0]!.getRouteAddress('/listen')!;
                 const client = new Client({ url });
                 const onListenResolvedSpy = jest.fn();
                 client.on('listen-response', onListenResolvedSpy);
