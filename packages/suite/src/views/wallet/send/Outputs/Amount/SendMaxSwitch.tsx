@@ -3,19 +3,19 @@ import { Switch } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
 type SendMaxSwitchProps = {
-    isSetMaxActive: boolean;
+    isSendMaxActive: boolean;
     'data-testid'?: string;
     onChange: () => void;
 };
 
 export const SendMaxSwitch = ({
-    isSetMaxActive,
+    isSendMaxActive,
     'data-testid': dataTest,
     onChange,
 }: SendMaxSwitchProps) => (
     <Switch
         labelPosition="start"
-        isChecked={isSetMaxActive}
+        isChecked={isSendMaxActive}
         data-testid={dataTest}
         size="small"
         onChange={onChange}
