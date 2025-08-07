@@ -154,7 +154,7 @@ export const useSendFormFields = ({
                     cryptoDecimals,
                     rate: fiatRate,
                     isCryptoInSats: shouldSendInSats === true,
-                    areSatsDisplayed,
+                    areSatsDisplayed: baseCurrencyCode === 'btc' && areSatsDisplayed,
                     value: new BigNumber(fiat),
                 });
             };
