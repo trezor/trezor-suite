@@ -291,7 +291,7 @@ const prepareContent = (
         .filter(record => record !== null) as Fields[];
 };
 
-const sanitizeCsvValue = (value: string) => {
+export const sanitizeCsvValue = (value: string) => {
     if (value.indexOf(CSV_SEPARATOR) !== -1) {
         return `"${value.replace(/"/g, '""')}"`;
     }
