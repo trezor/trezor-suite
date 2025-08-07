@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -16,14 +17,17 @@ import {
     PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
+    asAmountSubunit,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getAccountDecimals,
     getAreSatoshisUsed,
+    getEvmApprovalTxData,
     getPendingAccount,
     hasNetworkFeatures,
     isCardanoTx,
+    subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
@@ -333,28 +337,59 @@ export const pushSendFormTransactionThunk = createThunk<
             : '0';
 
         const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
-
-        // get total amount without fee OR token amount
-        const formattedAmount = token
-            ? `${convertAmountSubunitsToUnits(
-                  precomposedTransaction.totalSpent,
-                  token.decimals,
-              )} ${token.symbol!.toUpperCase()}`
-            : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol, true, areSatoshisUsed);
+        const evmApprovalData = getEvmApprovalTxData(precomposedForm?.ethereumDataHex);
 
         if (isSuccessfullyPushedTransaction(pushTxResponse)) {
             const { txid } = pushTxResponse.payload;
 
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'tx-sent',
-                    formattedAmount,
-                    device,
-                    descriptor: selectedAccount.descriptor,
-                    symbol: selectedAccount.symbol,
-                    txid,
-                }),
-            );
+            if (evmApprovalData && token) {
+                const isInfiniteApproval = new BigNumber(evmApprovalData.amount).eq(UINT256_MAX);
+                const amount = subunitsToUnits({
+                    value: asAmountSubunit(new BigNumber(evmApprovalData.amount)),
+                    decimals: token.decimals,
+                }).toString();
+
+                dispatch(
+                    notificationsActions.addToast({
+                        type: evmApprovalData.type === 'approval' ? 'tx-approved' : 'tx-revoked',
+                        isInfiniteApproval,
+                        formattedAmount: amount,
+                        tokenSymbol: token.symbol?.toUpperCase(),
+                        device,
+                        descriptor: selectedAccount.descriptor,
+                        symbol: selectedAccount.symbol,
+                        txid,
+                    }),
+                );
+            } else {
+                const amount = token
+                    ? subunitsToUnits({
+                          value: asAmountSubunit(new BigNumber(precomposedTransaction.totalSpent)),
+                          decimals: token.decimals,
+                      })
+                    : null;
+
+                // get total amount without fee OR token amount
+                const formattedAmount =
+                    token && amount
+                        ? `${amount} ${token.symbol?.toUpperCase()}`
+                        : formatNetworkAmount(
+                              spentWithoutFee,
+                              selectedAccount.symbol,
+                              true,
+                              areSatoshisUsed,
+                          );
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'tx-sent',
+                        formattedAmount,
+                        device,
+                        descriptor: selectedAccount.descriptor,
+                        symbol: selectedAccount.symbol,
+                        txid,
+                    }),
+                );
+            }
 
             dispatch(
                 synchronizeSentTransactionThunk({
