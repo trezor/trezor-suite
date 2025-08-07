@@ -27,7 +27,8 @@ import { createProtocolMessage } from '../utils/bridgeProtocolMessage';
 import { receiveAndParse } from '../utils/receive';
 import { buildMessage } from '../utils/send';
 
-const DEFAULT_URL = 'http://127.0.0.1:21325';
+const DEFAULT_URL = 'http://127.0.0.1';
+const DEFAULT_PORT = 21325;
 
 type BridgeEndpoint =
     | '/'
@@ -63,8 +64,7 @@ type IncompleteRequestOptions = {
 };
 
 type BridgeConstructorParameters = AbstractTransportParams & {
-    // bridge url
-    url?: string;
+    port?: number;
 };
 
 export class BridgeTransport extends AbstractTransport {
@@ -78,9 +78,9 @@ export class BridgeTransport extends AbstractTransport {
     public apiType = 'usb' as const;
 
     constructor(params: BridgeConstructorParameters) {
-        const { url = DEFAULT_URL, ...rest } = params || {};
+        const { port = DEFAULT_PORT, ...rest } = params || {};
         super(rest);
-        this.url = url;
+        this.url = `${DEFAULT_URL}:${port}`;
     }
 
     ping({ signal }: AbstractTransportMethodParams<'ping'> = {}) {
