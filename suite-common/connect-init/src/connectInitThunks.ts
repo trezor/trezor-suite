@@ -1,3 +1,4 @@
+import { selectFirmwareUpdateSource } from '@suite-common/firmware/src/firmwareReducer';
 import {
     Feature,
     parseTimeoutThresholdsPerModel,
@@ -48,7 +49,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
     `${CONNECT_INIT_MODULE}/initThunk`,
     async (connectInitHooks, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectDebugSettings, selectThpSettings, selectFirmwareUpdateSource },
+            selectors: { selectDebugSettings, selectThpSettings },
             actions: { lockDevice },
             utils: { connectInitSettings },
         } = extra;

@@ -31,6 +31,7 @@ const initialFirmwareState: FirmwareUpdateState = {
     targetType: undefined,
     uiEvent: undefined,
     useDevkit: false,
+    firmwareUpdateSource: 'production',
 };
 
 const testCases: {

@@ -440,10 +440,9 @@ export const selectShouldOfferUpdateFirmware = createMemoizedSelector(
         if (!firmwareReleaseConfig) return false;
         const { releaseConditions } = firmwareReleaseConfig;
         const { environment } = releaseConditions;
-        const isValidSuiteNativeVersion = environment?.min_suite_native_version ? versionUtils.isNewerOrEqual(
-            getSuiteVersion(),
-            environment?.min_suite_native_version,
-        ) : false;
+        const isValidSuiteNativeVersion = environment?.min_suite_native_version
+            ? versionUtils.isNewerOrEqual(getSuiteVersion(), environment?.min_suite_native_version)
+            : false;
 
         return (
             firmwareReleaseConfig?.isNewer &&
