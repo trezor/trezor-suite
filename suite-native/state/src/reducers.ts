@@ -242,6 +242,13 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const firmwarePersistedReducer = await preparePersistReducer({
+        reducer: firmwareReducer,
+        key: 'firmware',
+        version: 1,
+        persistedKeys: ['firmwareUpdateSource'],
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             app: appReducer,
@@ -253,7 +260,7 @@ export const prepareRootReducers = async () => {
             graph: graphReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,
-            firmware: firmwareReducer,
+            firmware: firmwarePersistedReducer,
             nativeFirmware: nativeFirmwareReducer,
             logs: logsSlice.reducer,
             notifications: notificationsReducer,
