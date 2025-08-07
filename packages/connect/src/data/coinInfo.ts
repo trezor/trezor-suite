@@ -15,48 +15,46 @@ const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
 export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
-    const networks = cloneObject(bitcoinNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
-        return networks.find(
+        return bitcoinNetworks.find(
             n =>
                 n.name.toLowerCase() === name ||
                 n.shortcut.toLowerCase() === name ||
                 n.label.toLowerCase() === name,
-        );
+        ) as Readonly<BitcoinNetworkInfo>;
     }
     const slip44 = fromHardened(pathOrName[1]);
 
-    return networks.find(n => n.slip44 === slip44);
+    return bitcoinNetworks.find(n => n.slip44 === slip44) as Readonly<BitcoinNetworkInfo>;
 };
 
 export const getEthereumNetwork = (pathOrNetworkSymbol: DerivationPath) => {
-    const networks = cloneObject(ethereumNetworks);
-
     if (typeof pathOrNetworkSymbol === 'string') {
         const networkSymbol = pathOrNetworkSymbol.toLowerCase();
 
-        return networks.find(network => network.shortcut.toLowerCase() === networkSymbol);
+        return ethereumNetworks.find(
+            network => network.shortcut.toLowerCase() === networkSymbol,
+        ) as Readonly<EthereumNetworkInfo>;
     }
 
     const slip44 = fromHardened(pathOrNetworkSymbol[1]);
 
-    return networks.find(n => n.slip44 === slip44);
+    return ethereumNetworks.find(n => n.slip44 === slip44) as Readonly<EthereumNetworkInfo>;
 };
 
 export const getMiscNetwork = (pathOrName: DerivationPath) => {
-    const networks = cloneObject(miscNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
-        return networks.find(
+        return miscNetworks.find(
             n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
-        );
+        ) as Readonly<MiscNetworkInfo>;
     }
     const slip44 = fromHardened(pathOrName[1]);
 
-    return networks.find(n => n.slip44 === slip44);
+    return miscNetworks.find(n => n.slip44 === slip44) as Readonly<MiscNetworkInfo>;
 };
 
 /*
