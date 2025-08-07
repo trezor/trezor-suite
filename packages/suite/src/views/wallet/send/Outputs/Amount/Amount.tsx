@@ -60,12 +60,12 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const amountName = `outputs.${outputId}.amount` as const;
     const tokenInputName = `outputs.${outputId}.token`;
     const maxOutputId = getDefaultValue('setMaxOutputId');
-    const isSetMaxActive = maxOutputId === outputId;
+    const isSendMaxActive = maxOutputId === outputId;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
 
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
-    const isSetMaxVisible = isSetMaxActive && !error && !Object.keys(errors).length;
+    const isSendMaxVisible = isSendMaxActive && !error && !Object.keys(errors).length;
     const maxSwitchId = `outputs.${outputId}.setMax`;
 
     const amountValue = getDefaultValue(amountName, output.amount || '');
@@ -136,13 +136,13 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const onSwitchChange = () => {
         const clearInput = network.networkType === 'solana';
 
-        setMax(outputId, isSetMaxActive, clearInput);
+        setMax(outputId, isSendMaxActive, clearInput);
         composeTransaction(amountName);
     };
 
     const sendMaxSwitch = (
         <SendMaxSwitch
-            isSetMaxActive={isSetMaxActive}
+            isSendMaxActive={isSendMaxActive}
             data-testid={maxSwitchId}
             onChange={onSwitchChange}
         />
@@ -159,10 +159,10 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     inputState={inputState}
                     locale={locale}
                     labelHoverRight={
-                        !isSetMaxVisible && (!isWithBaseCurrency || isBelowLaptop) && sendMaxSwitch
+                        !isSendMaxVisible && (!isWithBaseCurrency || isBelowLaptop) && sendMaxSwitch
                     }
                     labelRight={
-                        isSetMaxVisible && (!isWithBaseCurrency || isBelowLaptop) && sendMaxSwitch
+                        isSendMaxVisible && (!isWithBaseCurrency || isBelowLaptop) && sendMaxSwitch
                     }
                     labelLeft={
                         <Row>
@@ -198,6 +198,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                     <BaseCurrencyInput
                                         output={output}
                                         outputId={outputId}
+                                        isSendMaxActive={isSendMaxActive}
                                         // To fix alignment with the other input
                                         labelLeft={isBelowLaptop ? undefined : <>&nbsp;</>}
                                         labelRight={!isBelowLaptop && sendMaxSwitch}

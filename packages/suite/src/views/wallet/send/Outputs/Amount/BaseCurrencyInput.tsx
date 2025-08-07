@@ -18,6 +18,7 @@ import {
     getDecimalsForBaseCurrency,
     getInputState,
     isLowAnonymityWarning,
+    parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
 import {
@@ -39,6 +40,7 @@ import { validateDecimals } from 'src/utils/suite/validation';
 type FiatInputProps = {
     output: Partial<Output>;
     outputId: number;
+    isSendMaxActive?: boolean;
     labelLeft?: React.ReactNode;
     labelHoverRight?: React.ReactNode;
     labelRight?: React.ReactNode;
@@ -47,6 +49,7 @@ type FiatInputProps = {
 export const BaseCurrencyInput = ({
     output,
     outputId,
+    isSendMaxActive,
     labelLeft,
     labelHoverRight,
     labelRight,
@@ -90,24 +93,40 @@ export const BaseCurrencyInput = ({
         isInSats: areSatsDisplayed,
     });
 
-    const recalculateFiat = (rate: number) => {
+    const recalculate = (rate: number) => {
         const cryptoValue = new BigNumber(cryptoAmountValue);
+        const fiatValue = new BigNumber(baseCurrencyValue);
+        const cryptoDecimals = token ? token.decimals : network.decimals;
 
         if (rate && !cryptoValue.isNaN() && baseCurrencyCode !== '') {
-            const formatterAmount = parseCryptoToFormattedBaseCurrency({
-                baseCurrencyCode,
-                baseCurrencyToSats: shouldSendInSats === true,
+            const baseFormatOptions = {
                 areSatsDisplayed,
-                value: cryptoValue,
                 symbol: network.symbol,
                 rate,
-            });
+            };
 
-            if (formatterAmount !== null) {
-                setValue(baseCurrencyInputName, formatterAmount, {
+            if (isSendMaxActive) {
+                const formattedAmount = parseCryptoToFormattedBaseCurrency({
+                    ...baseFormatOptions,
+                    value: cryptoValue,
+                    baseCurrencyCode,
+                    baseCurrencyToSats: shouldSendInSats === true,
+                });
+                setValue(baseCurrencyInputName, formattedAmount || '', {
                     shouldValidate: true,
                 });
-                // call compose to store draft, precomposedTx should be the same
+            } else {
+                const formattedAmount = parseBaseCurrencyToFormattedCrypto({
+                    ...baseFormatOptions,
+                    value: fiatValue,
+                    isCryptoInSats: shouldSendInSats === true,
+                    areSatsDisplayed: false,
+                    cryptoDecimals,
+                });
+                setValue(amountInputName, formattedAmount || '', {
+                    shouldValidate: true,
+                });
+
                 composeTransaction(amountInputName);
             }
         }
@@ -192,10 +211,17 @@ export const BaseCurrencyInput = ({
                 );
 
                 if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                    const fiatRate = updateFiatRatesResult.payload as FiatRatesResult;
+                    // not type-safe and should be addressed in the future
+                    const fiatRates =
+                        updateFiatRatesResult.payload as PromiseSettledResult<FiatRatesResult>[];
 
-                    if (fiatRate?.rate) {
-                        recalculateFiat(fiatRate.rate);
+                    const successfulResult = fiatRates.find(
+                        (result): result is PromiseFulfilledResult<FiatRatesResult> =>
+                            result.status === 'fulfilled',
+                    );
+
+                    if (successfulResult?.value?.rate) {
+                        recalculate(successfulResult.value.rate);
                     }
                 }
             }}
