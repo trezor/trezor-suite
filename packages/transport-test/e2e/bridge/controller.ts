@@ -2,6 +2,7 @@
 
 import { WebUSB } from 'usb';
 
+import { BridgeTransport } from '@trezor/transport';
 import { TrezordNode } from '@trezor/transport-bridge/src';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { Log, scheduleAction } from '@trezor/utils';
@@ -56,7 +57,6 @@ class Controller extends TrezorUserEnvLinkClass {
                 : env.USE_NODE_BRIDGE
                   ? async () => {
                         this.nodeBridge = new TrezordNode({
-                            port: 21325,
                             api: !env.USE_HW ? 'udp' : 'usb',
                             logger: new Log('test-bridge', false),
                         });
@@ -118,36 +118,18 @@ class Controller extends TrezorUserEnvLinkClass {
             `${env.USE_HW && !env.USE_NODE_BRIDGE ? '[MANUAL ACTION REQUIRED] ' : ''} waiting for bridge ${expected ? 'start' : 'stop'}`,
         );
 
+        const client = new BridgeTransport({ messages: {}, id: 'test' });
+
         return scheduleAction(
             () =>
-                fetch('http://localhost:21325/', {
-                    method: 'POST',
-                    headers: {
-                        ['Origin']: 'https://wallet.trezor.io',
-                    },
-                })
-                    .then(res => {
-                        if (res.ok !== expected) {
-                            throw new Error('Condition not met');
-                        }
+                // use BridgeTransport ping
+                client.ping().then(res => {
+                    if (expected !== res) {
+                        throw new Error('Condition not met');
+                    }
 
-                        return res.text();
-                    })
-                    .then((text: string) => {
-                        console.log(`running bridge: ${text}`);
-
-                        return null;
-                    })
-                    .catch(err => {
-                        if (err.message === 'Condition not met') {
-                            throw err;
-                        }
-                        if (expected) {
-                            throw err;
-                        }
-
-                        return null;
-                    }),
+                    return null;
+                }),
             {
                 deadline: Date.now() + 60_000,
                 gap: 1000,
