@@ -31,7 +31,7 @@ import { calculateTotalGasCost, getAccountIdentity } from '@suite-common/wallet-
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch, GetState } from 'src/types/suite';
 
 const calculateStakingTransaction = (

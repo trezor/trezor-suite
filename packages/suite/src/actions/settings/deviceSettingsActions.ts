@@ -7,9 +7,8 @@ import TrezorConnect, { ERRORS } from '@trezor/connect';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as DEVICE from 'src/constants/suite/device';
+import { selectIsEntropyCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch, GetState } from 'src/types/suite';
-
-import { selectIsEntropyCheckEnabled } from '../../reducers/suite/suiteReducer';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>

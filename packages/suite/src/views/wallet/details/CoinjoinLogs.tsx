@@ -3,7 +3,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 export const CoinjoinLogs = () => {
     const isDebug = useSelector(selectIsDebugModeActive);

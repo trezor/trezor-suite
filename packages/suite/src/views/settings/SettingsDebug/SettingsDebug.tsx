@@ -5,7 +5,7 @@ import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { Backends } from './Backends';
 import { Bluetooth } from './Bluetooth';

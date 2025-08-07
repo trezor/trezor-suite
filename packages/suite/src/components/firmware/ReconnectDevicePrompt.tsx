@@ -14,7 +14,7 @@ import { spacings } from '@trezor/theme';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 const RebootDeviceGraphics = ({
     device,

@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 
 export const FirmwareAuthenticityChecks = () => {
     const dispatch = useDispatch();

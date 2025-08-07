@@ -15,10 +15,10 @@ import {
     TROUBLESHOOTING_TIP_USB,
 } from 'src/components/suite/troubleshooting/tips';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
+import { selectHasTransportOfType, selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from '../../../hooks/suite';
-import { selectHasTransportOfType, selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 import {
     TroubleshootingTipsItem,
     TroubleshootingTipsWithSections,

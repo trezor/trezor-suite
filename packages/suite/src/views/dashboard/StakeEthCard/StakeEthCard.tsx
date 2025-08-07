@@ -15,7 +15,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingFeature, Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { StakeEthCardFooter } from './StakeEthCardFooter/StakeEthCardFooter';
 

@@ -4,7 +4,7 @@ import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-util
 import { arrayPartition } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 export const useNetworkSupport = () => {
     const device = useSelector(selectSelectedDevice);

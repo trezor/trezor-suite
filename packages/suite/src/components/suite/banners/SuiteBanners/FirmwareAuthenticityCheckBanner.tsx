@@ -11,7 +11,7 @@ import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 const revisionCheckMessages: Record<
     Exclude<FirmwareRevisionCheckError, SkippedRevisionCheckError>,

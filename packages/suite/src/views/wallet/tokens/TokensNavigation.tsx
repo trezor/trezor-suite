@@ -12,7 +12,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { TranslationKey } from '../../../components/suite/Translation';

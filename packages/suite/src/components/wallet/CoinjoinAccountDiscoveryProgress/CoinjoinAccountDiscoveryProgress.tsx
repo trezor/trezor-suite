@@ -17,7 +17,7 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { RotatingFacts } from './RotatingFacts';
 

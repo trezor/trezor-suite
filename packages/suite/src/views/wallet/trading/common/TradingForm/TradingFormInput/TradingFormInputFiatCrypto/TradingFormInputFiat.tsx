@@ -13,7 +13,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
     TradingAllFormProps,
     TradingFormInputFiatCryptoProps,

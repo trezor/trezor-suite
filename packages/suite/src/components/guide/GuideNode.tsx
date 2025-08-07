@@ -10,7 +10,7 @@ import { borders, spacings } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const NodeButton = styled.button`

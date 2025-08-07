@@ -11,7 +11,7 @@ import {
     SubpageNavigation,
 } from 'src/components/suite/layouts/SuiteLayout';
 import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 

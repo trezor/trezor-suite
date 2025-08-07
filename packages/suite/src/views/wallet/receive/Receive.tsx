@@ -5,7 +5,7 @@ import { spacings } from '@trezor/theme';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
+import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 import { ConnectDeviceReceivePromo } from './components/ConnectDevicePromo';

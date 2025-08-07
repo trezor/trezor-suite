@@ -6,7 +6,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { RECEIVE } from 'src/actions/wallet/constants';
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch, GetState } from 'src/types/suite';
 
 export type ReceiveAction =

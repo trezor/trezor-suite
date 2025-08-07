@@ -13,7 +13,7 @@ import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/componen
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsBioAuthAvailable } from 'src/reducers/bioAuth';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;

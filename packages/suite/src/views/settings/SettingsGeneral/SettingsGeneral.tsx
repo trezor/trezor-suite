@@ -12,7 +12,7 @@ import {
     selectHasExperimentalFeature,
     selectIsSettingsDesktopAppPromoBannerShown,
     selectTorState,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';

@@ -7,7 +7,7 @@ import { spacings } from '@trezor/theme';
 import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationStandaloneProps = {
     // If true, information about new version is not shown, because we don't know anything about it

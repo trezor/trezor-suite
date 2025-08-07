@@ -17,8 +17,8 @@ import { goto } from 'src/actions/suite/routerActions';
 import { CoinList, Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 

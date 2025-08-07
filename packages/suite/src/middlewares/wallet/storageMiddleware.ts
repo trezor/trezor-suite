@@ -35,7 +35,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { FORM_DRAFT, GRAPH } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
-import { selectIsAutoEjectEnabled } from 'src/reducers/suite/suiteReducer';
+import { selectIsAutoEjectEnabled } from 'src/selectors/suite/suiteSelectors';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';

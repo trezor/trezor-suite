@@ -22,7 +22,7 @@ import { spacings } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceAcquire } from './DeviceAcquire';
 import { DeviceBootloader } from './DeviceBootloader';

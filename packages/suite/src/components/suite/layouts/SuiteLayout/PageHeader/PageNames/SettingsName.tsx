@@ -8,7 +8,7 @@ import { spacingsPx } from '@trezor/theme';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { HeaderHeading } from './BasicName';
 

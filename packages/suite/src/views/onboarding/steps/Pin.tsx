@@ -14,7 +14,7 @@ import {
 } from 'src/components/onboarding';
 import { PinMatrix, Translation } from 'src/components/suite';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 const SetPinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

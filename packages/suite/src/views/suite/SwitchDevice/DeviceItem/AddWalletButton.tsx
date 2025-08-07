@@ -21,7 +21,7 @@ import { spacings } from '@trezor/theme';
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDeviceOrUiLocked } from 'src/reducers/suite/suiteReducer';
+import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 interface AddWalletButtonProps {

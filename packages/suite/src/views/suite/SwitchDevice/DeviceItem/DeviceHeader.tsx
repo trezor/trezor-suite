@@ -9,7 +9,7 @@ import { Translation, WebUsbButton } from 'src/components/suite';
 import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 type DeviceHeaderProps = {

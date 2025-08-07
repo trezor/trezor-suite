@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { onCancel, openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const items: Array<{ icon: IconName; text: TranslationKey }> = [
     { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },

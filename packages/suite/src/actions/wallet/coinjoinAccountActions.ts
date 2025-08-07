@@ -19,7 +19,6 @@ import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 import {
     selectCoinjoinAccountByKey,
     selectCoinjoinAccounts,
@@ -32,6 +31,7 @@ import {
     selectSessionByAccountKey,
     selectWeightedAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { COORDINATOR_FEE_RATE_MULTIPLIER, CoinjoinService } from 'src/services/coinjoin';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';

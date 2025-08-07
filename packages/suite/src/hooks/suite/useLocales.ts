@@ -5,7 +5,7 @@ import type { Locale as DateFnsLocale } from 'date-fns';
 import { Locale as SuiteLocale } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const getDateFnsLocale = (locale: SuiteLocale): DateFnsLocale['code'] => {
     const localeMap: Record<SuiteLocale, DateFnsLocale['code']> = {

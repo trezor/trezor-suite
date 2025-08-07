@@ -4,6 +4,7 @@ import { Button, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
@@ -11,7 +12,6 @@ import { SwitchDeviceModal } from './SwitchDeviceModal';
 import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { BluetoothConnect } from '../../../components/suite/bluetooth/BluetoothConnect';
-import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);

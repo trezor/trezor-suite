@@ -18,7 +18,7 @@ import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';

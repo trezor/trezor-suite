@@ -9,7 +9,7 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsAutoEjectEnabled } from 'src/reducers/suite/suiteReducer';
+import { selectIsAutoEjectEnabled } from 'src/selectors/suite/suiteSelectors';
 
 const AutoEjectConfirmationModal = ({
     onCancel,

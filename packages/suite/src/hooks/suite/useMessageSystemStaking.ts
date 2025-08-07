@@ -5,7 +5,7 @@ import {
 } from '@suite-common/message-system';
 import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from './useSelector';
 

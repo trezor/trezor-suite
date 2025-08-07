@@ -8,8 +8,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
+import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;

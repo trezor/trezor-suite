@@ -13,7 +13,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { bannerAnimationConfig } from './banner-animations';
 

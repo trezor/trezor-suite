@@ -4,8 +4,8 @@ import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);

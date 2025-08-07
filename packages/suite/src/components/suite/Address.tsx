@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
 const TRUNCATION_PLACEHOLDER = ' ... ';
 

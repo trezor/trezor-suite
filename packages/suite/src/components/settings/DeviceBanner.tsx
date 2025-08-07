@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { AcquireDeviceButton } from '../suite/AcquireDeviceButton';
 

@@ -10,7 +10,7 @@ import { changeNetworks, deviceActions, selectSelectedDevice } from '@suite-comm
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
+import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 // actions which can affect message system messages

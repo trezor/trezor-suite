@@ -13,7 +13,7 @@ import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     padding: ${spacingsPx.md};

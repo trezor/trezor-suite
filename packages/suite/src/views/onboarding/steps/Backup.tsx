@@ -20,7 +20,7 @@ import {
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { canContinue } from 'src/utils/backup';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

@@ -5,7 +5,7 @@ import { KEYBOARD_CODE } from '@trezor/components';
 
 import { setLanguage } from 'src/actions/settings/languageActions';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
-import { selectIsDebugModeActive, selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive, selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';

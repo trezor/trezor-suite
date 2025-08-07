@@ -4,10 +4,10 @@ import { Feature, selectFeatureConfig } from '@suite-common/message-system';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectIsTEXDashboardPromoBannerShown } from 'src/selectors/suite/suiteSelectors';
 
 import { TrezorExpertBanner } from './TrezorExpertBanner';
 import { isDashboardBannerType } from './dashboardBannerTypes';
-import { selectIsTEXDashboardPromoBannerShown } from '../../../reducers/suite/suiteReducer';
 
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);

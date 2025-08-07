@@ -10,7 +10,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceAuthenticityCheckEnabled } from 'src/reducers/suite/suiteReducer';
+import { selectIsDeviceAuthenticityCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 
 export const DeviceAuthenticityOptOut = () => {
     const dispatch = useDispatch();

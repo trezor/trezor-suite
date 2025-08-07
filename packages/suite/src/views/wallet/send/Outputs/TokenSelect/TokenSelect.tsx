@@ -51,7 +51,7 @@ import {
 import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
+import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import {
     enhanceTokensWithRates,
     getTokenAddressTranslationId,

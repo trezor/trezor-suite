@@ -6,8 +6,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {

@@ -7,7 +7,7 @@ import { ROUTER } from 'src/actions/suite/constants';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
-import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/reducers/suite/suiteReducer';
+import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 import { getLocation, navigate } from 'src/support/suite/navigationService';
 import { Dispatch, GetState } from 'src/types/suite';
 import {

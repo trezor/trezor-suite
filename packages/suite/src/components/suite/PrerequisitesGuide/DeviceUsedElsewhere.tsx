@@ -8,8 +8,8 @@ import {
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
 import { useDevice, useSelector } from 'src/hooks/suite';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
-import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
 
 export const DeviceUsedElsewhere = () => {

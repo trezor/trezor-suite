@@ -24,13 +24,13 @@ import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
+import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '../constants/suite/firmware';
 import type { BioAuthState } from '../reducers/bioAuth';
-import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 import { AppState, TrezorDevice } from '../types/suite';
 
 const connectSrc = '../';

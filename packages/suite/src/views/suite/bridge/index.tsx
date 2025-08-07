@@ -9,7 +9,7 @@ import {
     selectHasActiveTransport,
     selectHasTransportOfType,
     selectTransportOfType,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {

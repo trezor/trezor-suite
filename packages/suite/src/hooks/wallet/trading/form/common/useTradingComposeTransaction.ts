@@ -20,7 +20,7 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import {
     TradingSellExchangeFormProps,
     TradingUseComposeTransactionProps,

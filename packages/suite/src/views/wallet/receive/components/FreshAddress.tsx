@@ -22,7 +22,7 @@ import { spacings } from '@trezor/theme';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { ReadMoreLink, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
-import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
+import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { AppState } from 'src/types/suite';
 
 const FreshAddressWrapper = styled.div`

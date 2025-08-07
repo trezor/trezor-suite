@@ -1,38 +1,20 @@
 import { produce } from 'immer';
 
 import type { CountryCode } from '@suite-common/geolocation';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { Locale } from '@suite-common/suite-types';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
 import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    DeviceRootState,
-    selectIsEntropyCheckFailed,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { versionUtils } from '@trezor/utils';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import {
-    hashCheckErrorScenarios,
-    isSkippedHashCheckError,
-    isSkippedRevisionCheckError,
-    revisionCheckErrorScenarios,
-} from 'src/constants/suite/firmware';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { Action, AppState, TorBootstrap, TorStatus } from 'src/types/suite';
+import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 import { ensureLocale } from 'src/utils/suite/l10n';
-import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
-import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
-
-import { RouterRootState, selectRouter } from './routerReducer';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -433,223 +415,5 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             // no default
         }
     });
-
-export const selectTorState = (state: SuiteRootState) => {
-    const { torStatus, torBootstrap } = state.suite;
-
-    return {
-        torStatus,
-        isTorEnabled: getIsTorEnabled(torStatus),
-        isTorLoading: getIsTorLoading(torStatus),
-        isTorError: torStatus === TorStatus.Error,
-        isTorDisabling: torStatus === TorStatus.Disabling,
-        isTorDisabled: torStatus === TorStatus.Disabled,
-        isTorEnabling: torStatus === TorStatus.Enabling,
-        torBootstrap,
-    };
-};
-
-// TODO: use this selector in all places where we need to check if debug mode is active
-export const selectIsDebugModeActive = (state: SuiteRootState) =>
-    state.suite.settings.debug.showDebugMenu;
-
-export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
-
-export const selectAddressDisplayType = (state: SuiteRootState) =>
-    state.suite.settings.addressDisplayType;
-
-export const selectIsDeviceLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.DEVICE];
-
-export const selectIsDeviceOrUiLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.DEVICE] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
-
-export const selectIsRouterLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER];
-
-export const selectIsRouterOrUiLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
-
-export const selectIsTransportInitialized = (state: SuiteRootState) => !!state.suite.transport;
-
-export const selectActiveTransports = (state: SuiteRootState) =>
-    state.suite.transport?.transports ?? [];
-
-export const selectHasActiveTransport = (state: SuiteRootState) =>
-    !!state.suite.transport?.transports.length;
-
-export const selectHasTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
-    state.suite.transport?.transports.some(t => t.type === type) ?? false;
-
-export const selectTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
-    state.suite.transport?.transports.find(t => t.type === type);
-
-export const selectUdevInstaller = (state: SuiteRootState) => state.suite.transport?.udev;
-
-export const selectIsActionAbortable = (state: SuiteRootState) => {
-    const bridge = state.suite.transport?.transports.find(t => t.type === 'BridgeTransport');
-
-    // TODO abortable actions should be decided based on specific device's transport
-    return !bridge || versionUtils.isNewerOrEqual(bridge.version as string, '2.0.31');
-};
-
-export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {
-    const { transport } = state.suite;
-    const device = selectSelectedDevice(state);
-    const router = selectRouter(state);
-
-    const excluded = getExcludedPrerequisites(router);
-    const prerequisite = getPrerequisiteName({ router, device, transport });
-
-    if (prerequisite === undefined) return;
-
-    if (excluded.includes(prerequisite)) {
-        return;
-    }
-
-    return prerequisite;
-};
-
-export const selectIsTEXDashboardPromoBannerShown = (state: SuiteRootState) =>
-    state.suite.flags.showTEXDashboardPromoBanner;
-
-export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState) =>
-    state.suite.flags.showSettingsDesktopAppPromoBanner;
-
-export const selectIsUnhideTokenModalShown = (state: SuiteRootState) =>
-    state.suite.flags.showUnhideTokenModal;
-
-export const selectIsCopyAddressModalShown = (state: SuiteRootState) =>
-    state.suite.flags.showCopyAddressModal;
-
-export const selectIsInitialRun = (state: SuiteRootState) => state.suite.flags.initialRun;
-
-export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
-    selectIsInitialRun(state) || state.device?.selectedDevice?.mode !== 'normal';
-
-export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
-
-export const selectSuiteSettings = (state: SuiteRootState) => ({
-    defaultWalletLoading: state.suite.settings.defaultWalletLoading,
-});
-
-export const selectHasExperimentalFeature =
-    (feature: ExperimentalFeature) => (state: SuiteRootState) =>
-        state.suite.settings.experimental?.includes(feature) ?? false;
-
-export const selectIsDeviceAuthenticityCheckEnabled = (state: SuiteRootState) =>
-    state.suite.settings.enabledSecurityChecks.deviceAuthenticity;
-export const selectIsEntropyCheckEnabled = (state: SuiteRootState) =>
-    state.suite.settings.enabledSecurityChecks.entropy;
-export const selectIsFirmwareHashCheckEnabled = (state: SuiteRootState) =>
-    state.suite.settings.enabledSecurityChecks.firmwareHash;
-export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
-    state.suite.settings.enabledSecurityChecks.firmwareRevision;
-export const selectIsAutoEjectEnabled = (state: SuiteRootState) => state.suite.settings.autoEject;
-
-/**
- * Get firmware revision check error, or null if check was successful / skipped.
- */
-export const selectFirmwareRevisionCheckError = (state: AppState) => {
-    const device = selectSelectedDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
-    const checkResult = device.authenticityChecks.firmwareRevision;
-
-    // null means not performed, then don't consider it failed
-    if (!checkResult || checkResult.success) return null;
-
-    if (isSkippedRevisionCheckError(checkResult.error)) return null;
-
-    return checkResult.error;
-};
-
-export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
-    const revisionCheckError = selectFirmwareRevisionCheckError(state);
-    if (revisionCheckError === null) return null;
-
-    const isFirmwareRevisionCheckDisabled =
-        !state.suite.settings.enabledSecurityChecks.firmwareRevision;
-    if (isFirmwareRevisionCheckDisabled) return null;
-
-    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
-    if (isDisabledByMessageSystem) return null;
-
-    return revisionCheckError;
-};
-
-/**
- * Get firmware hash check error, or null if check was successful / skipped.
- */
-export const selectFirmwareHashCheckError = (state: AppState) => {
-    const device = selectSelectedDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
-    const checkResult = device.authenticityChecks.firmwareHash;
-
-    // null means not performed, then don't consider it failed
-    if (!checkResult || checkResult.success) return null;
-
-    if (isSkippedHashCheckError(checkResult.error)) return null;
-
-    return checkResult.error;
-};
-
-export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
-    const hashCheckError = selectFirmwareHashCheckError(state);
-    if (hashCheckError === null) return null;
-
-    const isFirmwareHashCheckDisabled = !state.suite.settings.enabledSecurityChecks.firmwareHash;
-    if (isFirmwareHashCheckDisabled) return null;
-
-    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
-    if (isDisabledByMessageSystem) return null;
-
-    if (
-        hashCheckError === 'other-error' &&
-        selectIsFeatureDisabled(state, Feature.firmwareHashCheckOtherError)
-    ) {
-        return null;
-    }
-
-    if (
-        hashCheckError === 'takes-too-long' &&
-        selectIsFeatureDisabled(state, Feature.firmwareHashCheckTimeout)
-    ) {
-        return null;
-    }
-
-    return hashCheckError;
-};
-
-/**
- * Determine hard failure of either of firmware authenticity checks to block access to device.
- */
-export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: AppState) => {
-    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
-    const isRevisionHardError =
-        revisionError !== null && revisionCheckErrorScenarios[revisionError].type === 'hardModal';
-
-    const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
-    const isHashHardError =
-        hashError !== null && hashCheckErrorScenarios[hashError].type === 'hardModal';
-
-    return isRevisionHardError || isHashHardError;
-};
-
-/**
- * Return true if entropy check has failed and is not disabled via settings nor message system.
- */
-export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
-    const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(state);
-    const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
-        state,
-        Feature.entropyCheck,
-    );
-    const isEntropyCheckFailed = selectIsEntropyCheckFailed(state);
-
-    return isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
-};
-
-export const selectIsTradingTermsDismissed = (state: AppState, tradingType: TradingType): boolean =>
-    !!state.suite.dismissedTradingTerms?.[tradingType];
 
 export default suiteReducer;

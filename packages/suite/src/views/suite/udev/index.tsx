@@ -6,7 +6,7 @@ import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { useExternalLink, useSelector } from 'src/hooks/suite';
-import { selectUdevInstaller } from 'src/reducers/suite/suiteReducer';
+import { selectUdevInstaller } from 'src/selectors/suite/suiteSelectors';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 type Installer = {

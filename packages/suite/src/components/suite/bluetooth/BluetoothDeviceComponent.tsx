@@ -3,10 +3,11 @@ import { models } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+
 import { BluetoothDebugInfo } from './BluetoothDebugInfo';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
-import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 type BluetoothDeviceProps = {
     device: DesktopBluetoothDevice;

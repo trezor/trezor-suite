@@ -14,11 +14,11 @@ import { spacings } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 
 import { QuickActionButton } from './QuickActionButton';
 import { TooltipRow } from './TooltipRow';
-import { selectTorState } from '../../../../../../reducers/suite/suiteReducer';
 import { Translation, TranslationKey } from '../../../../Translation';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {

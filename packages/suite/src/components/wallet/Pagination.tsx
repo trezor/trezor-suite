@@ -8,7 +8,7 @@ import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const Wrapper = styled.div<{ $hasPages?: boolean }>`
     display: flex;

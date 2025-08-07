@@ -23,10 +23,10 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
-import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 const DiscoveryButtonWrapper = styled.div`
     margin-top: ${spacingsPx.xl};
