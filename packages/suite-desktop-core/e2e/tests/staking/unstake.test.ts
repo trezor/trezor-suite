@@ -72,8 +72,12 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     footer: 'Tap to continue',
                 });
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt.outputValueOf('amount')).toHaveText('3,234 ETH');
-                await expect(devicePrompt.outputValueOf('fee')).toHaveText('0.000290278609719 ETH');
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    '3,234 ETH',
+                );
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
+                    '0.000290278609719 ETH',
+                );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Unstake' },
                     body: [
@@ -181,8 +185,12 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     footer: 'Tap to continue',
                 });
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt.outputValueOf('amount')).toHaveText('3,234 ETH');
-                await expect(devicePrompt.outputValueOf('fee')).toHaveText('0.000290278609719 ETH');
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    '3,234 ETH',
+                );
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
+                    '0.000290278609719 ETH',
+                );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Claim' },
                     body: [['Maximum fee'], splitStringByDisplayLimit('0.000290278609719 ETH')],

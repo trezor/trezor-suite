@@ -96,10 +96,12 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     footer: 'Tap to continue',
                 });
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt.outputValueOf('amount')).toHaveText(
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
                     '0.100204158497493752 ETH',
                 );
-                await expect(devicePrompt.outputValueOf('fee')).toHaveText('0.000290278609719 ETH');
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
+                    '0.000290278609719 ETH',
+                );
 
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Stake' },
