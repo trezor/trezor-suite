@@ -3,6 +3,7 @@ import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 
 import { trezorLogo } from '@suite-common/suite-constants';
+import { Locale } from '@suite-common/suite-types';
 import { TokenDefinitions, getIsPhishingTransaction } from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -146,6 +147,7 @@ const makePdf = (
 
 const prepareContent = (
     data: Data,
+    locale: Locale,
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ): Fields[] => {
@@ -185,13 +187,13 @@ const prepareContent = (
                     }
                     const targetData = {
                         ...sharedData,
-                        fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
+                        fee: !hasFeeBeenAlreadyUsed ? localizeNumber(t.fee, locale) : '', // fee only once per tx
                         feeSymbol: !hasFeeBeenAlreadyUsed
                             ? getNetworkDisplaySymbol(data.symbol)
                             : '',
                         address: target.isAddress ? target.addresses[0] : '', // SENT - it is destination address, RECV - it is MY address
                         label: target.isAddress && target.metadataLabel ? target.metadataLabel : '',
-                        amount: target.isAddress ? target.amount : '',
+                        amount: target.isAddress ? localizeNumber(target.amount, locale) : '',
                         symbol: target.isAddress ? getNetworkDisplaySymbol(data.symbol) : '',
                         fiat:
                             target.isAddress && target.amount && historicRate
@@ -199,7 +201,7 @@ const prepareContent = (
                                       new BigNumber(target.amount)
                                           .multipliedBy(historicRate)
                                           .toNumber(),
-                                      undefined,
+                                      locale,
                                       2,
                                       2,
                                   ).toString()
@@ -228,13 +230,13 @@ const prepareContent = (
 
                     const tokenData = {
                         ...sharedData,
-                        fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
+                        fee: !hasFeeBeenAlreadyUsed ? localizeNumber(t.fee, locale) : '', // fee only once per tx
                         feeSymbol: !hasFeeBeenAlreadyUsed
                             ? getNetworkDisplaySymbol(data.symbol)
                             : '',
                         address: token.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // token transactions do not have labels
-                        amount: token.amount, // TODO: what to show if token.decimals missing so amount is not formatted correctly?
+                        amount: localizeNumber(token.amount, locale), // TODO: what to show if token.decimals missing so amount is not formatted correctly?
                         symbol: token.symbol?.toUpperCase() || token.contract, // if symbol not available, use contract address
                         fiat:
                             historicTokenRate && token.amount
@@ -242,7 +244,7 @@ const prepareContent = (
                                       new BigNumber(token.amount)
                                           .multipliedBy(historicTokenRate)
                                           .toNumber(),
-                                      undefined,
+                                      locale,
                                       2,
                                       2,
                                   ).toString()
@@ -259,13 +261,13 @@ const prepareContent = (
                 internalTransfers = t.internalTransfers.map(internal => {
                     const internalTransferData = {
                         ...sharedData,
-                        fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
+                        fee: !hasFeeBeenAlreadyUsed ? localizeNumber(t.fee, locale) : '', // fee only once per tx
                         feeSymbol: !hasFeeBeenAlreadyUsed
                             ? getNetworkDisplaySymbol(data.symbol)
                             : '',
                         address: internal.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // internal transactions do not have labels
-                        amount: internal.amount,
+                        amount: localizeNumber(internal.amount, locale),
                         symbol: getNetworkDisplaySymbol(data.symbol), // if symbol not available, use contract address
                         fiat:
                             internal.amount && historicRate
@@ -273,7 +275,7 @@ const prepareContent = (
                                       new BigNumber(internal.amount)
                                           .multipliedBy(historicRate)
                                           .toNumber(),
-                                      undefined,
+                                      locale,
                                       2,
                                       2,
                                   ).toString()
@@ -301,6 +303,7 @@ const sanitizeCsvValue = (value: string) => {
 
 const prepareCsv = (
     data: Data,
+    locale: Locale,
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ) => {
@@ -320,7 +323,7 @@ const prepareCsv = (
         other: 'Other',
     };
 
-    const content = prepareContent(data, tokenDefinitions, historicFiatRates);
+    const content = prepareContent(data, locale, tokenDefinitions, historicFiatRates);
 
     const lines: string[] = [];
 
@@ -351,6 +354,7 @@ const prepareCsv = (
 
 const preparePdf = (
     data: Data,
+    locale: Locale,
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ): TDocumentDefinitions => {
@@ -366,7 +370,7 @@ const preparePdf = (
     const fieldKeys = Object.keys(pdfFields);
     const fieldValues = Object.values(pdfFields);
 
-    const content = prepareContent(data, tokenDefinitions, historicFiatRates);
+    const content = prepareContent(data, locale, tokenDefinitions, historicFiatRates);
 
     const lines: any[] = [];
     content.forEach(item => {
@@ -446,6 +450,7 @@ const preparePdf = (
 
 export const formatData = async (
     data: Data,
+    locale: Locale,
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ) => {
@@ -453,12 +458,12 @@ export const formatData = async (
 
     switch (type) {
         case 'csv': {
-            const csv = prepareCsv(data, tokenDefinitions, historicFiatRates);
+            const csv = prepareCsv(data, locale, tokenDefinitions, historicFiatRates);
 
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
         case 'pdf': {
-            const pdfLayout = preparePdf(data, tokenDefinitions, historicFiatRates);
+            const pdfLayout = preparePdf(data, locale, tokenDefinitions, historicFiatRates);
             const pdfMake = await loadPdfMake();
             const pdf = await makePdf(pdfLayout, pdfMake);
 

@@ -36,6 +36,7 @@ export const exportTransactionsThunk = createThunk(
         const historicFiatRates = selectHistoricFiatRates(getState());
         const localCurrency = selectLocalCurrency(getState());
         const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
+        const locale = extra.selectors.selectLanguage(getState());
 
         // TODO: this is not nice (copy-paste)
         // metadata reducer is still not part of trezor-common and I can not import it
@@ -77,6 +78,7 @@ export const exportTransactionsThunk = createThunk(
                 transactions: filteredTransaction,
                 localCurrency,
             },
+            locale,
             tokenDefinitions,
             historicFiatRates,
         );
