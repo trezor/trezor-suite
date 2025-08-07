@@ -7,7 +7,7 @@ import {
     selectIsEntropyCheckEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 
 export const CheckFirmwareAuthenticity = () => {
     const dispatch = useDispatch();

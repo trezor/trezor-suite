@@ -10,7 +10,7 @@ import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 const BreadcrumbWrapper = styled.span`

@@ -60,7 +60,7 @@ import {
 import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 import { formatTokenSymbol, getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { BlurUrls } from '../BlurUrls';

@@ -9,7 +9,7 @@ import { OnboardingButtonCta } from 'src/components/onboarding';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { pickByDeviceModel } from 'src/utils/device/modelUtils';
 
 import RecoveryStepBox from './RecoveryStepBox';

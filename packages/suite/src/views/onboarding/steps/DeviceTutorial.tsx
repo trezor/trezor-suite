@@ -17,7 +17,7 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import messages from 'src/support/messages';
 
 const StyledOnboardingStepBox = styled(OnboardingStepBox)`

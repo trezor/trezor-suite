@@ -6,7 +6,7 @@ import { ConfirmKey, backupDevice } from 'src/actions/backup/backupActions';
 import { PreBackupCheckboxes } from 'src/components/backup';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 
 import { BackupStepDescription } from './BackupStepDescription';
 import { BackupState } from '../../reducers/backup/backupReducer';

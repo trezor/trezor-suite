@@ -9,7 +9,7 @@ import { spacingsPx, typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { NoRatesTooltip } from './NoRatesTooltip';
 

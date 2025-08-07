@@ -19,7 +19,7 @@ import { spacings } from '@trezor/theme';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { RedactNumericalValue } from './RedactNumericalValue';

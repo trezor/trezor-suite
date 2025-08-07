@@ -7,7 +7,7 @@ import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/se
 import { Translation } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectHasActiveTransport, selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectHasActiveTransport, selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import type { TrezorDevice } from 'src/types/suite';
 import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
 

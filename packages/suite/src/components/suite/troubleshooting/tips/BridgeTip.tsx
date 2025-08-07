@@ -7,7 +7,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
-import { selectTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 export const Wrapper = styled.div`
     a {

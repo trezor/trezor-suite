@@ -18,7 +18,7 @@ import { useDidUpdate } from '@trezor/react-utils';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
     TradingAccountOptionsGroupOptionProps,
     TradingCryptoListProps,

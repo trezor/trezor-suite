@@ -2,7 +2,7 @@ import { Checkbox } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 

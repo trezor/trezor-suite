@@ -18,11 +18,11 @@ import {
     SkipStepConfirmation,
 } from 'src/components/onboarding';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { PrerequisitesGuide, Translation } from '../suite';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
-import { selectIsDebugModeActive } from '../../reducers/suite/suiteReducer';
 
 const Description = styled.div`
     align-items: center;

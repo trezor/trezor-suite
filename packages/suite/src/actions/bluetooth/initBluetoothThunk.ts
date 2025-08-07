@@ -3,6 +3,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+
 import {
     DesktopBluetoothDevice,
     fromBluetoothDevice,
@@ -12,7 +14,6 @@ import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 import { remapKnownDevicesForLinux } from './remapKnownDevicesForLinux';
-import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 export const initBluetoothThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,

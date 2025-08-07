@@ -19,13 +19,13 @@ import { getOsName } from '@trezor/env-utils';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
-import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 import {
     selectCoinjoinAccounts,
     selectRoundsDurationInHours,
     selectRoundsLeftByAccountKey,
     selectRoundsNeededByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';

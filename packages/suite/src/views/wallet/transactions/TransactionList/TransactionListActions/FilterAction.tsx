@@ -21,7 +21,7 @@ import { spacings } from '@trezor/theme';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 const options = [
     {

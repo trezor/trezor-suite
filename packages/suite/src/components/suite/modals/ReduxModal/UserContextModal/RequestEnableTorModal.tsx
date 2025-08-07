@@ -7,7 +7,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 type RequestEnableTorModalProps = {
     decision: Extract<UserContextPayload, { type: 'request-enable-tor' }>['decision'];

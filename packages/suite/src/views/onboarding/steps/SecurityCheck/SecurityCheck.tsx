@@ -33,7 +33,7 @@ import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/Security
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { SecurityChecklist } from './SecurityChecklist';

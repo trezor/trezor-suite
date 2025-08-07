@@ -1,8 +1,8 @@
 import { Feature, selectFeatureMessageContent } from '@suite-common/message-system';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { selectCoinjoinSessionBlockerByAccountKey } from 'src/reducers/wallet/coinjoinReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 export const useCoinjoinSessionBlockers = (
     accountKey: string,

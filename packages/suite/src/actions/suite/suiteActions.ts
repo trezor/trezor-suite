@@ -11,12 +11,8 @@ import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { TranslationKey } from 'src/components/suite/Translation';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import {
-    AutodetectSettings,
-    DebugModeOptions,
-    EvmSettings,
-    selectTorState,
-} from 'src/reducers/suite/suiteReducer';
+import { AutodetectSettings, DebugModeOptions, EvmSettings } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';

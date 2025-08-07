@@ -6,9 +6,9 @@ import { Icon, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectIsDeviceAuthenticityCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 
 import { stepCategories } from '../../config/onboarding/steps';
-import { selectIsDeviceAuthenticityCheckEnabled } from '../../reducers/suite/suiteReducer';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';
 import { Translation } from '../suite';
 

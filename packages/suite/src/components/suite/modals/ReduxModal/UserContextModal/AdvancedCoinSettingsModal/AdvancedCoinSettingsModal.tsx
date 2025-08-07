@@ -22,7 +22,7 @@ import { useBackendsForm, useDefaultUrls } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
 import ConnectionInfo from './CustomBackends/ConnectionInfo';

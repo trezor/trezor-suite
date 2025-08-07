@@ -1,6 +1,6 @@
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { ModalSwitcher } from '../../components/suite/modals/ModalSwitcher/ModalSwitcher';
 import { SecurityCheck } from '../onboarding/steps/SecurityCheck/SecurityCheck';

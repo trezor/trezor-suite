@@ -12,7 +12,7 @@ import { OnboardingButtonBack, OnboardingStepBox, OptionsWrapper } from 'src/com
 import { Translation } from 'src/components/suite';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 import { SelectBackupType, isShamirBackupType } from './SelectBackupType/SelectBackupType';
 

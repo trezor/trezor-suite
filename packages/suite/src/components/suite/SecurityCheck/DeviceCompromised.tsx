@@ -8,7 +8,7 @@ import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
     selectIsEntropyCheckEnabledAndFailed,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';

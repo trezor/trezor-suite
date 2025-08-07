@@ -6,8 +6,9 @@ import { Locale } from '@suite-common/suite-types';
 import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+
 import { useSelector } from '../../hooks/suite';
-import { selectLanguage } from '../../reducers/suite/suiteReducer';
 import { RedactNumericalValue } from '../suite';
 
 const ValueWrapper = styled.div`

@@ -9,7 +9,7 @@ import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;

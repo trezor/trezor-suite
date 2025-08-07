@@ -8,7 +8,8 @@ import { ArrayElement } from '@trezor/type-utils';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { DebugModeOptions, selectActiveTransports } from 'src/reducers/suite/suiteReducer';
+import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
+import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
 

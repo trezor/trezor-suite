@@ -14,7 +14,7 @@ import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';

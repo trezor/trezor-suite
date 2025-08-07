@@ -8,10 +8,10 @@ import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
 } from 'src/components/suite/troubleshooting/tips';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from '../../../hooks/suite';
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
-import { selectIsDebugModeActive } from '../../../reducers/suite/suiteReducer';
 import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
 
 const tipItems: TroubleshootingTipsItem[] = [

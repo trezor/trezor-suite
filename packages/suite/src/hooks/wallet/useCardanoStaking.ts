@@ -21,7 +21,7 @@ import trezorConnect, { PROTO } from '@trezor/connect';
 
 import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { AppState } from 'src/types/suite';
 import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 

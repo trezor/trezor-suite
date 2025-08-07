@@ -22,7 +22,7 @@ import { HomescreenGallery, Translation } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 
 const Content = styled.div`

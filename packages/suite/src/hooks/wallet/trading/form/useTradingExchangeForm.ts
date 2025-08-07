@@ -54,7 +54,7 @@ import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import {
     selectIsDebugModeActive,
     selectIsTradingTermsDismissed,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {

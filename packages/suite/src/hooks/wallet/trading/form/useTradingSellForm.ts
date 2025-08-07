@@ -50,7 +50,7 @@ import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import {
     selectIsDebugModeActive,
     selectIsTradingTermsDismissed,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 import {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,

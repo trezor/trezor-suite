@@ -12,7 +12,7 @@ import {
 } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`

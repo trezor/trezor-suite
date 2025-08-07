@@ -11,7 +11,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
 type DisplayMode = 'copy' | 'modal' | 'static';
 

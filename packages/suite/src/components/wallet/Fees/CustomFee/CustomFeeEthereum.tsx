@@ -10,7 +10,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 import { CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from './CustomFee';

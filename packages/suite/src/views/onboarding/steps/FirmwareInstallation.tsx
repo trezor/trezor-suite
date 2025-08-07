@@ -8,7 +8,10 @@ import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/c
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectHasTransportOfType, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import {
+    selectHasTransportOfType,
+    selectIsActionAbortable,
+} from 'src/selectors/suite/suiteSelectors';
 
 const SelectDevice = styled.div`
     display: flex;

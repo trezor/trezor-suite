@@ -2,7 +2,7 @@ import { FormatterProviderConfig } from '@suite-common/formatters';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 export const useFormattersConfig = (): FormatterProviderConfig => {
     const locale = useSelector(selectLanguage);

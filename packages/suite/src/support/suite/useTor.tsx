@@ -10,7 +10,7 @@ import {
     updateTorStatus,
 } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 import { getIsTorDomain } from 'src/utils/suite/tor';
 

@@ -37,7 +37,7 @@ import {
     TrezorLink,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
+import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';

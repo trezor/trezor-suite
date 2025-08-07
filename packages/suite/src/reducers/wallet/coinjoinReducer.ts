@@ -21,11 +21,8 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import {
-    SuiteRootState,
-    selectIsDeviceOrUiLocked,
-    selectTorState,
-} from 'src/reducers/suite/suiteReducer';
+import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { selectIsDeviceOrUiLocked, selectTorState } from 'src/selectors/suite/suiteSelectors';
 import {
     CLIENT_STATUS_FALLBACK,
     DEFAULT_TARGET_ANONYMITY,

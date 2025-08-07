@@ -7,7 +7,7 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 const options = [
     {

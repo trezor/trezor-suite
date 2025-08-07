@@ -11,10 +11,12 @@ import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
     selectIsEntropyCheckEnabledAndFailed,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
+} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
+import {
     selectIsLoggedOut,
     selectIsTransportInitialized,
     selectPrerequisite,
-} from 'src/reducers/suite/suiteReducer';
+} from 'src/selectors/suite/suiteSelectors';
 import type { AppState } from 'src/types/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { SuiteStart } from 'src/views/start/SuiteStart';

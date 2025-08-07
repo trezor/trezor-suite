@@ -6,7 +6,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferent } from './DeviceDifferent';
 import { ShowPinMatrix } from './ShowPinMatrix';

@@ -6,7 +6,7 @@ import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/
 import { Translation } from 'src/components/suite';
 import { useGuideLoadArticle } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const ArticleWrapper = styled.div`
     padding-bottom: ${spacingsPx.xxl};

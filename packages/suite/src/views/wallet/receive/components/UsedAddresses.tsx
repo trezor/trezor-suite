@@ -21,7 +21,7 @@ import { showAddress } from 'src/actions/wallet/receiveActions';
 import { FormattedCryptoAmount, MetadataLabeling, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
+import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 

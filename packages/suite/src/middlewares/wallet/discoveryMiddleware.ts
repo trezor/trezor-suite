@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 
 // todo: this is crazy. needs some consideration
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(

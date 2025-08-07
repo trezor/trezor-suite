@@ -7,7 +7,7 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { getOsTheme } from 'src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';

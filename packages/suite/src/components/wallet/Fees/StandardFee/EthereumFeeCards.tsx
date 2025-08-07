@@ -9,7 +9,7 @@ import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useLocales, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { FeeOptionType, getFeeLevelTranslationId } from '../Fees';
 import { FeeCard } from './FeeCard';

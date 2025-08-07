@@ -10,7 +10,7 @@ import { spacings } from '@trezor/theme';
 import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
 import {
     validateCryptoLimits,

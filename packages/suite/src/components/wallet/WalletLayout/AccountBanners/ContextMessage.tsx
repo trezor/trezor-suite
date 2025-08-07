@@ -9,7 +9,7 @@ import { Banner, Row } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage, selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 type ContextMessageProps = {

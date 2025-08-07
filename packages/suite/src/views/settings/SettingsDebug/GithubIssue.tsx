@@ -1,6 +1,6 @@
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
+import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 import { openGithubIssue } from 'src/services/github';
 
 export const GithubIssue = () => {

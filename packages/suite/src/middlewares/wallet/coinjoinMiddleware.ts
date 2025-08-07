@@ -29,13 +29,13 @@ import {
     SESSION_TX_BROADCASTED,
     SET_DEBUG_SETTINGS,
 } from 'src/actions/wallet/constants/coinjoinConstants';
-import { selectIsDeviceOrUiLocked, selectTorState } from 'src/reducers/suite/suiteReducer';
 import {
     selectCoinjoinAccountByKey,
     selectCoinjoinSessionBlockerByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectIsDeviceOrUiLocked, selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { CoinjoinService } from 'src/services/coinjoin';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
 import { CoinjoinConfig } from 'src/types/wallet/coinjoin';
