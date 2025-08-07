@@ -38,7 +38,6 @@ export interface MethodInfo {
     name: string;
     requiredPermissions: MethodPermission[];
     info: string;
-    confirmation?: UiRequestConfirmation['payload'];
     precomposed?: PrecomposeResultFinal;
 }
 
@@ -354,7 +353,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             name: this.name,
             requiredPermissions: this.requiredPermissions,
             info: this.info,
-            confirmation: this.confirmation,
+            // confirmation can't be accessed here - it might use method.device which is not assigned yet
+            // confirmation: this.confirmation,
             precomposed: undefined, // will be filled in only if method.payloadToPrecomposed is implemented and both __info and __precompose param are sent
             // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
         };
