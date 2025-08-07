@@ -15,6 +15,7 @@ import { FeeSection } from './pageObjects/feeSection';
 import { GuidePanel } from './pageObjects/guidePanel';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
+import { PaginationControl } from './pageObjects/pagination';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
@@ -46,6 +47,7 @@ type Fixtures = {
     connectPermissionsModal: ConnectPermissionsModal;
     stakingSection: StakingSection;
     model: ModelFixture;
+    paginationControl: PaginationControl;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -130,6 +132,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     model: async ({ emulatorStartConf }, use) => {
         await use(new ModelFixture(emulatorStartConf.model));
+    },
+    paginationControl: async ({ page }, use) => {
+        await use(new PaginationControl(page));
     },
 });
 
