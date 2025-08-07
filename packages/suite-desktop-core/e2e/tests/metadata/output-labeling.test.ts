@@ -98,7 +98,7 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly
             const download = await page.waitForEvent('download');
             const downloadPath = await download.path();
             const fileContent = fs.readFileSync(downloadPath, 'utf8');
-            const expectedSubstr = '1PmVvr5DNVYJygtDT7J312qmxpa5pceu9E;submitted by button';
+            const expectedSubstr = '1PmVvr5DNVYJygtDT7J312qmxpa5pceu9E,submitted by button';
             expect(fileContent).toContain(expectedSubstr);
             expect(typeof fileContent).toBe('string');
         },
