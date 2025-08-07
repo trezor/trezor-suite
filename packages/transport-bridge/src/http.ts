@@ -20,10 +20,6 @@ import { Log, Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
 
-const defaults = {
-    port: 21325,
-};
-
 const str = (value: Record<string, any> | string) =>
     typeof value === 'string' ? value : JSON.stringify(value);
 
@@ -83,6 +79,8 @@ const validateProtocolMessageBody =
         }
     };
 
+const COMPATIBILITY_PORT = 21325;
+
 export class TrezordNode {
     version = '3.1.0';
     bundledVersion?: string;
@@ -95,8 +93,9 @@ export class TrezordNode {
         req: Parameters<RequestHandler<unknown, unknown>>[0];
         res: Response;
     }[];
-    port: number;
-    server?: HttpServer<never>;
+    private readonly requestedPort: number;
+    private port?: number;
+    server: HttpServer<never>[] = [];
     core: ReturnType<typeof createCore>;
     logger: Log;
     assetPrefix: string;
@@ -104,21 +103,20 @@ export class TrezordNode {
     throttler = new Throttler(500);
 
     constructor({
-        port,
         api,
         assetPrefix = '',
         logger,
         protocolMessages,
         bundledVersion,
+        port = 21328,
     }: {
-        port: number;
         api: 'usb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         protocolMessages?: boolean;
         bundledVersion?: string;
+        port?: number;
     }) {
-        this.port = port || defaults.port;
         this.logger = logger;
         this.descriptors = [];
         this.bundledVersion = bundledVersion;
@@ -129,6 +127,7 @@ export class TrezordNode {
 
         this.assetPrefix = assetPrefix;
         this.protocolMessages = protocolMessages ?? true;
+        this.requestedPort = port;
     }
 
     private checkAffectedSubscriptions() {
@@ -198,7 +197,7 @@ export class TrezordNode {
         );
     }
 
-    public start() {
+    public async start() {
         // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
         this.core.sessionsClient.on('descriptors', descriptors => {
             this.logger?.debug(
@@ -209,22 +208,34 @@ export class TrezordNode {
             );
         });
 
-        return new Promise<void>((resolve, reject) => {
-            this.logger.info('Starting Trezor Bridge HTTP server');
-            const app = new HttpServer({
-                port: this.port,
-                logger: this.logger,
-            });
+        this.logger.info('Starting Trezor Bridge HTTP server');
+        // for compatibility reasons, we start two servers sharing the same request handlers and state.
+        // compatibility case 1:
+        //   user still has the old bridge client (targeting port 21325), but he already runs the latest suite-desktop version. We need to make sure that bridge is still available on port 21325 -> we need 2 servers
+        // compatibility case 2:
+        //   user has the latest bridge client (checking all the possible ports), but he runs the old suite-desktop version. This is easy and does not require us to start 2 servers, bridge client will fallback to the old port.
 
+        const primaryApp = new HttpServer({
+            ports: [this.requestedPort],
+            logger: this.logger,
+        });
+
+        const compatibilityApp = new HttpServer({
+            ports: [COMPATIBILITY_PORT],
+            logger: this.logger,
+        });
+
+        const bindHandlers = (app: HttpServer<any>) => {
             app.use([
                 (req, res, next, context) => {
                     // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
                     if (
                         !req.headers.origin &&
                         req.headers.host &&
-                        [`127.0.0.1:${this.port}`, `localhost:${this.port}`].includes(
-                            req.headers.host,
-                        )
+                        [
+                            `127.0.0.1:${app.getServerAddress().port}`,
+                            `localhost:${app.getServerAddress().port}`,
+                        ].includes(req.headers.host)
                     ) {
                         next(req, res);
                     } else {
@@ -446,7 +457,7 @@ export class TrezordNode {
             app.get('/', [
                 (_req, res) => {
                     res.writeHead(301, {
-                        Location: `http://127.0.0.1:${this.port}/status`,
+                        Location: `http://127.0.0.1:${app.getServerAddress().port}/status`,
                     });
                     res.end();
                 },
@@ -477,7 +488,7 @@ export class TrezordNode {
                     const signal = this.createAbortSignal(res);
                     await this.core.enumerate({ signal });
                     const props = {
-                        intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
+                        intro: `To download full logs go to http://127.0.0.1:${app.getServerAddress().port}/logs`,
                         version: this.version,
                         bundledVersion: this.bundledVersion,
                         devices: this.descriptors,
@@ -510,16 +521,34 @@ export class TrezordNode {
             app.post('/', [this.handleInfo.bind(this)]);
 
             app.post('/configure', [this.handleInfo.bind(this)]);
+        };
 
-            app.start().then(result => {
-                if (result.success) {
-                    this.server = app;
+        // start both at once
+        const compatibilityAppRes =
+            this.requestedPort === COMPATIBILITY_PORT // Don't even try to start compatibilityApp when the primaryApp requests the same port
+                ? Promise.resolve({ success: false } as const)
+                : compatibilityApp.start();
 
-                    return resolve();
-                } else {
-                    reject(result.error);
+        const primaryAppRes = await primaryApp.start();
+
+        // if primary succeeds -> resolve
+        if (primaryAppRes.success) {
+            bindHandlers(primaryApp);
+            this.server.push(primaryApp);
+            this.port = primaryAppRes.payload.port;
+        }
+
+        return compatibilityAppRes.then(res => {
+            if (res.success) {
+                bindHandlers(compatibilityApp);
+                this.server.push(compatibilityApp);
+
+                if (!this.port) {
+                    this.port = res.payload.port;
                 }
-            });
+            } else if (!primaryAppRes.success) {
+                throw new Error(primaryAppRes.error); // -> neither compatibility, nor primary app started -> only this case means reject
+            }
         });
     }
 
@@ -529,20 +558,20 @@ export class TrezordNode {
         this.throttler.dispose();
         this.core.dispose();
 
-        return this.server?.stop().finally(() => {
-            this.server = undefined;
+        return Promise.all(this.server.map(server => server.stop())).finally(() => {
+            this.server = [];
             this.logger.info('Trezor Bridge HTTP server stopped');
         });
     }
 
     public async status() {
-        const running = await fetch(`http://127.0.0.1:${this.port}/`)
+        const running = await fetch(`http://127.0.0.1:${this.port ?? this.requestedPort}/`)
             .then(resp => resp.ok)
             .catch(() => false);
 
         return {
             service: running,
-            process: Boolean(this.server),
+            process: Boolean(this.server[0]),
         };
     }
 
