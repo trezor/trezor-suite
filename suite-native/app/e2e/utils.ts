@@ -149,8 +149,8 @@ export const prepareTrezorEmulator = async ({
         const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
 
         const fwVersion =
-            version && modelSupportedFirmwares.includes(version) ? version : '2-latest';
-
+            (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
+            '2-latest';
         await TrezorUserEnvLink.disconnect();
         await TrezorUserEnvLink.connect();
         // start with latest officially released firmware (necessary to pass the firmware checks)
