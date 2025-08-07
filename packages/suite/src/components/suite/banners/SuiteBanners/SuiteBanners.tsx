@@ -58,13 +58,11 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     }, [device?.features?.safety_checks]);
 
     if (isOnboarding) {
-        if (isOnboarding) {
-            return bannerMessage ? (
-                <Container $fill={fill}>
-                    <MessageSystemBanner message={bannerMessage} />
-                </Container>
-            ) : null;
-        }
+        return bannerMessage ? (
+            <Container $fill={fill}>
+                <MessageSystemBanner message={bannerMessage} />
+            </Container>
+        ) : null;
     }
 
     let banner = null;
