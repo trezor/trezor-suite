@@ -5,8 +5,8 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import {
-    FirmwareCheckType,
+import { FirmwareCheckType ,
+    Locale,
     Route,
     TrezorDevice,
     UserContextPayload,
@@ -54,7 +54,7 @@ export type ExtraDependencies = {
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
         // a wallet-core selector that could be reused directly, but this one is used very often and would create circular deps
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
-        selectLanguage: SuiteCompatibleSelector<string>;
+        selectLanguage: SuiteCompatibleSelector<Locale>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectRoute: SuiteCompatibleSelector<Route | undefined>;
