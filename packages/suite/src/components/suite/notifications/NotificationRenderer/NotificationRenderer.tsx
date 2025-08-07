@@ -198,6 +198,37 @@ export const NotificationRenderer = ({
                     }}
                 />
             );
+        case 'tx-revoked':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_REVOKED"
+                    messageValues={{
+                        tokenSymbol: notification.tokenSymbol,
+                    }}
+                />
+            );
+        case 'tx-approved':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message={
+                        notification.isInfiniteApproval
+                            ? 'TOAST_TX_APPROVED_MAX'
+                            : 'TOAST_TX_APPROVED'
+                    }
+                    messageValues={{
+                        amount: notification.formattedAmount,
+                        tokenSymbol: notification.tokenSymbol,
+                    }}
+                />
+            );
         case 'tx-sent':
             return (
                 <TransactionRenderer

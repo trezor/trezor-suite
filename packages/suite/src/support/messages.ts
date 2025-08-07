@@ -4079,6 +4079,18 @@ export default defineMessages({
         id: 'TOAST_COPY_TO_CLIPBOARD',
         defaultMessage: 'Copied',
     },
+    TOAST_TX_REVOKED: {
+        id: 'TOAST_TX_REVOKED',
+        defaultMessage: 'Revoke transaction of {tokenSymbol} was broadcasted',
+    },
+    TOAST_TX_APPROVED: {
+        id: 'TOAST_TX_APPROVED',
+        defaultMessage: 'Approve transaction of {amount} {tokenSymbol} was broadcasted',
+    },
+    TOAST_TX_APPROVED_MAX: {
+        id: 'TOAST_TX_APPROVED_MAX',
+        defaultMessage: 'Approve transaction of unlimited {tokenSymbol} was broadcasted',
+    },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
         defaultMessage: '{amount} sent from {account}',

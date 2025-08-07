@@ -23,6 +23,17 @@ type SentTransactionNotification = {
     type: 'tx-sent';
 } & TransactionNotificationPayload;
 
+type RevokeTransactionNotification = {
+    type: 'tx-revoked';
+    tokenSymbol?: string;
+} & TransactionNotificationPayload;
+
+type ApproveTransactionNotification = {
+    type: 'tx-approved';
+    tokenSymbol?: string;
+    isInfiniteApproval: boolean;
+} & TransactionNotificationPayload;
+
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
 } & TransactionNotificationPayload;
@@ -78,6 +89,8 @@ export type ToastPayload = (
               | 'sign-transaction-timeout';
       }
     | SentTransactionNotification
+    | ApproveTransactionNotification
+    | RevokeTransactionNotification
     | {
           type: 'raw-tx-sent';
           txid: string;

@@ -30,7 +30,14 @@ import { getTxAnchor } from 'src/utils/suite/anchor';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<
-        'tx-sent' | 'tx-received' | 'tx-confirmed' | 'tx-staked' | 'tx-unstaked' | 'tx-claimed'
+        | 'tx-sent'
+        | 'tx-received'
+        | 'tx-confirmed'
+        | 'tx-staked'
+        | 'tx-unstaked'
+        | 'tx-claimed'
+        | 'tx-approved'
+        | 'tx-revoked'
     >;
 
 export const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
@@ -95,6 +102,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
         <View
             {...props}
             messageValues={{
+                ...props.messageValues,
                 amount: <HiddenPlaceholder>{formattedAmount}</HiddenPlaceholder>,
                 account: (
                     <AccountLabeling
