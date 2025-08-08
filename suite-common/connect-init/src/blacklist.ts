@@ -33,4 +33,5 @@ export const blacklist: ConnectWebKey[] = [
     // WebUSB methods from Connect web
     'requestWebUSBDevice',
     'disableWebUSB',
+    'bleUnpair',
 ];
