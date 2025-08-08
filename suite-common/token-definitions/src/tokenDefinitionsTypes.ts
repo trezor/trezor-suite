@@ -11,6 +11,11 @@ export interface AdvancedTokenStructure {
 
 export type TokenStructure = SimpleTokenStructure | AdvancedTokenStructure;
 
+export enum TokenStructureType {
+    SIMPLE = 'simple',
+    ADVANCED = 'advanced',
+}
+
 export enum DefinitionType {
     NFT = 'nft',
     COIN = 'coin',
