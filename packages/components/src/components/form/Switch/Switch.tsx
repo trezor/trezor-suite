@@ -115,13 +115,13 @@ export const Switch = ({
             gap={mapSizeToLabelContainerGap(size)}
             isReversed={labelPosition === 'start'}
             margin={margin}
+            onClick={handleContainerClick}
         >
             <Container
                 // @ts-expect-error - needed for playwright retry-ability
                 disabled={isDisabled}
                 $isChecked={isChecked}
                 $isDisabled={isDisabled}
-                onClick={handleContainerClick}
                 data-testid={dataTest}
             >
                 <Box
