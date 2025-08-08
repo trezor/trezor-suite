@@ -59,6 +59,17 @@ const buildCoinUrls = (ticker: TickerId) => {
         return [`${baseUrl}/contract/${policyId}`, `${baseUrl}/contract/${ticker.tokenAddress}`];
     }
 
+    if (ticker.symbol === 'xlm') {
+        const [code, issuer] = ticker.tokenAddress.split('-');
+
+        // There are currently three formats on CoinGecko, we try them in order of frequency.
+        return [
+            `${baseUrl}/contract/${code}-${issuer}`,
+            `${baseUrl}/contract/${code}-${issuer}-1`,
+            `${baseUrl}/contract/${code}:${issuer}`,
+        ];
+    }
+
     return [`${baseUrl}/contract/${ticker.tokenAddress}`];
 };
 

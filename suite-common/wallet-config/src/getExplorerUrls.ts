@@ -48,6 +48,7 @@ export const getExplorerUrls = (
             tx: `${baseUrl}/tx/`,
             account: `${baseUrl}/account/`,
             address: `${baseUrl}/account/`,
+            token: `${baseUrl}/asset/`,
         },
     };
 
@@ -98,6 +99,7 @@ export const getExplorerUrlsRaw = (
             tx: 'tx',
             account: 'account',
             address: 'account',
+            token: 'asset',
         },
     };
 

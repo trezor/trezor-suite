@@ -640,7 +640,7 @@ export const getAmountValidationResult = ({
 
     if (amountBig.gt(formattedAvailableBalance)) {
         const reserve =
-            account.networkType === 'ripple' || account.networkType === 'stellar'
+            !token && (account.networkType === 'ripple' || account.networkType === 'stellar')
                 ? formatNetworkAmount(account.misc.reserve, account.symbol)
                 : undefined;
 
