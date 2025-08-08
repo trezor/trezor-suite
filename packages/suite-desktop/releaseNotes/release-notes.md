@@ -1,21 +1,17 @@
 ### 🚀 New features
 
-- Bitcoin can now be set as the primary currency unit.
-- “View only” wallets are now enabled by default.
-- Biometric authentication with auto-lock has been added to experimental features for enhanced security and convenience.
-- WalletConnect is now officially supported – connect your Trezor to dApps safely, with transaction simulations included.
-- TrezorConnect is out of experimental – connect your Trezor to supported apps through a secure Trezor Suite interface (availability depends on third-party wallet updates).
+- Bitcoin can now be set as the primary currency unit, offering greater control over how values are displayed.
+- “View-only” wallets are now enabled by default, making it easier to monitor balances without connecting your device.
+- Biometric authentication with auto-lock has been added to experimental features, enhancing both security and convenience.
+- WalletConnect is now officially supported—securely connect your Trezor to dApps, with transaction simulations included for added transparency.
+- Trezor Connect has graduated from experimental—seamlessly link your Trezor to supported apps via a secure Trezor Suite interface (availability depends on third-party wallet support).
 
 ### 🎨 Improvements
 
-- Minimum Bitcoin fee rate has been lowered to 0.1 sat/vB, giving more flexibility in choosing low-cost transaction options
-- Improved speed up transaction
-- Enhanced locktime functionality
-- Streamlined send options – Locktime and Broadcast settings have been moved under Advanced Send options
-- EVM token approvals aligned – Compatibility updates for new firmware ensure seamless token approval on EVM chains
-- Token approval upgraded – A cleaner and more intuitive flow when interacting with token approval
-- SLIP-0024 transaction review modal added
-- Adding a disclaimer informing the user about our fee structure (on buy / sell / swap )
+- The minimum Bitcoin fee rate has been reduced to 0.1 sat/vB, allowing for more cost-effective transaction options.
+- The "Speed up" transaction feature has been improved for better performance and reliability.
+- Locktime functionality has been enhanced for increased precision in transaction timing.
+- Send options have been streamlined—Locktime and Broadcast settings are now neatly organized under Advanced Send.
 
 ### 🔧 Bug fixes
 
