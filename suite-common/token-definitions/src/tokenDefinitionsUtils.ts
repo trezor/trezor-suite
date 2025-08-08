@@ -1,13 +1,23 @@
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { G } from '@mobily/ts-belt';
+import { decode, verify } from 'jws';
+
+import { NetworkSymbol, getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/connect';
+import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 
+import {
+    JWS_SIGN_ALGORITHM,
+    TOKEN_DEFINITIONS_PREFIX_URL,
+    TOKEN_DEFINITIONS_SUFFIX_URL,
+} from './tokenDefinitionsConstants';
 import {
     DefinitionType,
     SimpleTokenStructure,
     TokenDefinitionsState,
     TokenManagementAction,
     TokenManagementStorage,
+    TokenStructureType,
 } from './tokenDefinitionsTypes';
 
 // Using Set greatly improves performance of this function because of O(1) complexity instead of O(n) for Array.includes
@@ -93,4 +103,55 @@ export const buildTokenDefinitionsFromStorage = (
     }
 
     return tokenDefinitions;
+};
+
+export const fetchTokenDefinitions = async (
+    symbol: NetworkSymbol,
+    type: DefinitionType,
+    structure: TokenStructureType,
+) => {
+    const coingeckoId = getCoingeckoId(symbol);
+
+    if (!coingeckoId) {
+        throw Error('Cannot fetch token definitions for network without CoinGecko asset id!');
+    }
+
+    const env = isCodesignBuild() ? 'stable' : 'develop';
+
+    const response = await fetch(
+        `${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.${structure}.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
+    );
+
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+
+    const jws = await response.text();
+
+    const decodedJws = decode(jws);
+
+    if (!decodedJws) {
+        throw Error('Decoding of config failed');
+    }
+
+    const algorithmInHeader = decodedJws?.header.alg;
+    if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
+        throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
+    }
+
+    const authenticityPublicKey = getJWSPublicKey('token-definitions');
+
+    if (G.isNullable(authenticityPublicKey)) {
+        throw Error('Public key check token definitions authenticity was not found.');
+    }
+
+    const isAuthenticityValid = verify(jws, JWS_SIGN_ALGORITHM, authenticityPublicKey);
+
+    if (!isAuthenticityValid) {
+        throw Error('Config authenticity is invalid');
+    }
+
+    const data = JSON.parse(decodedJws.payload);
+
+    return data;
 };
