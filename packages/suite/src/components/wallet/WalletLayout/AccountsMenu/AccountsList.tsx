@@ -21,6 +21,7 @@ import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sideba
 
 interface AccountListProps {
     forceOnlyItemClick?: boolean;
+    hideStaking?: boolean;
     onItemClick?: (account: Account, type: AccountItemType) => void;
 }
 
@@ -28,6 +29,7 @@ type AccountsProps = {
     accounts: Account[];
     coinjoinIsPreloading?: boolean;
     discoveryInProgress?: boolean;
+    hideStaking?: boolean;
     type: AccountType;
     // NOTE: this is to disable completely default click behavior of the item
     forceOnlyItemClick?: boolean;
@@ -37,6 +39,7 @@ type AccountsProps = {
 const Accounts = ({
     accounts,
     forceOnlyItemClick,
+    hideStaking,
     coinjoinIsPreloading,
     discoveryInProgress,
     type,
@@ -62,6 +65,7 @@ const Accounts = ({
                     <AccountSection
                         key={account.key}
                         forceOnlyItemClick={forceOnlyItemClick}
+                        hideStaking={hideStaking}
                         account={{
                             ...account,
                             accountLabel: accountLabels[account.key],
@@ -76,7 +80,11 @@ const Accounts = ({
     );
 };
 
-export const AccountsList = ({ forceOnlyItemClick, onItemClick }: AccountListProps) => {
+export const AccountsList = ({
+    forceOnlyItemClick,
+    hideStaking,
+    onItemClick,
+}: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -155,11 +163,11 @@ export const AccountsList = ({ forceOnlyItemClick, onItemClick }: AccountListPro
                         hasBalance={groupHasBalance}
                         keepOpen={hideLabel || keepOpen(type)}
                     >
-                        <Accounts {...accountProps} />
+                        <Accounts hideStaking={hideStaking} {...accountProps} />
                     </AccountGroup>
                 </ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
-                    <Accounts {...accountProps} />
+                    <Accounts hideStaking={hideStaking} {...accountProps} />
                 </CollapsedSidebarOnly>
             </>
         );

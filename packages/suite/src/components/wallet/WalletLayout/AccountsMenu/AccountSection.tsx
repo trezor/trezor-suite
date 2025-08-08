@@ -12,6 +12,7 @@ import { AccountItemsGroup } from './AccountItemsGroup';
 interface AccountSectionProps {
     account: Account;
     forceOnlyItemClick?: boolean;
+    hideStaking?: boolean;
     selected: boolean;
     onItemClick?: (account: Account, type: AccountItemType) => void;
 }
@@ -19,6 +20,7 @@ interface AccountSectionProps {
 export const AccountSection = ({
     account,
     forceOnlyItemClick,
+    hideStaking,
     selected,
     onItemClick,
 }: AccountSectionProps) => {
@@ -36,7 +38,10 @@ export const AccountSection = ({
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
-    const isStakeShown = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakeShownStored = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key),
+    );
+    const isStakeShown = !hideStaking && isStakeShownStored;
 
     const tokens = getTokens({
         tokens: accountTokens,
