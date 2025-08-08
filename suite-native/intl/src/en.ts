@@ -151,6 +151,9 @@ export const en = {
             ejectedDuringDiscovery: 'Reconnect your trezor to load all assets.',
             discoveryProgress: { loading: 'Loading...', stillWorking: 'Retrieving balances' },
         },
+        accountList: {
+            title: 'My assets',
+        },
     },
     biometricsButton: 'Unlock with biometrics',
     bluetooth: {

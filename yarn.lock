@@ -10800,6 +10800,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/banner-flags": "workspace:*"
     "@suite-native/device": "workspace:*"

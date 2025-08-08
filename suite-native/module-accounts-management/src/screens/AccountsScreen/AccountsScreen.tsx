@@ -7,7 +7,9 @@ import {
     OnSelectAccount,
     SearchableAccountsListHeader,
 } from '@suite-native/accounts';
+import { EjectedDuringDiscoveryWarning } from '@suite-native/assets';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -43,10 +45,11 @@ export const AccountsScreen = () => {
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
             <SearchableAccountsListHeader
-                title="My assets"
+                title={<Translation id="assets.accountList.title" />}
                 onSearchInputChange={handleFilterChange}
                 flowType="accounts"
             />
+            <EjectedDuringDiscoveryWarning />
             <AccountsList
                 onSelectAccount={handleSelectAccount}
                 filterValue={accountsFilterValue}

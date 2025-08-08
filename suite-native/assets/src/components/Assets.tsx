@@ -65,7 +65,7 @@ export const Assets = () => {
     return (
         <>
             <AnimatedCard noPadding layout={LinearTransition}>
-                <EjectedDuringDiscoveryWarning />
+                <EjectedDuringDiscoveryWarning hasPadding />
                 {deviceNetworks.map(symbol => (
                     <Animated.View
                         entering={isLoading ? FadeInDown : undefined}

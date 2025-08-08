@@ -10,7 +10,13 @@ import {
     selectHasDeviceBeenEjectedDuringDiscovery,
 } from '@suite-native/settings';
 
-export const EjectedDuringDiscoveryWarning = () => {
+type EjectedDuringDiscoveryWarningProps = {
+    hasPadding?: boolean;
+};
+
+export const EjectedDuringDiscoveryWarning = ({
+    hasPadding = false,
+}: EjectedDuringDiscoveryWarningProps) => {
     const device = useSelector(selectSelectedDevice);
     const hasBeenEjectedDuringDiscovery = useSelector((state: SettingsSliceRootState) =>
         selectHasDeviceBeenEjectedDuringDiscovery(state, device?.id),
@@ -20,7 +26,7 @@ export const EjectedDuringDiscoveryWarning = () => {
 
     return (
         <Animated.View>
-            <Box padding="sp8">
+            <Box padding={hasPadding ? 'sp8' : undefined}>
                 <InlineAlertBox
                     title={<Translation id="assets.dashboard.ejectedDuringDiscovery" />}
                     variant="warning"

@@ -18,6 +18,7 @@
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
+        { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../banner-flags" },
         { "path": "../device" },
