@@ -66,7 +66,9 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         const { payload } = this;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'accounts', type: 'array', allowEmpty: true }]);
+        validateParams(payload, [
+            { name: 'accounts', type: 'array', required: true, allowEmpty: true },
+        ]);
 
         this.params = payload.accounts.flatMap(item => {
             // validate incoming parameters
