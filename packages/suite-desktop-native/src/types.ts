@@ -7,14 +7,19 @@ export interface IPCRequest {
     method: 'isHelloAvailable' | 'requestHello';
     params?: {
         message?: string;
-        windowHandle?: Buffer | null;
     };
 }
 
-export interface IPCSuccessResponse {
+export interface IPCISHelloAvailableSuccessResponse {
     id: string;
     success: true;
-    result: boolean | string; // isHelloAvailable returns boolean, requestHello returns string
+    result: boolean;
+}
+
+export interface IPCRequestHelloSuccessResponse {
+    id: string;
+    success: true;
+    result: string;
 }
 
 export interface IPCErrorResponse {
@@ -23,13 +28,14 @@ export interface IPCErrorResponse {
     error: string;
 }
 
-export type IPCResponse = IPCSuccessResponse | IPCErrorResponse;
+export type IPCResponse =
+    | IPCISHelloAvailableSuccessResponse
+    | IPCRequestHelloSuccessResponse
+    | IPCErrorResponse;
 
 export interface IPCReadyMessage {
     ready: true;
 }
-
-export type IPCMessage = IPCRequest | IPCResponse | IPCReadyMessage;
 
 /**
  * Logger interface
@@ -51,7 +57,7 @@ export interface WinHelloManagerOptions {
  */
 export interface WinHelloAPI {
     isHelloAvailable(): Promise<boolean>;
-    requestHello(message?: string, windowHandle?: Buffer | null): Promise<string>;
+    requestHello(message?: string): Promise<string>;
 }
 
 /**

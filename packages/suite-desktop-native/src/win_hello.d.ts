@@ -11,7 +11,6 @@ export function isHelloAvailable(): boolean;
 /**
  * Requests Windows Hello authentication
  * @param message The message to display in the Windows Hello prompt
- * @param windowHandle Optional native window handle for parent window
  * @returns "Success" if authentication was successful, otherwise throws an error
  */
-export function requestHello(message: string, windowHandle?: Buffer | null): string;
+export function requestHello(message: string): string;

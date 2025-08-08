@@ -144,11 +144,8 @@ export class WinHelloProcessManager implements WinHelloManager {
     public isHelloAvailable(): Promise<boolean> {
         return this.sendRequest('isHelloAvailable');
     }
-    public requestHello(
-        message: string = 'Verify your identity',
-        windowHandle: Buffer | null = null,
-    ): Promise<string> {
-        return this.sendRequest('requestHello', { message, windowHandle });
+    public requestHello(message: string = 'Verify your identity'): Promise<string> {
+        return this.sendRequest('requestHello', { message });
     }
 
     private sendRequest<T extends 'isHelloAvailable' | 'requestHello'>(
