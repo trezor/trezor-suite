@@ -1,3 +1,4 @@
+import { G } from '@mobily/ts-belt';
 import {
     Account,
     Asset,
@@ -9,22 +10,20 @@ import {
     TransactionBuilder,
     extractBaseAddress,
 } from '@stellar/stellar-sdk';
+import { decode, verify } from 'jws';
 
-import {
-    DefinitionType,
-    TokenStructureType,
-    fetchTokenDefinitions,
-} from '@suite-common/token-definitions';
 import type {
     Target,
     TokenDetailByMint,
     Transaction,
     TransactionDetail,
 } from '@trezor/blockchain-link-types';
+import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 import type { StellarAsset } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const STELLAR_DECIMALS = 7;
+const JWS_SIGN_ALGORITHM = 'ES256';
 
 export const toStroops = (value: string) => {
     const multiplier = new BigNumber(10).pow(STELLAR_DECIMALS);
@@ -211,5 +210,50 @@ export const buildSendTransaction = (
     return txBuilder.build();
 };
 
+// Basically copied from suite-common/token-definitions/src/tokenDefinitionsThunks.ts
+// TODO: Similar code is used in many other places in the library, but due to annoying circular
+// dependencies, we cannot directly use the utility functions from the token-definitions package.
+// Let's see if there's a chance to optimize this.
+const fetchTokenDefinitions = async () => {
+    const env = isCodesignBuild() ? 'stable' : 'develop';
+
+    const response = await fetch(
+        `https://data.trezor.io/suite/definitions/${env}/stellar.advanced.coin.definitions.v1.jws`,
+    );
+
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+
+    const jws = await response.text();
+
+    const decodedJws = decode(jws);
+
+    if (!decodedJws) {
+        throw Error('Decoding of config failed');
+    }
+
+    const algorithmInHeader = decodedJws?.header.alg;
+    if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
+        throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
+    }
+
+    const authenticityPublicKey = getJWSPublicKey('token-definitions');
+
+    if (G.isNullable(authenticityPublicKey)) {
+        throw Error('Public key check token definitions authenticity was not found.');
+    }
+
+    const isAuthenticityValid = verify(jws, JWS_SIGN_ALGORITHM, authenticityPublicKey);
+
+    if (!isAuthenticityValid) {
+        throw Error('Config authenticity is invalid');
+    }
+
+    const data = JSON.parse(decodedJws.payload);
+
+    return data;
+};
+
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> =>
-    await fetchTokenDefinitions('xlm', DefinitionType.COIN, TokenStructureType.ADVANCED);
+    await fetchTokenDefinitions();
