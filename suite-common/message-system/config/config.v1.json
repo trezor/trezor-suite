@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-08-04T15:00:00+00:00",
-    "sequence": 101,
+    "timestamp": "2025-08-08T00:00:00+00:00",
+    "sequence": 102,
     "actions": [
         {
             "conditions": [
@@ -1305,14 +1305,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=24.5.4 <=25.2.1",
+                        "desktop": ">=24.5.4 <=25.6.1",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "4eb22fe7-4677-4155-82be-fdf8dee511b7",
+                "id": "9e19da13-e203-48ee-b39c-ef6a209137d6",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
