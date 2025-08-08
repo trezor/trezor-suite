@@ -18,7 +18,7 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import type { Dispatch, GetState } from 'src/types/suite';
+import type { AcquiredDevice, Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
 import { onSuiteReady, setFlag } from './suiteActions';
@@ -75,16 +75,33 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         await dispatch(
             trezorConnectActions.connectInitThunk({
                 [DEVICE.CONNECT]: (_device, prevConnectedDevices) => {
-                    const previouslyConnectedDevices = prevConnectedDevices.filter(
-                        device => device.connected,
-                    );
+                    const previouslyConnectedUniqueDevices = prevConnectedDevices
+                        .filter(device => device.connected)
+                        .reduce<Map<string, AcquiredDevice>>((acc, device) => {
+                            if (device.id && !acc.has(device.id)) {
+                                acc.set(device.id, device);
+                            }
+
+                            return acc;
+                        }, new Map<string, AcquiredDevice>());
+
                     const currentConnectedDevices = selectDevices(getState()).filter(
                         device => device.connected,
                     );
 
+                    const uniqueConnectedDevices = currentConnectedDevices.reduce<
+                        Map<string, AcquiredDevice>
+                    >((acc, device) => {
+                        if (device.id && !acc.has(device.id)) {
+                            acc.set(device.id, device);
+                        }
+
+                        return acc;
+                    }, new Map<string, AcquiredDevice>());
+
                     if (
-                        currentConnectedDevices.length > 1 &&
-                        currentConnectedDevices.length > previouslyConnectedDevices.length
+                        uniqueConnectedDevices.size > 1 &&
+                        uniqueConnectedDevices.size > previouslyConnectedUniqueDevices.size
                     ) {
                         dispatch(
                             routerActions.goto('suite-switch-device', {
