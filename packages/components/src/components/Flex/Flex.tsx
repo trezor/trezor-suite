@@ -184,7 +184,7 @@ export type FlexProps = AllowedFrameProps & {
     /** @deprecated Use only is case of absolute desperation. Prefer keep it according to elevation. */
     dividerColor?: string;
     className?: string;
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     'data-testid'?: string;
     as?: string;
 };
