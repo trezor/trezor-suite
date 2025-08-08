@@ -57,7 +57,7 @@ export const bioAuthWindowFocusThunk = createThunk(
     },
 );
 
-const KNOWN_ERROR_MESSAGES = new Set(['Authentication canceled.']);
+const KNOWN_ERROR_MESSAGES = ['Authentication canceled.'];
 
 export const requestBioAuthChangeThunk = createThunk(
     `${BIO_AUTH_PREFIX}/requestBioAuthChangeThunk`,
@@ -104,7 +104,7 @@ export const requestBioAuthChangeThunk = createThunk(
             dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
 
-            if (KNOWN_ERROR_MESSAGES.has(String(error))) {
+            if (KNOWN_ERROR_MESSAGES.some(message => String(error).includes(message))) {
                 // NOTE: known error message
                 return;
             }
@@ -152,7 +152,7 @@ export const requestBioAuthValidationThunk = createThunk(
             dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
 
-            if (KNOWN_ERROR_MESSAGES.has(String(error))) {
+            if (KNOWN_ERROR_MESSAGES.some(message => String(error).includes(message))) {
                 // NOTE: known error message
                 return;
             }
