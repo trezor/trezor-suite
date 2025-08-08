@@ -1,13 +1,13 @@
 import { Horizon, Networks, Transaction as StellarTransaction } from '@stellar/stellar-sdk';
 
-import type { AccountInfo, Response } from '@trezor/blockchain-link-types';
+import type { AccountInfo, Response, TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 import { IntervalId } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, createLazy } from '@trezor/utils';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 
@@ -16,7 +16,9 @@ const BASE_INFO = {
     MINIMUM_RESERVE: utils.toStroops('1'), // 1 XLM
 };
 
-type Context = ContextType<Horizon.Server>;
+type Context = ContextType<Horizon.Server> & {
+    getTokenMetadata: () => Promise<TokenDetailByMint>;
+};
 type Request<T> = T & Context;
 
 const fetchLatestLedger = async (api: Horizon.Server) => {
@@ -68,7 +70,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         balance: '0', // default balance
         availableBalance: '0', // default balance
         empty: true,
-        // tokens: [], // Let's consider implementing it later; for now, we only need to support the native token (XLM).
         history: {
             // default history
             total: -1,
@@ -103,6 +104,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         stellarSequence: info.sequence,
         reserve: reserve.toString(),
     };
+
+    // XLM balance
     const nativeTokenBalance = info.balances.find(balance => balance.asset_type === 'native');
     if (!nativeTokenBalance) {
         // This should never happen, but just in case
@@ -116,6 +119,35 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         .minus(BASE_INFO.BASE_RESERVE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
         .plus(BASE_INFO.BASE_RESERVE.times(info.num_sponsored))
         .toString();
+
+    // Tokens balance
+    let tokenMetadata: TokenDetailByMint = {};
+    try {
+        tokenMetadata = await request.getTokenMetadata();
+    } catch (e) {
+        // If we fail to load token metadata, we log the error and continue without it
+        console.error('Failed to load Stellar token metadata:', e);
+    }
+    account.tokens = info.balances
+        .filter(
+            balanceInfo =>
+                balanceInfo.asset_type === 'credit_alphanum4' ||
+                balanceInfo.asset_type === 'credit_alphanum12',
+        )
+        .map(balanceInfo => {
+            const contract = `${balanceInfo.asset_code}-${balanceInfo.asset_issuer}`;
+            const balance = utils.toStroops(balanceInfo.balance);
+
+            return {
+                type: 'STELLAR-CLASSIC',
+                standard: 'STELLAR-CLASSIC',
+                contract,
+                balance: balance.toString(),
+                name: tokenMetadata[contract]?.name || balanceInfo.asset_code,
+                symbol: tokenMetadata[contract]?.symbol || balanceInfo.asset_code,
+                decimals: utils.STELLAR_DECIMALS,
+            };
+        });
     account.empty = false;
 
     if (payload.details !== 'txs') {
@@ -293,6 +325,7 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
 };
 
 class StellarWorker extends BaseWorker<Horizon.Server> {
+    private lazyTokens = createLazy(() => utils.getTokenMetadata());
     private isTestnet = false;
 
     protected isConnected(api: Horizon.Server | undefined): api is Horizon.Server {
@@ -320,7 +353,12 @@ class StellarWorker extends BaseWorker<Horizon.Server> {
             return;
         }
 
-        unsubscribeBlock(this);
+        unsubscribeBlock({
+            state: this.state,
+            connect: () => this.connect(),
+            post: (data: Response) => this.post(data),
+            getTokenMetadata: this.lazyTokens.getOrInit,
+        });
 
         this.api = undefined;
     }
@@ -335,6 +373,7 @@ class StellarWorker extends BaseWorker<Horizon.Server> {
                 connect: () => this.connect(),
                 post: (data: Response) => this.post(data),
                 state: this.state,
+                getTokenMetadata: this.lazyTokens.getOrInit,
             };
 
             const response = await onRequest(request, this.isTestnet);

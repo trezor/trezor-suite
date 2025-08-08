@@ -10,7 +10,18 @@ import {
     extractBaseAddress,
 } from '@stellar/stellar-sdk';
 
-import type { Target, Transaction, TransactionDetail } from '@trezor/blockchain-link-types';
+import {
+    DefinitionType,
+    TokenStructureType,
+    fetchTokenDefinitions,
+} from '@suite-common/token-definitions';
+import type {
+    Target,
+    TokenDetailByMint,
+    Transaction,
+    TransactionDetail,
+} from '@trezor/blockchain-link-types';
+import type { StellarAsset } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const STELLAR_DECIMALS = 7;
@@ -165,6 +176,7 @@ export const buildSendTransaction = (
     destinationActivated: boolean,
     destination: string,
     amount: string,
+    asset: StellarAsset,
     destinationTag?: string,
     isTestnet = false,
 ) => {
@@ -184,7 +196,7 @@ export const buildSendTransaction = (
             Operation.payment({
                 destination,
                 amount,
-                asset: Asset.native(),
+                asset: new Asset(asset.code || 'XLM', asset.issuer),
             }),
         );
     } else {
@@ -198,3 +210,6 @@ export const buildSendTransaction = (
 
     return txBuilder.build();
 };
+
+export const getTokenMetadata = async (): Promise<TokenDetailByMint> =>
+    await fetchTokenDefinitions('xlm', DefinitionType.COIN, TokenStructureType.ADVANCED);

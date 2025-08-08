@@ -1,5 +1,6 @@
 import { Horizon } from '@stellar/stellar-sdk';
 
+import type { StellarAsset } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils';
 
 import { buildSendTransaction, toStroops, transformTransaction } from '../stellar';
@@ -38,6 +39,7 @@ describe('stellar/utils', () => {
                     input.destinationActivated,
                     input.destination,
                     input.amount,
+                    input.asset as StellarAsset,
                     input.destinationTag,
                     input.isTestnet,
                 );
