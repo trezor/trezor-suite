@@ -297,11 +297,18 @@ const sortDevices = (devices: TrezorDevice[]) =>
         if (a.id === b.id) {
             return 0;
         }
+
+        // NOTE: ensure that a is at the end
         if (a.id === PORTFOLIO_TRACKER_DEVICE_ID) {
             return 1;
         }
 
-        return -1;
+        // NOTE: ensure that b is at the end
+        if (b.id === PORTFOLIO_TRACKER_DEVICE_ID) {
+            return -1;
+        }
+
+        return 0;
     });
 
 export const initDevices = createThunk(
