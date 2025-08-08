@@ -1761,7 +1761,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH_FAILED',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_MAC: {
-        defaultMessage: 'verify your identity. Touch ID or enter your password to allow this',
+        defaultMessage: 'verify your identity',
         id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_WIN: {
