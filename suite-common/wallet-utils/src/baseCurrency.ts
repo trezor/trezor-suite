@@ -143,5 +143,7 @@ export const parseBaseCurrencyToFormattedCrypto = ({
         : cryptoAmount;
 
     // 4. We have to return this correctly rounded as this value is used in the NumberInput
-    return valueToDisplay?.toFixed(cryptoDecimals) ?? null;
+    const finalValueDecimals = isCryptoInSats ? 0 : cryptoDecimals; // round units, not subunits
+
+    return valueToDisplay?.toFixed(finalValueDecimals) ?? null;
 };
