@@ -6,6 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { TradingExchangePreviewScreen } from '../screens/TradingExchangePreviewScreen';
 import { TradingHistoryScreen } from '../screens/TradingHistoryScreen';
 import { TradingReceiveAccountsPickerScreen } from '../screens/TradingReceiveAccountsPickerScreen';
 import { TradingScreen } from '../screens/TradingScreen';
@@ -31,6 +32,11 @@ export const TradingStackNavigator = () => (
             options={{ title: TradingStackRoutes.TradingHistory }}
             name={TradingStackRoutes.TradingHistory}
             component={TradingHistoryScreen}
+        />
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingExchangePreview }}
+            name={TradingStackRoutes.TradingExchangePreview}
+            component={TradingExchangePreviewScreen}
         />
     </TradingStack.Navigator>
 );

@@ -193,4 +193,5 @@ export enum TradingStackRoutes {
     Trading = 'Trading',
     ReceiveAccounts = 'ReceiveAccounts',
     TradingHistory = 'TradingHistory',
+    TradingExchangePreview = 'TradingExchangePreview',
 }
