@@ -2128,6 +2128,14 @@ export const en = {
             noQuotes: 'No offers available for your request. Change amount or currency.',
             insufficientBalance: 'Insufficient balance',
         },
+        tradingExchangePreviewScreen: {
+            title: 'Swap',
+            fromAccount: 'From',
+            toAccount: 'To',
+        },
+        exchangeTradePreviewCard: {
+            account: 'Account',
+        },
         tradeHistory: {
             list: {
                 title: 'Trade history',

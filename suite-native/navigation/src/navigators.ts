@@ -325,4 +325,5 @@ export type TradingStackParamList = {
         tradingType: Exclude<TradingType, 'sell'>;
     };
     [TradingStackRoutes.TradingHistory]: undefined;
+    [TradingStackRoutes.TradingExchangePreview]: undefined;
 };
