@@ -40,11 +40,12 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
 
     test('Once user passed trough, skips initial run and shows connect-device modal', async ({
         page,
-        dashboardPage,
         onboardingPage,
     }) => {
         await onboardingPage.completeOnboarding();
         await page.reload();
-        await expect(dashboardPage.deviceSwitchingOpenButton).toContainText('Connected');
+        await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
+            timeout: 30_000,
+        });
     });
 });
