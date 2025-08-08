@@ -37,7 +37,7 @@ export const GlobalSendReceiveModalBase = ({
                     {additionalAction}
                 </Row>
                 <ElevationContext baseElevation={-1}>
-                    <AccountList onSubmit={onSubmit} />
+                    <AccountList hideStaking onSubmit={onSubmit} />
                 </ElevationContext>
             </Column>
         </Modal>

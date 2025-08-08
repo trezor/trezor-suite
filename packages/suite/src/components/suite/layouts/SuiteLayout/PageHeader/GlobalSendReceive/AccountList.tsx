@@ -12,9 +12,12 @@ const ScrollContainer = styled.div`
     overflow: hidden auto;
 `;
 
-type AccountListProps = { onSubmit: (account: Account, type: AccountItemType) => void };
+type AccountListProps = {
+    hideStaking?: boolean;
+    onSubmit: (account: Account, type: AccountItemType) => void;
+};
 
-export const AccountList = ({ onSubmit }: AccountListProps) => {
+export const AccountList = ({ hideStaking, onSubmit }: AccountListProps) => {
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow();
 
@@ -27,7 +30,7 @@ export const AccountList = ({ onSubmit }: AccountListProps) => {
         <ShadowContainer>
             <ShadowTop backgroundColor={shadowColor} />
             <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
-                <AccountsList forceOnlyItemClick onItemClick={onSubmit} />
+                <AccountsList forceOnlyItemClick hideStaking={hideStaking} onItemClick={onSubmit} />
             </ScrollContainer>
             <ShadowBottom backgroundColor={shadowColor} />
         </ShadowContainer>
