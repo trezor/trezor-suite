@@ -222,6 +222,7 @@ export const TokenRow = ({
                         />
                     )}
                     <Text variant="tertiary" typographyStyle="hint">
+                        {/* TODO(stellar): I think it would be better to display the asset code as a symbol. */}
                         <FormattedCryptoAmount
                             value={token.balance}
                             symbol={formatTokenSymbol(token.symbol ?? '')}

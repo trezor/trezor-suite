@@ -8,15 +8,23 @@ import {
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
+    asAmountUnit,
     calculateMax,
     calculateTotal,
     formatNetworkAmount,
     getExternalComposeOutput,
     isTestnet,
     networkAmountToSmallestUnit,
+    unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
-import TrezorConnect, { FeeLevel, RipplePayment, StellarOperation } from '@trezor/connect';
+import TrezorConnect, {
+    FeeLevel,
+    RipplePayment,
+    StellarOperation,
+    TokenInfo,
+} from '@trezor/connect';
+import { StellarAssetType } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -32,24 +40,36 @@ const calculate = (
     output: ExternalOutput,
     feeLevel: FeeLevel,
     requiredAmount?: BigNumber,
+    token?: TokenInfo, // Only when sending non-native tokens.
 ): PrecomposedTransaction => {
     const feeInSatoshi = feeLevel.feePerUnit;
 
     let amount: string;
     let max: string | undefined;
+    const availableTokenBalance = token
+        ? unitsToSubunits({
+              value: asAmountUnit(new BigNumber(token.balance!)),
+              decimals: token.decimals,
+          }).toString()
+        : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = calculateMax(availableBalance, feeInSatoshi);
+        max = availableTokenBalance || calculateMax(availableBalance, feeInSatoshi);
         amount = max;
     } else {
         amount = output.amount;
     }
-    const totalSpent = new BigNumber(calculateTotal(amount, feeInSatoshi));
 
-    if (totalSpent.isGreaterThan(availableBalance)) {
+    // Total native asset amount to be sent.
+    // If sending a token, we only need to calculate the fee.
+    const totalNativeSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInSatoshi));
+
+    if (totalNativeSpent.isGreaterThan(availableBalance)) {
+        const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
+
         return {
             type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
-            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+            error,
+            errorMessage: { id: error },
         } as const;
     }
 
@@ -63,8 +83,9 @@ const calculate = (
 
     const payloadData = {
         type: 'nonfinal' as const,
-        totalSpent: totalSpent.toString(),
+        totalSpent: token ? amount : totalNativeSpent.toString(),
         max,
+        token,
         fee: feeInSatoshi,
         feePerByte: feeLevel.feePerUnit,
         bytes: 0, // TODO: calculate
@@ -106,7 +127,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                 message: 'Unable to compose output.',
             });
 
-        const { output } = composeOutputs;
+        const { output, tokenInfo } = composeOutputs;
         const { availableBalance } = account;
         const { address } = formState.outputs[0];
 
@@ -130,6 +151,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                 suppressBackupWarning: true,
             });
             if (accountResponse.success && accountResponse.payload.empty) {
+                // TODO(stellar): check if the recipient has a trust line before sending.
                 requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);
             }
         }
@@ -137,7 +159,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
-            calculate(availableBalance, output, level, requiredAmount),
+            calculate(availableBalance, output, level, requiredAmount, tokenInfo),
         );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
@@ -158,7 +180,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             }
 
             const customLevelsResponse = customLevels.map(level =>
-                calculate(availableBalance, output, level, requiredAmount),
+                calculate(availableBalance, output, level, requiredAmount, tokenInfo),
             );
 
             const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
@@ -184,6 +206,14 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                     values: {
                         reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
                         displaySymbol: getDisplaySymbol(account.symbol),
+                    },
+                };
+            }
+            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+                tx.errorMessage = {
+                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                    values: {
+                        networkDisplaySymbol: getDisplaySymbol(network.symbol),
                     },
                 };
             }
@@ -253,11 +283,23 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             const destinationActivated =
                 destinationAccount.success && !destinationAccount.payload.empty;
 
+            const { token } = precomposedTransaction;
+            const asset = token
+                ? (([code, issuer]) => ({
+                      type:
+                          code.length <= 4
+                              ? StellarAssetType.ALPHANUM4
+                              : StellarAssetType.ALPHANUM12,
+                      code,
+                      issuer,
+                  }))(token.contract.split('-'))
+                : { type: StellarAssetType.NATIVE };
+
             let operation: StellarOperation;
             if (destinationActivated) {
                 operation = {
                     type: 'payment',
-                    asset: { code: 'XLM', type: 0 },
+                    asset,
                     amount: toStroops(formState.outputs[0].amount).toString(),
                     destination: formState.outputs[0].address,
                 };
@@ -276,6 +318,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 destinationActivated,
                 formState.outputs[0].address,
                 formState.outputs[0].amount,
+                asset,
                 formState.destinationTag,
                 isTestnet(selectedAccount.symbol),
             );

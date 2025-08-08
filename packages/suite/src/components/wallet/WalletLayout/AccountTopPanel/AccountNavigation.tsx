@@ -33,7 +33,7 @@ export const AccountNavigation = () => {
                 goToWithAnalytics('wallet-tokens', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
+            isHidden: !['cardano', 'ethereum', 'solana', 'stellar'].includes(networkType),
             activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden'],
             'data-testid': '@wallet/menu/wallet-tokens',
         },

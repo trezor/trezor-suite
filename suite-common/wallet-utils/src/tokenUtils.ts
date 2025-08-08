@@ -24,6 +24,9 @@ export const getContractAddressForNetworkSymbol = (
 
             return policyId.toLowerCase();
         }
+        case 'xlm':
+        case 'txlm':
+            return contractAddress;
         default:
             return contractAddress.toLowerCase();
     }
@@ -34,7 +37,7 @@ export const getTokenExplorerUrl = (
     networkType: NetworkType,
     token: Pick<TokenInfo, 'contract' | 'fingerprint'>,
 ) => {
-    const suffix = networkType === 'cardano' ? 'token' : 'account';
+    const suffix = networkType === 'cardano' || networkType === 'stellar' ? 'token' : 'account';
     const explorerUrl = getExplorerUrl(explorer, suffix);
     const contractAddress = networkType === 'cardano' ? token.fingerprint : token.contract;
     const queryString = explorer.queryString ?? '';
