@@ -89,10 +89,7 @@ class WinHelloChildProcess {
         });
     }
 
-    private handleRequestHello(
-        message: string = 'Verify your identity',
-        windowHandle: Buffer | null = null,
-    ): Promise<string> {
+    private handleRequestHello(message: string = 'Verify your identity'): Promise<string> {
         return Promise.resolve().then(() => {
             if (!this.isWindows) {
                 throw new Error('Windows Hello is only available on Windows platforms');
@@ -102,7 +99,7 @@ class WinHelloChildProcess {
                 throw new Error('Windows Hello native module could not be loaded');
             }
 
-            const result = this.winHello.requestHello(message, windowHandle);
+            const result = this.winHello.requestHello(message);
 
             if (result === 'Success') {
                 return result;
@@ -121,10 +118,7 @@ class WinHelloChildProcess {
                     result = await this.handleIsHelloAvailable();
                     break;
                 case 'requestHello':
-                    result = await this.handleRequestHello(
-                        request.params?.message,
-                        request.params?.windowHandle,
-                    );
+                    result = await this.handleRequestHello(request.params?.message);
                     break;
                 default:
                     throw new Error(`Unknown method: ${request.method}`);

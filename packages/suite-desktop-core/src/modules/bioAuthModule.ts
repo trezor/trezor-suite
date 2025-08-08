@@ -26,10 +26,7 @@ const loadWin = async ({ mainWindowProxy }: Dependencies) => {
 
     ipcMain.on('bio-auth/request', async (_, params) => {
         try {
-            await winHello.requestHello(
-                params.message ?? PROMPT_REASON,
-                mainWindowProxy.getInstance()?.getNativeWindowHandle(),
-            );
+            await winHello.requestHello(params.message ?? PROMPT_REASON);
 
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', {
                 success: true,
