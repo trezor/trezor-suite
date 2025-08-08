@@ -5,7 +5,6 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onPassphrase } from '../pageObjects/passphraseModule';
@@ -76,8 +75,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('regtest');
         await onCoinEnabling.clickOnConfirmButton();
-
-        await onAlertSheet.skipViewOnlyMode();
     });
 
     afterAll(async () => {

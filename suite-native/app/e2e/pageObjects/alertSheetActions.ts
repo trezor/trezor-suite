@@ -12,13 +12,6 @@ class AlertSheetActions {
         await waitFor(secondaryButtonElement).toBeVisible().withTimeout(10000);
         await secondaryButtonElement.tap();
     }
-
-    async skipViewOnlyMode() {
-        await waitFor(element(by.id('@home/alert/view-only')))
-            .toBeVisible()
-            .withTimeout(60000);
-        await this.tapSecondaryButton();
-    }
 }
 
 export const onAlertSheet = new AlertSheetActions();

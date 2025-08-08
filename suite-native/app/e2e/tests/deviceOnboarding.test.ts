@@ -2,7 +2,6 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import {
@@ -39,8 +38,6 @@ const finishOnboardingFlow = async () => {
     await onCoinEnabling.waitForInitScreen();
     await onCoinEnabling.toggleNetwork('btc');
     await onCoinEnabling.clickOnConfirmButton();
-
-    await onAlertSheet.skipViewOnlyMode();
 
     // Check if Bitcoin is enabled
     const bitcoinNetworkElement = element(by.text('Bitcoin'));
