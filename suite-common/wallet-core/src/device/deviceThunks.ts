@@ -292,17 +292,17 @@ export const switchDuplicatedDevice = createThunk(
 );
 
 // Sort devices by timestamp and put Portfolio Tracker device at the end.
-const sortDevices = (devices: TrezorDevice[]) =>
-    sortByTimestamp([...devices]).sort((a, b) => {
-        if (a.id === b.id) {
-            return 0;
-        }
-        if (a.id === PORTFOLIO_TRACKER_DEVICE_ID) {
-            return 1;
-        }
+export const sortDevices = (devices: TrezorDevice[]) => {
+    const sortedDevicesByTimestamp = sortByTimestamp([...devices]);
 
-        return -1;
-    });
+    const containsPortfolioTrackerDevices = sortedDevicesByTimestamp.filter(
+        device => device.id === PORTFOLIO_TRACKER_DEVICE_ID,
+    );
+
+    return sortedDevicesByTimestamp
+        .filter(device => device.id !== PORTFOLIO_TRACKER_DEVICE_ID)
+        .concat(containsPortfolioTrackerDevices);
+};
 
 export const initDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
