@@ -26,8 +26,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
         await onCoinEnabling.clickOnConfirmButton();
-
-        await onAlertSheet.skipViewOnlyMode();
     });
 
     afterAll(async () => {

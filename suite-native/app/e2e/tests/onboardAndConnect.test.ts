@@ -3,7 +3,6 @@ import { expect as detoxExpect } from 'detox';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
 
-import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
@@ -36,8 +35,6 @@ conditionalDescribe(
             await onCoinEnabling.toggleNetwork('eth');
 
             await onCoinEnabling.clickOnConfirmButton();
-
-            await onAlertSheet.skipViewOnlyMode();
 
             await detoxExpect(element(by.id('@home/portfolio/header')));
         });

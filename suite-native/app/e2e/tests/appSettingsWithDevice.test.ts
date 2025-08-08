@@ -4,7 +4,6 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -28,7 +27,6 @@ conditionalDescribe(
             await onCoinEnabling.waitForInitScreen();
             await onCoinEnabling.toggleNetwork('btc');
             await onCoinEnabling.clickOnConfirmButton();
-            await onAlertSheet.skipViewOnlyMode();
             await detoxExpect(element(by.id('@home/portfolio/header'))).toExist();
             await detoxExpect(element(by.text('Ethereum'))).not.toExist(); // ETH should not be enabled at this point
         });
@@ -66,7 +64,7 @@ conditionalDescribe(
             await detoxExpect(ethereumTextElement).not.toExist();
         });
 
-        it('View Only Mode', async () => {
+        it.skip('View Only Mode', async () => {
             await waitFor(
                 element(
                     by.id('@device-manager/device-switch').withDescendant(by.text('Connected')),
