@@ -24,7 +24,7 @@ export const EjectedDuringDiscoveryWarning = () => {
                 <InlineAlertBox
                     title={<Translation id="assets.dashboard.ejectedDuringDiscovery" />}
                     variant="warning"
-                    iconName="trezorDevices"
+                    customIcon={<DeviceItemIcon deviceId={device?.id} iconSize="mediumLarge" />}
                 />
             </Box>
         </Animated.View>

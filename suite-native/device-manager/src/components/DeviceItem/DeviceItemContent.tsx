@@ -12,12 +12,11 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
-import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
+import { DeviceItemIcon, selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
 
-import { DeviceItemIcon } from './DeviceItemIcon';
 import { SimpleDeviceItemContent } from './SimpleDeviceItemContent';
 import { WalletDetailDeviceItemContent } from './WalletDetailDeviceItemContent';
 

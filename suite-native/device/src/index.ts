@@ -11,6 +11,7 @@ export * from './components/ConnectDeviceAnimation';
 export * from './components/ConfirmOnTrezorImage';
 export * from './components/ConnectorImage';
 export * from './components/DeviceImage';
+export * from './components/DeviceItemIcon';
 export * from './components/BootloaderModeScreen';
 export * from './components/ContinueOnTrezorScreenContent';
 export * from './components/ConnectAndUnlockDeviceScreenContent';

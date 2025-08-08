@@ -10,8 +10,8 @@ import {
     contentWrapperStyle,
     itemStyle,
 } from './DeviceItem/DeviceItemContent';
-import { DeviceItemIcon } from './DeviceItem/DeviceItemIcon';
 import { headerStyle } from './DeviceItem/SimpleDeviceItemContent';
+import { DeviceItemIcon } from '../../../device/src/components/DeviceItemIcon';
 
 export const BootloaderModeItemContent = () => {
     const { applyStyle } = useNativeStyles();
