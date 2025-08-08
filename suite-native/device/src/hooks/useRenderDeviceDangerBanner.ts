@@ -11,8 +11,8 @@ import {
 import {
     DeviceDangerBannerCause,
     deviceDangerBannerAtom,
-    revisionCheckErrorScenarios,
     selectFirmwareRevisionCheckErrorIfEnabled,
+    selectIsSkippedRevisionCheckError,
 } from '@suite-native/device';
 import {
     AppTabsRoutes,
@@ -40,6 +40,7 @@ export const useRenderDeviceDangerBanner = () => {
 
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
+    const isSkippedRevisionCheckError = useSelector(selectIsSkippedRevisionCheckError);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
 
@@ -60,8 +61,7 @@ export const useRenderDeviceDangerBanner = () => {
             !isOnboardingFinished ||
             isRouteExcluded ||
             !dangerCause ||
-            (revisionCheckError &&
-                revisionCheckErrorScenarios[revisionCheckError].type === 'skipped')
+            isSkippedRevisionCheckError
         ) {
             return setBannerVariant(null);
         }
@@ -77,6 +77,7 @@ export const useRenderDeviceDangerBanner = () => {
         isRouteExcluded,
         isBannerExtended,
         revisionCheckError,
+        isSkippedRevisionCheckError,
         isDeviceBackupUnfinished,
         isDeviceBackupRequired,
         isOnboardingFinished,

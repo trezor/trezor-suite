@@ -19,7 +19,6 @@ export * from './components/DeviceDangerBanner';
 export * from './utils';
 export * from './selectors';
 export * from './deviceThunks';
-export * from './config/firmware';
 export * from './types';
 export * from './deviceAtoms';
 export * from './components/EmptyWalletSvg';

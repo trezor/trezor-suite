@@ -10416,6 +10416,7 @@ __metadata:
   resolution: "@suite-native/connection-status@workspace:suite-native/connection-status"
   dependencies:
     "@react-native-community/netinfo": "npm:^11.4.1"
+    "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -10489,6 +10490,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
