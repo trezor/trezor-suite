@@ -262,6 +262,7 @@ const constructNewFlow = ({
 
     const isCardano = isCardanoTx(account, precomposedTx);
     const isSolana = account.networkType === 'solana';
+    const isStellar = account.networkType === 'stellar';
     const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.ethereumDataHex);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.ethereumDataHex);
 
@@ -380,7 +381,7 @@ const constructNewFlow = ({
                 };
 
                 // this is displayed only for tokens without definitions
-                if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana) {
+                if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana && !isStellar) {
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (

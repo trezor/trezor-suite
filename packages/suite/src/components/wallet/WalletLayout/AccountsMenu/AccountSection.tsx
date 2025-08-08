@@ -36,7 +36,7 @@ export const AccountSection = ({
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
-    const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
+    const showGroup = ['ethereum', 'solana', 'cardano', 'stellar'].includes(networkType);
 
     const isStakeShownStored = useSelector(state =>
         selectAccountIsStakingActive(state, account.key),

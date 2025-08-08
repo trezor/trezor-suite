@@ -106,27 +106,27 @@ const getBalanceFromAccountInfo = ({
 }) => {
     const networkType = getNetworkType(symbol);
 
+    const findTokenBalance = () => {
+        const token = accountInfo.tokens?.find(t => t.contract === contractId);
+
+        if (token && token.balance) {
+            // this is raw value from getAccountInfo, we need to divide it by 10^decimals (in redux it's already formatted)
+            return new BigNumber(token.balance).div(10 ** token.decimals).toFixed();
+        }
+
+        return '0';
+    };
+
     switch (networkType) {
         case 'ripple':
             // On Ripple, if we use availableBalance, we will get higher balance, IDK why.
             return accountInfo.balance;
         case 'stellar':
-            return accountInfo.availableBalance;
+            return contractId ? findTokenBalance() : accountInfo.balance;
         case 'ethereum':
         case 'solana':
         case 'cardano':
-            if (contractId) {
-                const token = accountInfo.tokens?.find(t => t.contract === contractId);
-
-                if (token && token.balance) {
-                    // this is raw value from getAccountInfo, we need to divide it by 10^decimals (in redux it's already formatted)
-                    return new BigNumber(token.balance).div(10 ** token.decimals).toFixed();
-                }
-
-                return '0';
-            }
-
-            return accountInfo.availableBalance;
+            return contractId ? findTokenBalance() : accountInfo.availableBalance;
         default:
             return accountInfo.availableBalance;
     }
@@ -465,10 +465,10 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     });
 
     const coins = Array.from(coinsSet).map(coinKey => {
-        const [symbol, contractId] = coinKey.split('-') as [
-            NetworkSymbol,
-            TokenAddress | undefined,
-        ];
+        const delimiterIndex = coinKey.indexOf('-');
+        const symbol = coinKey.slice(0, delimiterIndex) as NetworkSymbol;
+        const contractIdPart = coinKey.slice(delimiterIndex + 1);
+        const contractId = (contractIdPart || undefined) as TokenAddress | undefined;
 
         return { symbol, contractId };
     });

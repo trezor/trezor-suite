@@ -222,6 +222,7 @@ export const TokenRow = ({
                         />
                     )}
                     <Text variant="tertiary" typographyStyle="hint">
+                        {/* TODO(stellar): We should display the original symbol. */}
                         <FormattedCryptoAmount
                             value={token.balance}
                             symbol={formatTokenSymbol(token.symbol ?? '')}
