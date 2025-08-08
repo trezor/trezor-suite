@@ -1871,7 +1871,7 @@ export const fixtures = {
     ],
     buildSendTransactoin: [
         {
-            description: 'transaction contains a payment operation',
+            description: 'transaction contains a payment operation with native asset',
             input: {
                 descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
                 sequence: '123456789',
@@ -1879,6 +1879,7 @@ export const fixtures = {
                 destinationActivated: true,
                 destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
                 amount: '100.125',
+                asset: { type: 0 },
                 destinationTag: 'Hello, World!',
                 isTestnet: false,
             },
@@ -1904,6 +1905,88 @@ export const fixtures = {
                 .build(),
         },
         {
+            description: 'transaction contains a payment operation with alphanum4 asset',
+            input: {
+                descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                sequence: '123456789',
+                fee: '1200',
+                destinationActivated: true,
+                destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                amount: '100.125',
+                asset: {
+                    type: 2,
+                    code: 'USD',
+                    issuer: 'GDMRPPL6V5UJTX6YP7S4NPR3MVNZEF57A3ETB2GWH6ITILUE3MFNLN3Z',
+                },
+                destinationTag: 'Hello, World!',
+                isTestnet: false,
+            },
+            expectedOutput: new TransactionBuilder(
+                new Account(
+                    'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                    '123456789',
+                ),
+                {
+                    fee: '1200',
+                    networkPassphrase: Networks.PUBLIC,
+                },
+            )
+                .addMemo(Memo.text('Hello, World!'))
+                .setTimebounds(0, 0)
+                .addOperation(
+                    Operation.payment({
+                        destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                        amount: '100.125',
+                        asset: new Asset(
+                            'USD',
+                            'GDMRPPL6V5UJTX6YP7S4NPR3MVNZEF57A3ETB2GWH6ITILUE3MFNLN3Z',
+                        ),
+                    }),
+                )
+                .build(),
+        },
+        {
+            description: 'transaction contains a payment operation with alphanum12 asset',
+            input: {
+                descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                sequence: '123456789',
+                fee: '1200',
+                destinationActivated: true,
+                destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                amount: '100.125',
+                asset: {
+                    type: 2,
+                    code: 'BANANANANA',
+                    issuer: 'GDMRPPL6V5UJTX6YP7S4NPR3MVNZEF57A3ETB2GWH6ITILUE3MFNLN3Z',
+                },
+                destinationTag: 'Hello, World!',
+                isTestnet: false,
+            },
+            expectedOutput: new TransactionBuilder(
+                new Account(
+                    'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                    '123456789',
+                ),
+                {
+                    fee: '1200',
+                    networkPassphrase: Networks.PUBLIC,
+                },
+            )
+                .addMemo(Memo.text('Hello, World!'))
+                .setTimebounds(0, 0)
+                .addOperation(
+                    Operation.payment({
+                        destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                        amount: '100.125',
+                        asset: new Asset(
+                            'BANANANANA',
+                            'GDMRPPL6V5UJTX6YP7S4NPR3MVNZEF57A3ETB2GWH6ITILUE3MFNLN3Z',
+                        ),
+                    }),
+                )
+                .build(),
+        },
+        {
             description: 'transaction contains a create account operation',
             input: {
                 descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
@@ -1912,6 +1995,7 @@ export const fixtures = {
                 destinationActivated: false,
                 destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
                 amount: '100.125',
+                asset: { type: 0 },
                 destinationTag: 'Hello, World!',
                 isTestnet: false,
             },
@@ -1945,6 +2029,7 @@ export const fixtures = {
                 destinationActivated: true,
                 destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
                 amount: '100.125',
+                asset: { type: 0 },
                 destinationTag: undefined,
                 isTestnet: false,
             },
@@ -1977,6 +2062,7 @@ export const fixtures = {
                 destinationActivated: true,
                 destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
                 amount: '100.125',
+                asset: { type: 0 },
                 destinationTag: 'Hello, World!',
                 isTestnet: true,
             },

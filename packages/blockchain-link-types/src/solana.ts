@@ -10,8 +10,6 @@ export type SolanaStakingAccount = {
     rentExemptReserve: string;
 };
 
-export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };
-
 export const StakeState = {
     Inactive: 'inactive',
     Activating: 'activating',

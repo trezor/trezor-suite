@@ -11898,6 +11898,7 @@ __metadata:
     "@solana/rpc-api": "npm:^2.3.0"
     "@solana/rpc-types": "npm:^2.3.0"
     "@stellar/stellar-sdk": "npm:^13.3.0"
+    "@suite-common/token-definitions": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"

@@ -78,7 +78,8 @@ export type TokenStandard =
     | 'BEP1155'
     | 'SPL'
     | 'SPL-2022'
-    | 'BLOCKFROST';
+    | 'BLOCKFROST'
+    | 'STELLAR-CLASSIC';
 
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 
@@ -304,3 +305,5 @@ export interface SubscriptionAccountInfo {
 export type ChannelMessage<T> = T & { id: number };
 
 export type StakeType = 'stake' | 'unstake' | 'claim';
+
+export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };

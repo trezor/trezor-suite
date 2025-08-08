@@ -41,16 +41,14 @@ import type {
     AccountInfo,
     Response,
     SubscriptionAccountInfo,
+    TokenDetailByMint,
     TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type {
-    SolanaTokenAccountInfo,
-    TokenDetailByMint,
-} from '@trezor/blockchain-link-types/src/solana';
+import type { SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import {
     type TokenProgramName,
