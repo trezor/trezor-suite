@@ -10941,6 +10941,7 @@ __metadata:
     "@trezor/connect-mobile": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
+    expo-clipboard: "npm:~7.1.4"
     expo-linking: "npm:~7.1.5"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
