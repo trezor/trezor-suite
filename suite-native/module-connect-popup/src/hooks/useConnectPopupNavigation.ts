@@ -49,11 +49,9 @@ export const useConnectPopupNavigation = () => {
     const url = Linking.useURL();
 
     useEffect(() => {
-        if (!featureFlagEnabled || !url) return;
-
-        if (isConnectPopupUrl(url)) {
+        if (featureFlagEnabled && url && isConnectPopupUrl(url)) {
             dispatch(connectPopupDeeplinkThunk({ url }));
-        } else if (featureFlagWalletConnectEnabled && isWalletConnectUrl(url)) {
+        } else if (featureFlagWalletConnectEnabled && url && isWalletConnectUrl(url)) {
             try {
                 const parsedUrl = new URL(url);
                 const wcUri = parsedUrl?.searchParams?.get('uri');
