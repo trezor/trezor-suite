@@ -41,7 +41,7 @@
         "tsx": "^4.20.3"
     },
     "dependencies": {
-        "bignumber.js": "^9.3.0"
+        "bignumber.js": "^9.3.1"
     },
     "browser": {
         "crypto": false
