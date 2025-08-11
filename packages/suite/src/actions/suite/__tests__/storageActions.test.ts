@@ -189,7 +189,7 @@ describe('Storage actions', () => {
         // save wallet settings to the db
         await store.dispatch(storageActions.saveWalletSettings());
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
-        await store.dispatch(discoveryActions.setLocalCurrency('czk'));
+        await store.dispatch(discoveryActions.setBaseCurrency('czk'));
         const { settings } = store.getState().wallet;
         store.dispatch(await preloadStore());
 

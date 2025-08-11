@@ -1,13 +1,13 @@
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectIsEntropyCheckFailed, selectSelectedDevice } from '@suite-common/wallet-core';
-
 import {
     hashCheckErrorScenarios,
     isSkippedHashCheckError,
     isSkippedRevisionCheckError,
     revisionCheckErrorScenarios,
-} from 'src/constants/suite/firmware';
+} from '@suite-common/firmware-authenticity';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { selectIsEntropyCheckFailed, selectSelectedDevice } from '@suite-common/wallet-core';
+
 import { AppState } from 'src/types/suite';
 
 import { selectIsEntropyCheckEnabled } from './suiteSelectors';

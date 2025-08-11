@@ -7,11 +7,11 @@ import { PROTO } from '@trezor/connect';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
 import { selectBitcoinAmountUnit } from './walletSettingsReducer';
 
-export const setLocalCurrency = createAction(
-    WALLET_SETTINGS.SET_LOCAL_CURRENCY,
-    (localCurrency: string) => ({
+export const setBaseCurrency = createAction(
+    WALLET_SETTINGS.SET_BASE_CURRENCY,
+    (baseCurrencyCode: BaseCurrencyCode) => ({
         payload: {
-            localCurrency: localCurrency.toLowerCase() as BaseCurrencyCode,
+            localCurrency: baseCurrencyCode.toLowerCase() as BaseCurrencyCode,
         },
     }),
 );
@@ -47,7 +47,7 @@ export type SetBitcoinAmountUnitsAction = {
 
 export type WalletSettingsAction =
     | ReturnType<typeof changeNetworks>
-    | ReturnType<typeof setLocalCurrency>
+    | ReturnType<typeof setBaseCurrency>
     | ReturnType<typeof toggleHideSuspiciousTransactions>
     | ChangeCoinVisibilityAction
     | SetHideBalanceAction

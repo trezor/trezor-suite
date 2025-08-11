@@ -3,8 +3,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import {
     TRANSACTIONS_MODULE_PREFIX,
+    selectBaseCurrency,
     selectHistoricFiatRates,
-    selectLocalCurrency,
     selectTransactions,
 } from '@suite-common/wallet-core';
 import { Account, ExportFileType } from '@suite-common/wallet-types';
@@ -34,7 +34,7 @@ export const exportTransactionsThunk = createThunk(
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const historicFiatRates = selectHistoricFiatRates(getState());
-        const localCurrency = selectLocalCurrency(getState());
+        const baseCurrencyCode = selectBaseCurrency(getState());
         const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
 
         // TODO: this is not nice (copy-paste)
@@ -75,7 +75,7 @@ export const exportTransactionsThunk = createThunk(
                 accountName,
                 type,
                 transactions: filteredTransaction,
-                localCurrency,
+                baseCurrencyCode,
             },
             tokenDefinitions,
             historicFiatRates,

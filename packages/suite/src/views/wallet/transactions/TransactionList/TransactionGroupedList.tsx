@@ -1,5 +1,5 @@
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import {
     GroupedTransactionsByDate,
     getTransactionWithLowestNonce,
@@ -27,7 +27,7 @@ export const TransactionGroupedList = ({
     account,
     isPending,
 }: TransactionGroupedListProps) => {
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
     const network = getNetwork(symbol);
 
@@ -40,7 +40,7 @@ export const TransactionGroupedList = ({
             dateKey={dateKey}
             symbol={symbol}
             transactions={value}
-            localCurrency={localCurrency}
+            baseCurrencyCode={baseCurrencyCode}
             isPending={isPending}
             index={groupIndex}
         >
@@ -50,7 +50,7 @@ export const TransactionGroupedList = ({
                         key={item.rounds[0].txid}
                         transactions={item.rounds}
                         isPending={isPending}
-                        localCurrency={localCurrency}
+                        localCurrency={baseCurrencyCode}
                     />
                 ) : (
                     <TransactionItem

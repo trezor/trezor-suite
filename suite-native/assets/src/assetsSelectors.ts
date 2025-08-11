@@ -13,9 +13,9 @@ import {
     DeviceRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
+    selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAccounts,
-    selectLocalCurrency,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
@@ -107,16 +107,16 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     [
         selectVisibleDeviceAccounts,
         selectDeviceNetworksWithAssets,
-        selectLocalCurrency,
+        selectBaseCurrency,
         selectCurrentFiatRates,
     ],
-    (accounts, deviceNetworksWithAssets, fiatCurrencyCode, rates) => {
+    (accounts, deviceNetworksWithAssets, baseCurrencyCode, rates) => {
         const accountsWithFiatBalance = accounts.map(account => {
             const shouldIncludeStaking = doesCoinSupportStaking(account.symbol);
 
             const fiatValue = getAccountFiatBalance({
                 account,
-                localCurrency: fiatCurrencyCode,
+                baseCurrencyCode,
                 rates,
                 shouldIncludeStaking,
             });

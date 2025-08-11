@@ -6,9 +6,9 @@ import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRatesRootState,
+    selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectHistoricFiatRatesByTimestamp,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { Timestamp, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -32,7 +32,7 @@ type TodayHeaderCellProps = {
 };
 
 const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellProps) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
     const currentRates = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
@@ -80,7 +80,7 @@ export const TransactionDetailValuesSheet = ({
             ? transaction.amount
             : transaction.details.totalInput;
 
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
     const historicRate = useSelector((state: FiatRatesRootState) =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),

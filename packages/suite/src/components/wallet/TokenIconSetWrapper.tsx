@@ -1,6 +1,6 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { TokenIconSet } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
@@ -19,12 +19,12 @@ type TokenIconSetWrapperProps = {
 };
 
 export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperProps) => {
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
     const allTokensWithRates = accounts.flatMap(account =>
-        enhanceTokensWithRates(account.tokens, localCurrency, symbol, fiatRates),
+        enhanceTokensWithRates(account.tokens, baseCurrencyCode, symbol, fiatRates),
     );
 
     if (!allTokensWithRates.length) return null;

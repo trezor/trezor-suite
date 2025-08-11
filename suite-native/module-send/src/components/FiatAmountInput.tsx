@@ -5,8 +5,8 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
     TransactionsRootState,
+    selectBaseCurrency,
     selectIsBaseCurrencyInSats,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Input } from '@suite-native/atoms';
@@ -31,7 +31,7 @@ export const FiatAmountInput = ({
     accountKey,
 }: SendAmountInputProps) => {
     const { setValue } = useFormContext<SendOutputsFormValues>();
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
     const { decimals } = getNetwork(symbol);

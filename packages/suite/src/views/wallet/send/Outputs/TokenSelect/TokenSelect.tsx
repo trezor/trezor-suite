@@ -13,9 +13,9 @@ import {
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import {
+    selectBaseCurrency,
     selectCurrentFiatRates,
     selectExplorer,
-    selectLocalCurrency,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -147,7 +147,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
 
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
@@ -198,7 +198,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     const tokensWithRates = enhanceTokensWithRates(
         account.tokens,
-        localCurrency,
+        baseCurrencyCode,
         account.symbol,
         fiatRates,
     );
@@ -256,7 +256,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
                     },
                 ],
-                localCurrency: currencyValue.value as BaseCurrencyCode,
+                baseCurrencyCode: currencyValue.value as BaseCurrencyCode,
                 rateType: 'current',
                 fetchAttemptTimestamp: Date.now() as Timestamp,
             }),

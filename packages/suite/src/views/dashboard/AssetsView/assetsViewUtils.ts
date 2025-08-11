@@ -17,7 +17,7 @@ export const handleTokensAndStakingData = (
     accountsThatStaked: Account[],
     isStakingActive: boolean,
     symbol: NetworkSymbol,
-    localCurrency: BaseCurrencyCode,
+    baseCurrencyCode: BaseCurrencyCode,
     coinDefinitions?: TokenDefinition,
     currentFiatRates?: RatesByKey,
 ) => {
@@ -32,7 +32,7 @@ export const handleTokensAndStakingData = (
     });
     const tokensWithRates = enhanceTokensWithRates(
         tokens.shownWithBalance ?? [],
-        localCurrency,
+        baseCurrencyCode,
         symbol,
         currentFiatRates,
     );

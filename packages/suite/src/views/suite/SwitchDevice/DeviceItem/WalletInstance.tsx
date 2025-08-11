@@ -3,9 +3,9 @@ import { useState } from 'react';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
+    selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceThunk,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
 import {
@@ -53,7 +53,7 @@ export const WalletInstance = ({
     const accounts = useSelector(state => state.wallet.accounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
     const store = useStore();
@@ -62,7 +62,7 @@ export const WalletInstance = ({
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
 
-    const walletBalance = useTotalFiatBalance(deviceAccounts, localCurrency, currentFiatRates);
+    const walletBalance = useTotalFiatBalance(deviceAccounts, baseCurrencyCode, currentFiatRates);
 
     const { walletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),
@@ -201,7 +201,7 @@ export const WalletInstance = ({
                         <FiatHeader
                             amount={walletBalance}
                             size="medium"
-                            localCurrency={localCurrency}
+                            localCurrency={baseCurrencyCode}
                             data-testid={`${dataTestBase}/fiat-amount`}
                         />
                     </Column>

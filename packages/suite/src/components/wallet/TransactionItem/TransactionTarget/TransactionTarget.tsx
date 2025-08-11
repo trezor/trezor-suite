@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import {
+    selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
-    selectLocalCurrency,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -59,7 +59,7 @@ export const TransactionTarget = ({
 }: TransactionTargetProps) => {
     const dispatch = useDispatch();
 
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(
         transaction.symbol,
         baseCurrencyCode,

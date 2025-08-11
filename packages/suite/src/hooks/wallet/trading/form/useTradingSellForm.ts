@@ -26,7 +26,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 
@@ -111,10 +111,10 @@ export const useTradingSellForm = ({
         useTradingNavigation(account);
 
     const { symbol } = account;
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = networks[account.symbol];
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
+    const localCurrencyOption = { value: baseCurrencyCode, label: baseCurrencyCode.toUpperCase() };
     const trades = useSelector(selectTradingTrades);
     const trade = trades.find(
         (trade): trade is TradingTransactionSell =>

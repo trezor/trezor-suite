@@ -71,7 +71,7 @@ export const BaseCurrencyValue = ({
     isLoading,
 }: BaseCurrencyValueProps) => {
     const { shouldAnimate } = useLoadingSkeleton();
-    const { localCurrency, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
+    const { baseCurrencyCode, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
         symbol,
         tokenAddress,
@@ -105,7 +105,7 @@ export const BaseCurrencyValue = ({
             <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈&nbsp;</>}
                 <BaseCurrencyAmountFormatter
-                    currency={localCurrency.toUpperCase()}
+                    currency={baseCurrencyCode.toUpperCase()}
                     value={value}
                     {...fiatAmountFormatterOptions}
                 />
@@ -115,7 +115,7 @@ export const BaseCurrencyValue = ({
         const fiatRateComponent = rate ? (
             <SameWidthNums>
                 <BaseCurrencyAmountFormatter
-                    currency={localCurrency}
+                    currency={baseCurrencyCode}
                     value={asBaseCurrencyAmount(new BigNumber(rate))}
                     {...fiatRateFormatterOptions}
                 />

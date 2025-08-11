@@ -24,7 +24,7 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSession
 export const ensureHistoryRates = async (
     symbol: NetworkSymbol,
     data: BlockchainAccountBalanceHistory[],
-    fiatCurrency: BaseCurrencyCode,
+    baseCurrencyCode: BaseCurrencyCode,
     isElectrumBackend: boolean,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
     if (!getNetwork(symbol).coingeckoId) return data;
@@ -36,7 +36,7 @@ export const ensureHistoryRates = async (
     const rateDictionary = await getFiatRatesForTimestamps(
         { symbol },
         missingRates,
-        fiatCurrency,
+        baseCurrencyCode,
         isElectrumBackend,
     )
         .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))

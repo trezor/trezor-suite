@@ -16,9 +16,9 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     (builder, extra) => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
-                const { tickers, localCurrency, rateType } = action.meta.arg;
+                const { tickers, baseCurrencyCode, rateType } = action.meta.arg;
                 tickers.forEach(ticker => {
-                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
                     let currentRate = state[rateType]?.[fiatRateKey];
 
                     if (isTestnet(ticker.symbol)) {
@@ -46,7 +46,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
             .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;
 
-                const { tickers, localCurrency, rateType, fetchAttemptTimestamp } = action.meta.arg;
+                const { tickers, baseCurrencyCode, rateType, fetchAttemptTimestamp } =
+                    action.meta.arg;
 
                 // action.payload is iterator so we need for loop (nothing else works in Hermes (React Native))
                 let index = -1;
@@ -60,7 +61,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     }
 
                     if (result.status === 'rejected') {
-                        const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                        const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
                         const currentRate = state[rateType]?.[fiatRateKey];
 
                         // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
@@ -80,7 +81,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     }
 
                     const rate = result.value;
-                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
 
                     const currentRate = state[rateType]?.[fiatRateKey];
 
@@ -101,12 +102,12 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
             .addCase(updateFiatRatesThunk.rejected, (state, action) => {
                 // This case should ideally never happen, but in case something will seriously go wrong
                 // we want to have some error message in the state.
-                const { tickers, localCurrency, rateType } = action.meta.arg;
+                const { tickers, baseCurrencyCode, rateType } = action.meta.arg;
 
                 const errorMessage = `${action.error?.message}\n${action.error?.stack}`;
 
                 tickers.forEach(ticker => {
-                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
                     state[rateType][fiatRateKey].error = errorMessage;
                     state[rateType][fiatRateKey].isLoading = false;
                 });
@@ -116,8 +117,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                 action.payload.rates.forEach(fiatRate => {
                     const { tickerId, rates } = fiatRate;
-                    const { localCurrency } = action.meta.arg;
-                    const fiatRateKey = getFiatRateKeyFromTicker(tickerId, localCurrency);
+                    const { baseCurrencyCode } = action.meta.arg;
+                    const fiatRateKey = getFiatRateKeyFromTicker(tickerId, baseCurrencyCode);
 
                     // combine new rates with existing historic rates
                     state['historic'][fiatRateKey] = {

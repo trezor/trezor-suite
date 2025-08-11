@@ -1,11 +1,5 @@
 import { produce } from 'immer';
 
-import {
-    hashCheckErrorScenarios,
-    isSkippedHashCheckError,
-    isSkippedRevisionCheckError,
-    revisionCheckErrorScenarios,
-} from '@suite-common/firmware-authenticity';
 import type { CountryCode } from '@suite-common/geolocation';
 import { Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';

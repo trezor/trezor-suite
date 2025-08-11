@@ -2,8 +2,8 @@ import { memo, useMemo } from 'react';
 
 import {
     selectAllAccountsToList,
+    selectBaseCurrency,
     selectCurrentFiatRates,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Card, Column, Dropdown, Switch, Tooltip } from '@trezor/components';
@@ -25,7 +25,7 @@ import { PortfolioCardHeader } from './PortfolioCardHeader';
 
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const accounts = useSelector(selectAllAccountsToList);
@@ -35,7 +35,7 @@ export const PortfolioCard = memo(() => {
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const failedAccounts = useMemo(() => accounts.filter(isAccountFailed), [accounts]);
-    const walletBalance = useTotalFiatBalance(accounts, localCurrency, currentFiatRates);
+    const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)
     // 1. DashboardGraph gets mounted
@@ -87,7 +87,7 @@ export const PortfolioCard = memo(() => {
                 discovery={discovery}
                 showGraphControls={showGraphControls}
                 fiatAmount={walletBalance}
-                localCurrency={localCurrency}
+                localCurrency={baseCurrencyCode}
                 isWalletEmpty={isWalletEmpty}
                 isWalletLoading={isWalletLoading}
                 isWalletError={isWalletError}

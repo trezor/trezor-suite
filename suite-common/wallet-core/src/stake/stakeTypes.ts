@@ -54,7 +54,7 @@ export interface AmountLimitsString {
 export interface BaseStakeContextValues {
     account: Account;
     network: Network;
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
     composedLevels?: PrecomposedLevels;
     isComposing: boolean;
     clearForm: () => void;

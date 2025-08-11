@@ -18,6 +18,7 @@ import {
     getAccountsByDeviceState,
     selectAccounts,
     selectAccountsByDeviceState,
+    selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAccounts,
     selectDeviceFirmwareVersionArray,
@@ -31,7 +32,6 @@ import {
     selectIsDiscoveredDeviceAccountless,
     selectIsEntropyCheckFailed,
     selectIsUnacquiredDevice,
-    selectLocalCurrency,
     selectSelectedDevice,
     selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
@@ -117,7 +117,7 @@ const getTotalFiatBalanceNative = ({
         const accountFiatBalance =
             getAccountFiatBalance({
                 account: a,
-                localCurrency,
+                baseCurrencyCode: localCurrency,
                 rates,
                 shouldIncludeStaking: doesCoinSupportStaking(a.symbol),
             }) ?? '0';
@@ -128,13 +128,13 @@ const getTotalFiatBalanceNative = ({
 };
 
 export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
-    [selectDeviceAccounts, selectCurrentFiatRates, selectLocalCurrency],
+    [selectDeviceAccounts, selectCurrentFiatRates, selectBaseCurrency],
     (deviceAccounts, rates, localCurrency) =>
         getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
 );
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
-    [selectAccountsByDeviceState, selectCurrentFiatRates, selectLocalCurrency],
+    [selectAccountsByDeviceState, selectCurrentFiatRates, selectBaseCurrency],
     (deviceAccounts, rates, localCurrency) =>
         getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
 );

@@ -1,4 +1,4 @@
-const SET_LOCAL_CURRENCY = '@wallet-settings/set-local-currency';
+const SET_BASE_CURRENCY = '@wallet-settings/set-base-currency';
 const SET_HIDE_BALANCE = '@wallet-settings/hide-balance';
 const CHANGE_NETWORKS = '@wallet-settings/change-networks';
 const FROM_STORAGE = '@wallet-settings/from-storage';
@@ -8,7 +8,7 @@ const SET_DISCREET_MODE = '@wallet-settings/set-discreet-mode';
 const CHANGE_COIN_VISIBILITY = '@wallet-settings/change-coin-visibility';
 
 export const WALLET_SETTINGS = {
-    SET_LOCAL_CURRENCY,
+    SET_BASE_CURRENCY,
     SET_HIDE_BALANCE,
     CHANGE_NETWORKS,
     FROM_STORAGE,

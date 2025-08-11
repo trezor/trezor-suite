@@ -6,7 +6,7 @@ import {
     WALLET_SETTINGS,
     changeNetworks,
     deviceActions,
-    setLocalCurrency,
+    setBaseCurrency,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
@@ -56,7 +56,7 @@ const log =
             case SUITE.SET_THEME:
             case SUITE.SET_ADDRESS_DISPLAY_TYPE:
             case SUITE.SET_AUTODETECT:
-            case setLocalCurrency.type:
+            case setBaseCurrency.type:
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
             case METADATA.ENABLE:
             case METADATA.DISABLE:

@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    selectBaseCurrency,
     selectIsDiscreteModeActive,
-    selectLocalCurrency,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -69,7 +69,7 @@ const BaseCurrency = ({
     formattedBalance,
 }: BaseCurrencyProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { shouldAnimate } = useLoadingSkeleton();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
@@ -78,7 +78,7 @@ const BaseCurrency = ({
             {isLoading ? (
                 <SkeletonRectangle animate={shouldAnimate} />
             ) : (
-                <BaseCurrencyAmountFormatter value={customFiatValue} currency={localCurrency} />
+                <BaseCurrencyAmountFormatter value={customFiatValue} currency={baseCurrencyCode} />
             )}
         </HiddenPlaceholder>
     ) : (

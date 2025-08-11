@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
-import { selectLocalCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
@@ -20,7 +20,7 @@ ClaimFormContext.displayName = 'ClaimFormContext';
 export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimContextValues => {
     const dispatch = useDispatch();
 
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     const { account, network } = selectedAccount;
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
@@ -133,7 +133,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
         network,
         formState,
         register,
-        localCurrency,
+        baseCurrencyCode,
         composedLevels,
         isComposing,
         selectedFee,

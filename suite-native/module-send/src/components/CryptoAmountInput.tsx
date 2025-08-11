@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { selectIsBaseCurrencyInSats, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
@@ -40,7 +40,7 @@ export const CryptoAmountInput = ({
 }: SendAmountInputProps) => {
     const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();

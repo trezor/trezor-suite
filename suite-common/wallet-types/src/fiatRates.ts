@@ -21,12 +21,12 @@ export interface HistoricRates {
     ts: number;
 }
 
-export type FiatRateKey = string & Branded<'FiatRateKey'>;
-export const toFiatRateKey = (value: string) => value as FiatRateKey;
+export type CryptoBaseCurrencyPair = string & Branded<'CryptoBaseCurrencyCode'>;
+export const asCryptoBaseCurrencyCode = (value: string) => value as CryptoBaseCurrencyPair;
 
 // Unix Timestamp in milliseconds
 export type Timestamp = number & Branded<'Timestamp'>;
-export const toTimestamp = (number: number) => number as Timestamp;
+export const asTimestamp = (number: number) => number as Timestamp;
 
 export type RateType = 'current' | 'lastWeek' | 'historic';
 export type RateTypeWithoutHistoric = Exclude<RateType, 'historic'>;
@@ -51,6 +51,6 @@ export type TickerResult = {
     rates: FiatRatesResult[];
 };
 
-export type FiatRates = Record<FiatRateKey, Rate>;
-export type RatesByKey = Record<FiatRateKey, Rate>;
-export type RatesByTimestamps = Record<FiatRateKey, Record<Timestamp, number>>;
+export type FiatRates = Record<CryptoBaseCurrencyPair, Rate>;
+export type RatesByKey = Record<CryptoBaseCurrencyPair, Rate>;
+export type RatesByTimestamps = Record<CryptoBaseCurrencyPair, Record<Timestamp, number>>;

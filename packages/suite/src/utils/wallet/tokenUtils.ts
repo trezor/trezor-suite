@@ -38,7 +38,7 @@ export const sortTokensWithRates = (a: TokensWithRates, b: TokensWithRates) => {
 
 export const enhanceTokensWithRates = (
     tokens: Account['tokens'],
-    fiatCurrency: BaseCurrencyCode,
+    baseCurrencyCode: BaseCurrencyCode,
     symbol: NetworkSymbol,
     rates?: RatesByKey,
 ) => {
@@ -47,7 +47,7 @@ export const enhanceTokensWithRates = (
     const tokensWithRates = tokens.map(token => {
         const tokenFiatRateKey = getFiatRateKey(
             symbol,
-            fiatCurrency,
+            baseCurrencyCode,
             token.contract as TokenAddress,
         );
         const fiatRate = rates?.[tokenFiatRateKey];

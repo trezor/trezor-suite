@@ -1,15 +1,15 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRateKey,
+    CryptoBaseCurrencyPair,
     RatesByTimestamps,
     TickerId,
     TickerResult,
     Timestamp,
     TokenAddress,
     WalletAccountTransaction,
-    toFiatRateKey,
-    toTimestamp,
+    asCryptoBaseCurrencyCode,
+    asTimestamp,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { typedObjectKeys } from '@trezor/utils';
@@ -18,27 +18,27 @@ const ONE_HOUR_IN_SECONDS = 60 * 60;
 
 export const getFiatRateKey = (
     symbol: NetworkSymbol,
-    fiatCurrency: BaseCurrencyCode,
+    baseCurrencyCode: BaseCurrencyCode,
     tokenAddress?: TokenAddress,
-): FiatRateKey => {
+): CryptoBaseCurrencyPair => {
     if (tokenAddress) {
-        return toFiatRateKey(`${symbol}-${tokenAddress}-${fiatCurrency}`);
+        return asCryptoBaseCurrencyCode(`${symbol}-${tokenAddress}-${baseCurrencyCode}`);
     }
 
-    return toFiatRateKey(`${symbol}-${fiatCurrency}`);
+    return asCryptoBaseCurrencyCode(`${symbol}-${baseCurrencyCode}`);
 };
 
 export const getFiatRateKeyFromTicker = (
     ticker: TickerId,
     fiatCurrency: BaseCurrencyCode,
-): FiatRateKey => {
+): CryptoBaseCurrencyPair => {
     const { symbol, tokenAddress } = ticker;
 
     return getFiatRateKey(symbol, fiatCurrency, tokenAddress);
 };
 
 export const roundTimestampToNearestPastHour = (timestamp: Timestamp): Timestamp =>
-    toTimestamp(Math.floor(timestamp / ONE_HOUR_IN_SECONDS) * ONE_HOUR_IN_SECONDS);
+    asTimestamp(Math.floor(timestamp / ONE_HOUR_IN_SECONDS) * ONE_HOUR_IN_SECONDS);
 
 export const roundTimestampsToNearestPastHour = (timestamps: Timestamp[]): Timestamp[] =>
     timestamps.map(timestamp => roundTimestampToNearestPastHour(timestamp));
@@ -91,7 +91,7 @@ export const selectHistoricRatesByTransactions = (
 
     txs.forEach(tx => {
         const { symbol, blockTime, tokens } = tx;
-        const timestamp = roundTimestampToNearestPastHour(toTimestamp(blockTime ?? 0));
+        const timestamp = roundTimestampToNearestPastHour(asTimestamp(blockTime ?? 0));
 
         typedObjectKeys(historicRates).forEach(fiatRateKey => {
             if (

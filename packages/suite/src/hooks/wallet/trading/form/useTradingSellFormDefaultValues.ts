@@ -11,7 +11,7 @@ import {
     selectTradingPrefilledFromAccount,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { FormState, Output } from '@suite-common/wallet-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
@@ -60,15 +60,15 @@ export const useTradingSellFormDefaultValues = (
         }),
         [],
     );
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const defaultCurrency = useMemo(
         () =>
             buildTradingFiatOption(
-                isArrayMember(localCurrency, typedObjectValues(enabledTradingCurrencies))
-                    ? localCurrency
+                isArrayMember(baseCurrencyCode, typedObjectValues(enabledTradingCurrencies))
+                    ? baseCurrencyCode
                     : 'usd',
             ),
-        [localCurrency],
+        [baseCurrencyCode],
     );
     const defaultPayment: Output = useMemo(
         () => ({

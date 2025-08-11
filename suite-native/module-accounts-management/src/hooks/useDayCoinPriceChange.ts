@@ -8,8 +8,8 @@ import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     BlockchainRootState,
+    selectBaseCurrency,
     selectIsElectrumBackendSelected,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { percentageDiff } from '@suite-native/graph';
@@ -23,7 +23,7 @@ export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
     const [yesterdayValue, setYesterdayValue] = useState<number | null>(null);
     const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
 
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, symbol ?? 'btc'),
     );

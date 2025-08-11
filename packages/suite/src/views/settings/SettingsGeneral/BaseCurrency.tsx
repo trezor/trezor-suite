@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import {
     BaseCurrencyCode,
     fiatBaseCurrencies,
@@ -21,13 +21,13 @@ const buildCurrencyOption = (currency: BaseCurrencyCode) => ({
 
 export const BaseCurrency = () => {
     const { translationString } = useTranslation();
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
 
-    const value = buildCurrencyOption(localCurrency);
+    const value = buildCurrencyOption(baseCurrencyCode);
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
-        dispatch(setLocalCurrency(option.value));
+        dispatch(setBaseCurrency(option.value));
         analytics.report({
             type: EventType.SettingsGeneralChangeFiat,
             payload: {

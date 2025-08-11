@@ -43,7 +43,7 @@ export interface AssetTableRowProps {
     isStakeNetwork?: boolean;
     assetsFiatBalances: AssetFiatBalance[];
     accounts: Account[];
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
     currentFiatRates?: RatesByKey;
 }
 
@@ -55,7 +55,7 @@ export const AssetRow = memo(
         assetTokens,
         stakingAccounts,
         assetsFiatBalances,
-        localCurrency,
+        baseCurrencyCode,
         currentFiatRates,
         accounts,
         isStakeNetwork,
@@ -95,7 +95,7 @@ export const AssetRow = memo(
             stakingAccountsForAsset,
             isStakingActive,
             symbol,
-            localCurrency,
+            baseCurrencyCode,
             coinDefinitions,
             currentFiatRates,
         );

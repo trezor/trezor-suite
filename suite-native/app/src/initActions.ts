@@ -8,7 +8,7 @@ import {
     initDevices,
     initStakeDataThunk,
     periodicFetchFiatRatesThunk,
-    selectLocalCurrency,
+    selectBaseCurrency,
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
@@ -48,7 +48,7 @@ export const postOnboardingInit = createThunk(
         dispatch(
             periodicFetchFiatRatesThunk({
                 rateType: 'current',
-                localCurrency: selectLocalCurrency(getState()),
+                localCurrency: selectBaseCurrency(getState()),
             }),
         );
 

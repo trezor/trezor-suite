@@ -10,9 +10,9 @@ import {
 } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
+    selectBaseCurrency,
     selectCurrentFiatRates,
     selectEnabledNetworks,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { RatesByKey } from '@suite-common/wallet-types';
 import {
@@ -102,7 +102,7 @@ export const AssetsView = () => {
     const { supportedMainnets } = useNetworkSupport();
     const { isBelowTablet } = useLayoutSize();
 
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const hasMainnetNetworksToEnable = supportedMainnets.some(
         network => !enabledNetworks.includes(network.symbol),
@@ -167,7 +167,7 @@ export const AssetsView = () => {
     const assetsFiatBalances = useAssetsFiatBalances(
         assetsData,
         assets,
-        localCurrency,
+        baseCurrencyCode,
         currentFiatRates,
     );
 
@@ -244,7 +244,7 @@ export const AssetsView = () => {
                                 assetsFiatBalances={assetsFiatBalances}
                                 stakingAccounts={asset.stakingAccounts}
                                 assetTokens={asset.assetTokens}
-                                localCurrency={localCurrency}
+                                localCurrency={baseCurrencyCode}
                                 currentFiatRates={currentFiatRates}
                                 accounts={asset.accounts}
                                 isStakeNetwork={asset.isStakeNetwork}
@@ -272,7 +272,7 @@ export const AssetsView = () => {
                         assetsData={assetsData}
                         discoveryInProgress={discoveryInProgress}
                         assetsFiatBalances={assetsFiatBalances}
-                        localCurrency={localCurrency}
+                        baseCurrencyCode={baseCurrencyCode}
                         currentFiatRates={currentFiatRates}
                     />
                     {isError && (

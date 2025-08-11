@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectHasRunningDiscovery, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
@@ -56,7 +56,7 @@ const IgnoredNetworksBanner = () => {
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();

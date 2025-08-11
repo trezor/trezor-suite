@@ -632,13 +632,13 @@ export const enhanceHistory = ({
 
 export const areTokenFiatRatesLoading = (
     account: Account,
-    localCurrency: string,
+    baseCurrencyCode: BaseCurrencyCode,
     rates: RatesByKey,
 ) =>
     (account.tokens ?? []).some(token => {
         const tokenFiatRateKey = getFiatRateKey(
             account.symbol,
-            localCurrency as BaseCurrencyCode,
+            baseCurrencyCode,
             token.contract as TokenAddress,
         );
 
@@ -652,7 +652,7 @@ export const areTokenFiatRatesLoading = (
 
 export const getAccountTokensFiatBalance = (
     account: Account,
-    localCurrency: string,
+    baseCurrencyCode: BaseCurrencyCode,
     rates?: RatesByKey,
     tokens?: Account['tokens'],
 ): BaseCurrencyAmount =>
@@ -660,7 +660,7 @@ export const getAccountTokensFiatBalance = (
         (tokens ?? []).reduce((total, token) => {
             const tokenFiatRateKey = getFiatRateKey(
                 account.symbol,
-                localCurrency as BaseCurrencyCode,
+                baseCurrencyCode,
                 token.contract as TokenAddress,
             );
 
@@ -682,7 +682,7 @@ export const getStakingFiatBalance = (account: Account, rate: number | undefined
 
 type GetAccountFiatBalanceParams = {
     account: Account;
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
     rates?: RatesByKey;
     shouldIncludeTokens?: boolean;
     shouldIncludeStaking?: boolean;
@@ -690,12 +690,12 @@ type GetAccountFiatBalanceParams = {
 
 export const getAccountFiatBalance = ({
     account,
-    localCurrency,
+    baseCurrencyCode,
     rates,
     shouldIncludeTokens = true,
     shouldIncludeStaking = true,
 }: GetAccountFiatBalanceParams) => {
-    const coinFiatRateKey = getFiatRateKey(account.symbol, localCurrency);
+    const coinFiatRateKey = getFiatRateKey(account.symbol, baseCurrencyCode);
     const coinFiatRate = rates?.[coinFiatRateKey];
 
     if (!coinFiatRate?.rate) return null;
@@ -713,7 +713,7 @@ export const getAccountFiatBalance = ({
     if (shouldIncludeTokens) {
         const tokensBalance = getAccountTokensFiatBalance(
             account,
-            localCurrency,
+            baseCurrencyCode,
             rates,
             account.tokens,
         );
@@ -731,7 +731,7 @@ export const getAccountFiatBalance = ({
 
 type GetTotalFiatBalanceParams = {
     deviceAccounts: Account[];
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
     rates?: RatesByKey;
     shouldIncludeTokens?: boolean;
     shouldIncludeStaking?: boolean;
@@ -739,7 +739,7 @@ type GetTotalFiatBalanceParams = {
 
 export const getTotalFiatBalance = ({
     deviceAccounts,
-    localCurrency,
+    baseCurrencyCode,
     rates,
     shouldIncludeTokens = true,
     shouldIncludeStaking = true,
@@ -750,7 +750,7 @@ export const getTotalFiatBalance = ({
         const accountFiatBalance =
             getAccountFiatBalance({
                 account: a,
-                localCurrency,
+                baseCurrencyCode,
                 rates,
                 shouldIncludeTokens,
                 shouldIncludeStaking,
