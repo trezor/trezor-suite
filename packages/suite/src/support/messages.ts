@@ -534,77 +534,59 @@ export default defineMessages({
         defaultMessage: '{providerName}’s address',
         id: 'TR_EXCHANGE_SEND_TO',
     },
-    TR_EXCHANGE_APPROVAL_ERROR: {
-        defaultMessage: 'Failed to load approval status',
-        id: 'TR_EXCHANGE_APPROVAL_ERROR',
-    },
     TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING: {
         defaultMessage: 'Set {displaySymbol} spending',
         id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING',
     },
-    TR_EXCHANGE_APPROVAL_APPROVE_TOKEN: {
-        defaultMessage: 'Approve {displaySymbol}',
-        id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN',
-    },
-    TR_EXCHANGE_APPROVAL_LIMIT: {
-        defaultMessage: 'Approval limit',
-        id: 'TR_EXCHANGE_APPROVAL_LIMIT',
-    },
-    TR_EXCHANGE_APPROVAL_LIMIT_MINIMAL: {
-        defaultMessage: 'Minimum',
-        id: 'TR_EXCHANGE_APPROVAL_LIMIT_MINIMAL',
-    },
-    TR_EXCHANGE_APPROVAL_LIMIT_INFINITE: {
-        defaultMessage: 'Unlimited',
-        id: 'TR_EXCHANGE_APPROVAL_LIMIT_INFINITE',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_REQUIRED: {
-        defaultMessage: 'Approval is required',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_REQUIRED',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_PENDING_PREFIX: {
-        defaultMessage: 'Transaction with ID',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_PENDING_PREFIX',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX: {
-        defaultMessage: 'is being processed',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP: {
-        defaultMessage: 'Ready to swap',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_APPROVAL_REVOKED: {
-        defaultMessage: 'Approval revoked',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVAL_REVOKED',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_TITLE: {
-        defaultMessage: 'Contract approval',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_TITLE',
+    TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING: {
+        defaultMessage: 'Revoke {displaySymbol} spending',
+        id: 'TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING',
     },
     TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON: {
-        defaultMessage: 'Approve',
+        defaultMessage: 'Set & approve spending',
         id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON',
     },
     TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON: {
         defaultMessage: 'Revoke approval',
         id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON',
     },
+    TR_EXCHANGE_APPROVAL_FORM_INCREASE_BUTTON: {
+        defaultMessage: 'Increase approval',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_INCREASE_BUTTON',
+    },
     TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON: {
         defaultMessage: 'Refresh',
         id: 'TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON',
     },
-    TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED: {
-        defaultMessage: 'The approval transaction has been processed successfully.',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED',
+    TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER: {
+        defaultMessage:
+            'The approved amount is too low. To increase it, first revoke the current approval, then set a higher limit.',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER',
     },
-    TR_EXCHANGE_APPROVAL_SEND_TO: {
-        defaultMessage: '{send} contract',
-        id: 'TR_EXCHANGE_APPROVAL_SEND_TO',
+    TR_EXCHANGE_APPROVAL_MODAL_REVOKE_BANNER: {
+        defaultMessage:
+            "{displaySymbol} doesn't support increasing limits. You need to revoke the current approval before setting a higher one.",
+        id: 'TR_EXCHANGE_APPROVAL_MODAL_REVOKE_BANNER',
     },
-    TR_EXCHANGE_APPROVAL_VALUE: {
-        defaultMessage: 'Approval value',
-        id: 'TR_EXCHANGE_APPROVAL_VALUE',
+    TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL: {
+        defaultMessage: 'Confirming approval...',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL: {
+        defaultMessage: 'Revoking approval...',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID: {
+        defaultMessage: 'Transaction ID:',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID',
+    },
+    TR_EXCHANGE_APPROVAL_CURRENT_LIMIT: {
+        defaultMessage: 'Current limit',
+        id: 'TR_EXCHANGE_APPROVAL_CURRENT_LIMIT',
+    },
+    TR_EXCHANGE_APPROVAL_NEW_LIMIT: {
+        defaultMessage: 'New limit',
+        id: 'TR_EXCHANGE_APPROVAL_NEW_LIMIT',
     },
     TR_EXCHANGE_APPROVAL_VALUE_MINIMAL: {
         defaultMessage: '{value} {send}',
@@ -624,22 +606,9 @@ export default defineMessages({
             'Approve unlimited {send} to skip future approval requests and reduce fees. Only use this option if you trust {provider}, as it will have access to all your {send}.',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO',
     },
-    TR_EXCHANGE_APPROVAL_VALUE_ZERO: {
-        defaultMessage: 'Revoke previous approval of {value} {send}',
-        id: 'TR_EXCHANGE_APPROVAL_VALUE_ZERO',
-    },
-    TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO: {
-        defaultMessage:
-            'Perform a transaction that will remove previous approval of contract with {provider}.',
-        id: 'TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO',
-    },
     TR_EXCHANGE_APPROVAL_DATA: {
         defaultMessage: 'Approval transaction data',
         id: 'TR_EXCHANGE_APPROVAL_DATA',
-    },
-    TR_EXCHANGE_APPROVAL_NOT_REQUIRED: {
-        defaultMessage: 'No approval transaction needed for {send}.',
-        id: 'TR_EXCHANGE_APPROVAL_NOT_REQUIRED',
     },
     TR_EXCHANGE_APPROVAL_PROVIDER: {
         defaultMessage: 'Provider',

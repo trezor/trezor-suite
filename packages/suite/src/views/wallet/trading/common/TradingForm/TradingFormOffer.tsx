@@ -23,6 +23,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ApproveModal';
+import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/RevokeModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -69,6 +70,7 @@ export const TradingFormOffer = () => {
 
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+    const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
     const [isManuallyApproved, setIsManuallyApproved] = useState(false);
 
     const context = useTradingFormContext();
@@ -201,16 +203,48 @@ export const TradingFormOffer = () => {
         setIsApproveModalOpen(true);
     };
 
-    const onCloseApproveModal = async () => {
+    const onCloseApproveModal = async (isSubmitting = false) => {
         setIsApproveModalOpen(false);
 
         if (isTradingExchangeContext(context)) {
+            if (isSubmitting) return;
             if (context.selectedQuote?.receiveAddress) {
                 await context.confirmApproval({
                     trade: { ...context.selectedQuote, approvalType: undefined },
                     receiveAddress: context.selectedQuote.receiveAddress,
                 });
             }
+
+            context.setValue('ethereumDataHex', '');
+            await context.fetchFeesAndCompose();
+        }
+    };
+
+    const onOpenRevokeModal = async () => {
+        if (isTradingExchangeContext(context)) {
+            if (context.selectedQuote?.dexTx) {
+                context.setValue('ethereumDataHex', context.selectedQuote?.dexTx.data);
+                context.setValue(TRADING_FORM_OUTPUT_ADDRESS, context.selectedQuote?.dexTx.to);
+            }
+
+            await context.fetchFeesAndCompose();
+        }
+
+        setIsRevokeModalOpen(true);
+    };
+
+    const onCloseRevokeModal = async (isSubmitting = false) => {
+        setIsRevokeModalOpen(false);
+
+        if (isTradingExchangeContext(context)) {
+            if (isSubmitting) return;
+            if (context.selectedQuote?.receiveAddress) {
+                await context.confirmApproval({
+                    trade: { ...context.selectedQuote, approvalType: undefined },
+                    receiveAddress: context.selectedQuote?.receiveAddress,
+                });
+            }
+
             context.setValue('ethereumDataHex', '');
             await context.fetchFeesAndCompose();
         }
@@ -343,6 +377,7 @@ export const TradingFormOffer = () => {
             {requiresTokenApproval && bestScoredQuote && !isLoading ? (
                 <TradingFormApproval
                     openApproveModal={onOpenApproveModal}
+                    openRevokeModal={onOpenRevokeModal}
                     approvalType={approvalType}
                     setApprovalType={setApprovalType}
                     isManuallyApproved={isManuallyApproved}
@@ -369,6 +404,8 @@ export const TradingFormOffer = () => {
             {isApproveModalOpen && (
                 <ApproveModal onCancel={onCloseApproveModal} setApprovalType={setApprovalType} />
             )}
+
+            {isRevokeModalOpen && <RevokeModal onCancel={onCloseRevokeModal} />}
         </Column>
     );
 };

@@ -718,15 +718,14 @@ export const useTradingExchangeForm = ({
     const revokeApproval = async (trade: ExchangeTrade) => {
         if (!trade.receiveAddress) return false;
 
-        const approvalType: DexApprovalType = 'ZERO';
+        setApprovalInitiated(true);
 
+        const approvalType: DexApprovalType = 'ZERO';
         const updatedTrade: ExchangeTrade = {
             ...trade,
             approvalType,
-            status: 'CONFIRM',
+            status: trade.status === 'APPROVAL_REQ' ? 'APPROVAL_REQ' : 'CONFIRM',
         };
-
-        setApprovalInitiated(true);
 
         dispatch(tradingExchangeActions.saveSelectedQuote(updatedTrade));
 
@@ -735,11 +734,7 @@ export const useTradingExchangeForm = ({
             receiveAddress: trade.receiveAddress,
         });
 
-        if (!newTrade) {
-            return false;
-        }
-
-        return await sendTransaction();
+        return !!newTrade;
     };
 
     const fetchApprovalStatus = async (trade?: ExchangeTrade) => {
@@ -764,6 +759,11 @@ export const useTradingExchangeForm = ({
         await handleChange();
     };
 
+    const fetchFeesAndCompose = async () => {
+        await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
+        composeRequest();
+    };
+
     useEffect(() => {
         if (isPreviousRouteFromTradeSection && tradingAccountKey !== selectedAccount.account?.key) {
             setShouldUseTradingAccountKey(true);
@@ -780,11 +780,6 @@ export const useTradingExchangeForm = ({
         selectedAccount.account?.key,
         tradingAccountKey,
     ]);
-
-    const fetchFeesAndCompose = async () => {
-        await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
-        composeRequest();
-    };
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
