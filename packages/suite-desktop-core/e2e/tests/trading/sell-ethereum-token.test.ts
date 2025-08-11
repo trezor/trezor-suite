@@ -59,7 +59,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
             await tradingPage.termsConfirmButton.click();
         });
 
-        await tradingPage.waitForSellRedirectCompletion();
+        await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);

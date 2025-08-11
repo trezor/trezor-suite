@@ -473,16 +473,6 @@ export class TradingPage {
     }
 
     @step()
-    async waitForSellRedirectCompletion() {
-        await expect(this.page.getByText('Buy & sell')).toBeHidden();
-        //TODO: Workaround because of bug #19743, device switcher should not be opened
-        await Promise.all([
-            expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 }),
-            this.page.getByTestId('@switch-device/cancel-button').click({ timeout: 30_000 }),
-        ]);
-    }
-
-    @step()
     async verifyBuyFormOpened(cryptoName: RegExp) {
         await expect(this.accountDropdown).toHaveText(cryptoName);
         await expect(this.page.getByText('You buy')).toBeVisible();
