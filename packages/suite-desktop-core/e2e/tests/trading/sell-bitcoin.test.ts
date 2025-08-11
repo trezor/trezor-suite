@@ -67,7 +67,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
             });
         });
 
-        await tradingPage.waitForSellRedirectCompletion();
+        await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
@@ -140,7 +140,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
                     await tradingPage.termsConfirmButton.click();
                 });
 
-                await tradingPage.waitForSellRedirectCompletion();
+                await tradingPage.waitForRedirectCompletion();
 
                 await test.step('Initiate send and verify Fee', async () => {
                     await tradingPage.initiateSendConfirmation();

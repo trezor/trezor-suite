@@ -3,7 +3,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
-    test.beforeEach(async ({ page, onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: ['eth', 'ltc'],
