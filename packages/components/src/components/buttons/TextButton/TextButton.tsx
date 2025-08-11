@@ -104,9 +104,10 @@ export const TextButton = ({
     isLoading = false,
     children,
     variant = 'primary',
+    margin,
     ...rest
 }: TextButtonProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
+    const frameProps = pickAndPrepareFrameProps({ margin, ...rest }, allowedButtonFrameProps);
     const theme = useTheme();
     const IconComponent = getIcon({
         icon,
