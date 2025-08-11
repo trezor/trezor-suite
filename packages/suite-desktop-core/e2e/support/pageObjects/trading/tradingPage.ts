@@ -483,20 +483,20 @@ export class TradingPage {
     }
 
     @step()
-    async verifyBuyFormOpened(cryptoName: string) {
-        await expect(this.accountDropdown).toContainText(cryptoName);
+    async verifyBuyFormOpened(cryptoName: RegExp) {
+        await expect(this.accountDropdown).toHaveText(cryptoName);
         await expect(this.page.getByText('You buy')).toBeVisible();
     }
 
     @step()
-    async verifySellFormOpened(cryptoName: string) {
-        await expect(this.accountDropdown).toContainText(cryptoName);
+    async verifySellFormOpened(cryptoName: RegExp) {
+        await expect(this.accountDropdown).toHaveText(cryptoName);
         await expect(this.page.getByText('You sell')).toBeVisible();
     }
 
     @step()
-    async verifySwapFormOpened(cryptoName: string) {
-        await expect(this.swapFromAccountInput).toContainText(cryptoName);
+    async verifySwapFormOpened(cryptoName: RegExp) {
+        await expect(this.swapFromAccountInput).toHaveText(cryptoName);
         await expect(this.page.getByText('Swap amount')).toBeVisible();
     }
 
