@@ -98,7 +98,7 @@ export const sessionAuthenticateThunk = createThunk<
         dispatch(
             notificationsActions.addToast({
                 type: 'error',
-                error: `WalletConnect pairing failed - ${error.message}`,
+                error: error.message,
             }),
         );
         await walletKit.rejectSessionAuthenticate({
@@ -419,7 +419,7 @@ export const walletConnectInitThunk = createThunk(
 
 export const walletConnectPairThunk = createThunk<void, { uri: string }>(
     `${WALLETCONNECT_MODULE}/walletConnectPairThunk`,
-    async ({ uri }, { dispatch }) => {
+    async ({ uri }) => {
         try {
             await walletKit.pair({ uri });
             analytics.report({
@@ -427,18 +427,13 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
             });
         } catch (error) {
             console.error('WalletKit.pair:', error);
-            // TODO: make this a friendly localized message
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: `WalletConnect pairing failed - ${error.message}`,
-                }),
-            );
 
             analytics.report({
                 type: EventType.WalletConnectError,
                 payload: { error: error.message },
             });
+
+            throw error;
         }
     },
 );

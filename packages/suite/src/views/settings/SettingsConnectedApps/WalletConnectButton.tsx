@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { Button, Input, Modal } from '@trezor/components';
 
@@ -20,7 +21,16 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
     const handleConnect = async () => {
         setLoading(true);
         setConnectionUrl(''); // Clear input after attempt
-        await dispatch(walletConnectPairThunk({ uri: connectionUrl }));
+        await dispatch(walletConnectPairThunk({ uri: connectionUrl }))
+            .unwrap()
+            .catch(error => {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: error.message,
+                    }),
+                );
+            });
         setLoading(false);
         setModalOpened(false);
     };
