@@ -7,7 +7,7 @@ export type LaunchArguments = {
     isCardanoSendEnabled?: boolean;
     isConnectPopupEnabled?: boolean;
     isDebugKeysAllowed?: boolean;
-    isWalletConnectEnabled?: boolean;
+    isWalletConnectEnabled_v2?: boolean;
     isTradingBuyEnabled?: boolean;
     isTradingExchangeEnabled?: boolean;
     isTradingSellEnabled?: boolean;
