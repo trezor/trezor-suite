@@ -4,7 +4,7 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { selectLocalCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Button, variables } from '@trezor/components';
 
@@ -47,7 +47,7 @@ type DashboardGraphProps = {
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const graph = useSelector(state => state.wallet.graph);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
 
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
@@ -65,18 +65,18 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     }, [accounts, dispatch]);
 
     const receivedValueFn = useCallback(
-        (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[localCurrency],
-        [localCurrency],
+        (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[baseCurrencyCode],
+        [baseCurrencyCode],
     );
 
     const sentValueFn = useCallback(
-        (sourceData: AggregatedDashboardHistory) => sourceData.sentFiat[localCurrency],
-        [localCurrency],
+        (sourceData: AggregatedDashboardHistory) => sourceData.sentFiat[baseCurrencyCode],
+        [baseCurrencyCode],
     );
 
     const balanceValueFn = useCallback(
-        (sourceData: AggregatedDashboardHistory) => sourceData.balanceFiat?.[localCurrency],
-        [localCurrency],
+        (sourceData: AggregatedDashboardHistory) => sourceData.balanceFiat?.[baseCurrencyCode],
+        [baseCurrencyCode],
     );
 
     const minMaxValues = getMinMaxValueFromData(
@@ -125,7 +125,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         variant="all-assets"
                         onRefresh={onRefresh}
                         isLoading={graph.isLoading || isProcessing}
-                        localCurrency={localCurrency}
+                        localCurrency={baseCurrencyCode}
                         xTicks={xTicks}
                         minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}
                         data={data}

@@ -24,8 +24,8 @@ import {
     DeviceRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
+    selectBaseCurrency,
     selectCurrentFiatRates,
-    selectLocalCurrency,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
@@ -122,7 +122,7 @@ export const selectActiveTradingType = (state: TradingRootState) =>
 export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
     [
         selectCurrentFiatRates,
-        selectLocalCurrency,
+        selectBaseCurrency,
         (_state, asset: TradeableAsset) => asset,
         (_state, _symbol, amount: string) => amount,
     ],
@@ -150,7 +150,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectVisibleDeviceAccounts,
             selectTokenDefinitions,
             selectCurrentFiatRates,
-            selectLocalCurrency,
+            selectBaseCurrency,
             selectTradingSellSellCryptoIds,
             selectTradingExchangeSellCryptoIds,
             (_state, tradingType: TradingType) => tradingType,
@@ -239,7 +239,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                         balance: account.formattedBalance,
                         fiatBalance: getAccountFiatBalance({
                             account,
-                            localCurrency,
+                            baseCurrencyCode: localCurrency,
                             rates: fiatRates,
                             shouldIncludeStaking: false,
                             shouldIncludeTokens: false,

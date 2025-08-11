@@ -36,7 +36,7 @@ export const StakeInputs = () => {
         getValues,
         onCryptoAmountChange,
         onFiatAmountChange,
-        localCurrency,
+        baseCurrencyCode,
         isAmountForWithdrawalWarningShown,
         isLessAmountForWithdrawalWarningShown,
         isAdviceForWithdrawalWarningShown,
@@ -61,7 +61,7 @@ export const StakeInputs = () => {
             decimals: validateDecimals(translationString, { decimals: 2 }),
             limits: validateFiatLimits(translationString, {
                 amountLimits,
-                localCurrency,
+                localCurrency: baseCurrencyCode,
                 formatter: CryptoAmountFormatter,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
@@ -140,7 +140,7 @@ export const StakeInputs = () => {
                               rules: fiatInputRules,
                               maxLength: formInputsMaxLength.fiat,
                               innerAddon: (
-                                  <Text variant="tertiary">{localCurrency.toUpperCase()}</Text>
+                                  <Text variant="tertiary">{baseCurrencyCode.toUpperCase()}</Text>
                               ),
                               bottomText: errors[FIAT_INPUT]?.message ?? null,
                               inputState: getInputState(fiatError || cryptoError),
@@ -152,7 +152,7 @@ export const StakeInputs = () => {
                     fiat: (
                         <Translation
                             id="TR_TRADING_ENTER_AMOUNT_IN"
-                            values={{ currency: localCurrency.toUpperCase() }}
+                            values={{ currency: baseCurrencyCode.toUpperCase() }}
                         />
                     ),
                     crypto: (

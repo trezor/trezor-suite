@@ -67,7 +67,7 @@ export const useSendFormImport = ({
                                 symbol: network.symbol,
                             },
                         ],
-                        localCurrency: currency as BaseCurrencyCode,
+                        baseCurrencyCode: currency as BaseCurrencyCode,
                         rateType: 'current',
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),

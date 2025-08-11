@@ -7,7 +7,7 @@ import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 export const useTotalFiatBalance = (
     accounts: Account[],
-    localCurrency: BaseCurrencyCode,
+    baseCurrencyCode: BaseCurrencyCode,
     rates?: RatesByKey,
 ) => {
     const tokenDefinitions = useSelector(state => state.tokenDefinitions);
@@ -22,11 +22,11 @@ export const useTotalFiatBalance = (
         return { ...account, tokens: tokens.shownWithBalance };
     });
 
-    const totalFiatBalance = getTotalFiatBalance({
+    const totalBaseCurrencyBalance = getTotalFiatBalance({
         deviceAccounts,
-        localCurrency,
+        baseCurrencyCode,
         rates,
     }).toString();
 
-    return totalFiatBalance;
+    return totalBaseCurrencyBalance;
 };

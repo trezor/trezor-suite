@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectLocalCurrency, useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -54,7 +54,7 @@ const AccountTopPanelSkeleton = ({ animate, symbol }: AccountTopPanelSkeletonPro
 
 export const AccountTopPanel = () => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
-    const baseCurrency = useSelector(selectLocalCurrency);
+    const baseCurrency = useSelector(selectBaseCurrency);
     const { balanceSectionRef } = useAccountHeaderContext();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
 

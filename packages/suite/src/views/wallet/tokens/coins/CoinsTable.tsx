@@ -1,5 +1,5 @@
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
@@ -21,7 +21,7 @@ interface CoinsTableProps {
 
 export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) => {
     const fiatRates = useSelector(selectCurrentFiatRates);
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     const { account, network } = selectedAccount;
 
@@ -29,7 +29,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
 
     const tokensWithRates = enhanceTokensWithRates(
         account.tokens,
-        localCurrency,
+        baseCurrencyCode,
         account.symbol,
         fiatRates,
     );

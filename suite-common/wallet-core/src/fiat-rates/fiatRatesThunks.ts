@@ -10,7 +10,7 @@ import {
     TickerResult,
     Timestamp,
     WalletAccountTransaction,
-    toTimestamp,
+    asTimestamp,
     toTokenAddress,
 } from '@suite-common/wallet-types';
 import {
@@ -30,13 +30,13 @@ import { selectIsElectrumBackendSelected } from '../blockchain/blockchainSelecto
 type UpdateTxsFiatRatesThunkPayload = {
     accountKey: AccountKey;
     txs: WalletAccountTransaction[];
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
 };
 
 // TODO: Refactor this to batch requests as much as possible
 export const updateTxsFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/updateTxsRates`,
-    async ({ accountKey, txs, localCurrency }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
+    async ({ accountKey, txs, baseCurrencyCode }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account || txs?.length === 0 || isTestnet(account.symbol))
             return { account, rates: [] };
@@ -46,13 +46,13 @@ export const updateTxsFiatRatesThunk = createThunk(
         const rates: TickerResult[] = [];
 
         const timestamps = txs
-            .map(tx => (tx.blockTime !== undefined ? toTimestamp(tx.blockTime) : undefined))
+            .map(tx => (tx.blockTime !== undefined ? asTimestamp(tx.blockTime) : undefined))
             .filter(it => it !== undefined);
 
         await fetchTransactionsRates(
             { symbol: account.symbol },
             timestamps,
-            localCurrency,
+            baseCurrencyCode,
             isElectrumBackend,
             rates,
         );
@@ -77,7 +77,7 @@ export const updateTxsFiatRatesThunk = createThunk(
             }
 
             const tokenTimestamps = groupedTokensTxs[token]
-                .map(tx => (tx.blockTime !== undefined ? toTimestamp(tx.blockTime) : undefined))
+                .map(tx => (tx.blockTime !== undefined ? asTimestamp(tx.blockTime) : undefined))
                 .filter(it => it !== undefined);
 
             await fetchTransactionsRates(
@@ -86,7 +86,7 @@ export const updateTxsFiatRatesThunk = createThunk(
                     tokenAddress: toTokenAddress(token),
                 },
                 tokenTimestamps,
-                localCurrency,
+                baseCurrencyCode,
                 isElectrumBackend,
                 rates,
             );
@@ -98,7 +98,7 @@ export const updateTxsFiatRatesThunk = createThunk(
 
 type UpdateCurrentFiatRatesThunkPayload = {
     tickers: TickerId[];
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
     fetchAttemptTimestamp: Timestamp;
     rateType: RateTypeWithoutHistoric;
     forceFetchToken?: boolean;
@@ -110,7 +110,7 @@ export const updateFiatRatesThunk = createThunk<
     void
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateFiatRates`,
-    async ({ tickers, localCurrency, rateType, forceFetchToken }, { getState }) => {
+    async ({ tickers, baseCurrencyCode, rateType, forceFetchToken }, { getState }) => {
         const fetchRate = async (ticker: TickerId) => {
             if (isTestnet(ticker.symbol)) {
                 throw new Error('Testnet');
@@ -138,13 +138,13 @@ export const updateFiatRatesThunk = createThunk<
                     case 'current':
                         return fetchCurrentFiatRates({
                             ticker,
-                            localCurrency,
+                            localCurrency: baseCurrencyCode,
                             isElectrumBackend,
                         });
                     case 'lastWeek':
                         return fetchLastWeekFiatRates({
                             ticker,
-                            localCurrency,
+                            localCurrency: baseCurrencyCode,
                             isElectrumBackend,
                         });
                     default:
@@ -154,7 +154,7 @@ export const updateFiatRatesThunk = createThunk<
 
             if (!rate) {
                 throw new Error(
-                    `Failed to fetch fiat rates ${ticker.symbol}, currency ${localCurrency}, token ${ticker.tokenAddress ?? '-'}, rateType ${rateType}`,
+                    `Failed to fetch fiat rates ${ticker.symbol}, currency ${baseCurrencyCode}, token ${ticker.tokenAddress ?? '-'}, rateType ${rateType}`,
                 );
             }
 
@@ -184,7 +184,13 @@ export const updateMissingTxFiatRatesThunk = createThunk(
         );
 
         transactionsWithMissingRates.forEach(({ account, txs }) => {
-            dispatch(updateTxsFiatRatesThunk({ accountKey: account.key, txs, localCurrency }));
+            dispatch(
+                updateTxsFiatRatesThunk({
+                    accountKey: account.key,
+                    txs,
+                    baseCurrencyCode: localCurrency,
+                }),
+            );
         });
     },
 );
@@ -197,7 +203,7 @@ type FetchFiatRatesThunkPayload = {
 export const fetchFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/fetchFiatRates`,
     ({ rateType, localCurrency }: FetchFiatRatesThunkPayload, { dispatch, getState }) => {
-        const currentTimestamp = toTimestamp(Date.now());
+        const currentTimestamp = asTimestamp(Date.now());
         const tickers = selectTickersToBeUpdated(
             getState(),
             currentTimestamp,
@@ -228,9 +234,9 @@ export const fetchFiatRatesThunk = createThunk(
                     dispatch(
                         updateFiatRatesThunk({
                             tickers: chunk,
-                            localCurrency,
+                            baseCurrencyCode: localCurrency,
                             rateType,
-                            fetchAttemptTimestamp: toTimestamp(Date.now()),
+                            fetchAttemptTimestamp: asTimestamp(Date.now()),
                         }),
                     ),
                 ),

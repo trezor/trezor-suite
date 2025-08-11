@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectFiatRatesByFiatRateKey, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
@@ -43,8 +43,8 @@ export const TrendTicker = ({
     showLoadingSkeleton = true,
 }: TickerProps) => {
     const locale = useSelector(selectLanguage);
-    const localCurrency = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(symbol, localCurrency, contractAddress);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
     const lastWeekRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek'),
     );

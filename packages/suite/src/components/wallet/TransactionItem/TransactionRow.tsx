@@ -1,5 +1,5 @@
 import { SignOperator } from '@suite-common/suite-types';
-import { selectHistoricFiatRatesByTimestamp, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
     formatCardanoDeposit,
@@ -33,7 +33,7 @@ export const CustomRow = ({
     isLast?: boolean;
     className?: string;
 }) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
     const historicRate = useSelector(state =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
@@ -135,7 +135,7 @@ type CoinjoinRowProps = {
 };
 
 export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) => {
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, baseCurrencyCode);
     const historicRate = useSelector(state =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),

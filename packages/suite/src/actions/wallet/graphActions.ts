@@ -1,4 +1,4 @@
-import { selectIsElectrumBackendSelected, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
@@ -83,7 +83,7 @@ export const fetchAccountGraphData =
             },
         });
 
-        const localCurrency = selectLocalCurrency(getState());
+        const baseCurrencyCode = selectBaseCurrency(getState());
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin: account.symbol,
             identity: tryGetAccountIdentity(account),
@@ -97,7 +97,7 @@ export const fetchAccountGraphData =
             const responseWithRates = await ensureHistoryRates(
                 account.symbol,
                 response.payload,
-                localCurrency,
+                baseCurrencyCode,
                 isElectrumBackend,
             );
 

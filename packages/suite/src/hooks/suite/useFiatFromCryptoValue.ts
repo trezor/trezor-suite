@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectFiatRatesByFiatRateKey, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
@@ -23,13 +23,13 @@ export const useFiatFromCryptoValue = ({
     historicRate,
     useHistoricRate,
 }: UseFiatFromCryptoValueParams) => {
-    const localCurrency = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(symbol, localCurrency, tokenAddress);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
 
     const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
     const fiatAmount = rate ? toFiatCurrency({ amount, rate }) : null;
 
-    return { localCurrency, fiatAmount, rate, currentRate };
+    return { baseCurrencyCode, fiatAmount, rate, currentRate };
 };

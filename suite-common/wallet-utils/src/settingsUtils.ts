@@ -3,11 +3,6 @@ import { PROTO } from '@trezor/connect';
 
 import { hasNetworkFeatures } from './accountUtils';
 
-export const getLocalCurrency = (localCurrency: string) => ({
-    value: localCurrency,
-    label: localCurrency.toUpperCase(),
-});
-
 export const getAreSatoshisUsed = (bitcoinAmountUnit: PROTO.AmountUnit, account: Account) => {
     const areSatsDisplayed = bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
 

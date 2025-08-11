@@ -14,7 +14,7 @@ interface AssetTableProps {
     discoveryInProgress?: boolean;
     assetsData: AssetData[];
     assetsFiatBalances: AssetFiatBalance[];
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
     currentFiatRates?: RatesByKey;
 }
 
@@ -22,7 +22,7 @@ export const AssetTable = ({
     discoveryInProgress,
     assetsData,
     assetsFiatBalances,
-    localCurrency,
+    baseCurrencyCode,
     currentFiatRates,
 }: AssetTableProps) => (
     <Table
@@ -57,7 +57,7 @@ export const AssetTable = ({
                     assetTokens={asset.assetTokens}
                     stakingAccounts={asset.stakingAccounts}
                     assetsFiatBalances={assetsFiatBalances}
-                    localCurrency={localCurrency}
+                    baseCurrencyCode={baseCurrencyCode}
                     currentFiatRates={currentFiatRates}
                     accounts={asset.accounts}
                     isStakeNetwork={asset.isStakeNetwork}

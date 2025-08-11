@@ -7,8 +7,8 @@ import { fromWei } from 'web3-utils';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import {
     StakeContextValues,
+    selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
-    selectLocalCurrency,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
@@ -45,13 +45,13 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     const { account, network } = selectedAccount;
     const { symbol } = account;
 
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
 
     const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
 
     const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, baseCurrencyCode), 'current'),
     );
 
     const { MIN_AMOUNT_FOR_STAKING, MIN_FOR_WITHDRAWALS, MIN_BALANCE_FOR_STAKING } =
@@ -374,7 +374,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
         setValue,
         selectedFee,
         translationString,
-        localCurrency,
+        baseCurrencyCode,
         composedFee,
         account.formattedBalance,
         currentRate,
@@ -419,7 +419,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
         amountLimits,
         onCryptoAmountChange,
         onFiatAmountChange,
-        localCurrency,
+        baseCurrencyCode,
         composedLevels,
         isComposing,
         setMax,

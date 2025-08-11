@@ -161,7 +161,7 @@ export const BaseCurrencyInput = ({
                                 tokenAddress: token?.contract as TokenAddress,
                             },
                         ],
-                        localCurrency: selected.value as BaseCurrencyCode,
+                        baseCurrencyCode: selected.value as BaseCurrencyCode,
                         rateType: 'current',
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),

@@ -33,7 +33,7 @@ type FiatRatesParams = {
 const getConnectFiatRatesForTimestamp = async (
     ticker: TickerId,
     timestamps: number[],
-    currency: BaseCurrencyCode,
+    baseCurrencyCode: BaseCurrencyCode,
 ): Promise<
     | ReturnType<typeof TrezorConnect.blockchainGetFiatRatesForTimestamps>
     | { success: false; payload: null }
@@ -45,7 +45,7 @@ const getConnectFiatRatesForTimestamp = async (
                     coin: ticker.symbol,
                     token: ticker.tokenAddress,
                     timestamps,
-                    currencies: [currency],
+                    currencies: [baseCurrencyCode],
                 }),
             {
                 timeout: CONNECT_FETCH_TIMEOUT,
@@ -205,7 +205,7 @@ export const fetchLastWeekFiatRates = ({
 export const getFiatRatesForTimestamps = (
     ticker: TickerId,
     timestamps: number[],
-    localCurrency: BaseCurrencyCode,
+    baseCurrencyCode: BaseCurrencyCode,
     isElectrumBackend: boolean,
 ): Promise<HistoricRates | null> =>
     parallelRequestsCache.cache(
@@ -213,7 +213,7 @@ export const getFiatRatesForTimestamps = (
             'getFiatRatesForTimestamps',
             ticker.symbol,
             ticker?.tokenAddress,
-            localCurrency,
+            baseCurrencyCode,
             ...timestamps,
         ],
         async () => {
@@ -222,14 +222,14 @@ export const getFiatRatesForTimestamps = (
                     const { success, payload } = await getConnectFiatRatesForTimestamp(
                         ticker,
                         timestamps,
-                        localCurrency,
+                        baseCurrencyCode,
                     );
 
                     if (!success) return null;
 
                     // in case blockbook does not know fiat rate, it returns -1
                     const validTickers = payload.tickers.filter(
-                        tick => tick.rates[localCurrency] && tick.rates[localCurrency] >= 0,
+                        tick => tick.rates[baseCurrencyCode] && tick.rates[baseCurrencyCode] >= 0,
                     );
 
                     return {
@@ -242,7 +242,7 @@ export const getFiatRatesForTimestamps = (
                 const blockbookResponse = await blockbookService.getFiatRatesForTimestamps(
                     'btc',
                     timestamps,
-                    localCurrency,
+                    baseCurrencyCode,
                 );
 
                 if (blockbookResponse) return blockbookResponse;
@@ -251,7 +251,7 @@ export const getFiatRatesForTimestamps = (
             const coingeckoResponse = await coingeckoService.getFiatRatesForTimestamps(
                 ticker,
                 timestamps,
-                localCurrency,
+                baseCurrencyCode,
             );
 
             if (!coingeckoResponse) {

@@ -31,7 +31,7 @@ describe('settings reducer', () => {
     it('SET_LOCAL_CURRENCY', () => {
         expect(
             reducer(undefined, {
-                type: walletSettingsActions.setLocalCurrency.type,
+                type: walletSettingsActions.setBaseCurrency.type,
                 payload: { localCurrency: 'czk' },
             }),
         ).toEqual({

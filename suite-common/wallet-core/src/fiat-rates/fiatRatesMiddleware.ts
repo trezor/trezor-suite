@@ -12,8 +12,8 @@ import {
 } from './fiatRatesThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { blockchainActions } from '../blockchain/blockchainActions';
-import { setLocalCurrency } from '../settings/walletSettingsActions';
-import { selectLocalCurrency } from '../settings/walletSettingsReducer';
+import { setBaseCurrency } from '../settings/walletSettingsActions';
+import { selectBaseCurrency } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { fetchAllTransactionsForAccountThunk } from '../transactions/transactionsThunks';
 
@@ -25,14 +25,14 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             dispatch(
                 fetchFiatRatesThunk({
                     rateType: 'current',
-                    localCurrency: selectLocalCurrency(getState()),
+                    localCurrency: selectBaseCurrency(getState()),
                 }),
             );
             if (!isNative()) {
                 dispatch(
                     fetchFiatRatesThunk({
                         rateType: 'lastWeek',
-                        localCurrency: selectLocalCurrency(getState()),
+                        localCurrency: selectBaseCurrency(getState()),
                     }),
                 );
             }
@@ -49,7 +49,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 updateTxsFiatRatesThunk({
                     accountKey: account.key,
                     txs: transactions,
-                    localCurrency: selectLocalCurrency(getState()),
+                    baseCurrencyCode: selectBaseCurrency(getState()),
                 }),
             );
         }
@@ -67,11 +67,11 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             // It is happening in suite-native because it does not have fiat rates persisted.
             // But it can happen on desktop as well if fiat rates fetch fails for whatever reason.
             dispatch(
-                updateMissingTxFiatRatesThunk({ localCurrency: selectLocalCurrency(getState()) }),
+                updateMissingTxFiatRatesThunk({ localCurrency: selectBaseCurrency(getState()) }),
             );
         }
 
-        if (setLocalCurrency.match(action)) {
+        if (setBaseCurrency.match(action)) {
             const { localCurrency } = action.payload;
             // We need to pass localCurrency as a parameter, because it is not yet updated in the store
             dispatch(fetchFiatRatesThunk({ rateType: 'current', localCurrency }));
@@ -90,14 +90,14 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             dispatch(
                 fetchFiatRatesThunk({
                     rateType: 'current',
-                    localCurrency: selectLocalCurrency(getState()),
+                    localCurrency: selectBaseCurrency(getState()),
                 }),
             );
             if (!isNative()) {
                 dispatch(
                     fetchFiatRatesThunk({
                         rateType: 'lastWeek',
-                        localCurrency: selectLocalCurrency(getState()),
+                        localCurrency: selectBaseCurrency(getState()),
                     }),
                 );
             }
@@ -105,7 +105,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
 
         // Fetch fiat rates for all tokens of newly suite-native discovered account.
         if (accountsActions.createAccount.match(action)) {
-            const localCurrency = selectLocalCurrency(getState());
+            const baseCurrencyCode = selectBaseCurrency(getState());
 
             const { tokens = [], symbol } = action.payload;
             const tokenTickers = tokens.map(token => ({
@@ -119,7 +119,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 updateFiatRatesThunk({
                     tickers,
                     rateType: 'current',
-                    localCurrency,
+                    baseCurrencyCode,
                     fetchAttemptTimestamp: Date.now() as Timestamp,
                 }),
             );

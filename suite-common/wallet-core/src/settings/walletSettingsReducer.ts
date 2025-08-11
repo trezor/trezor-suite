@@ -39,8 +39,8 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
     (builder, extra) => {
         builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadWalletSettings);
         builder.addCase(
-            walletSettingsActions.setLocalCurrency.type,
-            (state, action: ReturnType<typeof walletSettingsActions.setLocalCurrency>) => {
+            walletSettingsActions.setBaseCurrency.type,
+            (state, action: ReturnType<typeof walletSettingsActions.setBaseCurrency>) => {
                 const { localCurrency } = action.payload;
                 state.localCurrency = localCurrency;
             },
@@ -74,7 +74,7 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
 
 export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
     returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
-export const selectLocalCurrency = (state: WalletSettingsRootState) =>
+export const selectBaseCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
 export const selectIsDiscreteModeActive = (state: WalletSettingsRootState) =>
     state.wallet.settings.discreetMode;
@@ -105,7 +105,7 @@ export const selectIsAmountInSats = (
 
 export const selectIsBaseCurrencyInSats = (state: WalletSettingsRootState) => {
     const areSatsAmountUnit = selectAreSatsAmountUnit(state);
-    const baseCurrency = selectLocalCurrency(state);
+    const baseCurrency = selectBaseCurrency(state);
 
     return isBaseCurrencyWithSats(baseCurrency) && areSatsAmountUnit;
 };

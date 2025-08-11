@@ -5,9 +5,9 @@ import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     FiatRatesRootState,
     TransactionsRootState,
+    selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     selectIsPhishingTransaction,
-    selectLocalCurrency,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
 import { AccountKey, Timestamp } from '@suite-common/wallet-types';
@@ -47,7 +47,7 @@ export const TransactionDetailData = ({
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
     const historicRate = useSelector((state: FiatRatesRootState) =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),

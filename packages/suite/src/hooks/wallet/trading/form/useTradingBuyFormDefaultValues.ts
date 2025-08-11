@@ -14,7 +14,7 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -48,17 +48,17 @@ export const useTradingBuyFormDefaultValues = (
         [],
     );
 
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isEnabledTradingCurrency = isArrayMember(
-        localCurrency,
+        baseCurrencyCode,
         typedObjectValues(enabledTradingCurrencies),
     );
     const suggestedFiatCurrency = (
-        isEnabledTradingCurrency ? localCurrency : 'usd'
+        isEnabledTradingCurrency ? baseCurrencyCode : 'usd'
     ) as FiatCurrencyCode;
     const defaultCurrency = useMemo(
-        () => buildTradingFiatOption(isEnabledTradingCurrency ? localCurrency : 'usd'),
-        [isEnabledTradingCurrency, localCurrency],
+        () => buildTradingFiatOption(isEnabledTradingCurrency ? baseCurrencyCode : 'usd'),
+        [isEnabledTradingCurrency, baseCurrencyCode],
     );
     const defaultValues = useMemo(
         () => ({

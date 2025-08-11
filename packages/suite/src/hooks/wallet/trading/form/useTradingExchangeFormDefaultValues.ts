@@ -18,7 +18,7 @@ import {
     selectTradingPrefilledFromAccount,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { FormState, Output } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
@@ -35,7 +35,7 @@ import {
 export const useTradingExchangeFormDefaultValues = (
     account: Account,
 ): TradingExchangeFormDefaultValuesProps => {
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
 
     const defaultCurrency = useMemo(
@@ -43,11 +43,11 @@ export const useTradingExchangeFormDefaultValues = (
             // Here, we are using BaseCurrency as a way how to determine the users preferred Sell/Buy currency,
             // however, they may not be available (or it is 'btc'). In that case, we fall back to 'usd'
             buildTradingFiatOption(
-                isArrayMember(localCurrency, typedObjectValues(enabledTradingCurrencies))
-                    ? localCurrency
+                isArrayMember(baseCurrencyCode, typedObjectValues(enabledTradingCurrencies))
+                    ? baseCurrencyCode
                     : 'usd',
             ),
-        [localCurrency],
+        [baseCurrencyCode],
     );
     const cryptoGroups = useTradingBuildAccountGroups('exchange');
     const cryptoOptions = useMemo(

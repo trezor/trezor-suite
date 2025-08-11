@@ -34,7 +34,7 @@ type Data = {
     accountName: string;
     type: ExportFileType;
     transactions: AccountTransactionForExports[];
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
 };
 
 type Fields = {
@@ -149,7 +149,7 @@ const prepareContent = (
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ): Fields[] => {
-    const { transactions, symbol, localCurrency } = data;
+    const { transactions, symbol, baseCurrencyCode } = data;
 
     return transactions
         .map(formatAmounts(symbol))
@@ -169,7 +169,7 @@ const prepareContent = (
                 type: t.type.toUpperCase(),
                 txid: t.txid,
             };
-            const fiatRateKey = getFiatRateKey(t.symbol, localCurrency);
+            const fiatRateKey = getFiatRateKey(t.symbol, baseCurrencyCode);
             const roundedTimestamp = roundTimestampToNearestPastHour(t.blockTime as Timestamp);
             const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
 
@@ -220,7 +220,7 @@ const prepareContent = (
 
                     const tokenFiatRateKey = getFiatRateKey(
                         t.symbol,
-                        localCurrency,
+                        baseCurrencyCode,
                         token.contract as TokenAddress,
                     );
                     const historicTokenRate =
@@ -316,7 +316,7 @@ const prepareCsv = (
         label: 'Label',
         amount: 'Amount',
         symbol: 'Amount unit',
-        fiat: `Fiat (${data.localCurrency.toUpperCase()})`,
+        fiat: `Fiat (${data.baseCurrencyCode.toUpperCase()})`,
         other: 'Other',
     };
 

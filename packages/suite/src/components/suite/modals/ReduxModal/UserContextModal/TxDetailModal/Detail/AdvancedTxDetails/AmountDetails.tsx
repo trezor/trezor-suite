@@ -1,7 +1,7 @@
 import {
+    selectBaseCurrency,
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -35,8 +35,8 @@ type AmountDetailsProps = {
 
 // TODO: Do not show FEE for sent but not mine transactions
 export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(tx.symbol, fiatCurrencyCode);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const fiatRateKey = getFiatRateKey(tx.symbol, baseCurrencyCode);
 
     const historicRate = useSelector(state =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, tx.blockTime as Timestamp),
@@ -169,7 +169,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 {tx.tokens.map((transfer, i) => {
                     const tokenFiatRateKey = getFiatRateKey(
                         tx.symbol,
-                        fiatCurrencyCode,
+                        baseCurrencyCode,
                         transfer.contract as TokenAddress,
                     );
                     const roundedTimestamp = roundTimestampToNearestPastHour(

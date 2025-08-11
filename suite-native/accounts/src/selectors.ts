@@ -15,10 +15,10 @@ import {
     TransactionsRootState,
     WalletSettingsRootState,
     selectAccountByKey,
+    selectBaseCurrency,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
     selectIsPortfolioTrackerDevice,
-    selectLocalCurrency,
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
@@ -77,7 +77,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
     [
         selectCurrentFiatRates,
         selectAccountByKey,
-        selectLocalCurrency,
+        selectBaseCurrency,
         (_, _accountKey: AccountKey, shouldIncludeStaking?: boolean) =>
             shouldIncludeStaking ?? true,
         (
@@ -95,7 +95,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
         const totalBalance = getAccountFiatBalance({
             account,
             rates: fiatRates,
-            localCurrency,
+            baseCurrencyCode: localCurrency,
             shouldIncludeStaking,
             shouldIncludeTokens,
         });
@@ -109,7 +109,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
 );
 
 export const selectAccountTokenFiatBalance = createMemoizedSelector(
-    [selectCurrentFiatRates, selectLocalCurrency, selectAccountByKey, selectAccountTokenInfo],
+    [selectCurrentFiatRates, selectBaseCurrency, selectAccountByKey, selectAccountTokenInfo],
     (fiatRates, localCurrency, account, tokenInfo) => {
         if (!account || !fiatRates || !tokenInfo) return BASE_CURRENCY_ZERO;
         const { contract, balance } = tokenInfo;

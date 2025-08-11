@@ -8,7 +8,7 @@ import {
     blockchainActions,
     changeNetworks,
     deviceActions,
-    setLocalCurrency,
+    setBaseCurrency,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
@@ -38,7 +38,7 @@ const breadcrumbActions = new Set<Action['type']>([
     SUITE.SET_THEME,
     SUITE.SET_ADDRESS_DISPLAY_TYPE,
     SUITE.SET_AUTODETECT,
-    setLocalCurrency.type,
+    setBaseCurrency.type,
     WALLET_SETTINGS.SET_HIDE_BALANCE,
     METADATA.ENABLE,
     METADATA.DISABLE,

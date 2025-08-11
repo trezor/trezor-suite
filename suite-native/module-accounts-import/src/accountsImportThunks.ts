@@ -80,11 +80,11 @@ export const importAccountThunk = createThunk(
 
 export const getAccountInfoThunk = createThunk<
     AccountInfo,
-    { symbol: NetworkSymbol; fiatCurrency: BaseCurrencyCode; xpubAddress: string },
+    { symbol: NetworkSymbol; baseCurrencyCode: BaseCurrencyCode; xpubAddress: string },
     { rejectValue: string }
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
-    async ({ symbol, fiatCurrency, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
+    async ({ symbol, baseCurrencyCode, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
         // Connect requires apostrophe in Taproot descriptors thus a conversion is necessary.
         const taprootXpubWithApostrophes = convertTaprootXpub({
             xpub: xpubAddress,
@@ -112,7 +112,7 @@ export const getAccountInfoThunk = createThunk<
                             },
                         ],
                         rateType: 'current',
-                        localCurrency: fiatCurrency,
+                        baseCurrencyCode,
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
                 ),
@@ -152,7 +152,7 @@ export const getAccountInfoThunk = createThunk<
                     updateFiatRatesThunk({
                         tickers,
                         rateType: 'current',
-                        localCurrency: fiatCurrency,
+                        baseCurrencyCode,
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
                 );

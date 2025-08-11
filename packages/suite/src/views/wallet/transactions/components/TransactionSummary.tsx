@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row, variables } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -46,7 +46,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
     const graph = useSelector(state => state.wallet.graph);
 
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
@@ -132,7 +132,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                                 minMaxValues[0].toNumber(),
                                                 minMaxValues[1].toNumber(),
                                             ]}
-                                            localCurrency={localCurrency}
+                                            localCurrency={baseCurrencyCode}
                                             onRefresh={onRefresh}
                                             selectedRange={selectedRange}
                                             receivedValueFn={data => data.received}
@@ -151,7 +151,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     selectedRange={selectedRange}
                     dataInterval={dataInterval}
                     data={data}
-                    localCurrency={localCurrency}
+                    localCurrency={baseCurrencyCode}
                     account={account}
                     isLoading={isLoading}
                 />

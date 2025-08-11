@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
+    selectBaseCurrency,
     selectBitcoinAmountUnit,
     selectEnabledNetworks,
-    selectLocalCurrency,
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
@@ -25,7 +25,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
     const { isDiscreetMode } = useDiscreetMode();
-    const currencyCode = useSelector(selectLocalCurrency);
+    const currencyCode = useSelector(selectBaseCurrency);
     const bitcoinUnit = useSelector(selectBitcoinAmountUnit);
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const rememberedStandardWallets = useSelector(selectRememberedStandardWalletsCount);

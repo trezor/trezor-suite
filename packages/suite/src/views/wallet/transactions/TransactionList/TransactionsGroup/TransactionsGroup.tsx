@@ -38,7 +38,7 @@ interface TransactionsGroupProps {
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
     symbol: NetworkSymbol;
-    localCurrency: BaseCurrencyCode;
+    baseCurrencyCode: BaseCurrencyCode;
     index: number;
     isPending: boolean;
 }
@@ -47,7 +47,7 @@ export const TransactionsGroup = ({
     dateKey,
     symbol,
     transactions,
-    localCurrency,
+    baseCurrencyCode,
     isPending,
     children,
     index,
@@ -59,11 +59,11 @@ export const TransactionsGroup = ({
     const totalAmountPerDay = sumTransactions(transactions);
     const totalFiatAmountPerDay = sumTransactionsFiat(
         transactions,
-        localCurrency,
+        baseCurrencyCode,
         historicFiatRates,
     );
     const isMissingFiatRates = transactions.some(tx => {
-        const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency);
+        const fiatRateKey = getFiatRateKey(tx.symbol, baseCurrencyCode);
         const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
         const historicCryptoRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
 
@@ -80,7 +80,7 @@ export const TransactionsGroup = ({
 
                 const tokenFiatRateKey = getFiatRateKey(
                     tx.symbol,
-                    localCurrency,
+                    baseCurrencyCode,
                     token.contract as TokenAddress,
                 );
                 const historicTokenRate = historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
@@ -105,7 +105,7 @@ export const TransactionsGroup = ({
                 isHovered={isHovered}
                 totalAmount={totalAmountPerDay}
                 totalFiatAmountPerDay={totalFiatAmountPerDay}
-                localCurrency={localCurrency}
+                localCurrency={baseCurrencyCode}
                 isMissingFiatRates={isMissingFiatRates}
             />
             {children}

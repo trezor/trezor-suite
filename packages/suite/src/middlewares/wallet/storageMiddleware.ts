@@ -23,7 +23,7 @@ import {
     selectHistoricFiatRates,
     selectSelectedDevice,
     sendFormActions,
-    setLocalCurrency,
+    setBaseCurrency,
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
@@ -246,7 +246,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             switch (action.type) {
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
-                case setLocalCurrency.type:
+                case setBaseCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                     api.dispatch(storageActions.saveWalletSettings());
                     break;

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
@@ -22,16 +22,16 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
     account,
     hasAnyKnownTokens,
 }) => {
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rates = useSelector(selectCurrentFiatRates);
     const cryptoBalanceWithStaking = useSelector((state: NativeStakingRootState) =>
         selectAccountCryptoBalanceWithStaking(state, account.key),
     );
     const shouldIncludeStaking = doesCoinSupportStaking(account.symbol);
 
-    const fiatBalance = useMemo(
-        () => getAccountFiatBalance({ account, localCurrency, rates, shouldIncludeStaking }),
-        [account, localCurrency, rates, shouldIncludeStaking],
+    const baseCurrencyBalance = useMemo(
+        () => getAccountFiatBalance({ account, baseCurrencyCode, rates, shouldIncludeStaking }),
+        [account, baseCurrencyCode, rates, shouldIncludeStaking],
     );
 
     return (
@@ -43,7 +43,7 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
                     <BaseCurrencyAmountFormatter
                         numberOfLines={1}
                         adjustsFontSizeToFit
-                        value={fiatBalance}
+                        value={baseCurrencyBalance}
                     />
                     <CryptoAmountFormatter
                         value={cryptoBalanceWithStaking}

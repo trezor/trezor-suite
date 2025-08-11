@@ -4,10 +4,10 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRatesRootState,
     WalletSettingsRootState,
+    selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -44,7 +44,7 @@ export const useCryptoFiatConverters = ({
         selectIsAmountInSats(state, symbolHelper),
     );
 
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const fiatRateKey = getFiatRateKey(symbolHelper, baseCurrencyCode, tokenContract);
     const currentRate = useSelector((state: FiatRatesRootState) =>

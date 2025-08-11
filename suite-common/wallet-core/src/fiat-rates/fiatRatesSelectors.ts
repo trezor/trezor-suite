@@ -7,7 +7,7 @@ import {
 import {
     Account,
     AccountKey,
-    FiatRateKey,
+    CryptoBaseCurrencyPair,
     Rate,
     RateTypeWithoutHistoric,
     RatesByKey,
@@ -40,13 +40,13 @@ export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimes
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,
-    fiatRateKey: FiatRateKey,
+    fiatRateKey: CryptoBaseCurrencyPair,
     rateType: RateTypeWithoutHistoric = 'current',
 ): Rate | undefined => state.wallet.fiat?.[rateType]?.[fiatRateKey];
 
 export const selectHistoricFiatRatesByTimestamp = (
     state: FiatRatesRootState,
-    fiatRateKey: FiatRateKey,
+    fiatRateKey: CryptoBaseCurrencyPair,
     timestamp: Timestamp,
 ): number | undefined => {
     const roundedTimestamp = roundTimestampToNearestPastHour(timestamp);
@@ -56,7 +56,7 @@ export const selectHistoricFiatRatesByTimestamp = (
 
 export const selectIsFiatRateLoading = (
     state: FiatRatesRootState,
-    fiatRateKey: FiatRateKey,
+    fiatRateKey: CryptoBaseCurrencyPair,
     rateType: RateTypeWithoutHistoric = 'current',
 ) => {
     const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType);
@@ -78,7 +78,7 @@ export const selectIsTickerLoading = (
 export const selectShouldUpdateFiatRate = (
     state: FiatRatesRootState,
     currentTimestamp: Timestamp,
-    fiatRateKey: FiatRateKey,
+    fiatRateKey: CryptoBaseCurrencyPair,
     rateType: RateTypeWithoutHistoric = 'current',
 ) => {
     const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType);

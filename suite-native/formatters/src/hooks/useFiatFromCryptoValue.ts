@@ -4,8 +4,8 @@ import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRatesRootState,
+    selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
-    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -31,7 +31,7 @@ export const useFiatFromCryptoValue = ({
     isBalance = false,
     tokenDecimals = 0,
 }: useFiatFromCryptoValueParams) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),

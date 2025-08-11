@@ -9,7 +9,7 @@ import {
     cryptoIdToNetworkAndContractAddress,
     invityAPI,
 } from '@suite-common/trading';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Text } from '@trezor/components';
@@ -28,7 +28,7 @@ import {
 export const TradingFormOfferOTC = () => {
     const context = useTradingFormContext<TradingTradeBuySellType>();
     const locale = useSelector(selectLanguage);
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { amountInCrypto } = context.getValues();
 
     const fiatInput = isTradingBuyContext(context)
@@ -39,7 +39,7 @@ export const TradingFormOfferOTC = () => {
         ? context.getValues().currencySelect.value
         : context.getValues().outputs[0].currency.value;
     if (amountInCrypto) {
-        fiatCurrency = localCurrency;
+        fiatCurrency = baseCurrencyCode;
     }
 
     const cryptoAmount = isTradingBuyContext(context)

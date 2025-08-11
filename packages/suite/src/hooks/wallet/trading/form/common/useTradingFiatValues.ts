@@ -5,8 +5,8 @@ import { FiatCurrencyCode } from 'invity-api';
 import { cryptoIdToSymbol, mapTestnetSymbol } from '@suite-common/trading';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
+    selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
-    selectLocalCurrency,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -53,10 +53,10 @@ export const useTradingFiatValues = ({
         | TokenAddress
         | undefined;
     const symbolForFiat = mapTestnetSymbol(symbol);
-    const localCurrency = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(
         symbolForFiat,
-        fiatCurrency ?? localCurrency,
+        fiatCurrency ?? baseCurrencyCode,
         tokenAddressTyped,
     );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
@@ -80,7 +80,7 @@ export const useTradingFiatValues = ({
                             tokenAddress: currentTokenAddress ?? tokenAddressTyped,
                         },
                     ],
-                    localCurrency: value,
+                    baseCurrencyCode: value,
                     rateType: 'current',
                     fetchAttemptTimestamp: Date.now() as Timestamp,
                 }),

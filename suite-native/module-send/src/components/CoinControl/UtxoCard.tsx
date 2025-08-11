@@ -9,8 +9,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRatesRootState,
     TransactionsRootState,
+    selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
-    selectLocalCurrency,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -60,7 +60,7 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = fals
         selectTransactionBlockTimeById(state, accountKey, utxo.txid),
     );
 
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
 
     const currentRates = useSelector((state: FiatRatesRootState) =>

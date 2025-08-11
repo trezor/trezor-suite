@@ -53,7 +53,7 @@ export const walletSettingsFixtures = [
     {
         description: 'setLocalCurrency',
         initialState: { localCurrency: 'eur' },
-        action: () => walletSettingsActions.setLocalCurrency('usd'),
+        action: () => walletSettingsActions.setBaseCurrency('usd'),
         result: {
             localCurrency: 'usd',
         },

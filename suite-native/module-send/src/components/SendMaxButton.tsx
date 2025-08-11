@@ -10,7 +10,7 @@ import {
     AccountsRootState,
     selectAccountNetworkSymbol,
     selectAreSatsAmountUnit,
-    selectLocalCurrency,
+    selectBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency, isAddressValid } from '@suite-common/wallet-utils';
@@ -44,7 +44,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
     const decimals = symbol && getNetwork(symbol).decimals;
 
     const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
-    const baseCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const decimalsForBaseCurrency = getDecimalsForBaseCurrency({
         code: baseCurrencyCode,
         isInSats: isBtcAmountInSats,
