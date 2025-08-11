@@ -6,7 +6,6 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
-import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     appIsFullyLoaded,
@@ -48,7 +47,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
     };
 
     const expectNonEmptyWallet = async () => {
-        await onPassphrase.expectSwitcherSubheader('Passphrase wallet #1');
+        await onPassphrase.expectSwitcherSubheader('Passphrase wallet #2');
 
         const amountEl = element(by.id('@assets/cryptoAmount/regtest'));
         const { text } = (await amountEl.getAttributes()) as { text: string };
@@ -88,8 +87,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
             await prepareTrezorEmulator();
             await restartApp();
             await appIsFullyLoaded();
-
-            await onConnectingDevice.waitForScreen();
         });
 
         it('Open empty passphrase wallet', async () => {
@@ -135,8 +132,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
             await prepareTrezorEmulator({ seed: undefined, passphrase_protection: true });
             await restartApp();
             await appIsFullyLoaded();
-
-            await onConnectingDevice.waitForScreen();
         });
 
         it('Open empty passphrase wallet', async () => {

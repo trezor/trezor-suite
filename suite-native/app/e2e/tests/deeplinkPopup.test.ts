@@ -60,7 +60,20 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
         await device.reverseTcpPort(SERVER_PORT);
 
         await prepareTrezorEmulator();
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
+        await openApp({
+            newInstance: true,
+            args: {
+                preloadedState: {
+                    appSettings: {
+                        ...onboardingCompleted?.appSettings,
+                    },
+                    device: {
+                        isDeviceAutoEjectEnabled: true,
+                        devices: [],
+                    },
+                },
+            },
+        });
 
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
@@ -93,6 +106,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
 
     afterAll(async () => {
         await disconnectTrezorUserEnv();
+
         await new Promise(resolve => {
             if (server) {
                 server.close(() => {
