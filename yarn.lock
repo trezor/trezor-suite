@@ -4356,14 +4356,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@hookform/resolvers@npm:5.1.1"
+"@hookform/resolvers@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "@hookform/resolvers@npm:5.2.1"
   dependencies:
     "@standard-schema/utils": "npm:^0.3.0"
   peerDependencies:
     react-hook-form: ^7.55.0
-  checksum: 10/4d686cd268786e1b56b5e6478e4298542ac7866ffe978de970399480dc42fddf57ebbb6c1df87a0b37c5f42e0fef26770843912639599b1419056ff5d99b4dcb
+  checksum: 10/9accc49f668209b58a4db5f410ab629d55fb9ac19d3cc6a591df9742a869286e1b929f117f419accaeb302a5941bf22f7e6da9c8b06cdb1104f57ac1a2a11c7e
   languageName: node
   linkType: hard
 
@@ -9962,7 +9962,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     react-redux: "npm:^9.2.0"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
@@ -10007,7 +10007,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     react: "npm:19.0.0"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     web3-eth-abi: "npm:^4.4.1"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
@@ -10064,7 +10064,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     jotai: "npm:^2.12.5"
     react: "npm:19.0.0"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     react-native: "npm:0.79.3"
     react-native-reanimated: "npm:^3.18.0"
     react-redux: "npm:9.2.0"
@@ -10607,12 +10607,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:^5.1.1"
+    "@hookform/resolvers": "npm:^5.2.1"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     react: "npm:19.0.0"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     react-native: "npm:0.79.3"
     react-native-reanimated: "npm:^3.18.0"
     yup: "npm:^1.6.1"
@@ -10781,7 +10781,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     react: "npm:19.0.0"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     react-native: "npm:0.79.3"
     react-native-reanimated: "npm:^3.18.0"
     react-redux: "npm:9.2.0"
@@ -11140,7 +11140,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jotai: "npm:^2.12.5"
     react: "npm:19.0.0"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     react-native: "npm:0.79.3"
     react-native-reanimated: "npm:^3.18.0"
     react-native-svg: "npm:15.11.2"
@@ -12485,7 +12485,7 @@ __metadata:
     "@types/zxcvbn": "npm:4.4.5"
     framer-motion: "npm:^12.23.3"
     react: "npm:19.0.0"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     react-intl: "npm:^7.1.11"
     react-svg: "npm:16.3.0"
     storybook: "npm:^9.0.16"
@@ -12867,7 +12867,7 @@ __metadata:
     "@floating-ui/react": "npm:^0.27.12"
     "@formatjs/cli": "npm:6.7.2"
     "@formatjs/intl": "npm:3.1.6"
-    "@hookform/resolvers": "npm:^5.1.1"
+    "@hookform/resolvers": "npm:^5.2.1"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@sentry/core": "npm:8.55.0"
@@ -12969,7 +12969,7 @@ __metadata:
     react-error-boundary: "npm:^6.0.0"
     react-focus-lock: "npm:^2.13.6"
     react-helmet-async: "npm:^2.0.5"
-    react-hook-form: "npm:^7.59.0"
+    react-hook-form: "npm:^7.62.0"
     react-intl: "npm:^7.1.11"
     react-redux: "npm:9.2.0"
     react-router: "npm:^7.6.2"
@@ -35367,12 +35367,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.59.0":
-  version: 7.59.0
-  resolution: "react-hook-form@npm:7.59.0"
+"react-hook-form@npm:^7.62.0":
+  version: 7.62.0
+  resolution: "react-hook-form@npm:7.62.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10/ff7a98e65f57b7468f4ea1b17435e69dcc68f276db6e0e10d513394c95d30dc6068333e3a453c8321627068dffcfacc49ff228c6ae7d8448c349469ab24457b2
+  checksum: 10/092dcf0317ed3e314b124ed9df3f3494cf3447326078cd857f6fdc47aad0504e466ab2fb593bbb8e79c247b8772159f83aebe54a7e5799926b00d7e401d127a6
   languageName: node
   linkType: hard
 
