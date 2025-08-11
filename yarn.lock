@@ -12752,7 +12752,7 @@ __metadata:
     glob: "npm:^11.0.3"
     jest-diff: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
-    openpgp: "npm:^6.1.1"
+    openpgp: "npm:^6.2.0"
     terser-webpack-plugin: "npm:^5.3.14"
     tsx: "npm:^4.20.3"
     webpack: "npm:5.100.0"
@@ -12809,7 +12809,7 @@ __metadata:
     blake-hash: "npm:^2.0.0"
     electron: "npm:37.2.0"
     electron-builder: "npm:26.0.3"
-    openpgp: "npm:^6.1.1"
+    openpgp: "npm:^6.2.0"
     usb: "npm:^2.15.0"
   languageName: unknown
   linkType: soft
@@ -32955,10 +32955,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openpgp@npm:^6.1.1":
-  version: 6.1.1
-  resolution: "openpgp@npm:6.1.1"
-  checksum: 10/1c575fe65b6fd2f03b81fe2ba44aff6961d7d57aa857a36e1e345fe9344e125cbb68d655b5cdec0e3118c5dfa5006e6bc5e67eafbb609dfd496436badc016241
+"openpgp@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "openpgp@npm:6.2.0"
+  checksum: 10/01b7524ff1fafa5f9c80533ca00e72f3a1fd3f2daa0406e491289b5d9b8b96c1e977e68792324b78f4c78da3204fc2f343e06515775e14ab04d5fc35dfd828d2
   languageName: node
   linkType: hard
 
