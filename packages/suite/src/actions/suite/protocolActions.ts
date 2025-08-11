@@ -66,7 +66,16 @@ export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch) => {
         const parsedUri = parseUri(uri);
         const wcUri = parsedUri?.searchParams?.get('uri');
         if (wcUri) {
-            dispatch(walletConnectActions.walletConnectPairThunk({ uri: wcUri }));
+            dispatch(walletConnectActions.walletConnectPairThunk({ uri: wcUri }))
+                .unwrap()
+                .catch(error => {
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: error.message,
+                        }),
+                    );
+                });
         }
     } else if (uri?.startsWith(SUITE_ANCHOR_DEEPLINK_PREFIX)) {
         const anchor = uri.replace(SUITE_ANCHOR_DEEPLINK_PREFIX, '');
