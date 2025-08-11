@@ -1,7 +1,7 @@
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
-import { DevicesManagement } from '../components/ViewOnly/DevicesManagement';
+import { DevicesManagement } from '../components/EjectWallets/DevicesManagement';
 
 export const SettingsAutoEjectScreen = () => (
     <Screen
