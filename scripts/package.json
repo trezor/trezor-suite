@@ -10,7 +10,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "chalk": "^4.1.2",
-        "fs-extra": "^11.3.0",
+        "fs-extra": "^11.3.1",
         "minimatch": "^10.0.3",
         "prettier": "^3.6.2",
         "sort-package-json": "^3.4.0",
