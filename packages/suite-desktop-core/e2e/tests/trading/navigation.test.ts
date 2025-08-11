@@ -5,11 +5,9 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ page, onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo('coins');
-        await settingsPage.coins.enableNetwork('ltc');
-        await settingsPage.coins.enableNetwork('eth');
-        await settingsPage.coins.activateCoinsButton.click();
-        await page.discoveryShouldFinish();
+        await settingsPage.changeNetworks({
+            enableNetworks: ['eth', 'ltc'],
+        });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
     });
@@ -26,33 +24,34 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
             await test.step('Buy from dashboard asset card', async () => {
                 await dashboardPage.navigateTo();
                 await page.getByTestId('@dashboard/asset/btc/buy-button').click();
-                await tradingPage.verifyBuyFormOpened('BTC');
-                await page.getByTestId(`@account-menu/filter-accounts`).click();
-                await walletPage.walletFilter('btc').click();
+                await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
             await test.step('Buy from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
                 await page.getByTestId('@trading/menu/wallet-trading-buy').click();
-                await tradingPage.verifyBuyFormOpened('BTC');
+                await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
             await test.step('Buy from global header', async () => {
                 await dashboardPage.navigateTo();
+                const isBuyButtonUnderDropDown = await walletPage.walletExtraDropDown.isVisible();
+                if (isBuyButtonUnderDropDown) {
+                    await walletPage.walletExtraDropDown.click();
+                }
                 await walletPage.openTradingGlobalButton.click();
-                await tradingPage.verifyBuyFormOpened('BTC');
+                await tradingPage.verifyBuyFormOpened(/BTC|ETH|LTC/);
             });
 
             await test.step('Buy from empty account', async () => {
-                await walletPage.walletFilter('btc').click();
                 await walletPage.openAccount({ symbol: 'ltc' });
                 await page.getByTestId('@accounts/empty-account/buy').click();
-                await tradingPage.verifyBuyFormOpened('LTC');
+                await tradingPage.verifyBuyFormOpened(/LTC/);
             });
 
             await test.step('Buy from token', async () => {
                 await walletPage.openBuyTradingOfToken('eth', 'TrueUSD');
-                await tradingPage.verifyBuyFormOpened('TrueUSD');
+                await tradingPage.verifyBuyFormOpened(/TrueUSD/);
             });
 
             // SELL
@@ -60,7 +59,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
             await test.step('Sell from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
                 await page.getByTestId('@trading/menu/wallet-trading-sell').click();
-                await tradingPage.verifySellFormOpened('BTC');
+                await tradingPage.verifySellFormOpened(/BTC/);
             });
 
             await test.step('Sell from token', async () => {
@@ -68,7 +67,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
                 // We cannot reproduce it manually, so we are using retry workaround to stabilize automation
                 await expect(async () => {
                     await walletPage.openSellTradingOfToken('eth', 'USD Coin');
-                    await tradingPage.verifySellFormOpened('USD Coin');
+                    await tradingPage.verifySellFormOpened(/USD Coin/);
                 }).toPass({ timeout: 15_000 });
             });
 
@@ -76,18 +75,18 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
             await test.step('Swap from Global header', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openSwapGlobalButton.click();
-                await tradingPage.verifySwapFormOpened('BTC');
+                await tradingPage.verifySwapFormOpened(/BTC|ETH|LTC/);
             });
 
             await test.step('Swap from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
                 await page.getByTestId('@trading/menu/wallet-trading-exchange').click();
-                await tradingPage.verifySwapFormOpened('BTC');
+                await tradingPage.verifySwapFormOpened(/BTC/);
             });
 
             await test.step('Swap from token', async () => {
                 await walletPage.openSwapTradingOfToken('eth', 'USD Coin');
-                await tradingPage.verifySwapFormOpened('USD Coin');
+                await tradingPage.verifySwapFormOpened(/USD Coin/);
             });
         },
     );
