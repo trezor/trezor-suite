@@ -94,7 +94,7 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
 
 export const WalletConnectPairScreen = () => {
     const sessions = useSelector(selectSessions);
-    const [pairingOpened, setPairingOpened] = useState<'qr' | 'manual' | null>(null);
+    const [pairingOpened, setPairingOpened] = useState(false);
 
     return (
         <Screen
@@ -107,7 +107,7 @@ export const WalletConnectPairScreen = () => {
                             colorScheme="tertiaryElevation0"
                             size="medium"
                             iconName="qrCode"
-                            onPress={() => setPairingOpened('qr')}
+                            onPress={() => setPairingOpened(true)}
                         />
                     }
                 />

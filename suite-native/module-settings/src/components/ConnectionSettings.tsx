@@ -29,7 +29,7 @@ export const ConnectionSettings = () => {
     const isWalletConnectEnabled = useFeatureFlag(FeatureFlag.IsWalletConnectEnabled);
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
-    const [pairingOpened, setPairingOpened] = useState<'qr' | 'manual' | null>(null);
+    const [pairingOpened, setPairingOpened] = useState(false);
 
     if (!isConnectPopupEnabled && !isWalletConnectEnabled) {
         return null;
@@ -59,7 +59,7 @@ export const ConnectionSettings = () => {
                                 setPairingOpened={setPairingOpened}
                             />
                             <TouchableOpacity
-                                onPress={() => setPairingOpened('qr')}
+                                onPress={() => setPairingOpened(true)}
                                 testID="@settings/wallet-connect-add"
                             >
                                 <HStack justifyContent="space-between" alignItems="center">

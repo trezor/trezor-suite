@@ -522,11 +522,7 @@ export const en = {
             message:
                 'An external app is trying to connect to your Trezor Suite. Make sure you trust the source!',
             connect: 'Connect',
-            pairingUrl: 'Enter pairing URL',
-            provideConnectionString: 'Provide connection string',
-            provideConnectionStringDescription:
-                'You can manually add a connection here by pasting the WalletConnect string.',
-            connectionStringPlaceholder: 'Connection string...',
+            pasteFromClipboard: 'Paste from clipboard',
             scanQR: 'Scan WalletConnect QR',
             addConnection: 'Add connection',
             activeConnections: 'Active connections',
@@ -540,6 +536,7 @@ export const en = {
                 unknown: 'Unknown',
                 dangerous: 'Dangerous',
             },
+            pairingSuccess: 'Paired. You can now use your Trezor with this app.',
             errors: {
                 requestExpired:
                     'Request has expired. Please go back to the application and try again.',
