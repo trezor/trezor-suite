@@ -85,8 +85,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
         await device.terminateApp();
     });
 
-    // TODO #16495 - currently not working
-    describe.skip('with passphrase not allowed on Trezor', () => {
+    describe('with passphrase not allowed on Trezor', () => {
         beforeEach(async () => {
             await prepareTrezorEmulator();
             await restartApp();
