@@ -67,6 +67,7 @@ const usedIcons = [
     'copy',
     'currencyBtc',
     'cpu',
+    'clipboard',
     'database',
     'detective',
     'discover',
