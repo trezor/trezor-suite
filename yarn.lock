@@ -12692,7 +12692,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: "npm:37.2.0"
+    electron: "npm:37.2.6"
   languageName: unknown
   linkType: soft
 
@@ -12744,7 +12744,7 @@ __metadata:
     app-builder-lib: "npm:^26.0.12"
     chalk: "npm:^4.1.2"
     dotenv: "npm:^16.4.7"
-    electron: "npm:37.2.0"
+    electron: "npm:37.2.6"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
     electron-updater: "npm:6.6.4"
@@ -12807,7 +12807,7 @@ __metadata:
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
     blake-hash: "npm:^2.0.0"
-    electron: "npm:37.2.0"
+    electron: "npm:37.2.6"
     electron-builder: "npm:26.0.3"
     openpgp: "npm:^6.2.0"
     usb: "npm:^2.15.0"
@@ -18780,7 +18780,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:37.2.0"
+    electron: "npm:37.2.6"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -18790,7 +18790,7 @@ __metadata:
   resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
   dependencies:
     "@trezor/eslint": "workspace:*"
-    electron: "npm:37.2.0"
+    electron: "npm:37.2.6"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -21175,16 +21175,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:37.2.0":
-  version: 37.2.0
-  resolution: "electron@npm:37.2.0"
+"electron@npm:37.2.6":
+  version: 37.2.6
+  resolution: "electron@npm:37.2.6"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/c90541d650e061ea8a447bf55f1460b970c9ed8b40603d7837bc0ffd0c6046173d7cd08b8cc84f8cb1997acafb1c53f8b345461081bb411e80eaef66532c1982
+  checksum: 10/b70ff62e22b13f9e7a0677d455da1e43e55db4fa7b7dca14ff3f0e5f0b653370d8008bc91881ffa67161528c8ec77e9b067bc155091e2fd4eca810010df97b6e
   languageName: node
   linkType: hard
 
