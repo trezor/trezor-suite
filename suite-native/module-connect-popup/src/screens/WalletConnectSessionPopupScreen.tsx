@@ -28,6 +28,7 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
+import { TxSimulationBanner } from '../components/TxSimulation/TxSimulationBanner';
 
 const networkStyle = prepareNativeStyle<{ isDisabled: boolean }>((_, { isDisabled }) => ({
     opacity: 1,
@@ -88,7 +89,9 @@ export const WalletConnectSessionPopupScreen = () => {
     const noNetworksActivated = !pendingProposal?.networks.some(
         network => network.status === 'active',
     );
-    const isDisabled = !pendingProposal || pendingProposal.expired || pendingProposal.isScam;
+    const [ignoreWarning, setIgnoreWarning] = useState(false);
+    const isDisabled =
+        !pendingProposal || pendingProposal.expired || (pendingProposal.isScam && !ignoreWarning);
 
     return (
         <Screen header={<ScreenHeader closeActionType="close" />}>
@@ -234,11 +237,14 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {pendingProposal?.isScam && (
-                    <InlineAlertBox
-                        variant="critical"
+                    <TxSimulationBanner
+                        type="error"
                         title={<Translation id="moduleConnectPopup.walletConnect.errors.isScam" />}
+                        disclaimerAccepted={ignoreWarning}
+                        setDisclaimerAccepted={setIgnoreWarning}
                     />
                 )}
+
                 {pendingProposal?.validation === 'INVALID' && (
                     <InlineAlertBox
                         variant="critical"

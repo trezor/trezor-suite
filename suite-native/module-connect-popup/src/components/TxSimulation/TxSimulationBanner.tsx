@@ -12,7 +12,7 @@ export const TxSimulationBanner = ({
     setDisclaimerAccepted,
 }: {
     title: React.ReactNode;
-    description: React.ReactNode;
+    description?: React.ReactNode;
     type: 'error' | 'warning';
     disclaimerAccepted: boolean;
     setDisclaimerAccepted: (value: boolean) => void;
@@ -20,8 +20,8 @@ export const TxSimulationBanner = ({
     <>
         <FullAlertBox
             variant={type === 'warning' ? 'warning' : 'critical'}
-            title={<>{title}</>}
-            description={<>{description}</>}
+            title={title}
+            description={description}
         />
         <TouchableOpacity onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}>
             <HStack spacing="sp16" padding="sp8" alignItems="center">
