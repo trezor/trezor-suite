@@ -34,13 +34,15 @@ type CompoundRootState = AccountsRootState &
     WalletSettingsRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<CompoundRootState>();
 
-const selectEnabledSupportedNetworks = (state: CompoundRootState) => {
-    const enabledNetworks = selectEnabledNetworks(state);
-    const device = selectSelectedDevice(state);
-    const deviceNetworks = selectSupportedNetworkByDevice(device);
+const selectEnabledSupportedNetworks = createMemoizedSelector(
+    [selectEnabledNetworks, selectSelectedDevice],
+    (enabledNetworks, device) => {
+        const deviceNetworks = selectSupportedNetworkByDevice(device);
+        const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
 
-    return enabledNetworks.filter(network => deviceNetworks.includes(network));
-};
+        return returnStableArrayIfEmpty(supportedNetworks);
+    },
+);
 
 /**
  * Listable accounts are visible, enabled in settings, supported by the device and conventionally sorted.
