@@ -179,9 +179,17 @@ export class TrezordNode {
         return abortController.signal;
     }
 
+    private handleResponse(res: Response, data: string) {
+        res.appendHeader('Content-Length', `${Buffer.byteLength(data)}`);
+        res.end(data);
+    }
+
     private handleInfo(_req: RequestWithParams, res: Response) {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end(
+        res.appendHeader('Content-Type', 'text/plain');
+        res.statusCode = 200;
+
+        this.handleResponse(
+            res,
             str({
                 version: this.version,
                 protocolMessages: this.protocolMessages,
@@ -260,6 +268,7 @@ export class TrezordNode {
                     if (req.headers.origin) {
                         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
                     }
+
                     next(req, res);
                 },
             ]);
@@ -272,9 +281,13 @@ export class TrezordNode {
                         if (!result.success) {
                             res.statusCode = 400;
 
-                            return res.end(str({ error: result.error, message: result.message }));
+                            return this.handleResponse(
+                                res,
+                                str({ error: result.error, message: result.message }),
+                            );
                         }
-                        res.end(str(result.payload.descriptors));
+                        res.statusCode = 200;
+                        this.handleResponse(res, str(result.payload.descriptors));
                     });
                 },
             ]);
@@ -311,11 +324,13 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(
+                                return this.handleResponse(
+                                    res,
                                     str({ error: result.error, message: result.message }),
                                 );
                             }
-                            res.end(str({ session: result.payload.session }));
+                            res.statusCode = 200;
+                            this.handleResponse(res, str({ session: result.payload.session }));
                         });
                 },
             ]);
@@ -332,11 +347,14 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(
+                                return this.handleResponse(
+                                    res,
                                     str({ error: result.error, message: result.message }),
                                 );
                             }
-                            res.end(str({ session: req.params.session }));
+                            res.statusCode = 200;
+
+                            this.handleResponse(res, str({ session: req.params.session }));
                         });
                 },
             ]);
@@ -357,11 +375,14 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(
+                                return this.handleResponse(
+                                    res,
                                     str({ error: result.error, message: result.message }),
                                 );
                             }
-                            res.end(str(result.payload));
+                            res.statusCode = 200;
+
+                            this.handleResponse(res, str(result.payload));
                         });
                 },
             ]);
@@ -382,11 +403,14 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(
+                                return this.handleResponse(
+                                    res,
                                     str({ error: result.error, message: result.message }),
                                 );
                             }
-                            res.end(str(result.payload));
+                            res.statusCode = 200;
+
+                            this.handleResponse(res, str(result.payload));
                         });
                 },
             ]);
@@ -407,11 +431,14 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(
+                                return this.handleResponse(
+                                    res,
                                     str({ error: result.error, message: result.message }),
                                 );
                             }
-                            res.end(str(result.payload));
+                            res.statusCode = 200;
+
+                            this.handleResponse(res, str(result.payload));
                         });
                 },
             ]);
@@ -427,20 +454,20 @@ export class TrezordNode {
 
             app.get('/status', [
                 async (_req, res) => {
+                    res.statusCode = 200;
+                    res.appendHeader('Content-Type', 'text/html');
+
                     try {
                         const ui = await fs.readFile(
                             path.join(__dirname, this.assetPrefix, 'ui/index.html'),
                             'utf-8',
                         );
 
-                        res.writeHead(200, { 'Content-Type': 'text/html' });
-
-                        res.end(ui);
+                        this.handleResponse(res, ui);
                     } catch (error) {
                         this.logger.error('Failed to fetch status page', error);
-                        res.writeHead(200, { 'Content-Type': 'text/plain' });
                         // you need to run yarn workspace @trezor/transport-bridge build:ui to make it available (or build:lib will do)
-                        res.end('Failed to fetch status page');
+                        this.handleResponse(res, 'Failed to fetch status page');
                     }
                 },
             ]);
@@ -456,18 +483,22 @@ export class TrezordNode {
                         devices: this.descriptors,
                         logs: this.logger.getLog(),
                     };
-
-                    res.end(str(props));
+                    res.appendHeader('Content-Type', 'application/json');
+                    this.handleResponse(res, str(props));
                 },
             ]);
 
             app.get('/logs', [
                 (_req, res) => {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/plain',
-                        'Content-Disposition': 'attachment; filename=trezor-bridge.txt',
-                    });
-                    res.end(
+                    res.appendHeader('Content-Type', 'text/plain');
+                    res.appendHeader(
+                        'Content-Disposition',
+                        'attachment; filename=trezor-bridge.txt',
+                    );
+                    res.statusCode = 200;
+
+                    this.handleResponse(
+                        res,
                         app.logger
                             .getLog()
                             .map(l => l.message.join('. '))
