@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 
 import { GlobalSendReceiveModalBase } from './GlobalSendReceiveModalBase';
 import { useDevice } from '../../../../../../hooks/suite';
@@ -12,7 +12,7 @@ import { AddAccountModal } from '../../../../modals';
 
 type GlobalReceiveModalProps = {
     onCancel: () => void;
-    onSubmit: (account: Account, type: AccountItemType) => void;
+    onSubmit: (account: Account, type: AccountItemType, tokenAddress?: TokenAddress) => void;
 };
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {

@@ -122,71 +122,84 @@ export const AccountItemContent = ({
     return (
         // Content is constant size in discreet mode, so overflow: hidden is unnecessary.
         // Though it would cut off CSS blur effect, so we may turn it off
-        <Column flex="1" overflow={discreetMode ? 'visible' : 'hidden'} gap={spacings.xxxs}>
-            <Row gap={spacings.md} margin={{ right: spacings.xxs }} justifyContent="space-between">
-                <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
-                    {type === 'coin' && <AccountLabel account={account} />}
-                    {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
-                    {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
-                </AccountLabelContainer>
-                <BaseCurrency
-                    isLoading={isFiatLoading}
-                    customFiatValue={customFiatValue}
-                    symbol={account.symbol}
-                    formattedBalance={formattedBalance}
-                />
-            </Row>
-            {isBalanceShown && type !== 'tokens' && (
-                <CoinBalance
-                    data-testid="@wallet"
-                    value={formattedBalance}
-                    symbol={account.symbol}
-                />
-            )}
-            {!isBalanceShown && (
-                <Column gap={spacings.xs}>
-                    <SkeletonRectangle width="100px" height="16px" animate={shouldAnimate} />
-
-                    {!isTestnet(account.symbol) && (
+        <Column flex="1" overflow={discreetMode ? 'visible' : 'hidden'} gap={spacings.xs}>
+            <Column gap={spacings.xxxs}>
+                <Row
+                    gap={spacings.md}
+                    margin={{ right: spacings.xxs }}
+                    justifyContent="space-between"
+                >
+                    <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
+                        {type === 'coin' && <AccountLabel account={account} />}
+                        {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
+                        {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
+                    </AccountLabelContainer>
+                    <BaseCurrency
+                        isLoading={isFiatLoading}
+                        customFiatValue={customFiatValue}
+                        symbol={account.symbol}
+                        formattedBalance={formattedBalance}
+                    />
+                </Row>
+                {isBalanceShown && type !== 'tokens' && (
+                    <CoinBalance
+                        data-testid="@wallet"
+                        value={formattedBalance}
+                        symbol={account.symbol}
+                    />
+                )}
+                {!isBalanceShown && (
+                    <Column gap={spacings.xs}>
                         <SkeletonRectangle width="100px" height="16px" animate={shouldAnimate} />
-                    )}
+
+                        {!isTestnet(account.symbol) && (
+                            <SkeletonRectangle
+                                width="100px"
+                                height="16px"
+                                animate={shouldAnimate}
+                            />
+                        )}
+                    </Column>
+                )}
+            </Column>
+            {isTokensExpanded && (
+                <Column gap={spacings.xs}>
+                    {tokens?.map(token => (
+                        <Row
+                            key={token.contract}
+                            gap={spacings.md}
+                            margin={{ right: spacings.xxs }}
+                            justifyContent="space-between"
+                            onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+                                onTokenClick(event, token.contract as TokenAddress);
+                            }}
+                        >
+                            <Row gap={spacings.xs}>
+                                <AssetLogo
+                                    key={token.contract}
+                                    size={20}
+                                    coingeckoId={getCoingeckoId(account.symbol) ?? ''}
+                                    contractAddress={getContractAddressForNetworkSymbol(
+                                        account.symbol,
+                                        token.contract,
+                                    )}
+                                    placeholder={token.symbol?.toUpperCase() ?? ''}
+                                    placeholderWithTooltip={false}
+                                />
+                                {token.name}
+                            </Row>
+                            <Column alignItems="flex-start">
+                                <BaseCurrencyValue
+                                    showLoadingSkeleton
+                                    amount={token.balance || ''}
+                                    symbol={account.symbol}
+                                    tokenAddress={token.contract as TokenAddress}
+                                />
+                            </Column>
+                        </Row>
+                    ))}
                 </Column>
             )}
-            {isTokensExpanded &&
-                tokens?.map(token => (
-                    <Row
-                        key={token.contract}
-                        gap={spacings.md}
-                        margin={{ right: spacings.xxs }}
-                        justifyContent="space-between"
-                        onClick={(event: React.MouseEvent<HTMLDivElement>) => {
-                            onTokenClick(event, token.contract as TokenAddress);
-                        }}
-                    >
-                        <Row gap={spacings.xs}>
-                            <AssetLogo
-                                key={token.contract}
-                                size={20}
-                                coingeckoId={getCoingeckoId(account.symbol) ?? ''}
-                                contractAddress={getContractAddressForNetworkSymbol(
-                                    account.symbol,
-                                    token.contract,
-                                )}
-                                placeholder={token.symbol?.toUpperCase() ?? ''}
-                                placeholderWithTooltip={false}
-                            />
-                            {token.name}
-                        </Row>
-                        <Column alignItems="flex-start">
-                            <BaseCurrencyValue
-                                showLoadingSkeleton
-                                amount={token.fiatValue || ''}
-                                symbol={account.symbol}
-                                tokenAddress={token.contract as TokenAddress}
-                            />
-                        </Column>
-                    </Row>
-                ))}
         </Column>
     );
 };

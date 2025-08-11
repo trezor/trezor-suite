@@ -1,4 +1,4 @@
-import { Account } from '@suite-common/wallet-types';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 
 import { GlobalSendReceiveModalBase } from './GlobalSendReceiveModalBase';
 import { LocalAccountSearchProvider } from '../../../../../../hooks/suite/useAccountSearch';
@@ -7,7 +7,7 @@ import { Translation } from '../../../../Translation';
 
 type GlobalSendModalProps = {
     onCancel: () => void;
-    onSubmit: (account: Account, type: AccountItemType) => void;
+    onSubmit: (account: Account, type: AccountItemType, tokenAddress?: TokenAddress) => void;
 };
 
 export const GlobalSendModal = ({ onCancel, onSubmit }: GlobalSendModalProps) => (
