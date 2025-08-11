@@ -392,3 +392,12 @@ export const getTradeTypeByRoute = (
         return 'exchange';
     }
 };
+
+export const tokenSupportsIncreasingAllowance = (contractAddress?: string) => {
+    const ethereumUsdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+
+    return (
+        contractAddress &&
+        contractAddress.trim().toLowerCase() !== ethereumUsdtContractAddress.toLowerCase()
+    );
+};

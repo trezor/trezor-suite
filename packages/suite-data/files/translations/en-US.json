@@ -969,7 +969,7 @@
   "TR_EXCHANGE_APPROVAL_DATA": "Approval transaction data",
   "TR_EXCHANGE_APPROVAL_ERROR": "Failed to load approval status",
   "TR_EXCHANGE_APPROVAL_FORM_APPROVAL_REVOKED": "Approval revoked",
-  "TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON": "Approve",
+  "TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON": "Set & approve spending",
   "TR_EXCHANGE_APPROVAL_FORM_PENDING_PREFIX": "Transaction with ID",
   "TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX": "is being processed",
   "TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP": "Ready to swap",

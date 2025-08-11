@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
@@ -46,7 +46,7 @@ const Icon = styled.img`
 
 type ApproveModalProps = {
     setApprovalType: (approvalType: TradingExchangeApprovalType) => void;
-    onCancel: () => void;
+    onCancel: (isSubmitting?: boolean) => void;
 };
 
 export const ApproveModal = ({
@@ -84,12 +84,6 @@ export const ApproveModal = ({
 
     const [approvalType, setApprovalType] = useState<DexApprovalType>('MINIMAL');
     const [isConfirmButtonLoading, setIsConfirmButtonLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (selectedQuote?.status !== 'APPROVAL_REQ') {
-            onCancel();
-        }
-    }, [selectedQuote?.status, onCancel]);
 
     if (!selectedQuote) return null;
 
@@ -149,6 +143,7 @@ export const ApproveModal = ({
         setIsConfirmButtonLoading(true);
         await sendTransaction();
         setIsConfirmButtonLoading(false);
+        onCancel(true);
     };
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(selectedQuote.send);
@@ -162,7 +157,7 @@ export const ApproveModal = ({
 
     return (
         <Modal
-            onCancel={onCancel}
+            onCancel={() => onCancel()}
             variant="primary"
             size="small"
             heading={
@@ -184,7 +179,7 @@ export const ApproveModal = ({
                         </Modal.Button>
                     )}
 
-                    <Modal.Button size="medium" variant="tertiary" onClick={onCancel}>
+                    <Modal.Button size="medium" variant="tertiary" onClick={() => onCancel()}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
@@ -201,7 +196,11 @@ export const ApproveModal = ({
             }
         >
             <Column gap={spacings.sm}>
-                <Box padding={spacings.sm} borderWidth={borders.widths.large} borderRadius="12px">
+                <Box
+                    padding={spacings.sm}
+                    borderWidth={borders.widths.large}
+                    borderRadius={borders.radii.sm}
+                >
                     <Column gap={spacings.sm}>
                         <Text>
                             <Translation id="TR_EXCHANGE_APPROVAL_PROVIDER" />
@@ -220,7 +219,11 @@ export const ApproveModal = ({
                     </Column>
                 </Box>
 
-                <Box borderWidth={borders.widths.large} padding={spacings.sm} borderRadius="12px">
+                <Box
+                    borderWidth={borders.widths.large}
+                    padding={spacings.sm}
+                    borderRadius={borders.radii.sm}
+                >
                     <Column gap={spacings.sm}>
                         <Text>
                             <Translation id="TR_EXCHANGE_APPROVAL_SET_LIMIT" />
@@ -297,7 +300,11 @@ export const ApproveModal = ({
                     </Column>
                 </Box>
 
-                <Box padding={spacings.sm} borderWidth={borders.widths.large} borderRadius="12px">
+                <Box
+                    padding={spacings.sm}
+                    borderWidth={borders.widths.large}
+                    borderRadius={borders.radii.sm}
+                >
                     <Fees
                         label="TR_TX_FEE"
                         control={control}
