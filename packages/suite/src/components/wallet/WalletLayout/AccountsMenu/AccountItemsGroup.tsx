@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { EnhancedTokenInfo } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     BASE_CURRENCY_ZERO,
@@ -15,6 +16,7 @@ import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { Account, AccountItemType } from 'src/types/wallet';
 
 import { AccountItem } from './AccountItem/AccountItem';
+import { TokensAccountItem } from './AccountItem/TokensAccountItem';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean }>`
@@ -43,7 +45,7 @@ interface AccountItemsGroupProps {
     forceOnlyItemClick?: boolean;
     selected: boolean;
     showStaking: boolean;
-    tokens?: Account['tokens'];
+    tokens?: EnhancedTokenInfo[];
     dataTestKey?: string;
     onItemClick?: (account: Account, type: AccountItemType) => void;
 }
@@ -103,18 +105,17 @@ export const AccountItemsGroup = ({
                     />
                 )}
                 {!!tokens?.length && (
-                    <AccountItem
+                    <TokensAccountItem
                         account={account}
+                        tokens={tokens}
                         forceOnlyItemClick={forceOnlyItemClick}
-                        type="tokens"
                         isSelected={selected && tokensRoutes.includes(routeName || '')}
                         formattedBalance={account.formattedBalance}
                         isGroup
                         isGroupSelected={selected}
-                        customFiatValue={tokensFiatBalance}
-                        tokens={tokens}
                         dataTestKey={`${dataTestKey}/tokens`}
                         isFiatLoading={isFiatLoading}
+                        customFiatValue={tokensFiatBalance}
                         onClick={onItemClick}
                     />
                 )}

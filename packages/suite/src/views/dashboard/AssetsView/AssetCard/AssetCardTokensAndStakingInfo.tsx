@@ -1,5 +1,4 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -17,7 +16,6 @@ type AssetCardTokensAndStakingInfoProps = {
     assetStakingBalance: string;
     shouldRenderStaking: boolean;
     shouldRenderTokens: boolean;
-    accounts: Account[];
 };
 
 export const AssetCardTokensAndStakingInfo = ({
@@ -26,7 +24,6 @@ export const AssetCardTokensAndStakingInfo = ({
     assetStakingBalance,
     shouldRenderStaking,
     shouldRenderTokens,
-    accounts,
 }: AssetCardTokensAndStakingInfoProps) => (
     <Column>
         <Divider strokeWidth={1} margin={{ vertical: spacings.xs }} />
@@ -61,7 +58,7 @@ export const AssetCardTokensAndStakingInfo = ({
                 margin={{ horizontal: spacings.xs, bottom: spacings.xs }}
             >
                 <Row gap={spacings.xs}>
-                    <TokenIconSetWrapper accounts={accounts} symbol={symbol} />
+                    <TokenIconSetWrapper symbol={symbol} />
                     <Text typographyStyle="body" variant="tertiary">
                         <Translation id="TR_NAV_TOKENS" />
                     </Text>

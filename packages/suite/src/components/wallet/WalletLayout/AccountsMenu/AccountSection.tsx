@@ -1,10 +1,14 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
+import {
+    selectAccountIsStakingActive,
+    selectBaseCurrency,
+    selectCurrentFiatRates,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
-import { getTokens } from 'src/utils/wallet/tokenUtils';
+import { enhanceTokensWithRates, getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { AccountItem } from './AccountItem/AccountItem';
 import { AccountItemsGroup } from './AccountItemsGroup';
@@ -35,6 +39,8 @@ export const AccountSection = ({
     } = account;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
+    const baseCurrency = useSelector(selectBaseCurrency);
+    const rates = useSelector(selectCurrentFiatRates);
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
@@ -43,8 +49,15 @@ export const AccountSection = ({
     );
     const isStakeShown = !hideStaking && isStakeShownStored;
 
+    const allTokensWithRates = enhanceTokensWithRates(
+        accountTokens,
+        baseCurrency,
+        account.symbol,
+        rates,
+    );
+
     const tokens = getTokens({
-        tokens: accountTokens,
+        tokens: allTokensWithRates,
         symbol: account.symbol,
         tokenDefinitions: coinDefinitions,
     });

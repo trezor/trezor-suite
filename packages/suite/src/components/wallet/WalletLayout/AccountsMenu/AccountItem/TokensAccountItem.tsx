@@ -1,16 +1,18 @@
-import { Ref, forwardRef } from 'react';
+import { Ref, forwardRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { EnhancedTokenInfo } from '@suite-common/token-definitions';
+import { EnhancedTokenInfo, selectCoinDefinitions } from '@suite-common/token-definitions';
+import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
+import { useSelector } from 'src/hooks/suite';
 import { Account, AccountItemType } from 'src/types/wallet';
+import { TokensWithRates, enhanceTokensWithRates, getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { AccountItemLeft } from './AccountItemLeft';
 import { AccountRow } from './AccountRow';
@@ -36,28 +38,26 @@ export const Left = styled.div`
 
 interface AccountItemProps {
     account: Account;
+    tokens: EnhancedTokenInfo[];
     // NOTE: disables the default item click behavior
     forceOnlyItemClick?: boolean;
-    type: AccountItemType;
     isSelected: boolean;
     isGroupSelected?: boolean;
     formattedBalance: string;
     customFiatValue?: BaseCurrencyAmount;
     isGroup?: boolean;
-    tokens?: EnhancedTokenInfo[];
     dataTestKey?: string;
     isFiatLoading?: boolean;
-    onClick?: (account: Account, type: AccountItemType) => void;
-    onTokensClick?: () => void;
+    onClick?: (account: Account, type: AccountItemType, tokenAddress?: TokenAddress) => void;
 }
 
 // Using `forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
-export const AccountItem = forwardRef(
+export const TokensAccountItem = forwardRef(
     (
         {
             account,
+            tokens,
             forceOnlyItemClick,
-            type,
             isSelected,
             isGroupSelected,
             formattedBalance,
@@ -65,14 +65,28 @@ export const AccountItem = forwardRef(
             isGroup,
             dataTestKey,
             isFiatLoading,
-            tokens,
             onClick,
         }: AccountItemProps,
         ref: Ref<HTMLDivElement>,
     ) => {
         const { accountType, index, symbol } = account;
+        const [isTokensExpanded, setIsTokensExpanded] = useState(false);
 
         const goToWithAnalytics = useGoToWithAnalytics(account);
+
+        const baseCurrency = useSelector(selectBaseCurrency);
+        const fiatRates = useSelector(selectCurrentFiatRates);
+        const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
+
+        const allTokensWithRates = enhanceTokensWithRates(tokens, baseCurrency, symbol, fiatRates);
+
+        if (!allTokensWithRates.length) return null;
+
+        const tokensWithRates = getTokens({
+            tokens: allTokensWithRates,
+            symbol,
+            tokenDefinitions: coinDefinitions,
+        })?.shownWithBalance as TokensWithRates[];
 
         const accountRouteParams = {
             symbol,
@@ -80,54 +94,43 @@ export const AccountItem = forwardRef(
             accountType,
         };
 
-        const getRoute = () => {
-            switch (type) {
-                case 'coin':
-                    return 'wallet-index';
-                case 'staking':
-                    return 'wallet-staking';
-                case 'tokens':
-                    return 'wallet-tokens';
-                default:
-                    return exhaustive(type);
-            }
+        const handleTokensClick = () => {
+            // onClick?.(account, type);
+            setIsTokensExpanded(!isTokensExpanded);
+        };
+
+        const handleAccountContentClick = (tokenAddress?: TokenAddress) => {
+            onClick?.(account, 'tokens', tokenAddress);
         };
 
         const handleHeaderClick = () => {
-            onClick?.(account, type);
+            onClick?.(account, 'tokens');
 
             // NOTE: disable default behavior useful eg in global send modal - when picking account
             // from which to send
             if (forceOnlyItemClick) {
                 return;
             }
-            goToWithAnalytics(getRoute(), { params: accountRouteParams });
-
-            if (type === 'staking') {
-                analytics.report({
-                    type: EventType.StakingNavigate,
-                    payload: {
-                        action: 'navigate',
-                        from: 'sidebar',
-                        networkSymbol: symbol,
-                    },
-                });
-            }
+            goToWithAnalytics('wallet-tokens', { params: accountRouteParams });
         };
 
         const content = (
             <AccountRow
+                isTokensExpanded={isTokensExpanded}
                 isFiatLoading={Boolean(isFiatLoading)}
+                tokens={tokensWithRates}
                 isSelected={isSelected}
                 isGroup={isGroup}
                 isGroupSelected={isGroupSelected}
                 handleHeaderClick={handleHeaderClick}
                 dataTestKey={dataTestKey}
-                type={type}
+                type="tokens"
                 account={account}
                 ref={ref}
                 customFiatValue={customFiatValue}
                 formattedBalance={formattedBalance}
+                onAccountContentClick={handleAccountContentClick}
+                onTokensClick={handleTokensClick}
             />
         );
 
@@ -135,7 +138,7 @@ export const AccountItem = forwardRef(
             <>
                 <ExpandedSidebarOnly>{content}</ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
-                    <Column alignItems="center">
+                    <Column alignItems="start">
                         <Tooltip
                             delayShow={TOOLTIP_DELAY_NORMAL}
                             cursor="pointer"
@@ -143,8 +146,16 @@ export const AccountItem = forwardRef(
                             placement="right"
                             hasArrow
                         >
-                            <CollapsedItem $isSelected={isSelected} onClick={handleHeaderClick}>
-                                <AccountItemLeft type={type} account={account} tokens={tokens} />
+                            <CollapsedItem
+                                $isSelected={isSelected}
+                                onClick={() => handleHeaderClick()}
+                            >
+                                <AccountItemLeft
+                                    account={account}
+                                    type="tokens"
+                                    tokens={tokensWithRates}
+                                    onClick={handleTokensClick}
+                                />
                             </CollapsedItem>
                         </Tooltip>
                     </Column>
@@ -153,3 +164,5 @@ export const AccountItem = forwardRef(
         );
     },
 );
+
+TokensAccountItem.displayName = 'TokensAccountItem';

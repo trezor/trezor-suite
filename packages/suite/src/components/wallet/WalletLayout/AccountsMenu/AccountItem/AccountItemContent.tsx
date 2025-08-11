@@ -3,15 +3,20 @@ import { JSX } from 'react';
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectIsDiscreteModeActive,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 import {
+    BaseCurrencyAmount,
+    getContractAddressForNetworkSymbol,
+    isTestnet,
+} from '@suite-common/wallet-utils';
+import {
+    AssetLogo,
     Column,
     Row,
     SkeletonRectangle,
@@ -29,6 +34,7 @@ import {
 } from 'src/components/suite';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
+import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 const AccountLabelContainer = styled.div`
     flex: 1;
@@ -46,6 +52,9 @@ type ItemContentProps = {
     formattedBalance: string;
     dataTestKey?: string;
     isFiatLoading?: boolean;
+    tokens?: TokensWithRates[];
+    isTokensExpanded?: boolean;
+    onAccountContentClick?: (tokenAddress?: TokenAddress) => void;
 };
 
 const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
@@ -95,9 +104,18 @@ export const AccountItemContent = ({
     formattedBalance,
     dataTestKey,
     isFiatLoading,
+    tokens,
+    isTokensExpanded,
+    onAccountContentClick,
 }: ItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const { shouldAnimate } = useLoadingSkeleton();
+
+    const onTokenClick = (event: React.MouseEvent<HTMLDivElement>, tokenAddress: TokenAddress) => {
+        if (!onAccountContentClick) return;
+        event.stopPropagation();
+        onAccountContentClick(tokenAddress);
+    };
 
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
@@ -134,6 +152,41 @@ export const AccountItemContent = ({
                     )}
                 </Column>
             )}
+            {isTokensExpanded &&
+                tokens?.map(token => (
+                    <Row
+                        key={token.contract}
+                        gap={spacings.md}
+                        margin={{ right: spacings.xxs }}
+                        justifyContent="space-between"
+                        onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+                            onTokenClick(event, token.contract as TokenAddress);
+                        }}
+                    >
+                        <Row gap={spacings.xs}>
+                            <AssetLogo
+                                key={token.contract}
+                                size={20}
+                                coingeckoId={getCoingeckoId(account.symbol) ?? ''}
+                                contractAddress={getContractAddressForNetworkSymbol(
+                                    account.symbol,
+                                    token.contract,
+                                )}
+                                placeholder={token.symbol?.toUpperCase() ?? ''}
+                                placeholderWithTooltip={false}
+                            />
+                            {token.name}
+                        </Row>
+                        <Column alignItems="flex-start">
+                            <BaseCurrencyValue
+                                showLoadingSkeleton
+                                amount={token.fiatValue || ''}
+                                symbol={account.symbol}
+                                tokenAddress={token.contract as TokenAddress}
+                            />
+                        </Column>
+                    </Row>
+                ))}
         </Column>
     );
 };

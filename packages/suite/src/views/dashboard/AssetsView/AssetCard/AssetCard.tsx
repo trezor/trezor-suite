@@ -228,7 +228,6 @@ export const AssetCard = ({
                         assetStakingBalance={assetStakingBalance.toString()}
                         shouldRenderStaking={shouldRenderStakingRow}
                         shouldRenderTokens={shouldRenderTokenRow}
-                        accounts={accounts}
                     />
                 )}
                 {shallDisplayBaseCurrency && (

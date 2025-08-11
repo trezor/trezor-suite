@@ -2,8 +2,11 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
+import { TokenAddress } from '@suite-common/wallet-types';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
+
+import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { Left } from './AccountItem';
 import { AccountItemContent } from './AccountItemContent';
@@ -22,6 +25,10 @@ type AccountRowProps = {
     customFiatValue?: BaseCurrencyAmount;
     formattedBalance: string;
     isFiatLoading?: boolean;
+    tokens?: TokensWithRates[];
+    isTokensExpanded?: boolean;
+    onAccountContentClick?: (tokenAddress?: TokenAddress) => void;
+    onTokensClick?: () => void;
 };
 
 const Wrapper = styled(NavigationItemBase)<{
@@ -32,6 +39,7 @@ const Wrapper = styled(NavigationItemBase)<{
     background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};
     gap: ${spacingsPx.md};
     display: flex;
+    align-items: start;
     justify-content: space-between;
     color: ${({ theme }) => theme.textSubdued};
     ${typography.hint};
@@ -48,6 +56,7 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             isSelected,
             isGroup,
             isGroupSelected,
+            isTokensExpanded,
             handleHeaderClick,
             dataTestKey,
             type,
@@ -55,6 +64,9 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             customFiatValue,
             formattedBalance,
             isFiatLoading,
+            tokens,
+            onTokensClick,
+            onAccountContentClick,
         },
         ref,
     ) => (
@@ -68,7 +80,12 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             tabIndex={0}
         >
             <Left>
-                <AccountItemLeft type={type} account={account} />
+                <AccountItemLeft
+                    type={type}
+                    account={account}
+                    tokens={tokens ?? []}
+                    onClick={onTokensClick}
+                />
             </Left>
             <AccountItemContent
                 customFiatValue={customFiatValue}
@@ -77,6 +94,9 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
                 formattedBalance={formattedBalance}
                 dataTestKey={dataTestKey}
                 isFiatLoading={Boolean(isFiatLoading)}
+                tokens={tokens}
+                isTokensExpanded={isTokensExpanded}
+                onAccountContentClick={onAccountContentClick}
             />
         </Wrapper>
     ),

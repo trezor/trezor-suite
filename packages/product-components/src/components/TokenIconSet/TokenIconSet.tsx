@@ -9,6 +9,7 @@ import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } fr
 export type TokenIconSetProps = {
     symbol: NetworkSymbol;
     tokens: TokenInfo[];
+    onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 const IconContainer = styled.div<{ $length: number }>`
@@ -37,7 +38,7 @@ const TokenIconPlaceholder = styled.div<{ $elevation: Elevation }>`
 /**
  * @param tokens - provide already sorted tokens (for example by fiat value).
  */
-export const TokenIconSet = ({ symbol, tokens }: TokenIconSetProps) => {
+export const TokenIconSet = ({ symbol, tokens, onClick }: TokenIconSetProps) => {
     const { elevation } = useElevation();
     const { length } = tokens;
 
@@ -50,7 +51,7 @@ export const TokenIconSet = ({ symbol, tokens }: TokenIconSetProps) => {
     const coingeckoId = getCoingeckoId(symbol);
 
     return (
-        <IconContainer $length={length}>
+        <IconContainer $length={length} onClick={onClick}>
             {length > 3 && <TokenIconPlaceholder $elevation={elevation} />}
             {visibleTokens.map(token => (
                 <AssetLogo
