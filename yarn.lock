@@ -9882,6 +9882,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/address-validator": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-plugin-ethereum": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -12146,7 +12147,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum":
+"@trezor/connect-plugin-ethereum@workspace:*, @trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum"
   dependencies:

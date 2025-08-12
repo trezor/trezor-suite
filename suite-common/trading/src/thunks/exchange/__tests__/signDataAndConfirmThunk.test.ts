@@ -16,6 +16,11 @@ import { initialState, prepareTradingReducer } from '../../../reducers/tradingRe
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
+jest.mock('@trezor/connect-plugin-ethereum', () => ({
+    ...jest.requireActual('@trezor/connect-plugin-ethereum'),
+    transformTypedData: jest.fn().mockReturnValue({ domain_separator_hash: '', message_hash: '' }),
+}));
+
 describe('signDataAndConfirmThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();

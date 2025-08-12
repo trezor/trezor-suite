@@ -11,6 +11,9 @@
             "path": "../../packages/address-validator"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-plugin-ethereum"
+        },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/utils" },
