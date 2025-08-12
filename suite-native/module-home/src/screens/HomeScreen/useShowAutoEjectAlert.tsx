@@ -7,6 +7,7 @@ import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
+import { isDetoxTestBuild } from '@suite-native/config';
 import { Translation } from '@suite-native/intl';
 import { selectShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
@@ -31,7 +32,7 @@ export const useShowAutoEjectAlert = () => {
     );
 
     useEffect(() => {
-        if (!hasAutoEjectAlertBeenDisplayed && shouldShowAutoEjectAlert) {
+        if (!hasAutoEjectAlertBeenDisplayed && shouldShowAutoEjectAlert && !isDetoxTestBuild()) {
             showAlert({
                 appendix: (
                     <VStack alignItems="center" spacing="sp24" testID="@home/alert/view-only">

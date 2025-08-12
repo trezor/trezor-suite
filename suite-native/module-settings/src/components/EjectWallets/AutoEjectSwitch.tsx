@@ -81,6 +81,7 @@ export const AutoEjectSwitch = () => {
                 </TouchableSwitchRowDescription>
             }
             iconName="eject"
+            testID="@settings/auto-eject-toggle"
         />
     );
 };

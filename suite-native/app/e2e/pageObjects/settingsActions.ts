@@ -2,7 +2,6 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
 import { TREZOR_E2E_DEVICE_LABEL, scrollUntilVisible } from '../utils';
-import { onAlertSheet } from './alertSheetActions';
 
 class SettingsActions {
     async tapPreferences() {
@@ -24,11 +23,11 @@ class SettingsActions {
         await coinEnablingElement.tap();
     }
 
-    async tapViewOnly() {
-        const viewOnlyElement = element(by.id('@settings/view-only'));
+    async tapEjectWallets() {
+        const ejectWalletsElement = element(by.id('@settings/eject-wallets'));
 
-        await waitFor(viewOnlyElement).toBeVisible().withTimeout(10000);
-        await viewOnlyElement.tap();
+        await waitFor(ejectWalletsElement).toBeVisible().withTimeout(10000);
+        await ejectWalletsElement.tap();
     }
 
     async toggleDiscreetMode() {
@@ -63,21 +62,18 @@ class SettingsActions {
         await currencySelectorItemElement.tap();
     }
 
-    async toggleWalletViewOnly(
-        deviceName: string = TREZOR_E2E_DEVICE_LABEL,
-        walletIndex: number = 1,
-    ) {
-        const toggleButtonElement = element(
-            by.id(`@settings/view-only/toggle-button/${deviceName}/${walletIndex}`),
-        );
-        await waitFor(toggleButtonElement).toBeVisible().withTimeout(10000);
-        await toggleButtonElement.tap();
+    async toggleAutoEject() {
+        const autoEjectElement = element(by.id('@settings/auto-eject-toggle'));
+        await waitFor(autoEjectElement).toBeVisible().withTimeout(10000);
+        await autoEjectElement.tap();
+    }
 
-        try {
-            await onAlertSheet.tapPrimaryButton();
-        } catch {
-            // Do nothing. In case of enabling view only mode, there is no alert sheet.
-        }
+    async ejectSingleWallet(deviceName: string = TREZOR_E2E_DEVICE_LABEL, walletIndex: number = 1) {
+        const ejectWalletElement = element(
+            by.id(`@settings/eject-single-wallet/${deviceName}/${walletIndex}`),
+        );
+        await waitFor(ejectWalletElement).toBeVisible().withTimeout(10000);
+        await ejectWalletElement.tap();
     }
 }
 
