@@ -59,6 +59,15 @@ export const selectAllAccountsToList = createMemoizedSelector(
     },
 );
 
+export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
+    [selectAllAccountsToList],
+    accounts => {
+        const filteredAccounts = accounts.filter(account => !account.failed);
+
+        return returnStableArrayIfEmpty(filteredAccounts);
+    },
+);
+
 export const selectDiscoveryAccountsParam = (
     state: CompoundRootState,
     staticSessionId: StaticSessionId,
