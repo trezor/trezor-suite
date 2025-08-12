@@ -15,7 +15,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:^",
-        "copy-webpack-plugin": "^13.0.0",
+        "copy-webpack-plugin": "^13.0.1",
         "html-webpack-plugin": "^5.6.3",
         "webpack": "5.100.0"
     }

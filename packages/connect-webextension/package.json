@@ -47,7 +47,7 @@
         "@trezor/eslint": "workspace:*",
         "@types/chrome": "^0.0.299",
         "babel-loader": "^10.0.0",
-        "copy-webpack-plugin": "^13.0.0",
+        "copy-webpack-plugin": "^13.0.1",
         "rimraf": "^6.0.1",
         "terser-webpack-plugin": "^5.3.14",
         "webpack": "5.100.0",
