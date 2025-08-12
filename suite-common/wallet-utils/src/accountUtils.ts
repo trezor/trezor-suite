@@ -39,11 +39,7 @@ import {
     TokenTransfer,
 } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
-import {
-    HELP_CENTER_ADDRESSES_URL,
-    HELP_CENTER_COINJOIN_URL,
-    HELP_CENTER_TAPROOT_URL,
-} from '@trezor/urls';
+import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
@@ -285,8 +281,6 @@ export const getAccountTypeUrl = (path: string) => {
     switch (bip43) {
         case 'bip86':
             return HELP_CENTER_TAPROOT_URL;
-        case 'slip25':
-            return HELP_CENTER_COINJOIN_URL;
         case 'shelley':
             return undefined;
         default:

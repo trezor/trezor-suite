@@ -83,8 +83,6 @@ export const HELP_CENTER_QR_CODE_URL: Url =
     'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/qr-codes-in-trezor-suite';
 export const HELP_CENTER_ADDRESSES_URL: Url =
     'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/addresses-transaction-history';
-export const HELP_CENTER_COINJOIN_URL: Url =
-    'https://trezor.io/learn/advanced/Blockchain-architecture-technologies/what-is-coinjoin';
 export const HELP_CENTER_TAPROOT_URL: Url =
     'https://trezor.io/learn/advanced/standards-proposals/what-is-taproot';
 export const HELP_CENTER_UDEV_URL: Url = 'https://trezor.io/guides/trezorctl/udev-rules';

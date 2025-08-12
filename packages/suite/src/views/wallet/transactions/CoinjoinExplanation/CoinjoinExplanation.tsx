@@ -1,13 +1,10 @@
-import { darken } from 'polished';
 import styled from 'styled-components';
 
 import { Card, Icon, variables } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
 
@@ -41,36 +38,6 @@ const Steps = styled(Card)`
     }
 `;
 
-const StyledLearnMoreButton = styled(LearnMoreButton)`
-    margin: 0 auto;
-    color: ${({ theme }) => theme.textSubdued};
-
-    button {
-        background: #d9d9d9;
-    }
-
-    path {
-        fill: ${({ theme }) => theme.iconSubdued};
-    }
-
-    button:hover,
-    button:focus {
-        background: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, '#d9d9d9')};
-    }
-
-    ${mediaQueries.dark_theme} {
-        button {
-            background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-        }
-
-        button:hover,
-        button:focus {
-            background: ${({ theme }) =>
-                darken(theme.legacy.HOVER_DARKEN_FILTER, theme.backgroundSurfaceElevation0)};
-        }
-    }
-`;
-
 const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
     {
         image: 'COINS',
@@ -101,7 +68,5 @@ export const CoinjoinExplanation = () => (
                 <CoinjoinProcessStep number={index + 1} key={step.image} {...step} />
             ))}
         </Steps>
-
-        <StyledLearnMoreButton url={HELP_CENTER_COINJOIN_URL} />
     </Container>
 );
