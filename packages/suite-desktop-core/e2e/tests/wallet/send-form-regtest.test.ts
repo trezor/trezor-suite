@@ -45,7 +45,8 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
         await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
 
         // add locktime
-        await page.getByTestId('add-locktime-button').click();
+        await page.getByTestId('@send/header-dropdown').click();
+        await page.getByTestId('@send/header-dropdown/locktime').click();
         await page.getByTestId('locktime-option/input').click();
         await page.getByTestId('locktime-option/option/block').click();
         await page.getByTestId('locktime-blockheight-input').fill('1000');

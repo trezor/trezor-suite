@@ -100,7 +100,6 @@ export class TradingPage {
     readonly finishTransactionButton: Locator;
     readonly confirmOnTrezorAndSend: Locator;
     // Swap
-    readonly broadcastButton: Locator;
     readonly sendAddressInput: Locator;
     readonly sendAmountInput: Locator;
     readonly sendButton: Locator;
@@ -188,7 +187,6 @@ export class TradingPage {
             '@trading/offer/confirm-on-trezor-and-send',
         );
         // Swap
-        this.broadcastButton = this.page.getByTestId('broadcast-button');
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
