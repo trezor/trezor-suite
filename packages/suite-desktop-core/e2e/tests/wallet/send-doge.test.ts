@@ -43,7 +43,8 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         });
 
         await test.step('Fill amount over MAX_SAFE_INTEGER and send', async () => {
-            await tradingPage.broadcastButton.click();
+            await page.getByTestId('@send/header-dropdown').click();
+            await page.getByTestId('@send/header-dropdown/broadcast').click();
             await tradingPage.sendAddressInput.fill(recipientAddress);
             await tradingPage.sendAmountInput.fill(sendAmount);
             await tradingPage.sendButton.click();
