@@ -45,7 +45,13 @@ export const TxSimulationAsset = ({
             <AssetIcon />
 
             {assetDiff?.in.map((inAmount, inIndex) => (
-                <HStack key={`in-${inIndex}`} spacing="sp12" alignItems="center" flex={1}>
+                <HStack
+                    key={`in-${inIndex}`}
+                    spacing="sp12"
+                    alignItems="center"
+                    flex={1}
+                    flexWrap="wrap"
+                >
                     <Text color="textPrimaryDefault">{inAmount.summary}</Text>
                     <Box flex={1} />
                     {inAmount.usd_price && (
@@ -60,7 +66,13 @@ export const TxSimulationAsset = ({
                 </HStack>
             ))}
             {assetDiff?.out.map((outAmount, outIndex) => (
-                <HStack key={`out-${outIndex}`} spacing="sp12" alignItems="center" flex={1}>
+                <HStack
+                    key={`out-${outIndex}`}
+                    spacing="sp12"
+                    alignItems="center"
+                    flex={1}
+                    flexWrap="wrap"
+                >
                     <Text color="textAlertRed">{outAmount.summary}</Text>
                     <Box flex={1} />
                     {outAmount.usd_price && (

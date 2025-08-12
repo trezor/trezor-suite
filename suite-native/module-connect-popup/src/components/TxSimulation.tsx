@@ -16,6 +16,7 @@ import {
     Text,
     TitleHeader,
     VStack,
+    useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -35,8 +36,10 @@ export const TxSimulation = () => {
     const account = accounts.find(
         a => popupCall?.state === 'tx-simulation' && a.key === popupCall?.selectedAccountKey,
     );
-    const [showContractInfo, setShowContractInfo] = useState(false);
-    const [showFeeInfo, setShowFeeInfo] = useState(false);
+    const { bottomSheetRef: contractInfoBottomSheetRef, openModal: openContractInfoModal } =
+        useBottomSheetModal();
+    const { bottomSheetRef: feeInfoBottomSheetRef, openModal: openFeeInfoModal } =
+        useBottomSheetModal();
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
     const { isLoading, simulationResult, error, needsDisclaimer, network, targetContract } =
         useTxSimulationConnectPopup(popupCall);
@@ -173,7 +176,7 @@ export const TxSimulation = () => {
 
                         <CardDivider />
 
-                        <TouchableOpacity onPress={() => setShowContractInfo(true)}>
+                        <TouchableOpacity onPress={openContractInfoModal}>
                             <HStack
                                 padding="sp16"
                                 justifyContent="space-between"
@@ -190,7 +193,7 @@ export const TxSimulation = () => {
                             <>
                                 <CardDivider />
 
-                                <TouchableOpacity onPress={() => setShowFeeInfo(true)}>
+                                <TouchableOpacity onPress={openFeeInfoModal}>
                                     <HStack
                                         padding="sp16"
                                         justifyContent="space-between"
@@ -276,14 +279,12 @@ export const TxSimulation = () => {
             </Button>
 
             <ContractInfoBottomSheet
-                isVisible={showContractInfo}
-                onClose={() => setShowContractInfo(false)}
+                ref={contractInfoBottomSheetRef}
                 targetContract={targetContract}
                 simulationResult={simulationResult}
             />
             <FeeInfoBottomSheet
-                isVisible={showFeeInfo}
-                onClose={() => setShowFeeInfo(false)}
+                ref={feeInfoBottomSheetRef}
                 network={network}
                 popupCall={popupCall}
                 defaultGasLimit={defaultGasLimit}
