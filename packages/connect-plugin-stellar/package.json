@@ -20,12 +20,12 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "lib/index.js"
-    },
-    "exports": {
-        ".": {
-            "import": "./libESM/index.js",
-            "require": "./lib/index.js"
+        "main": "lib/index.js",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js"
+            }
         }
     },
     "files": [
