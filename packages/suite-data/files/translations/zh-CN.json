@@ -2074,6 +2074,7 @@
   "TR_TOKENS": "代币",
   "TR_TOKENS_EMPTY": "没有代币",
   "TR_TOKENS_EMPTY_CHECK_HIDDEN": "没有代币。它们可能已被隐藏。",
+  "TR_TOKEN_ADDRESS": "代币地址",
   "TR_TOKEN_ID_COLON": "代币 ID：",
   "TR_TOKEN_NOT_FOUND": "未能找到此代币",
   "TR_TOKEN_NOT_FOUND_ON_NETWORK": "未能在 {networkName} 网络上找到此代币。",
