@@ -88,7 +88,7 @@ jobs:
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --disable_cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
+        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1,T2B1,T3B1,T3T1 --firmware=2-main --env=node --groups=api --disable_cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
 
       - name: Set all transports matrix
         id: set-matrix-all-transports
