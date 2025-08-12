@@ -48,7 +48,7 @@ export const FeaturesSettings = () => {
                             <Translation id="moduleSettings.items.features.ejectWallets.subtitle" />
                         }
                         onPress={() => navigateTo(SettingsStackRoutes.SettingsViewOnly)}
-                        testID="@settings/view-only"
+                        testID="@settings/eject-wallets"
                     />
                     <AppSettingsCardWithIconLayout
                         icon="coins"
