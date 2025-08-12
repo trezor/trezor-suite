@@ -10,7 +10,6 @@ import {
     selectIsDeviceInitialized,
 } from '@suite-common/wallet-core';
 import { TitledSection, VStack } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
@@ -32,9 +31,7 @@ export const DeviceSettingsModalScreen = () => {
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
-    const isCheckBackupsEnabled = useFeatureFlag(FeatureFlag.IsCheckBackupsEnabled);
-    const isCheckBackupAvailable =
-        isCheckBackupsEnabled && !isDeviceBackupUnfinished && isDeviceInitialized;
+    const isCheckBackupAvailable = isDeviceInitialized && !isDeviceBackupUnfinished;
 
     if (!deviceModel || !deviceName) {
         return null;
