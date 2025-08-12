@@ -14,7 +14,6 @@ import { TestReportProvider } from './annotations';
 
 class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunctions {
     // Initializes the reporter when test run begins, creates a GitHub project if it doesn't exist
-
     async onBegin() {
         await this.init();
     }
@@ -37,6 +36,8 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
                     }
                 } catch (error) {
                     this.logError(`Failed to process test end for "${test.title}":`, error);
+                    const testFileName = test.titlePath()[2].split('/').pop() || 'unknown-test';
+                    this.failedTestFilenames.push(testFileName!);
                     // Non-Critical error, no need to rethrow
                 }
             })(),
@@ -44,30 +45,33 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
     }
 
     // Finalizes reporting when all tests are complete, waits for pending operations to finish
-    // eslint-disable-next-line require-await
+
     async onEnd() {
         this.log('All tests completed, waiting for pending operations...');
 
         if (this.pendingOperations.length > 0) {
             this.log(`Waiting for ${this.pendingOperations.length} pending operations to complete`);
 
-            return Promise.allSettled(this.pendingOperations)
-                .then(results => {
-                    const failed = results.filter(r => r.status === 'rejected').length;
-                    if (failed > 0) {
-                        this.logError(`${failed} operations failed`);
-                    } else {
-                        this.log('All operations completed successfully');
-                    }
-                })
-                .finally(() => {
-                    this.log('GitHub reporter finished');
-                });
-        } else {
-            this.log('No pending operations, GitHub reporter finished');
+            const results = await Promise.allSettled(this.pendingOperations);
+            const failed = results.filter(r => r.status === 'rejected');
 
-            return Promise.resolve();
+            if (failed.length > 0) {
+                this.logError(`${failed.length} operations failed`);
+                failed.forEach((result, index) => {
+                    this.logError(`Operation ${index + 1} failed:`, result.reason);
+                });
+            } else {
+                this.log('All pending operations finished');
+            }
+        } else {
+            this.log('No pending operations to wait for');
         }
+
+        if (this.failedTestFilenames.length > 0) {
+            this.logInstructionsForRerun();
+            throw new Error('GitHub reporter finished with failure');
+        }
+        this.log('GitHub reporter finished successfully');
     }
 
     private async updateIssue(test: TestCase, report: TestReportProvider): Promise<void> {
@@ -98,7 +102,11 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
 
     private async createIssuePerOs(test: TestCase, report: TestReportProvider): Promise<void> {
         for (const operationSystem of report.osMatrix) {
-            const issueNodeId = await scheduleAction(() => {
+            const issueNodeId = await scheduleAction(async () => {
+                // Random delay between 1-5 seconds to distribute load on GitHub API
+                // Without it we often hit "Your attempt to move this item created a temporary conflict. Please try again"
+                const randomDelay = Math.floor(Math.random() * 4000) + 1000; // 1000-5000ms
+                await new Promise(resolve => setTimeout(resolve, randomDelay));
                 this.log(
                     `Creating GitHub draft issue for test "(OS ${operationSystem}) ${test.title}"...`,
                 );
