@@ -1,9 +1,14 @@
-name: "[Test] Release Suite Regression test publisher"
+name: "[Test] Release Suite Sanity test publisher"
 # Triggered by push to release branch
 # Runs Playwright reporter, creating manual regressions release suite in GitHub"
 
 on:
   workflow_dispatch:
+    inputs:
+      testFilter:
+        description: "(optional) Run the publisher for specific tests. Can be multiple tests' filenames separated by whitespace. Ex: test1.test.ts test2.test.ts"
+        required: false
+        default: ""
   workflow_call:
 
 concurrency:
@@ -57,4 +62,4 @@ jobs:
           RELEASE_BUILD: ${{ env.release_build }}
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
-          yarn workspace @trezor/suite-desktop-core github:report:manual
+          yarn workspace @trezor/suite-desktop-core github:report:manual ${{ inputs.testFilter }}

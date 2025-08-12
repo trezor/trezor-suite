@@ -8,9 +8,10 @@ import { LoggingFunctions, ProjectField } from './types';
 import { osMatrixAnnotation } from '../enums/testAnnotations';
 
 export const RETRY_CONF = {
-    attempts: 3,
+    attempts: 5,
     gap: 500,
 };
+const LOG_VISUAL_SEPARATOR = '='.repeat(80);
 
 enum InitializationState {
     NOT_STARTED = 'NOT_STARTED',
@@ -27,6 +28,7 @@ abstract class GitHubReporterBase implements LoggingFunctions {
     protected pendingOperations: Promise<any>[] = [];
     protected initState: InitializationState = InitializationState.NOT_STARTED;
     protected createdIssuesMap: Map<string, string> = new Map();
+    protected failedTestFilenames: string[] = [];
 
     protected initializationPromise: Promise<void> | null = null;
 
@@ -81,6 +83,29 @@ abstract class GitHubReporterBase implements LoggingFunctions {
             console.warn(`[GitHub Reporter] ${label}:`);
             console.warn(JSON.stringify(response, null, 2));
         }
+    }
+
+    protected logInstructionsForRerun(): void {
+        const failedCount = this.failedTestFilenames.length;
+        const uniqueFailedFilenames = [...new Set(this.failedTestFilenames)];
+
+        this.logError(LOG_VISUAL_SEPARATOR);
+        this.logError(`GITHUB REPORTER SUMMARY: ~${failedCount} test(s) failed to report`);
+        this.logError(LOG_VISUAL_SEPARATOR);
+
+        if (process.env.RELEASE_BUILD) {
+            this.logError(`Release Build: ${process.env.RELEASE_BUILD}`);
+        }
+
+        this.logError(`To rerun the reporter for these specific tests:`);
+        this.logError(
+            `1. Navigate to: https://github.com/trezor/trezor-suite/actions/workflows/test-suite-manual-release.yml`,
+        );
+        this.logError(`2. Click "Run workflow"`);
+        this.logError(`3. Specify your release branch`);
+        this.logError(`4. In the 'testFilter' parameter, paste the following:`);
+        this.logError(`   ${uniqueFailedFilenames.join(' ')}`);
+        this.logError(LOG_VISUAL_SEPARATOR);
     }
 
     // Tracks asynchronous operations and logs their completion

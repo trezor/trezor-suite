@@ -17,6 +17,10 @@ When executed during release builds, the reporter adds new draft issues to a Git
 Reporter no longer has automatic trigger. It needs to be triggered manually by running its orchestration workflow **[Test] Release Suite Report orchestration** which will run 3 relevant workflows (Web, Desktop and Manual). All automated tests will be run on the release again, their results reported to GitHub project and issues for manual regression will be generated as well.
 You can also run the specific workflow one by one.
 
+## What to do when workflow fails
+
+Each failed reporter run contains detailed instructions how to rerun it for specific set of tests and doing so creating complete report in our project without missing any tests.
+
 ## Overview
 
 The framework consists of three main components:
@@ -141,8 +145,9 @@ To add or change value of annotation, simply change or add new enum value in cor
 
 ### Retry Strategy
 
-The GitHub Test Reporter implements a retry mechanism to handle network issues or temporary API failures. It uses the `scheduleAction` utility. Each API operation will be attempted up to 3 times with a 500ms delay between attempts.
+The GitHub Test Reporter implements a retry mechanism to handle network issues or temporary API failures. It uses the `scheduleAction` utility. Each API operation will be attempted up to 5 times with a 500ms delay between attempts.
 The current implementation does not have built-in deduplication logic for duplicate test issues created by `scheduleAction` retries.
+We have implemented a random delay for action `create Draft Issue in Project` in order to distribute load and solve often issue "Your attempt to move this item created a temporary conflict. Please try again"
 
 ### Test Retry Deduplication
 
