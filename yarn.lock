@@ -1655,10 +1655,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.26.9, @babel/runtime@npm:^7.27.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
-  version: 7.27.6
-  resolution: "@babel/runtime@npm:7.27.6"
-  checksum: 10/cc957a12ba3781241b83d528eb69ddeb86ca5ac43179a825e83aa81263a6b3eb88c57bed8a937cdeacfc3192e07ec24c73acdfea4507d0c0428c8e23d6322bfe
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.26.9, @babel/runtime@npm:^7.28.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+  version: 7.28.2
+  resolution: "@babel/runtime@npm:7.28.2"
+  checksum: 10/a0965fbdd6aaa40709290923bbe05e1c4314021f0cef608eb1d69f04f717c41829e50a53d79c4a0f461512b4be9b3c0190dc19387b219bcdaacdd793b2fe1b8a
   languageName: node
   linkType: hard
 
@@ -11691,34 +11691,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^10.4.0":
-  version: 10.4.0
-  resolution: "@testing-library/dom@npm:10.4.0"
+"@testing-library/dom@npm:^10.4.1":
+  version: 10.4.1
+  resolution: "@testing-library/dom@npm:10.4.1"
   dependencies:
     "@babel/code-frame": "npm:^7.10.4"
     "@babel/runtime": "npm:^7.12.5"
     "@types/aria-query": "npm:^5.0.1"
     aria-query: "npm:5.3.0"
-    chalk: "npm:^4.1.0"
     dom-accessibility-api: "npm:^0.5.9"
     lz-string: "npm:^1.5.0"
+    picocolors: "npm:1.1.1"
     pretty-format: "npm:^27.0.2"
-  checksum: 10/05825ee9a15b88cbdae12c137db7111c34069ed3c7a1bd03b6696cb1b37b29f6f2d2de581ebf03033e7df1ab7ebf08399310293f440a4845d95c02c0a9ecc899
+  checksum: 10/7f93e09ea015f151f8b8f42cbab0b2b858999b5445f15239a72a612ef7716e672b14c40c421218194cf191cbecbde0afa6f3dc2cc83dda93ff6a4fb0237df6e6
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.6.3":
-  version: 6.6.3
-  resolution: "@testing-library/jest-dom@npm:6.6.3"
+"@testing-library/jest-dom@npm:^6.6.3, @testing-library/jest-dom@npm:^6.6.4":
+  version: 6.6.4
+  resolution: "@testing-library/jest-dom@npm:6.6.4"
   dependencies:
     "@adobe/css-tools": "npm:^4.4.0"
     aria-query: "npm:^5.0.0"
-    chalk: "npm:^3.0.0"
     css.escape: "npm:^1.5.1"
     dom-accessibility-api: "npm:^0.6.3"
     lodash: "npm:^4.17.21"
+    picocolors: "npm:^1.1.1"
     redent: "npm:^3.0.0"
-  checksum: 10/1f3427e45870eab9dcc59d6504b780d4a595062fe1687762ae6e67d06a70bf439b40ab64cf58cbace6293a99e3764d4647fdc8300a633b721764f5ce39dade18
+  checksum: 10/5e67112c789f884fb75b279c2cddfdd0995a012a7847a03c474e4134f0d213934ee70c97433bca26b45e3a5ffa56faafe6499c8e57841179c4f2bd80eef429cd
   languageName: node
   linkType: hard
 
@@ -11872,7 +11872,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     tsx: "npm:^4.20.3"
-    xrpl: "npm:^4.3.0"
+    xrpl: "npm:^4.4.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -11907,7 +11907,7 @@ __metadata:
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.2"
     worker-loader: "npm:^3.0.8"
-    xrpl: "npm:^4.3.0"
+    xrpl: "npm:^4.4.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -11956,8 +11956,8 @@ __metadata:
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/validators": "workspace:*"
-    "@testing-library/dom": "npm:^10.4.0"
-    "@testing-library/jest-dom": "npm:^6.6.3"
+    "@testing-library/dom": "npm:^10.4.1"
+    "@testing-library/jest-dom": "npm:^6.6.4"
     "@testing-library/react": "npm:^16.3.0"
     "@testing-library/user-event": "npm:^14.6.1"
     "@trezor/asset-utils": "workspace:*"
@@ -12021,7 +12021,7 @@ __metadata:
   resolution: "@trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme"
   dependencies:
     "@headlessui/react": "npm:^2.2.2"
-    "@testing-library/dom": "npm:^10.4.0"
+    "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/react": "npm:^16.3.0"
     "@trezor/components": "workspace:*"
     "@trezor/product-components": "workspace:*"
@@ -12084,7 +12084,7 @@ __metadata:
     codemirror-json-schema: "npm:^0.7.8"
     codemirror-json5: "npm:^1.0.3"
     concurrently: "npm:^8.2.2"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     eslint-plugin-mdx: "npm:^3.6.2"
     html-webpack-plugin: "npm:^5.6.3"
     json5: "npm:^2.2.3"
@@ -12124,7 +12124,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     babel-loader: "npm:^10.0.0"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     es6-promise: "npm:^4.2.8"
     html-webpack-plugin: "npm:^5.6.3"
     rimraf: "npm:^6.0.1"
@@ -12200,7 +12200,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:^19.0.0"
     babel-loader: "npm:^10.0.0"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:^5.6.3"
     react-dom: "npm:19.0.0"
@@ -12292,7 +12292,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@types/chrome": "npm:^0.0.299"
     babel-loader: "npm:^10.0.0"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     rimraf: "npm:^6.0.1"
     terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:5.100.0"
@@ -12639,7 +12639,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.7.0"
     babel-loader: "npm:^10.0.0"
     babel-plugin-styled-components: "npm:^2.1.4"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     crypto-browserify: "npm:3.12.0"
     css-loader: "npm:^6.10.0"
     css-minimizer-webpack-plugin: "npm:^7.0.2"
@@ -12910,7 +12910,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
-    "@testing-library/jest-dom": "npm:^6.6.3"
+    "@testing-library/jest-dom": "npm:^6.6.4"
     "@testing-library/react": "npm:^16.3.0"
     "@testing-library/user-event": "npm:^14.6.1"
     "@trezor/address-validator": "workspace:*"
@@ -13182,7 +13182,7 @@ __metadata:
   dependencies:
     "@trezor/connect-webextension": "workspace:^"
     "@trezor/eslint": "workspace:^"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     html-webpack-plugin: "npm:^5.6.3"
     webpack: "npm:5.100.0"
   languageName: unknown
@@ -15435,13 +15435,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xrplf/secret-numbers@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@xrplf/secret-numbers@npm:1.0.0"
+"@xrplf/secret-numbers@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@xrplf/secret-numbers@npm:2.0.0"
   dependencies:
-    "@xrplf/isomorphic": "npm:^1.0.0"
+    "@xrplf/isomorphic": "npm:^1.0.1"
     ripple-keypairs: "npm:^2.0.0"
-  checksum: 10/f9e584fdc73a605b2aba4a6b86f3a090c0df1a26e48817b7fa256d64211950d084b6f4419e89bef036e9eaedf85fd5fa98089e888b14e4232fe51ab9491742e0
+  checksum: 10/fe10014dd3d0751c47be14e4ed78f900a01ad3a70639cf61d0b3a6f11b2a68bba8c14a74bfe80142bce00636a2fc2ff2e287c3fc8ad7ba28a4c34fe5f048a761
   languageName: node
   linkType: hard
 
@@ -18967,9 +18967,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-webpack-plugin@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "copy-webpack-plugin@npm:13.0.0"
+"copy-webpack-plugin@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "copy-webpack-plugin@npm:13.0.1"
   dependencies:
     glob-parent: "npm:^6.0.1"
     normalize-path: "npm:^3.0.0"
@@ -18978,7 +18978,7 @@ __metadata:
     tinyglobby: "npm:^0.2.12"
   peerDependencies:
     webpack: ^5.1.0
-  checksum: 10/209051dd3c0bc7ab97170309cdb1826e642044d2d53e0adc35bb227123c89ae1296a504409325e9b955d7b2d1a505b063f0023e924151d382dbcc92cb9325e6a
+  checksum: 10/2abf3b85c32556b1cb9ef47f2198f6497ef414505cf42d249e3b7e65185db738756bec85333b4a32865d1c6b09343ea63eb9e8d154c133ddcebb4c7f066be5af
   languageName: node
   linkType: hard
 
@@ -21329,13 +21329,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.17.2":
-  version: 5.18.2
-  resolution: "enhanced-resolve@npm:5.18.2"
+"enhanced-resolve@npm:^5.17.2, enhanced-resolve@npm:^5.17.3":
+  version: 5.18.3
+  resolution: "enhanced-resolve@npm:5.18.3"
   dependencies:
     graceful-fs: "npm:^4.2.4"
     tapable: "npm:^2.2.0"
-  checksum: 10/d1b517c908b69d1afbf87b476bbe7dd8d1daf11070127b9ec4f8553f0c6020d30f79103c938776645d569e954e4e04c326f408d2ea3820ade71e72798fb7d36f
+  checksum: 10/a4d0a1eacba3079f617b68c8f7e17583c3cbc572055c2edca41c0fa0230a49f6e9b2c6ffd4128cc5f84e15ea6cc313ae2b01e1057fcd252fabef70220a5d9f6a
   languageName: node
   linkType: hard
 
@@ -33696,7 +33696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picocolors@npm:^1.0.0, picocolors@npm:^1.1.1":
+"picocolors@npm:1.1.1, picocolors@npm:^1.0.0, picocolors@npm:^1.1.1":
   version: 1.1.1
   resolution: "picocolors@npm:1.1.1"
   checksum: 10/e1cf46bf84886c79055fdfa9dcb3e4711ad259949e3565154b004b260cd356c5d54b31a1437ce9782624bf766272fe6b0154f5f0c744fb7af5d454d2b60db045
@@ -37017,14 +37017,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ripple-binary-codec@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "ripple-binary-codec@npm:2.4.0"
+"ripple-binary-codec@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "ripple-binary-codec@npm:2.5.0"
   dependencies:
     "@xrplf/isomorphic": "npm:^1.0.1"
     bignumber.js: "npm:^9.0.0"
     ripple-address-codec: "npm:^5.0.0"
-  checksum: 10/c14dd6f6ce7aa6bd2acfd0bc747c4d8d035f23f675764988ec00492d8a7636697c3600fee26da37129129b5ccaf914dcd169e05a26b2ed21f3cbca178fe7f472
+  checksum: 10/65d9c2cc268e6bb8daacbc281445c10aa23b3f38d171e3f8c2d219811f87ef798819926509077e7b09657a8e2362e772166d3c2cfc5b077390c7ac6efc690a73
   languageName: node
   linkType: hard
 
@@ -39970,7 +39970,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.28.0"
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
-    "@babel/runtime": "npm:^7.27.6"
+    "@babel/runtime": "npm:^7.28.2"
     "@trezor/eslint": "workspace:*"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
@@ -42389,7 +42389,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5, webpack@npm:5.100.0, webpack@npm:^5":
+"webpack@npm:5, webpack@npm:^5":
+  version: 5.101.1
+  resolution: "webpack@npm:5.101.1"
+  dependencies:
+    "@types/eslint-scope": "npm:^3.7.7"
+    "@types/estree": "npm:^1.0.8"
+    "@types/json-schema": "npm:^7.0.15"
+    "@webassemblyjs/ast": "npm:^1.14.1"
+    "@webassemblyjs/wasm-edit": "npm:^1.14.1"
+    "@webassemblyjs/wasm-parser": "npm:^1.14.1"
+    acorn: "npm:^8.15.0"
+    acorn-import-phases: "npm:^1.0.3"
+    browserslist: "npm:^4.24.0"
+    chrome-trace-event: "npm:^1.0.2"
+    enhanced-resolve: "npm:^5.17.3"
+    es-module-lexer: "npm:^1.2.1"
+    eslint-scope: "npm:5.1.1"
+    events: "npm:^3.2.0"
+    glob-to-regexp: "npm:^0.4.1"
+    graceful-fs: "npm:^4.2.11"
+    json-parse-even-better-errors: "npm:^2.3.1"
+    loader-runner: "npm:^4.2.0"
+    mime-types: "npm:^2.1.27"
+    neo-async: "npm:^2.6.2"
+    schema-utils: "npm:^4.3.2"
+    tapable: "npm:^2.1.1"
+    terser-webpack-plugin: "npm:^5.3.11"
+    watchpack: "npm:^2.4.1"
+    webpack-sources: "npm:^3.3.3"
+  peerDependenciesMeta:
+    webpack-cli:
+      optional: true
+  bin:
+    webpack: bin/webpack.js
+  checksum: 10/2cbb76683a959bf7f1c11a593e45bb6a2522254eff78e58106da155d6b08da49a3aca584d57948b473a7a55178adcbd728e98cd572ab535d72694b327896a595
+  languageName: node
+  linkType: hard
+
+"webpack@npm:5.100.0":
   version: 5.100.0
   resolution: "webpack@npm:5.100.0"
   dependencies:
@@ -42933,20 +42971,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xrpl@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "xrpl@npm:4.3.0"
+"xrpl@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "xrpl@npm:4.4.0"
   dependencies:
     "@scure/bip32": "npm:^1.3.1"
     "@scure/bip39": "npm:^1.2.1"
     "@xrplf/isomorphic": "npm:^1.0.1"
-    "@xrplf/secret-numbers": "npm:^1.0.0"
+    "@xrplf/secret-numbers": "npm:^2.0.0"
     bignumber.js: "npm:^9.0.0"
     eventemitter3: "npm:^5.0.1"
     ripple-address-codec: "npm:^5.0.0"
-    ripple-binary-codec: "npm:^2.4.0"
+    ripple-binary-codec: "npm:^2.5.0"
     ripple-keypairs: "npm:^2.0.0"
-  checksum: 10/f489e5fc6dcdaa4f8373818b67d7701a7df1143cfa9c5980aacbf5adf2f36834bed7d76d700017340493ffae408fc22b47d25aba4da680f3b6a203e7ab07606a
+  checksum: 10/b3bc9e0299a43b7541a3e3c79e218e48dfce938c3bebc5c792cdd28ea01be37f49387b8ce763fcdb99ccef44d2d8c2c684eb1498b5a85b496b13429af1f501d9
   languageName: node
   linkType: hard
 
