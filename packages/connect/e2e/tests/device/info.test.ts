@@ -1,24 +1,95 @@
 import TrezorConnect from '../../../src';
-import { getController, initTrezorConnect } from '../../common.setup';
+import { getController, initTrezorConnect, setup } from '../../common.setup';
+const controller = getController();
 
 describe('__info common param', () => {
     beforeAll(async () => {
         TrezorConnect.dispose();
-
-        await initTrezorConnect(getController());
+        await setup(controller, {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: false,
+        });
+        await initTrezorConnect(controller);
     });
 
     afterAll(() => {
+        controller.dispose();
         TrezorConnect.dispose();
     });
 
-    it('common param __info - only method info is returned', async () => {
-        const result = await TrezorConnect.getFeatures({
-            __info: true,
+    [true, false].forEach(__info => {
+        it(`when incorrect params are passed, __info: boolean makes no difference. case: ${__info}`, async () => {
+            // @ts-expect-error
+
+            const result = await TrezorConnect.getAddress({
+                __info,
+            });
+
+            expect(result).toBeDefined();
+            expect(result.success).toBe(false);
+            // @ts-expect-error
+            expect(result.payload.error).toEqual(
+                'Invalid parameter "bundle/0/path" (= undefined): Expected required property',
+            );
         });
-        if (!result.success) throw new Error(result.payload.error);
-        // @ts-expect-error todo: types not finished
-        expect(result.payload.useDevice).toEqual(true);
-        expect(result.payload.minor_version).toEqual(undefined);
+    });
+
+    [true, false].forEach(__info => {
+        it(`with correct params and __info: ${__info}`, async () => {
+            const result = await TrezorConnect.getAddress({
+                __info,
+                path: "m/44'/1'/0'/0/0",
+                showOnTrezor: false,
+            });
+            expect(result).toBeDefined();
+            expect(result.success).toBe(true);
+
+            if (__info) {
+                expect(result.payload).toMatchObject({
+                    useDevice: true,
+                });
+            } else {
+                expect(result.payload).toMatchObject({
+                    address: expect.any(String),
+                });
+            }
+        });
+    });
+
+    describe('all the non-utility methods should not crash', () => {
+        Object.keys(TrezorConnect).forEach(method => {
+            if (
+                [
+                    // "utility" methods
+                    'manifest',
+                    'init',
+                    'setTransports',
+                    'getSettings',
+                    'on',
+                    'off',
+                    'removeAllListeners',
+                    'uiResponse',
+                    'requestLogin',
+                    'getCoinInfo',
+                    'dispose',
+                    'cancel',
+                    'requestWebUSBDevice',
+                    'renderWebUSBButton',
+                    'disableWebUSB',
+                    'bleUnpair',
+                    'firmwareUpdate', // todo: this should probably work with __info param as well
+                ].includes(method)
+            ) {
+                return;
+            }
+
+            it(`TrezorConnect.${method}({ __info: true })`, async () => {
+                // @ts-expect-error
+                const result = await TrezorConnect[method]({
+                    __info: true,
+                });
+                expect(result).toBeDefined();
+            });
+        });
     });
 });

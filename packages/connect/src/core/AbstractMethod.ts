@@ -31,16 +31,17 @@ export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethod
 export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
 export type DeviceMode = typeof UI.SEEDLESS | typeof UI.BOOTLOADER | typeof UI.INITIALIZE;
 
-export interface MethodInfo {
+export type MethodInfo = {
+    // static fields
     useUi: boolean;
     useDevice: boolean;
     useDeviceState: boolean;
     name: string;
     requiredPermissions: MethodPermission[];
+    // available after init
     info: string;
-    confirmation?: UiRequestConfirmation['payload'];
     precomposed?: PrecomposeResultFinal;
-}
+};
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     UNKNOWN: { min: '1.0.0', max: '0' },
@@ -354,9 +355,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             name: this.name,
             requiredPermissions: this.requiredPermissions,
             info: this.info,
-            confirmation: this.confirmation,
-            precomposed: undefined, // will be filled in only if method.payloadToPrecomposed is implemented and both __info and __precompose param are sent
-            // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
+            precomposed: undefined, // requested by a special flag,
         };
     }
 
