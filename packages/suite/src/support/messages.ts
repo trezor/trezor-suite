@@ -9240,6 +9240,67 @@ export default defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
+    TR_STAKING_DASHBOARD_TITLE: {
+        id: 'TR_STAKING_DASHBOARD_TITLE',
+        defaultMessage: 'Staking',
+    },
+    TR_STAKING_DASHBOARD_TEXT: {
+        id: 'TR_STAKING_DASHBOARD_TEXT',
+        defaultMessage:
+            'Grow your crypto by locking it to help secure the network—and earn rewards in return.',
+    },
+    TR_STAKING_DASHBOARD_ACTIVE: {
+        id: 'TR_STAKING_DASHBOARD_ACTIVE',
+        defaultMessage: 'Active',
+    },
+    TR_STAKING_DASHBOARD_NOT_ACTIVE: {
+        id: 'TR_STAKING_DASHBOARD_NOT_ACTIVE',
+        defaultMessage: 'Not active',
+    },
+    TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
+        id: 'TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE',
+        defaultMessage: 'Account balance',
+    },
+    TR_STAKING_DASHBOARD_TABLE_APY: {
+        id: 'TR_STAKING_DASHBOARD_TABLE_APY',
+        defaultMessage: 'APY',
+    },
+    TR_STAKING_DASHBOARD_TABLE_YEARLY_REWARDS: {
+        id: 'TR_STAKING_DASHBOARD_TABLE_YEARLY_REWARDS',
+        defaultMessage: 'Your yearly rewards',
+    },
+    TR_STAKING_DASHBOARD_TABLE_POTENTIAL_REWARDS: {
+        id: 'TR_STAKING_DASHBOARD_TABLE_POTENTIAL_REWARDS',
+        defaultMessage: 'Potential rewards',
+    },
+    TR_STAKING_DASHBOARD_STAKE_NOW: {
+        id: 'TR_STAKING_DASHBOARD_STAKE_NOW',
+        defaultMessage: 'Stake now',
+    },
+    TR_STAKING_DASHBOARD_STAKE_MORE: {
+        id: 'TR_STAKING_DASHBOARD_STAKE_MORE',
+        defaultMessage: 'Stake more',
+    },
+    TR_STAKING_DASHBOARD_ACTIVATE: {
+        id: 'TR_STAKING_DASHBOARD_ACTIVATE',
+        defaultMessage: 'Activate {networkName}',
+    },
+    TR_STAKING_DASHBOARD_MINIMUM_STAKE: {
+        id: 'TR_STAKING_DASHBOARD_MINIMUM_STAKE',
+        defaultMessage: 'Minimum {amount} {displaySymbol} required to stake',
+    },
+    TR_STAKING_DASHBOARD_MAXIMUM_STAKE: {
+        id: 'TR_STAKING_DASHBOARD_MAXIMUM_STAKE',
+        defaultMessage: 'Maximum staked',
+    },
+    TR_STAKING_DASHBOARD_IF_YOU_ADD: {
+        id: 'TR_STAKING_DASHBOARD_IF_YOU_ADD',
+        defaultMessage: 'If you add {amount} {displaySymbol}',
+    },
+    TR_STAKING_DASHBOARD_STAKED: {
+        id: 'TR_STAKING_DASHBOARD_STAKED',
+        defaultMessage: '{amount} {displaySymbol} staked',
+    },
     TR_STAKE_NETWORK: {
         id: 'TR_STAKE_NETWORK',
         defaultMessage: 'Stake {symbol}',

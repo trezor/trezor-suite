@@ -48,13 +48,13 @@ import {
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
 
+import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import type { ReduxModalProps } from '../ReduxModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
-import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
-import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
+import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { TradingDCAModal } from './TradingDCAModal';
 import { TxSimulationModal } from './TxSimulationModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';

@@ -128,6 +128,7 @@ export interface SuiteState {
     recentlyConnectedDeviceRef: string | null; // TODO use type DeviceRef from suite-types; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
     recentlyDisconnectedDevice: string | null;
     seenDisconnectNotificationForDeviceIds: string[];
+    stakingDashboardCollapsed: boolean;
 }
 
 const initialState: SuiteState = {
@@ -211,6 +212,7 @@ const initialState: SuiteState = {
     recentlyConnectedDeviceRef: null,
     recentlyDisconnectedDevice: null,
     seenDisconnectNotificationForDeviceIds: [],
+    stakingDashboardCollapsed: false,
 };
 
 export const suiteInitialState = initialState;
@@ -251,6 +253,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.settings,
                     ...action.payload.suiteSettings?.settings,
                 };
+                if (typeof action.payload.suiteSettings?.stakingDashboardCollapsed === 'boolean') {
+                    draft.stakingDashboardCollapsed =
+                        action.payload.suiteSettings.stakingDashboardCollapsed;
+                }
                 break;
             case STORAGE.ERROR:
                 draft.lifecycle = { status: 'db-error', error: action.payload };
@@ -326,6 +332,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
+                break;
+
+            case SUITE.SET_STAKING_DASHBOARD_COLLAPSED:
+                draft.stakingDashboardCollapsed = action.isCollapsed;
                 break;
 
             case SUITE.SET_SEND_FORM_PREFILL:

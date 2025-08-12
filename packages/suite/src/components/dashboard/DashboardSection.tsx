@@ -1,31 +1,72 @@
-import { HTMLAttributes, ReactElement, Ref, forwardRef } from 'react';
+import {
+    HTMLAttributes,
+    ReactElement,
+    ReactNode,
+    Ref,
+    forwardRef,
+    useEffect,
+    useState,
+} from 'react';
 
-import { Column, H3, Row } from '@trezor/components';
+import { Column, H3, IconButton, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
     heading: ReactElement;
+    text?: ReactNode;
     actions?: ReactElement;
+    collapsible?: boolean;
+    defaultCollapsed?: boolean;
+    onCollapseChange?: (collapsed: boolean) => void;
     'data-testid'?: string;
 };
 
 export const DashboardSection = forwardRef(
     (
-        { heading, actions, children, 'data-testid': dataTestId, ...rest }: DashboardSectionProps,
+        {
+            heading,
+            text,
+            actions,
+            collapsible = false,
+            defaultCollapsed = false,
+            onCollapseChange,
+            children,
+            'data-testid': dataTestId,
+            ...rest
+        }: DashboardSectionProps,
         ref: Ref<HTMLDivElement>,
-    ) => (
-        <div ref={ref} {...rest}>
-            <Column data-testid={dataTestId} gap={spacings.md}>
-                <Row as="header" justifyContent="space-between">
-                    {heading && (
-                        <H3>
-                            <Row as="span">{heading}</Row>
-                        </H3>
-                    )}
-                    {actions && <div>{actions}</div>}
-                </Row>
-                {children}
-            </Column>
-        </div>
-    ),
+    ) => {
+        const [collapsed, setCollapsed] = useState(defaultCollapsed);
+
+        useEffect(() => {
+            onCollapseChange?.(collapsed);
+        }, [collapsed, onCollapseChange]);
+
+        return (
+            <div ref={ref} {...rest}>
+                <Column data-testid={dataTestId} gap={spacings.md}>
+                    <Column width="100%" gap={spacings.xs}>
+                        <Row as="header" justifyContent="space-between">
+                            {heading && (
+                                <H3>
+                                    <Row as="span">{heading}</Row>
+                                </H3>
+                            )}
+                            {actions && <div>{actions}</div>}
+                            {collapsible && (
+                                <IconButton
+                                    icon={collapsed ? 'caretDown' : 'caretUp'}
+                                    size="small"
+                                    variant="tertiary"
+                                    onClick={() => setCollapsed(prev => !prev)}
+                                ></IconButton>
+                            )}
+                        </Row>
+                        {text && <Paragraph variant="tertiary">{text}</Paragraph>}
+                    </Column>
+                    {!collapsed && children}
+                </Column>
+            </div>
+        );
+    },
 );
