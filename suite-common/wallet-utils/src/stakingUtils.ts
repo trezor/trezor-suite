@@ -43,6 +43,28 @@ export const getAccountTotalStakingBalance = (account: Account) => {
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
 
+export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol) => {
+    switch (symbol) {
+        case 'eth':
+            return {
+                MIN_AMOUNT_FOR_STAKING: MIN_ETH_AMOUNT_FOR_STAKING,
+                MAX_AMOUNT_FOR_STAKING: MAX_ETH_AMOUNT_FOR_STAKING,
+                MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
+                MIN_BALANCE_FOR_STAKING: MIN_ETH_BALANCE_FOR_STAKING,
+            };
+        case 'sol': {
+            return {
+                MIN_AMOUNT_FOR_STAKING: MIN_SOL_AMOUNT_FOR_STAKING,
+                MAX_AMOUNT_FOR_STAKING: MAX_SOL_AMOUNT_FOR_STAKING,
+                MIN_FOR_WITHDRAWALS: MIN_SOL_FOR_WITHDRAWALS,
+                MIN_BALANCE_FOR_STAKING: MIN_SOL_BALANCE_FOR_STAKING,
+            };
+        }
+        default:
+            throw new Error(`Unsupported network symbol: ${symbol}`);
+    }
+};
+
 export const getStakingLimitsByNetwork = (account: Account) => {
     switch (account.networkType) {
         case 'ethereum':
@@ -131,4 +153,24 @@ export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
     if (precomposedTx?.type !== 'final') return null;
 
     return precomposedTx.outputs[0].amount;
+};
+
+export const calculateYearlyRewards = (amount: string, apyPercent: number, days = 365) => {
+    const apy = apyPercent / 100;
+    const factor = Math.pow(1 + apy, days / 365) - 1;
+    const currentRewards = new BigNumber(amount).multipliedBy(factor).toString();
+
+    return currentRewards;
+};
+
+export const getFormattedRewards = (amount: BigNumber) => {
+    let precision = 4;
+    let formattedAmount = amount.toFixed(precision);
+
+    while (new BigNumber(formattedAmount).eq(0) && precision < 10) {
+        precision++;
+        formattedAmount = amount.toFixed(precision);
+    }
+
+    return formattedAmount;
 };

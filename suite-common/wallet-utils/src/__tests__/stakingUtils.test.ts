@@ -3,8 +3,8 @@ import { getUnstakingPeriodInDays } from '../stakingUtils';
 
 describe('getUnstakingPeriodInDays', () => {
     getUnstakingPeriodInDaysFixture.forEach(test => {
-        it(test.description, async () => {
-            const result = await getUnstakingPeriodInDays({
+        it(test.description, () => {
+            const result = getUnstakingPeriodInDays({
                 networkType: test.args.networkType,
                 validatorWithdrawTime: test.args.validatorWithdrawTime,
                 validatorExitTime: test.args.validatorExitTime,

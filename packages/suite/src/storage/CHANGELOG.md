@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 25.9.0
+
+- persist `suite.stakingDashboardCollapsed` in `suiteSettings`
+
 ## 25.8.0
 
 - make `device.authenticityChecks` non-nullable
