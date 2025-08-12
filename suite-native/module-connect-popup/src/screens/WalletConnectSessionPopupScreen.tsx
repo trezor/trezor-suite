@@ -113,7 +113,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                 size="large"
                             />
                             <VStack flex={1} spacing="sp4">
-                                <HStack>
+                                <HStack flexWrap="wrap">
                                     <Text>{pendingProposal?.params.proposer.metadata.name}</Text>
                                     {!pendingProposal?.isScam &&
                                         pendingProposal?.validation === 'VALID' && (
