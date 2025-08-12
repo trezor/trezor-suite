@@ -33,6 +33,8 @@ import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
+const MIN_FEE_RATE = 1; // minimum fee rate in sat/vB, introduced because nodes lowered min relay tx fee, but not incremental fee
+
 export type UseRbfProps = {
     selectedAccount: SelectedAccountLoaded;
     rbfParams: RbfTransactionParams;
@@ -54,7 +56,7 @@ const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin
     return {
         ...feeInfo,
         levels,
-        minFee: new BigNumber(feeRate).plus(feeInfo.minFee).toNumber(), // increase required minFee rate
+        minFee: Math.max(new BigNumber(feeRate).plus(feeInfo.minFee).toNumber(), MIN_FEE_RATE),
     };
 };
 
