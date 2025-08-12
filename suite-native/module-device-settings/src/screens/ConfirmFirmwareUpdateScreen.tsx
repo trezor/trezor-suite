@@ -68,7 +68,6 @@ export const ConfirmFirmwareUpdateScreen = () => {
                 ref={bottomSheetRef}
                 onConfirm={withModalClose(handleUpdateConfirmation)}
                 onCheckBackup={withModalClose(navigateToCheckBackup)}
-                onCancel={closeModal}
             />
         </Screen>
     );
