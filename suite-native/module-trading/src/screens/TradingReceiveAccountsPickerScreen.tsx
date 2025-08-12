@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { Translation } from '@suite-native/intl';
@@ -37,11 +36,11 @@ export const TradingReceiveAccountsPickerScreen = () => {
 
     const {
         onSelectedNetworkItem,
-        networkSymbolWithTypeToBeAdded,
         clearNetworkWithTypeToBeAdded,
         handleAccountTypeConfirmation,
         handleAccountTypeSelection,
         getAccountTypeToBeAddedName,
+        bottomSheetRef,
     } = useAddCoinAccount();
 
     const flowType: AddCoinFlowType = 'trade';
@@ -69,9 +68,9 @@ export const TradingReceiveAccountsPickerScreen = () => {
                 tradingType={tradingType}
             />
             <AccountTypeDecisionBottomSheet
+                ref={bottomSheetRef}
                 coinName={symbol}
                 typeName={getAccountTypeToBeAddedName()}
-                isVisible={G.isNotNullable(networkSymbolWithTypeToBeAdded)}
                 onClose={clearNetworkWithTypeToBeAdded}
                 onTypeSelectionTap={handleAccountTypeSelectionTap}
                 onConfirmTap={handleAddAccountConfirmTap}

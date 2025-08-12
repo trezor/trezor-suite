@@ -21,6 +21,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
+import { useBottomSheetModal } from '@suite-native/atoms';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
@@ -83,6 +84,7 @@ export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { name: routeName } = useRoute();
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const supportedNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
@@ -142,6 +144,7 @@ export const useAddCoinAccount = () => {
 
         if (type) {
             setNetworkSymbolWithTypeToBeAdded([symbol, type]);
+            openModal();
         }
     };
 
@@ -247,6 +250,7 @@ export const useAddCoinAccount = () => {
 
     const clearNetworkWithTypeToBeAdded = () => {
         setNetworkSymbolWithTypeToBeAdded(null);
+        closeModal();
     };
 
     const checkCanAddAccount = (accounts: Account[]) => {
@@ -408,5 +412,6 @@ export const useAddCoinAccount = () => {
         getAccountTypeToBeAddedName,
         handleAccountTypeSelection,
         handleAccountTypeConfirmation,
+        bottomSheetRef,
     };
 };

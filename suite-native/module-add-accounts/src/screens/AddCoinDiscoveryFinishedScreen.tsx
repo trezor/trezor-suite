@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
-
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
@@ -42,10 +40,10 @@ export const AddCoinDiscoveryFinishedScreen = ({
         navigateToSuccessorScreen,
         handleAccountTypeConfirmation,
         onSelectedNetworkItem,
-        networkSymbolWithTypeToBeAdded,
         clearNetworkWithTypeToBeAdded,
         handleAccountTypeSelection,
         getAccountTypeToBeAddedName,
+        bottomSheetRef,
     } = useAddCoinAccount();
 
     const handleSelectedAccount = (account: Account) =>
@@ -106,7 +104,7 @@ export const AddCoinDiscoveryFinishedScreen = ({
             <AccountTypeDecisionBottomSheet
                 coinName={networkSymbol}
                 typeName={getAccountTypeToBeAddedName()}
-                isVisible={G.isNotNullable(networkSymbolWithTypeToBeAdded)}
+                ref={bottomSheetRef}
                 onClose={clearNetworkWithTypeToBeAdded}
                 onTypeSelectionTap={handleTypeSelectionTap}
                 onConfirmTap={handleConfirmTap}
