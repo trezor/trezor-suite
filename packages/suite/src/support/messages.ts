@@ -9279,7 +9279,7 @@ export default defineMessages({
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
-        defaultMessage: '*Annual percentage yield',
+        defaultMessage: '*Annual Percentage Yield',
     },
     TR_STAKE_ETH_LOCK_FUNDS: {
         id: 'TR_STAKE_ETH_LOCK_FUNDS',
@@ -9509,7 +9509,7 @@ export default defineMessages({
     },
     TR_STAKE_APY: {
         id: 'TR_STAKE_APY',
-        defaultMessage: 'Annual percentage yield',
+        defaultMessage: 'Annual Percentage Yield',
     },
     TR_STAKE_APY_ABBR: {
         id: 'TR_STAKE_APY_ABBR',
