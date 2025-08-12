@@ -27,6 +27,7 @@ export const AddCoinAccountScreen = ({
         handleAccountTypeSelection,
         handleAccountTypeConfirmation,
         getAccountTypeToBeAddedName,
+        bottomSheetRef,
     } = useAddCoinAccount();
 
     const { flowType } = route.params;
@@ -67,7 +68,7 @@ export const AddCoinAccountScreen = ({
                         : ''
                 }
                 typeName={getAccountTypeToBeAddedName()}
-                isVisible={G.isNotNullable(networkSymbolWithTypeToBeAdded)}
+                ref={bottomSheetRef}
                 onClose={clearNetworkWithTypeToBeAdded}
                 onTypeSelectionTap={handleTypeSelectionTap}
                 onConfirmTap={handleConfirmTap}

@@ -1,4 +1,8 @@
-import { BottomSheet, Button, Text, VStack } from '@suite-native/atoms';
+import { Ref } from 'react';
+
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+
+import { BottomSheetModal, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -14,24 +18,25 @@ const descStyle = prepareNativeStyle(utils => ({
 type AccountTypeDecisionBottomSheetProps = {
     coinName: string;
     typeName: string;
-    isVisible: boolean;
     onTypeSelectionTap: () => void;
     onConfirmTap: () => void;
     onClose: () => void;
+    ref: Ref<BottomSheetModalMethods>;
 };
 
 export const AccountTypeDecisionBottomSheet = ({
     coinName,
     typeName,
-    isVisible,
     onTypeSelectionTap,
     onConfirmTap,
     onClose,
+    ref,
 }: AccountTypeDecisionBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <BottomSheet
+        <BottomSheetModal
+            ref={ref}
             title={
                 <Translation
                     id="moduleAddAccounts.accountTypeDecisionBottomSheet.title"
@@ -40,8 +45,7 @@ export const AccountTypeDecisionBottomSheet = ({
                     }}
                 />
             }
-            isVisible={isVisible}
-            onClose={onClose}
+            onDismiss={onClose}
             isCloseDisplayed={false}
         >
             <VStack spacing="sp16">
@@ -87,6 +91,6 @@ export const AccountTypeDecisionBottomSheet = ({
                     <Translation id="moduleAddAccounts.accountTypeDecisionBottomSheet.buttons.select" />
                 </Button>
             </VStack>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };
