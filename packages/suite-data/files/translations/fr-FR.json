@@ -1,5 +1,5 @@
 {
-  "AMOUNT": "Montant",
+  "AMOUNT": "Amount",
   "AMOUNT_EXCEEDS_MAX": "Le montant dépasse la valeur maximale autorisée de {maxAmount}.",
   "AMOUNT_IS_BELOW_DUST": "Le montant doit être d'au moins {dust}",
   "AMOUNT_IS_LESS_THAN_RESERVE": "Le compte du destinataire nécessite une réserve minimale de {reserve} {displaySymbol} pour être activé",
