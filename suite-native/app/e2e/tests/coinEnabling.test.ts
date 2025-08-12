@@ -1,7 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
@@ -62,60 +61,6 @@ conditionalDescribe(
             await device.pressBack();
 
             await detoxExpect(ethereumTextElement).not.toExist();
-        });
-
-        it.skip('View Only Mode', async () => {
-            await waitFor(
-                element(
-                    by.id('@device-manager/device-switch').withDescendant(by.text('Connected')),
-                ),
-            )
-                .toBeVisible()
-                .withTimeout(10000);
-
-            await onTabBar.navigateToSettings();
-            await onSettings.tapViewOnly();
-            await onSettings.toggleWalletViewOnly();
-
-            await TrezorUserEnvLink.stopBridge();
-
-            await waitFor(
-                element(
-                    by.id('@device-manager/device-switch').withDescendant(by.text('Disconnected')),
-                ),
-            )
-                .toBeVisible()
-                .withTimeout(10000);
-
-            await TrezorUserEnvLink.startBridge();
-            await restartApp();
-
-            await waitFor(
-                element(
-                    by.id('@device-manager/device-switch').withDescendant(by.text('Connected')),
-                ),
-            )
-                .toBeVisible()
-                .withTimeout(10000);
-
-            await onTabBar.navigateToSettings();
-            await onSettings.tapViewOnly();
-            await onSettings.toggleWalletViewOnly();
-
-            await device.pressBack();
-            await device.pressBack();
-
-            await TrezorUserEnvLink.stopBridge();
-
-            await waitFor(
-                element(
-                    by.id('@device-manager/device-switch').withDescendant(by.text('Hi there!')),
-                ),
-            )
-                .toBeVisible()
-                .withTimeout(10000);
-
-            await detoxExpect(element(by.text('Ethereum'))).not.toExist();
         });
     },
 );
