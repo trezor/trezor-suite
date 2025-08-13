@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { useFormatters } from '@suite-common/formatters';
 import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
@@ -40,6 +41,7 @@ interface StakingBannerProps {
 export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { isBelowLaptop } = useLayoutSize();
     const dispatch = useDispatch();
+    const { CryptoAmountFormatter } = useFormatters();
     const { stakeEthBannerClosed, stakeSolBannerClosed } = useSelector(selectSuiteFlags);
     const { route } = useSelector(state => state.router);
     const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
@@ -56,16 +58,14 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
         const amount = new BigNumber(totalBalance).multipliedBy(apy / 100);
 
-        let precision = 4;
-        let formattedAmount = amount.toFixed(precision);
-
-        while (new BigNumber(formattedAmount).eq(0) && precision < 10) {
-            precision++;
-            formattedAmount = amount.toFixed(precision);
-        }
-
-        return formattedAmount;
-    }, [accountBalance, stakingBalance, apy]);
+        return CryptoAmountFormatter.format(amount.toString(), {
+            symbol: account.symbol,
+            isBalance: true,
+            withSymbol: false,
+            maxDisplayedDecimals: 8,
+            isEllipsisAppended: false,
+        });
+    }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
 
     const closeBanner = () => {
         switch (account.networkType) {

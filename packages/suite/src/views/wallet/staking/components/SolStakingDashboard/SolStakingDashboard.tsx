@@ -19,11 +19,11 @@ import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/C
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
+import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
 import { PayoutCard } from '../StakingDashboard/components/PayoutCard';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
 import { RewardsList } from './components/Rewards/RewardsList';
-import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 
 interface SolStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;

@@ -162,15 +162,3 @@ export const calculateYearlyRewards = (amount: string, apyPercent: number, days 
 
     return currentRewards;
 };
-
-export const getFormattedRewards = (amount: BigNumber) => {
-    let precision = 4;
-    let formattedAmount = amount.toFixed(precision);
-
-    while (new BigNumber(formattedAmount).eq(0) && precision < 10) {
-        precision++;
-        formattedAmount = amount.toFixed(precision);
-    }
-
-    return formattedAmount;
-};
