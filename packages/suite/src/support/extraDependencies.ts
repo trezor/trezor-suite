@@ -23,7 +23,7 @@ import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActi
 import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
-import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
+import { reportSecurityCheck } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
@@ -209,6 +209,6 @@ export const extraDependencies: ExtraDependencies = {
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),
         connectInitSettings,
-        reportCheckFail,
+        reportSecurityCheck,
     },
 };

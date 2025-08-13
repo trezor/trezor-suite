@@ -543,7 +543,12 @@ export const failEntropyCheckThunk = createThunk(
             version: getFirmwareVersion(device),
             vendor: device?.features?.fw_vendor,
         };
-        extra.utils.reportCheckFail('Entropy', contextData, error);
+        extra.utils.reportSecurityCheck({
+            level: 'error',
+            checkType: 'Entropy',
+            contextData,
+            payload: error,
+        });
 
         const temporarilySkippedErrorsToBeInvestigated = [
             // These errors show up in Sentry and they probably lead to false positives.

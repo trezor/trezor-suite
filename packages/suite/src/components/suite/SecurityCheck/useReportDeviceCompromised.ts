@@ -4,7 +4,7 @@ import {
     hashCheckErrorScenarios,
     revisionCheckErrorScenarios,
 } from '@suite-common/firmware-authenticity';
-import { FirmwareCheckType } from '@suite-common/suite-types';
+import { ReportSecurityCheckProps } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -13,35 +13,23 @@ import { isArrayMember } from '@trezor/utils';
 import { useDevice } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 
-const reportCheck = (
-    level: 'error' | 'warning',
-    checkType: FirmwareCheckType,
-    contextData: Record<string, any>,
-    payload?: unknown,
-) => {
-    const action = level === 'error' ? 'failed' : 'warning';
-    const payloadLabel = `${checkType} check ${action}!`;
+export const reportSecurityCheck = ({
+    level,
+    checkType,
+    contextData,
+    payload,
+}: ReportSecurityCheckProps) => {
+    const levelDescription = level === 'error' ? 'failed' : 'warning';
+    const payloadLabel = `${checkType} check ${levelDescription}!`;
     console.warn(payloadLabel, contextData, payload);
 
     withSentryScope(scope => {
         scope.setLevel(level);
-        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check ${action}`);
+        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check ${levelDescription}`);
         scope.setExtra(`${level}Payload`, payload);
         captureSentryMessage(`${payloadLabel} ${JSON.stringify(contextData)}`, scope);
     });
 };
-
-export const reportCheckFail = (
-    checkType: FirmwareCheckType,
-    contextData: Record<string, any>,
-    errorPayload?: unknown,
-) => reportCheck('error', checkType, contextData, errorPayload);
-
-const reportCheckWarning = (
-    checkType: 'Firmware hash' | 'Firmware revision',
-    contextData: Record<string, any>,
-    warningPayload?: unknown,
-) => reportCheck('warning', checkType, contextData, warningPayload);
 
 const useCommonData = () => {
     const { device } = useDevice();
@@ -70,7 +58,12 @@ const useReportRevisionCheck = () => {
     useEffect(() => {
         if (errorType === null) return;
         if (revisionCheckErrorScenarios[errorType].shouldReport) {
-            reportCheckFail('Firmware revision', { ...commonData, errorType }, errorPayload);
+            reportSecurityCheck({
+                level: 'error',
+                checkType: 'Firmware revision',
+                contextData: { ...commonData, errorType },
+                payload: errorPayload,
+            });
         }
     }, [commonData, errorType, errorPayload]);
 };
@@ -93,7 +86,12 @@ const useReportHashCheck = () => {
             (attemptCount ?? 0) < FIRMWARE.HASH_CHECK_MAX_ATTEMPTS;
         if (willBeRetried) return;
 
-        reportCheckFail('Firmware hash', { ...commonData, errorType, attemptCount }, errorPayload);
+        reportSecurityCheck({
+            level: 'error',
+            checkType: 'Firmware hash',
+            contextData: { ...commonData, errorType, attemptCount },
+            payload: errorPayload,
+        });
     }, [commonData, errorType, errorPayload, attemptCount]);
 
     // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
@@ -101,7 +99,12 @@ const useReportHashCheck = () => {
     const warningPayload = isHashCheckSuccess ? hashCheck.warningPayload : null;
     useEffect(() => {
         if (warningPayload) {
-            reportCheckWarning('Firmware hash', commonData, warningPayload);
+            reportSecurityCheck({
+                level: 'warning',
+                checkType: 'Firmware hash',
+                contextData: commonData,
+                payload: warningPayload,
+            });
         }
     }, [commonData, warningPayload]);
 };

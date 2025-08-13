@@ -6,7 +6,7 @@ import {
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import {
-    FirmwareCheckType,
+    ReportSecurityCheckProps,
     Route,
     TrezorDevice,
     UserContextPayload,
@@ -108,11 +108,7 @@ export type ExtraDependencies = {
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
-        reportCheckFail: (
-            checkType: FirmwareCheckType,
-            contextData: Record<string, any>,
-            errorPayload?: unknown,
-        ) => void;
+        reportSecurityCheck: (props: ReportSecurityCheckProps) => void;
     };
 };
 

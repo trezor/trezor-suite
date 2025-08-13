@@ -44,7 +44,7 @@ export const firmwareUpdate = createThunk<
 
         const {
             selectors: { selectLanguage },
-            utils: { reportCheckFail },
+            utils: { reportSecurityCheck },
         } = extra;
 
         const device = selectSelectedDevice(getState());
@@ -132,15 +132,19 @@ export const firmwareUpdate = createThunk<
 
             // TODO: Add to the if-else block above and add handle in UI.
             if (!binary && !versionCheck) {
-                reportCheckFail('Firmware version', {
-                    model: device.features?.internal_model,
-                    revision: device.features?.revision,
-                    vendor: device.features?.fw_vendor,
-                    bootloaderVersion,
-                    binaryVersion,
-                    installedVersion,
-                    releaseVersion,
-                    error: 'Unexpected firmware version change during firmware update.',
+                reportSecurityCheck({
+                    level: 'error',
+                    checkType: 'Firmware version',
+                    contextData: {
+                        model: device.features?.internal_model,
+                        revision: device.features?.revision,
+                        vendor: device.features?.fw_vendor,
+                        bootloaderVersion,
+                        binaryVersion,
+                        installedVersion,
+                        releaseVersion,
+                        error: 'Unexpected firmware version change during firmware update.',
+                    },
                 });
             }
 

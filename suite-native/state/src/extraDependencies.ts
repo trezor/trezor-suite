@@ -5,7 +5,7 @@ import * as Device from 'expo-device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { reportCheckFail } from '@suite-native/device';
+import { reportSecurityCheck } from '@suite-native/device';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
@@ -65,7 +65,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
                 appUrl: '@trezor/suite',
             },
         },
-        reportCheckFail,
+        reportSecurityCheck,
     } as Partial<ExtraDependencies['utils']>,
 } as OneLevelPartial<ExtraDependencies>) as ExtraDependencies;
 
