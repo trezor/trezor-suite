@@ -71,7 +71,6 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const sendContextValues = useSendForm({ ...props, selectedAccount });
 
     const { symbol } = selectedAccount.account;
-
     if (props.sendRaw) {
         return (
             <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
@@ -111,8 +110,10 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 
 const Send = ({ children }: SendProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const currentRoute = useSelector(state => state.router.route?.name);
 
-    if (selectedAccount.status !== 'loaded') {
+    // alone selectedAccount.status is not enough, currently there is a race-condition that needs to be fixed in send form
+    if (selectedAccount.status !== 'loaded' || currentRoute !== 'wallet-send') {
         return <WalletLayout title="TR_NAV_SEND" account={selectedAccount} />;
     }
 
