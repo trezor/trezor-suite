@@ -1,18 +1,12 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { ButtonRequest, ThpSuiteCredentials, TrezorDevice } from '@suite-common/suite-types';
-import { WalletType } from '@suite-common/wallet-types';
 import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
-export type ConnectDeviceSettings = {
-    defaultWalletLoading: WalletType;
-};
-
 export type DeviceConnectActionPayload = {
     device: Device;
-    settings: ConnectDeviceSettings;
 };
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
@@ -69,7 +63,7 @@ const setTemporaryRememberedDevice = createAction(
 
 const forgetDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
-    (payload: { device: TrezorDevice; settings: ConnectDeviceSettings }) => ({
+    (payload: { device: TrezorDevice }) => ({
         payload,
     }),
 );

@@ -15,6 +15,7 @@ export const AddressConfirmation = () => {
     const popupCall = useSelector(selectConnectPopupCall);
     const device = useSelector(selectSelectedDevice);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    // todo: only makes sense if device is already authorized (has state)
     const passphraseWalletLabel = device?.useEmptyPassphrase ? (
         <Translation id="deviceManager.wallet.standard" />
     ) : (

@@ -5,8 +5,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
+import { useDispatch } from 'src/hooks/suite';
 
 type EjectAllConfirmationProps = {
     onCancel: () => void;
@@ -16,11 +15,9 @@ type EjectAllConfirmationProps = {
 export const EjectAllConfirmation = ({ onCancel, instances }: EjectAllConfirmationProps) => {
     const dispatch = useDispatch();
 
-    const settings = useSelector(selectSuiteSettings);
-
     const handleEjectAll = () => {
         instances.forEach(instance => {
-            dispatch(deviceActions.forgetDevice({ device: instance, settings }));
+            dispatch(deviceActions.forgetDevice({ device: instance }));
         });
 
         analytics.report({

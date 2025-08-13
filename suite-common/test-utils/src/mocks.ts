@@ -231,7 +231,7 @@ const getSuiteDevice = (
     const device = getConnectDevice(dev, { bootloader_mode, ...feat });
     if (device.type === 'acquired') {
         return {
-            useEmptyPassphrase: true,
+            useEmptyPassphrase: dev?.state ? true : undefined,
             remember: false,
             connected: false,
             available: false,

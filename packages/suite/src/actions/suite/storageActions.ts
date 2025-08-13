@@ -18,7 +18,6 @@ import {
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
-import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
 import { db } from 'src/storage';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -545,12 +544,11 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     if (!(await db.isAccessible())) return;
 
     const devices = selectDevices(getState());
-    const settings = selectSuiteSettings(getState());
 
     const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
-        dispatch(deviceActions.forgetDevice({ device: d, settings }));
+        dispatch(deviceActions.forgetDevice({ device: d }));
     });
     await db.removeDatabase();
     dispatch(

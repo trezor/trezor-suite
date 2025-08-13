@@ -34,7 +34,7 @@ import { getEnvironment } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
-import { ConnectDeviceSettings, DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
+import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import {
     selectDeviceByBaseStaticSessionId,
@@ -156,15 +156,10 @@ export const handleDeviceDisconnect = createThunk(
  */
 export const forgetDisconnectedDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
-    (
-        params: { device: Device | TrezorDevice; forceForget?: boolean },
-        { dispatch, getState, extra },
-    ) => {
+    (params: { device: Device | TrezorDevice; forceForget?: boolean }, { dispatch, getState }) => {
         const { device, forceForget = false } = params;
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
-
-        const settings = extra.selectors.selectSuiteSettings(getState());
 
         deviceInstances.forEach(d => {
             if (
@@ -176,7 +171,7 @@ export const forgetDisconnectedDevices = createThunk(
                     !d.state ||
                     d.mode !== 'normal')
             ) {
-                dispatch(deviceActions.forgetDevice({ device: d, settings }));
+                dispatch(deviceActions.forgetDevice({ device: d }));
             }
         });
     },
@@ -227,6 +222,7 @@ export const acquireDevice = createThunk(
 
         const response = await TrezorConnect.getFeatures({
             device,
+            // todo: it shouldn't be needed I think - getFeatures is not touching device.state, is it?
             useEmptyPassphrase: true,
         });
 
@@ -432,19 +428,16 @@ type DeviceConnectThunksParams = {
 
 export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
-    ({ type, device }, { dispatch, getState, extra }) => {
-        const settings = extra.selectors.selectSuiteSettings(getState());
-
+    ({ type, device }, { dispatch }) => {
         switch (type) {
             case DEVICE.CONNECT:
-                dispatch(deviceActions.connectDevice({ device, settings }));
+                dispatch(deviceActions.connectDevice({ device }));
                 dispatch(connectThpDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(
                     deviceActions.connectUnacquiredDevice({
                         device,
-                        settings,
                     }),
                 );
                 dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
@@ -492,11 +485,10 @@ export const wipeDeviceThunk = createThunk(
             }
             const newDevice = selectSelectedDevice(getState());
             const newDevices = selectDevices(getState());
-            const settings = extra.selectors.selectSuiteSettings(getState());
 
             deviceInstances.push(...getDeviceInstances(newDevice!, newDevices));
             deviceInstances.forEach(d => {
-                dispatch(deviceActions.forgetDevice({ device: d, settings }));
+                dispatch(deviceActions.forgetDevice({ device: d }));
             });
             dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
 
@@ -524,11 +516,7 @@ export const toggleAutoEjectThunk = createThunk(
 
         physicalDevices.forEach(wallet => {
             if (!wallet.connected && wallet.remember) {
-                const settings: ConnectDeviceSettings = {
-                    defaultWalletLoading: 'standard',
-                };
-
-                dispatch(deviceActions.forgetDevice({ device: wallet, settings }));
+                dispatch(deviceActions.forgetDevice({ device: wallet }));
             } else {
                 dispatch(
                     deviceActions.rememberDevice({

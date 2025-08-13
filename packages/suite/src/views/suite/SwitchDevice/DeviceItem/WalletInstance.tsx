@@ -134,7 +134,7 @@ export const WalletInstance = ({
                         >
                             <Row justifyContent="space-between">
                                 <Row gap={spacings.xxs}>
-                                    {!instance.useEmptyPassphrase && (
+                                    {instance.useEmptyPassphrase === false && (
                                         <Tooltip
                                             content={
                                                 <Translation id="TR_WALLET_PASSPHRASE_WALLET" />
