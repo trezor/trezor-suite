@@ -384,6 +384,14 @@ export const useTradingSellForm = ({
             });
 
             navigateToSellConfirm();
+
+            // empty quoteId means the partner requests login first, requestTrade to get login screen
+            if (
+                (sellInfo && sellUtils.needToRegisterOrVerifyBankAccount({ quote, sellInfo })) ||
+                !quote.quoteId
+            ) {
+                doSellTrade(quote);
+            }
         };
 
         const onCancel = () => {
@@ -555,22 +563,6 @@ export const useTradingSellForm = ({
             isComposing,
         ],
     );
-
-    useDebounce(() => {
-        // empty quoteId means the partner requests login first, requestTrade to get login screen
-        if (
-            selectedQuote &&
-            pageType === 'confirm' &&
-            (!selectedQuote.quoteId ||
-                (sellInfo &&
-                    sellUtils.needToRegisterOrVerifyBankAccount({
-                        quote: selectedQuote,
-                        sellInfo,
-                    })))
-        ) {
-            doSellTrade(selectedQuote);
-        }
-    }, 50);
 
     useEffect(() => {
         if (!quotesRequest && isNotFormPage) {
