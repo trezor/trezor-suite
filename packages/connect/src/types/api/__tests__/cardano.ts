@@ -427,7 +427,6 @@ export const cardanoSignMessage = async (api: TrezorConnect) => {
     const sign = await api.cardanoSignMessage({
         path: 'm/44',
         payload: 'Test..',
-        hashPayload: true,
         preferHexDisplay: false,
         networkId: 0,
         protocolMagic: 0,

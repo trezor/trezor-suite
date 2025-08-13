@@ -19,12 +19,6 @@ const batch = [
         value: '48656c6c6f205472657a6f7221',
     },
     {
-        name: 'hashPayload',
-        label: 'Hash payload',
-        type: 'checkbox',
-        value: true,
-    },
-    {
         name: 'preferHexDisplay',
         label: 'Display payload as hex bytes on Trezor even if it is valid ASCII',
         type: 'checkbox',
