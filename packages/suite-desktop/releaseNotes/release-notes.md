@@ -9,9 +9,7 @@
 ### 🎨 Improvements
 
 - The minimum Bitcoin fee rate has been reduced to 0.1 sat/vB, allowing for more cost-effective transaction options.
-- The "Speed up" transaction feature has been improved for better performance and reliability.
 - Locktime functionality has been enhanced for increased precision in transaction timing.
-- Send options have been streamlined—Locktime and Broadcast settings are now neatly organized under Advanced Send.
 
 ### 🔧 Bug fixes
 
