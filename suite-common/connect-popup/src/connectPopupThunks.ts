@@ -7,7 +7,7 @@ import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, { CallMethodParams } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
-import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -40,9 +40,10 @@ export const connectPopupCallThunkInner = createThunk<
             if (!methodInfo.success) {
                 throw methodInfo.payload;
             }
+            const methodInfoPayload = methodInfo.payload as MethodInfo;
             if (
-                methodInfo.payload.requiredPermissions.includes('management') ||
-                (methodInfo.payload.requiredPermissions.includes('push_tx') &&
+                methodInfoPayload.requiredPermissions.includes('management') ||
+                (methodInfoPayload.requiredPermissions.includes('push_tx') &&
                     source.type === 'deeplink')
             ) {
                 throw TypedError('Method_NotAllowed');
@@ -53,10 +54,10 @@ export const connectPopupCallThunkInner = createThunk<
                     method,
                     methodInfo: {
                         methodTitle:
-                            methodInfo.payload.confirmation?.label ?? methodInfo.payload.info,
-                        confirmLabel: methodInfo.payload.confirmation?.customConfirmButton?.label,
-                        permissionTypes: methodInfo.payload.requiredPermissions,
-                        useUi: methodInfo.payload.useUi,
+                            methodInfoPayload.confirmation?.label ?? methodInfoPayload.info,
+                        confirmLabel: methodInfoPayload.confirmation?.customConfirmButton?.label,
+                        permissionTypes: methodInfoPayload.requiredPermissions,
+                        useUi: methodInfoPayload.useUi,
                     },
                     payload,
                     source,
@@ -69,7 +70,7 @@ export const connectPopupCallThunkInner = createThunk<
                 app =>
                     app.origin === source.origin &&
                     app.process?.fullPath === source.process?.fullPath &&
-                    methodInfo.payload.requiredPermissions.every((permission: MethodPermission) =>
+                    methodInfoPayload.requiredPermissions.every((permission: MethodPermission) =>
                         app.types.includes(permission),
                     ),
             );
@@ -88,7 +89,7 @@ export const connectPopupCallThunkInner = createThunk<
             }
 
             const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
-                methodInfo.payload.precomposed;
+                methodInfoPayload.precomposed;
             const modifiedPayload = await preCallHooks({
                 method,
                 payload,
