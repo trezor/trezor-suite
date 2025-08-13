@@ -27,14 +27,13 @@ type RouteProps = RouteProp<SendStackParamList, SendStackRoutes.SendOutputsRevie
 export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const { params } = useRoute<RouteProps>();
 
-    const { prevHeaderHeight, initialSnapIndex } = params;
-    const defaultIndex = initialSnapIndex ?? 2;
+    const defaultIndex = params?.initialSnapIndex ?? 2;
 
     const currentIndex = useSharedValue(defaultIndex);
 
     const inset = useBannerAwareSafeAreaInsets();
     const [containerHeight, setContainerHeight] = useState(SCREEN_HEIGHT);
-    const [headerHeight, setHeaderHeight] = useState(prevHeaderHeight ?? 0);
+    const [headerHeight, setHeaderHeight] = useState(params?.prevHeaderHeight ?? 0);
 
     const snapPoints = useMemo(() => {
         const totalHeaderHeight = headerHeight + inset.top;
@@ -45,7 +44,7 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const translateY = useSharedValue(snapPoints[defaultIndex]);
     const prevTranslationY = useSharedValue(0);
 
-    const [isFullscreen, setIsFullscreen] = useState(!initialSnapIndex);
+    const [isFullscreen, setIsFullscreen] = useState(!params?.initialSnapIndex);
 
     const animatedOffset = useSharedValue(inset.top);
 
@@ -138,6 +137,6 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
         panGesture,
         containerHeight,
         headerHeight,
-        initialSnapIndex,
+        initialSnapIndex: params?.initialSnapIndex,
     };
 };

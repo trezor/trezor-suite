@@ -22,7 +22,6 @@ const INITIAL_LAUNCH_ARGS: LaunchArgumentsWithPreloadedState = {
     isConnectPopupEnabled: true,
     isDebugKeysAllowed: true,
     isTradingBuyEnabled: true,
-    isCheckBackupsEnabled: true,
 };
 
 export const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
