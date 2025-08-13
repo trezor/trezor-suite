@@ -5,7 +5,7 @@
         "min_bootloader_version": [2, 1, 6],
         "min_firmware_version": [2, 7, 2],
         "bootloader_version": [2, 1, 10],
-        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR", "tr-TR"],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
         "url": "firmware/t3t1/trezor-t3t1-2.8.10.bin",
         "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.10-bitcoinonly.bin",
         "fingerprint": "f6f50b4a419b041a59620ef681047c27af0902798e0227397c532dd70736694a",
