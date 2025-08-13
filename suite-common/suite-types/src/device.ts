@@ -35,8 +35,6 @@ export interface ExtendedDevice {
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
 
-    authFailed?: boolean; // device cannot be used because authorization process failed
-
     instance?: number;
     ts: number;
     firstConnectedTimestamp: number;

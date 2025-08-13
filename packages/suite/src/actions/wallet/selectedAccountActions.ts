@@ -32,13 +32,6 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
         };
     }
 
-    if (device.authFailed) {
-        return {
-            status: 'exception',
-            loader: 'auth-failed',
-        };
-    }
-
     if (!device.state) {
         return {
             status: 'loading',
