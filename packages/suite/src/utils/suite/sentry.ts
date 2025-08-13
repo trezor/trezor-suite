@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/core';
 
 import { allowReportTag } from '@suite-common/sentry';
+import { ReportSecurityCheckProps } from '@suite-common/suite-types';
 import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
@@ -38,5 +39,23 @@ export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) 
             suiteLog: getApplicationLog(logs.logEntries, true)?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
         });
         Sentry.captureException(error);
+    });
+};
+
+export const reportSecurityCheck = ({
+    level,
+    checkType,
+    contextData,
+    payload,
+}: ReportSecurityCheckProps) => {
+    const levelDescription = level === 'error' ? 'failed' : 'warning';
+    const payloadLabel = `${checkType} check ${levelDescription}!`;
+    console.warn(payloadLabel, contextData, payload);
+
+    withSentryScope(scope => {
+        scope.setLevel(level);
+        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check ${levelDescription}`);
+        scope.setExtra(`${level}Payload`, payload);
+        captureSentryMessage(`${payloadLabel} ${JSON.stringify(contextData)}`, scope);
     });
 };

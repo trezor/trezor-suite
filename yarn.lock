@@ -9571,9 +9571,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.0.0"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

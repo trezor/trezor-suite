@@ -11,8 +11,8 @@ import {
 import { DEVICE } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { reportSecurityCheck } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import { Action, AppState, Dispatch } from 'src/types/suite';
+import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 /*
  * Middleware for event notifications.

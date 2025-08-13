@@ -23,9 +23,9 @@ import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActi
 import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
-import { reportSecurityCheck } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
+import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
