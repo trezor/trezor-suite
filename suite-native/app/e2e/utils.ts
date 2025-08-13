@@ -96,18 +96,14 @@ export const openApp = async ({
 };
 
 type RestartAppProps = {
-    isNewInstance?: boolean;
     args?: LaunchArgumentsWithPreloadedState;
 };
 
-export const restartApp = async ({ isNewInstance = false, args = {} }: RestartAppProps = {}) => {
+export const restartApp = async ({ args = {} }: RestartAppProps = {}) => {
     await device.terminateApp();
     await openApp({
-        newInstance: isNewInstance,
-        args: {
-            ...INITIAL_LAUNCH_ARGS,
-            ...args,
-        },
+        newInstance: false,
+        args,
     });
 };
 

@@ -11,6 +11,7 @@ export interface AppSettingsState {
     isFirmwareHashCheckEnabled: boolean;
     areTestnetsEnabled: boolean;
     shouldShowAutoEjectAlert: boolean;
+    hasAutoEjectAlertBeenDisplayed: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -25,6 +26,7 @@ export const appSettingsInitialState: AppSettingsState = {
     isFirmwareHashCheckEnabled: true,
     areTestnetsEnabled: isDetoxTestBuild(),
     shouldShowAutoEjectAlert: false,
+    hasAutoEjectAlertBeenDisplayed: false,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -34,6 +36,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isFirmwareRevisionCheckEnabled',
     'isFirmwareHashCheckEnabled',
     'areTestnetsEnabled',
+    'hasAutoEjectAlertBeenDisplayed',
 ];
 
 export const appSettingsSlice = createSlice({
@@ -59,6 +62,9 @@ export const appSettingsSlice = createSlice({
         setShouldShowAutoEjectAlert: (state, { payload }: PayloadAction<boolean>) => {
             state.shouldShowAutoEjectAlert = payload;
         },
+        setHasAutoEjectAlertBeenDisplayed: (state, { payload }: PayloadAction<boolean>) => {
+            state.hasAutoEjectAlertBeenDisplayed = payload;
+        },
     },
     extraReducers: builder => {
         builder.addCase(DEVICE.CONNECT, state => {
@@ -81,6 +87,9 @@ export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
 export const selectIsCoinEnablingInitFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isCoinEnablingInitFinished;
 
+export const selectHasAutoEjectAlertBeenDisplayed = (state: SettingsSliceRootState) =>
+    state.appSettings.hasAutoEjectAlertBeenDisplayed;
+
 /**
  * Determine if either FW revision or FW hash check is disabled
  * (both are controlled by the same setting, see setCheckFirmwareAuthenticityEnabled reducer)
@@ -96,5 +105,6 @@ export const {
     toggleAreTestnetsEnabled,
     setIsCoinEnablingInitFinished,
     setShouldShowAutoEjectAlert,
+    setHasAutoEjectAlertBeenDisplayed,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
