@@ -360,6 +360,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [draft]);
 
+    // update composedLevels when feeInfo changes
     useEffect(() => {
         composeDraft(getValues());
     }, [composeDraft, getValues]);
