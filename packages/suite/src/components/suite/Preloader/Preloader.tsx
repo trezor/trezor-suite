@@ -1,6 +1,7 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
+import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
@@ -24,7 +25,6 @@ import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScr
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
-import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceCompromised';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
