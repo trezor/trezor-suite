@@ -6,6 +6,9 @@ import {
     cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
+    selectTradingActiveSection,
+    selectTradingBuyReceiveAccountKey,
+    selectTradingExchangeAccountKey,
 } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -67,7 +70,14 @@ const useTradingVerifyAccount = ({
     cryptoId,
     nonSuiteAccount,
 }: TradingVerifyAccountProps): TradingVerifyAccountReturnProps => {
+    const activeSection = useSelector(selectTradingActiveSection);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccountKey =
+        useSelector(
+            activeSection === 'exchange'
+                ? selectTradingExchangeAccountKey
+                : selectTradingBuyReceiveAccountKey,
+        ) || selectedAccount.account?.key;
     const accounts = useSelector(state => state.wallet.accounts);
     const isDebug = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectSelectedDevice);
@@ -114,13 +124,13 @@ const useTradingVerifyAccount = ({
             ),
         [device, suiteReceiveAccounts, isSupportedNetwork, nonSuiteAccount],
     );
+
     const preselectedAccount = useMemo(
         () =>
             selectAccountOptions.find(
-                accountOption =>
-                    accountOption.account?.descriptor === selectedAccount.account?.descriptor,
+                accountOption => accountOption.account?.key === selectedAccountKey,
             ) ?? selectAccountOptions[0],
-        [selectAccountOptions, selectedAccount],
+        [selectAccountOptions, selectedAccountKey],
     );
 
     const { address } = methods.getValues();

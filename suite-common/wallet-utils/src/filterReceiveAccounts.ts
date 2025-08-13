@@ -32,9 +32,11 @@ export const filterReceiveAccounts = ({
 }: FilterReceiveAccountsProps): Account[] => {
     const isSameDevice = (account: Account) => account.deviceState === deviceState;
     const isSameNetwork = (account: Account) => account.symbol === symbol;
-    const shouldDisplayDebugOnly = (account: Account) =>
-        isDebug || !isDebugOnlyAccountType(account.accountType, account.symbol);
     const isNotEmptyAccount = (account: Account) => !account.empty;
+    const shouldDisplayDebugOnly = (account: Account) =>
+        isDebug ||
+        !isDebugOnlyAccountType(account.accountType, account.symbol) ||
+        isNotEmptyAccount;
     const isVisibleAccount = (account: Account) => account.visible;
     const isFirstNormalAccount = (account: Account) =>
         account.accountType === 'normal' && account.index === 0;
