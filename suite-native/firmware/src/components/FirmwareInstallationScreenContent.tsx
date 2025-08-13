@@ -13,13 +13,13 @@ import { useKeepAwake } from 'expo-keep-awake';
 import { Badge, Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
-    reportSecurityCheck,
     setTemporaryRememberedDeviceThunk,
     useConfirmOnTrezorController,
 } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader } from '@suite-native/navigation';
+import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

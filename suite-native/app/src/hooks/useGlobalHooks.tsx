@@ -1,10 +1,10 @@
+import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
 import { useBluetoothAdapter } from '@suite-native/bluetooth';
 import {
     useDetectDeviceError,
     useDeviceCompromisedNotification,
     useHandleDeviceConnection,
     useRenderDeviceDangerBanner,
-    useReportDeviceCompromised,
     useRetryFwAuthenticityChecks,
 } from '@suite-native/device';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';

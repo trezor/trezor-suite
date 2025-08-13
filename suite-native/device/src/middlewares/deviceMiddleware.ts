@@ -17,6 +17,7 @@ import {
 import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { DEVICE } from '@trezor/connect';
 import {
@@ -25,7 +26,6 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 
-import { reportSecurityCheck } from '../hooks/useReportDeviceCompromised';
 import { isDeviceEventAction } from '../utils';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
