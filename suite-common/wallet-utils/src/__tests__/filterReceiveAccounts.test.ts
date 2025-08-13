@@ -85,8 +85,12 @@ describe('filter receive accounts', () => {
         expect(runFilterReceiveAccouns({})).toEqual(filteredAccounts);
     });
 
-    it('returns only non-debug accounts when debug mode is off', () => {
-        const filteredAccounts = [getWalletAccount({ symbol: 'eth', accountType: 'normal' })];
+    it('returns non-debug + non-empty accounts when debug mode is off', () => {
+        const filteredAccounts = [
+            getWalletAccount({ symbol: 'eth', accountType: 'normal' }),
+            getWalletAccount({ symbol: 'eth', accountType: 'ledger' }),
+            getWalletAccount({ symbol: 'eth', accountType: 'legacy' }),
+        ];
 
         expect(runFilterReceiveAccouns({ isDebug: false })).toEqual(filteredAccounts);
     });
