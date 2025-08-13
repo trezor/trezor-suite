@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { AnimatedBox } from '@suite-native/atoms';
+import { isDetoxTestBuild } from '@suite-native/config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const containerStyle = prepareNativeStyle(() => ({
@@ -46,6 +47,8 @@ const shadowRingStyle = prepareNativeStyle(utils => ({
     zIndex: 1,
 }));
 
+const INDICATOR_ANIMATION_REPEAT = isDetoxTestBuild() ? 1 : -1;
+
 export const ConfirmOnTrezorIndicator = () => {
     const { applyStyle } = useNativeStyles();
     const breathing = useSharedValue(0);
@@ -56,7 +59,7 @@ export const ConfirmOnTrezorIndicator = () => {
                 duration: 1400,
                 easing: Easing.bezier(0.4, 0, 0.6, 1),
             }),
-            -1,
+            INDICATOR_ANIMATION_REPEAT,
             true,
         );
     }, [breathing]);
