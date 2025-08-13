@@ -75,8 +75,6 @@ export const NotificationRenderer = ({
     switch (type) {
         case 'acquire-error':
             return error(render, notification, 'TOAST_ACQUIRE_ERROR');
-        case 'auth-failed':
-            return error(render, notification, 'TOAST_AUTH_FAILED');
         case 'auth-confirm-error':
             return error(render, notification, 'TOAST_AUTH_CONFIRM_ERROR', {
                 error: notification.error || { id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT' },
