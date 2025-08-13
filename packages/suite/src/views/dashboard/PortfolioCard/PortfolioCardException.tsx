@@ -145,7 +145,10 @@ export const PortfolioCardException = ({
                             values={{ details: discoveryFailedMessage(discovery, failed) }}
                         />
                     }
-                    cta={{ action: () => dispatch(restartDiscoveryThunk()), icon: 'repeat' }}
+                    cta={{
+                        action: () => dispatch(restartDiscoveryThunk({ force: true })),
+                        icon: 'repeat',
+                    }}
                     dataTestBase={exception.type}
                 />
             );
@@ -165,7 +168,11 @@ export const PortfolioCardException = ({
                             const result = await dispatch(applySettings({ use_passphrase: true }));
                             if (!result || !result.success) return;
                             // restart discovery
-                            dispatch(restartDiscoveryThunk());
+                            dispatch(
+                                restartDiscoveryThunk({
+                                    force: true,
+                                }),
+                            );
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                     }}

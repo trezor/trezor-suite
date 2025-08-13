@@ -14,7 +14,12 @@ export const AccountNotLoaded = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(restartDiscoveryThunk());
+    const handleClick = () =>
+        dispatch(
+            restartDiscoveryThunk({
+                force: true,
+            }),
+        );
 
     return (
         <AccountExceptionLayout

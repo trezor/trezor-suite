@@ -604,11 +604,13 @@ export const startDiscoveryThunk = createThunk(
             isAddingHiddenWallet,
             isAddingHiddenWalletWithRespectToSettings,
             isAddingExistingWallet,
+            force,
         }: {
             device?: TrezorDevice;
             isAddingHiddenWallet?: boolean;
             isAddingHiddenWalletWithRespectToSettings?: boolean;
             isAddingExistingWallet?: boolean;
+            force?: boolean;
         },
         { dispatch, getState },
     ): void => {
@@ -623,7 +625,7 @@ export const startDiscoveryThunk = createThunk(
 
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), actualDevice.path);
 
-        if (isDiscoveryInProgress(currentDiscovery)) {
+        if (isDiscoveryInProgress(currentDiscovery) && !force) {
             console.warn(
                 'startDiscoveryThunk: discovery already in progress, cancelling start call',
             );
@@ -693,6 +695,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
             );
 
             dispatch(accountsActions.createAccount(accountPayload));
+
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 
@@ -803,18 +806,18 @@ export const cancelDiscoveryThunk = createThunk(
 /**
  * Helper to restart discovery for currently selected device
  */
-export const restartDiscoveryThunk = createThunk(
+export const restartDiscoveryThunk = createThunk<void, { force?: boolean } | undefined, void>(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    (_, { dispatch, getState }) => {
+    (params: { force?: boolean } | undefined, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
         if (!device) return;
         const staticSessionId = device?.state?.staticSessionId;
-        if (staticSessionId) {
+        if (staticSessionId && !params?.force) {
             // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
             dispatch(runAdditionalDiscoveryThunk(staticSessionId));
         } else {
             // if no staticSessionId available yet it means we failed sooner, for example during pin input
-            dispatch(startDiscoveryThunk({ device }));
+            dispatch(startDiscoveryThunk({ device, force: params?.force }));
         }
     },
 );
