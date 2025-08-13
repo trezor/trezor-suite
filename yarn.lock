@@ -10191,6 +10191,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/fast-text-encoding": "npm:^1"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:22.13.10"
@@ -10202,6 +10203,7 @@ __metadata:
     babel-plugin-transform-remove-console: "npm:^6.9.4"
     buffer: "npm:^6.0.3"
     detox: "npm:^20.39.0"
+    dotenv: "npm:^17.2.1"
     event-target-shim: "npm:6.0.2"
     expo: "npm:53.0.20"
     expo-atlas: "npm:0.4.0"
@@ -10248,6 +10250,7 @@ __metadata:
     react-redux: "npm:9.2.0"
     redux-persist: "npm:6.0.0"
     ts-jest: "npm:^29.1.2"
+    ts-node: "npm:^10.9.2"
     typescript: "npm:5.8.3"
   languageName: unknown
   linkType: soft
@@ -20949,6 +20952,13 @@ __metadata:
   version: 16.5.0
   resolution: "dotenv@npm:16.5.0"
   checksum: 10/e68a16834f1a41cc2dfb01563bc150668ad675e6cd09191211467b5c0806b6ecd6ec438e021aa8e01cd0e72d2b70ef4302bec7cc0fe15b6955f85230b62dc8a9
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^17.2.1":
+  version: 17.2.1
+  resolution: "dotenv@npm:17.2.1"
+  checksum: 10/8fde672d1cc57f176095be8c93de1c5ea100ab38f2db183b50d522323fd9a6c07235e4145da624eec27fa310bb66d061aa8cb766f99e22ebe1e4a7ae78b5e56e
   languageName: node
   linkType: hard
 

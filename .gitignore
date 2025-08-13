@@ -45,6 +45,7 @@ __pycache__/
 screenshots
 test-results
 playwright-report
+suite-native/app/.metadata/
 
 # build outputs
 lib

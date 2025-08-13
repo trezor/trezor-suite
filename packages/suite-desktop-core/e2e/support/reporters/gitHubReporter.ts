@@ -15,6 +15,7 @@ import { TestReportProvider } from './annotations';
 class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunctions {
     // Initializes the reporter when test run begins, creates a GitHub project if it doesn't exist
     async onBegin() {
+        await this.initiateOctokitESM();
         await this.init();
     }
 
@@ -30,9 +31,9 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
 
                 try {
                     if (report.isRetryAttempt && this.createdIssuesMap.has(test.id)) {
-                        await this.updateIssue(test, report);
+                        await this.updateIssue(report);
                     } else {
-                        await this.createIssuePerOs(test, report);
+                        await this.createIssuePerOs(report);
                     }
                 } catch (error) {
                     this.logError(`Failed to process test end for "${test.title}":`, error);
@@ -74,13 +75,13 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
         this.log('GitHub reporter finished successfully');
     }
 
-    private async updateIssue(test: TestCase, report: TestReportProvider): Promise<void> {
-        const issueNodeId = this.createdIssuesMap.get(test.id);
+    private async updateIssue(report: TestReportProvider): Promise<void> {
+        const issueNodeId = this.createdIssuesMap.get(report.id);
         if (!issueNodeId) {
-            throw new Error(`Issue ID not found for test retried test "${test.title}"`);
+            throw new Error(`Issue ID not found for test retried test "${report.testTitle}"`);
         }
         this.log(
-            `[${issueNodeId}] Updating GitHub draft issue with a retry of test "${test.title}"...`,
+            `[${issueNodeId}] Updating GitHub draft issue with a retry of test "${report.testTitle}"...`,
         );
 
         this.log(`[${issueNodeId}] Updating field Status:"${report.status}"...`);
@@ -97,10 +98,10 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
             RETRY_CONF,
         );
         this.log(`[${issueNodeId}] Successfully updated field Status:"${report.status}"`);
-        this.log(`[${issueNodeId}] Successfully updated test result for "${test.title}"`);
+        this.log(`[${issueNodeId}] Successfully updated test result for "${report.testTitle}"`);
     }
 
-    private async createIssuePerOs(test: TestCase, report: TestReportProvider): Promise<void> {
+    private async createIssuePerOs(report: TestReportProvider): Promise<void> {
         for (const operationSystem of report.osMatrix) {
             const issueNodeId = await scheduleAction(async () => {
                 // Random delay between 1-5 seconds to distribute load on GitHub API
@@ -108,7 +109,7 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
                 const randomDelay = Math.floor(Math.random() * 4000) + 1000; // 1000-5000ms
                 await new Promise(resolve => setTimeout(resolve, randomDelay));
                 this.log(
-                    `Creating GitHub draft issue for test "(OS ${operationSystem}) ${test.title}"...`,
+                    `Creating GitHub draft issue for test "(OS ${operationSystem}) ${report.testTitle}"...`,
                 );
 
                 const titleWithOptionalEmoticons = report.useOsEmoticons
@@ -122,9 +123,9 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
                 );
             }, RETRY_CONF);
 
-            this.createdIssuesMap.set(test.id, issueNodeId);
+            this.createdIssuesMap.set(report.id, issueNodeId);
             this.log(
-                `[${issueNodeId}] Successfully created issue "(OS ${operationSystem}) ${test.title}"`,
+                `[${issueNodeId}] Successfully created issue "(OS ${operationSystem}) ${report.testTitle}"`,
             );
 
             const resolvedFieldsAndValues = report.projectValues.map(({ name, value }) =>
@@ -132,7 +133,7 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
             );
             await scheduleAction(() => {
                 this.log(
-                    `[${issueNodeId}] Updating values of issue "(OS ${operationSystem}) ${test.title}"...`,
+                    `[${issueNodeId}] Updating values of issue "(OS ${operationSystem}) ${report.testTitle}"...`,
                 );
 
                 return this.issueRequests.setMultipleValues(
@@ -143,11 +144,11 @@ class GitHubReporter extends GitHubReporterBase implements Reporter, LoggingFunc
             }, RETRY_CONF);
 
             this.log(
-                `[${issueNodeId}] Successfully updated values of issue "(OS ${operationSystem}) ${test.title}"`,
+                `[${issueNodeId}] Successfully updated values of issue "(OS ${operationSystem}) ${report.testTitle}"`,
             );
 
             this.log(
-                `[${issueNodeId}] Successfully recorded test result for "(OS ${operationSystem}) ${test.title}"`,
+                `[${issueNodeId}] Successfully recorded test result for "(OS ${operationSystem}) ${report.testTitle}"`,
             );
         }
     }

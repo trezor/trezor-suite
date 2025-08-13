@@ -1,75 +1,14 @@
-import { TestDetailsAnnotation } from '@playwright/test';
 import { TestCase } from '@playwright/test/reporter';
 
-import {
-    DeviceModel,
-    TestAnnotationType,
-    TestCategory,
-    TestOsMatrix,
-    TestPriority,
-    TestStatus,
-    TestStream,
-    annotationsAddedToTest,
-    annotationsForBodyDescription,
-    annotationsForProjectFields,
-} from '@trezor/e2e-utils';
-import { capitalizeFirstLetter } from '@trezor/utils';
-
-type TestMetadataInput = {
-    testCase?: string;
-    prerequisites?: string[];
-    steps?: string[];
-    category?: TestCategory;
-    priority?: TestPriority;
-    stream?: TestStream;
-    deviceModel?: DeviceModel;
-    osMatrix?: TestOsMatrix[];
-};
-
-const ARRAY_DELIMITER = ', ';
-
-const formatList = (steps: string[]): string =>
-    steps.map((step, index) => `${index + 1}. ${step}`).join('\n');
-
-// Loops thru params and adds these metadata to the test as annotation, used in test files
-export const createTestAnnotation = (metadata: TestMetadataInput): TestDetailsAnnotation[] => {
-    const formattedAnnotations = [];
-
-    for (const [key, value] of Object.entries(metadata)) {
-        const annotation = annotationsAddedToTest.find(a => a.key === key);
-        if (!value || !annotation?.annotationType) {
-            continue;
-        }
-
-        const type = annotation.annotationType.toString();
-        if (annotation.needsFormatting) {
-            formattedAnnotations.push({ type, description: formatList(value as string[]) });
-        } else {
-            const description = Array.isArray(value) ? value.join(ARRAY_DELIMITER) : value;
-            formattedAnnotations.push({ type, description });
-        }
-    }
-
-    return formattedAnnotations;
-};
+import { TestReportProviderBase, TestStatus, createTestAnnotation } from '@trezor/e2e-utils';
 
 // Class used by our GitHub Reporter to extract metadata from the test and its run
-export class TestReportProvider {
+export class TestReportProvider extends TestReportProviderBase {
     private readonly test: TestCase;
-    private readonly annotationMap: Map<string, string>;
-    private readonly defaults = {
-        prerequisites: 'No prerequisites defined',
-        steps: 'No steps defined',
-        category: TestCategory.NotCategorized,
-        priority: TestPriority.Medium,
-        stream: TestStream.NotDefined,
-        osMatrix: TestOsMatrix.NotDefined,
-        deviceModel: DeviceModel.Unknown,
-    };
 
     constructor(test: TestCase) {
+        super();
         this.test = test;
-        this.annotationMap = new Map();
 
         for (const annotation of test.annotations) {
             if (!annotation.description) {
@@ -79,20 +18,18 @@ export class TestReportProvider {
         }
     }
 
-    private getAnnotation(type: string, defaultValue: string): string {
-        return this.annotationMap.has(type) ? this.annotationMap.get(type)! : defaultValue;
+    // Platform-specific implementations
+    get testTitle(): string {
+        return this.test.title;
     }
 
-    get testCase(): string {
-        return this.getAnnotation(TestAnnotationType.TestCase, this.test.title);
-    }
-
-    get releaseBuild(): string {
-        if (!process.env.RELEASE_BUILD) {
-            throw new Error('RELEASE_BUILD is not set');
+    get testProject(): string {
+        const project = this.test.parent.project();
+        if (!project) {
+            throw new Error('Test project is not available');
         }
 
-        return process.env.RELEASE_BUILD;
+        return project.name;
     }
 
     get status(): string {
@@ -112,69 +49,6 @@ export class TestReportProvider {
         return TestStatus.Todo;
     }
 
-    get prerequisites(): string {
-        return this.getAnnotation(TestAnnotationType.Prerequisites, this.defaults.prerequisites);
-    }
-
-    get steps(): string {
-        return this.getAnnotation(TestAnnotationType.Steps, this.defaults.steps);
-    }
-
-    get category(): string {
-        return this.getAnnotation(TestAnnotationType.Category, this.defaults.category);
-    }
-
-    get priority(): string {
-        return this.getAnnotation(TestAnnotationType.Priority, this.defaults.priority);
-    }
-
-    get stream(): string {
-        return this.getAnnotation(TestAnnotationType.Stream, this.defaults.stream);
-    }
-
-    get testProject(): string {
-        const project = this.test.parent.project();
-        if (!project) {
-            throw new Error('Test project is not defined');
-        }
-
-        return project.name;
-    }
-
-    get testRun(): string {
-        if (this.isManual) {
-            return 'Manual';
-        } else {
-            // Web or Desktop
-            return capitalizeFirstLetter(this.testProject);
-        }
-    }
-
-    get osMatrix(): string[] {
-        if (this.isManual) {
-            const osAnnotation = this.getAnnotation(
-                TestAnnotationType.OsMatrix,
-                this.defaults.osMatrix,
-            );
-
-            return osAnnotation.split(ARRAY_DELIMITER);
-        }
-
-        return [TestOsMatrix.Linux];
-    }
-
-    get deviceModel(): string {
-        return this.getAnnotation(TestAnnotationType.DeviceModel, this.defaults.deviceModel);
-    }
-
-    get comment(): string {
-        return '';
-    }
-
-    get rawAnnotations(): Array<{ type: string; description?: string }> {
-        return this.test.annotations;
-    }
-
     get isManual(): boolean {
         return this.test.tags.some(tag => tag.startsWith('@group=manual'));
     }
@@ -183,59 +57,13 @@ export class TestReportProvider {
         return this.test.results.length > 1;
     }
 
-    get useOsEmoticons(): boolean {
-        return this.isManual && this.osMatrix.length > 1;
+    get id(): string {
+        return this.test.id;
     }
 
-    get bodyDescription(): string {
-        const sections = [];
-
-        if (this.isManual) {
-            for (const annotation of annotationsForBodyDescription) {
-                const value = this.getterByKey(annotation.key);
-                sections.push(`## ${annotation.name}\n${value}`);
-            }
-        } else {
-            sections.push(`## Automated Test\nID: ${this.test.id}`);
-        }
-
-        return sections.join('\n---\n');
-    }
-
-    get projectValues(): Array<{ name: string; value: string }> {
-        return annotationsForProjectFields.map(field => ({
-            name: field.name,
-            value: this.getterByKey(field.key),
-        }));
-    }
-
-    // This method allow us to loop thru array of keys and get the value from the getter
-    // That way `bodyDescription` and `projectValues` can be generated dynamically
-    // and rely on annotations objects (ex: 'annotationsForBodyDescription') as single source definitions
-    getterByKey(key: string): string {
-        // This is the downside, we need to record of all our annotation getters here
-        const getters: Record<string, () => string> = {
-            testCase: () => this.testCase,
-            releaseBuild: () => this.releaseBuild,
-            prerequisites: () => this.prerequisites,
-            steps: () => this.steps,
-            category: () => this.category,
-            priority: () => this.priority,
-            stream: () => this.stream,
-            status: () => this.status,
-            testRun: () => this.testRun,
-            osMatrix: () => this.osMatrix.join(ARRAY_DELIMITER),
-            deviceModel: () => this.deviceModel,
-            comment: () => this.comment,
-        };
-
-        const getter = getters[key];
-        if (!getter) {
-            throw new Error(
-                `The key '${key}' does not have corresponding getter on TestReportProvider class.`,
-            );
-        }
-
-        return getter();
+    get getTestFilePath(): string {
+        return this.test.location?.file || 'Path not available';
     }
 }
+
+export { createTestAnnotation };

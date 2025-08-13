@@ -89,6 +89,7 @@
         {
             "path": "../../packages/trezor-user-env-link"
         },
+        { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/test-utils"
         },

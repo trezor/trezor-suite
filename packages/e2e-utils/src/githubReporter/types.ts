@@ -78,3 +78,19 @@ export interface AddDraftIssueResponse {
 }
 
 export type ValueOrOptionId = string | { optionId: string };
+
+export interface TestDetailsAnnotation {
+    type: string;
+    description?: string | undefined;
+}
+
+export interface TestMetadataInput {
+    testCase?: string;
+    prerequisites?: string[];
+    steps?: string[];
+    category?: string;
+    priority?: string;
+    stream?: string;
+    deviceModel?: string;
+    osMatrix?: string[];
+}
