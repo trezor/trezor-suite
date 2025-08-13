@@ -7,7 +7,7 @@ const docs = 'methods/cardanoSignMessage.md';
 
 const batch = [
     {
-        name: 'signingPath',
+        name: 'path',
         label: 'Bip44 path',
         type: 'input',
         value: "m/1852'/1815'/0'/0/0",

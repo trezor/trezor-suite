@@ -302,7 +302,7 @@ export const CardanoSignedTxData = Type.Object({
 
 export type CardanoSignMessage = Static<typeof CardanoSignMessage>;
 export const CardanoSignMessage = Type.Object({
-    signingPath: DerivationPath,
+    path: DerivationPath,
     payload: Type.String(),
     hashPayload: Type.Boolean(),
     preferHexDisplay: Type.Optional(Type.Boolean()),
