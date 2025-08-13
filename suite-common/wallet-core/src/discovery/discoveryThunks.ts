@@ -700,7 +700,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
         TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
         // NOTE: prepare the device to the corresponding state eg. insert the passphrase
-        const stateResult = await TrezorConnect.getDeviceState({
+        const deviceStateResponse = await TrezorConnect.getDeviceState({
             device: {
                 path: device.path,
                 instance: device.instance,
@@ -709,12 +709,13 @@ export const runAdditionalDiscoveryThunk = createThunk(
             useEmptyPassphrase: device.useEmptyPassphrase,
         });
 
-        if (stateResult.success) {
+        if (deviceStateResponse.success) {
+            assertStaticSessionId(deviceStateResponse.payload._state);
             dispatch(
-                applyDeviceStatesThunk({
-                    newDeviceState: stateResult.payload._state,
-                    isAddingHiddenWallet: !device.useEmptyPassphrase,
-                    devicePath: device.path,
+                deviceActions.setDeviceState({
+                    device,
+                    state: deviceStateResponse.payload._state,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
                 }),
             );
         }
