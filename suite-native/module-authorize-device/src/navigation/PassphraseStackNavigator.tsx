@@ -40,14 +40,6 @@ const determineNativePassphraseFlowState = (
         return 'passphrase-checking-on-device';
     }
 
-    if (discovery.status === 'failed') {
-        return 'passphrase-redirecting';
-    }
-
-    if (discovery.status === 'complete') {
-        return 'passphrase-complete';
-    }
-
     if (discovery.status === 'starting') {
         return 'enter-passphrase';
     }
