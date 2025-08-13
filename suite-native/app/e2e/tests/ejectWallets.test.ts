@@ -4,6 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
+import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import {
@@ -52,12 +53,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
     });
 
     it('Eject single wallet with connected device', async () => {
-        await waitFor(
-            element(by.id('@device-manager/device-switch').withDescendant(by.text('Connected'))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await navigateToEjectWallets();
         await onSettings.ejectSingleWallet();
 
@@ -65,36 +61,17 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
         await device.pressBack();
         await device.pressBack();
 
-        await waitFor(
-            element(by.id('@device-manager/device-switch').withDescendant(by.text('Connected'))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await TrezorUserEnvLink.stopBridge();
 
-        await waitFor(
-            element(by.id('@device-manager/device-switch').withDescendant(by.text('Hi there!'))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });
 
     it('Eject single wallet with disconnected device', async () => {
-        await waitFor(
-            element(by.id('@device-manager/device-switch').withDescendant(by.text('Connected'))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await TrezorUserEnvLink.stopBridge();
 
-        await waitFor(
-            element(by.id('@device-manager/device-switch').withDescendant(by.text('Disconnected'))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Disconnected' });
         await navigateToEjectWallets();
         await onSettings.ejectSingleWallet();
 
@@ -102,11 +79,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
         await device.pressBack();
         await device.pressBack();
 
-        await waitFor(
-            element(by.id('@device-manager/device-switch').withDescendant(by.text('Hi there!'))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });
 
     it('Auto eject settings toggle switch', async () => {
@@ -116,10 +89,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
         await onAlertSheet.tapPrimaryButton();
         await TrezorUserEnvLink.stopBridge();
 
-        await waitFor(
-            element(by.id('@device-manager/device-switch').withDescendant(by.text('Hi there!'))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });
 });

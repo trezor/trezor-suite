@@ -8,5 +8,6 @@ export const onboardingCompleted: PreloadedState = {
         isFirmwareRevisionCheckEnabled: true,
         isFirmwareHashCheckEnabled: true,
         areTestnetsEnabled: true,
+        hasAutoEjectAlertBeenDisplayed: true,
     },
 };

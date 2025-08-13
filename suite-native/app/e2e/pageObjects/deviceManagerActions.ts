@@ -19,6 +19,18 @@ class DeviceManagerActions {
         await waitFor(openPassphraseButton).toBeVisible().withTimeout(30000);
         await openPassphraseButton.tap();
     }
+
+    async assertDeviceSwitcherState({
+        title,
+    }: {
+        title: 'Connected' | 'Disconnected' | 'Hi there!';
+    }) {
+        await waitFor(
+            element(by.id('@device-manager/device-switch').withDescendant(by.text(title))),
+        )
+            .toBeVisible()
+            .withTimeout(10000);
+    }
 }
 
 export const onDeviceManager = new DeviceManagerActions();
