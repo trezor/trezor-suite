@@ -1,15 +1,16 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
+import { BaseCurrencyAmount, isPending } from '@suite-common/wallet-utils';
 import { Icon, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
-import { useGraph } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { useGraph, useSelector } from 'src/hooks/suite';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import {
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
@@ -67,7 +68,7 @@ interface CommonProps {
     localCurrency: string;
     minMaxValues: [number, number];
     hideToolbar?: boolean;
-    onRefresh?: () => void;
+    onRefresh?: (abortController?: AbortController) => Promise<any>;
 }
 
 export interface CryptoGraphProps extends CommonProps {
@@ -89,6 +90,68 @@ export interface FiatGraphProps extends CommonProps {
 }
 
 export type TransactionsGraphProps = CryptoGraphProps | FiatGraphProps;
+
+const emptyList: ReturnType<typeof selectAccountTransactionsWithNulls>[] = [];
+const useTransactionGraphUpdater = ({
+    onRequestGraphUpdate,
+    account,
+}: {
+    onRequestGraphUpdate: (abortController: AbortController) => Promise<any> | undefined;
+    account: Account | undefined;
+}) => {
+    const [currentPromise, setCurrentPromise] = useState<{
+        promiseId: string;
+        promise: Promise<any>;
+        abortController: AbortController;
+    } | null>(null);
+
+    const allTransactions = useSelector(state =>
+        account ? selectAccountTransactionsWithNulls(state, account.key) : emptyList,
+    );
+
+    const newestTransactions = allTransactions
+        .slice(0, 3)
+        .flat()
+        .filter((tx): tx is WalletAccountTransaction =>
+            Boolean(Boolean(tx) && tx && !isPending(tx)),
+        );
+
+    const promiseId = newestTransactions.map(tx => tx.txid).join('-');
+
+    useEffect(() => {
+        if (promiseId !== currentPromise?.promiseId && account) {
+            const nextAbortController = new AbortController();
+
+            currentPromise?.abortController.abort();
+
+            setCurrentPromise({
+                promiseId,
+                abortController: nextAbortController,
+                promise: Promise.resolve()
+                    .then(() =>
+                        currentPromise?.promise?.then(
+                            result => result,
+                            _ => {
+                                // NOTE: swallow this error as we want to continue on with the next promise
+                            },
+                        ),
+                    )
+                    .then(() => {
+                        nextAbortController.signal.throwIfAborted();
+
+                        return Promise.resolve(onRequestGraphUpdate(nextAbortController));
+                    }),
+            });
+        }
+    }, [
+        account,
+        currentPromise?.abortController,
+        currentPromise?.promise,
+        currentPromise?.promiseId,
+        promiseId,
+        onRequestGraphUpdate,
+    ]);
+};
 
 export const TransactionsGraph = memo(
     ({
@@ -139,6 +202,11 @@ export const TransactionsGraph = memo(
             extendedDataForInterval,
             onShow: (index: number) => setHovered(index),
         };
+
+        useTransactionGraphUpdater({
+            onRequestGraphUpdate: abortController => onRefresh?.(abortController),
+            account,
+        });
 
         return (
             <Wrapper>
@@ -302,3 +370,5 @@ export const TransactionsGraph = memo(
         );
     },
 );
+
+TransactionsGraph.displayName = 'TransactionsGraph';

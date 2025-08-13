@@ -1,3 +1,4 @@
+import { createThunk } from '@suite-common/redux-utils';
 import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -68,7 +69,8 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
  * @returns
  */
 export const fetchAccountGraphData =
-    (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
+    (account: Account, options: { abortSignal?: AbortSignal }) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         dispatch({
             type: ACCOUNT_GRAPH_START,
             payload: {
@@ -90,6 +92,8 @@ export const fetchAccountGraphData =
             descriptor: account.descriptor,
             groupBy: 3600 * 24, // day
         });
+
+        options.abortSignal?.throwIfAborted();
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
 
@@ -136,20 +140,28 @@ export const fetchAccountGraphData =
         }
     };
 
-export const updateGraphData =
-    (
-        accounts: Account[],
-        options?: {
-            newAccountsOnly?: boolean;
+export const updateGraphData = createThunk<
+    void,
+    { accounts: Account[]; newAccountsOnly?: boolean; abortSignal?: AbortSignal },
+    void
+>(
+    'wallet/updateGraphData',
+    async (
+        { accounts, newAccountsOnly, abortSignal },
+        {
+            dispatch,
+            getState,
+        }: {
+            dispatch: Dispatch;
+            getState: GetState;
         },
-    ) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    ) => {
         const { graph } = getState().wallet;
 
         // TODO: default behaviour should be fetch only new data (since last timestamp)
         // exclude accounts with unsupported backend type
         let filteredAccounts = accounts.filter(a => isTrezorConnectBackendType(a.backendType));
-        if (options?.newAccountsOnly) {
+        if (newAccountsOnly) {
             // add only accounts for which we don't have any data for given interval
             filteredAccounts = filteredAccounts.filter(
                 account => !graph.data.find(d => accountGraphDataFilterFn(d, account)),
@@ -159,15 +171,30 @@ export const updateGraphData =
             return;
         }
 
-        dispatch({
-            type: AGGREGATED_GRAPH_START,
-        });
-        const promises = filteredAccounts.map(
-            a => dispatch(fetchAccountGraphData(a)), // fetch for all range
-        );
-        await Promise.all(promises);
+        try {
+            dispatch({
+                type: AGGREGATED_GRAPH_START,
+            });
+            const promises = filteredAccounts.map(
+                a => dispatch(fetchAccountGraphData(a, { abortSignal })), // fetch for all range
+            );
+            await Promise.all(promises);
 
-        dispatch({
-            type: AGGREGATED_GRAPH_SUCCESS,
-        });
-    };
+            abortSignal?.throwIfAborted();
+
+            dispatch({
+                type: AGGREGATED_GRAPH_SUCCESS,
+            });
+
+            return;
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                dispatch({
+                    type: AGGREGATED_GRAPH_SUCCESS,
+                });
+            }
+
+            return;
+        }
+    },
+);

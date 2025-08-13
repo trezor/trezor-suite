@@ -60,9 +60,10 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
         failedAccounts !== undefined &&
         accounts.every(a => failedAccounts.some(fa => fa.descriptor === a.descriptor));
 
-    const onRefresh = useCallback(() => {
-        dispatch(updateGraphData(accounts));
-    }, [accounts, dispatch]);
+    const onRefresh = useCallback(
+        () => dispatch(updateGraphData({ accounts })).unwrap(),
+        [accounts, dispatch],
+    );
 
     const receivedValueFn = useCallback(
         (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[baseCurrencyCode],

@@ -21,7 +21,8 @@ const graphMiddleware =
             // fetch graph data for selected account and range if needed
             if (action.payload.account) {
                 api.dispatch(
-                    graphActions.updateGraphData([action.payload.account], {
+                    graphActions.updateGraphData({
+                        accounts: [action.payload.account],
                         newAccountsOnly: true,
                     }),
                 );
@@ -39,7 +40,8 @@ const graphMiddleware =
                 transactions.some(t => (t.blockHeight ?? 0) > 0)
             ) {
                 api.dispatch(
-                    graphActions.updateGraphData([account], {
+                    graphActions.updateGraphData({
+                        accounts: [account],
                         newAccountsOnly: false,
                     }),
                 );
@@ -50,7 +52,12 @@ const graphMiddleware =
             action.type === discoveryActions.updateDiscovery.type &&
             action.payload.status.status === 'complete'
         ) {
-            api.dispatch(graphActions.updateGraphData(currentAccounts, { newAccountsOnly: true }));
+            api.dispatch(
+                graphActions.updateGraphData({
+                    accounts: currentAccounts,
+                    newAccountsOnly: true,
+                }),
+            );
         }
 
         return action;
