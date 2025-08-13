@@ -49,6 +49,7 @@ import {
     selectFeeLevels,
 } from '../sendFormSlice';
 import { NativeSupportedFeeLevel } from '../types';
+import { getFeeValue } from '../utils';
 
 type SendFormProps = {
     accountKey: AccountKey;
@@ -93,16 +94,20 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
 
     const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
 
+    const trimmedFeePerUnit = getFeeValue({
+        feeRate: formDraft?.feePerUnit,
+        symbol: account?.symbol,
+    });
     const form = useForm<SendFeesFormValues>({
         validation: sendFeesFormValidationSchema,
         defaultValues: {
             feeLevel: formDraft?.selectedFee as NativeSupportedFeeLevel,
-            customFeePerUnit: formDraft?.feePerUnit,
+            customFeePerUnit: trimmedFeePerUnit,
             customFeeLimit: normalFee?.feeLimit,
         },
         context: {
             networkFeeInfo,
-            networkType,
+            symbol: account?.symbol,
             minimalFeeLimit,
         },
     });
