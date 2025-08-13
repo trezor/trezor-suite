@@ -43,7 +43,7 @@ export type ConnectPopupCallLoaded = {
     method: keyof typeof TrezorConnect;
     methodInfo: {
         methodTitle: string;
-        confirmLabel: string;
+        confirmLabel?: string;
         permissionTypes: MethodPermission[];
         useUi: boolean;
     };

@@ -8,6 +8,7 @@ import {
 import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import type { EthereumSignTransaction } from '@trezor/connect';
+import { MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
@@ -139,7 +140,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                 if (!methodInfo.success) {
                     throw methodInfo.payload;
                 }
-                txSigningPrecomposed = (methodInfo.payload as any).precomposed;
+                txSigningPrecomposed = (methodInfo.payload as any as MethodInfo).precomposed;
                 if (txSigningPrecomposed)
                     dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
 
