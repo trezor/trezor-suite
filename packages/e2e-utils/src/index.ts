@@ -5,5 +5,7 @@ export { GoogleMock } from './mocks/google';
 export { GitHubReporterBase, InitializationState } from './githubReporter/gitHubReporterBase';
 export { GitHubProject } from './githubReporter/gitHubProject';
 export { IssueRequests } from './githubReporter/issueRequests';
+export { TestReportProviderBase, createTestAnnotation } from './githubReporter/annotationBase';
+export type { TestDetailsAnnotation, TestMetadataInput } from './githubReporter/types';
 export * from './githubReporter/types';
 export * from './enums/testAnnotations';

@@ -122,13 +122,34 @@ abstract class GitHubReporterBase implements LoggingFunctions {
         });
     }
 
+    protected async initiateOctokitESM(): Promise<void> {
+        try {
+            const OctokitModule = await import('@octokit/rest');
+            this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
+        } catch (error) {
+            this.initState = InitializationState.FAILED;
+            this.logError('Failed to initialize Octokit.');
+            throw error; // Critical error, rethrow to stop execution
+        }
+    }
+
+    protected async initiateOctokitCommonJS(): Promise<void> {
+        try {
+            const importDynamic = new Function('specifier', 'return import(specifier)');
+            const octokitModule = await importDynamic('@octokit/rest');
+            this._octokit = new octokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
+        } catch (error) {
+            this.initState = InitializationState.FAILED;
+            this.logError('Failed to initialize Octokit.');
+            throw error;
+        }
+    }
+
     protected init() {
         this.log('GitHub reporter started. Initializing GitHub client...');
         this.initState = InitializationState.IN_PROGRESS;
         const initPromise = (async () => {
             try {
-                const OctokitModule = await import('@octokit/rest');
-                this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
                 this._issueRequests = new IssueRequests(this.octokit);
                 this._gitHubProject = new GitHubProject(this.octokit, this);
                 this.log('GitHub client initialized successfully');

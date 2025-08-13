@@ -17,7 +17,8 @@
         "eas-build-on-success": "./eas-post-success.sh",
         "prebuild:clean": "expo prebuild --clean",
         "build:e2e": "npx detox build --configuration",
-        "test:e2e": "npx detox test --configuration",
+        "test:e2e": "npx detox test --configuration ",
+        "report:manual": "npx detox test ./e2e/tests/manual/currencyChange.test.ts --configuration android.emu.debug",
         "start:e2e": "NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo start --dev-client",
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
@@ -91,6 +92,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "@walletconnect/react-native-compat": "^2.20.3",
         "@whatwg-node/events": "0.1.2",
         "abortcontroller-polyfill": "1.7.6",
@@ -154,11 +156,13 @@
         "babel-plugin-transform-inline-environment-variables": "^0.4.4",
         "babel-plugin-transform-remove-console": "^6.9.4",
         "detox": "^20.39.0",
+        "dotenv": "^17.2.1",
         "expo-atlas": "0.4.0",
         "jest": "29.7.0",
         "jest-junit": "^16.0.0",
         "metro": "^0.82.0",
         "ts-jest": "^29.1.2",
+        "ts-node": "^10.9.2",
         "typescript": "5.8.3"
     },
     "private": true
