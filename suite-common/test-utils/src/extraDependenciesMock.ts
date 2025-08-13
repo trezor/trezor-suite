@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
-import { Route } from '@suite-common/suite-types';
+import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 import { testMocks } from './mocks';
@@ -138,7 +138,7 @@ export const extraDependenciesMock: ExtraDependencies = {
                 appUrl: '@suite-native/app',
             },
         },
-        reportCheckFail: (checkType, _contextData) =>
-            console.warn(`Reporting ${checkType} check fail. Implementation on phone not ready.`),
+        reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckProps) =>
+            console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
     },
 };

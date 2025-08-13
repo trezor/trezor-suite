@@ -13,7 +13,7 @@ import { useKeepAwake } from 'expo-keep-awake';
 import { Badge, Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
-    reportCheckFail,
+    reportSecurityCheck,
     setTemporaryRememberedDeviceThunk,
     useConfirmOnTrezorController,
 } from '@suite-native/device';
@@ -156,15 +156,19 @@ export const FirmwareInstallationScreenContent = ({
             result.payload;
 
         if (versionCheck === false) {
-            reportCheckFail('Firmware version', {
-                model: deviceInternalModel,
-                revision: deviceRevision,
-                vendor: deviceFirmwareVendor,
-                bootloaderVersion,
-                binaryVersion,
-                installedVersion,
-                releaseVersion,
-                error: 'Unexpected firmware version change during firmware update.',
+            reportSecurityCheck({
+                level: 'error',
+                checkType: 'Firmware version',
+                contextData: {
+                    model: deviceInternalModel,
+                    revision: deviceRevision,
+                    vendor: deviceFirmwareVendor,
+                    bootloaderVersion,
+                    binaryVersion,
+                    installedVersion,
+                    releaseVersion,
+                    error: 'Unexpected firmware version change during firmware update.',
+                },
             });
         }
 

@@ -2,22 +2,27 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { revisionCheckErrorScenarios } from '@suite-common/firmware-authenticity';
-import { FirmwareCheckType } from '@suite-common/suite-types';
+import { ReportSecurityCheckProps } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-export const reportCheckFail = (
-    checkType: FirmwareCheckType,
-    contextData: Record<string, any>,
-    errorPayload?: unknown,
-) => {
-    const payloadLabel = `${checkType} check failed!`;
+export const reportSecurityCheck = ({
+    level,
+    checkType,
+    contextData,
+    payload,
+}: ReportSecurityCheckProps) => {
+    const levelDescription = level === 'error' ? 'failed' : 'warning';
+    const exceptionName = level === 'error' ? 'reportCheckFail' : 'reportCheckWarning';
+    const payloadLabel = `${checkType} check ${levelDescription}!`;
+
     withSentryScope(scope => {
-        scope.setExtra('errorPayload', errorPayload);
+        scope.setExtra(`${level}Payload`, payload);
+        // The only way to do custom issue title is via Error.name
         const exceptionForSentry = new Error(`${payloadLabel} ${JSON.stringify(contextData)}`);
-        exceptionForSentry.name = 'reportCheckFail'; // Custom issue title
+        exceptionForSentry.name = exceptionName;
         captureSentryException(exceptionForSentry, scope);
     });
 };
@@ -47,7 +52,12 @@ export const useReportDeviceCompromised = () => {
     useEffect(() => {
         if (!errorType) return;
         if (revisionCheckErrorScenarios[errorType].shouldReport) {
-            reportCheckFail('Firmware revision', { ...commonData, errorType }, errorPayload);
+            reportSecurityCheck({
+                level: 'error',
+                checkType: 'Firmware revision',
+                contextData: { ...commonData, errorType },
+                payload: errorPayload,
+            });
         }
     }, [commonData, errorType, errorPayload]);
 };
