@@ -1,13 +1,14 @@
 import { yup } from '@suite-common/validators';
-import { NetworkType } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { FeeInfo } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { NativeSupportedFeeLevel } from './types';
+import { getFeeDecimals } from './utils';
 
 type SendFeesFormContext = {
-    networkType?: NetworkType;
+    symbol?: NetworkSymbol;
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
 };
@@ -30,17 +31,17 @@ export const sendFeesFormValidationSchema = yup.object({
             (value, { options: { context } }: yup.TestContext<SendFeesFormContext>) => {
                 if (!value) return true;
 
-                const { networkFeeInfo, networkType } = context!;
+                const { networkFeeInfo, symbol } = context!;
+
+                if (!symbol) return false;
+
+                const { networkType } = getNetwork(symbol);
+
                 if (!networkFeeInfo || !networkType) return false;
 
-                if (networkType !== 'bitcoin' && networkType !== 'ethereum') return true;
+                const maxDecimals = getFeeDecimals({ symbol });
 
-                let maxDecimals = 0;
-                if (networkType === 'bitcoin') {
-                    maxDecimals = 2;
-                } else if (networkType === 'ethereum') {
-                    maxDecimals = 9;
-                }
+                if (maxDecimals === null) return true;
 
                 return isDecimalsValid(value, maxDecimals);
             },
@@ -80,7 +81,10 @@ export const sendFeesFormValidationSchema = yup.object({
             'fee-limit-too-low',
             'Value is too low.',
             (value, { options: { context } }: yup.TestContext<SendFeesFormContext>) => {
-                const { networkType, minimalFeeLimit } = context!;
+                const { symbol, minimalFeeLimit } = context!;
+                if (!symbol) return true;
+
+                const { networkType } = getNetwork(symbol);
 
                 // Fee limit is used only for Ethereum, pass this validation for other networks.
                 if (networkType !== 'ethereum') return true;
