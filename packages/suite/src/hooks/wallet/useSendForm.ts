@@ -226,7 +226,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
-        dispatch(removeSendFormDraftThunk()); // reset draft;
+        dispatch(removeSendFormDraftThunk());
         setState(getStateFromProps({ selectedAccount, localCurrency, online, metadataEnabled }));
     }, [dispatch, setComposedLevels, selectedAccount, localCurrency, online, metadataEnabled]);
 
@@ -283,13 +283,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             }
         }
     }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);
-
-    // reset on account change
-    useEffect(() => {
-        if (state.account.key !== selectedAccount.account.key) {
-            resetContext();
-        }
-    }, [state.account.key, selectedAccount.account.key, resetContext]);
 
     const protocol = useSelector(state => state.protocol);
 
@@ -367,7 +360,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [draft]);
 
-    // update composedLevels when feeInfo changes
     useEffect(() => {
         composeDraft(getValues());
     }, [composeDraft, getValues]);

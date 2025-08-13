@@ -70,6 +70,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }:
                 settings: { bitcoinAmountUnit, enabledNetworks: ['thol'] },
             },
             suite: { settings: { language: 'en' } },
+            router: { route: { name: 'wallet-send' } },
         },
     });
 
@@ -255,6 +256,7 @@ describe('useSendForm hook', () => {
                     // validate action result
                     actionCallback(callback, a);
                 });
+
                 unmount();
             },
             TEST_TIMEOUT,
