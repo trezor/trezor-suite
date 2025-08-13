@@ -62,7 +62,7 @@ Sign hash of "Hello Trezor!":
 
 ```javascript
 TrezorConnect.cardanoSignMessage({
-    signingPath: "m/1852'/1815'/0'/0/0",
+    path: "m/1852'/1815'/0'/0/0",
     payload: '48656c6c6f205472657a6f7221', // "Hello Trezor!" in hex
     hashPayload: true,
     preferHexDisplay: false,
@@ -73,7 +73,7 @@ Sign hash of "Hello Trezor!" using address parameters for header:
 
 ```javascript
 TrezorConnect.cardanoSignMessage({
-    signingPath: "m/1852'/1815'/0'/0/0",
+    path: "m/1852'/1815'/0'/0/0",
     payload: '48656c6c6f205472657a6f7221', // "Hello Trezor!" in hex
     hashPayload: true,
     preferHexDisplay: false,

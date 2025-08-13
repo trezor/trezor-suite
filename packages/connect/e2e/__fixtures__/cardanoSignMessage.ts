@@ -21,12 +21,12 @@ const headerUnhashed = (address: string) => ({
 const headerHashed = (address: string) => {
     const header = headerUnhashed(address);
     header.unprotected.hashed = true;
+
     return header;
 };
 
 /** "HelloTrezor!" repeated 86 times (=1032 bytes) in hex */
-const HELLO_TREZOR_86 =
-    '48656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f722148656c6c6f5472657a6f7221';
+const HELLO_TREZOR_86 = '48656c6c6f5472657a6f7221'.repeat(86);
 
 export default {
     method: 'cardanoSignMessage',
@@ -37,7 +37,7 @@ export default {
         {
             description: 'Sign short ASCII payload',
             params: {
-                signingPath: "m/1852'/1815'/0'/0/0",
+                path: "m/1852'/1815'/0'/0/0",
                 payload: '54657374', // "Test" hex
                 hashPayload: false,
             },
@@ -53,7 +53,7 @@ export default {
         {
             description: 'Sign short ASCII payload and display as hex',
             params: {
-                signingPath: "m/1852'/1815'/0'/0/0",
+                path: "m/1852'/1815'/0'/0/0",
                 payload: '54657374', // "Test" hex
                 hashPayload: false,
                 preferHexDisplay: true,
@@ -70,7 +70,7 @@ export default {
         {
             description: 'Sign short ASCII payload with address parameters',
             params: {
-                signingPath: "m/1852'/1815'/0'/0/0",
+                path: "m/1852'/1815'/0'/0/0",
                 payload: '54657374', // "Test" hex
                 hashPayload: false,
                 networkId: 1,
@@ -95,7 +95,7 @@ export default {
         {
             description: 'Sign short non-ASCII payload',
             params: {
-                signingPath: "m/1852'/1815'/0'/0/0",
+                path: "m/1852'/1815'/0'/0/0",
                 payload: 'ff',
                 hashPayload: false,
             },
@@ -111,7 +111,7 @@ export default {
         {
             description: 'Sign long ASCII payload hash',
             params: {
-                signingPath: "m/1852'/1815'/0'/0/0",
+                path: "m/1852'/1815'/0'/0/0",
                 payload: HELLO_TREZOR_86,
                 hashPayload: true,
             },
@@ -127,7 +127,7 @@ export default {
         {
             description: 'Display ambigous-looking " " ASCII payload as hex',
             params: {
-                signingPath: "m/1852'/1815'/0'/0/0",
+                path: "m/1852'/1815'/0'/0/0",
                 payload: '20', // " " (single space) hex
                 hashPayload: false,
             },
@@ -143,7 +143,7 @@ export default {
         {
             description: 'Sign long ASCII payload without hashing',
             params: {
-                signingPath: "m/1852'/1815'/0'/0/0",
+                path: "m/1852'/1815'/0'/0/0",
                 payload: HELLO_TREZOR_86,
                 hashPayload: false,
             },

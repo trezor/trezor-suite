@@ -16,7 +16,7 @@ import { Path } from '../cardanoInputs';
 import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
-    signingPath: Path;
+    path: Path;
     payload: string;
     hashPayload: boolean;
     preferHexDisplay: boolean;
@@ -52,7 +52,7 @@ export default class CardanoSignMessage extends AbstractMethod<
         }
 
         this.params = {
-            signingPath: validatePath(payload.signingPath, 5),
+            path: validatePath(payload.path, 5),
             payload: payload.payload,
             hashPayload: payload.hashPayload,
             preferHexDisplay: payload.preferHexDisplay ?? false,
@@ -72,7 +72,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             'CardanoSignMessageInit',
             ['CardanoMessageSignature', 'CardanoMessageDataRequest'],
             {
-                signing_path: this.params.signingPath,
+                signing_path: this.params.path,
                 payload_size: payloadSize,
                 network_id: this.params.networkId,
                 protocol_magic: this.params.protocolMagic,
