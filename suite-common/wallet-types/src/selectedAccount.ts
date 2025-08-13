@@ -28,7 +28,7 @@ export interface SelectedAccountLoaded {
 export type SelectedAccountException =
     | {
           status: 'exception';
-          loader: 'auth-failed' | 'discovery-error' | 'discovery-empty'; // No network enabled in settings
+          loader: 'discovery-error' | 'discovery-empty'; // No network enabled in settings
           account?: undefined;
           network?: Network;
           params?: WalletParams;

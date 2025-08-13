@@ -4,7 +4,6 @@ import { Column, H2 } from '@trezor/components';
 import { AccountNotEnabled } from './AccountNotEnabled';
 import { AccountNotExists } from './AccountNotExists';
 import { AccountNotLoaded } from './AccountNotLoaded';
-import { AuthFailed } from './AuthFailed';
 import { DiscoveryEmpty } from './DiscoveryEmpty';
 import { DiscoveryFailed } from './DiscoveryFailed';
 
@@ -13,8 +12,6 @@ const getExceptionPage = (
     network: SelectedAccountException['network'],
 ) => {
     switch (loader) {
-        case 'auth-failed':
-            return <AuthFailed />;
         case 'discovery-error':
             return <DiscoveryFailed />;
         case 'discovery-empty':
