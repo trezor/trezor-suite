@@ -256,6 +256,7 @@ export const thpPairing = async (device: Device) => {
     const settings = DataManager.getSettings('thp');
     await thpCall(device, 'ThpPairingRequest', {
         host_name: settings?.hostName || 'Unknown hostName',
+        app_name: settings?.appName || 'Unknown appName',
     });
 
     // State HP1

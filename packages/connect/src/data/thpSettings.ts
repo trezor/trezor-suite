@@ -13,8 +13,12 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
 
     if (typeof thp?.hostName === 'string') {
         settings.hostName = thp.hostName;
+    }
+
+    if (typeof thp?.appName === 'string') {
+        settings.appName = thp.appName;
     } else if (typeof manifest?.appName === 'string') {
-        settings.hostName = manifest?.appName;
+        settings.appName = manifest?.appName;
     }
 
     if (typeof thp?.staticKey === 'string') {
