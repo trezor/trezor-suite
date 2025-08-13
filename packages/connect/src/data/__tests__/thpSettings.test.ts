@@ -2,37 +2,37 @@ import { parseThpSettings } from '../thpSettings';
 
 describe('data/thpSettings', () => {
     it('parseThpSettings', () => {
-        const hostName = 'TrezorConnect';
-        const manifest = { appName: hostName, appUrl: 'test', email: 'test@trezor.io' };
+        const appName = 'TrezorConnect';
+        const manifest = { appName, appUrl: 'test', email: 'test@trezor.io' };
         const pairingMethods = ['CodeEntry' as const];
 
-        // hostName fallbacks to manifest.appName, default pairingMethods
+        // appName fallbacks to manifest.appName, default pairingMethods
         let result = parseThpSettings({ manifest });
-        expect(result).toEqual({ hostName, pairingMethods });
+        expect(result).toEqual({ appName, pairingMethods });
 
-        // hostName from settings.thp, default pairingMethods
+        // appName from settings.thp, default pairingMethods
         result = parseThpSettings({
-            thp: { hostName: 'Bar', pairingMethods },
+            thp: { appName: 'Bar', pairingMethods },
         });
-        expect(result).toEqual({ hostName: 'Bar', pairingMethods });
+        expect(result).toEqual({ appName: 'Bar', pairingMethods });
 
         // pairingMethods from settings.thp
         result = parseThpSettings({ manifest, thp: { pairingMethods: [] } });
-        expect(result).toEqual({ hostName, pairingMethods: [] });
+        expect(result).toEqual({ appName, pairingMethods: [] });
 
         // pairingMethods as enum values
         result = parseThpSettings({
             manifest,
             thp: { pairingMethods: [1, 3] },
         });
-        expect(result).toEqual({ hostName, pairingMethods: [1, 3] });
+        expect(result).toEqual({ appName, pairingMethods: [1, 3] });
 
         // staticKey from settings.thp
         result = parseThpSettings({
             manifest,
             thp: { staticKey: '00112233', pairingMethods },
         });
-        expect(result).toEqual({ hostName, staticKey: '00112233', pairingMethods });
+        expect(result).toEqual({ appName, staticKey: '00112233', pairingMethods });
 
         // knownCredentials from settings.thp
         result = parseThpSettings({
@@ -46,7 +46,7 @@ describe('data/thpSettings', () => {
             },
         });
         expect(result).toEqual({
-            hostName,
+            appName,
             pairingMethods,
             knownCredentials: [
                 { credential: '0000', trezor_static_public_key: '1111', autoconnect: true },
@@ -56,24 +56,28 @@ describe('data/thpSettings', () => {
 
         // @ts-expect-error invalid pairingMethods
         result = parseThpSettings({ manifest, thp: { pairingMethods: 1 } });
-        expect(result).toEqual({ hostName, pairingMethods });
+        expect(result).toEqual({ appName, pairingMethods });
         // @ts-expect-error invalid pairingMethods
         result = parseThpSettings({ manifest, thp: { pairingMethods: ['Foo'] } });
         // @ts-expect-error invalid pairingMethods
         result = parseThpSettings({ manifest, thp: { pairingMethods: [0] } });
+
+        // @ts-expect-error invalid appName
+        result = parseThpSettings({ thp: { appName: {} } });
+        expect(result).toEqual({ pairingMethods });
 
         // @ts-expect-error invalid hostName
         result = parseThpSettings({ thp: { hostName: {} } });
         expect(result).toEqual({ pairingMethods });
 
         // @ts-expect-error invalid staticKey
-        result = parseThpSettings({ thp: { hostName, staticKey: true } });
-        expect(result).toEqual({ hostName, pairingMethods });
+        result = parseThpSettings({ thp: { appName, staticKey: true } });
+        expect(result).toEqual({ appName, pairingMethods });
 
         // invalid knownCredentials
         result = parseThpSettings({
             thp: {
-                hostName,
+                appName,
                 pairingMethods,
                 knownCredentials: [
                     // @ts-expect-error
@@ -85,6 +89,6 @@ describe('data/thpSettings', () => {
                 ],
             },
         });
-        expect(result).toEqual({ hostName, pairingMethods, knownCredentials: [] });
+        expect(result).toEqual({ appName, pairingMethods, knownCredentials: [] });
     });
 });
