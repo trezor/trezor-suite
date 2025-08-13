@@ -1,11 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import {
-    accountsActions,
-    discoveryActions,
-    selectDiscoveryForSelectedDevice,
-    transactionsActions,
-} from '@suite-common/wallet-core';
+import { accountsActions, discoveryActions } from '@suite-common/wallet-core';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
@@ -24,25 +19,6 @@ const graphMiddleware =
                     graphActions.updateGraphData({
                         accounts: [action.payload.account],
                         newAccountsOnly: true,
-                    }),
-                );
-            }
-        }
-
-        // don't run while fetching txs pages in transactions tab
-        if (transactionsActions.addTransaction.match(action) && !action.payload.page) {
-            const { account, transactions } = action.payload;
-
-            // don't run during discovery and on unconfirmed txs
-            const discovery = selectDiscoveryForSelectedDevice(api.getState());
-            if (
-                discovery?.status === 'complete' &&
-                transactions.some(t => (t.blockHeight ?? 0) > 0)
-            ) {
-                api.dispatch(
-                    graphActions.updateGraphData({
-                        accounts: [account],
-                        newAccountsOnly: false,
                     }),
                 );
             }
