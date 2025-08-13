@@ -5,7 +5,9 @@
         "exactOptionalPropertyTypes": true
     },
     "references": [
+        { "path": "../metadata-types" },
         { "path": "../suite-types" },
-        { "path": "../wallet-core" }
+        { "path": "../wallet-core" },
+        { "path": "../../packages/connect" }
     ]
 }

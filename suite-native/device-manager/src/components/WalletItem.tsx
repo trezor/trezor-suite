@@ -40,7 +40,7 @@ export const WalletItem = ({ onPress, deviceState, isSelectable = true }: Wallet
             onPress={onPress}
             isSelectable={isSelectable}
             isSelected={showAsSelected}
-            walletNumber={device.walletNumber}
+            device={device}
             baseCurrencyAmount={baseCurrencyAmount}
         />
     );

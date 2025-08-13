@@ -154,12 +154,10 @@ export const TransactionListItemContainer = ({
                 <Box marginLeft="sp16" flex={1}>
                     <HStack flexDirection="row" alignItems="center" spacing="sp4">
                         <Box style={applyStyle(titleStyle)}>
-                            <Text variant="body">
-                                <TransactionName
-                                    transaction={transaction}
-                                    isPending={isTransactionPending}
-                                />
-                            </Text>
+                            <TransactionName
+                                transaction={transaction}
+                                isPending={isTransactionPending}
+                            />
                             {isPhishingTransaction && (
                                 <Badge
                                     label={<Translation id="transactions.phishing.badge" />}

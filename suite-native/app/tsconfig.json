@@ -67,6 +67,9 @@
             "path": "../module-staking-management"
         },
         { "path": "../module-trading" },
+        {
+            "path": "../native-local-first-storage"
+        },
         { "path": "../navigation" },
         { "path": "../notifications" },
         { "path": "../receive" },

@@ -19,6 +19,8 @@ export {
     selectAddressLabels,
     selectAccountLabel,
     selectOutputLabels,
+    selectOutputLabel,
+    WithLabelingState,
 } from './labeling/labelingSelectors';
 export { labelingActions } from './labeling/labelingActions';
 export { prepareLabelingReducer, initialLabelingState } from './labeling/labelingReducer';

@@ -1,8 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectAccountLabel } from '@suite-common/local-first-storage';
+import { WithLabelingState } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -77,6 +80,12 @@ export const AccountsListItem = ({
         selectAccountFiatBalance(state, account.key, accountHasStaking),
     );
 
+    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+
+    const localFirstAccountLabel = useSelector((state: WithLabelingState) =>
+        selectAccountLabel({ state, walletDescriptor, accountKey: account.key }),
+    );
+
     const handleOnPress = useCallback(() => {
         onPress?.({
             account,
@@ -111,7 +120,7 @@ export const AccountsListItem = ({
             icon={icon}
             title={
                 shouldShowAccountLabel ? (
-                    accountLabel
+                    (localFirstAccountLabel?.label ?? accountLabel)
                 ) : (
                     <NetworkDisplaySymbolNameFormatter value={account.symbol} />
                 )

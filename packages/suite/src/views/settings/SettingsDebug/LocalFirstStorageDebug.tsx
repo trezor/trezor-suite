@@ -5,7 +5,7 @@ import {
     disposeAllLocalFirstStorageThunk,
 } from '@suite-common/local-first-storage';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
-import { initLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
+import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
@@ -33,7 +33,7 @@ export const LocalFirstStorageDebug = () => {
     const handleToggleLocalFirstStorage = () => {
         dispatch(setFlag('isLocalFirstStorageEnabled', !isLocalFirstStorageEnabled));
         if (!isLocalFirstStorageEnabled) {
-            dispatch(initLocalFirstStorageThunk());
+            dispatch(initSuiteLocalFirstStorageThunk());
         } else {
             dispatch(disposeAllLocalFirstStorageThunk());
         }
@@ -50,7 +50,7 @@ export const LocalFirstStorageDebug = () => {
         // We need to dispose of all Evolu instances and create new
         // as they do not support the Relay URL change
         dispatch(disposeAllLocalFirstStorageThunk());
-        dispatch(initLocalFirstStorageThunk());
+        dispatch(initSuiteLocalFirstStorageThunk());
 
         // Fake it, to make some UI interaction for the user
         setTimeout(() => {

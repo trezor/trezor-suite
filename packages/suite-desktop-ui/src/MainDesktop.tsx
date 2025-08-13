@@ -43,7 +43,7 @@ import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
-import { initLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
+import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 const MainDesktop = () => {
     useTor();
@@ -152,7 +152,7 @@ export const init = async (container: HTMLElement) => {
     await store.dispatch(initBluetoothThunk());
 
     // This needs to be initialized to subscribe to all Remembered Wallets
-    await store.dispatch(initLocalFirstStorageThunk());
+    await store.dispatch(initSuiteLocalFirstStorageThunk());
 
     // finally render whole app
     root.render(

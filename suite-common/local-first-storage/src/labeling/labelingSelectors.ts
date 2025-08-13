@@ -108,3 +108,21 @@ type FindOutputLabelParams = {
 
 export const findOutputLabel = ({ outputLabels, txId, outputIndex }: FindOutputLabelParams) =>
     outputLabels.find(it => it.txId === txId && it.outputIndex === outputIndex);
+
+type SelectOutputLabelParams = {
+    state: WithLabelingState;
+    deviceStaticSessionId: StaticSessionId;
+    txId: string;
+    outputIndex: number;
+};
+
+export const selectOutputLabel = ({
+    state,
+    deviceStaticSessionId,
+    txId,
+    outputIndex,
+}: SelectOutputLabelParams) => {
+    const outputLabels = selectOutputLabels(state, deviceStaticSessionId);
+
+    return findOutputLabel({ txId, outputIndex, outputLabels });
+};

@@ -12,6 +12,7 @@ export const FeatureFlag = {
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
     IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
     IsTradingSellEnabled: 'isTradingSellEnabled',
+    IsLocalFirstStorageEnabled: 'isLocalFirstStorageEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -40,6 +41,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SWAP_ENABLED === 'true',
     [FeatureFlag.IsTradingSellEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SELL_ENABLED === 'true',
+    [FeatureFlag.IsLocalFirstStorageEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_LOCAL_FIRST_STORAGE_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -51,6 +54,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingBuyEnabled,
     FeatureFlag.IsTradingExchangeEnabled,
     FeatureFlag.IsTradingSellEnabled,
+    FeatureFlag.IsLocalFirstStorageEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

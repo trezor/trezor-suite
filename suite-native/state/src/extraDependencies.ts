@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
+import { subscribeLocalFirstStorageThunk } from '@suite-common/local-first-storage';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -26,6 +27,10 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
+        selectSuiteSettings: state => ({
+            ...extraDependenciesMock.selectors.selectSuiteSettings(state),
+            isLocalFirstStorageEnabled: state.featureFlags.isLocalFirstStorageEnabled,
+        }),
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
         selectDebugSettings: () => ({
@@ -49,7 +54,9 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             knownCredentials: state.thp?.credentials,
         }),
     } as Partial<ExtraDependencies['selectors']>,
-    thunks: {} as Partial<ExtraDependencies['thunks']>,
+    thunks: {
+        subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
+    } as Partial<ExtraDependencies['thunks']>,
     actions: {} as Partial<ExtraDependencies['actions']>,
     actionTypes: {} as Partial<ExtraDependencies['actionTypes']>,
     reducers: {} as Partial<ExtraDependencies['reducers']>,

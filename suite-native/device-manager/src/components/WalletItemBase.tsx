@@ -1,7 +1,10 @@
 import { Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { WithLabelingState, selectWalletLabel } from '@suite-common/local-first-storage';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { HStack, Radio, Text } from '@suite-native/atoms';
+import { HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -14,7 +17,7 @@ type WalletItemBaseProps = {
     onPress: () => void;
     isSelectable: boolean;
     isSelected: boolean;
-    walletNumber?: number;
+    device: TrezorDevice;
     baseCurrencyAmount?: BaseCurrencyAmount;
 };
 
@@ -58,27 +61,48 @@ export const WalletItemBase = ({
     onPress,
     isSelected,
     isSelectable,
-    walletNumber,
+    device,
     baseCurrencyAmount,
 }: WalletItemBaseProps) => {
     const { applyStyle } = useNativeStyles();
     const isStandard = variant === 'standard';
 
-    const walletNameLabel = isStandard ? (
-        <Translation id="deviceManager.wallet.standard" />
-    ) : (
-        <Translation id="deviceManager.wallet.defaultPassphrase" values={{ index: walletNumber }} />
+    const localFirstWalletLabel = useSelector((state: WithLabelingState) =>
+        selectWalletLabel({ state, deviceStaticSessionId: device.state?.staticSessionId }),
     );
+
+    const walletNameLabel =
+        // eslint-disable-next-line no-nested-ternary
+        localFirstWalletLabel !== null ? (
+            localFirstWalletLabel
+        ) : isStandard ? (
+            <Translation id="deviceManager.wallet.standard" />
+        ) : (
+            <Translation
+                id="deviceManager.wallet.defaultPassphrase"
+                values={{ index: device?.walletNumber }}
+            />
+        );
+
+    const debug =
+        device.state?.staticSessionId?.split('@')[0].slice(-8) +
+        ' @ ' +
+        device.state?.staticSessionId?.slice(-8) +
+        ' E: ' +
+        device.localFirstStorageSecret?.evoluKeys?.ownerId.slice(-8);
 
     return (
         <Pressable onPress={onPress}>
             <HStack style={applyStyle(walletItemBaseStyle, { isSelected, isSelectable })}>
-                <HStack alignItems="center" flex={1}>
-                    <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
-                    <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>
-                        {walletNameLabel}
-                    </Text>
-                </HStack>
+                <VStack>
+                    <HStack alignItems="center" flex={1}>
+                        <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
+                        <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>
+                            {walletNameLabel}
+                        </Text>
+                    </HStack>
+                    <Text>{debug}</Text>
+                </VStack>
                 <HStack alignItems="center" spacing="sp12">
                     {baseCurrencyAmount && (
                         <BaseCurrencyAmountFormatter

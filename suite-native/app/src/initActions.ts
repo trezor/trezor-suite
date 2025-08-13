@@ -13,6 +13,7 @@ import {
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { initNativeLocalFirstStorageThunk } from '@suite-native/native-local-first-storage';
 import { setIsAppReady } from '@suite-native/state/src/appSlice';
 
 const ACTION_PREFIX = '@suite-native/app';
@@ -58,5 +59,9 @@ export const postOnboardingInit = createThunk(
         if (selectIsFeatureFlagEnabled(getState(), FeatureFlag.IsWalletConnectEnabled)) {
             dispatch(walletConnectInitThunk());
         }
+
+        // This needs to be initialized to subscribe to all Remembered Wallets
+        console.log('initNativeLocalFirstStorageThunk...');
+        await dispatch(initNativeLocalFirstStorageThunk());
     },
 );

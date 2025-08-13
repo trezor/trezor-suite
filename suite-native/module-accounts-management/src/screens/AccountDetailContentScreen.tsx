@@ -1,12 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    selectAccountByKey,
-    selectAccountLabel,
-} from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { WithLabelingState, selectAccountLabel } from '@suite-common/local-first-storage';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -17,23 +14,22 @@ import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetail
 import { TransactionListHeader } from '../components/TransactionListHeader';
 
 type AccountDetailContentScreenProps = {
-    accountKey: string;
+    account: Account;
     tokenContract?: TokenAddress;
 };
 
 export const AccountDetailContentScreen = ({
-    accountKey,
+    account,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, accountKey),
+    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+
+    const localFirstAccountLabel = useSelector((state: WithLabelingState) =>
+        selectAccountLabel({ state, walletDescriptor, accountKey: account.key }),
     );
 
     const token = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
+        selectAccountTokenInfo(state, account.key, tokenContract),
     );
 
     useEffect(() => {
@@ -50,8 +46,8 @@ export const AccountDetailContentScreen = ({
     }, [account, token?.symbol, token?.contract]);
 
     const listHeaderComponent = useMemo(
-        () => <TransactionListHeader accountKey={accountKey} tokenContract={tokenContract} />,
-        [accountKey, tokenContract],
+        () => <TransactionListHeader accountKey={account.key} tokenContract={tokenContract} />,
+        [account.key, tokenContract],
     );
 
     return (
@@ -60,19 +56,21 @@ export const AccountDetailContentScreen = ({
                 tokenContract ? (
                     <TokenAccountDetailScreenHeader
                         tokenContract={tokenContract}
-                        accountKey={accountKey}
+                        accountKey={account.key}
                     />
                 ) : (
                     <AccountDetailScreenHeader
-                        accountLabel={accountLabel}
-                        accountKey={accountKey}
+                        accountLabel={
+                            localFirstAccountLabel?.label ?? account?.accountLabel ?? null
+                        }
+                        accountKey={account.key}
                     />
                 )
             }
             noHorizontalPadding
         >
             <TransactionList
-                accountKey={accountKey}
+                accountKey={account.key}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}
             />

@@ -1,4 +1,8 @@
+import { useSelector } from 'react-redux';
+
+import { selectOutputLabel } from '@suite-common/local-first-storage';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { HStack, Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 
 type TransactionNameProps = {
@@ -53,12 +57,28 @@ export const getTransactionName = (
 };
 
 export const TransactionName = ({ transaction, isPending }: TransactionNameProps) => {
+    const localFirstOutputLabel = useSelector((state: any) =>
+        selectOutputLabel({
+            state,
+            txId: transaction.txid,
+            outputIndex: 0,
+            deviceStaticSessionId: transaction.deviceState,
+        }),
+    );
+
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
 
     // use name of eth txns, but not for recv or sent Transfer
     if (ethName) {
-        return ethName;
+        return <Text variant="body">{ethName}</Text>;
     }
 
-    return <Translation id={getTransactionName(transaction, isPending)} />;
+    return (
+        <HStack spacing="sp8">
+            <Text variant="body">
+                <Translation id={getTransactionName(transaction, isPending)} />
+            </Text>
+            <Text>{localFirstOutputLabel?.label}</Text>
+        </HStack>
+    );
 };
