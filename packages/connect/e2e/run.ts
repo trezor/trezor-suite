@@ -25,7 +25,13 @@ const firmwareBtcOnly = process.env.TESTS_FIRMWARE_BTC_ONLY === 'true';
  */
 const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     const getLatestFirmware = (model: keyof Firmwares) =>
-        availableFirmwares[model].find(fw => !fw.replace('-arm', '').includes('-'));
+        availableFirmwares[model].find(fw => {
+            const withoutArm = fw.replace('-arm', '');
+            const semverVersion = !withoutArm.includes('-'); // there are only 2-main-arm or 2.9.0-arm
+            const mainVersion = withoutArm.endsWith('-main');
+
+            return semverVersion || mainVersion; // return named (semver) version, or 'main' version fallback - this happens when new model is created but it has no stable firmware release yet.
+        });
 
     const model =
         firmwareModel && typedObjectKeys(availableFirmwares).includes(firmwareModel)
