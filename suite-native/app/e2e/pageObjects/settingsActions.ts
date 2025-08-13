@@ -1,7 +1,7 @@
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
-import { TREZOR_E2E_DEVICE_LABEL, scrollUntilVisible } from '../utils';
+import { scrollUntilVisible } from '../utils';
 
 class SettingsActions {
     async tapPreferences() {
@@ -68,10 +68,8 @@ class SettingsActions {
         await autoEjectElement.tap();
     }
 
-    async ejectSingleWallet(deviceName: string = TREZOR_E2E_DEVICE_LABEL, walletIndex: number = 1) {
-        const ejectWalletElement = element(
-            by.id(`@settings/eject-single-wallet/${deviceName}/${walletIndex}`),
-        );
+    async ejectSingleWallet() {
+        const ejectWalletElement = element(by.id(`@settings/eject-single-wallet`));
         await waitFor(ejectWalletElement).toBeVisible().withTimeout(10000);
         await ejectWalletElement.tap();
     }
