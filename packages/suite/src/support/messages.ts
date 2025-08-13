@@ -9301,6 +9301,23 @@ export default defineMessages({
         id: 'TR_STAKING_DASHBOARD_STAKED',
         defaultMessage: '{amount} {displaySymbol} staked',
     },
+    TR_STAKING_BANNER_DETAIL_TITLE: {
+        id: 'TR_STAKING_BANNER_DETAIL_TITLE',
+        defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',
+    },
+    TR_STAKING_BANNER_DETAIL_TEXT: {
+        id: 'TR_STAKING_BANNER_DETAIL_TEXT',
+        defaultMessage:
+            'Stake your balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY.',
+    },
+    TR_STAKING_BANNER_DETAIL_TEXT_EMPTY: {
+        id: 'TR_STAKING_BANNER_DETAIL_TEXT_EMPTY',
+        defaultMessage: 'Make your {displaySymbol} work for you. Start staking to earn rewards.',
+    },
+    TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING: {
+        id: 'TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING',
+        defaultMessage: 'Explore staking',
+    },
     TR_STAKE_NETWORK: {
         id: 'TR_STAKE_NETWORK',
         defaultMessage: 'Stake {symbol}',
@@ -9395,15 +9412,6 @@ export default defineMessages({
         id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
             "Staking involves temporarily locking your {symbol} assets to support the blockchain's operation. In return, you'll receive additional {symbol} as a reward.",
-    },
-    TR_STAKE_ANY_AMOUNT_ETH: {
-        id: 'TR_STAKE_ANY_AMOUNT_ETH',
-        defaultMessage:
-            'Stake a minimum amount of {amount} {networkDisplaySymbol} and start receiving rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
-    },
-    TR_STAKE_LEARN_MORE: {
-        id: 'TR_STAKE_LEARN_MORE',
-        defaultMessage: 'Learn more',
     },
     TR_STAKE_STAKING_IN_A_NUTSHELL: {
         id: 'TR_STAKE_STAKING_IN_A_NUTSHELL',
