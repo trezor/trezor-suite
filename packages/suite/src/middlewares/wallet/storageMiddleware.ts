@@ -22,7 +22,6 @@ import {
     selectDevices,
     selectHistoricFiatRates,
     selectSelectedDevice,
-    sendFormActions,
     setLocalCurrency,
     transactionsActions,
     updateTxsFiatRatesThunk,
@@ -33,7 +32,7 @@ import { walletConnectActions } from '@suite-common/walletconnect';
 import { METADATA, STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as storageActions from 'src/actions/suite/storageActions';
-import { FORM_DRAFT, GRAPH } from 'src/actions/wallet/constants';
+import { GRAPH } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { selectIsAutoEjectEnabled } from 'src/reducers/suite/suiteReducer';
 import { db } from 'src/storage';
@@ -211,19 +210,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveKnownDevices());
             }
 
-            if (sendFormActions.storeDraft.match(action)) {
-                const device = selectSelectedDevice(api.getState());
-                const { formState, accountKey } = action.payload;
-                // save drafts for remembered device
-                if (isDeviceRemembered(device)) {
-                    storageActions.saveDraft(formState, accountKey);
-                }
-            }
-
-            if (sendFormActions.removeDraft.match(action)) {
-                storageActions.removeDraft(action.payload.accountKey);
-            }
-
             if (
                 isAnyOf(
                     connectPopupActions.rememberAppPermissions,
@@ -327,17 +313,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
-                case FORM_DRAFT.STORE_DRAFT: {
-                    const device = selectSelectedDevice(api.getState());
-                    // save drafts for remembered device
-                    if (isDeviceRemembered(device)) {
-                        storageActions.saveFormDraft(action.key, action.formDraft);
-                    }
-                    break;
-                }
-                case FORM_DRAFT.REMOVE_DRAFT:
-                    storageActions.removeFormDraft(action.key);
-                    break;
 
                 case deviceActions.setEntropyCheckFail.type:
                     api.dispatch(storageActions.saveEntropyCheckFail());
