@@ -41,6 +41,7 @@ export type MethodInfo = {
     // available after init
     info: string;
     precomposed?: PrecomposeResultFinal;
+    confirmation?: UiRequestConfirmation['payload'];
 };
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
@@ -356,6 +357,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             requiredPermissions: this.requiredPermissions,
             info: this.info,
             precomposed: undefined, // requested by a special flag,
+            confirmation: this.confirmation,
         };
     }
 

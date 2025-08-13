@@ -18,7 +18,7 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
             view: 'device-management' as const,
             customConfirmButton: {
                 className: 'wipe',
-                label: `Wipe ${this.device.toMessageObject().label}`,
+                label: `Wipe`,
             },
             label: 'Are you sure you want to wipe your device?',
         };
