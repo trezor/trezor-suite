@@ -16,16 +16,14 @@ import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 type DisplayMode = 'copy' | 'modal' | 'static';
 
 const IconWrapper = styled.div`
-    display: none;
+    display: block;
     padding: 1px;
     border-radius: 2px;
+    opacity: 0;
+    transition: 250ms ease;
     margin-left: 4px;
     background-color: ${({ theme }) => theme.iconSubdued};
     height: 14px;
-
-    &:hover {
-        opacity: 0.7;
-    }
 `;
 
 const onHoverTextOverflowContainerHover = css`
@@ -35,7 +33,11 @@ const onHoverTextOverflowContainerHover = css`
     z-index: 3;
 
     ${IconWrapper} {
-        display: block;
+        opacity: 1;
+
+        &:hover {
+            opacity: 0.7;
+        }
     }
 `;
 
