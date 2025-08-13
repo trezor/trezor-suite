@@ -37,7 +37,7 @@ export const PortfolioCardHeader = ({
 
     const onSelectedRange = useCallback(
         (_range: GraphRange) => {
-            updateGraphData(accounts, { newAccountsOnly: true });
+            updateGraphData({ accounts, newAccountsOnly: true });
         },
         [accounts],
     );

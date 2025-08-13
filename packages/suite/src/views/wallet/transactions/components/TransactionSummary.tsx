@@ -86,8 +86,20 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
               ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 
-    const onRefresh = () => dispatch(updateGraphData([account]));
-    const onSelectedRange = () => dispatch(updateGraphData([account], { newAccountsOnly: true }));
+    const onRefresh = (abortController?: AbortController) =>
+        dispatch(
+            updateGraphData({
+                accounts: [account],
+                abortSignal: abortController?.signal,
+            }),
+        ).unwrap();
+    const onSelectedRange = () =>
+        dispatch(
+            updateGraphData({
+                accounts: [account],
+                newAccountsOnly: true,
+            }),
+        );
 
     return (
         <Column alignItems="stretch" gap={20}>
@@ -108,7 +120,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                     <ErrorMessage>
                                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
                                         <Button
-                                            onClick={onRefresh}
+                                            onClick={() => onRefresh()}
                                             icon="repeat"
                                             variant="tertiary"
                                         >

@@ -21,7 +21,7 @@ export const useGraph = () => {
                 options?: {
                     newAccountsOnly?: boolean;
                 },
-            ) => dispatch(graphActions.updateGraphData(accounts, options)),
+            ) => dispatch(graphActions.updateGraphData({ accounts, ...options })),
         }),
         [dispatch],
     );
