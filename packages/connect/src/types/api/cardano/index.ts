@@ -304,7 +304,6 @@ export type CardanoSignMessage = Static<typeof CardanoSignMessage>;
 export const CardanoSignMessage = Type.Object({
     path: DerivationPath,
     payload: Type.String(),
-    hashPayload: Type.Boolean(),
     preferHexDisplay: Type.Optional(Type.Boolean()),
     networkId: Type.Optional(Type.Number()),
     protocolMagic: Type.Optional(Type.Number()),

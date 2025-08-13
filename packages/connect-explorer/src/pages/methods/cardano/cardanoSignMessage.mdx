@@ -20,8 +20,6 @@ import signMessage from '../../../data/methods/cardano/signMessage.ts';
 export const paramDescriptions = {
     path: 'minimum length is `5`. [read more](/details/path)',
     payload: 'message bytes in hex',
-    hashPayload:
-        'if true, device will hash the payload before signing. Must be enabled if payload exceeds 1024 bytes',
     preferHexDisplay: 'if true, device will always decode payload as hex bytes',
     networkId: 'network identifier. Required if `addressParameters` are set',
     protocolMagic: 'protocol magic. Required if `addressParameters` are set',
@@ -46,8 +44,6 @@ const result = await TrezorConnect.cardanoSignMessage(params);
 
 ### Displaying payload
 
-If `hashPayload` is `true`, the device will display just the first 56 bytes of the payload. Otherwise 1024 bytes are displayed.
-
 By default, the payload is decoded as ASCII given the conditions below are satisfied. If they are not satisfied or `preferHexDisplay` is `true`, the payload is displayed as hex bytes. The ASCII conditions are:
 
 - The payload is a valid ASCII string.
@@ -64,7 +60,6 @@ Sign hash of "Hello Trezor!":
 TrezorConnect.cardanoSignMessage({
     path: "m/1852'/1815'/0'/0/0",
     payload: '48656c6c6f205472657a6f7221', // "Hello Trezor!" in hex
-    hashPayload: true,
     preferHexDisplay: false,
 });
 ```
@@ -75,7 +70,6 @@ Sign hash of "Hello Trezor!" using address parameters for header:
 TrezorConnect.cardanoSignMessage({
     path: "m/1852'/1815'/0'/0/0",
     payload: '48656c6c6f205472657a6f7221', // "Hello Trezor!" in hex
-    hashPayload: true,
     preferHexDisplay: false,
     networkId: 1,
     protocolMagic: 764824073,

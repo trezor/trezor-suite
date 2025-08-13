@@ -2,7 +2,7 @@ import { ALGORITHM_IDS } from '../../src/constants/cardano';
 
 const legacyResults = {
     beforeMessageSigning: {
-        rules: ['<2.6.5', '1'],
+        rules: ['<2.9.1', '1'],
         success: false,
     },
 };
@@ -18,13 +18,6 @@ const headerUnhashed = (address: string) => ({
     },
 });
 
-const headerHashed = (address: string) => {
-    const header = headerUnhashed(address);
-    header.unprotected.hashed = true;
-
-    return header;
-};
-
 /** "HelloTrezor!" repeated 86 times (=1032 bytes) in hex */
 const HELLO_TREZOR_86 = '48656c6c6f5472657a6f7221'.repeat(86);
 
@@ -39,7 +32,6 @@ export default {
             params: {
                 path: "m/1852'/1815'/0'/0/0",
                 payload: '54657374', // "Test" hex
-                hashPayload: false,
             },
             result: {
                 payload: '54657374',
@@ -55,7 +47,6 @@ export default {
             params: {
                 path: "m/1852'/1815'/0'/0/0",
                 payload: '54657374', // "Test" hex
-                hashPayload: false,
                 preferHexDisplay: true,
             },
             result: {
@@ -72,7 +63,6 @@ export default {
             params: {
                 path: "m/1852'/1815'/0'/0/0",
                 payload: '54657374', // "Test" hex
-                hashPayload: false,
                 networkId: 1,
                 protocolMagic: 764824073,
                 addressParameters: {
@@ -97,7 +87,6 @@ export default {
             params: {
                 path: "m/1852'/1815'/0'/0/0",
                 payload: 'ff',
-                hashPayload: false,
             },
             result: {
                 payload: 'ff',
@@ -109,27 +98,10 @@ export default {
             legacyResults: [legacyResults.beforeMessageSigning],
         },
         {
-            description: 'Sign long ASCII payload hash',
-            params: {
-                path: "m/1852'/1815'/0'/0/0",
-                payload: HELLO_TREZOR_86,
-                hashPayload: true,
-            },
-            result: {
-                payload: HELLO_TREZOR_86,
-                signature:
-                    '39dba8107fb840b0aeff3f45eaddf9612cd4fd640a18cbe28ea2448b8ba2fea99b67cd9662a46cc7a70e1ad0d6399008d5fad9d67ddb437a623b594bf93b8e0f',
-                headers: headerHashed('80f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa'),
-                pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
-            },
-            legacyResults: [legacyResults.beforeMessageSigning],
-        },
-        {
             description: 'Display ambigous-looking " " ASCII payload as hex',
             params: {
                 path: "m/1852'/1815'/0'/0/0",
                 payload: '20', // " " (single space) hex
-                hashPayload: false,
             },
             result: {
                 payload: '20',
@@ -141,13 +113,18 @@ export default {
             legacyResults: [legacyResults.beforeMessageSigning],
         },
         {
-            description: 'Sign long ASCII payload without hashing',
+            description: 'Sign long ASCII payload',
             params: {
                 path: "m/1852'/1815'/0'/0/0",
                 payload: HELLO_TREZOR_86,
-                hashPayload: false,
             },
-            result: false,
+            result: {
+                payload: HELLO_TREZOR_86,
+                signature:
+                    '59adf3050177a25a4682c81480dc803e2eb69a22b885f157153c3e7cee76e11369db8e9a8d15872facfc979ac6ae443375da5b0b90aac16a38c9f88021a0bd01',
+                headers: headerUnhashed('80f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa'),
+                pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+            },
             legacyResults: [legacyResults.beforeMessageSigning],
         },
     ],
