@@ -72,9 +72,6 @@ export const PassphraseStackNavigator = () => {
         checkingOnDevice,
     });
 
-    // If there's no passphrase state, don't render anything
-    if (!passphraseState) return null;
-
     return (
         <PassphraseStack.Navigator
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
