@@ -28,6 +28,7 @@ export type ThpCreateNewSession = { derive_cardano?: boolean } & (
 
 export type ThpPairingRequest = {
     host_name: string;
+    app_name: string;
 };
 
 export type ThpPairingRequestApproved = {};

@@ -26,7 +26,9 @@ export const getProtobufDefinitions = () => ({
             derive_cardano: { type: 'bool', id: 3, options: { default: false } },
         },
     },
-    ThpPairingRequest: { fields: { host_name: { type: 'string', id: 1 } } },
+    ThpPairingRequest: {
+        fields: { host_name: { type: 'string', id: 1 }, app_name: { type: 'string', id: 2 } },
+    },
     ThpPairingRequestApproved: { fields: {} },
     ThpSelectMethod: {
         fields: { selected_pairing_method: { rule: 'required', type: 'ThpPairingMethod', id: 1 } },
