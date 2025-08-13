@@ -9318,6 +9318,48 @@ export default defineMessages({
         id: 'TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING',
         defaultMessage: 'Explore staking',
     },
+    TR_STAKING_CARD_TITLE: {
+        id: 'TR_STAKING_CARD_TITLE',
+        defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',
+    },
+    TR_STAKING_CARD_TEXT: {
+        id: 'TR_STAKING_CARD_TEXT',
+        defaultMessage:
+            'Stake your full balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
+    },
+    TR_STAKING_CARD_TEXT_EMPTY: {
+        id: 'TR_STAKING_CARD_TEXT_EMPTY',
+        defaultMessage:
+            'Stake your full balance and start earning rewards. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
+    },
+    TR_STAKING_CARD_START_STAKING: {
+        id: 'TR_STAKING_CARD_START_STAKING',
+        defaultMessage: 'Start staking',
+    },
+    TR_STAKING_CARD_KEEP_EARNING_TITLE: {
+        id: 'TR_STAKING_CARD_KEEP_EARNING_TITLE',
+        defaultMessage: 'Keep earning',
+    },
+    TR_STAKING_CARD_KEEP_EARNING_TEXT: {
+        id: 'TR_STAKING_CARD_KEEP_EARNING_TEXT',
+        defaultMessage: '<t>APY</t> is your yearly return on staked funds, with compounding.',
+    },
+    TR_STAKING_CARD_LOCK_IN_TITLE: {
+        id: 'TR_STAKING_CARD_LOCK_IN_TITLE',
+        defaultMessage: 'Lock in with flexibility',
+    },
+    TR_STAKING_CARD_LOCK_IN_TEXT: {
+        id: 'TR_STAKING_CARD_LOCK_IN_TEXT',
+        defaultMessage: 'Staking locks in your funds, but you can unstake them anytime.',
+    },
+    TR_STAKING_CARD_RESTAKE_TITLE: {
+        id: 'TR_STAKING_CARD_RESTAKE_TITLE',
+        defaultMessage: 'Restake automatically',
+    },
+    TR_STAKING_CARD_RESTAKE_TEXT: {
+        id: 'TR_STAKING_CARD_RESTAKE_TEXT',
+        defaultMessage: 'Your rewards are restaked automatically—so your balance grows faster.',
+    },
     TR_STAKE_NETWORK: {
         id: 'TR_STAKE_NETWORK',
         defaultMessage: 'Stake {symbol}',
@@ -9403,15 +9445,6 @@ export default defineMessages({
     TR_MAYBE_LATER: {
         id: 'TR_MAYBE_LATER',
         defaultMessage: 'Maybe later',
-    },
-    TR_STAKE_WHAT_IS_STAKING: {
-        id: 'TR_STAKE_WHAT_IS_STAKING',
-        defaultMessage: 'What is staking?',
-    },
-    TR_STAKE_STAKING_IS: {
-        id: 'TR_STAKE_STAKING_IS',
-        defaultMessage:
-            "Staking involves temporarily locking your {symbol} assets to support the blockchain's operation. In return, you'll receive additional {symbol} as a reward.",
     },
     TR_STAKE_STAKING_IN_A_NUTSHELL: {
         id: 'TR_STAKE_STAKING_IN_A_NUTSHELL',

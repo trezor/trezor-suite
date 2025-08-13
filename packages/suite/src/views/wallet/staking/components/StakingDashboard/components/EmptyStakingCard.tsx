@@ -1,25 +1,29 @@
 import { useMemo } from 'react';
 
+import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import {
     Button,
     Card,
     Column,
-    Divider,
     Grid,
-    IconName,
+    H3,
+    H4,
+    IconCircle,
     Paragraph,
-    Text,
+    Row,
     Tooltip,
 } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { DashboardSection } from 'src/components/dashboard';
-import { StakingFeature, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -30,6 +34,8 @@ import { DiscoveryWarning } from './DiscoveryWarning';
 
 export const EmptyStakingCard = () => {
     const { isBelowLaptop } = useLayoutSize();
+    const dispatch = useDispatch();
+    const { CryptoAmountFormatter } = useFormatters();
     const account = useSelector(selectSelectedAccount);
     const { device } = useDevice();
 
@@ -38,8 +44,66 @@ export const EmptyStakingCard = () => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
+    const stakingData = getStakingDataForNetwork(account);
 
-    const dispatch = useDispatch();
+    const accountBalance = account?.formattedBalance ?? '0';
+    const stakingBalance = stakingData?.depositedBalance ?? '0';
+
+    const isAccountEmpty = new BigNumber(accountBalance).eq(0);
+
+    const potentialRewards = useMemo(() => {
+        const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
+        const amount = new BigNumber(totalBalance).multipliedBy(apy / 100);
+
+        return CryptoAmountFormatter.format(amount.toString(), {
+            symbol: account?.symbol,
+            isBalance: true,
+            withSymbol: false,
+            maxDisplayedDecimals: 8,
+            isEllipsisAppended: false,
+        });
+    }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
+
+    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
+
+    const stakingFeatures = useMemo(
+        () => [
+            {
+                id: 0,
+                icon: 'piggyBank' as const,
+                title: <Translation id="TR_STAKING_CARD_KEEP_EARNING_TITLE" />,
+                text: (
+                    <Translation
+                        id="TR_STAKING_CARD_KEEP_EARNING_TEXT"
+                        values={{
+                            t: text => (
+                                <Tooltip
+                                    dashed
+                                    isInline
+                                    content={<Translation id="TR_STAKE_APY_DESC" />}
+                                >
+                                    <abbr>{text}</abbr>
+                                </Tooltip>
+                            ),
+                        }}
+                    />
+                ),
+            },
+            {
+                id: 1,
+                icon: 'lockLaminatedOpen' as const,
+                title: <Translation id="TR_STAKING_CARD_LOCK_IN_TITLE" />,
+                text: <Translation id="TR_STAKING_CARD_LOCK_IN_TEXT" />,
+            },
+            {
+                id: 2,
+                icon: 'everstakeLogo' as const,
+                title: <Translation id="TR_STAKING_CARD_RESTAKE_TITLE" />,
+                text: <Translation id="TR_STAKING_CARD_RESTAKE_TEXT" />,
+            },
+        ],
+        [],
+    );
 
     const openStakeInANutshellModal = () => {
         if (!isStakingDisabled) {
@@ -56,49 +120,6 @@ export const EmptyStakingCard = () => {
         }
     };
 
-    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
-
-    const stakeEthFeatures = useMemo(
-        () => [
-            {
-                id: 0,
-                icon: 'piggyBank' as IconName,
-                title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
-                description: (
-                    <Translation
-                        id="TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC"
-                        values={{
-                            symbol: displaySymbol,
-                            apyPercent: apy,
-                            t: text => (
-                                <Tooltip
-                                    dashed
-                                    isInline
-                                    content={<Translation id="TR_STAKE_APY_DESC" />}
-                                >
-                                    <abbr>{text}</abbr>
-                                </Tooltip>
-                            ),
-                        }}
-                    />
-                ),
-            },
-            {
-                id: 1,
-                icon: 'lockLaminatedOpen' as IconName,
-                title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
-                description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
-            },
-            {
-                id: 2,
-                icon: 'everstakeLogo' as IconName,
-                title: <Translation id="TR_STAKE_ETH_EVERSTAKE" />,
-                description: <Translation id="TR_STAKE_ETH_EVERSTAKE_DESC" />,
-            },
-        ],
-        [apy, displaySymbol],
-    );
-
     return (
         <DashboardSection
             data-testid="@wallet/staking/empty-card"
@@ -107,44 +128,52 @@ export const EmptyStakingCard = () => {
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
             {isDiscoveryRunning && <DiscoveryWarning />}
             <Card>
-                <Column>
-                    <section>
-                        <Text typographyStyle="highlight">
-                            <Translation id="TR_STAKE_WHAT_IS_STAKING" />
-                        </Text>
-                        <Paragraph variant="tertiary">
+                <Column gap={spacings.xxxl}>
+                    <Column gap={spacings.xs}>
+                        <H3>
                             <Translation
-                                id="TR_STAKE_STAKING_IS"
-                                values={{ symbol: displaySymbol }}
+                                id="TR_STAKING_CARD_TITLE"
+                                values={{ apy, displaySymbol }}
                             />
-                        </Paragraph>
-                    </section>
-                    <Divider />
-                    <section>
-                        <Grid
-                            columns={isBelowLaptop ? 1 : 3}
-                            gap={isBelowLaptop ? spacings.xxxl : spacings.xxxxl}
-                            margin={{ top: spacings.xl, bottom: spacings.xxl }}
-                        >
-                            {stakeEthFeatures.map(({ id, icon, title, description }) => (
-                                <StakingFeature
-                                    icon={icon}
-                                    title={title}
-                                    description={description}
-                                    key={id}
+                        </H3>
+                        <Paragraph variant="tertiary" maxWidth={700}>
+                            {isAccountEmpty ? (
+                                <Translation
+                                    id="TR_STAKING_CARD_TEXT_EMPTY"
+                                    values={{ displaySymbol }}
                                 />
-                            ))}
-                        </Grid>
-                        <Tooltip content={stakingMessageContent}>
-                            <Button
-                                onClick={openStakeInANutshellModal}
-                                isDisabled={isStakingDisabled}
-                                icon={isStakingDisabled ? 'info' : undefined}
-                            >
-                                <Translation id="TR_STAKE_START_STAKING" />
-                            </Button>
-                        </Tooltip>
-                    </section>
+                            ) : (
+                                <Translation
+                                    id="TR_STAKING_CARD_TEXT"
+                                    values={{ potentialRewards, displaySymbol }}
+                                />
+                            )}
+                        </Paragraph>
+                    </Column>
+
+                    <Grid columns={isBelowLaptop ? 1 : 3} gap={spacings.xl}>
+                        {stakingFeatures.map(feature => (
+                            <Row key={feature.id} gap={spacings.md} alignItems="flex-start">
+                                <Column>
+                                    <IconCircle name={feature.icon} variant="primary" size={44} />
+                                </Column>
+                                <Column gap={spacings.xxs}>
+                                    <H4>{feature.title}</H4>
+                                    <Paragraph variant="tertiary">{feature.text}</Paragraph>
+                                </Column>
+                            </Row>
+                        ))}
+                    </Grid>
+
+                    <Tooltip content={stakingMessageContent}>
+                        <Button
+                            onClick={openStakeInANutshellModal}
+                            isDisabled={isStakingDisabled}
+                            icon={isStakingDisabled ? 'info' : undefined}
+                        >
+                            <Translation id="TR_STAKING_CARD_START_STAKING" />
+                        </Button>
+                    </Tooltip>
                 </Column>
             </Card>
             <ContextMessage context={Context.getLegal('gateway')} />
