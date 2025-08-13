@@ -7,9 +7,7 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 
-import { selectDeviceAuthFailed } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
@@ -41,7 +39,6 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
-    const hasDeviceAuthFailed = useSelector(selectDeviceAuthFailed);
 
     const handleSuccess = useCallback(() => {
         onSuccess?.();
@@ -49,12 +46,8 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     }, [onSuccess, reset]);
 
     const handleDeviceChange = useCallback(() => {
-        if (hasDeviceAuthFailed) {
-            reset();
-        } else {
-            handleSuccess();
-        }
-    }, [hasDeviceAuthFailed, reset, handleSuccess]);
+        handleSuccess();
+    }, [handleSuccess]);
 
     useEffect(() => {
         TrezorConnect.on(DEVICE.CHANGED, handleDeviceChange);
@@ -74,12 +67,10 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                 <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain" />
             ),
             onPressPrimaryButton: () => {
-                if (hasDeviceAuthFailed) {
-                    // Ask for new PIN entry after 3 wrong attempts.
-                    // requestPrioritizedDeviceAccess({
-                    //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
-                    // });
-                }
+                // Ask for new PIN entry after 3 wrong attempts.
+                // requestPrioritizedDeviceAccess({
+                //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
+                // });
             },
             secondaryButtonTitle: (
                 <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.button.help" />
@@ -88,15 +79,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                 openLink(PIN_HELP_URL);
             },
         });
-    }, [hasDeviceAuthFailed, openLink, reset, showAlert]);
-
-    useEffect(() => {
-        // After third wrong PIN, UI.INVALID_PIN is no more reported
-        // and selectedDevice.authFailed is set to true instead.
-        if (hasDeviceAuthFailed) {
-            handleInvalidPin();
-        }
-    }, [handleInvalidPin, hasDeviceAuthFailed]);
+    }, [openLink, reset, showAlert]);
 
     useEffect(() => {
         // UI.INVALID_PIN is emitted when user enters wrong PIN for first 3 attempts.
