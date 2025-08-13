@@ -17,7 +17,7 @@ type StateParams = {
     device: TrezorDevice;
     account: Account;
     coin: Account['symbol'];
-    useEmptyPassphrase: boolean;
+    useEmptyPassphrase?: boolean;
     chunkify?: boolean;
 };
 

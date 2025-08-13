@@ -120,6 +120,8 @@ const applyDeviceStatesThunk = createThunk(
                     deviceActions.setDeviceState({
                         device,
                         state: newDeviceState,
+                        // todo: this is incorrect, it should not depend on user's input but on
+                        // discovery actual result (empty passphrase entered on device)
                         useEmptyPassphrase: !isAddingHiddenWallet,
                     }),
                 );
@@ -132,6 +134,8 @@ const applyDeviceStatesThunk = createThunk(
                             ...device,
                             metadata: {},
                             instance: getNewInstanceNumber(selectDevices(getState()), device),
+                            // todo: this is incorrect, it should not depend on user's input but on
+                            // discovery actual result (empty passphrase entered on device)
                             useEmptyPassphrase: !isAddingHiddenWallet,
                             remember: shouldDeviceBeRemembered({
                                 isDeviceAutoEjectEnabled,

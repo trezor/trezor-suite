@@ -7,8 +7,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
+import { useDispatch } from 'src/hooks/suite';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
@@ -19,10 +18,8 @@ type EjectConfirmationProps = {
 export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
     const dispatch = useDispatch();
 
-    const settings = useSelector(selectSuiteSettings);
-
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice({ device: instance, settings }));
+        dispatch(deviceActions.forgetDevice({ device: instance }));
 
         analytics.report({
             type: EventType.SwitchDeviceEject,

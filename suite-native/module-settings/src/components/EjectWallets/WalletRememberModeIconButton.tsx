@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
-    ConnectDeviceSettings,
     deviceActions,
     selectIsDeviceAutoEjectEnabled,
     toggleRememberDevice,
@@ -21,10 +20,6 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
     const { showToast } = useToast();
 
     const handleEjectWallet = () => {
-        const settings: ConnectDeviceSettings = {
-            defaultWalletLoading: 'standard',
-        };
-
         analytics.report({
             type: EventType.AutoEjectChange,
             payload: { enabled: !device.remember, origin: 'settingsToggle' },
@@ -41,7 +36,7 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
                 });
             }
         } else {
-            dispatch(deviceActions.forgetDevice({ device, settings }));
+            dispatch(deviceActions.forgetDevice({ device }));
             showToast({
                 variant: 'default',
                 message: <Translation id="moduleSettings.viewOnly.autoEject.toast.walletEjected" />,

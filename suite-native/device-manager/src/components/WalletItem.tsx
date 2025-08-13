@@ -30,6 +30,10 @@ export const WalletItem = ({ onPress, deviceState, isSelectable = true }: Wallet
 
     const showAsSelected = isSelected && isSelectable;
 
+    if (!device?.state?.staticSessionId) {
+        console.warn('device is not authorized, this will yield unexpected wallet type');
+    }
+
     return (
         <WalletItemBase
             variant={device.useEmptyPassphrase ? 'standard' : 'passphrase'}

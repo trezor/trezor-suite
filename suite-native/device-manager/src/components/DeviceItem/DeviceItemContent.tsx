@@ -99,6 +99,7 @@ export const DeviceItemContent = React.memo(
             (isPortfolioTrackerDevice ? device?.name : device?.label) ??
             translate('deviceManager.defaultHeader');
 
+        // todo: only makes sense device is already authorized (has state)
         const walletNameLabel = device?.useEmptyPassphrase ? (
             <Translation id="deviceManager.wallet.standard" />
         ) : (
