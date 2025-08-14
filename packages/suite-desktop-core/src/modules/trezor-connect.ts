@@ -6,6 +6,7 @@ import { parseElectrumUrl } from '@trezor/utils';
 
 import { getStoredFirmwares } from './firmware';
 import { APP_NAME } from '../libs/constants';
+import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 
 import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
@@ -65,7 +66,8 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     const localFirmwares = await getStoredFirmwares();
                     if (settings.thp) {
                         // upgrade THP hostName with codesign (dev/local) suffix
-                        settings.thp.hostName = APP_NAME;
+                        settings.thp.appName = APP_NAME;
+                        settings.thp.hostName = getComputerName();
                     }
                     if (localFirmwares.success) {
                         settings.localFirmwares = localFirmwares.payload;

@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { app } from 'electron';
 import os from 'os';
 
@@ -49,4 +50,21 @@ export const getComputerInfo = () => {
         `- Cores: ${cpu.cores} @ ${cpu.speedGHz} GHz`,
         `- RAM: ${bytesToHumanReadable(os.totalmem())}`,
     ];
+};
+
+export const getComputerName = () => {
+    let name;
+    switch (process.platform) {
+        case 'win32':
+            name = process.env.COMPUTERNAME;
+            break;
+        case 'darwin':
+            name = execSync('scutil --get ComputerName').toString().trim();
+            break;
+        case 'linux':
+            name = execSync('hostnamectl --pretty').toString().trim();
+            break;
+    }
+
+    return name || os.hostname();
 };
