@@ -41,14 +41,15 @@ summary {
 
 @media (max-width: 767px) {
     .nextra-sidebar-container {
-        @apply nx-fixed nx-pt-[calc(var(--nextra-navbar-height))] nx-top-0 nx-w-full nx-bottom-0 nx-z-[15] nx-overscroll-contain nx-bg-white dark:nx-bg-dark;
+        @apply nx-fixed nx-pt-[calc(var(--nextra-navbar-height))] nx-top-0 nx-w-full nx-bottom-0 nx-z-[1] nx-overscroll-contain nx-bg-white dark:nx-bg-dark;
         transition: transform 0.8s cubic-bezier(0.52, 0.16, 0.04, 1);
         will-change: transform, opacity;
         contain: layout style;
         backface-visibility: hidden;
 
         & > .nextra-scrollbar {
-            mask-image: linear-gradient(to bottom, transparent, #000 20px),
+            mask-image:
+                linear-gradient(to bottom, transparent, #000 20px),
                 linear-gradient(to left, #000 10px, transparent 10px);
         }
     }
@@ -103,7 +104,8 @@ article details > summary {
 @media (min-width: 768px) {
     .nextra-toc > .div,
     .nextra-sidebar-container {
-        mask-image: linear-gradient(to bottom, transparent, #000 20px),
+        mask-image:
+            linear-gradient(to bottom, transparent, #000 20px),
             linear-gradient(to left, #000 10px, transparent 10px);
     }
 }
