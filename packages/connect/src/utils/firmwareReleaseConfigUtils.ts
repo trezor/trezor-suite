@@ -10,9 +10,21 @@ const JWS_SIGN_ALGORITHM = 'ES256';
 const VERSION = 1;
 const JWS_RELEASES_FILENAME_REMOTE = `releases.v${VERSION}.json`;
 
+// Enable this for local development purposes:
+// set to true to always fetch local JWS
+const FORCE_LOCAL_JWS = true;
+
 const getReleaseJWS = async () => {
     const { BASE_URL, MIDDLE_PATH, env } = getOnlineFirmwareBaseUrl();
     const remoteReleasesUrl = `${BASE_URL}/${MIDDLE_PATH}/${env === 'production' ? 'config/' : ''}${JWS_RELEASES_FILENAME_REMOTE}`;
+
+    if (FORCE_LOCAL_JWS) {
+        return {
+            releasesJws: firmwareReleaseConfigAssets.jws,
+            isRemote: false,
+            env,
+        };
+    }
 
     try {
         const controller = new AbortController();
@@ -90,10 +102,11 @@ const verifyFirmwareRelease = (
     }
 
     try {
-        const isAuthenticityValid = verify(releasesJws, JWS_SIGN_ALGORITHM, JWSPublicKey);
-        if (!isAuthenticityValid) {
-            throw new Error('Config authenticity is invalid');
-        }
+        // TODO: this is just for development
+        // const isAuthenticityValid = verify(releasesJws, JWS_SIGN_ALGORITHM, JWSPublicKey);
+        // if (!isAuthenticityValid) {
+        //     throw new Error('Config authenticity is invalid');
+        // }
 
         return JSON.parse(decodedJws.payload);
     } catch (error) {

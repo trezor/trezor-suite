@@ -1,21 +1,19 @@
-[
-    {
-        "required": false,
-        "version": [2, 9, 99],
-        "min_firmware_version": [2, 0, 8],
-        "min_bootloader_version": [2, 0, 0],
-        "bootloader_version": [2, 1, 11],
-        "firmware_revision": "d4127aab5d41f6310d5b3f0156e712b23614acfb",
-        "translations": {
-            "cs-CZ": "firmware/translations/t3w1/translation-T3W1-cs-CZ-2.9.99.bin",
-            "de-DE": "firmware/translations/t3w1/translation-T3W1-de-DE-2.9.99.bin",
-            "es-ES": "firmware/translations/t3w1/translation-T3W1-es-ES-2.9.99.bin",
-            "fr-FR": "firmware/translations/t3w1/translation-T3W1-fr-FR-2.9.99.bin",
-            "it-IT": "firmware/translations/t3w1/translation-T3W1-it-IT-2.9.99.bin",
-            "pt-BR": "firmware/translations/t3w1/translation-T3W1-pt-BR-2.9.99.bin"
-        },
-        "url": "firmware/t3w1/firmware-T3W1-2.9.1-8c171c2.bin",
-        "fingerprint": "f4888bed3e75205464910f3956d1f3ad19bb73e093b31c9141a66226a7081990",
-        "changelog": ""
-    }
-]
+{
+    "required": false,
+    "version": [2, 9, 99],
+    "min_firmware_version": [2, 0, 8],
+    "min_bootloader_version": [2, 0, 0],
+    "bootloader_version": [2, 1, 11],
+    "firmware_revision": "d4127aab5d41f6310d5b3f0156e712b23614acfb",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3w1/translation-T3W1-cs-CZ-2.9.99.bin",
+        "de-DE": "firmware/translations/t3w1/translation-T3W1-de-DE-2.9.99.bin",
+        "es-ES": "firmware/translations/t3w1/translation-T3W1-es-ES-2.9.99.bin",
+        "fr-FR": "firmware/translations/t3w1/translation-T3W1-fr-FR-2.9.99.bin",
+        "it-IT": "firmware/translations/t3w1/translation-T3W1-it-IT-2.9.99.bin",
+        "pt-BR": "firmware/translations/t3w1/translation-T3W1-pt-BR-2.9.99.bin"
+    },
+    "url": "firmware/t3w1/firmware-T3W1-2.9.1-8c171c2.bin",
+    "fingerprint": "f4888bed3e75205464910f3956d1f3ad19bb73e093b31c9141a66226a7081990",
+    "changelog": ""
+}
