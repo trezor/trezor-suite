@@ -98,7 +98,7 @@ export const abortThpWorkflow = async (device: Device) => {
     // in that case we don't need to update THP sync values because thpState is synchronized
     // in any other case we need to update sync values before current transport.call process is resolved
     if (thpState.pairingTagPromise) {
-        thpState.pairingTagPromise.abort();
+        await thpState.pairingTagPromise.abort();
         await device.getCurrentSession().cancelCall();
         thpState.resetState();
     } else if (thpState.cancelablePromise) {

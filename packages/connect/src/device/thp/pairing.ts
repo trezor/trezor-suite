@@ -158,7 +158,14 @@ const waitForPairingTag = async (device: Device) => {
             // silent
         });
 
-    thpState.setPairingTagPromise({ abort: () => readAbort.abort() });
+    thpState.setPairingTagPromise({
+        abort: async () => {
+            readAbort.abort();
+            await readCancel;
+            // NOTE: this is hotfix for AbstractTransport.receive scheduleAction bug
+            await new Promise(resolve => setTimeout(resolve, 300));
+        },
+    });
 
     // start listening for the UI response
     const payload = {

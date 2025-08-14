@@ -24,7 +24,7 @@ export class ThpState {
     private _pairingCredentials: ThpCredentials[] = [];
     private _phase: ThpPhase = 'handshake';
     private _isPaired: boolean = false;
-    private _pairingTagPromise: { abort: () => void } | undefined;
+    private _pairingTagPromise: { abort: () => Promise<void> } | undefined;
     private _cancelablePromise: { abort: () => void } | undefined;
     private _handshakeCredentials?: ThpHandshakeCredentials;
     private _channel: Buffer = Buffer.alloc(0);
@@ -42,7 +42,7 @@ export class ThpState {
         return this._pairingTagPromise;
     }
 
-    setPairingTagPromise(p?: { abort: () => void }) {
+    setPairingTagPromise(p?: { abort: () => Promise<void> }) {
         this._pairingTagPromise = p;
     }
 
