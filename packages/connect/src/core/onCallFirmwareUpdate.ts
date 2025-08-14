@@ -13,7 +13,13 @@ import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
 import { CoreEventMessage, UI, createUiMessage } from '../events';
-import { BinaryInfo, CommonParams, DeviceUniquePath, FirmwareType } from '../types';
+import {
+    BinaryInfo,
+    CommonParams,
+    DeviceUniquePath,
+    FirmwareType,
+    FirmwareUpdateFlowType,
+} from '../types';
 import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
 
@@ -165,11 +171,18 @@ const getInstallationParams = (device: Device, params: Params) => {
             device.atLeast('2.6.3') && isUpdatingToNewerVersion && isUpdatingToEqualFirmwareType;
         const manual = !device.atLeast(['1.10.0', '2.6.0']) && !upgrade;
 
+        const getUpdateFlowType = (): FirmwareUpdateFlowType => {
+            if (manual) return 'manual';
+
+            return upgrade ? 'reboot_and_upgrade' : 'reboot_and_wait';
+        };
+
         return {
             /** RebootToBootloader is not supported */
             manual,
-            /** RebootToBootloader (REBOOT_AND_UPGRADE) is supported  */
+            /** RebootToBootloader (reboot_and_upgrade) is supported  */
             upgrade,
+            updateFlowType: getUpdateFlowType(),
             btcOnly,
         };
     } else {
@@ -179,6 +192,7 @@ const getInstallationParams = (device: Device, params: Params) => {
         return {
             manual: false,
             upgrade: false,
+            updateFlowType: 'unknown_flow' as const,
             btcOnly,
         };
     }
@@ -295,10 +309,11 @@ export const onCallFirmwareUpdate = async ({
 
     registerEvents(device);
 
-    const { manual, upgrade, btcOnly } = getInstallationParams(device, params);
+    const { manual, upgrade, updateFlowType, btcOnly } = getInstallationParams(device, params);
     log.debug('onCallFirmwareUpdate', 'installation params', {
         manual,
         upgrade,
+        updateFlowType,
         btcOnly,
     });
 
@@ -425,17 +440,15 @@ export const onCallFirmwareUpdate = async ({
     // Might not be installed, but needed for calculateFirmwareHash anyway
     let stripped = stripFwHeaders(firstBinaryInfo.binary);
 
-    await uploadFirmware(
-        reconnectedDevice.getCommands().typedCall,
+    const payload =
+        !intermediary && shouldStripFwHeaders(device.features) ? stripped : firstBinaryInfo.binary;
+    await uploadFirmware({
+        typedCall: reconnectedDevice.getCommands().typedCall,
         postMessage,
-        reconnectedDevice,
-        {
-            payload:
-                !intermediary && shouldStripFwHeaders(device.features)
-                    ? stripped
-                    : firstBinaryInfo.binary,
-        },
-    );
+        device: reconnectedDevice,
+        firmwareUploadRequest: { payload },
+        updateFlowType,
+    });
 
     log.info('onCallFirmwareUpdate', 'firmware uploaded');
 
@@ -451,12 +464,13 @@ export const onCallFirmwareUpdate = async ({
         // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
         await reconnectedDevice.initialize(false);
 
-        await uploadFirmware(
-            reconnectedDevice.getCommands().typedCall,
+        await uploadFirmware({
+            typedCall: reconnectedDevice.getCommands().typedCall,
             postMessage,
-            reconnectedDevice,
-            { payload: stripped },
-        );
+            device: reconnectedDevice,
+            firmwareUploadRequest: { payload: stripped },
+            updateFlowType,
+        });
     }
 
     reconnectedDevice = await waitForReconnectedDevice(

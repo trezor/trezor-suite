@@ -6,14 +6,16 @@ import { ERRORS, PROTO } from '../../constants';
 import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
 import { CoreEventMessage, DEVICE, UI, createUiMessage } from '../../events';
+import { FirmwareUpdateFlowType } from '../../types';
 
-// firmware does not send button message but user still must press button to continue
-// with fw update.
-const postConfirmationMessage = (device: Device) => {
-    // only if firmware is already installed. fresh device does not require button confirmation
-    if (device.features.firmware_present) {
-        device.emit(DEVICE.BUTTON, { device, payload: { code: 'ButtonRequest_FirmwareUpdate' } });
-    }
+// Each FW update flow starts with confirmation to restart into bootloader, and in some cases a confirmation for the FW
+// update itself. But device sends no ButtonRequest at that point, so create a synthethic ButtonRequest.
+const postConfirmationMessage = (device: Device, updateFlowType: FirmwareUpdateFlowType) => {
+    // Device does not require confirmation if fresh install, or if the flow is 'reboot_and_upgrade'.
+    const freshInstall = device.features.firmware_present === false;
+    if (freshInstall || updateFlowType === 'reboot_and_upgrade') return;
+
+    device.emit(DEVICE.BUTTON, { device, payload: { code: 'ButtonRequest_FirmwareUpdate' } });
 };
 
 const postProgressMessage = (
@@ -32,14 +34,23 @@ const postProgressMessage = (
 
 const FIRMWARE_ERASE_TIMEOUT_MILLISECONDS = 15_000;
 
-export const uploadFirmware = async (
-    typedCall: TypedCall,
-    postMessage: (message: CoreEventMessage) => void,
-    device: Device,
-    { payload }: PROTO.FirmwareUpload,
-) => {
+type UploadFirmwareProps = {
+    typedCall: TypedCall;
+    postMessage: (message: CoreEventMessage) => void;
+    device: Device;
+    firmwareUploadRequest: PROTO.FirmwareUpload;
+    updateFlowType: FirmwareUpdateFlowType;
+};
+
+export const uploadFirmware = async ({
+    typedCall,
+    postMessage,
+    device,
+    firmwareUploadRequest: { payload },
+    updateFlowType,
+}: UploadFirmwareProps) => {
     if (device.features.major_version === 1) {
-        postConfirmationMessage(device);
+        postConfirmationMessage(device, updateFlowType);
 
         // If FirmwareErase takes too long, it can be simply because we're waiting for the user pressing the confirm button,
         // but it may also indicate that something is wrong with the device, so inform Suite which can then display warning.
@@ -70,7 +81,7 @@ export const uploadFirmware = async (
     }
 
     if (device.features.major_version === 2) {
-        postConfirmationMessage(device);
+        postConfirmationMessage(device, updateFlowType);
         const length = payload.byteLength;
         let progress = 0;
         let response = await typedCall('FirmwareErase', ['FirmwareRequest', 'Success'], { length });
