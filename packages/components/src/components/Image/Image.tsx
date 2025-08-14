@@ -2,6 +2,8 @@ import { ImgHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
+import { isArrayMember, typedObjectEntries } from '@trezor/utils';
+
 import { PNG_IMAGES, PngImage, SVG_IMAGES, SvgImage } from './images';
 import {
     FrameProps,
@@ -78,21 +80,29 @@ export type ImageProps = AllowedFrameProps &
           }
     ) & { isFilterActive?: boolean };
 
+const getImageHTMLProps = (
+    imageProps: Omit<ImageProps, 'image' | 'imageSrc' | 'isFilterActive'>,
+): ImageHTMLProps =>
+    typedObjectEntries(imageProps).reduce<ImageHTMLProps>(
+        (imageHTMLProps, [propKey, propValue]) => {
+            if (!isArrayMember(propKey, allowedImageFrameProps)) {
+                imageHTMLProps[propKey] = propValue;
+            }
+
+            return imageHTMLProps;
+        },
+        {},
+    );
+
 export const Image = ({ image, imageSrc, isFilterActive = true, ...rest }: ImageProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedImageFrameProps);
-    const imageProps = Object.entries(rest).reduce((props, [propKey, propValue]) => {
-        if (!(propKey in frameProps)) {
-            props[propKey as keyof ImageHTMLProps] = propValue;
-        }
-
-        return props;
-    }, {} as ImageHTMLProps);
+    const imageHTMLProps = getImageHTMLProps(rest);
     const sourceProps = image ? getSourceProps(image) : { src: imageSrc };
 
     return (
         <StyledImage
             {...sourceProps}
-            {...imageProps}
+            {...imageHTMLProps}
             {...frameProps}
             $isFilterActive={isFilterActive}
         />
