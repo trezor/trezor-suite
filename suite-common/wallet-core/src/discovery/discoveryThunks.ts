@@ -507,14 +507,6 @@ export const runDiscoveryThunk = createThunk(
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
             if (!allAccountsEmpty) {
-                await dispatch(
-                    applyDeviceStatesThunk({
-                        newDeviceState: deviceStateResponse.payload._state,
-                        isAddingHiddenWallet,
-                        devicePath: device.path,
-                    }),
-                );
-
                 dispatch(
                     completeDiscoveryThunk({
                         staticSessionId: deviceStateResponse.payload._state.staticSessionId,
@@ -522,6 +514,7 @@ export const runDiscoveryThunk = createThunk(
                     }),
                 );
 
+                // finish here, device state was applied from bundle progress handler
                 return;
             }
 
