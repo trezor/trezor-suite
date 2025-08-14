@@ -114,7 +114,7 @@ export function Sidebar({
                 className={cn(
                     'motion-reduce:nx-transition-none [transition:background-color_1.5s_ease]',
                     menu
-                        ? 'nx-fixed nx-inset-0 nx-z-10 nx-bg-black/80 dark:nx-bg-black/60'
+                        ? 'nx-fixed nx-inset-0 nx-bg-black/80 dark:nx-bg-black/60'
                         : 'nx-bg-transparent',
                 )}
                 onClick={() => setMenu(false)}
