@@ -31,3 +31,19 @@ export type FirmwareReleaseConfigInfo = {
     isNewer: boolean | null;
     translations?: Record<string, string>;
 };
+
+/**
+ * 'reboot_and_upgrade': after confirming reboot to bootloader, FW updates automatically.
+ *      Case: 2.x.x when upgrading FW version.
+ * 'reboot_and_wait': after confirming reboot to bootloader, device needs user confirmation before the update itself.
+ *      Case: the usual case for 1.x.x, or 2.x.x manual reinstall / downgrade / switch BTC-only.
+ * 'manual': user needs to manually reconnect device during the update flow when prompted.
+ *      Case: firmware version less than 1.10.0, 2.6.0 (corresponds to bootloader versions 1.10.0, 2.1.0).
+ * 'unknown_flow': when device starts in bootloader, the flow type cannot be reliably determined (can't tell FW version).
+ *      Case: fresh device with no FW (most usual case).
+ */
+export type FirmwareUpdateFlowType =
+    | 'reboot_and_wait'
+    | 'reboot_and_upgrade'
+    | 'manual'
+    | 'unknown_flow';
