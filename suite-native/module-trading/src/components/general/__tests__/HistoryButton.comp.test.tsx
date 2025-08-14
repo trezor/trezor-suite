@@ -1,13 +1,15 @@
+import { TradingTransaction } from '@suite-common/trading';
 import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
+import { getBuyTrade } from '../../../__fixtures__/trades';
 import { HistoryButton } from '../HistoryButton';
 
-let mockSelectDeviceHasTradingTradesReturn: boolean;
+let mockSelectDeviceTradingTrades: TradingTransaction[];
 let mockNavigate: jest.Mock;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
-    selectDeviceHasTradingTrades: () => mockSelectDeviceHasTradingTradesReturn,
+    selectDeviceTradingTrades: () => mockSelectDeviceTradingTrades,
 }));
 
 jest.mock('@react-navigation/native', () => ({
@@ -24,7 +26,7 @@ describe('HistoryButton', () => {
         });
 
     it('should render nothing where no trades are available', async () => {
-        mockSelectDeviceHasTradingTradesReturn = false;
+        mockSelectDeviceTradingTrades = [];
         const { toJSON } = await renderHistoryButton({});
 
         expect(toJSON()).toBeNull();
@@ -32,7 +34,7 @@ describe('HistoryButton', () => {
 
     describe('with trades available', () => {
         beforeEach(() => {
-            mockSelectDeviceHasTradingTradesReturn = true;
+            mockSelectDeviceTradingTrades = [getBuyTrade({ status: 'SUBMITTED' })];
             mockNavigate = jest.fn();
         });
 
