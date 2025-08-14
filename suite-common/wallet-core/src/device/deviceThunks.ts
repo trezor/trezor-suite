@@ -28,7 +28,6 @@ import TrezorConnect, {
     DEVICE,
     Device,
     StaticSessionId,
-    UI,
 } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { getEnvironment } from '@trezor/env-utils';
@@ -421,36 +420,6 @@ export const confirmAddressOnDeviceThunk = createThunk(
         }
 
         return response;
-    },
-);
-
-export const onPassphraseSubmit = createThunk(
-    `${DEVICE_MODULE_PREFIX}/onPassphraseSubmit`,
-    (
-        { value, passphraseOnDevice }: { value: string; passphraseOnDevice: boolean },
-        { dispatch, getState },
-    ) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
-
-        if (!device.state) {
-            dispatch(
-                deviceActions.updatePassphraseMode({
-                    device,
-                    hidden: passphraseOnDevice || !!value,
-                    alwaysOnDevice: passphraseOnDevice,
-                }),
-            );
-        }
-
-        TrezorConnect.uiResponse({
-            type: UI.RECEIVE_PASSPHRASE,
-            payload: {
-                value,
-                save: true,
-                passphraseOnDevice,
-            },
-        });
     },
 );
 

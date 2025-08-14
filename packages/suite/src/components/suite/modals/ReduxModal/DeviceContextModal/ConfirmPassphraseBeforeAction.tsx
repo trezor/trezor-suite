@@ -1,16 +1,12 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
-import {
-    onPassphraseSubmit,
-    selectDeviceModel,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectDeviceModel, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, H3, Paragraph } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
@@ -21,24 +17,22 @@ import { Translation } from '../../../Translation';
 export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
-    const dispatch = useDispatch();
 
     const intl = useIntl();
 
     const onEnterPassphraseDialogCancel = () =>
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
-    const onSubmit = useCallback(
-        (value: string, passphraseOnDevice?: boolean) => {
-            dispatch(
-                onPassphraseSubmit({
-                    value,
-                    passphraseOnDevice: !!passphraseOnDevice,
-                }),
-            );
-        },
-        [dispatch],
-    );
+    const onSubmit = useCallback((value: string, passphraseOnDevice?: boolean) => {
+        TrezorConnect.uiResponse({
+            type: UI.RECEIVE_PASSPHRASE,
+            payload: {
+                value,
+                save: true,
+                passphraseOnDevice: !!passphraseOnDevice,
+            },
+        });
+    }, []);
 
     if (!device) {
         return null;

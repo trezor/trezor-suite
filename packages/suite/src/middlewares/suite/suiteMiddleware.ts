@@ -24,7 +24,6 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
             deviceActions.selectDevice,
-            deviceActions.updatePassphraseMode,
             deviceActions.addButtonRequest,
             deviceActions.removeButtonRequests,
             deviceActions.rememberDevice,

@@ -1,18 +1,23 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { onPassphraseSubmit, selectDeviceInternalModel } from '@suite-common/wallet-core';
+import { selectDeviceInternalModel } from '@suite-common/wallet-core';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import TrezorConnect, { UI } from '@trezor/connect';
 
 export const NoPassphraseButton = () => {
-    const dispatch = useDispatch();
-
     const deviceModel = useSelector(selectDeviceInternalModel);
 
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const handleSubmitOnDevice = () => {
-        dispatch(onPassphraseSubmit({ value: '', passphraseOnDevice: false }));
+        TrezorConnect.uiResponse({
+            type: UI.RECEIVE_PASSPHRASE,
+            payload: {
+                value: '',
+                passphraseOnDevice: false,
+            },
+        });
         navigateToInitialScreen();
     };
 
