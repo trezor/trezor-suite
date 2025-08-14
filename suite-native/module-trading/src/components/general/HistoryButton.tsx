@@ -4,10 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    TradingRootStateWithDeviceAndAccounts,
-    selectDeviceHasTradingTrades,
-} from '@suite-common/trading';
 import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -19,6 +15,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 
+import { useWatchAllTrades } from '../../hooks/general/useWatchAllTrades';
 import { selectIsAmountInputActive } from '../../selectors/commonSelectors';
 
 export type HistoryButtonProps = {
@@ -47,13 +44,14 @@ const buttonStyle = prepareNativeStyle(utils => ({
 
 export const HistoryButton = ({ isFormMountedRecently }: HistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
+
     const navigation = useNavigation<NavigationProps>();
-    const hasTrades = useSelector((state: TradingRootStateWithDeviceAndAccounts) =>
-        selectDeviceHasTradingTrades(state),
-    );
+
+    const { totalTrades } = useWatchAllTrades();
+
     const shouldHideButton = useSelector(selectIsAmountInputActive);
 
-    if (!hasTrades || shouldHideButton) {
+    if (totalTrades === 0 || shouldHideButton) {
         return null;
     }
 
