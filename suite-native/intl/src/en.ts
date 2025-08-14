@@ -2122,6 +2122,30 @@ export const en = {
             fromAccount: 'From',
             toAccount: 'To',
         },
+        tradingExchangeApprovalScreen: {
+            title: 'Set {symbol} spending',
+            subtitle: 'Set how much {symbol} to approve for this swap.',
+            revokeSuccessAlert: 'Revoke successful. Set a higher limit.',
+            lowLimitInfoAlert:
+                'You’ve approved this token, but the limit is too low. Increase it to continue.',
+            for: 'For',
+            approvalDetailsTitle: 'Approval details',
+            limitLabel: 'Limit',
+            unlimitedLabel: 'Unlimited',
+            limitInfo:
+                'Skip future approvals and pay less fees. {companyName} will gain full access to your {symbol}.',
+        },
+        exchangeApprovalLimitSheet: {
+            title: 'Set limit',
+            unlimitedCard: {
+                description:
+                    "Skip future approval requests and save on fees by approving unlimited {symbol}. {companyName} will have full access to your {symbol}, and your funds may be at risk if they're ever compromised.",
+            },
+            limitedCard: {
+                description:
+                    "Approve only the amount needed for this swap. You'll need to approve again (and pay a fee) for future swaps, but this reduces risk by keeping you in full control of your {symbol}.",
+            },
+        },
         exchangeTradePreviewCard: {
             account: 'Account',
         },

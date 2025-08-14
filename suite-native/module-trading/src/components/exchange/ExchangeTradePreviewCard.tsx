@@ -3,12 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { CryptoId } from 'invity-api';
 
-import { invariant } from '@suite-common/suite-utils';
-import {
-    cryptoIdToNetworkAndContractAddress,
-    isCryptoIdForNativeToken,
-} from '@suite-common/trading';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountLabel,
@@ -29,17 +25,6 @@ type ExchangeTradePreviewProps = {
     title: ReactNode;
 };
 
-const getNetworkSymbolAndContractAddress = (cryptoId: CryptoId) => {
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
-    const symbol = isCryptoIdForNativeToken(cryptoId)
-        ? (network?.displaySymbol as NetworkSymbol)
-        : network?.symbol;
-
-    invariant(symbol, 'symbol must be defined');
-
-    return { symbol, contractAddress };
-};
-
 export const ExchangeTradePreviewCard = ({
     account,
     cryptoId,
@@ -58,7 +43,11 @@ export const ExchangeTradePreviewCard = ({
         return null;
     }
 
-    const { symbol, contractAddress } = getNetworkSymbolAndContractAddress(cryptoId);
+    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+
+    if (!symbol) {
+        return null;
+    }
 
     const fromNetworkName = networkSymbol && getNetwork(networkSymbol)?.name;
 
