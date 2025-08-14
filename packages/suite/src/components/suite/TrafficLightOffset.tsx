@@ -24,8 +24,6 @@ const FixForNotBeingAbleToDragWindow = styled.div`
 
 const Container = styled.div<{ $offset: number }>`
     ${({ $offset }) => `padding-top: ${$offset}px;`}
-    width: 100%;
-    height: 100%;
 `;
 
 // See: https://github.com/electron/electron/issues/5678
