@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.1.5",
-        "@react-navigation/native": "6.1.18",
+        "@react-navigation/native": "7.1.17",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/formatters": "workspace:*",
         "@suite-native/intl": "workspace:*",

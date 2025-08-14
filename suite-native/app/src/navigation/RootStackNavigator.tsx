@@ -40,13 +40,11 @@ import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 
 import { AppTabNavigator } from './AppTabNavigator';
-import { useGlobalHooks } from '../hooks/useGlobalHooks';
+import { NavigatorLayoutWithGlobalHooks } from './RootStackNavigatorGlobalHooksWrapper';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
-    useGlobalHooks();
-
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
     const getInitialRouteName = () => {
@@ -59,6 +57,7 @@ export const RootStackNavigator = () => {
 
     return (
         <RootStack.Navigator
+            layout={NavigatorLayoutWithGlobalHooks}
             initialRouteName={getInitialRouteName()}
             screenOptions={stackNavigationOptionsConfig}
         >
