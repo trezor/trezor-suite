@@ -113,15 +113,6 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     params[0].transports = getTransportsParam(params[0].transports);
                 }
 
-                if (method === 'firmwareUpdate') {
-                    const powerSaveBlocker = new PowerSaveBlocker();
-                    powerSaveBlocker.startBlockingPowerSave();
-                    const response = await TrezorConnect.firmwareUpdate(params[0]);
-                    powerSaveBlocker.stopBlockingPowerSave();
-
-                    return response;
-                }
-
                 return (TrezorConnect[method] as any)(...params);
             },
             onAddListener: (eventName, listener) => {
