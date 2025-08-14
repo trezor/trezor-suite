@@ -1,6 +1,5 @@
 import { MiddlewareAPI } from 'redux';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -10,30 +9,6 @@ const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        // not sure if it's belongs here or to suiteMiddleware. however,
-        // in case when "passphrase on device" was chosen in <PassphraseModal /> do not display this modal ever again.
-        // catch passphrase request and respond immediately with `passphraseOnDevice: true` without action propagation
-        if (action.type === UI.REQUEST_PASSPHRASE) {
-            const device = selectSelectedDevice(api.getState());
-            if (
-                device &&
-                device.features &&
-                device.passphraseOnDevice &&
-                device.features.capabilities?.includes('Capability_PassphraseEntry')
-            ) {
-                TrezorConnect.uiResponse({
-                    type: UI.RECEIVE_PASSPHRASE,
-                    payload: {
-                        value: '',
-                        save: true,
-                        passphraseOnDevice: true,
-                    },
-                });
-
-                return action;
-            }
-        }
-
         // can happen when there is a Connect Popup call and the device is unreadable/unacquired.
         // for now we just open the device switcher and cancel the call, user will have to retry manually
         if (action.type === UI.SELECT_DEVICE) {

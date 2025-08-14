@@ -28,7 +28,6 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
 
 export interface ExtendedDevice {
     useEmptyPassphrase: boolean;
-    passphraseOnDevice?: boolean;
     remember?: boolean; // device should be remembered
     forceRemember?: true; // device was forced to be remembered
     temporaryRemember?: boolean; // device should be remembered only for fw update or this session

@@ -1,4 +1,4 @@
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { WalletType as DefaultWalletLoadingOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -35,17 +35,7 @@ export const DefaultWalletLoading = () => {
             type: EventType.SettingsDeviceDefaultWalletLoading,
             payload: { defaultWalletLoading: value },
         });
-
         dispatch(setDefaultWalletLoading(value));
-
-        if (device.state === undefined) {
-            dispatch(
-                deviceActions.updatePassphraseMode({
-                    device,
-                    hidden: value === DefaultWalletLoadingOptions.PASSPHRASE,
-                }),
-            );
-        }
     };
 
     return (

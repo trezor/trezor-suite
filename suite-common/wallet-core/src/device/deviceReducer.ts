@@ -406,39 +406,6 @@ const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
 };
 
 /**
- * Action handler: SUITE.RECEIVE_PASSPHRASE_MODE + SUITE.UPDATE_PASSPHRASE_MODE
- * @param {DeviceReducerState} draft
- * @param {TrezorDevice} device
- * @param {boolean} hidden
- * @param {boolean} [alwaysOnDevice=false]
- * @returns
- */
-const updatePassphraseMode = (
-    draft: DeviceReducerState,
-    device: TrezorDevice,
-    hidden: boolean,
-    alwaysOnDevice = false,
-) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    // update fields
-    draft.devices[index].useEmptyPassphrase = !hidden;
-    draft.devices[index].passphraseOnDevice = alwaysOnDevice;
-    draft.devices[index].ts = new Date().getTime();
-    if (hidden && typeof draft.devices[index].walletNumber !== 'number') {
-        draft.devices[index].walletNumber = deviceUtils.getNewWalletNumber(
-            draft.devices,
-            draft.devices[index],
-        );
-    }
-    if (!hidden && typeof draft.devices[index].walletNumber === 'number') {
-        delete draft.devices[index].walletNumber;
-    }
-};
-
-/**
  * Action handler: SUITE.CREATE_DEVICE_INSTANCE
  * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
@@ -454,7 +421,6 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     const currentTime = new Date().getTime();
     const newDevice: TrezorDevice = {
         ...device,
-        passphraseOnDevice: false,
         remember: true,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
@@ -546,7 +512,6 @@ const forget = (
             settings,
         );
 
-        draft.devices[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
         draft.devices[index].remember = false;
         draft.devices[index].metadata = {};
@@ -627,9 +592,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
 
         .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
             disconnectDevice(state, payload);
-        })
-        .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
-            updatePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
             remember(state, payload.device, payload.remember, payload.forceRemember);
