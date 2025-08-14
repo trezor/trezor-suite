@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router';
 
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { TokensNavigation } from './TokensNavigation';
 import { CoinsTable } from './coins/CoinsTable';
@@ -17,15 +19,17 @@ export const Tokens = () => {
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const dispatch = useDispatch();
+    const routeName = useSelector(selectRouteName);
 
     useEffect(() => {
         if (
             selectedAccount.status === 'loaded' &&
-            !selectedAccount.network?.features.includes('tokens')
+            !hasNetworkFeatures(selectedAccount.account, 'tokens') &&
+            routeName !== 'wallet-index'
         ) {
             dispatch(goto('wallet-index', { preserveParams: true }));
         }
-    }, [selectedAccount, dispatch]);
+    }, [selectedAccount, dispatch, routeName]);
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_TOKENS" account={selectedAccount} />;
