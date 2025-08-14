@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useRef } from 'react';
+import { ReactNode, createContext, useMemo, useRef, useState } from 'react';
 
 import {
     DarkTheme,
@@ -13,7 +13,10 @@ import { useNativeStyles } from '@trezor/styles';
 
 import { useReportSendFlowExitToAnalytics } from '../useReportSendFlowExitToAnalytics';
 
+export const IsNavigationReadyContext = createContext(false);
+
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
+    const [isNavigationReady, setIsNavigationReady] = useState(false);
     const navigationContainerRef = useNavigationContainerRef();
     const routeNameRef = useRef<string | undefined>(undefined);
     const {
@@ -45,6 +48,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
 
     const handleNavigationReady = () => {
         routeNameRef.current = navigationContainerRef.getCurrentRoute()?.name;
+        if (!isNavigationReady) setIsNavigationReady(true);
     };
 
     const handleStateChange = () => {
@@ -83,13 +87,15 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
     };
 
     return (
-        <NavigationContainer
-            ref={navigationContainerRef}
-            onReady={handleNavigationReady}
-            onStateChange={handleStateChange}
-            theme={themeColors}
-        >
-            {children}
-        </NavigationContainer>
+        <IsNavigationReadyContext.Provider value={isNavigationReady}>
+            <NavigationContainer
+                ref={navigationContainerRef}
+                onReady={handleNavigationReady}
+                onStateChange={handleStateChange}
+                theme={themeColors}
+            >
+                {children}
+            </NavigationContainer>
+        </IsNavigationReadyContext.Provider>
     );
 };

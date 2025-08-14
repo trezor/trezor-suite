@@ -11,8 +11,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/core": "^6.4.10",
-        "@react-navigation/native": "6.1.18",
+        "@react-navigation/core": "7.12.4",
+        "@react-navigation/native": "7.1.17",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",

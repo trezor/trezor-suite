@@ -71,7 +71,8 @@ export const ConnectDeviceScreenHeader = ({
             }
 
             if (onCancelNavigationTarget) {
-                navigation.navigate(onCancelNavigationTarget);
+                // Temporary solution, the onCancelNavigationTarget should be removed completely as a follow up.
+                navigation.navigateDeprecated({ ...onCancelNavigationTarget });
 
                 return;
             }

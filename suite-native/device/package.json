@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.18",
+        "@react-navigation/native": "7.1.17",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/message-system": "workspace:*",

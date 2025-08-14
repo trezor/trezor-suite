@@ -95,7 +95,7 @@ export const useHandleDeviceConnection = () => {
         DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
     );
 
-    const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
+    const lastRoute = useNavigationState(state => state.routes.at(-1)?.name);
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const isOnboardingStackFocused = lastRoute === RootStackRoutes.OnboardingStack;
     const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
