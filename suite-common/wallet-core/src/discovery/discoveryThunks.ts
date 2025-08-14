@@ -24,6 +24,7 @@ import {
     selectIsDeviceAutoEjectEnabled,
     selectPhysicalDevices,
     selectSelectedDevice,
+    selectStandardWalletDevice,
 } from '../device/deviceSelectors';
 import { selectDeviceThunk } from '../device/deviceThunks';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
@@ -114,15 +115,38 @@ const applyDeviceStatesThunk = createThunk(
             const physicalDevices = selectPhysicalDevices(getState());
             const devicesWithoutState = physicalDevices.filter(d => !d.state?.staticSessionId);
 
+            // user was adding a hidden wallet but he might have input empty passphrase -> this is defacto standard wallet
+            let useEmptyPassphrase = !isAddingHiddenWallet; // set to reasonable default
+            if (isAddingHiddenWallet) {
+                let emptyPassphraseDeviceState = selectStandardWalletDevice(getState())?.state;
+
+                // no cache hit, query device
+                if (!emptyPassphraseDeviceState) {
+                    const res = await TrezorConnect.getDeviceState({
+                        device,
+                        useEmptyPassphrase: true,
+                    });
+                    if (res.success) {
+                        emptyPassphraseDeviceState = res.payload._state;
+                    }
+
+                    // todo: how to handle error?
+                }
+
+                if (emptyPassphraseDeviceState) {
+                    useEmptyPassphrase =
+                        emptyPassphraseDeviceState!.staticSessionId?.split(':')[0] ===
+                        staticSessionId.split(':')[0];
+                }
+            }
+
             // now we expect that there is exactly one device without state - meaning that we want to update its state
             if (devicesWithoutState.length === 1) {
                 dispatch(
                     deviceActions.setDeviceState({
                         device,
                         state: newDeviceState,
-                        // todo: this is incorrect, it should not depend on user's input but on
-                        // discovery actual result (empty passphrase entered on device)
-                        useEmptyPassphrase: !isAddingHiddenWallet,
+                        useEmptyPassphrase,
                     }),
                 );
             } else {
@@ -134,9 +158,7 @@ const applyDeviceStatesThunk = createThunk(
                             ...device,
                             metadata: {},
                             instance: getNewInstanceNumber(selectDevices(getState()), device),
-                            // todo: this is incorrect, it should not depend on user's input but on
-                            // discovery actual result (empty passphrase entered on device)
-                            useEmptyPassphrase: !isAddingHiddenWallet,
+                            useEmptyPassphrase,
                             remember: shouldDeviceBeRemembered({
                                 isDeviceAutoEjectEnabled,
                                 device,

@@ -481,3 +481,7 @@ export const selectDeviceDefaultBackupType = createMemoizedSelector(
         return deviceModel ? defaultBackupTypeMap[deviceModel] : 'shamir-single';
     },
 );
+
+export const selectStandardWalletDevice = createMemoizedSelector([selectDevices], devices =>
+    devices.find(device => device.useEmptyPassphrase),
+);
