@@ -25,9 +25,10 @@ export const GlobalSendReceive = () => {
             {isSendModalOpen && (
                 <GlobalSendModal
                     onCancel={() => setIsSendModalOpen(false)}
-                    onSubmit={account => {
+                    onSubmit={(account, type) => {
                         setIsSendModalOpen(false);
-                        goToWithAnalytics('wallet-send', {
+
+                        goToWithAnalytics(type === 'tokens' ? 'wallet-tokens' : 'wallet-send', {
                             params: {
                                 symbol: account.symbol,
                                 accountIndex: account.index,
@@ -40,9 +41,10 @@ export const GlobalSendReceive = () => {
             {isReceiveModalOpen && (
                 <GlobalReceiveModal
                     onCancel={() => setIsReceiveModalOpen(false)}
-                    onSubmit={account => {
+                    onSubmit={(account, type) => {
                         setIsReceiveModalOpen(false);
-                        goToWithAnalytics('wallet-receive', {
+
+                        goToWithAnalytics(type === 'tokens' ? 'wallet-tokens' : 'wallet-receive', {
                             params: {
                                 symbol: account.symbol,
                                 accountIndex: account.index,
