@@ -122,9 +122,20 @@ async fn handle_http_request(
     peer: String,
     req: hyper::Request<Incoming>,
     manager: AdapterManager,
+    access_key: Option<String>,
 ) -> Result<HyperResponse<Full<Bytes>>, ServerError> {
-    // TODO: cors check like trezord-go and node-bridge
-    // let = req.headers().get("origin");
+    // Check access key header
+    if let Some(expected_key) = access_key {
+        if req
+            .headers()
+            .get("x-access-key")
+            .and_then(|h| h.to_str().ok())
+            .map(|h| h != expected_key)
+            .unwrap_or(true)
+        {
+            return Ok(HyperResponse::new(Full::<Bytes>::from("Access denied")));
+        }
+    }
 
     if hyper_tungstenite::is_upgrade_request(&req) {
         let (response, websocket) = match hyper_tungstenite::upgrade(req, None) {
@@ -161,7 +172,7 @@ async fn handle_http_request(
     }
 }
 
-pub async fn start_server(address: &str) -> Result<(), ServerError> {
+pub async fn start_server(address: &str, access_key: Option<String>) -> Result<(), ServerError> {
     let tcp_listener = TcpListener::bind(&address).await.expect("Failed to bind");
     info!("Version: {} Listening on: {}", utils::APP_VERSION, address);
 
@@ -176,8 +187,9 @@ pub async fn start_server(address: &str) -> Result<(), ServerError> {
         let (stream, _) = tcp_listener.accept().await?;
         let peer = stream.peer_addr().expect("Missing peer address");
         let manager = manager.clone();
+        let access_key = access_key.clone();
         let service = hyper::service::service_fn(move |req| {
-            handle_http_request(peer.to_string(), req, manager.clone())
+            handle_http_request(peer.to_string(), req, manager.clone(), access_key.clone())
         });
 
         let connection = http

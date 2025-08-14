@@ -278,7 +278,7 @@ let testIsRunning = false;
 const run = async () => {
     await initDebugLink();
 
-    const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/` });
+    const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/`, accessKey: '' });
     if (argv.bluetooth) {
         await bluetoothApi.connect();
     }
@@ -535,7 +535,12 @@ const run = async () => {
 
         await bluetoothApi.send('start_scan');
 
-        transport = new BluetoothTransport({ url: 'ws://127.0.0.1:21327', messages, id: 'ble' });
+        transport = new BluetoothTransport({
+            url: 'ws://127.0.0.1:21327',
+            accessKey: '',
+            messages,
+            id: 'ble',
+        });
     }
 
     await TrezorConnect.init({

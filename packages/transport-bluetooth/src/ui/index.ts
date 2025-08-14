@@ -107,6 +107,7 @@ const updateDevice = (api: TrezorBluetooth, device: BluetoothDevice) => {
 async function init() {
     const api = new TrezorBluetooth({
         url: `ws://localhost:21327/`,
+        accessKey: '',
     });
 
     try {

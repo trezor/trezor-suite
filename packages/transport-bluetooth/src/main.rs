@@ -7,6 +7,8 @@ mod server;
 struct Opts {
     #[structopt(short, long, default_value = "21327")]
     port: u16,
+    #[structopt(short, long)]
+    key: Option<String>,
 }
 
 #[tokio::main]
@@ -16,7 +18,7 @@ async fn main() {
     let opt = Opts::from_args();
     let addr = format!("127.0.0.1:{}", opt.port);
 
-    match server::start_server(&addr).await {
+    match server::start_server(&addr, opt.key).await {
         // Ok should not happen as start_server runs indefinitely unless there's an error
         Ok(_) => Err("Server unexpectedly stopped".to_string()),
         Err(err) => Err(format!("Server start error {:?}", err)),

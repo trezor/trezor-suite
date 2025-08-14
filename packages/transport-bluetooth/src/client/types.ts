@@ -5,6 +5,7 @@ export type { Logger } from '@trezor/transport/src/types';
 
 export interface TrezorBluetoothSettings {
     url: string;
+    accessKey: string;
     logger?: Logger;
     timeout?: number;
     writeWithResponse?: boolean;

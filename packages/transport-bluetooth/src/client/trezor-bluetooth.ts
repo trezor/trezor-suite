@@ -32,6 +32,9 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
     constructor(settings: TrezorBluetoothSettings) {
         super({
             url: settings.url,
+            headers: {
+                'x-access-key': settings.accessKey,
+            },
             keepAlive: true,
         });
         this.settings = Object.freeze(settings);

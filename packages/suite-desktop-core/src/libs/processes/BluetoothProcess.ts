@@ -5,13 +5,15 @@ import { getSwitchValue } from '../process-switches';
 
 export class BluetoothProcess extends BaseProcess {
     private readonly port;
+    private readonly accessKey;
 
-    constructor(port = 21327) {
+    constructor(port = 21327, accessKey = '') {
         super('bluetooth', 'trezor-bluetooth', {
             autoRestart: 0,
             stdio: 'inherit',
         });
         this.port = port;
+        this.accessKey = accessKey;
     }
 
     getUrl() {
@@ -62,6 +64,6 @@ export class BluetoothProcess extends BaseProcess {
             process.env.RUST_BACKTRACE = '1';
         }
 
-        return super.start(['-p', this.port.toString()]);
+        return super.start(['-p', this.port.toString(), '-k', this.accessKey]);
     }
 }

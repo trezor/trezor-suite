@@ -4,6 +4,7 @@ import { isMacOs, isWindows } from '@trezor/env-utils';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
+import { getWeakRandomId } from '@trezor/utils';
 
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
@@ -25,12 +26,14 @@ export const init: ModuleInit = () => {
     const { logger } = global;
 
     let bluetoothProcess: BluetoothProcess | undefined;
+    // Random string to be used as an access key to authenticate requests to the Bluetooth server.
+    const accessKey = getWeakRandomId(64);
 
     const getBluetoothProcess = async () => {
         if (!bluetoothProcess) {
             // TODO: for debug purposes
             const port = await getFreePort().then(_p => 21327);
-            bluetoothProcess = new BluetoothProcess(port);
+            bluetoothProcess = new BluetoothProcess(port, accessKey);
         }
 
         return bluetoothProcess;
@@ -57,6 +60,7 @@ export const init: ModuleInit = () => {
 
         return new BluetoothIpc({
             url: btProcess.getUrl(),
+            accessKey,
             logger: desktopLogger,
         });
     };
@@ -66,6 +70,7 @@ export const init: ModuleInit = () => {
             ? new BluetoothTransport({
                   id: 'BluetoothTransport',
                   url: bluetoothProcess.getUrl(),
+                  accessKey,
                   logger: desktopLogger,
                   messages: {}, // will be added by @trezor/connect transport initialization
                   writeWithResponse: isMacOs(),
