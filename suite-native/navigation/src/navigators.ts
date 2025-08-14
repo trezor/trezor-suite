@@ -328,4 +328,5 @@ export type TradingStackParamList = {
     };
     [TradingStackRoutes.TradingHistory]: undefined;
     [TradingStackRoutes.TradingExchangePreview]: undefined;
+    [TradingStackRoutes.TradingExchangeApproval]: undefined;
 };

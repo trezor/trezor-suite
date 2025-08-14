@@ -52,6 +52,12 @@ export const parseCryptoId = (cryptoId: CryptoId): TradingParsedCryptoIdProps =>
     return { networkId: parts[0] as CryptoId, contractAddress: parts[1] };
 };
 
+export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
+    const { contractAddress } = parseCryptoId(cryptoId);
+
+    return contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
+};
+
 export const cryptoIdToNetworkAndContractAddress = (
     cryptoId: CryptoId,
 ): NetworkAndContractAddress => {
@@ -69,6 +75,20 @@ export const cryptoIdToNetwork = (cryptoId: CryptoId): Network | undefined =>
 export const cryptoIdToSymbol = (cryptoId: CryptoId): NetworkSymbol | undefined =>
     cryptoIdToNetwork(cryptoId)?.symbol;
 
+export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId) => {
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
+    if (!network) {
+        return { symbol: undefined, contractAddress: undefined };
+    }
+    const { symbol } = network;
+
+    if (isCryptoIdForNativeToken(cryptoId)) {
+        return { symbol, contractAddress: undefined };
+    }
+
+    return { symbol, contractAddress };
+};
+
 export const toTokenCryptoId = (symbol: NetworkSymbol, contractAddress: string): CryptoId =>
     `${getCoingeckoId(symbol)}${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}` as CryptoId;
 
@@ -78,12 +98,6 @@ export const testnetToProdCryptoId = (cryptoId: CryptoId): CryptoId => {
 
     return ((networkId.split('test-')?.[1] ?? networkId) +
         (contractAddress ? `${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}` : '')) as CryptoId;
-};
-
-export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
-    const { contractAddress } = parseCryptoId(cryptoId);
-
-    return contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
 
 export const getUnusedAddressFromAccount = (account: Account) => {

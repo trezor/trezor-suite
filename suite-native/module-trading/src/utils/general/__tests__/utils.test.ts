@@ -1,6 +1,15 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
-import { TradingTransaction, TradingType } from '@suite-common/trading';
+jest.mock('@suite-common/trading', () => {
+    const actual = jest.requireActual('@suite-common/trading');
+
+    return {
+        ...actual,
+        cryptoIdToNetworkAndContractAddress: jest.fn(),
+        isCryptoIdForNativeToken: jest.fn(),
+    };
+});
+import type { TradingTransaction, TradingType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
