@@ -1,9 +1,10 @@
-import { Alert } from 'react-native';
+import { Alert, Pressable } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
+import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 import {
     DevUtilsStackParamList,
@@ -33,6 +34,12 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
+    const copyToClipboard = useCopyToClipboard();
+    const versionString = `${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`;
+
+    const handleCopyVersion = () => {
+        copyToClipboard(versionString);
+    };
 
     return (
         <Screen
@@ -46,10 +53,9 @@ export const DevUtilsScreen = () => {
             <VStack spacing="sp16">
                 <Card>
                     <VStack spacing="sp16">
-                        <TitleHeader
-                            title="Build version"
-                            subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`}
-                        />
+                        <Pressable onPress={handleCopyVersion}>
+                            <TitleHeader title="Build version" subtitle={versionString} />
+                        </Pressable>
                         {isDevelopOrDebugEnv() && (
                             <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                                 See Component Demo
