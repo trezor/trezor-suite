@@ -246,9 +246,7 @@ export const acquireDevice = createThunk(
                     dispatch(thpActions.resetThpFlow());
                 }
             }
-        }
-
-        if (startDiscovery) {
+        } else if (startDiscovery) {
             dispatch(
                 startDiscoveryThunk({
                     device,
