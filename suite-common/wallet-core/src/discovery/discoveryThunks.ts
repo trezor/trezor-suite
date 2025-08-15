@@ -22,7 +22,6 @@ import {
     selectDeviceByStaticSessionId,
     selectDevices,
     selectIsDeviceAutoEjectEnabled,
-    selectPhysicalDevices,
     selectSelectedDevice,
     selectStandardWalletDevice,
 } from '../device/deviceSelectors';
@@ -100,20 +99,18 @@ const applyDeviceStatesThunk = createThunk(
                 return;
             }
 
+            const devicesByPathWithoutState = devicesByPath.filter(d => !d.state?.staticSessionId);
             // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
             // todo: this sanity check could be moved somewhere higher.
-            // if (devicesByPath.length !== 1) {
-            //     throw new Error('exactly one device should be found by path');
-            // }
+            if (devicesByPathWithoutState.length !== 1 && devicesByPathWithoutState.length !== 0) {
+                throw new Error('there must be either one or zero physical devices without state');
+            }
             const device = devicesByPath[0];
 
             assertDeviceIsAcquired(device);
             assertStaticSessionId(newDeviceState);
             const { staticSessionId } = newDeviceState;
-
-            const physicalDevices = selectPhysicalDevices(getState());
-            const devicesWithoutState = physicalDevices.filter(d => !d.state?.staticSessionId);
 
             // user was adding a hidden wallet but he might have input empty passphrase -> this is defacto standard wallet
             let useEmptyPassphrase = !isAddingHiddenWallet; // set to reasonable default
@@ -141,7 +138,7 @@ const applyDeviceStatesThunk = createThunk(
             }
 
             // now we expect that there is exactly one device without state - meaning that we want to update its state
-            if (devicesWithoutState.length === 1) {
+            if (devicesByPathWithoutState.length === 1) {
                 dispatch(
                     deviceActions.setDeviceState({
                         device,

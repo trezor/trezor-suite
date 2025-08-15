@@ -322,6 +322,7 @@ export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
     device => getFirmwareVersionArray(device),
 );
 
+// todo: these are not necessarily physical, might be passphrases as well - sounds like a bug to me.
 export const selectPhysicalDevices = createMemoizedSelector([selectDevices], devices =>
     pipe(
         devices,
