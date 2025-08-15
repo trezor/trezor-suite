@@ -61,7 +61,7 @@ export class TestReportProvider extends TestReportProviderBase {
         return this.test.id;
     }
 
-    get getTestFilePath(): string {
+    get filePath(): string {
         return this.test.location?.file || 'Path not available';
     }
 }

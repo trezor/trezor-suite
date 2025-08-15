@@ -1,7 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { TestMetadataInput } from '@trezor/e2e-utils';
 
-import { TestMetadataInput, createTestAnnotation } from '@trezor/e2e-utils';
+import { writeMetadata } from './metadataIO';
 
 type JestIt = typeof global.it;
 
@@ -11,21 +10,6 @@ interface ItWithMetadataFn {
     skip: JestIt['skip'];
     only: JestIt['only'];
     concurrent: JestIt['concurrent'];
-}
-
-const METADATA_DIR = path.join(process.cwd(), '.metadata');
-
-function ensureMetadataDir() {
-    if (!fs.existsSync(METADATA_DIR)) {
-        fs.mkdirSync(METADATA_DIR, { recursive: true });
-    }
-}
-
-function writeMetadata(testName: string, metadata: TestMetadataInput) {
-    ensureMetadataDir();
-    const safeName = Buffer.from(testName).toString('base64'); // Avoid filesystem issues
-    const filePath = path.join(METADATA_DIR, `${safeName}.json`);
-    fs.writeFileSync(filePath, JSON.stringify(createTestAnnotation(metadata), null, 2));
 }
 
 const wrappedIt = (

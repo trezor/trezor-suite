@@ -62,7 +62,7 @@ export abstract class TestReportProviderBase {
     abstract get isRetryAttempt(): boolean;
     abstract get status(): string;
     abstract get id(): string;
-    abstract get getTestFilePath(): string;
+    abstract get filePath(): string;
 
     // Default implementations of shared logic that can be overridden if needed
     protected getAnnotation(type: string, defaultValue: string): string {
@@ -157,6 +157,10 @@ export abstract class TestReportProviderBase {
             name: field.name,
             value: this.getterByKey(field.key),
         }));
+    }
+
+    get filename(): string {
+        return this.filePath.split('/').pop() || 'unknown-file-name';
     }
 
     // This method allows us to loop through array of keys and get the value from the getter
