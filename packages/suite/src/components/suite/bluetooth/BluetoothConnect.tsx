@@ -25,6 +25,7 @@ import { bluetoothStopScanningThunk } from '../../../actions/bluetooth/bluetooth
 import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import { closeModalApp } from '../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../hooks/suite';
+import { Translation } from '../Translation';
 
 const SCAN_TIMEOUT = 30_000;
 const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT = 30_000;
@@ -186,7 +187,10 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
     }
 
     if (nearbyDevices === null || waitingForFirstUpdate) {
-        return <BluetoothLoading onClose={onClose} />;
+        const floatingHeader =
+            uiMode === 'card' ? undefined : <Translation id="TR_CONNECT_VIA_BLUETOOTH" />;
+
+        return <BluetoothLoading floatingHeader={floatingHeader} onClose={onClose} />;
     }
 
     return (

@@ -1,16 +1,19 @@
+import { ReactNode } from 'react';
+
 import { Card, Spinner } from '@trezor/components';
 
 import { BluetoothDialogCard } from './BluetoothDialogCard';
 import { Translation } from '../Translation';
 
 type BluetoothLoadingProps = {
+    floatingHeader?: ReactNode;
     onClose: () => void;
 };
 
-export const BluetoothLoading = ({ onClose }: BluetoothLoadingProps) => (
+export const BluetoothLoading = ({ floatingHeader, onClose }: BluetoothLoadingProps) => (
     <BluetoothDialogCard
         cardHeader={<Translation id="TR_LOADING" />}
-        floatingHeader={<Translation id="TR_CONNECT_VIA_BLUETOOTH" />}
+        floatingHeader={floatingHeader}
         headerOnClose={onClose}
     >
         <Card>
