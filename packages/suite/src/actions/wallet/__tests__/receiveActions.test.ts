@@ -116,6 +116,7 @@ const getInitialState = (state: Partial<InitialState> | undefined) => ({
         ...state?.device,
     },
     messageSystem: messageSystemInitialState,
+    firmware: { firmwareUpdateSource: 'production' },
 });
 
 type State = ReturnType<typeof getInitialState>;
