@@ -38,7 +38,7 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 <Column gap={spacings.md}>
                     {sortedDevices.map(device => (
                         <DeviceItem
-                            key={`${device.id}-${device.instance}`}
+                            key={`${device.path}-${device.id}-${device.instance}`}
                             device={device}
                             instances={deviceUtils.getDeviceInstances(device, devices)}
                             onCancel={cancelable ? onCancel : undefined}
