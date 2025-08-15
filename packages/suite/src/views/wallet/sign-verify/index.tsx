@@ -109,9 +109,9 @@ const SignVerify = () => {
 
     // Empty accountTypes means there is only 'normal' accountType and therefore the signatures are same.
     const signFormatsDiffer =
-        selectedAccount.account!.networkType === 'bitcoin' &&
-        selectedAccount.account!.accountType !== 'legacy' &&
-        Object.keys(selectedAccount.network!.accountTypes).length >= 1;
+        selectedAccount.account?.networkType === 'bitcoin' &&
+        selectedAccount.account?.accountType !== 'legacy' &&
+        Object.keys(selectedAccount.network?.accountTypes ?? {}).length >= 1;
 
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" isSubpage account={selectedAccount}>
