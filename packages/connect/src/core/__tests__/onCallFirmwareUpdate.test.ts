@@ -537,7 +537,7 @@ describe('onCallFirmwareUpdate', () => {
                 params: {},
                 context,
             }),
-        ).rejects.toThrow('Device missing features');
+        ).rejects.toThrow('device.firmwareReleaseMessage is not set');
 
         await deviceList.dispose();
     });

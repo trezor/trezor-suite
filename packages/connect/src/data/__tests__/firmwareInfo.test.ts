@@ -42,7 +42,7 @@ describe('data/firmwareInfo', () => {
                 features,
                 FirmwareType.Universal,
             );
-            expect(firmwareReleaseConfigInfo.release.version).toEqual([2, 1, 1]);
+            expect(firmwareReleaseConfigInfo?.release.version).toEqual([2, 1, 1]);
         });
     });
 });
