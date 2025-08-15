@@ -91,6 +91,22 @@ export const selectAddressLabels = (
     return state.labeling.walletsLabels[walletDescriptor]?.addressLabels ?? [];
 };
 
+type SelectAddressLabelParams = {
+    state: WithLabelingState;
+    deviceStaticSessionId: StaticSessionId;
+    address: string;
+};
+
+export const selectAddressLabel = ({
+    state,
+    deviceStaticSessionId,
+    address,
+}: SelectAddressLabelParams) => {
+    const addressLabels = selectAddressLabels(state, deviceStaticSessionId);
+
+    return findAddressLabel({ address, addressLabels });
+};
+
 export const selectOutputLabels = (
     state: WithLabelingState,
     deviceStaticSessionId: StaticSessionId,

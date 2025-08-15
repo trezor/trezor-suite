@@ -50,6 +50,8 @@ export class AddressLabels {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            console.log('______AddressLabels::labels', labels);
+
             for (const label of labels) {
                 if (label.address === null) {
                     continue;

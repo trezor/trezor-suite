@@ -39,9 +39,9 @@ export class WalletLabels {
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('walletLabel').selectAll());
 
     update = ({ walletDescriptor, label }: LabelData) => {
-        console.log("'______WalletLabels:update ... updating ...");
+        console.log("'______WalletLabels:update ... updating ... (", walletDescriptor, label, ')');
         const result = this.evolu.upsert('walletLabel', {
-            // Todo: replace getOrThrow wit some nice error propagation
+            // Todo: replace getOrThrow with some nice error propagation
             id: getOrThrow(createWalletLabelId(walletDescriptor)),
             walletDescriptor,
             label,
@@ -54,10 +54,14 @@ export class WalletLabels {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            console.log('______WalletLabels::labels', labels);
+
             for (const label of labels) {
                 if (label.walletDescriptor === null) {
                     continue;
                 }
+
+                console.log('______WalletLabels::onChange', label);
 
                 onChange({
                     walletDescriptor: label.walletDescriptor as unknown as WalletDescriptor,

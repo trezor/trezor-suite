@@ -20,6 +20,10 @@ export const subscribeLabelingUpdatesThunk = createThunk<
         const storage = getLocalFirstStorageProvider(evoluKeys);
 
         const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
+            if (walletDescriptor !== payload.walletDescriptor) {
+                return; // Filter out corrupted data. // Todo: figure out why it may happen?
+            }
+
             dispatch(labelingActions.setWalletLabel({ ...payload, walletDescriptor }));
         });
         const unsubscribeAccountLabels = storage.accountLabels.subscribe(payload => {

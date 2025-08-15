@@ -19,8 +19,6 @@ export const updateWalletLabelThunk = createThunk<void, UpdateWalletLabelThunkPa
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
-        console.log('_____updateWalletLabelThunk::device', device);
-
         const evoluKeys = device?.localFirstStorageSecret?.evoluKeys;
 
         if (evoluKeys === undefined) {

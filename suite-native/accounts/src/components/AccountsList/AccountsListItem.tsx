@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectAccountLabel } from '@suite-common/local-first-storage';
-import { WithLabelingState } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
+import { WithLabelingState, selectAccountLabel } from '@suite-common/local-first-storage';
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';

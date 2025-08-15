@@ -57,6 +57,7 @@ export class AccountLabels {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            console.log('______AccountLabels::labels', labels);
             for (const label of labels) {
                 if (label.accountDescriptor === null || label.networkSymbol === null) {
                     continue;

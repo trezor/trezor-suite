@@ -15,6 +15,7 @@
         "@react-navigation/native": "7.1.17",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/local-first-storage": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/validators": "workspace:*",

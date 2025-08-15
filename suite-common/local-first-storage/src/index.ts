@@ -14,14 +14,15 @@ export {
     selectWalletLabel,
     selectAccountLabels,
     findAccountLabel,
-    findAddressLabel,
     findOutputLabel,
     selectAddressLabels,
+    selectAddressLabel,
+    findAddressLabel,
     selectAccountLabel,
     selectOutputLabels,
     selectOutputLabel,
-    WithLabelingState,
 } from './labeling/labelingSelectors';
+export type { WithLabelingState } from './labeling/labelingSelectors';
 export { labelingActions } from './labeling/labelingActions';
 export { prepareLabelingReducer, initialLabelingState } from './labeling/labelingReducer';
 export { processMetadataMessageThunk } from './labeling/processMetadataMessageThunk';
