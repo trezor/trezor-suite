@@ -102,12 +102,12 @@ export const requestBioAuthChangeThunk = createThunk(
             };
         } catch (error) {
             dispatch(bioAuthActions.bioAuthValidated(null));
-            console.error(error);
 
             if (KNOWN_ERROR_MESSAGES.some(message => String(error).includes(message))) {
                 // NOTE: known error message
                 return;
             }
+            console.error(error);
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
@@ -150,12 +150,12 @@ export const requestBioAuthValidationThunk = createThunk(
             }
         } catch (error) {
             dispatch(bioAuthActions.bioAuthValidated(null));
-            console.error(error);
 
             if (KNOWN_ERROR_MESSAGES.some(message => String(error).includes(message))) {
                 // NOTE: known error message
                 return;
             }
+            console.error(error);
 
             dispatch(
                 notificationsActions.addToast({
