@@ -3,6 +3,12 @@ import type { FilterPropertiesByType } from '@trezor/type-utils';
 
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
+export const isHardRevisionCheckError = (error: FirmwareRevisionCheckError | null) =>
+    error !== null && revisionCheckErrorScenarios[error].type === 'hardModal';
+
+export const isHardHashCheckError = (error: FirmwareHashCheckError | null) =>
+    error !== null && hashCheckErrorScenarios[error].type === 'hardModal';
+
 export type SkippedRevisionCheckError = keyof FilterPropertiesByType<
     typeof revisionCheckErrorScenarios,
     { type: 'skipped' }

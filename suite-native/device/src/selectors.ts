@@ -1,13 +1,16 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { revisionCheckErrorScenarios } from '@suite-common/firmware-authenticity';
+import {
+    isHardRevisionCheckError,
+    isSkippedRevisionCheckError,
+    revisionCheckErrorScenarios,
+} from '@suite-common/firmware-authenticity';
 import {
     Feature,
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -25,6 +28,7 @@ import {
     selectDeviceInstances,
     selectDeviceModel,
     selectDevices,
+    selectFirmwareRevisionCheckError,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
@@ -168,20 +172,6 @@ export const selectHasNoDeviceWithEmptyPassphrase = createMemoizedSelector(
     deviceInstances => A.isEmpty(deviceInstances.filter(d => d.useEmptyPassphrase)),
 );
 
-/**
- * Get firmware revision check error, or null if check was successful / skipped.
- */
-export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
-    const device = selectSelectedDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
-    const checkResult = device.authenticityChecks.firmwareRevision;
-
-    // null means not performed, then don't consider it failed
-    if (!checkResult || checkResult.success) return null;
-
-    return checkResult.error;
-};
-
 type FwAuthenticityCheckState = NativeDeviceRootState &
     FeatureFlagsRootState &
     MessageSystemRootState;
@@ -209,7 +199,7 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: FwAuthenticityC
 export const selectIsSkippedRevisionCheckError = (state: FwAuthenticityCheckState): boolean => {
     const revisionCheckError = selectFirmwareRevisionCheckErrorIfEnabled(state);
     if (revisionCheckError === null) return false;
-    if (revisionCheckErrorScenarios[revisionCheckError].type === 'skipped') return true;
+    if (isSkippedRevisionCheckError(revisionCheckError)) return true;
 
     // Special handling for offline error, which is handled as softWarning (top-screen banner),
     // but the banner is rendered separately in useIsOfflineBannerVisible.
@@ -226,15 +216,7 @@ export const selectIsSkippedRevisionCheckError = (state: FwAuthenticityCheckStat
  */
 export const selectHasFirmwareAuthenticityCheckHardFailed = createMemoizedSelector(
     [selectFirmwareRevisionCheckErrorIfEnabled],
-    revisionError => {
-        const isRevisionHardError =
-            revisionError !== null &&
-            revisionCheckErrorScenarios[revisionError].type === 'hardModal';
-
-        // FW hash check to be implemented
-
-        return isRevisionHardError;
-    },
+    revisionError => isHardRevisionCheckError(revisionError), // FW hash check to be implemented
 );
 
 export const selectIsEntropyCheckEnabledAndFailed = createMemoizedSelector(
