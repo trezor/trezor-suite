@@ -22,7 +22,7 @@ const fixtures = [
         }),
         release: getReleaseData(),
         conditions: {
-            environment: { min_suite_version: '25.2.1' },
+            environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
             rollout_probability: 100,
         },
         isBitcoinOnlyAvailable: true,
@@ -36,7 +36,7 @@ const fixtures = [
         },
         result: {
             releaseConditions: {
-                environment: { min_suite_version: '25.2.1' },
+                environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
                 rollout_probability: 100,
                 shouldBeOffered: true,
             },
