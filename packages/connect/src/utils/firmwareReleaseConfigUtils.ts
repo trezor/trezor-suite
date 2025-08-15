@@ -82,7 +82,8 @@ const verifyFirmwareRelease = (
 
     const JWSPublicKey = getJWSPublicKey(
         'firmware-release',
-        ['test-signed', 'production'].includes(env),
+        // When using local we always want to use CodeSignKey.
+        ['test-signed', 'production'].includes(env) || !isRemote,
     );
     if (!JWSPublicKey) {
         throw new Error('JWS public key is not defined!');
