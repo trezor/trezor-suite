@@ -35,6 +35,7 @@ const getInitialState = (override: any) => {
             },
         },
         messageSystem: messageSystemInitialState,
+        firmware: { firmwareUpdateSource: 'production' },
     };
     if (override) {
         return mergeDeepObject(defaults, override);

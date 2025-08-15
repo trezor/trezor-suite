@@ -78,6 +78,7 @@ const rootReducer = combineReducers({
         () => ({}),
     ),
     messageSystem: createReducer(messageSystemInitialState, () => ({})),
+    firmware: createReducer([{ firmwareUpdateSource: 'production' }], () => ({})),
 });
 
 interface StateOverrides {

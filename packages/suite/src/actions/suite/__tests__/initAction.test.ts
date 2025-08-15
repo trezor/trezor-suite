@@ -66,6 +66,7 @@ const getInitialState = (initialRun?: boolean) => ({
     messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
     device: deviceReducer(undefined, EMPTY_ACTION),
     metadata: metadataReducer(undefined, EMPTY_ACTION),
+    firmware: { firmwareUpdateSource: 'production' },
 });
 
 type Fixture = {
