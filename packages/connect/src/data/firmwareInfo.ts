@@ -149,7 +149,7 @@ export const getReleaseConfig = (features: Features, firmwareType: FirmwareType)
     }
     const deviceMessageRelease = firmwareReleaseConfig[internal_model];
     if (!deviceMessageRelease) {
-        throw new Error(`No firmware release config found for device model ${internal_model}`);
+        return;
     }
 
     return deviceMessageRelease[firmwareType];
@@ -489,12 +489,12 @@ export const getReleaseInfo = ({
 export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: FirmwareType) => {
     const deviceMessageRelease = getReleaseConfig(features, firmwareType);
     if (!deviceMessageRelease) {
-        throw new Error('Missing Firmware release config release for device');
+        return;
     }
 
     const { release, conditions, firmware_type } = deviceMessageRelease;
     if (!release) {
-        throw new Error('Missing Firmware release for device');
+        return;
     }
 
     const currentVersion = getCurrentVersion(features);
