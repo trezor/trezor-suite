@@ -76,7 +76,7 @@ export const useTradingExchangeForm = ({
     pageType = 'form',
 }: UseTradingFormProps): TradingExchangeFormContextProps => {
     const type = 'exchange';
-    const isNotFormPage = pageType !== 'form';
+    const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const {
@@ -100,7 +100,9 @@ export const useTradingExchangeForm = ({
     // used for disabling approve/revoke controls when
     // quotes are scheduled to refresh after changing swap form inputs
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
-    const [shouldUseTradingAccountKey, setShouldUseTradingAccountKey] = useState<boolean>(false);
+    const [shouldUseTradingAccountKey, setShouldUseTradingAccountKey] = useState<boolean>(
+        isPreviousRouteFromTradeSection,
+    );
 
     const [accountKey, setAccountKey] = useTradingAccountKey({
         type,
@@ -109,6 +111,7 @@ export const useTradingExchangeForm = ({
         shouldUseTradingAccountKey,
     });
     const accountByKey = useSelector(state => selectAccountByKey(state, accountKey));
+
     const account = accountByKey ?? selectedAccount.account;
 
     const isTradingTermsDismissed = useSelector(state =>
@@ -760,10 +763,21 @@ export const useTradingExchangeForm = ({
     };
 
     useEffect(() => {
-        if (tradingAccountKey) {
+        if (isPreviousRouteFromTradeSection && tradingAccountKey !== selectedAccount.account?.key) {
+            setShouldUseTradingAccountKey(true);
+
+            return;
+        }
+
+        if (tradingAccountKey && isFormPage) {
             setShouldUseTradingAccountKey(selectedAccount.account?.key !== tradingAccountKey);
         }
-    }, [selectedAccount.account?.key, tradingAccountKey]);
+    }, [
+        isPreviousRouteFromTradeSection,
+        isFormPage,
+        selectedAccount.account?.key,
+        tradingAccountKey,
+    ]);
 
     // save approval tx data for approval fee estimation
     useEffect(() => {
@@ -830,12 +844,12 @@ export const useTradingExchangeForm = ({
     }, [reset, isDraft, exchangeInfo, defaultValues, isInitialDataLoading]);
 
     useEffect(() => {
-        if (!quotesRequest && isNotFormPage) {
+        if (!quotesRequest && !isFormPage) {
             navigateToExchangeForm();
 
             return;
         }
-    }, [isNotFormPage, quotesRequest, navigateToExchangeForm]);
+    }, [isFormPage, quotesRequest, navigateToExchangeForm]);
 
     useEffect(() => {
         if (preselectedQuote || approvalInitiated) return;
