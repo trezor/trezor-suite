@@ -107,6 +107,7 @@ export interface ConditionalRelease {
     conditions: {
         environment: {
             min_suite_version: string;
+            min_suite_native_version: string;
         };
         rollout_probability: number;
     };
