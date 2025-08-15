@@ -63,7 +63,7 @@ export class TestReportProvider extends TestReportProviderBase {
         return this.test.testFilePath;
     }
 
-    get getTestFilePath(): string {
+    get filePath(): string {
         return this.test.testFilePath;
     }
 }

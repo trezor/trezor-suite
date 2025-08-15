@@ -2,10 +2,16 @@ import type { Octokit } from '@octokit/rest';
 
 import { scheduleAction } from '@trezor/utils';
 
+import { TestReportProviderBase } from './annotationBase';
 import { GitHubProject } from './gitHubProject';
 import { IssueRequests } from './issueRequests';
 import { LoggingFunctions, ProjectField } from './types';
-import { osMatrixAnnotation } from '../enums/testAnnotations';
+import {
+    TestOsEmoticons,
+    TestOsMatrix,
+    osMatrixAnnotation,
+    statusAnnotation,
+} from '../enums/testAnnotations';
 
 export const RETRY_CONF = {
     attempts: 5,
@@ -174,6 +180,55 @@ abstract class GitHubReporterBase implements LoggingFunctions {
         return this.trackOperation(initPromise);
     }
 
+    // eslint-disable-next-line require-await
+    protected async processTestResult(report: TestReportProviderBase): Promise<void> {
+        return this.trackOperation(
+            (async () => {
+                await this.waitForOnBeginInit();
+
+                try {
+                    if (report.isRetryAttempt && this.createdIssuesMap.has(report.id)) {
+                        await this.updateIssue(report);
+                    } else {
+                        await this.createIssuePerOs(report);
+                    }
+                } catch (error) {
+                    this.logError(`Failed to process test end for "${report.testTitle}":`, error);
+                    this.failedTestFilenames.push(report.filename);
+                    // Non-Critical error, no need to rethrow
+                }
+            })(),
+        );
+    }
+
+    protected async conclude() {
+        this.log('All tests completed, waiting for pending operations...');
+
+        if (this.pendingOperations.length > 0) {
+            this.log(`Waiting for ${this.pendingOperations.length} pending operations to complete`);
+
+            const results = await Promise.allSettled(this.pendingOperations);
+            const failed = results.filter(r => r.status === 'rejected');
+
+            if (failed.length > 0) {
+                this.logError(`${failed.length} operations failed`);
+                failed.forEach((result, index) => {
+                    this.logError(`Operation ${index + 1} failed:`, result.reason);
+                });
+            } else {
+                this.log('All pending operations finished');
+            }
+        } else {
+            this.log('No pending operations to wait for');
+        }
+
+        if (this.failedTestFilenames.length > 0) {
+            this.logInstructionsForRerun();
+            throw new Error('GitHub reporter finished with failure');
+        }
+        this.log('GitHub reporter finished successfully');
+    }
+
     protected async getProjectFields() {
         this.log(`Fetching fields for project ${this.gitHubProject.id}...`);
         this._fieldsInGitHub = await this.issueRequests.getProjectFields(this.gitHubProject.id);
@@ -269,6 +324,84 @@ abstract class GitHubReporterBase implements LoggingFunctions {
 
         if (this.initState === InitializationState.IN_PROGRESS && this.initializationPromise) {
             await this.initializationPromise;
+        }
+    }
+
+    protected async updateIssue(report: TestReportProviderBase): Promise<void> {
+        const issueNodeId = this.createdIssuesMap.get(report.id);
+        if (!issueNodeId) {
+            throw new Error(`Issue ID not found for test retried test "${report.testTitle}"`);
+        }
+        this.log(
+            `[${issueNodeId}] Updating GitHub draft issue with a retry of test "${report.testTitle}"...`,
+        );
+
+        this.log(`[${issueNodeId}] Updating field Status:"${report.status}"...`);
+        const { fieldId: statusFieldId, valueOrOptionId: statusOptionId } =
+            this.resolveFieldAndValue(statusAnnotation.name, report.status);
+        await scheduleAction(
+            () =>
+                this.issueRequests.setItemValue(
+                    this.gitHubProject.id,
+                    issueNodeId,
+                    statusFieldId,
+                    statusOptionId,
+                ),
+            RETRY_CONF,
+        );
+        this.log(`[${issueNodeId}] Successfully updated field Status:"${report.status}"`);
+        this.log(`[${issueNodeId}] Successfully updated test result for "${report.testTitle}"`);
+    }
+
+    protected async createIssuePerOs(report: TestReportProviderBase): Promise<void> {
+        for (const operationSystem of report.osMatrix) {
+            const issueNodeId = await scheduleAction(async () => {
+                // Random delay between 1-5 seconds to distribute load on GitHub API
+                // Without it we often hit "Your attempt to move this item created a temporary conflict. Please try again"
+                const randomDelay = Math.floor(Math.random() * 4000) + 1000; // 1000-5000ms
+                await new Promise(resolve => setTimeout(resolve, randomDelay));
+                this.log(
+                    `Creating GitHub draft issue for test "(OS ${operationSystem}) ${report.testTitle}"...`,
+                );
+
+                const titleWithOptionalEmoticons = report.useOsEmoticons
+                    ? `${TestOsEmoticons[operationSystem as TestOsMatrix]} ${report.testCase}`
+                    : report.testCase;
+
+                return this.issueRequests.createDraftIssueInProject(
+                    this.gitHubProject.id,
+                    titleWithOptionalEmoticons,
+                    report.bodyDescription,
+                );
+            }, RETRY_CONF);
+
+            this.createdIssuesMap.set(report.id, issueNodeId);
+            this.log(
+                `[${issueNodeId}] Successfully created issue "(OS ${operationSystem}) ${report.testTitle}"`,
+            );
+
+            const resolvedFieldsAndValues = report.projectValues.map(({ name, value }) =>
+                this.resolveFieldAndValue(name, value, operationSystem),
+            );
+            await scheduleAction(() => {
+                this.log(
+                    `[${issueNodeId}] Updating values of issue "(OS ${operationSystem}) ${report.testTitle}"...`,
+                );
+
+                return this.issueRequests.setMultipleValues(
+                    this.gitHubProject.id,
+                    issueNodeId,
+                    resolvedFieldsAndValues,
+                );
+            }, RETRY_CONF);
+
+            this.log(
+                `[${issueNodeId}] Successfully updated values of issue "(OS ${operationSystem}) ${report.testTitle}"`,
+            );
+
+            this.log(
+                `[${issueNodeId}] Successfully recorded test result for "(OS ${operationSystem}) ${report.testTitle}"`,
+            );
         }
     }
 }
