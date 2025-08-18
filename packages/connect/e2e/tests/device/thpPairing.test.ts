@@ -55,6 +55,52 @@ describe('THP pairing', () => {
         expect(spy).toHaveBeenCalledTimes(0);
     });
 
+    it('ThpPairing CodeEntry', async () => {
+        const device = await waitForDevice({ pairingMethods: ['CodeEntry'] });
+
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        TrezorConnect.on('ui-request_thp_pairing', async ({ device }) => {
+            const state = await controller.getPairingInfo(device.thp!.channel);
+            TrezorConnect.removeAllListeners('ui-request_thp_pairing');
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_thp_pairing_tag',
+                payload: {
+                    source: 'code-entry',
+                    tag: state.code_entry_code.toString(),
+                },
+            });
+        });
+
+        const address = await TrezorConnect.getAddress({
+            device,
+            path: "m/44'/0'/0'/1/1",
+            // showOnTrezor: true,
+        });
+        expect(address).toMatchObject({ success: true });
+    });
+
+    // throws: not implemented
+    it.skip('ThpPairing QrCode', async () => {
+        const device = await waitForDevice({ pairingMethods: ['QrCode'] });
+
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        TrezorConnect.on('ui-request_thp_pairing', async ({ device }) => {
+            const state = await controller.getPairingInfo(device.thp!.channel);
+            TrezorConnect.removeAllListeners('ui-request_thp_pairing');
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_thp_pairing_tag',
+                payload: { source: 'qr-code', tag: state.code_qr_code },
+            });
+        });
+
+        const address = await TrezorConnect.getAddress({
+            device,
+            path: "m/44'/0'/0'/1/1",
+            // showOnTrezor: true,
+        });
+        expect(address).toMatchObject({ success: true });
+    });
+
     it('ThpPairing NFC', async () => {
         const device = await waitForDevice({ pairingMethods: ['NFC'] });
 
