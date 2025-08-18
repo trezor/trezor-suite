@@ -15,6 +15,7 @@ export const ThpConnectionModal = ({ device }: ThpConnectionModalProps) => {
             device={device}
             title="TR_THP_SECURELY_CONNECT_WITH_TREZOR"
             onCancel={onCancel}
+            enableBackdropClick={false}
         />
     );
 };

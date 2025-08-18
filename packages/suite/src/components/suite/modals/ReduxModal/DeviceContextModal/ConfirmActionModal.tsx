@@ -24,9 +24,15 @@ interface ConfirmActionProps {
     device: TrezorDevice;
     title?: TranslationKey;
     onCancel?: () => void;
+    enableBackdropClick?: boolean;
 }
 
-export const ConfirmActionModal = ({ title, device, onCancel }: ConfirmActionProps) => {
+export const ConfirmActionModal = ({
+    title,
+    device,
+    onCancel,
+    enableBackdropClick = true,
+}: ConfirmActionProps) => {
     const intl = useIntl();
     const handleCancel = () => {
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
@@ -35,7 +41,7 @@ export const ConfirmActionModal = ({ title, device, onCancel }: ConfirmActionPro
 
     return (
         <ConnectModalBackdrop
-            onClick={onCancel}
+            onClick={enableBackdropClick ? onCancel : undefined}
             data-testid="@suite/modal/confirm-action-on-device"
             canSwitchDevice
         >
