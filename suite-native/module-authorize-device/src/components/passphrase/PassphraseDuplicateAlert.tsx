@@ -42,15 +42,13 @@ export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNo
         ({ duplicateStaticSessionId }: { duplicateStaticSessionId: StaticSessionId }) => {
             // Not all passphrase errors have device property, but we know this one does
             // based on condition in `./passphraseSlice`. This if is just to keep TS happy.
-            if (duplicateStaticSessionId) {
-                dispatch(switchDuplicatedDevice(duplicateStaticSessionId));
-                navigation.navigate(RootStackRoutes.AppTabs, {
-                    screen: AppTabsRoutes.HomeStack,
-                    params: {
-                        screen: HomeStackRoutes.Home,
-                    },
-                });
-            }
+            dispatch(switchDuplicatedDevice(duplicateStaticSessionId));
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
         },
         [dispatch, navigation],
     );
