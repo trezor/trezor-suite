@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { TrezorUserEnvLinkProxy, step } from '../common';
+import { TrezorUserEnvLinkProxy, analyzeObject, step } from '../common';
 
 export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
@@ -130,12 +130,25 @@ export class DevicePrompt {
         return textsArray.map(removeWhitespaces).join('');
     }
 
+    @step()
+    async getAnalyzedDisplayContent() {
+        const debugState = await this.getDisplayContent();
+
+        return analyzeObject({
+            header: debugState.header,
+            body: debugState.body,
+            footer: debugState.footer,
+        });
+    }
+
     // Serves to quickly get the text from the device display and end the test
     @step()
     async debugThrowJSONFromDisplay() {
         const debugState = await TrezorUserEnvLinkProxy.getDebugState();
         const json = JSON.parse(debugState.tokens.join(''));
-        throw new Error(`Debug JSON: ${JSON.stringify(json, null, 2)}`);
+        throw new Error(
+            `Debug JSON: ${JSON.stringify(json, null, 2)} \n\nCharacter analysis: ${JSON.stringify(await this.getAnalyzedDisplayContent(), null, 2)}`,
+        );
     }
 
     @step()

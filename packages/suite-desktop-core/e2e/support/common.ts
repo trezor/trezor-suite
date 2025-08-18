@@ -166,3 +166,54 @@ export const mockRemoteMessageSystem = async (page: Page): Promise<void> =>
     await page.route('**/config.v1.jws', async route => {
         await route.fulfill({ status: 200, body: validJws });
     });
+
+export const normalizeWhitespace = (obj: any): any => {
+    if (typeof obj === 'string') {
+        // Normalize whitespace: \u00A0 is non-breaking space, \u0020 is regular space.
+        return obj.replace(/[\u00A0\u0020]/g, ' ');
+    }
+    if (Array.isArray(obj)) {
+        return obj.map(normalizeWhitespace);
+    }
+    if (obj && typeof obj === 'object') {
+        const result: any = {};
+        for (const [key, value] of Object.entries(obj)) {
+            result[key] = normalizeWhitespace(value);
+        }
+
+        return result;
+    }
+
+    return obj;
+};
+
+export const analyzeObject = (obj: any): any => {
+    const padding = 3; // Padding for character codes
+    const analyzeText = (text: string) => {
+        const chars = Array.from(text);
+        const paddedChars = chars.map(char => char.padStart(padding, ' '));
+        const paddedCodes = chars.map(char => char.charCodeAt(0).toString().padStart(padding, ' '));
+
+        return {
+            chars: `${paddedChars.join(' ')}`,
+            codes: `${paddedCodes.join(' ')}`,
+        };
+    };
+
+    if (typeof obj === 'string') {
+        return analyzeText(obj);
+    }
+    if (Array.isArray(obj)) {
+        return obj.map(analyzeObject);
+    }
+    if (obj && typeof obj === 'object') {
+        const result: any = {};
+        for (const [key, value] of Object.entries(obj)) {
+            result[key] = analyzeObject(value);
+        }
+
+        return result;
+    }
+
+    return obj;
+};

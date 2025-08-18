@@ -2,7 +2,7 @@ import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
 import { diff } from 'jest-diff';
 import { isEqual } from 'lodash';
 
-import { formatAddress, isEqualWithOmit } from '../common';
+import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DevicePrompt } from '../pageObjects/devicePrompt';
 
 type LineFormats = 'fourTetragrams' | 'fullLine';
@@ -37,11 +37,14 @@ const compareDisplayContent = async (
     errorMessage: string,
 ) => {
     await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
-    const content = await devicePrompt.getDisplayContent();
+    const contentRaw = await devicePrompt.getDisplayContent();
+    const content = normalizeWhitespace(contentRaw);
+    const debugInfo = JSON.stringify(await devicePrompt.getAnalyzedDisplayContent(), null, 2);
 
     return {
         pass: isEqual(expectedContent, content),
-        message: () => `${errorMessage}. Diff:\n${diff(expectedContent, content)}`,
+        message: () =>
+            `${errorMessage}. Diff:\n${diff(expectedContent, content)}\n\nAnalysis:\n${debugInfo}`,
     };
 };
 
