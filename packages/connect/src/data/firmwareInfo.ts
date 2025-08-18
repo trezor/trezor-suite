@@ -50,7 +50,7 @@ const SIGNED_LOCALHOST = {
 };
 const UNSIGNED_LOCALHOST = {
     BASE_URL: 'http://localhost:3000',
-    MIDDLE_PATH: 'firmware/signed',
+    MIDDLE_PATH: 'firmware/unsigned',
 };
 const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareUpdateSource, RemoteBaseInfo> = {
     production: RELEASES_URL_REMOTE_BASE,
@@ -84,7 +84,11 @@ const getBundledFirmwareVersion = (
 ) => {
     const { config: localFirmwareReleaseConfig } = getOnlyLocalFirmwareReleaseConfig();
     const modelReleases = localFirmwareReleaseConfig.releases[deviceModel];
-    const bundledRelease = modelReleases[firmwareType];
+    const bundledRelease = modelReleases?.[firmwareType];
+    if (!bundledRelease) {
+        // Probably this is a new device model.
+        return;
+    }
     // Extracts the version from the filename, 't2b1-2.6.3-bitcoinonly.json' -> '2.6.3'.
     const bundledVersion = bundledRelease.releasePath.match(/(\d+\.\d+\.\d+)/);
 
@@ -97,6 +101,10 @@ const getBundledFirmwareVersion = (
 
 export const getBundledRelease = (deviceModel: DeviceModelInternal, firmwareType: FirmwareType) => {
     const version = getBundledFirmwareVersion(deviceModel, firmwareType);
+    if (!version) {
+        // Probably it is a new device model
+        return;
+    }
     const versionArray = versionUtils.tryParse(version);
     if (!versionArray) {
         throw new Error('There was error parsing bundled release.');

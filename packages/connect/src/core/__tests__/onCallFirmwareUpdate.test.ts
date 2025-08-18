@@ -40,6 +40,10 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
         });
 
     const success = '3f23230002000000060a046d656f77';
+    const latest = getBundledRelease(DeviceModelInternal.T2T1, FirmwareType.Universal);
+    if (!latest) {
+        throw new Error('Missing latest bundled release.');
+    }
 
     return {
         on: (evt: string, listener: any) => {
@@ -75,11 +79,7 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
                 return response(success);
             } else if (request === '0058') {
                 // GetFirmwareHash > FirmwareHash
-                return response(
-                    '3f23230059000000160a14' +
-                        getBundledRelease(DeviceModelInternal.T2T1, FirmwareType.Universal)
-                            .firmware_revision,
-                );
+                return response('3f23230059000000160a14' + latest.firmware_revision);
             }
 
             // Success
@@ -96,6 +96,9 @@ const buildProtobufMessage = (messages: any, override: any = {}) => {
     const internal_model = major_version === 1 ? 'T1B1' : 'T2T1';
     const deviceModel = major_version === 1 ? DeviceModelInternal.T1B1 : DeviceModelInternal.T2T1;
     const latest = getBundledRelease(deviceModel, FirmwareType.Universal);
+    if (!latest) {
+        throw new Error('Missing latest bundled release.');
+    }
     const [fw_major, fw_minor, fw_patch] = latest.version;
     const version = {
         major_version: fw_major,
@@ -130,15 +133,19 @@ const buildProtobufMessage = (messages: any, override: any = {}) => {
 };
 
 const httpRequestMock = (version?: number[]) => {
+    const finalVersion =
+        version ?? getBundledRelease(DeviceModelInternal.T2T1, FirmwareType.Universal)?.version;
+
+    if (finalVersion === undefined) {
+        throw new Error('Firmware version could not be determined.');
+    }
     const binary = Buffer.concat([
         Buffer.from('TRZV', 'utf-8'),
         Buffer.from([200]),
         Buffer.alloc(200 - 5),
         Buffer.from('TRZF', 'utf-8'),
         Buffer.alloc(12),
-        Buffer.from(
-            version || getBundledRelease(DeviceModelInternal.T2T1, FirmwareType.Universal).version,
-        ),
+        Buffer.from(finalVersion),
     ]);
 
     // as ArrayBuffer:
@@ -149,7 +156,7 @@ const httpRequestMock = (version?: number[]) => {
 const calculateFirmwareHashMock = (hash?: string) => ({
     hash:
         hash ||
-        getBundledRelease(DeviceModelInternal.T2T1, FirmwareType.Universal).firmware_revision ||
+        getBundledRelease(DeviceModelInternal.T2T1, FirmwareType.Universal)?.firmware_revision ||
         '',
     challenge: '',
 });
