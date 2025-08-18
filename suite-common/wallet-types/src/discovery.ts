@@ -8,7 +8,7 @@ type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
     isAddingHiddenWalletWithRespectToSettings?: boolean;
-    hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the disocovery started loading actual accounts
+    hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the discovery started loading actual accounts
     emptyWallet?: boolean;
     passphraseOnDevice?: boolean;
     startTimestamp?: number;
