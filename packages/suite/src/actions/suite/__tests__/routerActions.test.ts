@@ -1,8 +1,10 @@
+import { createMemoryHistory } from 'history';
+
 import { AppState } from 'src/reducers/store';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { setLocation, setNavigate } from 'src/support/suite/navigationService';
+import { createRouterServices } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from '../__fixtures__/routerActions';
@@ -48,10 +50,12 @@ const getInitialState = (
 };
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
-    const store = mockStore(state);
+    const routerServices = createRouterServices(createMemoryHistory());
+    const store = configureStore<State, any>([], {
+        routerServices,
+    })(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
         const { suite, router } = store.getState();
@@ -61,16 +65,15 @@ const initStore = (state: State) => {
         store.getActions().push(action);
     });
 
-    return store;
+    return { store, routerServices };
 };
 
 describe('Suite Actions', () => {
     fixtures.init.forEach(f => {
         it(`init: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
-            const store = initStore(state);
-            setLocation(defaultLocation);
-            setNavigate(() => {});
+            const { store, routerServices } = initStore(state);
+            routerServices.history.push(defaultLocation);
             store.dispatch(routerActions.init());
             if (f.result) {
                 expect(store.getState().router).toEqual(f.result);
@@ -82,7 +85,7 @@ describe('Suite Actions', () => {
     fixtures.onBeforePopState.forEach(f => {
         it(`onBeforePopState: ${f.description}`, () => {
             const state = getInitialState(f.state as unknown as InitialState);
-            const store = initStore(state);
+            const { store } = initStore(state);
             const result = store.dispatch(routerActions.onBeforePopState());
             expect(result).toEqual(f.result);
         });
@@ -91,12 +94,13 @@ describe('Suite Actions', () => {
     fixtures.initialRedirection.forEach(f => {
         it(`initialRedirection: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
-            const store = initStore(state);
+            const { store, routerServices } = initStore(state);
 
-            setLocation({
+            routerServices.history.push({
                 ...defaultLocation,
                 pathname: f.pathname || '/',
             });
+
             store.dispatch(routerActions.initialRedirection());
             expect(store.getState().router.app).toEqual(f.app);
         });
@@ -105,18 +109,17 @@ describe('Suite Actions', () => {
     fixtures.goto.forEach(f => {
         it(`goto: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
-            const store = initStore(state);
-
-            setLocation({
+            const { store, routerServices } = initStore(state);
+            routerServices.history.push({
                 ...defaultLocation,
                 hash: `#${f.hash}`,
             });
+
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
-                expect(store.getActions()[0].payload.url).toEqual(f.result);
-                expect(store.getActions().length).toEqual(1);
-            } else {
-                expect(store.getActions().length).toEqual(0);
+                expect(
+                    routerServices.history.location.pathname + routerServices.history.location.hash,
+                ).toEqual(f.result);
             }
         });
     });
@@ -126,7 +129,7 @@ describe('Suite Actions', () => {
             suite: { locks: { router: 1 } },
             router: { loaded: true },
         } as InitialState);
-        const store = initStore(state);
+        const { store } = initStore(state);
         store.dispatch(routerActions.onLocationChange('/'));
         expect(store.getActions().length).toEqual(0);
     });
@@ -134,12 +137,12 @@ describe('Suite Actions', () => {
     it('closeModalApp', () => {
         // @ts-expect-error this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
-        const store = initStore(state);
-
-        setLocation({
+        const { store, routerServices } = initStore(state);
+        routerServices.history.push({
             ...defaultLocation,
             pathname: '/accounts/send',
         });
+
         store.dispatch(routerActions.closeModalApp());
         expect(store.getActions().length).toEqual(2); // unlock + location change
         expect(store.getState().router.app).toEqual('wallet');

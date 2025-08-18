@@ -3,6 +3,8 @@ import { Dispatch } from 'redux';
 import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
 import { withExtraArgument } from 'redux-thunk';
 
+import type { ExtraDependencies } from '@suite-common/redux-utils';
+
 import { extraDependencies } from '../extraDependencies';
 
 interface MiddlewareAPI<D extends Dispatch = Dispatch<AnyAction>, S = any> {
@@ -19,8 +21,12 @@ interface Middleware<_DispatchExt = {}, S = any, D extends Dispatch = Dispatch<a
  */
 export const configureStore = <S, DispatchExts = {}>(
     middlewares?: Middleware[],
+    additionalExtraDeps?: Partial<ExtraDependencies>,
 ): MockStoreCreator<S, DispatchExts> =>
-    reduxMockStore([withExtraArgument(extraDependencies), ...(middlewares || [])]);
+    reduxMockStore([
+        withExtraArgument({ ...extraDependencies, ...additionalExtraDeps }),
+        ...(middlewares || []),
+    ]);
 
 /*
  * This function is useful, because a lot of test fixtures doesn't count with added thunk pending/fulfilled action that are now
