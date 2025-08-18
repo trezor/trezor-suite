@@ -313,10 +313,31 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
+
     async getDebugState() {
         const { response } = await this.client.send({ type: 'emulator-get-debug-state' });
 
         return response;
+    }
+
+    async getPairingInfo(thp_channel_id: string, nfcData?: string) {
+        // user-env expects something, cannot be undefined
+        const d = nfcData ? Buffer.from(nfcData, 'hex') : undefined;
+        const [nfc_secret_host, handshake_hash] = d
+            ? [d.subarray(0, 16), d.subarray(16)].map(b => b.toString('hex'))
+            : [null, null];
+
+        const { response } = await this.client.send({
+            type: 'emulator-get-pairing-info',
+            thp_channel_id,
+            handshake_hash,
+            nfc_secret_host,
+        });
+
+        return {
+            ...response,
+            code_entry_code: Number(response.code_entry_code).toString().padStart(6, '0'),
+        };
     }
 
     async logTestDetails(text: string) {
