@@ -3,33 +3,41 @@ import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { ExchangeConfirmation } from '../ExchangeConfirmation';
 
-jest.mock('../../../hooks/exchange/useExchangeFlow', () => ({
-    useExchangeFlow: jest.fn(),
+jest.mock('../../../hooks/exchange/useExchangeSelectQuote', () => ({
+    useExchangeSelectQuote: jest.fn(),
 }));
+
+const mockQuote = {
+    send: 'BTC',
+    receive: 'ETH',
+    exchange: 'test-provider',
+    isDex: false,
+    preapprovedStringAmount: undefined,
+};
 
 jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
     useExchangeFormContext: () => ({
-        watch: () => ({
-            send: 'BTC',
-            receive: 'ETH',
-            exchange: 'test-provider',
-            isDex: false,
-        }),
+        watch: () => mockQuote,
     }),
 }));
 
 describe('ExchangeConfirmation', () => {
-    const mockUseExchangeFlow = require('../../../hooks/exchange/useExchangeFlow').useExchangeFlow;
+    const mockUseExchangeSelectQuote =
+        require('../../../hooks/exchange/useExchangeSelectQuote').useExchangeSelectQuote;
 
     const renderConfirmation = () =>
         renderWithStoreProviderAsync(<ExchangeConfirmation />, {
             preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } },
         });
 
+    beforeEach(() => {
+        mockQuote.isDex = false;
+        mockQuote.preapprovedStringAmount = undefined;
+    });
+
     it('should render "Swap" button when canProceed is true and approval not needed', async () => {
-        mockUseExchangeFlow.mockReturnValue({
+        mockUseExchangeSelectQuote.mockReturnValue({
             canProceed: true,
-            approvalStatus: 'not_needed',
             selectQuote: jest.fn(),
             isConsentRequested: false,
             giveConsent: jest.fn(),
@@ -41,9 +49,10 @@ describe('ExchangeConfirmation', () => {
     });
 
     it('should render "Approve and swap" button when canProceed is true and approval needed', async () => {
-        mockUseExchangeFlow.mockReturnValue({
+        mockQuote.isDex = true;
+
+        mockUseExchangeSelectQuote.mockReturnValue({
             canProceed: true,
-            approvalStatus: 'needs_approval',
             selectQuote: jest.fn(),
             isConsentRequested: false,
             giveConsent: jest.fn(),
@@ -55,9 +64,10 @@ describe('ExchangeConfirmation', () => {
     });
 
     it('should render "Swap" button when canProceed is true and approval status is approved', async () => {
-        mockUseExchangeFlow.mockReturnValue({
+        mockQuote.isDex = false;
+
+        mockUseExchangeSelectQuote.mockReturnValue({
             canProceed: true,
-            approvalStatus: 'approved',
             selectQuote: jest.fn(),
             isConsentRequested: false,
             giveConsent: jest.fn(),
@@ -69,9 +79,10 @@ describe('ExchangeConfirmation', () => {
     });
 
     it('should render "Swap" button when canProceed is true and approval status is null', async () => {
-        mockUseExchangeFlow.mockReturnValue({
+        mockQuote.isDex = false;
+
+        mockUseExchangeSelectQuote.mockReturnValue({
             canProceed: true,
-            approvalStatus: null,
             selectQuote: jest.fn(),
             isConsentRequested: false,
             giveConsent: jest.fn(),
@@ -83,9 +94,10 @@ describe('ExchangeConfirmation', () => {
     });
 
     it('should not render button when canProceed is false', async () => {
-        mockUseExchangeFlow.mockReturnValue({
+        mockQuote.isDex = false;
+
+        mockUseExchangeSelectQuote.mockReturnValue({
             canProceed: false,
-            approvalStatus: 'not_needed',
             selectQuote: jest.fn(),
             isConsentRequested: false,
             giveConsent: jest.fn(),
