@@ -388,13 +388,12 @@ export const runDiscoveryThunk = createThunk(
                         deviceStateResponse.payload._state.staticSessionId!.split(':')[0],
                 );
 
-            if (isAddingHiddenWallet && duplicate) {
+            if (isAddingHiddenWallet && duplicate?.state?.staticSessionId) {
                 dispatch(
                     discoveryActions.updateDiscovery(
                         {
                             status: 'passphrase-duplicate',
-                            duplicateDeviceStaticSessionId:
-                                deviceStateResponse.payload._state.staticSessionId,
+                            duplicateDeviceStaticSessionId: duplicate.state.staticSessionId,
                         },
                         device.path,
                     ),
@@ -834,5 +833,28 @@ export const restartDiscoveryThunk = createThunk(
             // if no staticSessionId available yet it means we failed sooner, for example during pin input
             dispatch(startDiscoveryThunk({ device }));
         }
+    },
+);
+
+export const switchToDuplicatedWallet = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/switchToDuplicatedWallet`,
+    (_, { dispatch, getState }) => {
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+
+        const discovery = selectDiscoveryByDevicePath(getState(), device.path);
+
+        if (discovery?.status !== 'passphrase-duplicate') return;
+
+        dispatch(cancelDiscoveryThunk(device));
+
+        const duplicatedDevice = selectDeviceByStaticSessionId(
+            getState(),
+            discovery.duplicateDeviceStaticSessionId,
+        );
+
+        if (!duplicatedDevice) return;
+        // Switch to the duplicated wallet
+        dispatch(selectDeviceThunk({ device: duplicatedDevice }));
     },
 );

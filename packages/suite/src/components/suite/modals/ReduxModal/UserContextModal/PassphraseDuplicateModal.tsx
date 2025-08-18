@@ -1,17 +1,15 @@
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
-    selectDeviceThunk,
-    selectDevices,
-    selectDiscovery,
     startDiscoveryThunk,
+    switchToDuplicatedWallet,
 } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
@@ -29,24 +27,11 @@ export const PassphraseDuplicateModal = ({
 }: PassphraseDuplicateModalProps) => {
     const { isLocked } = useDevice();
     const dispatch = useDispatch();
-    const discoveries = useSelector(selectDiscovery);
 
     const isDeviceLocked = isLocked();
-    const devices = useSelector(selectDevices);
 
-    const duplicateDevice = devices
-        .filter(d => d.state?.staticSessionId)
-        .find(
-            d =>
-                d.state!.staticSessionId?.split(':')[0] ===
-                discovery.duplicateDeviceStaticSessionId.split(':')[0],
-        );
-    const switchToDuplicateWallet = () => {
-        // if the last selected device is the same as the duplicate passphrase, do nothing, otherwise select it
-        if (duplicateDevice) {
-            dispatch(selectDeviceThunk({ device: duplicateDevice }));
-        }
-        dispatch(cancelDiscoveryThunk(device));
+    const handleDuplicateDevicePassphrase = () => {
+        dispatch(switchToDuplicatedWallet());
     };
 
     const onTryDifferentPassphrase = () => {
@@ -68,9 +53,6 @@ export const PassphraseDuplicateModal = ({
                 ...discovery,
             }),
         );
-
-        const nextDiscovery = discoveries?.[device.path];
-        if (!nextDiscovery) return;
 
         dispatch(runDiscoveryThunk(device));
     };
@@ -94,7 +76,7 @@ export const PassphraseDuplicateModal = ({
                         >
                             <Button
                                 variant="primary"
-                                onClick={switchToDuplicateWallet}
+                                onClick={handleDuplicateDevicePassphrase}
                                 isDisabled={isDeviceLocked}
                                 isFullWidth
                             >
