@@ -84,7 +84,7 @@ const bitcoinRequestThunk = createThunk<
                 ...account.addresses.unused,
             ].find(a => a.address === address || !address);
             if (!addressInfo) throw new Error('Address not found');
-            await dispatch(
+            dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     method: 'signMessage',
                     payload: {
@@ -165,7 +165,7 @@ const bitcoinRequestThunk = createThunk<
                 console.error('composeTransaction error', precomposedTransaction);
                 throw new Error('composeTransaction error');
             }
-            await dispatch(
+            dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     method: 'signTransaction',
                     payload: {
