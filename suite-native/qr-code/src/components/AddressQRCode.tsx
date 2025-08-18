@@ -1,14 +1,19 @@
 import { Alert, Pressable, Share } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { WithLabelingState, selectAddressLabel } from '@suite-common/local-first-storage';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
+import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { AddAddressLabel } from './AddAddressLabel';
 import { QRCode } from './QRCode';
 
 type AddressQRCodeProps = {
     address: string;
+    deviceStaticSessionId: StaticSessionId;
 };
 
 const addressContainer = prepareNativeStyle(() => ({
@@ -16,7 +21,7 @@ const addressContainer = prepareNativeStyle(() => ({
     alignItems: 'center',
 }));
 
-export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
+export const AddressQRCode = ({ address, deviceStaticSessionId }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -35,6 +40,18 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
         }
     };
 
+    const label = useSelector(
+        (state: WithLabelingState) =>
+            (address !== undefined
+                ? selectAddressLabel({
+                      state,
+                      address,
+                      deviceStaticSessionId,
+                  })
+                : null
+            )?.label ?? null,
+    );
+
     return (
         <VStack spacing="sp24">
             <QRCode data={address} />
@@ -47,6 +64,11 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     {address}
                 </Text>
             </Pressable>
+            <AddAddressLabel
+                address={address}
+                deviceStaticSessionId={deviceStaticSessionId}
+                label={label}
+            />
             <HStack spacing="sp8" justifyContent="center">
                 <Button
                     size="small"

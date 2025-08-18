@@ -154,6 +154,7 @@ export const ReceiveAddressScreen = ({
                 <ReceiveAddressCard
                     symbol={account.symbol}
                     address={address}
+                    deviceStaticSessionId={account.deviceState}
                     isTokenAddress={!!tokenContract}
                     isReceiveApproved={isReceiveApproved}
                     isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
