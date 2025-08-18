@@ -20,6 +20,11 @@ const groups = {
         name: 'api-flaky',
         pattern: 'override init',
     },
+    thp: {
+        name: 'thp',
+        pattern: 'thpPairing',
+        includeFilter: '',
+    },
     management: {
         name: 'management',
         pattern: 'methods',
