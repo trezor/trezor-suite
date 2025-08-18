@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
-import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
+import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { CONTEXT_NONE, CONTEXT_USER } from 'src/actions/suite/constants/modalConstants';
@@ -15,11 +15,7 @@ export const useConnectPopupModals = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
-    const isInDiscoveryFlow =
-        discovery &&
-        discovery.status !== 'failed' &&
-        discovery.status !== 'complete' &&
-        discovery.status !== 'cancelled';
+    const isInDiscoveryFlow = isDiscoveryInProgress(discovery);
 
     // Modal opening control
     const modalContext = useSelector(state => state.modal.context);
