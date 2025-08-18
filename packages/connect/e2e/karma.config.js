@@ -125,6 +125,7 @@ module.exports = config => {
                     'process.env.TESTS_USE_WS_CACHE': JSON.stringify(
                         process.env.TESTS_USE_WS_CACHE,
                     ),
+                    'process.env.TESTS_TRANSPORT': JSON.stringify(process.env.TESTS_TRANSPORT),
                 }),
             ],
         },
