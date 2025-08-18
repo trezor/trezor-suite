@@ -1,7 +1,12 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type AccountType, type Bip43Path, type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type Bip43Path,
+    Network,
+    type NetworkSymbol,
+} from '@suite-common/wallet-config';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
@@ -278,3 +283,29 @@ export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountBy
 
     return !!account.misc.solStakingAccounts?.length;
 });
+
+export const selectAddressByNetworkAndPath = createMemoizedSelector(
+    [
+        selectAccounts,
+        (_state: AccountsRootState, network?: Network) => network,
+        (_state: AccountsRootState, _network?: Network, path?: string) => path,
+    ],
+    (accounts, network, path) => {
+        if (!network || !path) return undefined;
+
+        const networkAccounts = accounts.filter(a => a.symbol === network.symbol);
+        for (const account of networkAccounts) {
+            if (account.addresses) {
+                const address = account.addresses.unused
+                    .concat(account.addresses.used)
+                    .concat(account.addresses.change)
+                    .find(a => a.path === path);
+                if (address) return address.address;
+            } else {
+                if (account.path === path) return account.descriptor;
+            }
+        }
+
+        return undefined;
+    },
+);

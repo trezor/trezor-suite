@@ -2,7 +2,12 @@ import styled from 'styled-components';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import { selectDeviceAccounts } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAddressByNetworkAndPath,
+    selectDeviceAccounts,
+} from '@suite-common/wallet-core';
+import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
@@ -65,7 +70,14 @@ export const SignMessageModal = ({
     const network = eip712ChainId
         ? getNetworkByEvmChainId(eip712ChainId)
         : getNetwork(networkSymbol ?? 'eth');
-    const account = accounts.find(a => a.symbol === network?.symbol && a.path === serializedPath);
+
+    const address = useSelector((state: AccountsRootState) =>
+        selectAddressByNetworkAndPath(state, network, serializedPath),
+    );
+    const account =
+        network && address
+            ? findAccountsByAddress(network.symbol, address, accounts)[0]
+            : undefined;
 
     return (
         <ConnectModalBackdrop onClick={onCancel} canSwitchDevice>
@@ -116,7 +128,7 @@ export const SignMessageModal = ({
                 onCancel={onCancel}
             >
                 <Column gap={spacings.xs}>
-                    {account && (
+                    {address && (
                         <Card
                             header={
                                 <Row gap={spacings.sm}>
@@ -129,7 +141,7 @@ export const SignMessageModal = ({
                             paddingType="small"
                         >
                             <MessageText data-testid="@sign-message-modal/address">
-                                {account.descriptor}
+                                {address}
                             </MessageText>
                         </Card>
                     )}

@@ -61,7 +61,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         if (code === 'ButtonRequest_Other' && name === 'sign_message') {
             return {
                 type: 'message' as const,
-                serializedPath: getSerializedPath(this.params.address_n.slice(0, 4)),
+                serializedPath: getSerializedPath(this.params.address_n),
                 coin: this.coinInfo?.shortcut ?? 'BTC',
                 message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
             };
