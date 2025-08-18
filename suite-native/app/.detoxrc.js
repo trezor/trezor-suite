@@ -64,5 +64,25 @@ module.exports = {
             device: 'emulator',
             app: 'android.release',
         },
+        // Configuration for publishing manual tests
+        'reporter.only': {
+            device: 'emulator', // does not need device
+            app: 'android.debug', // does not need app
+            testRunner: {
+                args: {
+                    $0: 'jest',
+                    config: 'e2e/jest.config.js',
+                    maxWorkers: 1,
+                },
+            },
+            artifacts: false,
+            behavior: {
+                init: {
+                    exposeGlobals: false,
+                    reinstallApp: false,
+                },
+                launchApp: 'manual',
+            },
+        },
     },
 };

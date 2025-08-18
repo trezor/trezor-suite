@@ -18,7 +18,7 @@
         "prebuild:clean": "expo prebuild --clean",
         "build:e2e": "npx detox build --configuration",
         "test:e2e": "npx detox test --configuration ",
-        "report:manual": "npx detox test ./e2e/tests/manual/currencyChange.test.ts --configuration android.emu.debug",
+        "github:report:manual": "npx detox test --configuration reporter.only --reporters ./e2e/support/reporter/index.js --testPathPattern /manual/",
         "start:e2e": "NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo start --dev-client",
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
