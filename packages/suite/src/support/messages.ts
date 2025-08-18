@@ -9018,6 +9018,10 @@ export default defineMessages({
         id: 'TR_MOBILE_APP_PROMO_TEXT_FOOTER',
         defaultMessage: 'Sync & track on your phone with <b>Trezor Suite Lite</b>',
     },
+    TR_DASHBOARD_REFERRAL_BUTTON: {
+        id: 'TR_DASHBOARD_REFERRAL_BUTTON',
+        defaultMessage: 'Earn $20 per Referral',
+    },
     TR_PROMO_BANNER_DASHBOARD_TEX_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TEX_TITLE',
         defaultMessage: '<rest>Trezor Expert</rest> <underline>Consultation</underline>',

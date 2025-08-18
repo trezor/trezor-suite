@@ -15,6 +15,7 @@ export const DATA_TOS_INVITY_URL: Url = 'https://data.trezor.io/legal/invity-ter
 export const DOCS_ANALYTICS_URL: Url = 'https://docs.trezor.io/trezor-suite/analytics/';
 
 export const SUITE_URL: Url = 'https://trezor.io/trezor-suite';
+export const SUITE_REFERRAL: Url = 'https://trezor.io/refer-a-friend?utm_medium=desktop';
 export const SUITE_BACKUP_URL: Url = 'https://suite.trezor.io/web/backup/';
 export const SUITE_FIRMWARE_URL: Url = 'https://suite.trezor.io/web/firmware/';
 export const SUITE_UDEV_URL: Url = 'https://suite.trezor.io/web/udev/';
