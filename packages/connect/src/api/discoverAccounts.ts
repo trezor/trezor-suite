@@ -251,10 +251,12 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         }
 
         let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index);
+        descPromise.catch(() => {});
         while (true) {
             try {
                 const { descriptor, ...descRest } = await descPromise;
                 descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
+                descPromise.catch(() => {});
 
                 const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
 
@@ -283,7 +285,6 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                     return { nonempty: index - skip };
                 }
             } catch (err) {
-                descPromise.catch(() => {});
                 const path = substituteBip43Path(bip43, offset + index);
                 const { message: error, code } = err;
                 const failed = true;
