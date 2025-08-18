@@ -22,6 +22,7 @@ csstype
 date-fns
 electron-devtools-installer
 framer-motion
+history
 lottie-react
 node-addon-api
 node-loader

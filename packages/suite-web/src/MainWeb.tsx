@@ -8,7 +8,6 @@ if (!process.env.VITE) {
 import { Provider as ReduxProvider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router';
 import { init as initSentry } from '@sentry/browser';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
@@ -35,8 +34,12 @@ import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { Suspense } from 'react';
 import { webComponents } from './support/webComponents';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
+import { Router } from 'react-router';
+import type { History } from 'history';
+import { createBrowserHistory } from 'history';
+import { createRouterServices } from 'src/support/extraDependencies';
 
-const MainWeb = () => {
+const MainWeb = ({ history }: { history: History }) => {
     usePlaywright();
     useTor();
     useDebugLanguageShortcut();
@@ -48,14 +51,14 @@ const MainWeb = () => {
         // <StrictMode>
         <HelmetProvider>
             <ConnectedThemeProvider>
-                <BrowserRouter>
+                <Router location={history.location} navigator={history}>
                     <ResponsiveContextProvider>
                         <ErrorBoundary>
                             <Autodetect />
                             <Resize />
                             <Protocol />
                             <OnlineStatus />
-                            <RouterHandler />
+                            <RouterHandler history={history} />
                             <ConnectedIntlProvider>
                                 <FormatterProvider config={formattersConfig}>
                                     <Metadata />
@@ -69,7 +72,7 @@ const MainWeb = () => {
                             </ConnectedIntlProvider>
                         </ErrorBoundary>
                     </ResponsiveContextProvider>
-                </BrowserRouter>
+                </Router>
             </ConnectedThemeProvider>
         </HelmetProvider>
         // </StrictMode>
@@ -81,18 +84,24 @@ export const init = async (container: HTMLElement) => {
         initSentry(SENTRY_CONFIG);
     }
 
+    const browserHistory = createBrowserHistory();
+
     // render simple loader with theme provider without redux, wait for indexedDB
     const root = createRoot(container);
     root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
-    const store = initStore(preloadAction);
+    const store = initStore(preloadAction, {
+        additionalExtraDeps: {
+            routerServices: createRouterServices(browserHistory),
+        },
+    });
 
     store.dispatch(initSuiteLocalFirstStorageThunk());
 
     root.render(
         <ReduxProvider store={store}>
-            <MainWeb />
+            <MainWeb history={browserHistory} />
         </ReduxProvider>,
     );
 };

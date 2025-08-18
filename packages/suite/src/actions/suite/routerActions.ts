@@ -1,6 +1,8 @@
 /**
  * Use override for react-native (@suite-native/app/src/actions)
  */
+
+import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { Route } from '@suite-common/suite-types';
 
 import { ROUTER } from 'src/actions/suite/constants';
@@ -8,7 +10,6 @@ import * as suiteActions from 'src/actions/suite/suiteActions';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
-import { getLocation, navigate } from 'src/support/suite/navigationService';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     RouteParams,
@@ -87,10 +88,10 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
  * Dispatch initial url
  * Called from `@suite-middlewares/suiteMiddleware`
  */
-export const init = () => (dispatch: Dispatch, getState: GetState) => {
+export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const location = getLocation();
+        const { location } = extra.routerServices.history;
         const url = location.pathname + location.hash;
         dispatch(onLocationChange(url));
     }
@@ -106,7 +107,7 @@ export const goto =
             anchor?: AnchorType;
         } = {},
     ) =>
-    (dispatch: Dispatch, getState: GetState) => {
+    (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { params, preserveParams, anchor } = options;
 
         const state = getState();
@@ -130,12 +131,12 @@ export const goto =
 
             return;
         }
-        const location = getLocation();
+        const { location } = extra.routerServices.history;
         const newUrl = `${urlBase}${preserveParams ? location.hash : ''}`;
-        dispatch(onLocationChange(newUrl, anchor));
 
         const route = findRouteByName(routeName);
 
+        dispatch(onLocationChange(newUrl, anchor));
         if (route?.isForegroundApp) {
             dispatch(suiteActions.lockRouter(true));
 
@@ -143,13 +144,13 @@ export const goto =
             // where we want to have suite-start router clearing the URL to ensure
             // that there isn't a state stuck
             if (route?.clearUrl) {
-                navigate(urlBase);
+                extra.routerServices.navigate(urlBase);
             }
 
             return;
         }
 
-        navigate(newUrl);
+        extra.routerServices.navigate(newUrl);
     };
 
 /**
@@ -159,10 +160,10 @@ export const goto =
  */
 export const closeModalApp =
     (preserveParams = true) =>
-    (dispatch: Dispatch) => {
+    (dispatch: Dispatch, _: GetState, extra: ExtraDependencies) => {
         dispatch(suiteActions.lockRouter(false));
 
-        const route = getBackgroundRoute();
+        const route = getBackgroundRoute(extra);
 
         // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
         // so we need a fallback to suite-index
@@ -170,10 +171,10 @@ export const closeModalApp =
             return dispatch(goto('suite-index'));
         }
 
-        const location = getLocation();
+        const { location } = extra.routerServices.history;
 
         if (!preserveParams && location.hash.length > 0) {
-            navigate(getPrefixedURL(location.pathname));
+            extra.routerServices.navigate(getPrefixedURL(location.pathname));
         } else {
             // + history.location.hash is here to preserve params (e.g. nth account)
             dispatch(onLocationChange(location.pathname + location.hash));
@@ -184,20 +185,23 @@ export const closeModalApp =
  * Called from `@suite-middlewares/suiteMiddleware`
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
-export const initialRedirection = () => (dispatch: Dispatch, getState: GetState) => {
-    const location = getLocation();
-    const route = findRoute(location.pathname + location.hash);
+export const initialRedirection = createThunk(
+    '@suite/initial-redirection',
+    (_, { dispatch, getState, extra }) => {
+        const { location } = extra.routerServices.history;
+        const route = findRoute(location.pathname + location.hash);
 
-    const { initialRun } = getState().suite.flags;
-    // only do initial redirection of route is valid
-    // otherwise do nothing -> just show 404 page
-    if (!route) {
-        return;
-    }
+        const { initialRun } = getState().suite.flags;
+        // only do initial redirection of route is valid
+        // otherwise do nothing -> just show 404 page
+        if (!route) {
+            return;
+        }
 
-    if (route.isForegroundApp) {
-        dispatch(goto(route.name));
-    } else if (initialRun) {
-        dispatch(goto('suite-start'));
-    }
-};
+        if (route.isForegroundApp) {
+            dispatch(goto(route.name));
+        } else if (initialRun) {
+            dispatch(goto('suite-start'));
+        }
+    },
+);

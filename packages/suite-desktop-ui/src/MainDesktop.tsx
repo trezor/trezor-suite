@@ -2,7 +2,7 @@
 import { Provider as ReduxProvider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import { init as initSentry } from '@sentry/electron/renderer';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
@@ -43,9 +43,15 @@ import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
+<<<<<<< HEAD
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
+||||||| parent of 0ba493b2eb (fix(suite): routing flashing)
+=======
+import { type History, createMemoryHistory } from 'history';
+import { createRouterServices } from 'src/support/extraDependencies';
+>>>>>>> 0ba493b2eb (fix(suite): routing flashing)
 
-const MainDesktop = () => {
+const MainDesktop = ({ history }: { history: History }) => {
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupDesktop();
@@ -58,14 +64,14 @@ const MainDesktop = () => {
         <HelmetProvider>
             <TrafficLightDraggableWindowHeader />
             <ConnectedThemeProvider>
-                <MemoryRouter>
+                <Router location={history.location} navigator={history}>
                     <ResponsiveContextProvider>
                         <ErrorBoundary>
                             <Autodetect />
                             <Resize />
                             <Protocol />
                             <OnlineStatus />
-                            <RouterHandler />
+                            <RouterHandler history={history} />
                             <ConnectedIntlProvider>
                                 <FormatterProvider config={formattersConfig}>
                                     <DesktopUpdater>
@@ -81,7 +87,7 @@ const MainDesktop = () => {
                             </ConnectedIntlProvider>
                         </ErrorBoundary>
                     </ResponsiveContextProvider>
-                </MemoryRouter>
+                </Router>
             </ConnectedThemeProvider>
         </HelmetProvider>
         // </StrictMode>
@@ -95,9 +101,13 @@ export const init = async (container: HTMLElement) => {
     const root = createRoot(container);
     root.render(<LoadingScreen />);
 
+    const memoryHistory = createMemoryHistory();
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
-    const store = initStore(preloadAction, statePatch);
+    const store = initStore(preloadAction, {
+        statePatch,
+        additionalExtraDeps: { routerServices: createRouterServices(memoryHistory) },
+    });
 
     // Expose Redux store for Playwright/e2e tests
     if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
@@ -161,7 +171,7 @@ export const init = async (container: HTMLElement) => {
     // finally render whole app
     root.render(
         <ReduxProvider store={store}>
-            <MainDesktop />
+            <MainDesktop history={memoryHistory} />
         </ReduxProvider>,
     );
 };
