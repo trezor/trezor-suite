@@ -1,4 +1,4 @@
-import { useNavigationState } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import type { NavigationState } from '@react-navigation/routers';
 
 import { AppTabsParamList } from '../navigators';
@@ -23,8 +23,11 @@ export const getActiveRouteName = (state: AppNavigationState): string | undefine
  * The value should be same as from useRoute hook provided by lib, but that hook can only be used in
  * components downstream of the stack navigators! In components above the navigators, use this hook.
  */
-export const useNavigationRoute = () =>
-    useNavigationState(state => getActiveRouteName(state as AppNavigationState));
+export const useNavigationRoute = () => {
+    const navigation = useNavigation();
+
+    return getActiveRouteName(navigation.getState() as AppNavigationState);
+};
 
 /**
  * Determine if the most specific active route name matches the query.
