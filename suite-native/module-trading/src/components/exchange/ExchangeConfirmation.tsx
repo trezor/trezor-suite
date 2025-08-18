@@ -4,8 +4,9 @@ import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { ExchangeLegalSheet } from './ExchangeLegalSheet';
-import { useExchangeFlow } from '../../hooks/exchange/useExchangeFlow';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
+import { useExchangeSelectQuote } from '../../hooks/exchange/useExchangeSelectQuote';
+import { getApprovalStatus } from '../../utils/general/approvalStatusUtils';
 
 export type ExchangeConfirmationProps = {
     enteringAnimation?: AnimatedProps<any>['entering'];
@@ -16,16 +17,11 @@ const CONFIRMATION_TEST_ID = '@trading/exchange/continue-button';
 export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmationProps) => {
     const form = useExchangeFormContext();
 
-    const {
-        canProceed,
-        approvalStatus,
-        selectQuote,
-        isConsentRequested,
-        giveConsent,
-        cancelConsent,
-    } = useExchangeFlow(form);
+    const { canProceed, selectQuote, isConsentRequested, giveConsent, cancelConsent } =
+        useExchangeSelectQuote(form);
 
     const quote = form.watch('quote');
+    const approvalStatus = getApprovalStatus(quote);
 
     const { send = '', receive = '', exchange = '', isDex = false } = quote ?? {};
 
