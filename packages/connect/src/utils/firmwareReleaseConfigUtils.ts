@@ -1,4 +1,4 @@
-import { decode, verify } from 'jws';
+import { decode } from 'jws';
 
 import { FirmwareReleaseConfig } from '@trezor/device-utils';
 import { getJWSPublicKey } from '@trezor/env-utils';
