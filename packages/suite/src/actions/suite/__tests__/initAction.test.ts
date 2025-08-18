@@ -1,3 +1,5 @@
+import { createMemoryHistory } from 'history';
+
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
@@ -34,11 +36,11 @@ import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import walletReducers from 'src/reducers/wallet';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { setLocation, setNavigate } from 'src/support/suite/navigationService';
+import { createRouterServices, extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import type { AppState } from 'src/types/suite';
 
+import { initialRedirection } from '../routerActions';
 import { appChanged } from '../suiteActions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
@@ -97,10 +99,12 @@ const fixtures: Fixture[] = [
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
+            initialRedirection.pending.type,
             appChanged.type,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
             connectInitThunk.pending.type,
+            initialRedirection.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -144,7 +148,9 @@ const fixtures: Fixture[] = [
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
+            initialRedirection.pending.type,
             connectInitThunk.pending.type,
+            initialRedirection.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -189,7 +195,9 @@ const fixtures: Fixture[] = [
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
+            initialRedirection.pending.type,
             connectInitThunk.pending.type,
+            initialRedirection.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -234,10 +242,12 @@ const fixtures: Fixture[] = [
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
+            initialRedirection.pending.type,
             appChanged.type,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
             connectInitThunk.pending.type,
+            initialRedirection.fulfilled.type,
             connectInitThunk.rejected.type,
             SUITE.ERROR,
         ],
@@ -247,7 +257,11 @@ const fixtures: Fixture[] = [
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, any>([suiteMiddleware]);
+    const memoryHistory = createMemoryHistory();
+    const routerServices = createRouterServices(memoryHistory);
+    const mockStore = configureStore<State, any>([suiteMiddleware], {
+        routerServices,
+    });
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().slice(-1)[0];
@@ -256,23 +270,19 @@ const initStore = (state: State) => {
         store.getState().router = routerReducer(router, action);
     });
 
-    return store;
+    return {
+        store,
+        routerServices,
+    };
 };
 
 describe('Suite init action', () => {
     fixtures.forEach(({ description, options, actions }) => {
         it(description, async () => {
-            const store = initStore(getInitialState(options.initialRun));
+            const { store, routerServices } = initStore(getInitialState(options.initialRun));
 
             if (options?.initialPath) {
-                setLocation({
-                    pathname: options.initialPath,
-                    state: undefined,
-                    key: '',
-                    hash: '',
-                    search: '',
-                });
-                setNavigate(() => {});
+                routerServices.history.push(options.initialPath);
             }
 
             if (options?.trezorConnectError) {

@@ -21,6 +21,7 @@ css-minimizer-webpack-plugin
 csstype
 date-fns
 framer-motion
+history
 lottie-react
 node-addon-api
 node-loader

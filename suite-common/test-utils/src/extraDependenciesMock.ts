@@ -1,4 +1,7 @@
+import type { NavigateOptions } from 'react-router';
+
 import { createAction } from '@reduxjs/toolkit';
+import { To, createMemoryHistory } from 'history';
 
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
@@ -140,4 +143,12 @@ export const extraDependenciesMock: ExtraDependencies = {
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckProps) =>
             console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
     },
+    routerServices: (() => {
+        const history = createMemoryHistory();
+
+        return {
+            history,
+            navigate: (to: To, options?: NavigateOptions) => history.push(to, options),
+        };
+    })(),
 };

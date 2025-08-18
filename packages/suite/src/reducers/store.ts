@@ -38,6 +38,7 @@ import { extraDependencies } from '../support/extraDependencies';
 import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -110,9 +111,9 @@ type RootReducerShape = typeof rootReducer;
 type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export const initStore = (
+export const initStore = <E extends Partial<ExtraDependencies>>(
     preloadStoreAction?: PreloadStoreAction,
-    statePatch?: Record<string, any>,
+    options: { statePatch?: Record<string, any>; additionalExtraDeps?: E } = {},
 ) => {
     // get initial state by calling STORAGE.LOAD action with optional payload
     // payload will be processed in each reducer explicitly
@@ -121,11 +122,11 @@ export const initStore = (
         : undefined;
 
     const patchedState =
-        preloadedState && statePatch && patchConfirm(statePatch)
+        preloadedState && options.statePatch && patchConfirm(options.statePatch)
             ? mergeDeepObject.withOptions(
                   { dotNotation: true },
                   preloadedState,
-                  statePatch as Partial<AppState>,
+                  options.statePatch as Partial<AppState>,
               )
             : preloadedState;
 
@@ -142,7 +143,12 @@ export const initStore = (
                         'modal.payload.decision.reject',
                     ],
                 },
-                thunk: { extraArgument: extraDependencies },
+                thunk: {
+                    extraArgument: {
+                        ...extraDependencies,
+                        ...(options.additionalExtraDeps ?? {}),
+                    },
+                },
             }).concat(getCustomMiddleware()),
         devTools,
     } as const);

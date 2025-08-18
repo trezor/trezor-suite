@@ -3,7 +3,7 @@ export default [
         description: 'Action ignored',
         initialState: {},
         action: {
-            type: 'foo',
+            location: '/foo',
         },
         result: undefined,
     },

@@ -10,6 +10,7 @@ import { FeeLevel } from '@trezor/connect';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
+import { selectRouter } from 'src/reducers/suite/routerReducer';
 import { Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`
@@ -29,7 +30,7 @@ export const TradingRedirect = () => {
         redirectToSellOffers,
         redirectToExchangeOffers,
     } = useTradingRedirect();
-    const router = useSelector(state => state.router);
+    const router = useSelector(selectRouter);
 
     const dispatch = useDispatch();
 

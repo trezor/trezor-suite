@@ -1,8 +1,11 @@
+import type { NavigateOptions, To } from 'react-router';
+
 import {
     ActionCreatorWithPayload,
     ActionCreatorWithPreparedPayload,
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
+import type { History } from 'history';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import {
@@ -107,6 +110,10 @@ export type ExtraDependencies = {
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
         reportSecurityCheck: (props: ReportSecurityCheckProps) => void;
+    };
+    routerServices: {
+        history: History;
+        navigate: (to: To, options?: NavigateOptions) => void;
     };
 };
 

@@ -1,10 +1,10 @@
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
-import { getLocation } from 'src/support/suite/navigationService';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
@@ -185,8 +185,8 @@ export const getTopLevelRoute = (url: string) => {
  * Used only in application modal.
  * Returns Route of application beneath the application modal. (real Router value)
  */
-export const getBackgroundRoute = () => {
-    const location = getLocation();
+export const getBackgroundRoute = (extra: ExtraDependencies) => {
+    const { location } = extra.routerServices.history;
 
     return findRoute(location.pathname + location.hash);
 };
