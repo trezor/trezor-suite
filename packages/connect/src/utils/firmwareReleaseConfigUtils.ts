@@ -6,109 +6,106 @@ import { getJWSPublicKey } from '@trezor/env-utils';
 import { firmwareReleaseConfigAssets } from './assetUtils';
 import { FirmwareUpdateSource, getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
 
-const JWS_SIGN_ALGORITHM = 'ES256';
-const VERSION = 1;
-const JWS_RELEASES_FILENAME_REMOTE = `releases.v${VERSION}.json`;
+const JWS_CONFIG = {
+    SIGN_ALGORITHM: 'ES256',
+    VERSION: 1,
+    REMOTE_FILENAME: 'releases.v1.json',
+    REQUEST_TIMEOUT_MS: 5000,
+};
 
-const getReleaseJWS = async () => {
+type JwsInfo = {
+    jws: string;
+    source: 'remote' | 'local';
+    env: FirmwareUpdateSource;
+};
+
+const fetchRemoteJWS = async (): Promise<JwsInfo> => {
     const { BASE_URL, MIDDLE_PATH, env } = getOnlineFirmwareBaseUrl();
-    const remoteReleasesUrl = `${BASE_URL}/${MIDDLE_PATH}/${env === 'production' ? 'config/' : ''}${JWS_RELEASES_FILENAME_REMOTE}`;
+
+    const remoteReleasesUrl = new URL(BASE_URL);
+    remoteReleasesUrl.pathname = `${MIDDLE_PATH}/${env === 'production' ? 'config/' : ''}${JWS_CONFIG.REMOTE_FILENAME}`;
 
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const timeoutId = setTimeout(() => controller.abort(), JWS_CONFIG.REQUEST_TIMEOUT_MS);
 
-        const response = await fetch(remoteReleasesUrl, {
-            signal: controller.signal,
-        });
-
+        const response = await fetch(remoteReleasesUrl.toString(), { signal: controller.signal });
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-            throw new Error(response.statusText);
+            throw new Error(`Fetching error with status: ${response.status}`);
         }
 
-        const releasesJws = await response.text();
+        const data = await response.json();
 
-        const parsedConfig = JSON.parse(releasesJws);
-
-        return {
-            releasesJws: parsedConfig.jws,
-            isRemote: true,
-            env,
-        };
+        return { jws: data.jws, source: 'remote', env };
     } catch (error) {
-        console.error(`Fetching of remote firmware release config failed: ${error}`);
+        console.error(
+            `Fetching remote firmware release failed: ${error}. Falling back to local config.`,
+        );
 
-        return {
-            releasesJws: firmwareReleaseConfigAssets.jws,
-            isRemote: false,
-            env,
-        };
+        // Fallback to the local asset if the remote fetch fails.
+        return { jws: firmwareReleaseConfigAssets.jws, source: 'local', env };
     }
 };
 
-const verifyFirmwareRelease = (
-    releasesJws: string,
-    isRemote: boolean,
-    env: FirmwareUpdateSource,
-) => {
-    let decodedJws = decode(releasesJws);
-    if (!decodedJws) {
-        throw new Error('Decoding of releases failed.');
+const decodeJwsPayload = (jws: string): any => {
+    const decoded = decode(jws);
+    if (!decoded || !decoded.payload) {
+        throw new Error('Failed to decode JWS or payload is missing.');
     }
 
-    if (isRemote) {
-        const decodedJwsLocal = decode(firmwareReleaseConfigAssets.jws);
-        if (!decodedJwsLocal || !decodedJwsLocal.payload) {
-            // Sanity check, local config should always be there and should be possible to decode it.
-            throw new Error('Local firmware release config missing.');
-        }
-        const localJws = JSON.parse(decodedJwsLocal?.payload);
-        if (localJws.version !== VERSION) {
-            // Sanity check, local config should always be the hard-coded version.
-            throw new Error(`Local firmware release config expected version ${VERSION}.`);
-        }
-        if (localJws.sequence >= decodedJws.payload.sequence) {
-            // If we fetch remote but local is newer or equal to remote then we use local.
-            decodedJws = decodedJwsLocal;
-        }
+    return JSON.parse(decoded.payload);
+};
+
+const verifyJwsSignature = (jws: string, publicKey: string): void => {
+    const decoded = decode(jws);
+    if (decoded?.header.alg !== JWS_CONFIG.SIGN_ALGORITHM) {
+        throw new Error(
+            `Invalid JWS algorithm: expected ${JWS_CONFIG.SIGN_ALGORITHM}, got ${decoded?.header.alg}`,
+        );
     }
 
-    const algorithmInHeader = decodedJws?.header.alg;
-    if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-        throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-    }
-
-    const JWSPublicKey = getJWSPublicKey(
-        'firmware-release',
-        // When using local we always want to use CodeSignKey.
-        ['test-signed', 'production'].includes(env) || !isRemote,
-    );
-    if (!JWSPublicKey) {
-        throw new Error('JWS public key is not defined!');
-    }
-
-    try {
-        const isAuthenticityValid = verify(releasesJws, JWS_SIGN_ALGORITHM, JWSPublicKey);
-        if (!isAuthenticityValid) {
-            throw new Error('Config authenticity is invalid');
-        }
-
-        return JSON.parse(decodedJws.payload);
-    } catch (error) {
-        console.error('Error validating:', error);
-        throw new Error(`Failed to validate release message: ${error.message}`);
+    if (!verify(jws, JWS_CONFIG.SIGN_ALGORITHM, publicKey)) {
+        throw new Error('JWS signature is invalid.');
     }
 };
 
 export const getFirmwareReleaseConfig = async () => {
-    const { releasesJws, isRemote, env } = await getReleaseJWS();
-    const config: FirmwareReleaseConfig = verifyFirmwareRelease(releasesJws, isRemote, env);
+    const { jws: remoteJws, source: initialSource, env } = await fetchRemoteJWS();
+
+    let finalJws = remoteJws;
+    let finalSource = initialSource;
+
+    if (initialSource === 'remote') {
+        try {
+            const remotePayload = decodeJwsPayload(remoteJws);
+            const localPayload = decodeJwsPayload(firmwareReleaseConfigAssets.jws);
+
+            // Sanity check local config version.
+            if (localPayload.version !== JWS_CONFIG.VERSION) {
+                throw new Error(`Local config has mismatched version: ${localPayload.version}`);
+            }
+
+            // If local is newer or same sequence, prefer it over remote.
+            if (localPayload.sequence >= remotePayload.sequence) {
+                finalJws = firmwareReleaseConfigAssets.jws;
+                finalSource = 'local';
+            }
+        } catch (error) {
+            console.error(`Error comparing remote/local JWS: ${error}. Using remote as is.`);
+        }
+    }
+
+    const useProductionKey = ['test-signed', 'production'].includes(env) || finalSource === 'local';
+    const publicKey = getJWSPublicKey('firmware-release', useProductionKey);
+
+    verifyJwsSignature(finalJws, publicKey);
+    const config = decodeJwsPayload(finalJws);
 
     return {
         config,
-        isRemote,
+        isRemote: finalSource === 'remote',
     };
 };
 
@@ -116,12 +113,12 @@ export const getOnlyLocalFirmwareReleaseConfig = (): {
     config: FirmwareReleaseConfig;
     isRemote: false;
 } => {
-    // The bundled local is always the production one so hard-code production env here.
-    const config: FirmwareReleaseConfig = verifyFirmwareRelease(
-        firmwareReleaseConfigAssets.jws,
-        false,
-        'production',
-    );
+    const localJws = firmwareReleaseConfigAssets.jws;
+    // For local-only, we always use the production signing key.
+    const publicKey = getJWSPublicKey('firmware-release', true);
+
+    verifyJwsSignature(localJws, publicKey);
+    const config = decodeJwsPayload(localJws);
 
     return {
         config,
