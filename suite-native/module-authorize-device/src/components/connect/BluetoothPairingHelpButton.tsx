@@ -15,10 +15,10 @@ export const BluetoothPairingHelpButton = ({
 }: BluetoothPairingHelpButtonProps) => {
     const { showAlert } = useAlert();
 
-    const showBluetoothPairingHintsAlert = () => {
+    const showBluetoothPairingAlert = () => {
         onShowAlert();
         showAlert({
-            title: <Translation id="moduleConnectDevice.helpModal.pairing.hints.title" />,
+            title: <Translation id="moduleConnectDevice.helpModal.pairing.title" />,
             primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
             primaryButtonVariant: 'blueBold',
             onPressPrimaryButton: onHideAlert,
@@ -31,7 +31,7 @@ export const BluetoothPairingHelpButton = ({
             colorScheme="tertiaryElevation0"
             size="medium"
             iconName="question"
-            onPress={showBluetoothPairingHintsAlert}
+            onPress={showBluetoothPairingAlert}
         />
     );
 };

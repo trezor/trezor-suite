@@ -23,7 +23,6 @@ import { TimerId } from '@trezor/type-utils';
 
 import { BluetoothPairingHelpButton } from '../../components/connect/BluetoothPairingHelpButton';
 import { BluetoothPairingHints } from '../../components/connect/BluetoothPairingHints';
-import { BluetoothPairingSettings } from '../../components/connect/BluetoothPairingSettings';
 import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
 
 type NavigationProps = StackNavigationProps<
@@ -38,7 +37,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
 
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
     const hasKnownBluetoothDevices = useSelector(selectHasKnownBluetoothDevices);
-    const unknownNearbyDevices = useSelector(selectUnknownNearbyBluetoothDevices);
+    const unknownNearbyBluetoothDevices = useSelector(selectUnknownNearbyBluetoothDevices);
 
     const navigateToConnectAndUnlockDeviceScreen = () => {
         navigation.replace(AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice);
@@ -48,81 +47,55 @@ export const TurnOnAndUnlockDeviceScreen = () => {
         navigation.replace(AuthorizeDeviceStackRoutes.RemoveBluetoothDevice);
     }, [navigation]);
 
-    const showBluetoothPairingSettingsAlert = useCallback(() => {
-        setTimeout(
-            () =>
-                showAlert({
-                    title: (
-                        <Translation id="moduleConnectDevice.helpModal.pairing.settings.title" />
-                    ),
-                    description: (
-                        <Translation id="moduleConnectDevice.helpModal.pairing.settings.subtitle" />
-                    ),
-                    primaryButtonTitle: (
-                        <Translation id="moduleConnectDevice.helpModal.pairing.settings.pairAgainButton" />
-                    ),
-                    primaryButtonVariant: 'blueBold',
-                    onPressPrimaryButton: navigateToRemoveBluetoothDeviceScreen,
-                    secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                    secondaryButtonVariant: 'blueElevation0',
-                    onPressSecondaryButton: navigation.goBack,
-                    appendix: <BluetoothPairingSettings />,
-                }),
-            1, // ensures the previous alert disappears first
-        );
-    }, [showAlert, navigateToRemoveBluetoothDeviceScreen, navigation]);
-
-    const setBluetoothPairingHintsAlertTimeout = useCallback(() => {
+    const setBluetoothPairingAlertTimeout = useCallback(() => {
         timeoutIdRef.current = setTimeout(
             () =>
                 showAlert({
-                    title: (
-                        <Translation id="moduleConnectDevice.helpModal.pairing.hints.altTitle" />
-                    ),
+                    title: <Translation id="moduleConnectDevice.helpModal.pairing.altTitle" />,
                     primaryButtonTitle: (
-                        <Translation id="moduleConnectDevice.helpModal.pairing.hints.scanAgainButton" />
+                        <Translation id="moduleConnectDevice.helpModal.pairing.scanAgainButton" />
                     ),
                     primaryButtonVariant: 'blueBold',
-                    onPressPrimaryButton: setBluetoothPairingHintsAlertTimeout,
+                    onPressPrimaryButton: setBluetoothPairingAlertTimeout,
                     secondaryButtonTitle: (
                         <Translation
                             id={
                                 hasKnownBluetoothDevices
-                                    ? 'moduleConnectDevice.helpModal.pairing.hints.stillNotWorkingButton'
+                                    ? 'moduleConnectDevice.helpModal.pairing.stillNotWorkingButton'
                                     : 'generic.buttons.cancel'
                             }
                         />
                     ),
                     secondaryButtonVariant: 'blueElevation0',
                     onPressSecondaryButton: hasKnownBluetoothDevices
-                        ? showBluetoothPairingSettingsAlert
+                        ? navigateToRemoveBluetoothDeviceScreen
                         : navigation.goBack,
                     appendix: <BluetoothPairingHints />,
                 }),
             15_000,
         );
-    }, [showAlert, hasKnownBluetoothDevices, showBluetoothPairingSettingsAlert, navigation]);
+    }, [showAlert, hasKnownBluetoothDevices, navigateToRemoveBluetoothDeviceScreen, navigation]);
 
-    const clearBluetoothPairingHintsAlertTimeout = () => {
+    const clearBluetoothPairingAlertTimeout = () => {
         clearTimeout(timeoutIdRef.current);
     };
 
     useFocusEffect(
         useCallback(() => {
             if (bluetoothAdapterStatus === 'enabled') {
-                setBluetoothPairingHintsAlertTimeout();
+                setBluetoothPairingAlertTimeout();
 
-                return clearBluetoothPairingHintsAlertTimeout;
+                return clearBluetoothPairingAlertTimeout;
             }
-        }, [bluetoothAdapterStatus, setBluetoothPairingHintsAlertTimeout]),
+        }, [bluetoothAdapterStatus, setBluetoothPairingAlertTimeout]),
     );
 
     useEffect(() => {
-        if (unknownNearbyDevices.length > 0) {
+        if (unknownNearbyBluetoothDevices.length > 0) {
             hideAlert();
             navigation.navigate(AuthorizeDeviceStackRoutes.ConnectBluetoothDevice);
         }
-    }, [unknownNearbyDevices, hideAlert, navigation]);
+    }, [unknownNearbyBluetoothDevices, hideAlert, navigation]);
 
     useBluetoothManager();
 
@@ -132,8 +105,8 @@ export const TurnOnAndUnlockDeviceScreen = () => {
                 <ConnectDeviceScreenHeader
                     helpButton={
                         <BluetoothPairingHelpButton
-                            onShowAlert={clearBluetoothPairingHintsAlertTimeout}
-                            onHideAlert={setBluetoothPairingHintsAlertTimeout}
+                            onShowAlert={clearBluetoothPairingAlertTimeout}
+                            onHideAlert={setBluetoothPairingAlertTimeout}
                         />
                     }
                 />
