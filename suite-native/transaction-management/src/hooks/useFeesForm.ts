@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { getNetworkType } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     FeesRootState,
@@ -41,8 +40,6 @@ export const useFeesForm = ({
         symbol: account?.symbol,
     });
 
-    const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
-
     const minimalFeeLimit =
         'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
 
@@ -57,7 +54,7 @@ export const useFeesForm = ({
         },
         context: {
             networkFeeInfo,
-            networkType,
+            symbol: account?.symbol,
             minimalFeeLimit,
         },
     });
