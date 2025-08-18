@@ -37,8 +37,8 @@ const RELEASES_URL_REMOTE_BASE = {
     MIDDLE_PATH: 'firmware',
 };
 const UNSIGNED_URL_REMOTE_BASE = {
-    BASE_URL: 'https://suite.corp.sldev.cz',
-    MIDDLE_PATH: 'firmware/unsigned',
+    BASE_URL: 'https://data.trezor.io',
+    MIDDLE_PATH: 'dev/firmware/releases/unsigned',
 };
 const SIGNED_URL_REMOTE_BASE = {
     BASE_URL: 'https://suite.corp.sldev.cz',
