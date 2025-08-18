@@ -2544,3 +2544,9 @@ section > div .divider span:after {
 .iframe-failure .cancel {
     margin-top: 16px;
 }
+
+.thp-pairing {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}

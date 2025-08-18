@@ -166,6 +166,9 @@ export const handleUIAffectingMessage = (message: CoreEventMessage) => {
         case UI_REQUEST.INVALID_PASSPHRASE:
             view.initInvalidPassphraseView(message.payload);
             break;
+        case UI_REQUEST.REQUEST_THP_PAIRING:
+            showView('thp-pairing');
+            break;
         // no default
     }
 };
