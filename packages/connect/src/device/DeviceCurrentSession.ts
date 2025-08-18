@@ -40,6 +40,8 @@ const allowedCallsBeforeInitialize: Messages.MessageKey[] = [
     'RebootToBootloader',
     'FirmwareErase',
     'FirmwareUpload',
+    // Wallet recovery may also be called before Initialize
+    'RecoveryDevice',
     // There are other, which are allowed by firmware (ApplySettings,...) but we do not use them this way in connect.
 ];
 
