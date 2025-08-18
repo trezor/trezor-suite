@@ -22,6 +22,7 @@ export const ThpPairingPinEntryModal = () => {
     return (
         <Modal
             onCancel={onCancel}
+            isBackdropCancelable={false}
             size="small"
             data-testid="@modal/thp-paring"
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}

@@ -20,6 +20,7 @@ export const ThpAutoconnectionModal = ({ device }: ThpAutoconnectionModalProps) 
             device={device}
             title="TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR"
             onCancel={onCancel}
+            enableBackdropClick={false}
         />
     );
 };
