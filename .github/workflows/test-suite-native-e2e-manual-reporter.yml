@@ -1,5 +1,5 @@
-name: "[Test] Release Suite Sanity test publisher"
-# Runs Playwright reporter, creating manual regressions release suite in GitHub"
+name: "[Test] Release Suite Native Sanity test publisher"
+# Runs Native reporter, creating manual regressions release suite in GitHub"
 
 on:
   workflow_dispatch:
@@ -8,14 +8,13 @@ on:
         description: "(optional) Run the publisher for specific tests. Can be multiple tests' filenames separated by whitespace. Ex: test1.test.ts test2.test.ts"
         required: false
         default: ""
-  workflow_call:
 
 concurrency:
   group: manual-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  run-e2e-suite-manual-tests:
+  run_android_e2e_tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
 
@@ -27,18 +26,28 @@ jobs:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
-      - name: Checkout
+      - name: Checkout project
         uses: actions/checkout@v4
         with:
-          submodules: true
-          ref: ${{ github.sha }}
-          fetch-depth: 2
+          submodules: "true"
 
-      - name: Setup Node.js
+      - name: Install node and yarn
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           cache: yarn
+
+      - name: Load node modules cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules/${{ github.ref }}/${{github.run_id}}
+
+      - name: Install Yarn dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn install
 
       - name: Extract Release Build
         id: extract_branch
@@ -46,13 +55,7 @@ jobs:
         run: |
           echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
 
-      - name: Install PW Dependencies
-        shell: bash
-        run: |
-          echo "Installing Playwright dependencies"
-          yarn workspaces focus @trezor/suite-desktop-core
-
-      - name: Run Playwright Reporter
+      - name: Run Detox Reporter
         shell: bash
         env:
           GITHUB_ACTION: true
@@ -60,5 +63,5 @@ jobs:
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
         run: |
-          echo "Starting Playwright Reporter for manual regression suite"
-          yarn workspace @trezor/suite-desktop-core github:report:manual ${{ inputs.testFilter }}
+          echo "Starting Detox Reporter for manual regression suite"
+          yarn workspace @suite-native/app github:report:manual ${{ inputs.testFilter }}
