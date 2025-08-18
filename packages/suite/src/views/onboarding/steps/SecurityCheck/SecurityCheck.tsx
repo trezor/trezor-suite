@@ -26,6 +26,7 @@ import {
 } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
@@ -144,6 +145,8 @@ const SecurityCheckContent = ({
             rerun();
         } else if (isOnboardingActive) {
             goToNextStep('firmware');
+            // ensure that we are not stuck in the 'start' FullscreenApp
+            dispatch(routerActions.goto('onboarding-index'));
         } else {
             dispatch(goto('onboarding-index'));
         }
