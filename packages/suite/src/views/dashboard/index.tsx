@@ -9,9 +9,9 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
+import { DashboardFooter } from './DashboardFooter';
 import { DashboardPassphraseBanner } from './DashboardPassphraseBanner';
 import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
-import { DesktopSuitePromoBanner } from './DesktopSuitePromoBanner';
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { StakeEthCard } from './StakeEthCard/StakeEthCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
@@ -36,7 +36,7 @@ export const Dashboard = () => {
             <DashboardPromoBanner />
             <AssetsView />
             <StakeEthCard />
-            <DesktopSuitePromoBanner />
+            <DashboardFooter />
         </Column>
     );
 };

@@ -13,8 +13,8 @@ const Wrapper = styled.button<{ $isGuideOpen: boolean; $elevation: Elevation }>`
     align-items: center;
     position: fixed;
     z-index: ${zIndices.guideButton};
-    bottom: 18px;
-    right: 18px;
+    bottom: 15px;
+    right: 15px;
     width: 40px;
     height: 40px;
     border-radius: 50%;

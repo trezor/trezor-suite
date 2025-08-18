@@ -672,6 +672,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.ReferralButton;
+          payload: {
+              hasAtLeastOneRememberedWallet: boolean;
+          };
+      }
+    | {
           type: EventType.SettingsMultiShareBackup;
           payload: {
               action: 'start' | 'done' | 'learn-more' | 'close-modal';

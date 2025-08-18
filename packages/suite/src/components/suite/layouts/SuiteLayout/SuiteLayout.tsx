@@ -88,7 +88,7 @@ export const ContentWrapper = styled.div`
     padding: ${spacingsPx.xxl} ${HORIZONTAL_LAYOUT_PADDINGS} 134px ${HORIZONTAL_LAYOUT_PADDINGS};
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        padding-bottom: ${spacingsPx.xxxxl};
+        padding-bottom: 90px;
     }
 `;
 
