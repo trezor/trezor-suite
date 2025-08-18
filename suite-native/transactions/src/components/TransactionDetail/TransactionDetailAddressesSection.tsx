@@ -4,17 +4,19 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
-import { AccountAddressFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
+import { WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
 import { formatAddressesCount } from './TransactionDetailAddressesSheet';
 import { SummaryRow } from './TransactionSummaryRow';
+import { TransactionUtxoAddress } from './TransactionUtxoAddress';
 import { VinVoutAddress } from '../../types';
 
 type TransactionDetailAddressesSectionProps = {
+    transaction: WalletAccountTransaction;
     addresses: VinVoutAddress[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
@@ -35,10 +37,6 @@ const hiddenTransactionsCountStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
     paddingHorizontal: utils.spacings.sp8,
     paddingVertical: utils.spacings.sp2,
-}));
-
-const addressTextStyle = prepareNativeStyle(_ => ({
-    maxWidth: '80%',
 }));
 
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
@@ -69,6 +67,7 @@ const TransactionDetailSummaryStepper = () => {
 };
 
 export const TransactionDetailAddressesSection = ({
+    transaction,
     addressesType,
     addresses,
     onShowMore,
@@ -105,11 +104,13 @@ export const TransactionDetailAddressesSection = ({
                                 values={{ count: formatAddressesCount(targetAddresses.length) }}
                             />
                         </Text>
-                        {targetAddresses.slice(0, 2).map(({ address }) => (
-                            <AccountAddressFormatter
+                        {targetAddresses.slice(0, 2).map(({ address, n }) => (
+                            <TransactionUtxoAddress
                                 key={address}
-                                value={address}
-                                style={applyStyle(addressTextStyle)}
+                                address={address}
+                                n={n}
+                                deviceStaticSessionId={transaction.deviceState}
+                                txId={transaction.txid}
                             />
                         ))}
                     </Box>
@@ -146,11 +147,13 @@ export const TransactionDetailAddressesSection = ({
                         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                             <Box>
                                 <ChangeAddressesHeader addressesCount={changeAddresses.length} />
-                                {changeAddresses.map(({ address }) => (
-                                    <AccountAddressFormatter
+                                {changeAddresses.map(({ address, n }) => (
+                                    <TransactionUtxoAddress
                                         key={address}
-                                        value={address}
-                                        style={applyStyle(addressTextStyle)}
+                                        address={address}
+                                        n={n}
+                                        deviceStaticSessionId={transaction.deviceState}
+                                        txId={transaction.txid}
                                     />
                                 ))}
                             </Box>

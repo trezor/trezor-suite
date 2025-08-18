@@ -128,7 +128,7 @@ export const TransactionDetailData = ({
                 </VStack>
             </Card>
             <TransactionDetailSummary
-                txid={transaction.txid}
+                transaction={transaction}
                 accountKey={accountKey}
                 tokenTransfer={tokenTransfer}
             />

@@ -10,13 +10,13 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.8.2",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/labeling": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -24,7 +24,6 @@
         "expo-image-picker": "~16.1.4",
         "react": "19.0.0",
         "react-native": "0.79.3",
-        "react-qr-code": "2.0.12",
-        "react-redux": "9.2.0"
+        "react-qr-code": "2.0.12"
     }
 }

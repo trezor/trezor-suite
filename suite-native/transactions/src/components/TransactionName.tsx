@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectOutputLabel } from '@suite-common/local-first-storage';
+import { WithLabelingState, selectOutputLabel } from '@suite-common/local-first-storage';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -57,7 +57,7 @@ export const getTransactionName = (
 };
 
 export const TransactionName = ({ transaction, isPending }: TransactionNameProps) => {
-    const localFirstOutputLabel = useSelector((state: any) =>
+    const localFirstOutputLabel = useSelector((state: WithLabelingState) =>
         selectOutputLabel({
             state,
             txId: transaction.txid,

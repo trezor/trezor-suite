@@ -1,5 +1,7 @@
 import { Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { WithLabelingState, selectAddressLabel } from '@suite-common/local-first-storage';
 import { HStack, Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Icon, iconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -10,15 +12,22 @@ import { AddressLabelBottomSheet } from './AddressLabelBottomSheet';
 type AddAddressLabelProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
-    label: string | null;
 };
 
-export const AddAddressLabel = ({
-    address,
-    deviceStaticSessionId,
-    label,
-}: AddAddressLabelProps) => {
+export const AddAddressLabel = ({ address, deviceStaticSessionId }: AddAddressLabelProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const label = useSelector(
+        (state: WithLabelingState) =>
+            (address !== undefined
+                ? selectAddressLabel({
+                      state,
+                      address,
+                      deviceStaticSessionId,
+                  })
+                : null
+            )?.label ?? null,
+    );
 
     return (
         <>

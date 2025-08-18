@@ -1,14 +1,12 @@
 import { Alert, Pressable, Share } from 'react-native';
-import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAddressLabel } from '@suite-common/local-first-storage';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { AddAddressLabel } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { AddAddressLabel } from './AddAddressLabel';
 import { QRCode } from './QRCode';
 
 type AddressQRCodeProps = {
@@ -20,7 +18,6 @@ const addressContainer = prepareNativeStyle(() => ({
     justifyContent: 'center',
     alignItems: 'center',
 }));
-
 export const AddressQRCode = ({ address, deviceStaticSessionId }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
@@ -40,18 +37,6 @@ export const AddressQRCode = ({ address, deviceStaticSessionId }: AddressQRCodeP
         }
     };
 
-    const label = useSelector(
-        (state: WithLabelingState) =>
-            (address !== undefined
-                ? selectAddressLabel({
-                      state,
-                      address,
-                      deviceStaticSessionId,
-                  })
-                : null
-            )?.label ?? null,
-    );
-
     return (
         <VStack spacing="sp24">
             <QRCode data={address} />
@@ -64,11 +49,7 @@ export const AddressQRCode = ({ address, deviceStaticSessionId }: AddressQRCodeP
                     {address}
                 </Text>
             </Pressable>
-            <AddAddressLabel
-                address={address}
-                deviceStaticSessionId={deviceStaticSessionId}
-                label={label}
-            />
+            <AddAddressLabel address={address} deviceStaticSessionId={deviceStaticSessionId} />
             <HStack spacing="sp8" justifyContent="center">
                 <Button
                     size="small"

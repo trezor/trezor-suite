@@ -62,7 +62,7 @@ export const AddressLabelBottomSheet = ({
             <VStack spacing="sp16">
                 <Form form={form}>
                     <VStack spacing="sp8">
-                        <TextInputField ref={inputRef} name="label" />
+                        <TextInputField ref={inputRef} name="label" asBottomSheetInput />
                         <Button onPress={onConfirm} size="large" isDisabled={!isValid}>
                             Confirm
                         </Button>

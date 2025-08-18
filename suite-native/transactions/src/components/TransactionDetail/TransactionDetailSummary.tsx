@@ -1,6 +1,6 @@
 import { AccountKey } from '@suite-common/wallet-types';
 import { Card, useBottomSheetModal } from '@suite-native/atoms';
-import { TypedTokenTransfer } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
@@ -8,7 +8,7 @@ import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
 import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
 
 type TransactionDetailSummaryProps = {
-    txid: string;
+    transaction: WalletAccountTransaction;
     accountKey: AccountKey;
     tokenTransfer?: TypedTokenTransfer;
 };
@@ -19,7 +19,7 @@ export const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 export const TransactionDetailSummary = ({
-    txid,
+    transaction,
     accountKey,
     tokenTransfer,
 }: TransactionDetailSummaryProps) => {
@@ -33,20 +33,20 @@ export const TransactionDetailSummary = ({
             {isTokenTransferDetail ? (
                 <TokenTransactionDetailSummary
                     accountKey={accountKey}
-                    txid={txid}
+                    txid={transaction.txid}
                     tokenTransfer={tokenTransfer}
                     onShowMore={openModal}
                 />
             ) : (
                 <NetworkTransactionDetailSummary
                     accountKey={accountKey}
-                    txid={txid}
+                    transaction={transaction}
                     onShowMore={openModal}
                 />
             )}
             <TransactionDetailAddressesSheet
                 ref={bottomSheetRef}
-                txid={txid}
+                txid={transaction.txid}
                 accountKey={accountKey}
                 onClose={closeModal}
             />
