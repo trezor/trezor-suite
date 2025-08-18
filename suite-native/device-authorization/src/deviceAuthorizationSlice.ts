@@ -111,16 +111,6 @@ export const selectPassphraseError = (
     }
 };
 
-export const selectPassphraseDuplicateStaticSessionId = (
-    state: DiscoveryRootState & DeviceRootState,
-) => {
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
-
-    return discovery?.status === 'passphrase-duplicate'
-        ? discovery.duplicateDeviceStaticSessionId
-        : null;
-};
-
 export const selectHasVerificationCancelledError = (
     state: DiscoveryRootState & DeviceRootState,
 ) => {

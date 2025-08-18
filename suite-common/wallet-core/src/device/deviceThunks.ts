@@ -27,7 +27,6 @@ import TrezorConnect, {
     Response as ConnectResponse,
     DEVICE,
     Device,
-    StaticSessionId,
 } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { getEnvironment } from '@trezor/env-utils';
@@ -37,14 +36,13 @@ import { isChanged } from '@trezor/utils';
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import {
-    selectDeviceByBaseStaticSessionId,
     selectDeviceById,
     selectDevices,
     selectPhysicalDevices,
     selectSelectedDevice,
 } from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
-import { cancelDiscoveryThunk, startDiscoveryThunk } from '../discovery/discoveryThunks';
+import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -248,39 +246,6 @@ export const acquireDevice = createThunk(
                 }),
             );
         }
-    },
-);
-
-export const switchDuplicatedDevice = createThunk(
-    `${DEVICE_MODULE_PREFIX}/switchDuplicatedDevice`,
-    async (passphraseDuplicateStaticSessionId: StaticSessionId, { dispatch, getState, extra }) => {
-        const {
-            actions: { onModalCancel },
-        } = extra;
-        // close modal
-        dispatch(onModalCancel());
-
-        const device = selectDeviceByBaseStaticSessionId(
-            getState(),
-            passphraseDuplicateStaticSessionId,
-        );
-
-        if (!device) {
-            console.error('switchDuplicatedDevice: Device not found');
-
-            return;
-        }
-
-        dispatch(cancelDiscoveryThunk(device));
-
-        // release session from authorizeDevice
-        await TrezorConnect.getFeatures({
-            device,
-            keepSession: false,
-        });
-
-        // switch to existing wallet
-        dispatch(selectDeviceThunk({ device }));
     },
 );
 
