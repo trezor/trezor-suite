@@ -6,6 +6,9 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../utils"
+        },
+        {
             "path": "../utxo-lib"
         },
         {
