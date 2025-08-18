@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigationState } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
 import {
@@ -24,7 +24,8 @@ import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 export const useRenderDeviceDangerBanner = () => {
     const setBannerVariant = useSetAtom(deviceDangerBannerAtom);
-    const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
+    const navigation = useNavigation();
+    const lastRoute = navigation.getState()?.routes.at(-1)?.name;
     const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
 
     const isRouteExcluded =

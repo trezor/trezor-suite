@@ -20,13 +20,12 @@ import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
     AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    StackNavigationProps,
     useNavigateToInitialScreen,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
@@ -42,11 +41,7 @@ import {
 import { selectIsDeviceSetupSupported } from '../selectors';
 import { useDeviceChecks } from './useDeviceChecks';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList | RootStackParamList,
-    AuthorizeDeviceStackRoutes.PinMatrix | RootStackRoutes.OnboardingStack,
-    RootStackParamList
->;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
 const pinMatrixBlacklistedScreens = [
     RootStackRoutes.DeviceSettingsStack,
