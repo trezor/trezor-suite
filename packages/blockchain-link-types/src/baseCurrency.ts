@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 export const fiatBaseCurrencies = {
     usd: { code: 'usd', label: 'United States Dollar' },
     eur: { code: 'eur', label: 'Euro' },
@@ -49,6 +51,8 @@ export const valuablesBaseCurrencies = {
     xag: { code: 'xag', label: 'Silver' },
     xau: { code: 'xau', label: 'Gold' },
 } as const;
+
+export const valuablesBaseCurrencyCodes = typedObjectKeys(valuablesBaseCurrencies);
 
 export const baseCurrencies = {
     ...fiatBaseCurrencies,
