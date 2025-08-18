@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+# !!! If you are going to change this, change update-tor workflow as well !!!
 CRX_VER=1_0_38
 CRX_LINUX_ARM_VER=1_0_7
 
