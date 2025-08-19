@@ -24,6 +24,7 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
         dispatch(setIsUnpairingDevice({ isUnpairing: false }));
         if (!resultForget.success) {
             dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: true }));
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
         }
     },
 );

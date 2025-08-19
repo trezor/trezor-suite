@@ -1,4 +1,4 @@
-import { BLUETOOTH_PREFIX } from '@suite-common/bluetooth';
+import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { Device } from '@trezor/connect';
@@ -42,6 +42,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 result.error.includes('Peer removed pairing information');
             if (isUnpaired) {
                 dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: true }));
+                dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
             } else {
                 dispatch(
                     notificationsActions.addToast({
