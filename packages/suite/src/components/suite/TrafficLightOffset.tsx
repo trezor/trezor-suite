@@ -9,6 +9,7 @@ type Props = {
     children?: React.ReactNode;
     offset?: number;
     isVisible?: boolean;
+    expand?: boolean;
 };
 
 const FixForNotBeingAbleToDragWindow = styled.div`
@@ -22,8 +23,13 @@ const FixForNotBeingAbleToDragWindow = styled.div`
     width: 100%;
 `;
 
-const Container = styled.div<{ $offset: number }>`
+const Container = styled.div<{ $offset: number; $expand?: boolean }>`
     ${({ $offset }) => `padding-top: ${$offset}px;`}
+
+    ${({ $expand }) =>
+        $expand &&
+        `height: 100%;
+    width: 100%;`}
 `;
 
 // See: https://github.com/electron/electron/issues/5678
@@ -38,11 +44,20 @@ export const TrafficLightDraggableWindowHeader = ({ children, isVisible = true }
 };
 
 // on Mac in desktop app we don't use window bar and close/maximize/minimize icons are positioned directly in the app
-export const TrafficLightOffset = ({ children, offset = 35, isVisible = true }: Props) => {
+export const TrafficLightOffset = ({
+    children,
+    offset = 35,
+    isVisible = true,
+    expand = true,
+}: Props) => {
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
 
     if (!isVisible || !isMac || !isDesktopApp) return children;
 
-    return <Container $offset={offset}>{children}</Container>;
+    return (
+        <Container $offset={offset} $expand={expand}>
+            {children}
+        </Container>
+    );
 };
