@@ -1,10 +1,17 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import * as Haptics from 'expo-haptics';
 
 import { selectIsDeviceInitialized } from '@suite-common/wallet-core';
-import { Box, Button, Card, InlineAlertBox, Text, TitleHeader } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    InlineAlertBox,
+    Text,
+    TitleHeader,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -51,23 +58,20 @@ export const WalletBackupTutorialStep5 = ({
     onSelectType,
 }: WalletBackupTutorialStep5Props) => {
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
-    const [isModalShown, setIsModalShown] = useState(false);
     const isCalloutButtonShown =
         selectedType === 'shamir-single' || selectedType === 'shamir-advanced';
 
     const openBackupSelection = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        setIsModalShown(true);
+        openModal();
     };
 
     const handleLearnMorePress = () => {
         openLink(HELP_CENTER_MULTI_SHARE_BACKUP_URL);
-    };
-
-    const closeModal = () => {
-        setIsModalShown(false);
     };
 
     return (
@@ -131,7 +135,7 @@ export const WalletBackupTutorialStep5 = ({
                 )}
             </Box>
             <WalletBackupSheet
-                isDisplayed={isModalShown}
+                ref={bottomSheetRef}
                 onCloseModal={closeModal}
                 selectedType={selectedType}
                 onSelectType={onSelectType}

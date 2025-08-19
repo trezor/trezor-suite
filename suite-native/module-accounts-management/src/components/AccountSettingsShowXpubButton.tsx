@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -26,8 +26,16 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
         selectAccountByKey(state, accountKey),
     );
 
-    const [isXpubVisible, setIsXpubVisible] = useState(false);
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const {
+        bottomSheetRef: walletBackupWarningSheetRef,
+        openModal: openWalletBackupWarningSheet,
+        closeModal: closeWalletBackupWarningSheet,
+    } = useBottomSheetModal();
+    const {
+        bottomSheetRef: xpubQRSheetRef,
+        openModal: openXpubQRSheet,
+        closeModal: closeXpubQRSheet,
+    } = useBottomSheetModal();
 
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
@@ -41,11 +49,11 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
 
         showXpubOnDevice(device, account);
         if (isDeviceBackupRequired) {
-            openModal();
+            openWalletBackupWarningSheet();
         } else {
-            setIsXpubVisible(true);
+            openXpubQRSheet();
         }
-    }, [isDeviceBackupRequired, device, account, openModal]);
+    }, [device, account, isDeviceBackupRequired, openWalletBackupWarningSheet, openXpubQRSheet]);
 
     const showFirmwareAuthenticityCheckAlert = useCallback(
         () =>
@@ -69,9 +77,6 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
         convertTaprootXpub({ xpub: account.descriptor, direction: 'apostrophe-to-h' }) ??
         account.descriptor;
 
-    const handleClose = () => {
-        setIsXpubVisible(false);
-    };
     const isAddressBased = isAddressBasedNetwork(account.networkType);
 
     const buttonTitle = (
@@ -89,11 +94,11 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
             {isDeviceBackupRequired && (
                 <WalletBackupNotSetWarningBottomSheet
                     onConfirm={() => {
-                        setIsXpubVisible(true);
-                        closeModal();
+                        openXpubQRSheet();
+                        closeWalletBackupWarningSheet();
                     }}
-                    onClose={handleClose}
-                    ref={bottomSheetRef}
+                    onClose={closeXpubQRSheet}
+                    ref={walletBackupWarningSheetRef}
                 />
             )}
             <Button
@@ -108,8 +113,8 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
                 {buttonTitle}
             </Button>
             <XpubQRCodeBottomSheet
-                isVisible={isXpubVisible}
-                onClose={handleClose}
+                ref={xpubQRSheetRef}
+                onClose={closeXpubQRSheet}
                 symbol={account.symbol}
                 qrCodeData={accountXpub}
             />

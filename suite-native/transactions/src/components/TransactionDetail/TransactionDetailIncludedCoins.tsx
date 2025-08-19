@@ -1,8 +1,14 @@
-import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { AccountKey } from '@suite-common/wallet-types';
-import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    Box,
+    Card,
+    RoundedIcon,
+    Text,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
@@ -52,7 +58,7 @@ export const TransactionDetailIncludedCoins = ({
     transaction,
     tokenTransfer,
 }: TransactionDetailIncludedCoinsProps) => {
-    const [sheetIsVisible, setSheetIsVisible] = useState(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isTokenTransactionDetail = !!tokenTransfer;
 
@@ -73,23 +79,21 @@ export const TransactionDetailIncludedCoins = ({
     const isEthereumCoinDisplayed =
         isTokenTransactionDetail && !isZeroAmountTransaction(transaction);
 
-    const toggleSheet = () => setSheetIsVisible(!sheetIsVisible);
-
     return (
         <>
             {coinsIncludedCount > 0 && (
-                <IncludedCoinsSheetTrigger title={sheetTitle} onPress={toggleSheet} />
+                <IncludedCoinsSheetTrigger title={sheetTitle} onPress={openModal} />
             )}
 
-            <BottomSheet
-                isVisible={sheetIsVisible}
+            <BottomSheetModal
+                ref={bottomSheetRef}
                 title={sheetTitle}
                 subtitle={sheetSubtitle}
-                onClose={toggleSheet}
+                isCloseDisplayed
             >
                 {isEthereumCoinDisplayed && (
                     <TransactionDetailListItem
-                        onPress={toggleSheet}
+                        onPress={closeModal}
                         accountKey={accountKey}
                         transaction={transaction}
                         isFirst
@@ -97,7 +101,7 @@ export const TransactionDetailIncludedCoins = ({
                 )}
                 {includedTokens.map((token, index) => (
                     <TransactionDetailListItem
-                        onPress={toggleSheet}
+                        onPress={closeModal}
                         key={token.contract}
                         accountKey={accountKey}
                         transaction={transaction}
@@ -106,7 +110,7 @@ export const TransactionDetailIncludedCoins = ({
                         isLast={index === includedTokens.length - 1}
                     />
                 ))}
-            </BottomSheet>
+            </BottomSheetModal>
         </>
     );
 };

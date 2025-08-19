@@ -1,8 +1,4 @@
-import { Ref } from 'react';
-
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-
-import { BottomSheetModal, Button, Text, VStack } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -21,7 +17,7 @@ type AccountTypeDecisionBottomSheetProps = {
     onTypeSelectionTap: () => void;
     onConfirmTap: () => void;
     onClose: () => void;
-    ref: Ref<BottomSheetModalMethods>;
+    ref: BottomSheetModalRef;
 };
 
 export const AccountTypeDecisionBottomSheet = ({

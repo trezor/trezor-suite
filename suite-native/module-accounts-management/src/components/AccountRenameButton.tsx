@@ -1,6 +1,4 @@
-import { useState } from 'react';
-
-import { BottomSheet, Box, IconButton } from '@suite-native/atoms';
+import { BottomSheetModal, Box, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { AccountRenameForm } from './AccountRenameForm';
@@ -10,28 +8,25 @@ type AccountRenameModalProps = {
 };
 
 export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => {
-    const [isVisible, setIsVisible] = useState(false);
-
-    const handleOpen = () => setIsVisible(true);
-    const handleClose = () => setIsVisible(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     return (
         <Box>
             <IconButton
                 colorScheme="tertiaryElevation0"
                 iconName="pencilSimple"
-                onPress={handleOpen}
+                onPress={openModal}
                 testID="@account-detail/settings/edit-button"
             />
-            <BottomSheet
+            <BottomSheetModal
+                isCloseDisplayed
+                ref={bottomSheetRef}
                 title={
                     <Translation id="moduleAccountManagement.accountSettingsScreen.renameForm.title" />
                 }
-                isVisible={isVisible}
-                onClose={handleClose}
             >
-                <AccountRenameForm accountKey={accountKey} onSubmit={handleClose} />
-            </BottomSheet>
+                <AccountRenameForm accountKey={accountKey} onSubmit={closeModal} />
+            </BottomSheetModal>
         </Box>
     );
 };

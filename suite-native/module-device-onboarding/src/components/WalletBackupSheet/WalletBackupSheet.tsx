@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
-import { BottomSheet, BottomSheetHandle, Button, VStack } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Button, VStack } from '@suite-native/atoms';
 import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -21,10 +21,10 @@ const legacyButtonStyle = prepareNativeStyle(utils => ({
 }));
 
 interface WalletBackupSheetProps {
-    isDisplayed: boolean;
     onCloseModal: () => void;
     selectedType: WalletBackupType;
     onSelectType: (type: WalletBackupType) => void;
+    ref: BottomSheetModalRef;
 }
 
 const walletOptions = [
@@ -35,38 +35,29 @@ const walletOptions = [
 ] as const satisfies WalletBackupType[];
 
 export const WalletBackupSheet = ({
-    onCloseModal,
-    isDisplayed,
     onSelectType,
     selectedType,
+    ref,
+    onCloseModal,
 }: WalletBackupSheetProps) => {
     const [showLegacyOptions, setShowLegacyOptions] = useState(
         selectedType === '12-words' || selectedType === '24-words',
     );
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
-    const bottomSheetRef = useRef<BottomSheetHandle>(null);
 
     const displayLegacyOptions = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         setShowLegacyOptions(true);
     };
 
-    const submitSelection = () => {
-        bottomSheetRef.current?.closeWithAnimation();
-    };
-
     return (
-        <BottomSheet
+        <BottomSheetModal
             title={translate('moduleDeviceOnboarding.walletBackupSheet.title')}
-            isVisible={isDisplayed}
-            onClose={onCloseModal}
-            ref={bottomSheetRef}
-            footer={
-                <WalletBackupSheetFooter selectedType={selectedType} onSubmit={submitSelection} />
-            }
+            ref={ref}
+            footer={<WalletBackupSheetFooter selectedType={selectedType} onSubmit={onCloseModal} />}
             style={applyStyle(containerStyle)}
-            maxHeight="98%"
+            isCloseDisplayed
         >
             <VStack spacing="sp16">
                 {walletOptions.map(type => {
@@ -96,6 +87,6 @@ export const WalletBackupSheet = ({
                     <Translation id="moduleDeviceOnboarding.walletBackupSheet.legacyOptionsLabel" />
                 </Button>
             )}
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

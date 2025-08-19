@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useCallback } from 'react';
+import { ReactNode, Ref, forwardRef, useCallback } from 'react';
 
 import {
     BottomSheetBackdrop,
@@ -30,6 +30,8 @@ export type BottomSheetModalProps = {
 const backgroundStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
 }));
+
+export type BottomSheetModalRef = Ref<BottomSheetModalMethods>;
 
 export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetModalProps>(
     (

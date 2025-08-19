@@ -1,10 +1,8 @@
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-
-import { BottomSheetModal, Button, Text, VStack } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type ConfirmBottomSheetProps = {
-    ref: React.Ref<BottomSheetModalMethods>;
+    ref: BottomSheetModalRef;
     onConfirm: () => void;
     onCheckBackup: () => void;
 };

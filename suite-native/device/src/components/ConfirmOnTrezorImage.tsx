@@ -1,7 +1,8 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { Image, Pressable, SafeAreaView } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
+import { useBottomSheetModal } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConfirmOnTrezorBottomSheet } from './ConfirmOnTrezorBottomSheet';
@@ -21,18 +22,11 @@ const imageContainerStyle = prepareNativeStyle(utils => ({
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImageProps) => {
-    const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
     const { applyStyle } = useNativeStyles();
 
     const imageSource = useMemo(() => require('../assets/confirmOnTrezor.webp'), []);
-
-    const handleImagePress = () => {
-        setIsBottomSheetOpened(true);
-    };
-
-    const handleCloseBottomSheet = () => {
-        setIsBottomSheetOpened(false);
-    };
 
     return (
         <SafeAreaView>
@@ -40,15 +34,15 @@ export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImagePr
                 entering={SlideInDown}
                 exiting={SlideOutDown}
                 style={applyStyle(imageContainerStyle)}
-                onPress={handleImagePress}
+                onPress={openModal}
             >
                 <Image source={imageSource} />
             </AnimatedPressable>
             {bottomSheetText && (
                 <ConfirmOnTrezorBottomSheet
+                    ref={bottomSheetRef}
                     text={bottomSheetText}
-                    isOpened={isBottomSheetOpened}
-                    onClose={handleCloseBottomSheet}
+                    onClose={closeModal}
                 />
             )}
         </SafeAreaView>

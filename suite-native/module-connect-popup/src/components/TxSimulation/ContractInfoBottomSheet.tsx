@@ -1,9 +1,7 @@
 import { Pressable } from 'react-native';
 
-import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-
 import { TransactionScanResponse } from '@suite-common/tx-simulation';
-import { BottomSheetModal, Card, Text, VStack } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Card, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 
@@ -12,7 +10,7 @@ export const ContractInfoBottomSheet = ({
     targetContract,
     simulationResult,
 }: {
-    ref: React.Ref<BottomSheetModalMethods>;
+    ref: BottomSheetModalRef;
     targetContract: string;
     simulationResult: TransactionScanResponse | null;
 }) => {

@@ -4,19 +4,19 @@ import { useDispatch } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
 
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
-import { Button, Loader, TextDivider } from '@suite-native/atoms';
+import { BottomSheetModalRef, Button, Loader, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { useToast } from '@suite-native/toasts';
 
 export type WalletConnectPairBottomSheetProps = {
-    pairingOpened: boolean;
-    setPairingOpened: (value: boolean) => void;
+    onClose: () => void;
+    ref: BottomSheetModalRef;
 };
 
 export const WalletConnectPairBottomSheet = ({
-    pairingOpened,
-    setPairingOpened,
+    ref,
+    onClose,
 }: WalletConnectPairBottomSheetProps) => {
     const dispatch = useDispatch();
 
@@ -40,12 +40,12 @@ export const WalletConnectPairBottomSheet = ({
                 });
             })
             .finally(() => {
-                setPairingOpened(false);
+                onClose();
                 setIsPairing(false);
             });
     };
     const handleClose = () => {
-        setPairingOpened(false);
+        onClose();
     };
     const handlePaste = () => {
         Clipboard.getStringAsync().then(pastedUri => {
@@ -56,10 +56,10 @@ export const WalletConnectPairBottomSheet = ({
     return (
         <ScanQRBottomSheet
             title={<Translation id="moduleConnectPopup.walletConnect.scanQR" />}
-            isVisible={pairingOpened}
             onCodeScanned={code => handlePair(code)}
             onClose={handleClose}
             spacing="sp16"
+            ref={ref}
         >
             <TextDivider />
             {isPairing ? (

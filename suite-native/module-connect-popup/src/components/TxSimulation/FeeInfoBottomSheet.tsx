@@ -1,11 +1,17 @@
-import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { fromWei } from 'web3-utils';
 
 import { ConnectPopupCall } from '@suite-common/connect-popup';
 import { useFormatters } from '@suite-common/formatters';
 import { Network } from '@suite-common/wallet-config';
 import { getFeeUnits } from '@suite-common/wallet-utils';
-import { BottomSheetModal, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    Card,
+    HStack,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const FeeInfoBottomSheet = ({
@@ -14,7 +20,7 @@ export const FeeInfoBottomSheet = ({
     network,
     popupCall,
 }: {
-    ref: React.Ref<BottomSheetModalMethods>;
+    ref: BottomSheetModalRef;
     defaultGasLimit: string;
     network: Network;
     popupCall: ConnectPopupCall;

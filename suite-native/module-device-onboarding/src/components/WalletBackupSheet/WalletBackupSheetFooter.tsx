@@ -1,3 +1,5 @@
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { Box, Button } from '@suite-native/atoms';
@@ -24,14 +26,19 @@ interface CardFooterProps {
     selectedType: WalletBackupType;
 }
 
+const containerStyle = prepareNativeStyle<{ marginBottom: number }>((_, { marginBottom }) => ({
+    marginBottom,
+}));
+
 export const WalletBackupSheetFooter = ({ onSubmit, selectedType }: CardFooterProps) => {
     const { utils, applyStyle } = useNativeStyles();
 
     const backgroundColor = utils.colors.backgroundSurfaceElevation0;
     const transparentColor = hexToRgba(backgroundColor, 0.01);
+    const { bottom } = useSafeAreaInsets();
 
     return (
-        <Box>
+        <Box style={applyStyle(containerStyle, { marginBottom: bottom })}>
             <LinearGradient
                 colors={[transparentColor, backgroundColor]}
                 style={applyStyle(linearGradientStyle)}
