@@ -10,6 +10,7 @@ import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
 import { useAnimatedBorderStyle } from '../../hooks/general/useAnimatedBorderStyle';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { CardTitle } from '../general/CardTitle';
+import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 
@@ -62,6 +63,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                         spacing="sp4"
                     >
                         <TradeableAssetNetworkInfo asset={asset} />
+                        <SellSendAccountCryptoBalance />
                     </HStack>
                 </VStack>
                 <VStack style={applyStyle(sellSectionStyle, { bottomBorder: true })}>

@@ -27,7 +27,6 @@ describe('useExchangeForm', () => {
                 bitcoinAmountUnit,
             }),
         };
-        preloadedState.wallet!.tradingNew!.buy!.tradingAccountKey = 'btc-account-1';
 
         return await initStore(preloadedState);
     };
