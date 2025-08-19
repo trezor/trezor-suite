@@ -545,7 +545,7 @@ describe('onCallFirmwareUpdate', () => {
                 params: {},
                 context,
             }),
-        ).rejects.toThrow('device.firmwareReleaseMessage is not set');
+        ).rejects.toThrow('device.firmwareReleaseConfigInfo is not set');
 
         await deviceList.dispose();
     });
