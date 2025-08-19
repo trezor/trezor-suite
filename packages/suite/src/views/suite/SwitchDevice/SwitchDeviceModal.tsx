@@ -43,7 +43,7 @@ export const SwitchDeviceModal = ({
             alignment={{ x: 'start', y: 'start' }}
             padding={spacings.xs}
         >
-            <TrafficLightOffset>
+            <TrafficLightOffset expand={false}>
                 <Container data-testid={`${dataTest}/switch-device`}>
                     <Column alignItems="flex-start" gap={spacings.md} flex="1">
                         <motion.div
