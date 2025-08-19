@@ -23,9 +23,13 @@ inputs:
     default: "false"
     required: false
   additional-grep:
-    description: "Additional grep for PW tests. Use regexp groups with positive or negative lookahead. Example: (?=.*@webOnly)"
-    default: ""
+    description: "Extra include grep (regex), passed to --grep, does not work for negative lookahead."
     required: false
+    default: ""
+  additional-grep-invert:
+    description: "Exclude grep (regex), passed to --grep-invert"
+    required: false
+    default: ""
   currents-project-id:
     description: "Currents project ID for reporting"
     required: true
@@ -126,7 +130,8 @@ runs:
           --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
           --forbid-only \
           $REPORTER_OPT \
-          --grep="${{ inputs.additional-grep }}"
+          --grep="${{ inputs.additional-grep }}" \
+          --grep-invert="${{ inputs.additional-grep-invert }}"
 
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}
