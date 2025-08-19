@@ -41,7 +41,7 @@ const getDateFnsLocale = (locale: SuiteLocale): DateFnsLocale['code'] => {
         'uk-UA': 'uk',
         'vi-VN': 'vi',
         'zh-CN': 'zhCN',
-        ww: 'zhTW',
+        'zh-TW': 'zhTW',
     };
 
     return localeMap[locale];
