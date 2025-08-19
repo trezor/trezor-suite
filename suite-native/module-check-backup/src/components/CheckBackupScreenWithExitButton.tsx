@@ -50,7 +50,7 @@ export const useHandleCheckBackupExitButtonPress = () => {
                     },
                 });
                 TrezorConnect.cancel();
-                navigation.navigate(DeviceSettingsStackRoutes.DeviceSettings);
+                navigation.popTo(DeviceSettingsStackRoutes.DeviceSettings);
             },
         });
     }, [navigation, showAlert, translate, route.name]);

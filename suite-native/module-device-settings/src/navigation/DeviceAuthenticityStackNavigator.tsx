@@ -8,6 +8,9 @@ import {
     DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,
     DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     StackToStackCompositeNavigationProps,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
@@ -19,16 +22,21 @@ import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySu
 const DeviceAuthenticityStack = createNativeStackNavigator<DeviceAuthenticityStackParamList>();
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    DeviceAuthenticityStackParamList,
-    DeviceAuthenticityStackRoutes,
-    DeviceSettingsStackParamList
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.DeviceAuthenticityStack,
+    RootStackParamList
 >;
 
 export const DeviceAuthenticityStackNavigator = () => {
     const [isAuthenticityCheckStarted, setIsAuthenticityCheckStarted] = useState(false);
     const navigation = useNavigation<NavigationProp>();
     const handleSuccess = useCallback(() => {
-        navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySuccess);
+        navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
+            screen: DeviceSettingsStackRoutes.DeviceAuthenticityStack,
+            params: {
+                screen: DeviceAuthenticityStackRoutes.AuthenticitySuccess,
+            },
+        });
     }, [navigation]);
 
     const { checkDeviceAuthenticity } = useDeviceAuthenticityCheck();

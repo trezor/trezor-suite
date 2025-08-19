@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
@@ -28,6 +28,7 @@ type NavigationProp = StackToTabCompositeProps<
 >;
 
 export const useOnDeviceReadyNavigation = () => {
+    const isFocused = useIsFocused();
     const [isTimeoutFinished, setIsTimeoutFinished] = useState(false);
     const navigation = useNavigation<NavigationProp>();
 
@@ -54,7 +55,7 @@ export const useOnDeviceReadyNavigation = () => {
     // also redirect to the Home screen otherwise user would be blocked forever.
     // This can happen if user enabled only COIN on device A and then connects device B which does not support COIN.
     useEffect(() => {
-        if (isFirmwareInstallationRunning) return;
+        if (isFirmwareInstallationRunning || !isFocused) return;
 
         if (
             (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
@@ -82,5 +83,6 @@ export const useOnDeviceReadyNavigation = () => {
         isCoinEnablingInitFinished,
         isConnectPopupOpened,
         isFirmwareInstallationRunning,
+        isFocused,
     ]);
 };

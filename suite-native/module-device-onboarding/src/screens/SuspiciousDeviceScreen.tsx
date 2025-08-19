@@ -52,7 +52,7 @@ export const SuspiciousDeviceScreen = ({
     const handleBackButtonPress = () => {
         if (isNoPhysicalDeviceConnected) {
             // Exit the onboarding flow if device was disconnected while was user on this screen.
-            navigation.navigate(RootStackRoutes.AppTabs, {
+            navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
                     screen: HomeStackRoutes.Home,

@@ -93,7 +93,7 @@ export const useHandleOnDeviceTransactionReview = ({
                 errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
                 errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
             ) {
-                navigation.navigate(SendStackRoutes.SendFees, {
+                navigation.popTo(SendStackRoutes.SendFees, {
                     accountKey,
                     tokenContract,
                 });
@@ -121,7 +121,7 @@ export const useHandleOnDeviceTransactionReview = ({
                 message === TRANSPORT_ERROR.UNEXPECTED_ERROR
             ) {
                 if (isViewOnlyDevice) {
-                    navigation.navigate(SendStackRoutes.SendFees, {
+                    navigation.popTo(SendStackRoutes.SendFees, {
                         accountKey,
                         tokenContract,
                     });

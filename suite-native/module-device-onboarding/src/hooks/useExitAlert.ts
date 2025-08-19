@@ -48,7 +48,7 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
                 if (selectedDevice) {
                     setIsFirmwareInstallationRunning(false);
                     setWasDeviceOnboardingCancelled(true);
-                    navigation.navigate(RootStackRoutes.AppTabs, {
+                    navigation.popTo(RootStackRoutes.AppTabs, {
                         screen: AppTabsRoutes.HomeStack,
                         params: {
                             screen: HomeStackRoutes.Home,

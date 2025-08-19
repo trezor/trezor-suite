@@ -40,7 +40,7 @@ export const useShowDeviceDisconnectedAlert = () => {
     };
 
     const handleCancel = () => {
-        navigation.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: { screen: HomeStackRoutes.Home },
         });

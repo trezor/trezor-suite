@@ -19,7 +19,7 @@ export const DeviceNameLoadingScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const handleFinish = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.DeviceSettings);
+        navigation.popTo(DeviceSettingsStackRoutes.DeviceSettings);
     };
 
     return (
