@@ -36,6 +36,15 @@ jest.mock('@suite-common/trading', () => ({
     },
 }));
 
+const mockNavigation = {
+    navigate: jest.fn(),
+};
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => mockNavigation,
+}));
+
 describe('useExchangeSelectQuote', () => {
     const getInitializedStore = async ({ isLoading }: { isLoading?: boolean }) => {
         const btcAccount = getBtcAccount('btc-account-key');

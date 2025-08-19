@@ -88,7 +88,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             return;
         }
 
-        if (!receiveAccountKey) {
+        if (!receiveAccount) {
             selectReceiveAccount();
 
             return;
@@ -101,6 +101,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 userConsent: handleConsent.request,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
+                    navigation.navigate(TradingStackRoutes.TradingExchangePreview);
                 },
                 onCancel: () => {},
             }),
@@ -112,7 +113,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         candidateQuote,
         sendAccount,
         receiveAccount,
-        receiveAccountKey,
         isLoading,
         isConsentRequested,
         selectReceiveAccount,

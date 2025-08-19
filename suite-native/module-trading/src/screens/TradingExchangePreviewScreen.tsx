@@ -8,6 +8,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { ExchangeTradePreviewCard } from '../components/exchange/ExchangeTradePreviewCard';
+import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { useChangeStringsExtractor } from '../hooks/history/useChangeStringsExtractor';
 import {
     selectExchangeSelectedReceiveAccount,
@@ -24,6 +25,24 @@ export const TradingExchangePreviewScreen = () => {
     invariant(toAccount, 'toAccount must be defined');
 
     const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
+    const { confirmTrade } = useExchangeFlow();
+
+    const handleConfirmTrade = () => {
+        const { account } = toAccount;
+
+        if (!account.descriptor) {
+            console.warn('receiveAddress is not defined', quote);
+
+            return;
+        }
+
+        confirmTrade({
+            sendAccount: fromAccount,
+            receiveAddress: account.descriptor,
+            trade: quote,
+            approvalFlow: false,
+        });
+    };
 
     return (
         <Screen
@@ -63,11 +82,7 @@ export const TradingExchangePreviewScreen = () => {
                 </VStack>
             </ScrollView>
 
-            <Button
-                onPress={() => {
-                    // TODO
-                }}
-            >
+            <Button onPress={handleConfirmTrade}>
                 <Translation id="generic.buttons.continue" />
             </Button>
         </Screen>
