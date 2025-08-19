@@ -1,3 +1,5 @@
+import { DeviceModelInternal } from '@trezor/device-utils';
+
 import { calculateFirmwareHash } from '../calculateFirmwareHash';
 
 // NOTE: for unit test purposes create "firmware with empty bytes"
@@ -5,15 +7,31 @@ import { calculateFirmwareHash } from '../calculateFirmwareHash';
 const bin = Buffer.from('ff', 'hex');
 
 describe('firmware/calculateFirmwareHash', () => {
+    it('T1B1 without internal_model', () => {
+        expect(
+            calculateFirmwareHash(
+                // @ts-expect-error - Testing some might be real case when T1B1 does not report interna_model
+                undefined,
+                bin,
+                Buffer.from('0123456789abcdef'),
+            ),
+        ).toStrictEqual({
+            hash: 'f5f1097835c9a7c45486230b4f40389a85a4442b5c2c7766e7ca8ef22bf84bd1',
+            challenge: '30313233343536373839616263646566',
+        });
+    });
+
     it('T1B1 with challenge', () => {
-        expect(calculateFirmwareHash(1, bin, Buffer.from('0123456789abcdef'))).toStrictEqual({
+        expect(
+            calculateFirmwareHash(DeviceModelInternal.T1B1, bin, Buffer.from('0123456789abcdef')),
+        ).toStrictEqual({
             hash: 'f5f1097835c9a7c45486230b4f40389a85a4442b5c2c7766e7ca8ef22bf84bd1',
             challenge: '30313233343536373839616263646566',
         });
     });
 
     it('T1B1 without challenge', () => {
-        expect(calculateFirmwareHash(1, bin)).toStrictEqual({
+        expect(calculateFirmwareHash(DeviceModelInternal.T1B1, bin)).toStrictEqual({
             hash: 'a184d460adaac3c059bf2240521b5ff89a6aa6c2a765165d28bee7f4cb9af051',
             challenge: '',
         });
@@ -21,28 +39,53 @@ describe('firmware/calculateFirmwareHash', () => {
 
     // T2T1 results from https://github.com/trezor/trezor-firmware/blob/main/core/tests/test_trezor.utils.py
     it('T2T1 with challenge', () => {
-        expect(calculateFirmwareHash(2, bin, Buffer.from('0123456789abcdef'))).toStrictEqual({
+        expect(
+            calculateFirmwareHash(DeviceModelInternal.T2T1, bin, Buffer.from('0123456789abcdef')),
+        ).toStrictEqual({
             hash: 'a0934098a680db076ddf7ee22745f119d8fda4601048f05fdb66a64eddc0cfed',
             challenge: '30313233343536373839616263646566',
         });
     });
 
     it('T2T1 without challenge', () => {
-        expect(calculateFirmwareHash(2, bin)).toStrictEqual({
+        expect(calculateFirmwareHash(DeviceModelInternal.T2T1, bin)).toStrictEqual({
             hash: 'd2db90a76a5636a7004ec3b48e71a955e0cbb2cb5a6fd7ae9fbef846bc166c8c',
+            challenge: '',
+        });
+    });
+
+    it('T3W1 with challenge', () => {
+        expect(
+            calculateFirmwareHash(DeviceModelInternal.T3W1, bin, Buffer.from('0123456789abcdef')),
+        ).toStrictEqual({
+            hash: '9fb271f171cb9b6a915bac9b62ad80d2319f52dbae7501ddb1d7db43fdfae86f',
+            challenge: '30313233343536373839616263646566',
+        });
+    });
+
+    it('T3W1 without challenge', () => {
+        expect(calculateFirmwareHash(DeviceModelInternal.T3W1, bin)).toStrictEqual({
+            hash: '6f64d60f29dadd23f0383c51a0c595b4a4d7da952a1f3c7a03de149f1f7a394c',
             challenge: '',
         });
     });
 
     // just for coverage
     it('no padding', () => {
-        expect(calculateFirmwareHash(2, Buffer.alloc(13 * 128 * 1024).fill(bin))).toStrictEqual({
+        expect(
+            calculateFirmwareHash(
+                DeviceModelInternal.T2T1,
+                Buffer.alloc(13 * 128 * 1024).fill(bin),
+            ),
+        ).toStrictEqual({
             hash: 'd2db90a76a5636a7004ec3b48e71a955e0cbb2cb5a6fd7ae9fbef846bc166c8c',
             challenge: '',
         });
     });
 
-    it('Firmware too big', () => {
-        expect(() => calculateFirmwareHash(2, Buffer.alloc(100000000))).toThrow('Firmware too big');
+    it('T2T1, Firmware too big', () => {
+        expect(() =>
+            calculateFirmwareHash(DeviceModelInternal.T2T1, Buffer.alloc(100000000)),
+        ).toThrow('Firmware too big');
     });
 });
