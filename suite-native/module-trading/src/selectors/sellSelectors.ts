@@ -68,3 +68,5 @@ export const selectSellSelectedSendAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingSell],
     (state, { tradingAccountKey }) => selectAccountByKey(state, tradingAccountKey) || undefined,
 );
+
+export const selectSellQuotes = (state: TradingRootState) => state.wallet.tradingNew.sell.quotes;

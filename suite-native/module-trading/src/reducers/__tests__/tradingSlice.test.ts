@@ -2,15 +2,21 @@ import { BuyTrade, CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
+import {
+    tradingBuyActions,
+    tradingExchangeActions,
+    tradingSellActions,
+} from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 import { Address } from '@trezor/blockchain-link-types';
 
 import quotes from '../../__fixtures__/buyQuotes.json';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
+import { sellQuotes } from '../../__fixtures__/sellQuotes';
 import { adaAsset, btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
 import { buyActions, buyInitialState } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';
+import { sellActions } from '../sellSlice';
 import { TradingState, initialState, tradingActions, tradingSlice } from '../tradingSlice';
 
 describe('tradingSlice', () => {
@@ -96,7 +102,7 @@ describe('tradingSlice', () => {
             expect(state.tradingEnvironment).toBe('production');
         });
 
-        it('setTradingEnvironment should set trading environment', () => {
+        it('should set trading environment', () => {
             const state = tradingReducer(undefined, tradingActions.setTradingEnvironment('dev'));
 
             expect(state.tradingEnvironment).toBe('dev');
@@ -107,7 +113,7 @@ describe('tradingSlice', () => {
             });
         });
 
-        it('setTradingEnvironment should clear buy state', () => {
+        it('should clear buy state', () => {
             const prevState: TradingState = {
                 ...initialState,
                 buy: {
@@ -137,6 +143,37 @@ describe('tradingSlice', () => {
                 quotes: [],
                 isFromRedirect: false,
                 isLoading: false,
+            });
+        });
+
+        it('should clear sell state', () => {
+            const prevState: TradingState = {
+                ...initialState,
+                sell: {
+                    ...initialState.sell,
+                    quotes: sellQuotes,
+                    tradingAccountKey: 'account-key',
+                    quotesRequest: {
+                        amountInCrypto: true,
+                        cryptoCurrency: 'bitcoin' as CryptoId,
+                        fiatStringAmount: '1000',
+                        fiatCurrency: 'CZK',
+                    },
+                    amountLimits: {
+                        currency: 'CZK',
+                        minFiat: '100',
+                    },
+                    selectedQuote: sellQuotes[0],
+                },
+            };
+
+            const state = tradingReducer(prevState, tradingActions.setTradingEnvironment('dev'));
+
+            expect(state.sell).toEqual({
+                quotes: [],
+                isFromRedirect: false,
+                isLoading: false,
+                formStep: 'BANK_ACCOUNT',
             });
         });
 
@@ -225,6 +262,33 @@ describe('tradingSlice', () => {
         });
     });
 
+    describe('tradingSell/clearState', () => {
+        it('should clear sell state (sellSlice action)', () => {
+            const tradingInitialState = {
+                ...initialState,
+                sell: {
+                    ...initialState.sell,
+                    quotes: sellQuotes,
+                },
+            } as TradingState;
+
+            const state = tradingReducer(tradingInitialState, sellActions.clearState());
+
+            expect(state.sell.quotes).toEqual([]);
+        });
+
+        it('should clear tradeOrderIdToBeOpened', () => {
+            const tradingInitialState = {
+                ...initialState,
+                tradeOrderIdToBeOpened: 'orderId',
+            } as TradingState;
+
+            const state = tradingReducer(tradingInitialState, sellActions.clearState());
+
+            expect(state.tradeOrderIdToBeOpened).toBeUndefined();
+        });
+    });
+
     describe('tradeOrderIdToBeOpened', () => {
         it('should have undefined as initial tradeOrderIdToBeOpened', () => {
             const state = tradingReducer(undefined, { type: 'undefined_action' });
@@ -296,6 +360,16 @@ describe('tradingSlice', () => {
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
             expect(state.exchange.receiveAccountKey).toBeUndefined();
+        });
+
+        it('should clear sell.tradingAccountKey', () => {
+            const actions = [
+                tradingSellActions.setTradingAccountKey('account-key'),
+                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+            expect(state.sell.tradingAccountKey).toBeUndefined();
         });
     });
 

@@ -1,10 +1,3 @@
-jest.mock('react-native', () => ({
-    Platform: {
-        OS: 'ios',
-        select: jest.fn(specifics => specifics.ios ?? specifics.default),
-    },
-}));
-
 import { Platform } from 'react-native';
 
 import { BuyTrade, CryptoId } from 'invity-api';
@@ -28,6 +21,13 @@ import {
     selectTradingBuy,
     selectValidTradingBuyQuotesNative,
 } from '../buySelectors';
+
+jest.mock('react-native', () => ({
+    Platform: {
+        OS: 'ios',
+        select: jest.fn(specifics => specifics.ios ?? specifics.default),
+    },
+}));
 
 describe('buySelectors', () => {
     let state: TradingRootState & AccountsRootState;
