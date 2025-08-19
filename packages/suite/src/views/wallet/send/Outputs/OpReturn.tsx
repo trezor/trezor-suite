@@ -60,7 +60,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
 
     const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
         onChange: event => {
-            setValue(inputHexName, Buffer.from(event.target.value, 'ascii').toString('hex'), {
+            setValue(inputHexName, Buffer.from(event.target.value, 'utf-8').toString('hex'), {
                 shouldValidate: true,
             });
             composeTransaction(inputAsciiName);
@@ -79,7 +79,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     useEffect(() => {
         setValue(
             inputAsciiName,
-            hexValue && !hexError ? Buffer.from(hexValue, 'hex').toString('ascii') : '',
+            hexValue && !hexError ? Buffer.from(hexValue, 'hex').toString('utf-8') : '',
         );
     }, [inputAsciiName, hexValue, hexError, setValue]);
 
