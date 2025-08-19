@@ -11903,7 +11903,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    jws: "npm:^4.0.0"
     tsx: "npm:^4.20.3"
     xrpl: "npm:^4.4.0"
   peerDependencies:
