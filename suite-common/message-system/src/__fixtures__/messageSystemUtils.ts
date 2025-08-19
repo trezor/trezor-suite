@@ -2070,7 +2070,6 @@ export const validateExperiments = [
 ];
 
 const localizedMessages: Localization = {
-    'en-GB': 'This is a message in English-GB.',
     en: 'This is a message in English.',
     cs: 'Toto je zpráva v češtině.',
     de: 'Dies ist eine Nachricht auf Deutsch.',
@@ -2097,8 +2096,8 @@ export const resolveMessageContentFixture: Array<{
     {
         description: 'resolveMessageContent - case 1',
         message: localizedMessages,
-        language: 'en-GB',
-        result: 'This is a message in English-GB.',
+        language: 'en',
+        result: 'This is a message in English.',
     },
     {
         description: 'resolveMessageContent - case 2',

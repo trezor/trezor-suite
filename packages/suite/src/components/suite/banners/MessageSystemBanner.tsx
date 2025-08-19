@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { messageSystemActions } from '@suite-common/message-system';
+import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
 import { Banner, BannerProps, Row, Banner as WarningComponent } from '@trezor/components';
 
@@ -41,7 +41,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
         }
 
         return {
-            label: label[language] || label.en,
+            label: resolveMessageContent(label, language) || label.en,
             onClick: onClick!,
             'data-testid': `@message-system/${id}/cta`,
         };
@@ -84,7 +84,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
             margin={margin}
             width={width}
         >
-            {content[language] || content.en}
+            {resolveMessageContent(content, language) || content.en}
         </Banner>
     );
 };
