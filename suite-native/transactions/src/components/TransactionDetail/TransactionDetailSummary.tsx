@@ -1,7 +1,5 @@
-import { useState } from 'react';
-
 import { AccountKey } from '@suite-common/wallet-types';
-import { Card } from '@suite-native/atoms';
+import { Card, useBottomSheetModal } from '@suite-native/atoms';
 import { TypedTokenTransfer } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -26,9 +24,7 @@ export const TransactionDetailSummary = ({
     tokenTransfer,
 }: TransactionDetailSummaryProps) => {
     const { applyStyle } = useNativeStyles();
-    const [isAddressesSheetVisible, setIsAddressesSheetVisible] = useState(false);
-
-    const toggleAddressesSheet = () => setIsAddressesSheetVisible(prev => !prev);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isTokenTransferDetail = !!tokenTransfer;
 
@@ -39,20 +35,20 @@ export const TransactionDetailSummary = ({
                     accountKey={accountKey}
                     txid={txid}
                     tokenTransfer={tokenTransfer}
-                    onShowMore={toggleAddressesSheet}
+                    onShowMore={openModal}
                 />
             ) : (
                 <NetworkTransactionDetailSummary
                     accountKey={accountKey}
                     txid={txid}
-                    onShowMore={toggleAddressesSheet}
+                    onShowMore={openModal}
                 />
             )}
             <TransactionDetailAddressesSheet
-                isVisible={isAddressesSheetVisible}
+                ref={bottomSheetRef}
                 txid={txid}
                 accountKey={accountKey}
-                onClose={toggleAddressesSheet}
+                onClose={closeModal}
             />
         </Card>
     );

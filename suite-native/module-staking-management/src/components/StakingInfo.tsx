@@ -1,7 +1,6 @@
-import { useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -29,32 +28,21 @@ type StakingInfoProps = {
 export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
-
-    const [isCardSelected, setIsCardSelected] = useState<boolean>(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleDesktopClick = () => {
         openLink('https://trezor.io/trezor-suite');
     };
 
-    const handleToggleBottomSheet = useCallback(() => {
-        setIsCardSelected(prev => !prev);
-    }, [setIsCardSelected]);
-
     return (
         <Box style={applyStyle(sectionStyle)}>
-            <StakePendingCard
-                accountKey={accountKey}
-                handleToggleBottomSheet={handleToggleBottomSheet}
-            />
+            <StakePendingCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
 
-            <StakeClaimableCard
-                accountKey={accountKey}
-                handleToggleBottomSheet={handleToggleBottomSheet}
-            />
+            <StakeClaimableCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
 
             <StakingBalancesOverviewCard
                 accountKey={accountKey}
-                handleToggleBottomSheet={handleToggleBottomSheet}
+                handleToggleBottomSheet={openModal}
             />
 
             <Box marginTop="sp16" alignItems="center">
@@ -75,8 +63,8 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
             </Box>
 
             <StakingUnavailableBottomSheet
-                isCardSelected={isCardSelected}
-                handleToggleBottomSheet={handleToggleBottomSheet}
+                ref={bottomSheetRef}
+                onClose={closeModal}
                 handleDesktopClick={handleDesktopClick}
             />
         </Box>

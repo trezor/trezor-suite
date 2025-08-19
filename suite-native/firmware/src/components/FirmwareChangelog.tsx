@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectFirmwareChangelog } from '@suite-common/wallet-core';
-import { BottomSheet, Button, Text } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type FirmwareChangelogProps = {
-    isVisible: boolean;
     onClose: () => void;
+    ref: BottomSheetModalRef;
 };
 
 const changelogSectionTitleTextStyle = prepareNativeStyle(utils => ({
@@ -26,7 +26,7 @@ const ChangelogSectionTitle = ({ children }: { children: React.ReactNode }) => {
     return <Text style={applyStyle(changelogSectionTitleTextStyle)}>{children}</Text>;
 };
 
-export const FirmwareChangelog = ({ isVisible, onClose }: FirmwareChangelogProps) => {
+export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
     const firmwareChangelog = useSelector(selectFirmwareChangelog);
     const { applyStyle } = useNativeStyles();
 
@@ -69,7 +69,7 @@ export const FirmwareChangelog = ({ isVisible, onClose }: FirmwareChangelogProps
     }, [firmwareChangelog]);
 
     return (
-        <BottomSheet isVisible={isVisible} onClose={onClose} isScrollable isCloseDisplayed={false}>
+        <BottomSheetModal ref={ref}>
             <Text variant="titleSmall" color="textDefault">
                 <Translation id="firmware.firmwareUpdateScreen.changelog.title" />
             </Text>
@@ -81,6 +81,6 @@ export const FirmwareChangelog = ({ isVisible, onClose }: FirmwareChangelogProps
             >
                 <Translation id="firmware.firmwareUpdateScreen.changelog.closeButton" />
             </Button>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

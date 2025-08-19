@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +15,7 @@ import {
     IconButton,
     Text,
     VStack,
+    useBottomSheetModal,
 } from '@suite-native/atoms';
 import { AccordionContent } from '@suite-native/atoms/src/Accordion/AccordionContent';
 import { Icon } from '@suite-native/icons';
@@ -94,7 +94,7 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
 
 export const WalletConnectPairScreen = () => {
     const sessions = useSelector(selectSessions);
-    const [pairingOpened, setPairingOpened] = useState(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     return (
         <Screen
@@ -107,7 +107,7 @@ export const WalletConnectPairScreen = () => {
                             colorScheme="tertiaryElevation0"
                             size="medium"
                             iconName="qrCode"
-                            onPress={() => setPairingOpened(true)}
+                            onPress={openModal}
                         />
                     }
                 />
@@ -118,10 +118,7 @@ export const WalletConnectPairScreen = () => {
                 justifyContent={sessions.length === 0 ? 'center' : 'flex-start'}
                 flex={1}
             >
-                <WalletConnectPairBottomSheet
-                    pairingOpened={pairingOpened}
-                    setPairingOpened={setPairingOpened}
-                />
+                <WalletConnectPairBottomSheet ref={bottomSheetRef} onClose={closeModal} />
                 {sessions.map(session => (
                     <SessionDetailCard key={session.topic} session={session} />
                 ))}

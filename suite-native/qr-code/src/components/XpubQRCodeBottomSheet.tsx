@@ -2,17 +2,18 @@ import { useState } from 'react';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { BottomSheet, BottomSheetProps, Box, Button, VStack } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Box, Button, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { XpubQRCodeCard } from './XpubQRCodeCard';
 
-type XpubQRCodeBottomSheetProps = Pick<BottomSheetProps, 'isVisible'> & {
+type XpubQRCodeBottomSheetProps = {
     onClose: () => void;
     qrCodeData?: string;
     symbol: NetworkSymbol;
+    ref: BottomSheetModalRef;
 };
 
 const buttonStyle = prepareNativeStyle(utils => ({
@@ -20,10 +21,10 @@ const buttonStyle = prepareNativeStyle(utils => ({
 }));
 
 export const XpubQRCodeBottomSheet = ({
-    isVisible,
     onClose,
     qrCodeData,
     symbol,
+    ref,
 }: XpubQRCodeBottomSheetProps) => {
     const { translate } = useTranslate();
     const networkType = getNetworkType(symbol);
@@ -69,7 +70,7 @@ export const XpubQRCodeBottomSheet = ({
     };
 
     return (
-        <BottomSheet title={sheetTitle} isVisible={isVisible} onClose={onClose}>
+        <BottomSheetModal ref={ref} isCloseDisplayed title={sheetTitle}>
             <VStack spacing="sp24">
                 <XpubQRCodeCard isXpubShown={isXpubShown} qrCodeData={qrCodeData} />
 
@@ -85,6 +86,6 @@ export const XpubQRCodeBottomSheet = ({
                     )}
                 </Box>
             </VStack>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

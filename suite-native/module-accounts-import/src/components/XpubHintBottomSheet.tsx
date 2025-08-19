@@ -1,19 +1,26 @@
 import { NetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    Box,
+    Button,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { Video, VideoName } from '@suite-native/video-assets';
 
 type XpubHintBottomSheetProps = {
     networkType: NetworkType;
-    isVisible: boolean;
     handleClose: () => void;
+    ref: BottomSheetModalRef;
 };
 
 export const XpubHintBottomSheet = ({
     networkType,
-    isVisible,
     handleClose,
+    ref,
 }: XpubHintBottomSheetProps) => {
     const isAddressBased = isAddressBasedNetwork(networkType);
     const video: VideoName = isAddressBased ? 'xpubImportETH' : 'xpubImportBTC';
@@ -32,7 +39,7 @@ export const XpubHintBottomSheet = ({
         : 'moduleAccountImport.xpubScanScreen.hintBottomSheet.text.xpub';
 
     return (
-        <BottomSheet title={title} isVisible={isVisible} onClose={handleClose}>
+        <BottomSheetModal title={title} ref={ref} isCloseDisplayed>
             <Box paddingTop="sp8" justifyContent="space-between">
                 <Video name={video} aspectRatio={1} />
                 <VStack spacing="sp24" paddingTop="sp24">
@@ -58,6 +65,6 @@ export const XpubHintBottomSheet = ({
                     </Button>
                 </Box>
             </Box>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

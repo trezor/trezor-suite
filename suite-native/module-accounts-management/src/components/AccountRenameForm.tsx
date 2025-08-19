@@ -72,6 +72,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         name="accountLabel"
                         label={coinLabelFieldLabel}
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
+                        asBottomSheetInput
                         testID="@account-detail/settings/account-rename/input"
                     />
                     <AccountLabelFieldHint formControl={control} />

@@ -3,7 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { BottomSheet, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    HStack,
+    InlineAlertBox,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { FormSubmitButton, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -12,7 +19,6 @@ import { CustomFeeInputs } from './CustomFeeInputs';
 import { FeesFormValues } from '../../../feesFormSchema';
 
 type CustomFeeBottomSheetProps = {
-    isVisible: boolean;
     onClose: () => void;
     accountKey: AccountKey;
     feeValue: string;
@@ -20,16 +26,17 @@ type CustomFeeBottomSheetProps = {
     isSubmittable: boolean;
     isErrorBoxVisible: boolean;
     onCustomFeeSet: (feePerUnit: string, feeLimit?: string) => void;
+    ref: BottomSheetModalRef;
 };
 
 export const CustomFeeBottomSheet = ({
-    isVisible,
     onClose,
     accountKey,
     feeValue,
     isFeeLoading,
     isSubmittable,
     isErrorBoxVisible,
+    ref,
     onCustomFeeSet,
 }: CustomFeeBottomSheetProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
@@ -49,11 +56,11 @@ export const CustomFeeBottomSheet = ({
     if (!symbol) return null;
 
     return (
-        <BottomSheet
-            isVisible={isVisible}
-            onClose={onClose}
+        <BottomSheetModal
+            ref={ref}
             title={<Translation id="transactionManagement.fees.custom.bottomSheet.title" />}
             testID="@transactionManagement/custom-fee-bottom-sheet"
+            isCloseDisplayed
         >
             <VStack spacing="sp24" justifyContent="space-between" flex={1}>
                 <CustomFeeInputs symbol={symbol} />
@@ -91,12 +98,12 @@ export const CustomFeeBottomSheet = ({
                 )}
                 <FormSubmitButton
                     onPress={handleSetCustomFee}
-                    isVisible={isSubmittable && isVisible}
+                    isVisible={isSubmittable}
                     testID="@transactionManagement/custom-fee-submit-button"
                 >
                     <Translation id="transactionManagement.fees.custom.bottomSheet.confirmButton" />
                 </FormSubmitButton>
             </VStack>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

@@ -3,7 +3,7 @@ import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Box, Button } from '@suite-native/atoms';
+import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -52,7 +52,8 @@ export const CustomFee = ({
     isErrorBoxVisible,
     onCustomFeeSet,
 }: CustomFeeProps) => {
-    const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
     const [previousSelectedFeeLevelLabel, setPreviousSelectedFeeLevelLabel] =
         useState<NativeSupportedFeeLevel>('normal');
     const { watch, setValue, getValues } = useFormContext<FeesFormValues>();
@@ -60,20 +61,16 @@ export const CustomFee = ({
     const isCustomFeeSelected = watch('feeLevel') === 'custom';
 
     const openCustomFeeBottomSheet = () => {
-        setIsBottomSheetVisible(true);
+        openModal();
 
         const currentSelectedFeeLevelLabel = getValues('feeLevel');
         if (currentSelectedFeeLevelLabel !== 'custom')
             setPreviousSelectedFeeLevelLabel(currentSelectedFeeLevelLabel);
     };
 
-    const closeCustomFeeBottomSheet = () => {
-        setIsBottomSheetVisible(false);
-    };
-
     const cancelCustomFee = () => {
         setValue('feeLevel', previousSelectedFeeLevelLabel);
-        setIsBottomSheetVisible(false);
+        closeModal();
     };
 
     // custom fees are not allowed for solana
@@ -94,9 +91,9 @@ export const CustomFee = ({
             )}
 
             <CustomFeeBottomSheet
+                ref={bottomSheetRef}
                 accountKey={accountKey}
-                isVisible={isBottomSheetVisible}
-                onClose={closeCustomFeeBottomSheet}
+                onClose={closeModal}
                 onCustomFeeSet={onCustomFeeSet}
                 feeValue={feeValue}
                 isFeeLoading={isFeeLoading}

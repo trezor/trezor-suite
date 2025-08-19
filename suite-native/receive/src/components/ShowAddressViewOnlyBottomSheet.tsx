@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { BottomSheet, Button, Text, VStack } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type ShowAddressViewOnlyBottomSheetProps = {
-    setIsViewOnlyBottomSheetVisible: (isVisible: boolean) => void;
-    isViewOnlyBottomSheetVisible: boolean;
+    onClose: () => void;
+    ref: BottomSheetModalRef;
     onShowAddress: () => void;
 };
 
@@ -15,22 +15,14 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 export const ShowAddressViewOnlyBottomSheet = ({
-    setIsViewOnlyBottomSheetVisible,
-    isViewOnlyBottomSheetVisible,
+    onClose,
+    ref,
     onShowAddress,
 }: ShowAddressViewOnlyBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const handleCloseViewOnlyBottomSheet = () => {
-        setIsViewOnlyBottomSheetVisible(false);
-    };
-
     return (
-        <BottomSheet
-            isVisible={isViewOnlyBottomSheetVisible}
-            isCloseDisplayed={false}
-            onClose={handleCloseViewOnlyBottomSheet}
-        >
+        <BottomSheetModal ref={ref}>
             <VStack spacing="sp24">
                 <VStack alignItems="center">
                     <Text variant="titleSmall">
@@ -44,11 +36,11 @@ export const ShowAddressViewOnlyBottomSheet = ({
                     <Button colorScheme="yellowBold" onPress={onShowAddress}>
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.primaryButton" />
                     </Button>
-                    <Button colorScheme="yellowElevation1" onPress={handleCloseViewOnlyBottomSheet}>
+                    <Button colorScheme="yellowElevation1" onPress={onClose}>
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.secondaryButton" />
                     </Button>
                 </VStack>
             </VStack>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

@@ -13,7 +13,7 @@ import {
 import { AccountsListItem } from '@suite-native/accounts';
 import {
     Badge,
-    BottomSheet,
+    BottomSheetModal,
     Button,
     Card,
     HStack,
@@ -21,6 +21,7 @@ import {
     Text,
     TitleHeader,
     VStack,
+    useBottomSheetModal,
 } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -59,7 +60,7 @@ export const WalletConnectSessionPopupScreen = () => {
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         selectableAccounts[0] || null,
     );
-    const [accountListOpen, setAccountListOpen] = useState(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleAccept = () => {
         if (pendingProposal?.eventId) {
@@ -196,12 +197,12 @@ export const WalletConnectSessionPopupScreen = () => {
                     <Card noPadding>
                         <AccountsListItem
                             account={selectedDefaultAccount || accounts[0]}
-                            onPress={() => setAccountListOpen(true)}
+                            onPress={openModal}
                         />
 
-                        <BottomSheet
-                            isVisible={accountListOpen}
-                            onClose={() => setAccountListOpen(false)}
+                        <BottomSheetModal
+                            ref={bottomSheetRef}
+                            isCloseDisplayed
                             title={
                                 <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
                             }
@@ -212,12 +213,12 @@ export const WalletConnectSessionPopupScreen = () => {
                                     account={account}
                                     onPress={() => {
                                         setSelectedDefaultAccount(account);
-                                        setAccountListOpen(false);
+                                        closeModal();
                                     }}
                                     hasBackground={selectedDefaultAccount?.key === account.key}
                                 />
                             ))}
-                        </BottomSheet>
+                        </BottomSheetModal>
                     </Card>
                 </VStack>
 

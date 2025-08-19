@@ -35,6 +35,7 @@ export const BottomSheetModalContent = memo<BottomSheetModalContentProps>(
                 style={applyStyle(containerStyle)}
                 onScroll={handleScroll}
                 testID="@bottom-sheet/scroll-view"
+                keyboardShouldPersistTaps="handled"
             >
                 <AnimatedBox
                     style={[applyStyle(childWrapperStyle, { bottomInset: bottom }), style]}

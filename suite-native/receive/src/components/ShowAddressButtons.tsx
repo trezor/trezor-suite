@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { Button, TextButton, VStack } from '@suite-native/atoms';
+import { Button, TextButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
@@ -18,10 +18,9 @@ type ShowAddressButtonsProps = {
 export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const openLink = useOpenLink();
-
-    const [isViewOnlyBottomSheetVisible, setIsViewOnlyBottomSheetVisible] = useState(false);
 
     const handleOpenEduLink = () => {
         openLink(
@@ -31,7 +30,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
 
     const handleShowAddress = () => {
         if (!isPortfolioTrackerDevice && isDeviceInViewOnlyMode) {
-            setIsViewOnlyBottomSheetVisible(true);
+            openModal();
         } else {
             onShowAddress();
         }
@@ -57,8 +56,8 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
                 <Translation id="moduleReceive.receiveAddressCard.showAddress.learnMore" />
             </TextButton>
             <ShowAddressViewOnlyBottomSheet
-                isViewOnlyBottomSheetVisible={isViewOnlyBottomSheetVisible}
-                setIsViewOnlyBottomSheetVisible={setIsViewOnlyBottomSheetVisible}
+                ref={bottomSheetRef}
+                onClose={closeModal}
                 onShowAddress={onShowAddress}
             />
         </VStack>

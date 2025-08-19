@@ -7,7 +7,16 @@ import { A } from '@mobily/ts-belt';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { BottomSheet, Box, Button, Card, Text, Toggle, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    Box,
+    Button,
+    Card,
+    Text,
+    Toggle,
+    VStack,
+} from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -17,10 +26,10 @@ import { selectTransactionAddresses } from '../../selectors';
 import { AddressesType, VinVoutAddress } from '../../types';
 
 type TransactionDetailAddressesSheetProps = {
-    isVisible: boolean;
     txid: string;
     accountKey: AccountKey;
     onClose: () => void;
+    ref: BottomSheetModalRef;
 };
 
 const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
@@ -70,10 +79,10 @@ const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
 );
 
 export const TransactionDetailAddressesSheet = ({
-    isVisible,
     onClose,
     txid,
     accountKey,
+    ref,
 }: TransactionDetailAddressesSheetProps) => {
     const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
 
@@ -101,9 +110,9 @@ export const TransactionDetailAddressesSheet = ({
     };
 
     return (
-        <BottomSheet
-            isVisible={isVisible}
-            onClose={onClose}
+        <BottomSheetModal
+            isCloseDisplayed
+            ref={ref}
             title="Addresses"
             subtitle={`Transaction #${txid}`}
         >
@@ -132,6 +141,6 @@ export const TransactionDetailAddressesSheet = ({
                     </Box>
                 </Box>
             </Box>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };
