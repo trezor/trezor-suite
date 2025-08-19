@@ -36,7 +36,7 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
     };
 
     const redirectToDeviceSettings = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.DeviceSettings);
+        navigation.popTo(DeviceSettingsStackRoutes.DeviceSettings);
     };
 
     return (

@@ -11042,6 +11042,7 @@ __metadata:
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
     react-native-reanimated: "npm:^3.18.0"
+    react-native-safe-area-context: "npm:5.4.0"
     react-native-svg: "npm:15.11.2"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -35490,14 +35491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^19.0.0":
-  version: 19.1.0
-  resolution: "react-is@npm:19.1.0"
-  checksum: 10/4aceca94492032a19411138bf68c6ca7dce4abee7ae6c7f23db9291d2dff14d6a643717b176ef9a151e8cdf6a2b71fdbc59fd998328e086a6f752512304a252b
-  languageName: node
-  linkType: hard
-
-"react-is@npm:^19.1.0":
+"react-is@npm:^19.0.0, react-is@npm:^19.1.0":
   version: 19.1.1
   resolution: "react-is@npm:19.1.1"
   checksum: 10/44e0937da1f0da1d5dbd4f01972870768ef207f8a49717f4491f5022454f34c956cb66be560aee5286387169853b0283a81e1f419b51dc62654c8710dc98065a

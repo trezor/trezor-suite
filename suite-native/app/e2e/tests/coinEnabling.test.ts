@@ -30,7 +30,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling', () => {
         await onCoinEnabling.toggleNetwork('eth');
 
         await device.pressBack();
-        await device.pressBack();
+        await onTabBar.navigateToHome();
 
         const ethereumTextElement = element(by.text('Ethereum'));
 
@@ -40,7 +40,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling', () => {
         await onSettings.tapCoinEnabling();
         await onCoinEnabling.toggleNetwork('eth');
         await device.pressBack();
-        await device.pressBack();
+        await onTabBar.navigateToHome();
 
         await detoxExpect(ethereumTextElement).not.toExist();
     });

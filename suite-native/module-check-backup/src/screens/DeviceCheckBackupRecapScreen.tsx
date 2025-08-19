@@ -18,7 +18,7 @@ export const DeviceCheckBackupRecapScreen = ({
     DeviceSettingsStackParamList
 >) => {
     const handleContinueButtonPress = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.DeviceSettings);
+        navigation.popTo(DeviceSettingsStackRoutes.DeviceSettings);
     };
 
     return (

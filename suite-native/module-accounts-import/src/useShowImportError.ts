@@ -7,7 +7,6 @@ import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
@@ -67,14 +66,6 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                 }
             }
 
-            const handleGoBack = () =>
-                navigation.navigate(RootStackRoutes.AccountsImport, {
-                    screen: AccountsImportStackRoutes.XpubScan,
-                    params: {
-                        networkSymbol: symbol,
-                    },
-                });
-
             const { title, description, icon } = alertErrorMap[alertError];
 
             if (onRetry) {
@@ -86,7 +77,7 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                     primaryButtonTitle: 'Try Again',
                     onPressPrimaryButton: onRetry,
                     secondaryButtonTitle: 'Go back',
-                    onPressSecondaryButton: handleGoBack,
+                    onPressSecondaryButton: navigation.goBack,
                 });
             } else {
                 showAlert({
@@ -95,7 +86,7 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                     icon,
                     pictogramVariant: 'critical',
                     primaryButtonTitle: 'Go back',
-                    onPressPrimaryButton: handleGoBack,
+                    onPressPrimaryButton: navigation.goBack,
                     testID: `@alert-sheet/error/${alertError}`,
                 });
             }

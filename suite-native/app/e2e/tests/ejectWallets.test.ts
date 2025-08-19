@@ -59,7 +59,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
 
         // Navigate home
         await device.pressBack();
-        await device.pressBack();
+        await onTabBar.navigateToHome();
 
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await TrezorUserEnvLink.stopBridge();
@@ -69,7 +69,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
 
     it('Eject single wallet with disconnected device', async () => {
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
-        await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.stopEmu();
 
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Disconnected' });
         await navigateToEjectWallets();
@@ -77,7 +77,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
 
         // Navigate home
         await device.pressBack();
-        await device.pressBack();
+        await onTabBar.navigateToHome();
 
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });

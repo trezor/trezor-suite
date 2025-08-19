@@ -48,7 +48,7 @@ export const useDeviceChangedCheck = () => {
             device.connected
         ) {
             TrezorConnect.cancel();
-            navigation.navigate(RootStackRoutes.AppTabs, {
+            navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
                     screen: HomeStackRoutes.Home,

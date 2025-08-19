@@ -34,7 +34,7 @@ export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNo
     const handleDuplicateDevicePassphrase = useCallback(() => {
         dispatch(switchToDuplicatedWallet());
 
-        navigation.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {
                 screen: HomeStackRoutes.Home,

@@ -12,7 +12,7 @@ export const DeviceCheckBackupFailScreen = ({
     navigation,
 }: StackProps<DeviceCheckBackupStackParamList, DeviceCheckBackupStackRoutes.CheckBackupFail>) => {
     const handlePressTryAgain = () => {
-        navigation.navigate(DeviceCheckBackupStackRoutes.CheckBackup);
+        navigation.popTo(DeviceCheckBackupStackRoutes.CheckBackup);
     };
 
     const handlePressContactSupport = () => {

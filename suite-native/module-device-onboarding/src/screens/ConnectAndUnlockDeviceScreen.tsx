@@ -41,7 +41,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
     const setWasDeviceOnboardingCancelled = useSetAtom(wasDeviceOnboardingCancelledAtom);
 
     const navigateToHome = () =>
-        navigation.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {
                 screen: HomeStackRoutes.Home,

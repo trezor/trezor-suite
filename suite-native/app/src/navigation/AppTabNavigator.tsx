@@ -70,7 +70,7 @@ export const AppTabNavigator = () => {
             initialRouteName={AppTabsRoutes.HomeStack}
             screenOptions={{
                 headerShown: false,
-                unmountOnBlur: true,
+                popToTopOnBlur: true,
             }}
             tabBar={(props: BottomTabBarProps) => (
                 <TabBar tabItemOptions={rootTabsOptions} {...props} />
