@@ -61,7 +61,7 @@ jobs:
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false
-          additional-grep: "(?!.*@specificFirmware)"
+          additional-grep-invert: "@specificFirmware|@group=trading"
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           currents-tags: "fw-canary"
