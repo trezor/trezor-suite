@@ -517,18 +517,18 @@ export const onCallFirmwareUpdate = async ({
         });
     }
 
-    if (device.bluetoothProps) {
-        // close device
-        await device.release();
-        // T3W1 countdown after FW installation
-        await resolveAfter(4000);
-        // request ui (suite) to disconnect the device
-        postMessage(
-            createUiMessage(UI.FIRMWARE_DISCONNECT, {
-                device: device.toMessageObject(),
-            }),
-        );
-    }
+    // if (device.bluetoothProps) {
+    //     // close device
+    //     await device.release();
+    //     // T3W1 countdown after FW installation
+    //     await resolveAfter(4000);
+    //     // request ui (suite) to disconnect the device
+    //     postMessage(
+    //         createUiMessage(UI.FIRMWARE_DISCONNECT, {
+    //             device: device.toMessageObject(),
+    //         }),
+    //     );
+    // }
 
     reconnectedDevice = await waitForReconnectedDevice(
         { bootloader: false, method: 'wait' },
