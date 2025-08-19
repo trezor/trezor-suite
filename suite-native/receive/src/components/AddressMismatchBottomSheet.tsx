@@ -1,18 +1,23 @@
-import { BottomSheet, Box, BulletListItem, Button, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    Box,
+    BulletListItem,
+    Button,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
 import { ReceiveAddressBottomSheetHeader } from './ReceiveAddressBottomSheetHeader';
 
 type AddressMismatchBottomSheetProps = {
-    isOpened: boolean;
     onClose: () => void;
+    ref: BottomSheetModalRef;
 };
 
-export const AddressMismatchBottomSheet = ({
-    isOpened,
-    onClose,
-}: AddressMismatchBottomSheetProps) => {
+export const AddressMismatchBottomSheet = ({ onClose, ref }: AddressMismatchBottomSheetProps) => {
     const openLink = useOpenLink();
 
     const handleOpenSupportLink = () =>
@@ -21,12 +26,7 @@ export const AddressMismatchBottomSheet = ({
         );
 
     return (
-        <BottomSheet
-            isVisible={isOpened}
-            onClose={onClose}
-            isCloseDisplayed={false}
-            paddingHorizontal="sp24"
-        >
+        <BottomSheetModal ref={ref} paddingHorizontal="sp24">
             <VStack spacing="sp24">
                 <ReceiveAddressBottomSheetHeader
                     title={<Translation id="moduleReceive.bottomSheets.addressMismatch.title" />}
@@ -62,6 +62,6 @@ export const AddressMismatchBottomSheet = ({
                     </VStack>
                 </Box>
             </VStack>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

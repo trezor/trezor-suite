@@ -1,20 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { FirmwareUpdateStuckedState } from '@suite-native/analytics';
-import { BottomSheet, Box, Button, NumberedListItem, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    Box,
+    Button,
+    NumberedListItem,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type MayBeStuckedBottomSheetProps = {
-    isOpened: boolean;
     onClose: () => void;
     onAnalyticsReportStucked: (state: FirmwareUpdateStuckedState) => void;
+    ref: BottomSheetModalRef;
 };
 
 export const MayBeStuckedBottomSheet = ({
-    isOpened,
     onClose,
     onAnalyticsReportStucked,
+    ref,
 }: MayBeStuckedBottomSheetProps) => {
     const [visiblePart, setVisiblePart] = useState<1 | 2>(1);
 
@@ -23,23 +31,13 @@ export const MayBeStuckedBottomSheet = ({
         setVisiblePart(1);
     };
 
-    useEffect(() => {
-        if (isOpened) {
-            if (visiblePart === 1) {
-                onAnalyticsReportStucked('modalPart1');
-            } else if (visiblePart === 2) {
-                onAnalyticsReportStucked('modalPart2');
-            }
-        }
-    }, [visiblePart, onAnalyticsReportStucked, isOpened]);
+    const handleContinue = () => {
+        setVisiblePart(2);
+        onAnalyticsReportStucked('modalPart2');
+    };
 
     return (
-        <BottomSheet
-            isVisible={isOpened}
-            onClose={onClose}
-            isCloseDisplayed={false}
-            paddingHorizontal="sp24"
-        >
+        <BottomSheetModal ref={ref} paddingHorizontal="sp24">
             {visiblePart === 1 && (
                 <Animated.View>
                     <VStack spacing="sp24">
@@ -53,7 +51,7 @@ export const MayBeStuckedBottomSheet = ({
                         </VStack>
 
                         <VStack spacing="sp16">
-                            <Button onPress={() => setVisiblePart(2)} colorScheme="yellowBold">
+                            <Button onPress={handleContinue} colorScheme="yellowBold">
                                 <Translation id="firmware.stuckedBottomSheet.part1.continueButton" />
                             </Button>
                             <Button onPress={handleClose} colorScheme="yellowElevation0">
@@ -95,6 +93,6 @@ export const MayBeStuckedBottomSheet = ({
                     </VStack>
                 </Animated.View>
             )}
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

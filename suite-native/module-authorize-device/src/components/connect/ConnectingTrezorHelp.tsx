@@ -1,7 +1,12 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { BottomSheet, IconButton, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    IconButton,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -9,9 +14,7 @@ import { Link } from '@suite-native/link';
 import { PIN_HELP_URL } from '../../constants/pinFormConstants';
 
 export const ConnectingTrezorHelp = () => {
-    const [isHelperBottomSheetVisible, setIsHelperBottomSheetVisible] = useState(false);
-
-    const toggleBottomSheet = () => setIsHelperBottomSheetVisible(!isHelperBottomSheetVisible);
+    const { bottomSheetRef, openModal } = useBottomSheetModal();
 
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
@@ -40,13 +43,13 @@ export const ConnectingTrezorHelp = () => {
                 size="medium"
                 colorScheme="tertiaryElevation1"
                 iconName="question"
-                onPress={toggleBottomSheet}
+                onPress={openModal}
             />
-            <BottomSheet
-                isVisible={isHelperBottomSheetVisible}
+            <BottomSheetModal
+                isCloseDisplayed
                 title={modalTitle}
                 subtitle={modalSubtitle}
-                onClose={toggleBottomSheet}
+                ref={bottomSheetRef}
             >
                 <VStack padding="sp8">
                     {hasDeviceRequestedPin ? (
@@ -80,7 +83,7 @@ export const ConnectingTrezorHelp = () => {
                         </>
                     )}
                 </VStack>
-            </BottomSheet>
+            </BottomSheetModal>
         </>
     );
 };

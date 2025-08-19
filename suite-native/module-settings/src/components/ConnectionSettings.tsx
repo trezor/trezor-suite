@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { useNavigation } from '@react-navigation/core';
@@ -11,6 +10,7 @@ import {
     RoundedIcon,
     Text,
     TitledSection,
+    useBottomSheetModal,
 } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Icon } from '@suite-native/icons';
@@ -27,9 +27,9 @@ import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 export const ConnectionSettings = () => {
     const isConnectPopupEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
     const isWalletConnectEnabled = useFeatureFlag(FeatureFlag.IsWalletConnectEnabled);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
-    const [pairingOpened, setPairingOpened] = useState(false);
 
     if (!isConnectPopupEnabled && !isWalletConnectEnabled) {
         return null;
@@ -55,11 +55,11 @@ export const ConnectionSettings = () => {
                         <CardDivider />
                         <Box paddingHorizontal="sp16" paddingVertical="sp12">
                             <WalletConnectPairBottomSheet
-                                pairingOpened={pairingOpened}
-                                setPairingOpened={setPairingOpened}
+                                ref={bottomSheetRef}
+                                onClose={closeModal}
                             />
                             <TouchableOpacity
-                                onPress={() => setPairingOpened(true)}
+                                onPress={openModal}
                                 testID="@settings/wallet-connect-add"
                             >
                                 <HStack justifyContent="space-between" alignItems="center">

@@ -1,9 +1,15 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    Box,
+    Button,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
@@ -14,10 +20,10 @@ import { SecuritySealImages } from './SecuritySealImages';
 
 export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
-    const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleLinkPress = () => {
-        setIsBottomSheetVisible(true);
+        openModal();
         analytics.report({
             type: EventType.DeviceSetupInfo,
             payload: {
@@ -25,7 +31,6 @@ export const SecuritySealDescription = () => {
             },
         });
     };
-    const closeBottomSheet = () => setIsBottomSheetVisible(false);
 
     const deviceModel = useSelector(selectDeviceModel);
 
@@ -57,11 +62,7 @@ export const SecuritySealDescription = () => {
                 />
             </Text>
             <Box flex={0}>
-                <BottomSheet
-                    isVisible={isBottomSheetVisible}
-                    onClose={closeBottomSheet}
-                    isCloseDisplayed={false}
-                >
+                <BottomSheetModal ref={bottomSheetRef}>
                     <VStack spacing="sp32" justifyContent="flex-end">
                         <VStack spacing="sp24">
                             <SecuritySealImages />
@@ -83,7 +84,7 @@ export const SecuritySealDescription = () => {
                                 </VStack>
 
                                 <VStack spacing="sp12">
-                                    <Button onPress={closeBottomSheet}>
+                                    <Button onPress={closeModal}>
                                         <Translation id="generic.buttons.gotIt" />
                                     </Button>
                                     <Button
@@ -97,7 +98,7 @@ export const SecuritySealDescription = () => {
                             </VStack>
                         </VStack>
                     </VStack>
-                </BottomSheet>
+                </BottomSheetModal>
             </Box>
         </>
     );

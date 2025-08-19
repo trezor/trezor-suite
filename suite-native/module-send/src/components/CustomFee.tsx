@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { Box, Button } from '@suite-native/atoms';
+import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -16,8 +16,29 @@ type CustomFeeProps = {
     symbol: NetworkSymbol;
 };
 
+type CustomFeeButtonProps = {
+    onPress: () => void;
+};
+
+export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
+    <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
+        <Box alignSelf="center">
+            <Button
+                colorScheme="tertiaryElevation0"
+                size="small"
+                viewLeft={<Icon name="plus" size="mediumLarge" />}
+                testID="@send/fees-level-custom"
+                onPress={onPress}
+            >
+                <Translation id="moduleSend.fees.custom.addButton" />
+            </Button>
+        </Box>
+    </Animated.View>
+);
+
 export const CustomFee = ({ symbol }: CustomFeeProps) => {
-    const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
     const [previousSelectedFeeLevelLabel, setPreviousSelectedFeeLevelLabel] =
         useState<NativeSupportedFeeLevel>('normal');
     const { watch, setValue, getValues } = useFormContext<SendFeesFormValues>();
@@ -25,20 +46,16 @@ export const CustomFee = ({ symbol }: CustomFeeProps) => {
     const isCustomFeeSelected = watch('feeLevel') === 'custom';
 
     const openCustomFeeBottomSheet = () => {
-        setIsBottomSheetVisible(true);
+        openModal();
 
         const currentSelectedFeeLevelLabel = getValues('feeLevel');
         if (currentSelectedFeeLevelLabel !== 'custom')
             setPreviousSelectedFeeLevelLabel(currentSelectedFeeLevelLabel);
     };
 
-    const closeCustomFeeBottomSheet = () => {
-        setIsBottomSheetVisible(false);
-    };
-
     const cancelCustomFee = () => {
         setValue('feeLevel', previousSelectedFeeLevelLabel);
-        setIsBottomSheetVisible(false);
+        closeModal();
     };
 
     // custom fees are not allowed for solana
@@ -51,25 +68,10 @@ export const CustomFee = ({ symbol }: CustomFeeProps) => {
             {isCustomFeeSelected ? (
                 <CustomFeeCard onEdit={openCustomFeeBottomSheet} onCancel={cancelCustomFee} />
             ) : (
-                <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
-                    <Box alignSelf="center">
-                        <Button
-                            colorScheme="tertiaryElevation0"
-                            size="small"
-                            viewLeft={<Icon name="plus" size="mediumLarge" />}
-                            testID="@send/fees-level-custom"
-                            onPress={openCustomFeeBottomSheet}
-                        >
-                            <Translation id="moduleSend.fees.custom.addButton" />
-                        </Button>
-                    </Box>
-                </Animated.View>
+                <CustomFeeButton onPress={openCustomFeeBottomSheet} />
             )}
 
-            <CustomFeeBottomSheet
-                isVisible={isBottomSheetVisible}
-                onClose={closeCustomFeeBottomSheet}
-            />
+            <CustomFeeBottomSheet ref={bottomSheetRef} onClose={closeModal} />
         </Box>
     );
 };

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 
 import { getNetworkType } from '@suite-common/wallet-config';
@@ -199,46 +200,51 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
 
     return (
         <Form form={form}>
-            <VStack spacing="sp32" flex={1}>
-                <RecipientsSummary
-                    accountKey={accountKey}
-                    tokenContract={tokenContract}
-                    selectedFeeLevel={selectedFeeLevelTransaction}
-                />
-                <VStack flex={1} justifyContent="space-between" spacing="sp24">
-                    <VStack spacing="sp16">
-                        <VStack spacing="sp4">
-                            <Text variant="titleSmall">
-                                <Translation id="moduleSend.fees.description.title" />
-                            </Text>
-                            <Text>
-                                <Translation id="moduleSend.fees.description.body" />
-                            </Text>
-                        </VStack>
-                        <VStack spacing="sp24">
-                            {selectedFeeLevel !== 'custom' && (
-                                <FeeOptionsList
-                                    feeLevels={feeLevels}
-                                    symbol={account.symbol}
-                                    accountKey={accountKey}
-                                    tokenContract={tokenContract}
-                                    isLoading={areFeesLoading}
-                                />
-                            )}
-                            <CustomFee symbol={account.symbol} />
-                        </VStack>
-                    </VStack>
-                    <FeesFooter
+            {/*// BottomSheetModalProvider must be inside FormProvider to keep context available for sheets rendered via portal*/}
+            <BottomSheetModalProvider>
+                <VStack spacing="sp32" flex={1}>
+                    <RecipientsSummary
                         accountKey={accountKey}
-                        isSubmittable={isSubmittable}
-                        onSubmit={handleNavigateToReviewScreen}
-                        totalAmount={selectedFeeLevelTransaction?.totalSpent ?? mockedTotalAmount}
-                        fee={selectedFeeLevelTransaction?.fee ?? mockedFee}
-                        symbol={account.symbol}
                         tokenContract={tokenContract}
+                        selectedFeeLevel={selectedFeeLevelTransaction}
                     />
+                    <VStack flex={1} justifyContent="space-between" spacing="sp24">
+                        <VStack spacing="sp16">
+                            <VStack spacing="sp4">
+                                <Text variant="titleSmall">
+                                    <Translation id="moduleSend.fees.description.title" />
+                                </Text>
+                                <Text>
+                                    <Translation id="moduleSend.fees.description.body" />
+                                </Text>
+                            </VStack>
+                            <VStack spacing="sp24">
+                                {selectedFeeLevel !== 'custom' && (
+                                    <FeeOptionsList
+                                        feeLevels={feeLevels}
+                                        symbol={account.symbol}
+                                        accountKey={accountKey}
+                                        tokenContract={tokenContract}
+                                        isLoading={areFeesLoading}
+                                    />
+                                )}
+                                <CustomFee symbol={account.symbol} />
+                            </VStack>
+                        </VStack>
+                        <FeesFooter
+                            accountKey={accountKey}
+                            isSubmittable={isSubmittable}
+                            onSubmit={handleNavigateToReviewScreen}
+                            totalAmount={
+                                selectedFeeLevelTransaction?.totalSpent ?? mockedTotalAmount
+                            }
+                            fee={selectedFeeLevelTransaction?.fee ?? mockedFee}
+                            symbol={account.symbol}
+                            tokenContract={tokenContract}
+                        />
+                    </VStack>
                 </VStack>
-            </VStack>
+            </BottomSheetModalProvider>
         </Form>
     );
 };

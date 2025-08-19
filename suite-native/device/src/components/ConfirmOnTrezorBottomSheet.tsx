@@ -1,25 +1,27 @@
 import { ReactNode } from 'react';
 
-import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    Box,
+    Button,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type ConfirmOnTrezorBottomSheetProps = {
-    isOpened: boolean;
     onClose: () => void;
     text: ReactNode;
+    ref: BottomSheetModalRef;
 };
 
 export const ConfirmOnTrezorBottomSheet = ({
-    isOpened,
     onClose,
     text,
+    ref,
 }: ConfirmOnTrezorBottomSheetProps) => (
-    <BottomSheet
-        isVisible={isOpened}
-        onClose={onClose}
-        isCloseDisplayed={false}
-        paddingHorizontal="sp24"
-    >
+    <BottomSheetModal ref={ref} paddingHorizontal="sp24">
         <VStack spacing="sp24">
             <VStack alignItems="center">
                 <Text textAlign="center" variant="titleSmall">
@@ -36,5 +38,5 @@ export const ConfirmOnTrezorBottomSheet = ({
                 </Button>
             </Box>
         </VStack>
-    </BottomSheet>
+    </BottomSheetModal>
 );

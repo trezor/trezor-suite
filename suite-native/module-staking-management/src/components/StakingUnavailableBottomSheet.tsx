@@ -1,4 +1,4 @@
-import { BottomSheet, Button, Text } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -7,30 +7,26 @@ const bottomSheetElementStyle = prepareNativeStyle(utils => ({
 }));
 
 type StakingUnavailableBottomSheet = {
-    isCardSelected: boolean;
-    handleToggleBottomSheet: () => void;
+    onClose: () => void;
     handleDesktopClick: () => void;
+    ref: BottomSheetModalRef;
 };
 
 export const StakingUnavailableBottomSheet = ({
-    isCardSelected,
-    handleToggleBottomSheet,
+    onClose,
     handleDesktopClick,
+    ref,
 }: StakingUnavailableBottomSheet) => {
     const { applyStyle } = useNativeStyles();
 
-    if (!isCardSelected) return null;
-
     return (
-        <BottomSheet
+        <BottomSheetModal
+            ref={ref}
             title={
                 <Text variant="titleSmall" textAlign="center">
                     <Translation id="staking.stakingBottomSheet.title" />
                 </Text>
             }
-            isVisible
-            isCloseDisplayed={false}
-            onClose={handleToggleBottomSheet}
             paddingHorizontal="sp24"
         >
             <Text
@@ -41,7 +37,7 @@ export const StakingUnavailableBottomSheet = ({
                 <Translation id="staking.stakingBottomSheet.description" />
             </Text>
 
-            <Button onPress={handleToggleBottomSheet} style={applyStyle(bottomSheetElementStyle)}>
+            <Button onPress={onClose} style={applyStyle(bottomSheetElementStyle)}>
                 <Translation id="generic.buttons.gotIt" />
             </Button>
 
@@ -53,6 +49,6 @@ export const StakingUnavailableBottomSheet = ({
             >
                 <Translation id="staking.trezorDesktop" />
             </Button>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

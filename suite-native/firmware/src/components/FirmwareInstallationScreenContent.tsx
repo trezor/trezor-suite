@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import Animated, {
     FadeInDown,
     FadeInUp,
@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
-import { Badge, Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Badge, Box, Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     reportCheckFail,
@@ -63,8 +63,13 @@ export const FirmwareInstallationScreenContent = ({
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation();
-    const [isMayBeStuckBottomSheetOpened, setIsMayBeStuckBottomSheetOpened] =
-        useState<boolean>(false);
+
+    const {
+        bottomSheetRef,
+        openModal,
+        closeModal: closeMayBeStuckBottomSheet,
+    } = useBottomSheetModal();
+
     const {
         operation,
         setIsFirmwareInstallationRunning,
@@ -97,6 +102,11 @@ export const FirmwareInstallationScreenContent = ({
     const deviceInternalModel = originalDevice?.features?.internal_model;
     const deviceRevision = originalDevice?.features?.revision;
     const deviceFirmwareVendor = originalDevice?.features?.fw_vendor;
+
+    const openMayBeStuckBottomSheet = () => {
+        handleAnalyticsReportStucked('modalPart1');
+        openModal();
+    };
 
     useEffect(() => {
         if (!isTemporaryRememeberAllowed) return;
@@ -187,14 +197,6 @@ export const FirmwareInstallationScreenContent = ({
         resetReducer();
         startFirmwareUpdate();
     }, [startFirmwareUpdate, resetReducer, handleAnalyticsReportStarted]);
-
-    const openMayBeStuckBottomSheet = useCallback(() => {
-        setIsMayBeStuckBottomSheetOpened(true);
-    }, []);
-
-    const closeMayBeStuckBottomSheet = useCallback(() => {
-        setIsMayBeStuckBottomSheetOpened(false);
-    }, []);
 
     const handleContactSupport = useCallback(() => {
         openLink(SUITE_LITE_SUPPORT_URL);
@@ -323,7 +325,7 @@ export const FirmwareInstallationScreenContent = ({
             )}
 
             <MayBeStuckedBottomSheet
-                isOpened={isMayBeStuckBottomSheetOpened}
+                ref={bottomSheetRef}
                 onClose={closeMayBeStuckBottomSheet}
                 onAnalyticsReportStucked={handleAnalyticsReportStucked}
             />

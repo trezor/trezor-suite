@@ -4,7 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { BottomSheet, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    BottomSheetModalRef,
+    HStack,
+    InlineAlertBox,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { FormSubmitButton, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -16,13 +23,12 @@ import { useCustomFee } from '../hooks/useCustomFee';
 import { updateSelectedFeeLevelThunk } from '../sendFormThunks';
 
 type CustomFeeBottomSheetProps = {
-    isVisible: boolean;
+    ref: BottomSheetModalRef;
     onClose: () => void;
 };
-
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
 
-export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomSheetProps) => {
+export const CustomFeeBottomSheet = ({ ref, onClose }: CustomFeeBottomSheetProps) => {
     const route = useRoute<RouteProps>();
     const dispatch = useDispatch();
     const { accountKey, tokenContract } = route.params;
@@ -54,11 +60,11 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
     if (!symbol) return null;
 
     return (
-        <BottomSheet
-            isVisible={isVisible}
-            onClose={onClose}
+        <BottomSheetModal
+            ref={ref}
             title={<Translation id="moduleSend.fees.custom.bottomSheet.title" />}
             testID="@send/custom-fee-bottom-sheet"
+            isCloseDisplayed
         >
             <VStack spacing="sp24" justifyContent="space-between" flex={1}>
                 <CustomFeeInputs symbol={symbol} />
@@ -96,12 +102,12 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
                 )}
                 <FormSubmitButton
                     onPress={handleSetCustomFee}
-                    isVisible={isSubmittable && isVisible}
                     testID="@send/custom-fee-submit-button"
+                    isVisible={isSubmittable}
                 >
                     <Translation id="moduleSend.fees.custom.bottomSheet.confirmButton" />
                 </FormSubmitButton>
             </VStack>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };

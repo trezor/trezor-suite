@@ -8,14 +8,12 @@ import {
     XpubFormContext,
     XpubFormValues,
     xpubFormValidationSchema,
-    // TODO: This direct import is needed to avoid importing the `@suite-common/wallet-utils`
-    // to the `connect` packages. Should be revisited soon when fixing the monorepo tree shaking problems.
 } from '@suite-common/validators/src/schemas/xpubSchema';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { Alert, useAlert } from '@suite-native/alerts';
-import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { Button, Card, TextDivider, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -57,7 +55,16 @@ export const XpubScanScreen = ({
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const [_, setIsCameraRequested] = useState(false);
-    const [isScannerVisible, setIsScannerVisible] = useState(false);
+    const {
+        bottomSheetRef: xpubHintRef,
+        openModal: openXpubHint,
+        closeModal: closeXpubHint,
+    } = useBottomSheetModal();
+    const {
+        bottomSheetRef: scannerRef,
+        openModal: openScanner,
+        closeModal: closeScanner,
+    } = useBottomSheetModal();
 
     const { showAlert, hideAlert } = useAlert();
 
@@ -70,7 +77,6 @@ export const XpubScanScreen = ({
     });
     const { handleSubmit, setValue, watch } = form;
     const watchXpubAddress = watch('xpubAddress');
-    const [isHintSheetVisible, setIsHintSheetVisible] = useState(false);
 
     const isXpubFormFilled = watchXpubAddress?.length > 0;
 
@@ -127,7 +133,7 @@ export const XpubScanScreen = ({
                 ),
                 onPressSecondaryButton: () => {
                     hideAlert();
-                    setIsHintSheetVisible(true);
+                    openXpubHint();
                 },
             });
 
@@ -158,12 +164,6 @@ export const XpubScanScreen = ({
         }
     }, [handleXpubResult, route.params]);
 
-    const handleOpenHint = () => setIsHintSheetVisible(true);
-
-    const handleToggleScanner = () => {
-        setIsScannerVisible(prevState => !prevState);
-    };
-
     const handleBarCodeScanned = (data: string) => {
         setValue('xpubAddress', data);
         onXpubFormSubmit();
@@ -172,7 +172,7 @@ export const XpubScanScreen = ({
     return (
         <Screen
             header={<AccountImportScreenHeader closeActionType="back" />}
-            footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
+            footer={<XpubHint networkType={networkType} handleOpen={openXpubHint} />}
             focusedInputBottomOffset={163} // button height with vertical margin + footer height
         >
             <Card>
@@ -180,10 +180,7 @@ export const XpubScanScreen = ({
             </Card>
             <VStack spacing="sp16">
                 <View style={applyStyle(cameraStyle)}>
-                    <XpubImportSection
-                        onRequestCamera={handleToggleScanner}
-                        symbol={networkSymbol}
-                    />
+                    <XpubImportSection onRequestCamera={openScanner} symbol={networkSymbol} />
                 </View>
 
                 <TextDivider
@@ -219,15 +216,14 @@ export const XpubScanScreen = ({
             </VStack>
             <XpubHintBottomSheet
                 networkType={networkType}
-                isVisible={isHintSheetVisible}
-                handleClose={() => setIsHintSheetVisible(false)}
+                ref={xpubHintRef}
+                handleClose={closeXpubHint}
             />
-
             <ScanQRBottomSheet
                 title={networkTypeToTitleMap[networkType]}
-                isVisible={isScannerVisible}
                 onCodeScanned={handleBarCodeScanned}
-                onClose={handleToggleScanner}
+                ref={scannerRef}
+                onClose={closeScanner}
             />
         </Screen>
     );

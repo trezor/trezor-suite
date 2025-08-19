@@ -2,19 +2,14 @@ import React, { useEffect } from 'react';
 
 import * as Linking from 'expo-linking';
 
-import { BottomSheet, Button } from '@suite-native/atoms';
+import { BottomSheetModal, BottomSheetModalRef, Button } from '@suite-native/atoms';
 import TrezorConnectDeeplink from '@trezor/connect-mobile';
 
 type ConnectPopupDebugOptionsProps = React.PropsWithChildren<{
-    showDebug: boolean;
-    setShowDebug: (show: boolean) => void;
+    ref: BottomSheetModalRef;
 }>;
 
-export const ConnectPopupDebugOptions = ({
-    showDebug,
-    setShowDebug,
-    children,
-}: ConnectPopupDebugOptionsProps) => {
+export const ConnectPopupDebugOptions = ({ children, ref }: ConnectPopupDebugOptionsProps) => {
     useEffect(() => {
         TrezorConnectDeeplink.init({
             manifest: {
@@ -30,12 +25,7 @@ export const ConnectPopupDebugOptions = ({
     }, []);
 
     return (
-        <BottomSheet
-            isVisible={showDebug}
-            onClose={() => {
-                setShowDebug(false);
-            }}
-        >
+        <BottomSheetModal ref={ref} isCloseDisplayed>
             {children}
             <Button
                 onPress={() => {
@@ -102,6 +92,6 @@ export const ConnectPopupDebugOptions = ({
             >
                 signMessage invalid test
             </Button>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 };
