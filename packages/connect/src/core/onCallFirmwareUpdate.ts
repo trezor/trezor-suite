@@ -255,7 +255,7 @@ const getBinaryHelper = async ({
     }
 
     if (!device.firmwareReleaseConfigInfo) {
-        throw ERRORS.TypedError('Runtime', 'device.firmwareReleaseMessage is not set');
+        throw ERRORS.TypedError('Runtime', 'device.firmwareReleaseConfigInfo is not set');
     }
     const deviceModel = device.features?.internal_model;
 
