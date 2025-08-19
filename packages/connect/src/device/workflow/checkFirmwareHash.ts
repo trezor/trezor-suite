@@ -76,7 +76,7 @@ export const checkFirmwareHash = async ({
 
     const strippedBinary = stripFwHeaders(firmwareBinary.binary);
     const { hash: expectedHash, challenge } = calculateFirmwareHash(
-        device.features.major_version,
+        device.features.internal_model,
         strippedBinary,
         randomBytes(32),
     );

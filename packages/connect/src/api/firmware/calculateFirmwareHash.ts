@@ -1,10 +1,35 @@
 import { blake2sHex } from 'blakejs';
 
-const SIZE_T1 = (7 * 128 + 64) * 1024;
-const SIZE_TT = 13 * 128 * 1024;
+import { DeviceModelInternal } from '@trezor/device-utils';
 
-export const calculateFirmwareHash = (major_version: number, fw: ArrayBuffer, key?: Buffer) => {
-    const size = major_version === 1 ? SIZE_T1 : SIZE_TT;
+// Size values are taken from
+// https://github.com/trezor/trezor-firmware/blob/56f9490c01b40e99d94fe5d8a283955800d86562/core/embed/models/T3T1/memory.h#L62
+// and the calculation reflects the internal memory layout.
+// We keep size values expanded even though the result is the same for all core models except T3W1.
+const SIZE_T1B1 = (7 * 128 + 64) * 1024; // 960 kB
+const SIZE_T2T1 = 13 * 128 * 1024; // 1664 kB
+const SIZE_T2B1 = 13 * 128 * 1024; // 1664 kB
+const SIZE_T3B1 = 208 * 8 * 1024; // 1664 kB
+const SIZE_T3T1 = 208 * 8 * 1024; // 1664 kB
+const SIZE_T3W1 = 417 * 8 * 1024; // 3336 kB
+
+const firmwareSizeMap: Partial<Record<DeviceModelInternal, number>> = {
+    [DeviceModelInternal.T1B1]: SIZE_T1B1,
+    [DeviceModelInternal.T2T1]: SIZE_T2T1,
+    [DeviceModelInternal.T2B1]: SIZE_T2B1,
+    [DeviceModelInternal.T3B1]: SIZE_T3B1,
+    [DeviceModelInternal.T3T1]: SIZE_T3T1,
+    [DeviceModelInternal.T3W1]: SIZE_T3W1,
+};
+
+export const calculateFirmwareHash = (
+    internal_model: DeviceModelInternal,
+    fw: ArrayBuffer,
+    key?: Buffer,
+) => {
+    // Default is SIZE_T1B1 since some old T1 do not report internal_model.
+    const size = firmwareSizeMap[internal_model] ?? SIZE_T1B1;
+
     const padding = size - fw.byteLength;
     if (padding < 0) {
         throw new Error('Firmware too big');
