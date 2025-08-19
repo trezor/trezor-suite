@@ -26,7 +26,7 @@ export const useDeviceConnectionGuard = () => {
 
     const redirectToConnectAndUnlockScreen = useCallback(() => {
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize,
             params: {
                 onCancelNavigationTarget: {
                     name: RootStackRoutes.DeviceSettingsStack,

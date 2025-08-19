@@ -84,7 +84,7 @@ export const useHandleDeviceConnection = () => {
     );
 
     const isDeviceOnboardingConnectAndUnlockScreenFocused = useNavigationRouteMatch(
-        DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+        DeviceOnboardingStackRoutes.ConnectAndUnlockDeviceOnboarding,
     );
 
     const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
@@ -204,7 +204,7 @@ export const useHandleDeviceConnection = () => {
 
             if (isDeviceOnboardingStackFocused) {
                 navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                    screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+                    screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDeviceOnboarding,
                 });
 
                 return;

@@ -243,7 +243,7 @@ export const useDetectDeviceError = () => {
                 onPressPrimaryButton: () => {
                     handleDisconnect();
                     navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                        screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+                        screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize,
                     });
                 },
                 secondaryButtonTitle: (

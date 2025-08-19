@@ -61,7 +61,7 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
     const handleConnectDevice = () => {
         const connectDeviceScreen = isOnlyBluetoothSupported
             ? AuthorizeDeviceStackRoutes.ConnectBluetoothDevice
-            : AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice;
+            : AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize;
 
         if (device) {
             onSelectDevice(device);

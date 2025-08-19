@@ -40,7 +40,7 @@ export enum OnboardingStackRoutes {
 }
 
 export enum DeviceOnboardingStackRoutes {
-    ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    ConnectAndUnlockDeviceOnboarding = 'ConnectAndUnlockDeviceOnboarding',
     UninitializedDeviceLanding = 'UninitializedDeviceLanding',
     SuspiciousDevice = 'SuspiciousDevice',
     SecurityCheck = 'SecurityCheck',
@@ -122,7 +122,7 @@ export enum DeviceNameStackRoutes {
 }
 
 export enum AuthorizeDeviceStackRoutes {
-    ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    ConnectAndUnlockDeviceAuthorize = 'ConnectAndUnlockDeviceAuthorize',
     TurnOnAndUnlockDevice = 'TurnOnAndUnlockDevice',
     ConnectBluetoothDevice = 'ConnectBluetoothDevice',
     RemoveBluetoothDevice = 'RemoveBluetoothDevice',

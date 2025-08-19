@@ -34,7 +34,7 @@ export const DeviceOnboardingStackNavigator = () => (
         screenOptions={stackNavigationOptionsConfig}
     >
         <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ConnectAndUnlockDevice}
+            name={DeviceOnboardingStackRoutes.ConnectAndUnlockDeviceOnboarding}
             component={ConnectAndUnlockDeviceScreen}
             options={{
                 gestureEnabled: false,

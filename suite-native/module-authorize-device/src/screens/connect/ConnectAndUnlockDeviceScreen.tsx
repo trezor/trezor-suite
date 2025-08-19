@@ -21,7 +21,7 @@ export const ConnectAndUnlockDeviceScreen = ({
     navigation,
 }: StackToStackCompositeScreenProps<
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+    AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize,
     RootStackParamList
 >) => {
     const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);

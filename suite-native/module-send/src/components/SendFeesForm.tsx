@@ -230,7 +230,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
 
         // In case that view only device is not connected, show connect screen first.
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize,
             params: {
                 // If user cancels, navigate back to the send fees screen.
                 onCancelNavigationTarget: {
