@@ -1,0 +1,7 @@
+{
+  "AMOUNT_IS_NOT_ENOUGH": ".",
+  "MAX_FEE": "උපරිම ගාස්තුව",
+  "TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING": "ඔබට ප්‍රමාණවත් පෞද්ගලික අරමුදල් නොමැත. තවත් කාසි පෞද්ගලික කරන්න හෝ පෞද්ගලිකත්ව මට්ටම අඩු කරන්න.",
+  "TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING": "",
+  "TR_STAKING_NOT_ENOUGH_FUNDS": "ඔබට ප්‍රමාණවත් අරමුදල් නොමැත."
+}
