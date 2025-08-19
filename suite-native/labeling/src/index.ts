@@ -1,2 +1,3 @@
-export * from './components/AddAddressLabel';
-export * from './components/AddressLabelBottomSheet';
+export * from './components/AddressLabel';
+export * from './components/AddressLabelEditable';
+export * from './components/TransactionOutputLabelEditable';

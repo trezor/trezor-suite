@@ -33,7 +33,7 @@ export const TransactionDetailSummary = ({
             {isTokenTransferDetail ? (
                 <TokenTransactionDetailSummary
                     accountKey={accountKey}
-                    txid={transaction.txid}
+                    transaction={transaction}
                     tokenTransfer={tokenTransfer}
                     onShowMore={openModal}
                 />

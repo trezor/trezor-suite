@@ -105,13 +105,20 @@ export const TransactionDetailAddressesSection = ({
                             />
                         </Text>
                         {targetAddresses.slice(0, 2).map(({ address, n }) => (
-                            <TransactionUtxoAddress
-                                key={address}
-                                address={address}
-                                n={n}
-                                deviceStaticSessionId={transaction.deviceState}
-                                txId={transaction.txid}
-                            />
+                            <>
+                                <Text>{isOwn && 'OWN'}</Text>
+                                <TransactionUtxoAddress
+                                    key={address}
+                                    address={address}
+                                    n={n}
+                                    deviceStaticSessionId={transaction.deviceState}
+                                    txId={transaction.txid}
+                                    // Todo: input not implemented yet. The idea is, that transaction input is just output
+                                    //       of the previous transaction. So for inputs we would need to pass previous txid
+                                    //       (and figure out correct `n` output index of the utxo on the previous transaction)
+                                    showLabels={addressesType === 'outputs'}
+                                />
+                            </>
                         ))}
                     </Box>
 
@@ -154,6 +161,10 @@ export const TransactionDetailAddressesSection = ({
                                         n={n}
                                         deviceStaticSessionId={transaction.deviceState}
                                         txId={transaction.txid}
+                                        // Todo: input not implemented yet. The idea is, that transaction input is just output
+                                        //       of the previous transaction. So for inputs we would need to pass previous txid
+                                        //       (and figure out correct `n` output index of the utxo on the previous transaction)
+                                        showLabels={addressesType === 'outputs'}
                                     />
                                 ))}
                             </Box>

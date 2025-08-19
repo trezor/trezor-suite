@@ -1,8 +1,6 @@
-import { useSelector } from 'react-redux';
-
-import { WithLabelingState, selectOutputLabel } from '@suite-common/local-first-storage';
-import { Text, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
+import { TransactionOutputLabelEditable } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -15,6 +13,7 @@ type TransactionUtxoAddressProps = {
     n: number;
     txId: string;
     deviceStaticSessionId: StaticSessionId;
+    showLabels?: boolean;
 };
 
 export const TransactionUtxoAddress = ({
@@ -22,17 +21,9 @@ export const TransactionUtxoAddress = ({
     txId,
     n,
     address,
+    showLabels,
 }: TransactionUtxoAddressProps) => {
     const { applyStyle } = useNativeStyles();
-
-    const localFirstOutputLabel = useSelector((state: WithLabelingState) =>
-        selectOutputLabel({
-            state,
-            txId,
-            outputIndex: n,
-            deviceStaticSessionId,
-        }),
-    );
 
     return (
         <VStack>
@@ -41,7 +32,13 @@ export const TransactionUtxoAddress = ({
                 value={address}
                 style={applyStyle(addressTextStyle)}
             />
-            {localFirstOutputLabel?.label && <Text>{localFirstOutputLabel.label}</Text>}
+            {showLabels && (
+                <TransactionOutputLabelEditable
+                    txId={txId}
+                    outputIndex={n}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                />
+            )}
         </VStack>
     );
 };

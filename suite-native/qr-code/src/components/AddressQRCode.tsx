@@ -3,7 +3,7 @@ import { Alert, Pressable, Share } from 'react-native';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { AddAddressLabel } from '@suite-native/labeling';
+import { AddressLabelEditable } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -49,7 +49,7 @@ export const AddressQRCode = ({ address, deviceStaticSessionId }: AddressQRCodeP
                     {address}
                 </Text>
             </Pressable>
-            <AddAddressLabel address={address} deviceStaticSessionId={deviceStaticSessionId} />
+            <AddressLabelEditable address={address} deviceStaticSessionId={deviceStaticSessionId} />
             <HStack spacing="sp8" justifyContent="center">
                 <Button
                     size="small"

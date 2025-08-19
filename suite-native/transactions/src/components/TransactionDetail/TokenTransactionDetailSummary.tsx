@@ -3,20 +3,21 @@ import { useSelector } from 'react-redux';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
-import { TypedTokenTransfer } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 
 import { VerticalSeparator } from './NetworkTransactionDetailSummary';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 import { VinVoutAddress } from '../../types';
 
 type TokenTransactionDetailSummaryProps = {
+    transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    txid: string;
     tokenTransfer: TypedTokenTransfer;
     onShowMore: () => void;
 };
 
 export const TokenTransactionDetailSummary = ({
+    transaction,
     accountKey,
     tokenTransfer,
     onShowMore,
@@ -35,6 +36,7 @@ export const TokenTransactionDetailSummary = ({
     return (
         <VStack>
             <TransactionDetailAddressesSection
+                transaction={transaction}
                 addressesType="inputs"
                 addresses={inputAddresses}
                 symbol={symbol ?? undefined}
@@ -42,6 +44,7 @@ export const TokenTransactionDetailSummary = ({
                 onShowMore={onShowMore}
             />
             <TransactionDetailAddressesSection
+                transaction={transaction}
                 addressesType="outputs"
                 addresses={outputAddresses}
                 onShowMore={onShowMore}
