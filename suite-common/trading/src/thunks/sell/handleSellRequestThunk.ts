@@ -3,14 +3,13 @@ import { SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { Timer } from '@trezor/react-utils';
 
 import { TRADING_DEFAULT_SELL_FLOWS, TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
-import { TradingSellFormProps, TradingSellType } from '../../types';
+import { HandleSellRequestThunkProps, MinimalSellFormProps, TradingSellType } from '../../types';
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
@@ -29,7 +28,7 @@ const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
     invityAPI.getSellQuotes(requestData, signal);
 
 type GetQuoteRequestData = {
-    formValues: TradingSellFormProps;
+    formValues: MinimalSellFormProps;
     network: Network;
     shouldSendInSats: boolean | undefined;
 };
@@ -40,7 +39,7 @@ const getQuoteRequestData = ({
     shouldSendInSats,
 }: GetQuoteRequestData): SellFiatTradeQuoteRequest | null => {
     const { outputs, countrySelect, sendCryptoSelect, amountInCrypto } = formValues;
-    const decimals = getTradingNetworkDecimals({ network, sendCryptoSelect });
+    const decimals = getTradingNetworkDecimals({ network });
 
     const fiatStringAmount = outputs[0].fiat;
     const unformattedOutputAmount = outputs[0].amount;
@@ -69,14 +68,6 @@ const getQuoteRequestData = ({
     };
 
     return request;
-};
-
-export type HandleSellRequestThunkProps = {
-    formValues: TradingSellFormProps;
-    network: Network;
-    timer: Timer;
-    shouldSendInSats: boolean | undefined;
-    composeRequestCallback: () => void;
 };
 
 export const handleSellRequestThunk = createThunk<

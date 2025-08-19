@@ -26,7 +26,6 @@ import { BigNumber } from '@trezor/utils';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './constants';
 import { regional } from './regional';
 import {
-    TradingAccountOptionsGroupOptionProps,
     TradingCountryCode,
     TradingExchangeType,
     TradingParsedCryptoIdProps,
@@ -191,7 +190,7 @@ export const addIdsToQuotes = <T extends TradingType>(
 };
 
 interface TradingGetDecimalsProps {
-    sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
+    sendCryptoSelect?: { value: CryptoId; decimals: number };
     network?: Network | null;
 }
 

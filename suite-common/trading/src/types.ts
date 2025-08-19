@@ -25,6 +25,7 @@ import { AccountType, Network, NetworkSymbolExtended } from '@suite-common/walle
 import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import {
     Account,
+    BaseCurrencyOption,
     FormState,
     GeneralPrecomposedTransactionFinal,
     SelectedAccountStatus,
@@ -287,6 +288,14 @@ export interface TradingSellFormProps extends FormState {
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
 }
 
+export type MinimalSellFormProps = {
+    outputs: { amount?: string; fiat?: string; currency: Pick<BaseCurrencyOption, 'value'> }[];
+    sendCryptoSelect: { value: CryptoId } | undefined;
+    countrySelect: TradingCountryOption;
+    amountInCrypto: boolean;
+    setMaxOutputId?: number;
+};
+
 export type TradingSellUserConsentProps = {
     provider: string;
     cryptoCurrency: CryptoId;
@@ -301,6 +310,14 @@ export type HandleBuyRequestThunkProps = {
 
 export type HandleExchangeRequestThunkProps = {
     formValues: MinimalExchangeFormProps;
+    network: Network;
+    timer: Timer;
+    shouldSendInSats: boolean | undefined;
+    composeRequestCallback: () => void;
+};
+
+export type HandleSellRequestThunkProps = {
+    formValues: MinimalSellFormProps;
     network: Network;
     timer: Timer;
     shouldSendInSats: boolean | undefined;

@@ -8,9 +8,12 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { sellThunks } from '../../';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { TradingSellFormProps } from '../../../types';
+import {
+    HandleSellRequestThunkProps,
+    MinimalSellFormProps,
+    TradingSellFormProps,
+} from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
-import { HandleSellRequestThunkProps } from '../handleSellRequestThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
@@ -167,7 +170,7 @@ describe('handleSellRequestThunk', () => {
                         ...input.formValues,
                         outputs: input.formValues.outputs.map(output => ({
                             ...output,
-                            amount: convertAmountUnitsToSubunits(output.amount, 8),
+                            amount: convertAmountUnitsToSubunits(output.amount!, 8),
                         })),
                     },
                     shouldSendInSats: true,
@@ -224,7 +227,7 @@ describe('handleSellRequestThunk', () => {
                             accountType: 'normal',
                             decimals: 8,
                         },
-                    },
+                    } as MinimalSellFormProps,
                 }),
             )
             .unwrap();
