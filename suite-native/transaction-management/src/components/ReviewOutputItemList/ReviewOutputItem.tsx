@@ -1,6 +1,6 @@
 import { LayoutChangeEvent, View } from 'react-native';
 
-import { ReviewOutputType } from '@suite-common/wallet-types';
+import { ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
@@ -11,6 +11,7 @@ export type ReviewOutputItemProps = {
     accountKey: string;
     reviewOutput: StatefulReviewOutput;
     onLayout: (event: LayoutChangeEvent) => void;
+    tokenContract?: TokenAddress;
 };
 
 const outputLabelTranslationMap = {
@@ -28,7 +29,12 @@ const isTranslationDefined = (
     type: ReviewOutputType,
 ): type is keyof typeof outputLabelTranslationMap => type in outputLabelTranslationMap;
 
-export const ReviewOutputItem = ({ accountKey, reviewOutput, onLayout }: ReviewOutputItemProps) => {
+export const ReviewOutputItem = ({
+    accountKey,
+    reviewOutput,
+    onLayout,
+    tokenContract,
+}: ReviewOutputItemProps) => {
     const { translate } = useTranslate();
 
     const { state, type, value } = reviewOutput;
@@ -37,7 +43,12 @@ export const ReviewOutputItem = ({ accountKey, reviewOutput, onLayout }: ReviewO
     return (
         <View onLayout={onLayout}>
             <ReviewOutputCard title={title} outputState={state}>
-                <ReviewOutputItemContent accountKey={accountKey} outputType={type} value={value} />
+                <ReviewOutputItemContent
+                    accountKey={accountKey}
+                    outputType={type}
+                    value={value}
+                    tokenContract={tokenContract}
+                />
             </ReviewOutputCard>
         </View>
     );

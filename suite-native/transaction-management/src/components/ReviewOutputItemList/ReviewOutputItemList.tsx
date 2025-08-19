@@ -52,6 +52,7 @@ export const ReviewOutputItemList = ({
                             accountKey={accountKey}
                             reviewOutput={output}
                             onLayout={event => handleReadListItemHeight(event, index)}
+                            tokenContract={tokenContract}
                         />
                     ))}
                     <ReviewOutputSummaryItem
