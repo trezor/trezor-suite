@@ -1,4 +1,4 @@
-import { ReviewOutputType } from '@suite-common/wallet-types';
+import { ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
@@ -9,12 +9,14 @@ export type ReviewOutputItemContentProps = {
     accountKey: string;
     outputType: ReviewOutputType;
     value: string;
+    tokenContract?: TokenAddress;
 };
 
 export const ReviewOutputItemContent = ({
     accountKey,
     outputType,
     value,
+    tokenContract,
 }: ReviewOutputItemContentProps) => {
     switch (outputType) {
         case 'amount':
@@ -23,6 +25,7 @@ export const ReviewOutputItemContent = ({
                     accountKey={accountKey}
                     value={value}
                     translationKey="transactionManagement.review.outputs.amountLabel"
+                    tokenContract={tokenContract}
                 />
             );
 
