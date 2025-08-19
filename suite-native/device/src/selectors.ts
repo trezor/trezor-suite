@@ -234,7 +234,7 @@ export const selectHasFirmwareAuthenticityCheckHardFailed = createMemoizedSelect
 export const selectIsEntropyCheckEnabledAndFailed = createMemoizedSelector(
     [
         (state: FwAuthenticityCheckState) =>
-            selectIsFeatureEnabled(state, Feature.firmwareRevisionCheckMobile, true),
+            selectIsFeatureEnabled(state, Feature.entropyCheckMobile, true),
         selectIsEntropyCheckFailed,
     ],
     (isFeatureEnabled, isEntropyCheckFailed) => isFeatureEnabled && isEntropyCheckFailed,
