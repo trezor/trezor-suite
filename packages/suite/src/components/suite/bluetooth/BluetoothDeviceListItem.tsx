@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,
@@ -14,19 +12,20 @@ import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBlueto
 import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 import { Translation, TranslationKey } from '../Translation';
+import { PairingState } from './PairingState';
 
-const labelMap: Record<DeviceBluetoothConnectionStatusType, TranslationKey | null> = {
-    disconnected: 'TR_BLUETOOTH_CONNECT',
-    connecting: 'TR_BLUETOOTH_CONNECTING',
+const connectionStatusMap: Record<
+    DeviceBluetoothConnectionStatusType,
+    { component: 'button' | 'loader'; text: TranslationKey } | null
+> = {
+    disconnected: { component: 'button', text: 'TR_BLUETOOTH_CONNECT' },
+    connecting: { component: 'loader', text: 'TR_BLUETOOTH_CONNECTING' },
     connected: null, // Do not offer disconnect, it is confusing to the user as BT device auto-connects anyway.
-    'connection-error': 'TR_BLUETOOTH_TRY_AGAIN', // Out-of-range, offline, in the faraday cage, ...
-    pairing: 'TR_BLUETOOTH_PAIRING',
-    paired: 'TR_BLUETOOTH_PAIRED',
+    'connection-error': { component: 'button', text: 'TR_BLUETOOTH_TRY_AGAIN' }, // Out-of-range, offline, in the faraday cage, ...
+    pairing: { component: 'loader', text: 'TR_BLUETOOTH_PAIRING' },
+    paired: null, // This shall never be shown to the user
     'pairing-error': null, // This shall never be shown to the user
 };
-
-const LOADING_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'connecting'];
-const DISABLED_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'connecting'];
 
 type GhostDeviceActionButtonProps = {
     device: DesktopBluetoothDevice;
@@ -40,12 +39,11 @@ const GhostDeviceActionButton = ({
     isConnectingDevice,
 }: GhostDeviceActionButtonProps) => {
     const dispatch = useDispatch();
-    const handleDelete = () => {
-        dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
-    };
 
-    const isDisabled =
-        DISABLED_STATUSES.includes(device.connectionStatus.type) || isConnectingDevice;
+    const handleDelete = () =>
+        dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
+
+    const isDisabled = isLoading || isConnectingDevice;
 
     return (
         <Button
@@ -68,19 +66,12 @@ type ActionButtonProps = {
 };
 
 const ActionButton = ({ isGhostDevice, device, onConnect }: ActionButtonProps) => {
-    const [isLoadingLocal, setIsLoadingLocal] = useState(false);
-
     const connectingDevicesIds = useSelector(selectConnectingDevices);
+
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
-
-    const isGlobalLoading = LOADING_STATUSES.includes(device.connectionStatus.type);
-    const isLoading = isLoadingLocal || isGlobalLoading;
-    const buttonLabel =
-        labelMap[isSuiteTryingToConnectToDevice ? 'connecting' : device.connectionStatus.type];
-
-    if (buttonLabel === null) {
-        return null;
-    }
+    const connectionStatus = connectionStatusMap[device.connectionStatus.type];
+    const isClickable = connectionStatus?.component === 'button';
+    const isLoading = connectionStatus?.component === 'loader';
 
     if (isGhostDevice) {
         return (
@@ -94,39 +85,21 @@ const ActionButton = ({ isGhostDevice, device, onConnect }: ActionButtonProps) =
         );
     }
 
-    const onClickMap: Record<
-        DeviceBluetoothConnectionStatusType,
-        (() => Promise<void>) | undefined
-    > = {
-        'connection-error': () => onConnect(device.id),
-        'pairing-error': undefined,
-        connected: undefined,
-        connecting: undefined,
-        disconnected: () => onConnect(device.id),
-        paired: undefined,
-        pairing: undefined,
-    };
-
-    const onClickAction = onClickMap[device.connectionStatus.type];
-
-    const handleOnClick = async () => {
-        setIsLoadingLocal(true);
-        await onClickAction?.();
-        setIsLoadingLocal(false);
-    };
+    const handleOnClick = () => onConnect(device.id);
 
     return (
         <Row gap={spacings.xs}>
-            <Button
-                variant="primary"
-                size="small"
-                margin={{ vertical: spacings.xxs }}
-                isDisabled={onClickAction === undefined}
-                isLoading={isLoading}
-                onClick={handleOnClick}
-            >
-                <Translation id={buttonLabel} />
-            </Button>
+            {isClickable && (
+                <Button
+                    variant="primary"
+                    size="small"
+                    margin={{ vertical: spacings.xxs }}
+                    onClick={handleOnClick}
+                >
+                    <Translation id={connectionStatus.text} />
+                </Button>
+            )}
+            {isLoading && <PairingState isLoading text={connectionStatus.text} />}
         </Row>
     );
 };
