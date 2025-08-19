@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  run_android_e2e_tests:
+  run-e2e-manual-test-publisher:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
 
@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
 
-      - name: Run Detox Reporter
+      - name: Run Jest Reporter
         shell: bash
         env:
           GITHUB_ACTION: true
@@ -63,5 +63,5 @@ jobs:
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
         run: |
-          echo "Starting Detox Reporter for manual regression suite"
+          echo "Starting Jest Reporter for manual regression suite"
           yarn workspace @suite-native/app github:report:manual ${{ inputs.testFilter }}

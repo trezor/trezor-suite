@@ -18,9 +18,9 @@
         "prebuild:clean": "expo prebuild --clean",
         "build:e2e": "npx detox build --configuration",
         "test:e2e": "npx detox test --configuration ",
-        "github:report:manual": "npx detox test --configuration reporter.only --reporters ./e2e/support/reporter/index.js --testPathPattern /manual/",
         "start:e2e": "NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo start --dev-client",
-        "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
+        "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121",
+        "github:report:manual": "npx jest --config=./e2e/jest.config.reporter.js"
     },
     "dependencies": {
         "@exodus/patch-broken-hermes-typed-arrays": "^1.0.0-alpha.1",
