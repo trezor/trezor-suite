@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 
 import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
-import { Card, Column, Icon, Row, Spinner, Text } from '@trezor/components';
+import { Card, Column, Row, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
@@ -9,57 +9,13 @@ import { BluetoothDialogCard } from './BluetoothDialogCard';
 import { BluetoothTips } from './BluetoothTips';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
-
-const DisconnectedButWaitingComponent = () => (
-    <Row gap={spacings.xxs} alignItems="center">
-        <Spinner size={spacings.md} />
-        <Text variant="tertiary">
-            <Translation id="TR_BLUETOOTH_DISCONNECTED_BUT_WAITING" />
-        </Text>
-    </Row>
-);
+import { PairingState } from './PairingState';
 
 const Cancelling = () => (
     <Row gap={spacings.xxs} alignItems="center">
         <Spinner size={spacings.md} />
         <Text variant="tertiary">
             <Translation id="TR_BLUETOOTH_CANCELLING" />
-        </Text>
-    </Row>
-);
-
-const PairedComponent = () => (
-    <Row gap={spacings.md} alignItems="center">
-        <Icon size="small" name="check"></Icon>
-        <Text variant="primary">
-            <Translation id="TR_BLUETOOTH_PAIRED" />
-        </Text>
-    </Row>
-);
-
-const PairingComponent = () => (
-    <Row gap={spacings.xxs} alignItems="center">
-        <Spinner size={spacings.md} />
-        <Text variant="tertiary">
-            <Translation id="TR_BLUETOOTH_PAIRING" />
-        </Text>
-    </Row>
-);
-
-const ConnectingComponent = () => (
-    <Row gap={spacings.xxs} alignItems="center">
-        <Spinner size={spacings.md} />
-        <Text variant="tertiary">
-            <Translation id="TR_BLUETOOTH_CONNECTING" />
-        </Text>
-    </Row>
-);
-
-const ConnectedComponent = () => (
-    <Row gap={spacings.md} alignItems="center">
-        <Icon size="small" name="check"></Icon>
-        <Text variant="primary">
-            <Translation id="TR_BLUETOOTH_CONNECTED" />
         </Text>
     </Row>
 );
@@ -71,12 +27,12 @@ export type OkComponentProps = {
 
 const OkComponent = ({ device, isCancelling }: OkComponentProps) => {
     const map: Record<DeviceBluetoothConnectionStatusType, ReactNode> = {
-        disconnected: <DisconnectedButWaitingComponent />,
-        pairing: <PairingComponent />,
-        paired: <PairedComponent />,
+        disconnected: <PairingState isLoading text="TR_BLUETOOTH_DISCONNECTED_BUT_WAITING" />,
+        pairing: <PairingState isLoading text="TR_BLUETOOTH_PAIRING" />,
+        paired: <PairingState text="TR_BLUETOOTH_PAIRED" />,
         'pairing-error': 'Pairing failed', // Shall not be shown in the UI
-        connecting: <ConnectingComponent />,
-        connected: <ConnectedComponent />,
+        connecting: <PairingState isLoading text="TR_BLUETOOTH_CONNECTING" />,
+        connected: <PairingState text="TR_BLUETOOTH_CONNECTED" />,
         'connection-error': 'Connection failed', // Shall not be shown in the UI
     };
 
