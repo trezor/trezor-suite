@@ -1,6 +1,7 @@
 # GitHub Test Reporter
 
 The GitHub Test Reporter is a unified test documentation and reporting framework designed to create a single source of truth for both automated and manual tests in our repository. This framework uses structured test annotations to document tests directly in the codebase and automatically generates GitHub project items during release for efficient QA regression testing and single overview of both manual and automated results of release testing.
+Currently, the GitHub Test Reporter is used in Suite and Suite native.
 
 ## Purpose
 
@@ -118,7 +119,7 @@ The reporter can be run from a local environment for troubleshooting and develop
 
 ### Reporter Architecture
 
-The GitHubReporter class implements the Playwright Reporter interface and handles:
+The GitHubReporter class implements the Reporter interface and handles:
 
 1. **Initialization** - Setting up GitHub API access through Octokit
 2. **Test Result Processing** - Creating or updating GitHub issues for each test
@@ -163,8 +164,9 @@ The reporter is integrated into release branch CI workflows:
 
 - `test-suite-web-e2e-release.yml` for Suite Web tests
 - `test-suite-desktop-e2e-release.yml` for Suite Desktop tests
-- `test-suite-manual-release.yml` for manual tests
+- `test-suite-manual-release.yml` for Suite Sanity tests
 - `test-suite-release-e2e-report-orchestration` servers to run all relevant workflows
+- `test-suite-native-e2e-manual-reporter` for Suite native Sanity tests
 
 Each workflow passes the `RELEASE_BUILD` and `GITHUB_TOKEN` environment variables to enable test reporting.
 On the Web and Desktop workflows, reporter is enabled only when workflow is run manually. Otherwise only test are run. That way we have full control on the generation of issues in GitHub. We had a problem of duplicate and unwanted triggers when it was based on push to release branch.
