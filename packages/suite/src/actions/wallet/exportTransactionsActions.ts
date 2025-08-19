@@ -68,6 +68,9 @@ export const exportTransactionsThunk = createThunk(
                 ? advancedSearchTransactions(transactions, accountMetadata, searchQuery)
                 : transactions;
 
+        // getAccountTransactions doesn't guarantee transactions will be sorted
+        filteredTransaction.sort((t1, t2) => (t2.blockTime || 0) - (t1.blockTime || 0));
+
         // Prepare data in right format
         const data = await formatData(
             {
