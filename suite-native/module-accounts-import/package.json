@@ -17,7 +17,7 @@
         "@react-navigation/native-stack": "7.3.25",
         "@reduxjs/toolkit": "2.8.2",
         "@shopify/flash-list": "1.7.6",
-        "@shopify/react-native-skia": "^2.0.5",
+        "@shopify/react-native-skia": "2.2.3",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/validators": "workspace:*",
