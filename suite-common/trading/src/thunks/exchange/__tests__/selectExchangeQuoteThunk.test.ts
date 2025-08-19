@@ -190,30 +190,6 @@ describe('selectExchangeQuoteThunk', () => {
             expect(store.getState().wallet.tradingNew.exchange.selectedQuote).toEqual(undefined);
         });
 
-        it('when quoteRequest is undefined', async () => {
-            const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop, mockUserConsent } = getMocks({
-                ...state,
-                quotesRequest: undefined,
-            });
-
-            await store
-                .dispatch(
-                    exchangeThunks.selectQuoteThunk({
-                        quote,
-                        timer: mockTimer,
-                        userConsent: mockUserConsent,
-                        nextStep: mockNextStep,
-                    }),
-                )
-                .unwrap();
-
-            expect(mockUserConsent).toHaveBeenCalledTimes(0);
-            expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.exchange.selectedQuote).toEqual(undefined);
-        });
-
         it('when quote send is undefined', async () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockTimerStop, mockUserConsent } =

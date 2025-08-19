@@ -5,10 +5,7 @@ import { Timer } from '@trezor/react-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import {
-    selectTradingExchangeInfo,
-    selectTradingExchangeQuotesRequest,
-} from '../../selectors/tradingSelectors';
+import { selectTradingExchangeInfo } from '../../selectors/tradingSelectors';
 import { TradingExchangeUserConsentProps } from '../../types';
 
 export type SelectExchangeQuoteThunkProps = {
@@ -32,13 +29,12 @@ export const selectExchangeQuoteThunk = createThunk(
         { dispatch, getState },
     ) => {
         const exchangeInfo = selectTradingExchangeInfo(getState());
-        const quotesRequest = selectTradingExchangeQuotesRequest(getState());
         const provider =
             exchangeInfo?.providerInfos && quote.exchange
                 ? exchangeInfo?.providerInfos[quote.exchange]
                 : null;
 
-        if (!quotesRequest || !provider || !quote.send || !quote.receive) {
+        if (!provider || !quote.send || !quote.receive) {
             return;
         }
 
