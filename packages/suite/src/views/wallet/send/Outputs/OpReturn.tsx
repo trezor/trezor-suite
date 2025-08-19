@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import styled from 'styled-components';
 
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -37,12 +39,11 @@ const Space = styled.div`
 export const OpReturn = ({ outputId }: { outputId: number }) => {
     const {
         register,
-        outputs,
-        getDefaultValue,
         setValue,
         formState: { errors },
         composeTransaction,
         removeOpReturn,
+        watch,
     } = useSendFormContext();
 
     const { translationString } = useTranslation();
@@ -50,8 +51,8 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     const inputAsciiName = `outputs.${outputId}.dataAscii` as const;
     const inputHexName = `outputs.${outputId}.dataHex` as const;
 
-    const asciiValue = getDefaultValue(inputAsciiName, outputs[outputId].dataAscii || '');
-    const hexValue = getDefaultValue(inputHexName, outputs[outputId].dataHex || '');
+    const asciiValue = watch(inputAsciiName);
+    const hexValue = watch(inputHexName);
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const asciiError = outputError ? outputError.dataAscii : undefined;
@@ -66,20 +67,21 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
         },
         required: translationString('DATA_NOT_SET'),
     });
+
     const { ref: hexRef, ...hexField } = register(inputHexName, {
-        onChange: event => {
-            setValue(
-                inputAsciiName,
-                !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
-            );
-            composeTransaction(inputHexName);
-        },
         required: translationString('DATA_NOT_SET'),
         validate: (value = '') => {
             if (!isHexValid(value)) return translationString('DATA_NOT_VALID_HEX');
             if (value.length > 80 * 2) return translationString('DATA_HEX_TOO_BIG');
         },
     });
+
+    useEffect(() => {
+        setValue(
+            inputAsciiName,
+            hexValue && !hexError ? Buffer.from(hexValue, 'hex').toString('ascii') : '',
+        );
+    }, [inputAsciiName, hexValue, hexError, setValue]);
 
     return (
         <div>
