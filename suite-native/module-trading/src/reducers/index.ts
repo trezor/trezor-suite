@@ -8,6 +8,7 @@ export type { TradingState, TradingRootState } from './tradingSlice';
 export { initialState, tradingSlice, tradingActions } from './tradingSlice';
 export { buyActions } from './buySlice';
 export { exchangeActions } from './exchangeSlice';
+export { sellActions } from './sellSlice';
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 export const createMemoizedSelectorWithAccounts = createWeakMapSelector.withTypes<
