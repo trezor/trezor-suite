@@ -10,6 +10,7 @@ import { SellPaymentCard } from './payment/SellPaymentCard';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
+import { useSellQuotes } from '../../hooks/sell/useSellQuotes';
 import { AmountEditingDoneButton } from '../general/AmountEditingDoneButton';
 
 type SellFormProps = {
@@ -74,6 +75,8 @@ const SellFormMemoized = memo(
 export const SellForm = ({ shouldAnimateEntering }: SellFormProps) => {
     const sellForm = useSellFormContext();
     const isAmountInputActiveDebounced = useFocusedValueWatch(sellForm.watch);
+
+    useSellQuotes(sellForm);
 
     return (
         <SellFormMemoized
