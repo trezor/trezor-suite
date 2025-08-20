@@ -162,7 +162,11 @@ export const FeeOption = ({
     };
 
     return (
-        <Pressable onPress={handleSelectFeeLevel} disabled={!isInteractive}>
+        <Pressable
+            onPress={handleSelectFeeLevel}
+            disabled={!isInteractive}
+            testID={`@transactionManagement/fees-level-container-${feeKey}`}
+        >
             <Animated.View style={[applyStyle(wrapperStyle), animatedCardStyle]}>
                 <Box style={applyStyle(valuesWrapperStyle)}>
                     <HStack
@@ -222,7 +226,7 @@ export const FeeOption = ({
                                         : 'iconAlertRed'
                                 }
                                 onPress={handleSelectFeeLevel}
-                                testID={`@transactionManagement/fees-level-${feeKey}`}
+                                testID={`@transactionManagement/fees-level-radio-${feeKey}`}
                             />
                         )}
                     </HStack>

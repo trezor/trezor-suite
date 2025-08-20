@@ -163,7 +163,7 @@ describe('FeeOptionsList', () => {
         it('should call onSelectedFeeLevel when a fee option is selected', async () => {
             const { getByTestId } = await renderFeeOptionsList({});
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-normal'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
 
             expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('normal');
         });
@@ -171,10 +171,10 @@ describe('FeeOptionsList', () => {
         it('should handle different fee level selections', async () => {
             const { getByTestId } = await renderFeeOptionsList({});
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-economy'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-economy'));
             expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('economy');
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-high'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-high'));
             expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('high');
         });
 
@@ -182,9 +182,9 @@ describe('FeeOptionsList', () => {
             const { getByTestId } = await renderFeeOptionsList({});
 
             // Should have radio buttons when multiple options are available
-            expect(getByTestId('@transactionManagement/fees-level-normal')).toBeTruthy();
-            expect(getByTestId('@transactionManagement/fees-level-economy')).toBeTruthy();
-            expect(getByTestId('@transactionManagement/fees-level-high')).toBeTruthy();
+            expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toBeTruthy();
+            expect(getByTestId('@transactionManagement/fees-level-radio-economy')).toBeTruthy();
+            expect(getByTestId('@transactionManagement/fees-level-radio-high')).toBeTruthy();
         });
 
         it('should make options non-interactive when only one option is available', async () => {
@@ -197,7 +197,7 @@ describe('FeeOptionsList', () => {
             });
 
             // Should not have radio buttons when only one option is available
-            expect(queryByTestId('@transactionManagement/fees-level-normal')).toBeNull();
+            expect(queryByTestId('@transactionManagement/fees-level-radio-normal')).toBeNull();
         });
     });
 });
