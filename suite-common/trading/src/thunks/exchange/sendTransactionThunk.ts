@@ -70,6 +70,7 @@ export const sendTransactionThunk = createThunk<
                         triggerAnalyticsTradeConfirmation,
                         processResponseData,
                         signAndPushSendFormTransaction,
+                        isSlip24Active,
                     }),
                 ).unwrap();
 
@@ -96,6 +97,8 @@ export const sendTransactionThunk = createThunk<
             providers,
             trade: selectedTrade,
             isSlip24Active,
+            sendAccountKey: account.key,
+            receiveAccountKey,
         });
 
         const sendStringAmount = shouldSendInSats
@@ -103,7 +106,6 @@ export const sendTransactionThunk = createThunk<
             : selectedTrade.sendStringAmount;
         const sendPaymentExtraId =
             selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId;
-
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,

@@ -33,7 +33,6 @@ const getLines = (
     precomposedForm: FormState | StakeFormState,
     isRbfAction?: boolean,
     stakeType?: StakeType,
-    isSLIP24Active?: boolean,
 ): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType, stakeType);
@@ -58,7 +57,7 @@ const getLines = (
         .minus(precomposedTx.fee)
         .toString();
 
-    if (isSLIP24Active) {
+    if (precomposedForm.trading?.isSlip24Active) {
         return [
             {
                 id: 'fee',
@@ -125,7 +124,6 @@ export type TransactionReviewTotalOutputProps = {
     precomposedTx: GeneralPrecomposedTransactionFinal;
     precomposedForm: FormState | StakeFormState;
     account: Account;
-    isSLIP24Active: boolean;
     isRbf: boolean;
     stakeType?: StakeType;
 };
@@ -136,7 +134,6 @@ export const TransactionReviewTotalOutput = ({
     precomposedTx,
     precomposedForm,
     stakeType,
-    isSLIP24Active,
     isRbf,
 }: TransactionReviewTotalOutputProps) => {
     const device = useSelector(selectSelectedDevice);
@@ -146,20 +143,12 @@ export const TransactionReviewTotalOutput = ({
     }
 
     const { networkType, symbol } = account;
-    const lines = getLines(
-        device,
-        networkType,
-        precomposedTx,
-        precomposedForm,
-        isRbf,
-        stakeType,
-        isSLIP24Active,
-    );
+    const lines = getLines(device, networkType, precomposedTx, precomposedForm, isRbf, stakeType);
 
     return (
         <TransactionReviewOutputElement
             title={
-                isSLIP24Active ? (
+                precomposedForm.trading?.isSlip24Active ? (
                     <Translation id="TR_SUMMARY" />
                 ) : (
                     <Translation id="TR_TOTAL_INCLUDING_FEE" />

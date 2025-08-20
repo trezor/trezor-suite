@@ -6,6 +6,7 @@ import {
     TradingSellType,
     TradingSignAndPushSendFormTransactionProps,
     selectTradingExchangeProviders,
+    selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
@@ -108,6 +109,11 @@ export const composeTradingTransactionThunk = createThunk(
                     ? (selectTradingExchangeProviders(getState()) ?? {})
                     : (selectTradingSellProviders(getState()) ?? {});
 
+            const receiveAccountKey =
+                tradeType === 'exchange'
+                    ? selectTradingExchangeReceiveAccountKey(getState())
+                    : undefined;
+
             if (!selectedQuote) {
                 return rejectWithValue('No selected quote found');
             }
@@ -121,6 +127,8 @@ export const composeTradingTransactionThunk = createThunk(
                 providers,
                 feeLevel: { label: selectedFeeLevel, feePerUnit: '' },
                 isSlip24Active,
+                sendAccountKey: account.key,
+                receiveAccountKey,
             });
 
             const response = await dispatch(

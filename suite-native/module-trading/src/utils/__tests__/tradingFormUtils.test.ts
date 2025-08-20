@@ -6,6 +6,7 @@ import { createFormStateForSendForm } from '../tradingFormUtils';
 
 describe('createFormStateForSendForm', () => {
     describe('createTradingFormState', () => {
+        const sendAccountKey = '';
         it('should create FormState for exchange quote (swap)', () => {
             const exchangeQuote: ExchangeTrade = {
                 exchange: 'sideshiftfr',
@@ -30,6 +31,7 @@ describe('createFormStateForSendForm', () => {
                 quote: exchangeQuote,
                 feeLevel,
                 providers,
+                sendAccountKey,
             });
 
             expect(formState.outputs).toHaveLength(1);
@@ -71,7 +73,11 @@ describe('createFormStateForSendForm', () => {
             } as SellFiatTrade;
 
             const providers = { invity: sellInvity };
-            const formState = createFormStateForSendForm({ quote: sellQuote, providers });
+            const formState = createFormStateForSendForm({
+                quote: sellQuote,
+                providers,
+                sendAccountKey,
+            });
 
             expect(formState.outputs).toHaveLength(1);
             expect(formState.outputs[0]).toEqual({
@@ -99,7 +105,11 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { invity: exchangeInvity };
-            const formState = createFormStateForSendForm({ quote: tokenQuote, providers });
+            const formState = createFormStateForSendForm({
+                quote: tokenQuote,
+                providers,
+                sendAccountKey,
+            });
 
             expect(formState.outputs[0].token).toBe('0x0987654321123456789012345678901234567890');
             expect(formState.outputs[0].address).toBe('0x1234567890123456789012345678901234567890');
@@ -121,7 +131,11 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { changelly: exchangeInvity };
-            const formState = createFormStateForSendForm({ quote: xrpQuote, providers });
+            const formState = createFormStateForSendForm({
+                quote: xrpQuote,
+                providers,
+                sendAccountKey,
+            });
 
             expect(formState.destinationTag).toBe('12345');
         });
@@ -154,6 +168,7 @@ describe('createFormStateForSendForm', () => {
                 quote,
                 extraField: customExtraField,
                 providers,
+                sendAccountKey,
             });
 
             expect(formState.destinationTag).toBe('custom-tag-123');
@@ -170,7 +185,11 @@ describe('createFormStateForSendForm', () => {
 
             const providers = { test: exchangeInvity };
             expect(() =>
-                createFormStateForSendForm({ quote: invalidQuote as any, providers }),
+                createFormStateForSendForm({
+                    quote: invalidQuote as any,
+                    providers,
+                    sendAccountKey,
+                }),
             ).toThrow('Invalid quote type: must be ExchangeTrade or SellFiatTrade');
         });
 
@@ -188,7 +207,7 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { test: exchangeInvity };
-            const formState = createFormStateForSendForm({ quote, providers });
+            const formState = createFormStateForSendForm({ quote, providers, sendAccountKey });
 
             expect(formState.selectedFee).toBe('normal');
             expect(formState.feePerUnit).toBe('');

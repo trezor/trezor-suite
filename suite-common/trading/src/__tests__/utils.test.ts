@@ -384,6 +384,7 @@ describe('getTradingFormState', () => {
         it('should return default state when required fields are missing', () => {
             const incompleteTrade = {
                 exchange: 'test-exchange',
+                isSlip24Active: false,
                 // Missing required fields
             } as SellFiatTrade;
 
@@ -395,10 +396,12 @@ describe('getTradingFormState', () => {
                 activeSection,
                 trade: incompleteTrade,
                 providers,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
+                isSlip24Active: false,
             });
         });
 
@@ -415,10 +418,12 @@ describe('getTradingFormState', () => {
                 activeSection,
                 trade,
                 providers: {},
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
+                isSlip24Active: false,
             });
         });
 
@@ -439,10 +444,13 @@ describe('getTradingFormState', () => {
                 activeSection,
                 trade,
                 providers,
+                sendAccountKey: '',
+                isSlip24Active: false,
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
+                isSlip24Active: false,
             });
         });
 
@@ -464,12 +472,16 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
+                isSlip24Active: true,
                 recipientName: 'Test Exchange',
                 send: {
+                    accountKey: '',
+                    cryptoId: 'bitcoin',
                     symbol: 'btc',
                     contractAddress: undefined,
                     amount: '0.025',
@@ -499,15 +511,19 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
                 recipientName: 'Test Exchange',
+                isSlip24Active: true,
                 send: {
+                    accountKey: '',
                     symbol: 'eth',
                     contractAddress: '0x123456789',
                     amount: '100',
+                    cryptoId: 'ethereum--0x123456789',
                 },
                 receive: {
                     amount: '500',
@@ -535,10 +551,12 @@ describe('getTradingFormState', () => {
                 trade: incompleteTrade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'exchange',
+                isSlip24Active: true,
             });
         });
 
@@ -556,10 +574,12 @@ describe('getTradingFormState', () => {
                 trade,
                 providers: {},
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'exchange',
+                isSlip24Active: true,
             });
         });
 
@@ -581,10 +601,12 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'exchange',
+                isSlip24Active: true,
             });
         });
 
@@ -606,10 +628,12 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'exchange',
+                isSlip24Active: true,
             });
         });
 
@@ -631,17 +655,24 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
+                receiveAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'exchange',
                 recipientName: 'Test Exchange',
+                isSlip24Active: true,
                 send: {
+                    accountKey: '',
+                    cryptoId: 'bitcoin',
                     symbol: 'btc',
                     contractAddress: undefined,
                     amount: '0.025',
                 },
                 receive: {
+                    accountKey: '',
+                    cryptoId: 'ethereum',
                     symbol: 'eth',
                     contractAddress: undefined,
                     amount: '1',
@@ -667,17 +698,24 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
+                receiveAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'exchange',
                 recipientName: 'Test Exchange',
+                isSlip24Active: true,
                 send: {
+                    accountKey: '',
+                    cryptoId: 'ethereum--0xsend456',
                     symbol: 'eth',
                     contractAddress: '0xsend456',
                     amount: '50',
                 },
                 receive: {
+                    accountKey: '',
+                    cryptoId: 'ethereum--0xreceive123',
                     symbol: 'eth',
                     contractAddress: '0xreceive123',
                     amount: '100',
@@ -701,10 +739,12 @@ describe('getTradingFormState', () => {
                 trade,
                 providers: undefined,
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
+                isSlip24Active: true,
             });
         });
 
@@ -722,10 +762,12 @@ describe('getTradingFormState', () => {
                 trade,
                 providers: { 'test-exchange': mockProvider },
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
+                isSlip24Active: true,
             });
         });
 
@@ -747,10 +789,12 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
+                sendAccountKey: '',
             });
 
             expect(result).toEqual({
                 activeSection: 'sell',
+                isSlip24Active: true,
             });
         });
     });

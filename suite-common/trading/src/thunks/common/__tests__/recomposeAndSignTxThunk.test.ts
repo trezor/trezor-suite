@@ -141,6 +141,7 @@ describe('recomposeAndSignTxThunk', () => {
         });
         const tradingFormState = {
             activeSection: 'exchange' as const,
+            isSlip24Active: false,
         };
 
         const mockSignAndPushSendFormTransaction = jest.fn();

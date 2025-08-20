@@ -73,6 +73,7 @@ export const sendSellTransactionThunk = createThunk(
             providers,
             trade: selectedTrade,
             isSlip24Active,
+            sendAccountKey: account.key,
         });
         const cryptoStringAmount = shouldSendInSats
             ? convertAmountUnitsToSubunits(selectedTrade.cryptoStringAmount, decimals)

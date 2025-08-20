@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel } from '@trezor/connect';
 
@@ -14,6 +16,8 @@ export type FormOptions =
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
 
 export type FormStateTradingCryptoCurrency = {
+    cryptoId: CryptoId | undefined;
+    accountKey: string | undefined;
     symbol: NetworkSymbol;
     contractAddress?: string;
     amount: string;
@@ -24,13 +28,15 @@ export type FormStateTradingFiatCurrency = {
     fiatCurrency: string;
 };
 
-type FormStateTradingDefault = {
+export type FormStateTradingDefault = {
     activeSection: 'sell' | 'exchange';
+    isSlip24Active: boolean;
 };
 
 type FormStateTradingCommon = {
     recipientName: string;
     send: FormStateTradingCryptoCurrency;
+    isSlip24Active: boolean;
 };
 
 type FormStateTradingSell = {
@@ -38,7 +44,7 @@ type FormStateTradingSell = {
     receive: FormStateTradingFiatCurrency;
 } & FormStateTradingCommon;
 
-type FormStateTradingExchange = {
+export type FormStateTradingExchange = {
     activeSection: 'exchange';
     receive: FormStateTradingCryptoCurrency;
 } & FormStateTradingCommon;

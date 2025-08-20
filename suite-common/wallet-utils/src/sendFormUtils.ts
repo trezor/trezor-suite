@@ -25,6 +25,8 @@ import type {
     ExternalOutput,
     FeeInfo,
     FormState,
+    FormStateTrading,
+    FormStateTradingExchange,
     GeneralPrecomposedTransactionFinal,
     Output,
     RbfTransactionParams,
@@ -697,3 +699,7 @@ export const getMevProtectedTxData = (
 
     return isMevProtectionEnabled ? hex : { hex, disableAlternativeRPC: true };
 };
+
+export const isExchangeTradingForm = (
+    form: FormStateTrading | undefined,
+): form is FormStateTradingExchange => form?.activeSection === 'exchange';
