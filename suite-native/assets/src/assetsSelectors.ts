@@ -138,18 +138,24 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
                 (sum, { cryptoValue }) => sum.plus(new BigNumber(cryptoValue)),
                 new BigNumber(0),
             );
-            const fiatBalance = networkAccounts.reduce(
-                (sum, { fiatValue }) => (fiatValue ? sum.plus(fiatValue) : sum),
-                new BigNumber(0),
-            );
+            const fiatBalance = networkAccounts.reduce<BigNumber | null>((sum, { fiatValue }) => {
+                // If any account has null fiat data, set the network fiat to null.
+                // This prevents showing partial/incomplete values to users - we show loading state until all data is available.
+                if (sum === null) return null;
+                if (fiatValue == null) return null;
 
-            totalFiatBalance = asBaseCurrencyAmount(totalFiatBalance.plus(fiatBalance));
+                return sum.plus(fiatValue);
+            }, new BigNumber(0));
+
+            if (fiatBalance) {
+                totalFiatBalance = asBaseCurrencyAmount(totalFiatBalance.plus(fiatBalance));
+            }
 
             const asset: AssetType = {
                 symbol,
                 // For assets we should always only 8 decimals to save space
                 assetBalance: assetBalance.toFixed(8),
-                fiatBalance: asBaseCurrencyAmount(fiatBalance),
+                fiatBalance: fiatBalance ? asBaseCurrencyAmount(fiatBalance) : null,
             };
 
             return asset;
