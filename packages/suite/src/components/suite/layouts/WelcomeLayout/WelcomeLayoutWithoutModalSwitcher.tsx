@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import {
     Column,
+    Divider,
     ElevationDown,
     ElevationUp,
     Modal,
@@ -11,21 +12,24 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
-import { Elevation, spacingsPx } from '@trezor/theme';
+import { Elevation, borders, spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { SuiteBanners } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+import { selectIsTEXDashboardPromoBannerShown } from 'src/selectors/suite/suiteSelectors';
+import { DashboardPromoBanner } from 'src/views/dashboard/DashboardPromoBanner/DashboardPromoBanner';
 
 import { LoggedOutSidebar } from '../LoggedOutSidebar';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
+import { PageName } from '../SuiteLayout/PageHeader/PageNames/PageName';
 
 const Content = styled.div<{ $elevation: Elevation }>`
     display: flex;
+    flex: 1;
     flex-direction: column;
-    flex: 3;
     padding: ${spacingsPx.lg};
     align-items: center;
     overflow-y: auto;
@@ -38,12 +42,23 @@ const Content = styled.div<{ $elevation: Elevation }>`
 
 const ChildrenWrapper = styled.div`
     display: flex;
-    flex: 1;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
     max-width: ${MAX_ONBOARDING_WIDTH}px;
+    gap: ${spacingsPx.md};
+    padding: ${spacingsPx.xxl};
+    border-radius: ${borders.radii.md};
+    border: ${borders.widths.small} solid ${({ theme }) => theme.borderElevation1};
+    background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
+`;
+
+const WelcomePageHeaderWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
 `;
 
 export type WelcomeLayoutWithoutModalSwitcherProps = {
@@ -54,12 +69,25 @@ export type WelcomeLayoutWithoutModalSwitcherProps = {
 const Right = ({ bannerSlot, children }: { bannerSlot?: ReactNode; children: ReactNode }) => {
     const { elevation } = useElevation();
 
+    const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
+
     return (
         <Content $elevation={elevation}>
             {bannerSlot ?? null}
+            <WelcomePageHeaderWrapper>
+                <PageName />
+                <Divider />
+            </WelcomePageHeaderWrapper>
             <ChildrenWrapper>
                 <ElevationUp>{children}</ElevationUp>
             </ChildrenWrapper>
+            {shouldShowTEXDashboardPromoBanner && (
+                <>
+                    <Divider />
+                    <DashboardPromoBanner />
+                    <Divider />
+                </>
+            )}
         </Content>
     );
 };
@@ -87,9 +115,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                                 <LoggedOutSidebar />
                             </ElevationDown>
                         ) : null}
-
                         <Right bannerSlot={<SuiteBanners fill />}>{children}</Right>
-
                         <GuideButton />
                         <GuideRouter />
                     </Modal.Provider>
