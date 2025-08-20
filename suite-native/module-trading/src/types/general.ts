@@ -44,3 +44,7 @@ export type BaseFormValues<FocusedValue extends string, Quote extends TradingTra
 export type QuotesCategory = 'fixed' | 'float' | 'dex';
 
 export type QuotesByCategories<T extends TradingTradeType> = { [Q in QuotesCategory]?: T[] };
+
+export type AbortablePromise<T = unknown> = Promise<T> & {
+    abort: (message?: string) => void;
+};

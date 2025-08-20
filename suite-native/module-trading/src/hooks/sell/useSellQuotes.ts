@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
@@ -13,14 +13,12 @@ import { Timer, useDebounce } from '@trezor/react-utils';
 
 import { sellActions } from '../../reducers';
 import { selectSellQuotes } from '../../selectors/sellSelectors';
+import { AbortablePromise } from '../../types/general';
 import { SellFormType } from '../../types/sell';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { tradingSellFormToTradingSellFormProps } from '../../utils/sell/quotesUtils';
+import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 import { useReloadTimer } from '../general/useReloadTimer';
-
-type PromiseType = {
-    abort: (message?: string) => void;
-};
 
 type ShouldFetchSellQuotes = {
     isFetchAllowed: boolean;
@@ -102,58 +100,28 @@ const useShouldFetchSellQuotes = ({ watch }: SellFormType): ShouldFetchSellQuote
 
 const useSellQuotesInvalidator = (
     isFormValid: boolean,
-    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const dispatch = useDispatch();
     const quotes = useSelector(selectSellQuotes);
     const isLoading = useSelector(selectTradingSellIsLoading);
 
-    const shouldClearDebounceCallback = !isFormValid;
-    const shouldAbortQuotesRequest = !isFormValid && isLoading;
-    const shouldInvalidateQuotes = !isFormValid && quotes.length > 0;
-
-    // make sure that no debounced quotes request is pending when form is invalid
-    useEffect(() => {
-        if (shouldClearDebounceCallback) {
-            debounce(() => {});
-        }
-    }, [shouldClearDebounceCallback, debounce]);
-
-    // make sure no quotes request is pending when form is invalid
-    useEffect(() => {
-        if (shouldAbortQuotesRequest && quotesPromiseRef.current?.abort) {
-            quotesPromiseRef.current.abort('Invalidating quotes');
-        }
-    }, [shouldAbortQuotesRequest, quotesPromiseRef, debounce]);
-
-    // make sure no stale quotes are present when form is invalid
-    useEffect(() => {
-        if (shouldInvalidateQuotes) {
-            dispatch(sellActions.clearQuotesAndQuotesRequest());
-        }
-    }, [shouldInvalidateQuotes, dispatch]);
-
-    useEffect(
-        // on form unmount
-        () => () => {
-            // make sure no quotes request is pending
-            if (quotesPromiseRef.current?.abort) {
-                quotesPromiseRef.current.abort('Component unmounted');
-            }
-            // clear whole sell state including quotes
-            dispatch(sellActions.clearState());
-            // debounce should be handled by useDebounce, no need to clear it here
-        },
-        [dispatch, quotesPromiseRef],
-    );
+    useQuotesInvalidator({
+        isFormValid,
+        isLoading,
+        anyQuotesLoaded: quotes.length > 0,
+        quotesPromiseRef,
+        debounce,
+        getClearRequestAction: sellActions.clearQuotesAndQuotesRequest,
+        getClearStateAction: sellActions.clearState,
+    });
 };
 
 const useSellQuotesThunk = (
     getValues: SellFormType['getValues'],
     timer: Timer,
     shouldRefetchQuotes: boolean,
-    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const dispatch = useDispatch();
@@ -198,7 +166,7 @@ const useSellQuotesThunk = (
 
 export const useSellQuotes = (form: SellFormType) => {
     const debounce = useDebounce();
-    const promiseRef = useRef<PromiseType | undefined>(undefined);
+    const promiseRef = useRef<AbortablePromise | undefined>(undefined);
 
     const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchSellQuotes(form);
     const { timer, shouldReload } = useReloadTimer({ isEnabled: isFetchAllowed });

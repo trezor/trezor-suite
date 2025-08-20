@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
@@ -15,8 +15,10 @@ import { Timer, useDebounce } from '@trezor/react-utils';
 import { exchangeActions } from '../../reducers';
 import { selectExchangeQuotes } from '../../selectors/exchangeSelectors';
 import { ExchangeFormType } from '../../types/exchange';
+import { AbortablePromise } from '../../types/general';
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
+import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 import { useReloadTimer } from '../general/useReloadTimer';
 
 type ShouldFetchExchangeQuotesRef = {
@@ -24,10 +26,6 @@ type ShouldFetchExchangeQuotesRef = {
     receiveAsset: string | undefined;
     sendCryptoAmount: string | undefined;
     accountDescriptor: string | undefined;
-};
-
-type PromiseType = {
-    abort: (message?: string) => void;
 };
 
 const noop = () => {};
@@ -94,7 +92,7 @@ const useExchangeQuotesThunk = (
     getValues: ExchangeFormType['getValues'],
     timer: Timer,
     shouldRefetchQuotes: boolean,
-    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const dispatch = useDispatch();
@@ -140,56 +138,26 @@ const useExchangeQuotesThunk = (
 
 const useExchangeQuotesInvalidator = (
     isFormValid: boolean,
-    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const dispatch = useDispatch();
     const quotes = useSelector(selectExchangeQuotes);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
 
-    const shouldClearDebounceCallback = !isFormValid;
-    const shouldAbortQuotesRequest = !isFormValid && isLoading;
-    const shouldInvalidateQuotes = !isFormValid && quotes.length > 0;
-
-    // make sure that no debounced quotes request is pending when form is invalid
-    useEffect(() => {
-        if (shouldClearDebounceCallback) {
-            debounce(() => {});
-        }
-    }, [shouldClearDebounceCallback, debounce]);
-
-    // make sure no quotes request is pending when form is invalid
-    useEffect(() => {
-        if (shouldAbortQuotesRequest && quotesPromiseRef.current?.abort) {
-            quotesPromiseRef.current.abort('Invalidating quotes');
-        }
-    }, [shouldAbortQuotesRequest, quotesPromiseRef, debounce]);
-
-    // make sure no stale quotes are present when form is invalid
-    useEffect(() => {
-        if (shouldInvalidateQuotes) {
-            dispatch(exchangeActions.clearQuotesAndQuotesRequest());
-        }
-    }, [shouldInvalidateQuotes, dispatch]);
-
-    useEffect(
-        // on form unmount
-        () => () => {
-            // make sure no quotes request is pending
-            if (quotesPromiseRef.current?.abort) {
-                quotesPromiseRef.current.abort('Component unmounted');
-            }
-            // clear whole exchange state including quotes
-            dispatch(exchangeActions.clearState());
-            // debounce should be handled by useDebounce, no need to clear it here
-        },
-        [dispatch, quotesPromiseRef],
-    );
+    useQuotesInvalidator({
+        isFormValid,
+        isLoading,
+        anyQuotesLoaded: quotes.length > 0,
+        quotesPromiseRef,
+        debounce,
+        getClearRequestAction: exchangeActions.clearQuotesAndQuotesRequest,
+        getClearStateAction: exchangeActions.clearState,
+    });
 };
 
 export const useExchangeQuotes = ({ watch, getValues, control }: ExchangeFormType) => {
     const debounce = useDebounce();
-    const promiseRef = useRef<PromiseType | undefined>(undefined);
+    const promiseRef = useRef<AbortablePromise | undefined>(undefined);
 
     const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchExchangeQuotes(watch, control);
 

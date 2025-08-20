@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -20,13 +20,11 @@ import { useDebounce } from '@trezor/react-utils';
 import { buyActions } from '../../reducers';
 import { selectValidTradingBuyQuotesNative } from '../../selectors/buySelectors';
 import { BuyFormType } from '../../types/buy';
+import { AbortablePromise } from '../../types/general';
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
+import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 import { useReloadTimer } from '../general/useReloadTimer';
-
-type PromiseType = {
-    abort: (message?: string) => void;
-};
 
 type ShouldFetchBuyQuotesRef = {
     cryptoId: string | undefined;
@@ -97,58 +95,28 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
 
 const useBuyQuotesInvalidator = (
     isFormValid: boolean,
-    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const dispatch = useDispatch();
     const quotes = useSelector(selectValidTradingBuyQuotesNative);
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
-    const shouldClearDebounceCallback = !isFormValid;
-    const shouldAbortQuotesRequest = !isFormValid && isLoading;
-    const shouldInvalidateQuotes = !isFormValid && quotes.length > 0;
-
-    // make sure that no debounced quotes request is pending when form is invalid
-    useEffect(() => {
-        if (shouldClearDebounceCallback) {
-            debounce(() => {});
-        }
-    }, [shouldClearDebounceCallback, debounce]);
-
-    // make sure no quotes request is pending when form is invalid
-    useEffect(() => {
-        if (shouldAbortQuotesRequest && quotesPromiseRef.current?.abort) {
-            quotesPromiseRef.current.abort('Invalidating quotes');
-        }
-    }, [shouldAbortQuotesRequest, quotesPromiseRef, debounce]);
-
-    // make sure no stale quotes are present when form is invalid
-    useEffect(() => {
-        if (shouldInvalidateQuotes) {
-            dispatch(buyActions.clearQuotesAndQuotesRequest());
-        }
-    }, [shouldInvalidateQuotes, dispatch]);
-
-    useEffect(
-        // on form unmount
-        () => () => {
-            // make sure no quotes request is pending
-            if (quotesPromiseRef.current?.abort) {
-                quotesPromiseRef.current.abort('Component unmounted');
-            }
-            // clear whole buy state including quotes
-            dispatch(buyActions.clearState());
-            // debounce should be handled by useDebounce, no need to clear it here
-        },
-        [dispatch, quotesPromiseRef],
-    );
+    useQuotesInvalidator({
+        isFormValid,
+        isLoading,
+        anyQuotesLoaded: quotes.length > 0,
+        quotesPromiseRef,
+        debounce,
+        getClearRequestAction: buyActions.clearQuotesAndQuotesRequest,
+        getClearStateAction: buyActions.clearState,
+    });
 };
 
 const useBuyQuotesThunk = (
     form: BuyFormType,
     timer: ReturnType<typeof useReloadTimer>['timer'],
     shouldRefetchQuotes: boolean,
-    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const dispatch = useDispatch();
@@ -207,7 +175,7 @@ const useBuyQuotesThunk = (
 
 export const useBuyQuotes = (form: BuyFormType) => {
     const debounce = useDebounce();
-    const promiseRef = useRef<PromiseType | undefined>(undefined);
+    const promiseRef = useRef<AbortablePromise | undefined>(undefined);
 
     const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchBuyQuotes(form);
     const { timer, shouldReload } = useReloadTimer({ isEnabled: isFetchAllowed });
