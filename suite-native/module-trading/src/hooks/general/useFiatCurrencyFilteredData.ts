@@ -1,21 +1,18 @@
 import { ReactNode, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { useListDataFilter } from './useListDataFilter';
-import { selectBuySupportedFiatCurrenciesList } from '../../selectors/buySelectors';
 import { FiatCurrencyItem } from '../../types/general';
 
 const filterCallback = ({ label, value }: FiatCurrencyItem, filterValue: string): boolean =>
     label.toLowerCase().includes(filterValue.toLowerCase()) ||
     value.toLowerCase().includes(filterValue.toLowerCase());
 
-export const useFiatCurrencyFilteredData = () => {
-    const supportedCurrencies = useSelector(selectBuySupportedFiatCurrenciesList);
+export const useFiatCurrencyFilteredData = (supportedFiatCurrencies: FiatCurrencyItem[]) => {
     const {
         filteredData: data,
         filterValue,
         setFilterValue,
-    } = useListDataFilter(supportedCurrencies, filterCallback);
+    } = useListDataFilter(supportedFiatCurrencies, filterCallback);
 
     const filteredData = useMemo(
         () => [

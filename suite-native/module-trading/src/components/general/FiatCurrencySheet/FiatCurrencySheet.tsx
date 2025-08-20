@@ -15,13 +15,15 @@ export type FiatCurrencySheetProps = {
     isVisible: boolean;
     onClose: () => void;
     onFiatSelect: (currency: FiatCurrencyCode) => void;
+    supportedFiatCurrencies: FiatCurrencyItem[];
 };
 
 const keyExtractor = (item: FiatCurrencyItem) => item.value;
 
 export const FiatCurrencySheet = memo(
-    ({ isVisible, onClose, onFiatSelect }: FiatCurrencySheetProps) => {
-        const { filteredData, filterValue, setFilterValue } = useFiatCurrencyFilteredData();
+    ({ isVisible, onClose, onFiatSelect, supportedFiatCurrencies }: FiatCurrencySheetProps) => {
+        const { filteredData, filterValue, setFilterValue } =
+            useFiatCurrencyFilteredData(supportedFiatCurrencies);
         const { translate } = useTranslate();
 
         // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
