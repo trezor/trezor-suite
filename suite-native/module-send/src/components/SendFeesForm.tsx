@@ -5,17 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     FeesRootState,
     SendRootState,
     selectAccountByKey,
-    selectAreFeesLoading,
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectSendFormDraftByKey,
-    useFetchFeesOnce,
-    useRefetchFees,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
@@ -43,6 +40,7 @@ import {
     NativeSupportedFeeLevel,
     selectDestinationTagFromDraft,
     selectFeeLevels,
+    useFeesFetching,
     useFeesForm,
 } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
@@ -108,17 +106,13 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         selectAccountByKey(state, accountKey),
     );
 
-    const areFeesLoading = useSelector((state: FeesRootState) =>
-        selectAreFeesLoading(state, account?.symbol),
-    );
-
     const feeLevels = useSelector(selectFeeLevels);
+
+    const { networkType, symbol } = account ?? {};
 
     const formDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
-
-    const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
 
     const destinationTag = useSelector((state: NativeSendRootState) =>
         selectDestinationTagFromDraft(state, accountKey, tokenContract),
@@ -133,23 +127,21 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     });
     const { handleSubmit, control } = form;
 
-    useFetchFeesOnce({ networkSymbol: account?.symbol });
-
     const selectedFeeLevel = useWatch({ control, name: 'feeLevel' });
     const selectedFeeLevelTransaction = feeLevels[
         selectedFeeLevel
     ] as GeneralPrecomposedTransactionFinal;
 
     const feePerUnit = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
+        selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, selectedFeeLevel),
     );
 
-    useRefetchFees({
-        networkSymbol: account?.symbol,
-        isDisabled: selectedFeeLevel === 'custom' || formDraft?.setMaxOutputId !== undefined,
-    });
-
     const transactionBytes = normalFee.bytes as number;
+
+    const { areFeesLoading } = useFeesFetching({
+        accountKey,
+        isRefetchDisabled: selectedFeeLevel === 'custom' || formDraft?.setMaxOutputId !== undefined,
+    });
 
     // If trezor-connect was not able to compose the fee level, we have calculate total amount locally.
     const mockedFee = useMemo(
@@ -245,6 +237,8 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         });
     });
 
+    if (!symbol) return;
+
     const isSubmittable = selectedFeeLevelTransaction?.type === 'final';
 
     return (
@@ -271,13 +265,13 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                                 {selectedFeeLevel !== 'custom' && (
                                     <FeeOptionsList
                                         feeLevels={feeLevels}
-                                        symbol={account.symbol}
+                                        symbol={symbol}
                                         isLoading={areFeesLoading}
                                         onSelectedFeeLevel={handleFeeLevelChange}
                                     />
                                 )}
                                 <CustomFeeWrapper
-                                    symbol={account.symbol}
+                                    symbol={symbol}
                                     accountKey={accountKey}
                                     tokenContract={tokenContract}
                                     onCustomFeeSet={handleCustomFeeSet}
@@ -292,7 +286,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                                 selectedFeeLevelTransaction?.totalSpent ?? mockedTotalAmount
                             }
                             fee={selectedFeeLevelTransaction?.fee ?? mockedFee}
-                            symbol={account.symbol}
+                            symbol={symbol}
                             tokenContract={tokenContract}
                         />
                     </VStack>
