@@ -130,16 +130,6 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceSta
 
 export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
 
-export const isDeviceAccessible = (device?: TrezorDevice) => {
-    if (!device || !device.features) return false;
-
-    return device.mode === 'normal' && device.firmware !== 'required';
-};
-
-// useful for working with `Device` type straight from connect, which is missing `ExtendedDevice` properties (required on `TrezorDevice`)
-export const isDeviceKnown = (device?: Device): device is KnownDevice =>
-    device?.type === 'acquired';
-
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
     !!device?.features;
 

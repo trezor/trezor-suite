@@ -13,15 +13,6 @@ describe('getStatus', () => {
     });
 });
 
-describe('isDeviceAccessible', () => {
-    fixtures.isDeviceAccessible.forEach(f => {
-        it(f.description, () => {
-            const instance = utils.isDeviceAccessible(f.device);
-            expect(instance).toEqual(f.result);
-        });
-    });
-});
-
 describe('isSelectedDevice', () => {
     fixtures.isSelectedDevice.forEach(f => {
         it(f.description, () => {
