@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { AppState, Platform } from 'react-native';
-import { SystemBarStyle } from 'react-native-edge-to-edge';
+import { SystemBarStyle, SystemBars } from 'react-native-edge-to-edge';
 
 import { useIsFocused } from '@react-navigation/native';
-import * as NavigationBar from 'expo-navigation-bar';
 import * as SystemUI from 'expo-system-ui';
 
 import { isDarkColor, useNativeStyles } from '@trezor/styles';
@@ -11,8 +10,7 @@ import { CSSColor, Color } from '@trezor/theme';
 
 const adjustSystemBarStyleToBackground = (color: CSSColor) => {
     if (Platform.OS === 'android') {
-        NavigationBar.setBackgroundColorAsync(color);
-        NavigationBar.setButtonStyleAsync(isDarkColor(color) ? 'light' : 'dark');
+        SystemBars.setStyle(isDarkColor(color) ? 'light' : 'dark');
     }
 };
 

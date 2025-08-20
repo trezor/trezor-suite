@@ -21,7 +21,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-image": "~2.2.0",
+        "expo-image": "2.4.0",
         "react": "19.0.0",
         "react-native": "0.79.3",
         "react-native-reanimated": "^3.18.0"

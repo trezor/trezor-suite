@@ -19,7 +19,7 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-camera": "~16.1.7",
+        "expo-camera": "16.1.11",
         "expo-image-picker": "~16.1.4",
         "react": "19.0.0",
         "react-native": "0.79.3",

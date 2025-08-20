@@ -16,7 +16,7 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "expo-clipboard": "~7.1.4",
+        "expo-clipboard": "7.1.5",
         "react": "19.0.0",
         "react-native": "0.79.3",
         "react-redux": "9.2.0"
