@@ -10,7 +10,7 @@ import { disposeBluetoothThunk } from '../../../actions/bluetooth/disposeBluetoo
 import { initBluetoothThunk } from '../../../actions/bluetooth/initBluetoothThunk';
 import { setFlag } from '../../../actions/suite/suiteActions';
 
-export const Bluetooth = () => {
+export const BluetoothEnabledCheckbox = () => {
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);

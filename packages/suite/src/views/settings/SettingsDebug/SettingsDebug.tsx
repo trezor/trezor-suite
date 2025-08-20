@@ -8,13 +8,14 @@ import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { Backends } from './Backends';
-import { Bluetooth } from './Bluetooth';
+import { BluetoothEnabledCheckbox } from './BluetoothEnabledCheckbox';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { FirmwareUpdate } from './FirmwareUpdate';
+import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
 import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
@@ -89,8 +90,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
-                    <Bluetooth />
+                    <BluetoothEnabledCheckbox />
                     <ShowBluetoothDebugInfo />
+                    <ForgetAllDevicesButton />
                 </SettingsSection>
             )}
             <SettingsSection title="Trezor Host Protocol">
