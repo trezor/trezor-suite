@@ -16,8 +16,8 @@ export type UISize = (typeof uiSizes)[number];
 export const uiAlignments = ['start', 'center', 'end'] as const;
 export type UIAlignment = (typeof uiAlignments)[number];
 
-export const uiIntent = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
-export type UIIntent = (typeof uiIntent)[number];
+export const uiIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
+export type UIIntent = (typeof uiIntents)[number];
 
-export const uiPriority = ['primary', 'secondary'] as const;
-export type UIPriority = (typeof uiPriority)[number];
+export const uiPriorities = ['primary', 'secondary'] as const;
+export type UIPriority = (typeof uiPriorities)[number];

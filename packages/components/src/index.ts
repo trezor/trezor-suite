@@ -16,6 +16,7 @@ export * from './components/buttons/Button/Button';
 export { type ButtonVariant } from './components/buttons/buttonStyleUtils';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export * from './components/buttons/IconButton/IconButton';
+export { NewButton, type NewButtonProps } from './components/buttons/NewButton/NewButton';
 export * from './components/Icon/Icon';
 export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
 export * from './components/buttons/PinButton/PinButton';
