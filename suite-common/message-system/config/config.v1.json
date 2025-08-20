@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-08-20T00:00:00+00:00",
-    "sequence": 104,
+    "timestamp": "2025-08-20T14:00:00+00:00",
+    "sequence": 105,
     "actions": [
         {
             "conditions": [
@@ -1775,6 +1775,46 @@
                     {
                         "domain": "security.firmware.hashCheck.otherError",
                         "flag": false
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.8.1",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "ab804171-6266-4618-be4f-a7c25d4c19ce",
+                "priority": 1,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "tex",
+                        "flag": true
                     }
                 ]
             }
