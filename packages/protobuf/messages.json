@@ -1691,6 +1691,10 @@
                     "options": {
                         "default": false
                     }
+                },
+                "payment_req": {
+                    "type": "PaymentRequest",
+                    "id": 24
                 }
             }
         },
@@ -5741,6 +5745,10 @@
                 "additional_info": {
                     "type": "SolanaTxAdditionalInfo",
                     "id": 3
+                },
+                "payment_req": {
+                    "type": "PaymentRequest",
+                    "id": 4
                 }
             }
         },

@@ -44,6 +44,44 @@ export enum DecredStakingSpendType {
     SSRTX = 1,
 }
 
+export type TextMemo = {
+    text: string;
+};
+
+export type RefundMemo = {
+    address: string;
+    address_n: number[];
+    mac: string;
+};
+
+export type CoinPurchaseMemo = {
+    coin_type: number;
+    amount: string;
+    address: string;
+    address_n: number[];
+    mac: string;
+};
+
+export type TextDetailsMemo = {
+    title?: string;
+    text?: string;
+};
+
+export type PaymentRequestMemo = {
+    text_memo?: TextMemo;
+    refund_memo?: RefundMemo;
+    coin_purchase_memo?: CoinPurchaseMemo;
+    text_details_memo?: TextDetailsMemo;
+};
+
+export type PaymentRequest = {
+    nonce?: string;
+    recipient_name: string;
+    memos?: PaymentRequestMemo[];
+    amount?: UintType;
+    signature: string;
+};
+
 export enum AmountUnit {
     BITCOIN = 0,
     MILLIBITCOIN = 1,
@@ -624,6 +662,7 @@ export type CardanoSignTxInit = {
     reference_inputs_count?: number;
     chunkify?: boolean;
     tag_cbor_sets?: boolean;
+    payment_req?: PaymentRequest;
 };
 
 export type CardanoTxInput = {
@@ -882,44 +921,6 @@ export type Deprecated_PassphraseStateRequest = {
 };
 
 export type Deprecated_PassphraseStateAck = {};
-
-export type TextMemo = {
-    text: string;
-};
-
-export type TextDetailsMemo = {
-    title?: string;
-    text?: string;
-};
-
-export type RefundMemo = {
-    address: string;
-    address_n: number[];
-    mac: string;
-};
-
-export type CoinPurchaseMemo = {
-    coin_type: number;
-    amount: string;
-    address: string;
-    address_n: number[];
-    mac: string;
-};
-
-export type PaymentRequestMemo = {
-    text_memo?: TextMemo;
-    refund_memo?: RefundMemo;
-    coin_purchase_memo?: CoinPurchaseMemo;
-    text_details_memo?: TextDetailsMemo;
-};
-
-export type PaymentRequest = {
-    nonce?: string;
-    recipient_name: string;
-    memos?: PaymentRequestMemo[];
-    amount?: UintType;
-    signature: string;
-};
 
 export type CipherKeyValue = {
     address_n: number[];
@@ -1970,6 +1971,7 @@ export type SolanaSignTx = {
     address_n: number[];
     serialized_tx: string;
     additional_info?: SolanaTxAdditionalInfo;
+    payment_req?: PaymentRequest;
 };
 
 export type SolanaTxSignature = {
@@ -2272,6 +2274,12 @@ export type TezosSignedTx = {
 
 // custom connect definitions
 export type MessageType = {
+    TextMemo: TextMemo;
+    RefundMemo: RefundMemo;
+    CoinPurchaseMemo: CoinPurchaseMemo;
+    TextDetailsMemo: TextDetailsMemo;
+    PaymentRequestMemo: PaymentRequestMemo;
+    PaymentRequest: PaymentRequest;
     HDNodeType: HDNodeType;
     HDNodePathType: HDNodePathType;
     MultisigRedeemScriptType: MultisigRedeemScriptType;
@@ -2362,12 +2370,6 @@ export type MessageType = {
     PassphraseAck: PassphraseAck;
     Deprecated_PassphraseStateRequest: Deprecated_PassphraseStateRequest;
     Deprecated_PassphraseStateAck: Deprecated_PassphraseStateAck;
-    TextMemo: TextMemo;
-    TextDetailsMemo: TextDetailsMemo;
-    RefundMemo: RefundMemo;
-    CoinPurchaseMemo: CoinPurchaseMemo;
-    PaymentRequestMemo: PaymentRequestMemo;
-    PaymentRequest: PaymentRequest;
     CipherKeyValue: CipherKeyValue;
     CipheredKeyValue: CipheredKeyValue;
     IdentityType: IdentityType;

@@ -52,6 +52,68 @@ export enum DecredStakingSpendType {
 export type EnumDecredStakingSpendType = Static<typeof EnumDecredStakingSpendType>;
 export const EnumDecredStakingSpendType = Type.Enum(DecredStakingSpendType);
 
+export type TextMemo = Static<typeof TextMemo>;
+export const TextMemo = Type.Object(
+    {
+        text: Type.String(),
+    },
+    { $id: 'TextMemo' },
+);
+
+export type RefundMemo = Static<typeof RefundMemo>;
+export const RefundMemo = Type.Object(
+    {
+        address: Type.String(),
+        address_n: Type.Array(Type.Number()),
+        mac: Type.String(),
+    },
+    { $id: 'RefundMemo' },
+);
+
+export type CoinPurchaseMemo = Static<typeof CoinPurchaseMemo>;
+export const CoinPurchaseMemo = Type.Object(
+    {
+        coin_type: Type.Number(),
+        amount: Type.String(),
+        address: Type.String(),
+        address_n: Type.Array(Type.Number()),
+        mac: Type.String(),
+    },
+    { $id: 'CoinPurchaseMemo' },
+);
+
+export type TextDetailsMemo = Static<typeof TextDetailsMemo>;
+export const TextDetailsMemo = Type.Object(
+    {
+        title: Type.Optional(Type.String()),
+        text: Type.Optional(Type.String()),
+    },
+    { $id: 'TextDetailsMemo' },
+);
+
+export type PaymentRequestMemo = Static<typeof PaymentRequestMemo>;
+export const PaymentRequestMemo = Type.Object(
+    {
+        text_memo: Type.Optional(TextMemo),
+        refund_memo: Type.Optional(RefundMemo),
+        coin_purchase_memo: Type.Optional(CoinPurchaseMemo),
+        text_details_memo: Type.Optional(TextDetailsMemo),
+    },
+    { $id: 'PaymentRequestMemo' },
+);
+
+export type PaymentRequest = Static<typeof PaymentRequest>;
+export const PaymentRequest = Type.Object(
+    {
+        nonce: Type.Optional(Type.String()),
+        recipient_name: Type.String(),
+        memos: Type.Optional(Type.Array(PaymentRequestMemo)),
+        amount: Type.Optional(Type.Uint()),
+        signature: Type.String(),
+    },
+    { $id: 'PaymentRequest' },
+);
+
 export enum AmountUnit {
     BITCOIN = 0,
     MILLIBITCOIN = 1,
@@ -906,6 +968,7 @@ export const CardanoSignTxInit = Type.Object(
         reference_inputs_count: Type.Optional(Type.Number()),
         chunkify: Type.Optional(Type.Boolean()),
         tag_cbor_sets: Type.Optional(Type.Boolean()),
+        payment_req: Type.Optional(PaymentRequest),
     },
     { $id: 'CardanoSignTxInit' },
 );
@@ -1319,68 +1382,6 @@ export type Deprecated_PassphraseStateAck = Static<typeof Deprecated_PassphraseS
 export const Deprecated_PassphraseStateAck = Type.Object(
     {},
     { $id: 'Deprecated_PassphraseStateAck' },
-);
-
-export type TextMemo = Static<typeof TextMemo>;
-export const TextMemo = Type.Object(
-    {
-        text: Type.String(),
-    },
-    { $id: 'TextMemo' },
-);
-
-export type TextDetailsMemo = Static<typeof TextDetailsMemo>;
-export const TextDetailsMemo = Type.Object(
-    {
-        title: Type.Optional(Type.String()),
-        text: Type.Optional(Type.String()),
-    },
-    { $id: 'TextDetailsMemo' },
-);
-
-export type RefundMemo = Static<typeof RefundMemo>;
-export const RefundMemo = Type.Object(
-    {
-        address: Type.String(),
-        address_n: Type.Array(Type.Number()),
-        mac: Type.String(),
-    },
-    { $id: 'RefundMemo' },
-);
-
-export type CoinPurchaseMemo = Static<typeof CoinPurchaseMemo>;
-export const CoinPurchaseMemo = Type.Object(
-    {
-        coin_type: Type.Number(),
-        amount: Type.String(),
-        address: Type.String(),
-        address_n: Type.Array(Type.Number()),
-        mac: Type.String(),
-    },
-    { $id: 'CoinPurchaseMemo' },
-);
-
-export type PaymentRequestMemo = Static<typeof PaymentRequestMemo>;
-export const PaymentRequestMemo = Type.Object(
-    {
-        text_memo: Type.Optional(TextMemo),
-        refund_memo: Type.Optional(RefundMemo),
-        coin_purchase_memo: Type.Optional(CoinPurchaseMemo),
-        text_details_memo: Type.Optional(TextDetailsMemo),
-    },
-    { $id: 'PaymentRequestMemo' },
-);
-
-export type PaymentRequest = Static<typeof PaymentRequest>;
-export const PaymentRequest = Type.Object(
-    {
-        nonce: Type.Optional(Type.String()),
-        recipient_name: Type.String(),
-        memos: Type.Optional(Type.Array(PaymentRequestMemo)),
-        amount: Type.Optional(Type.Uint()),
-        signature: Type.String(),
-    },
-    { $id: 'PaymentRequest' },
 );
 
 export type CipherKeyValue = Static<typeof CipherKeyValue>;
@@ -3036,6 +3037,7 @@ export const SolanaSignTx = Type.Object(
         address_n: Type.Array(Type.Number()),
         serialized_tx: Type.String(),
         additional_info: Type.Optional(SolanaTxAdditionalInfo),
+        payment_req: Type.Optional(PaymentRequest),
     },
     { $id: 'SolanaSignTx' },
 );
@@ -3504,6 +3506,12 @@ export const TezosSignedTx = Type.Object(
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
+        TextMemo,
+        RefundMemo,
+        CoinPurchaseMemo,
+        TextDetailsMemo,
+        PaymentRequestMemo,
+        PaymentRequest,
         HDNodeType,
         HDNodePathType,
         MultisigRedeemScriptType,
@@ -3594,12 +3602,6 @@ export const MessageType = Type.Object(
         PassphraseAck,
         Deprecated_PassphraseStateRequest,
         Deprecated_PassphraseStateAck,
-        TextMemo,
-        TextDetailsMemo,
-        RefundMemo,
-        CoinPurchaseMemo,
-        PaymentRequestMemo,
-        PaymentRequest,
         CipherKeyValue,
         CipheredKeyValue,
         IdentityType,
