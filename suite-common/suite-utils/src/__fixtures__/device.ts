@@ -59,34 +59,6 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
     },
 ];
 
-const isDeviceAccessible = [
-    {
-        description: `Device is accessible`,
-        device: SUITE_DEVICE,
-        result: true,
-    },
-    {
-        description: `Device is not accessible (seedless mode)`,
-        device: getSuiteDevice({ mode: 'seedless' }),
-        result: false,
-    },
-    {
-        description: `Device is not accessible (firmware required)`,
-        device: getSuiteDevice({ firmware: 'required' }),
-        result: false,
-    },
-    {
-        description: `Device is not accessible (no features)`,
-        device: getSuiteDevice({ type: 'unacquired' }),
-        result: false,
-    },
-    {
-        description: `Device is not accessible (no device)`,
-        device: undefined,
-        result: false,
-    },
-];
-
 const isSelectedDevice = [
     {
         description: `Device is selected`,
@@ -582,7 +554,6 @@ const getFirmwareDowngradeUrl = [
 
 export default {
     getStatus,
-    isDeviceAccessible,
     isSelectedDevice,
     isSelectedInstance,
     getNewInstanceNumber,
