@@ -5,11 +5,7 @@ import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
-export type DeviceConnectActionPayload = {
-    device: Device;
-};
-
-const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
+const connectDevice = createAction(DEVICE.CONNECT, (payload: Device) => ({
     payload,
 }));
 
@@ -18,10 +14,9 @@ const createDeviceInstance = createAction(
     (payload: { device: TrezorDevice }) => ({ payload }),
 );
 
-const connectUnacquiredDevice = createAction(
-    DEVICE.CONNECT_UNACQUIRED,
-    (payload: DeviceConnectActionPayload) => ({ payload }),
-);
+const connectUnacquiredDevice = createAction(DEVICE.CONNECT_UNACQUIRED, (payload: Device) => ({
+    payload,
+}));
 
 const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device) => ({
     payload,

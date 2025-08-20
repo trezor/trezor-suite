@@ -1,11 +1,12 @@
 import { AnyAction, Draft } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { DeviceConnectActionPayload, deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
 import { BluetoothAdapterStatus, BluetoothDeviceCommon, BluetoothScanStatus } from './types';
+import { Device } from '@trezor/connect';
 
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
     adapterStatus: BluetoothAdapterStatus;
@@ -99,14 +100,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 action =>
                     action.type === deviceActions.connectDevice.type ||
                     action.type === deviceActions.connectUnacquiredDevice.type,
-                (
-                    state,
-                    {
-                        payload: {
-                            device: { bluetoothProps },
-                        },
-                    }: { payload: DeviceConnectActionPayload },
-                ) => {
+                (state, { payload: { bluetoothProps } }: { payload: Device }) => {
                     if (bluetoothProps === undefined) {
                         return;
                     }
