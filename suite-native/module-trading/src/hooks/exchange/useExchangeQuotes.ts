@@ -23,6 +23,7 @@ type ShouldFetchExchangeQuotesRef = {
     sendAsset: string | undefined;
     receiveAsset: string | undefined;
     sendCryptoAmount: string | undefined;
+    accountDescriptor: string | undefined;
 };
 
 type PromiseType = {
@@ -35,6 +36,7 @@ const defaultState = {
     sendAsset: undefined,
     receiveAsset: undefined,
     sendCryptoAmount: undefined,
+    accountDescriptor: undefined,
 } as const;
 
 const useShouldFetchExchangeQuotes = (
@@ -53,10 +55,11 @@ const useShouldFetchExchangeQuotes = (
         };
     }
 
-    const [sendAsset, receiveAsset, sendCryptoAmount] = watch([
+    const [sendAsset, receiveAsset, sendCryptoAmount, sendAccount] = watch([
         'sendAsset',
         'receiveAsset',
         'sendCryptoAmount',
+        'sendAccount',
     ]);
 
     const isFetchAllowed =
@@ -65,7 +68,8 @@ const useShouldFetchExchangeQuotes = (
     if (
         sendAsset?.cryptoId === prevState.current.sendAsset &&
         receiveAsset?.cryptoId === prevState.current.receiveAsset &&
-        sendCryptoAmount === prevState.current.sendCryptoAmount
+        sendCryptoAmount === prevState.current.sendCryptoAmount &&
+        sendAccount?.descriptor === prevState.current.accountDescriptor
     ) {
         return {
             isFetchAllowed,
@@ -77,6 +81,7 @@ const useShouldFetchExchangeQuotes = (
         sendAsset: sendAsset?.cryptoId,
         receiveAsset: receiveAsset?.cryptoId,
         sendCryptoAmount,
+        accountDescriptor: sendAccount?.descriptor,
     };
 
     return {

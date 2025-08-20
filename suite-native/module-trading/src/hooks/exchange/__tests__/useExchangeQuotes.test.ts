@@ -213,6 +213,7 @@ describe('useExchangeQuotes', () => {
         ['sendAsset', usdcAsset],
         ['receiveAsset', usdtAsset],
         ['sendCryptoAmount', '0.2'],
+        ['sendAccount', getBtcAccount('btc-account-2')],
     ])('should refetch quotes on %s value change', async (field, value) => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
