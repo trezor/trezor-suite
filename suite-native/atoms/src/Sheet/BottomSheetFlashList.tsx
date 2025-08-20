@@ -115,6 +115,7 @@ export const BottomSheetFlashList = <TItem,>({
             keyboardBlurBehavior="restore"
             keyboardBehavior="fillParent"
         >
+            {title}
             <FlashList
                 renderScrollComponent={BottomSheetListScrollComponent}
                 key={flashListKey}

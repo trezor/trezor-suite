@@ -155,6 +155,12 @@ export const messages = {
                 update: 'Update',
             },
         },
+        stakingBanner: {
+            title: 'Grow your {networkSymbol} with staking',
+            subtitle: 'Earn rewards by staking your {networkSymbol} to support the network.',
+            bannerText: 'Earn <bold>~{apy}% APY</bold> on your {networkSymbol}',
+            bottomSheetTitle: 'Select account to stake',
+        },
     },
     accounts: {
         accountLabelFieldHint: {

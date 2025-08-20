@@ -25,6 +25,7 @@ import {
 import { FirmwareUpdateAlert } from './FirmwareUpdateAlert';
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 import { ReferralButton } from './ReferralButton';
+import { StakingBanner } from './StakingBanner';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -85,6 +86,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                             </HStack>
                         )}
                         <Assets />
+                        <StakingBanner />
                     </VStack>
                     {!isPortfolioTracker && <ReferralButton />}
                 </VStack>
