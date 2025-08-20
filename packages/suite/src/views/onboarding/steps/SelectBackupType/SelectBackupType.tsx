@@ -80,7 +80,6 @@ export const SelectBackupType = ({
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
     const { isBelowTablet } = useLayoutSize();
 
-    const isDefault = deviceDefaultBackupType === selected;
     const isShamirDefault = isShamirBackupType(deviceDefaultBackupType);
     const isShamirSelected = isShamirBackupType(selected);
 
@@ -124,13 +123,7 @@ export const SelectBackupType = ({
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
                             </Text>
                             <Text typographyStyle={isBelowTablet ? 'highlight' : 'titleSmall'}>
-                                <Translation
-                                    id={
-                                        isDefault
-                                            ? 'TR_ONBOARDING_BACKUP_TYPE_DEFAULT'
-                                            : typesToLabelMap[selected]
-                                    }
-                                />
+                                <Translation id={typesToLabelMap[selected]} />
                             </Text>
                         </OptionText>
                     </SelectedOption>
