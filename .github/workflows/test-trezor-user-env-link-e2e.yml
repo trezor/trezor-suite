@@ -39,5 +39,5 @@ jobs:
 
       - name: Run e2e tests
         run: |
-          docker run -d --network=host ghcr.io/trezor/trezor-user-env:73802f22d932dc3194be3d9094872938f2fb9b96
+          docker run -d --network=host ghcr.io/trezor/trezor-user-env:51efcaf8e2ffd1fc518db7f10fabb7d540c8ccd1
           yarn workspace @trezor/trezor-user-env-link test:e2e

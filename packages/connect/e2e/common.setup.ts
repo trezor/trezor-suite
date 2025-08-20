@@ -136,6 +136,7 @@ export const initTrezorConnect = async (
 ) => {
     TrezorConnect.removeAllListeners();
 
+    // todo: keep revision
     TrezorConnect.on('device-connect', device => {
         if (!device.features) {
             throw new Error('Device features not available');
