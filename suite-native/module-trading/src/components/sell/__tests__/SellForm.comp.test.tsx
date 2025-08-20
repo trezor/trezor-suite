@@ -29,8 +29,8 @@ describe('SellForm', () => {
         const { result } = await renderFormHook({});
         const { getByText, getByLabelText } = await renderSellForm({}, result.current);
 
-        expect(getByText('You pay')).toBeTruthy();
-        expect(getByText('You get')).toBeTruthy();
+        expect(getByText('You pay')).toBeOnTheScreen();
+        expect(getByText('You get')).toBeOnTheScreen();
         expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
     });
 
@@ -46,10 +46,10 @@ describe('SellForm', () => {
         it('should render with default values', async () => {
             const { getByLabelText, getByText } = await renderSellForm(preloadedState, form);
 
-            expect(getByText('You pay')).toBeTruthy();
-
-            expect(getByLabelText('Select fiat currency')).toBeTruthy();
+            expect(getByText('You pay')).toBeOnTheScreen();
+            expect(getByLabelText('Select fiat currency')).toBeOnTheScreen();
             expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
+            expect(getByText('Country of residence')).toBeOnTheScreen();
         });
 
         it('should render only SellCard and Done when amount input is active', async () => {
@@ -58,10 +58,11 @@ describe('SellForm', () => {
             });
             const { queryByText, getByText } = await renderSellForm(preloadedState, form);
 
-            expect(getByText('You pay')).toBeTruthy();
-            expect(getByText('You get')).toBeTruthy();
+            expect(getByText('You pay')).toBeOnTheScreen();
+            expect(getByText('You get')).toBeOnTheScreen();
 
             expect(queryByText('Continue')).toBeNull();
+            expect(queryByText('Country of residence')).toBeNull();
         });
     });
 });
