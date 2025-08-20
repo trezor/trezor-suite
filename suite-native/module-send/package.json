@@ -49,7 +49,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "jotai": "^2.12.5",
+        "jotai": "2.13.1",
         "react": "19.0.0",
         "react-hook-form": "^7.62.0",
         "react-native": "0.79.3",

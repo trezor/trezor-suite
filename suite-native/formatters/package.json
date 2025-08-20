@@ -23,7 +23,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-localization": "16.0.1",
+        "expo-localization": "16.1.6",
         "react": "19.0.0",
         "react-native": "0.79.3",
         "react-redux": "9.2.0",

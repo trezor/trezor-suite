@@ -13,7 +13,7 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "jotai": "^2.12.5",
+        "jotai": "2.13.1",
         "react": "19.0.0",
         "react-fela": "^12.2.1",
         "react-native": "0.79.3"
