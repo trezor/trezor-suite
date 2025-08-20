@@ -2,6 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import {
+    selectIsConnectedDeviceUninitialized,
+    selectIsDeviceThpRequired,
+} from '@suite-common/wallet-core';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
@@ -19,11 +23,15 @@ import { TurnOnAndUnlockDeviceScreen } from '../screens/connect/TurnOnAndUnlockD
 import { PassphraseConfirmFeatureUnlockEnterOnTrezoreScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockEnterOnTrezoreScreen';
 import { PassphraseConfirmFeatureUnlockOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockOnTrezorScreen';
 import { PassphraseFeatureUnlockFormScreen } from '../screens/passphrase/PassphraseFeatureUnlockFormScreen';
+import { ThpCodeEntryScreen } from '../screens/thp/ThpCodeEntryScreen';
+import { ThpConfirmationScreen } from '../screens/thp/ThpConfirmationScreen';
 
 export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
 
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
+    const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
 
     return (
         <AuthorizeDeviceStack.Navigator
@@ -40,40 +48,48 @@ export const AuthorizeDeviceStackNavigator = () => {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate
                 // directly to the next screen without jumping back and forth.
-                !hasDeviceRequestedPin && (
-                    <AuthorizeDeviceStack.Group>
-                        <AuthorizeDeviceStack.Screen
-                            name={AuthorizeDeviceStackRoutes.ConnectingDevice}
-                            component={ConnectingDeviceScreen}
-                        />
-                        <AuthorizeDeviceStack.Screen
-                            name={AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice}
-                            component={TurnOnAndUnlockDeviceScreen}
-                        />
-                        <AuthorizeDeviceStack.Screen
-                            name={AuthorizeDeviceStackRoutes.ConnectBluetoothDevice}
-                            component={ConnectBluetoothDeviceScreen}
-                        />
-                        <AuthorizeDeviceStack.Screen
-                            name={AuthorizeDeviceStackRoutes.RemoveBluetoothDevice}
-                            component={RemoveBluetoothDeviceScreen}
-                        />
-                        <AuthorizeDeviceStack.Screen
-                            name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
-                            component={ConnectAndUnlockDeviceScreen}
-                            options={{ animationTypeForReplace: 'pop' }}
-                        />
-                    </AuthorizeDeviceStack.Group>
-                )
+                !hasDeviceRequestedPin &&
+                    !isDeviceThpRequired &&
+                    !isConnectedDeviceUninitialized && (
+                        <AuthorizeDeviceStack.Group>
+                            <AuthorizeDeviceStack.Screen
+                                name={AuthorizeDeviceStackRoutes.ConnectingDevice}
+                                component={ConnectingDeviceScreen}
+                            />
+                            <AuthorizeDeviceStack.Screen
+                                name={AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice}
+                                component={TurnOnAndUnlockDeviceScreen}
+                            />
+                            <AuthorizeDeviceStack.Screen
+                                name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
+                                component={ConnectAndUnlockDeviceScreen}
+                                options={{ animationTypeForReplace: 'pop' }}
+                            />
+                        </AuthorizeDeviceStack.Group>
+                    )
             }
-
-            {hasDeviceRequestedPin && (
+            {!isDeviceThpRequired && hasDeviceRequestedPin && (
                 <AuthorizeDeviceStack.Screen
                     name={AuthorizeDeviceStackRoutes.PinMatrix}
                     component={PinScreen}
                 />
             )}
-
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.ConnectBluetoothDevice}
+                component={ConnectBluetoothDeviceScreen}
+            />
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.RemoveBluetoothDevice}
+                component={RemoveBluetoothDeviceScreen}
+            />
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.ThpConfirmation}
+                component={ThpConfirmationScreen}
+            />
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.ThpCodeEntry}
+                component={ThpCodeEntryScreen}
+            />
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm}
                 component={PassphraseFeatureUnlockFormScreen}

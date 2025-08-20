@@ -42,7 +42,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             params: undefined,
         }),
         selectThpSettings: state => ({
-            hostName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
+            hostName: Device.deviceName,
             pairingMethods: ['CodeEntry', 'NFC'],
             staticKey: state.thp?.staticKey,
             knownCredentials: state.thp?.credentials,

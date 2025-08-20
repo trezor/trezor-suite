@@ -37,7 +37,8 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
             const shallShowAutoConnectDialog =
                 // -1 because it was just about incremented
                 credential.connectionCounter === NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT - 1 &&
-                !hasAutoconnectCredential;
+                !hasAutoconnectCredential &&
+                !isFwInstall;
 
             dispatch(
                 shallShowAutoConnectDialog

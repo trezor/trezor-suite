@@ -1,4 +1,5 @@
 import {
+    BleError,
     BleErrorCode,
     BleManager,
     Characteristic,
@@ -12,22 +13,16 @@ import {
 
 import { EventEmitter } from 'events';
 
-import type { IntervalId } from '@trezor/type-utils';
+import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
+import type { TimerId } from '@trezor/type-utils';
 
 import { BluetoothDevice, DeviceConnectionStatusChangeEvent } from './types';
 
-type Base64String = string;
-
-type DeviceMessage = {
-    value: Base64String;
-    timestamp: number;
-};
+type DeviceId = string;
 
 type BleDeviceWithMetadata = {
     bleDevice: Device;
-    writeUuid: string;
-    notifyUuid: string;
-    readOutputQueue: DeviceMessage[];
+    writeCharacteristic: Characteristic;
 };
 
 const eventNames = {
@@ -55,8 +50,9 @@ class BluetoothManager {
     private bleManager: BleManager | null = null;
     private eventEmitter: EventEmitter = new EventEmitter();
     private nearbyDevices: BluetoothDevice[] = [];
-    private nearbyDevicesRemovalId: IntervalId | null = null;
-    private connectedDevices: BleDeviceWithMetadata[] = [];
+    private nearbyDevicesRemovalId: TimerId | null = null;
+    private connectedDevices: Record<DeviceId, BleDeviceWithMetadata> = {};
+    private readBuffer = readMessageBuffer();
 
     private getBleManager() {
         // this ensures that Bluetooth permission is not auto-requested at iOS app startup
@@ -191,16 +187,16 @@ class BluetoothManager {
         }
     };
 
-    public getAllConnectedDevices = () => this.connectedDevices.map(d => d.bleDevice);
+    public isDeviceConnected = (deviceId: DeviceId): boolean =>
+        this.connectedDevices[deviceId] !== undefined;
 
-    public findConnectedDevice = (deviceId: string) =>
-        this.connectedDevices.find(d => d.bleDevice.id === deviceId);
+    public getConnectedDeviceIds = () => Object.keys(this.connectedDevices);
 
     public connectDevice = async ({
         deviceId,
         timeoutMs = 5_000,
     }: {
-        deviceId: string;
+        deviceId: DeviceId;
         timeoutMs?: number;
     }): Promise<Device> => {
         debugLog(`Connecting device ${deviceId}`);
@@ -270,18 +266,7 @@ class BluetoothManager {
 
         await this.discoverAndTestCharacteristics(device);
 
-        this.getBleManager().onDeviceDisconnected(device.id, (error, disconnectedDevice) => {
-            if (error) {
-                errorLog('Device disconnected error', error);
-            }
-            if (disconnectedDevice) {
-                this.removeConnectedDevice(disconnectedDevice.id);
-                this.updateDeviceConnectionStatusChange({
-                    deviceId: disconnectedDevice.id,
-                    connectionStatus: { type: 'disconnected' },
-                });
-            }
-        });
+        this.getBleManager().onDeviceDisconnected(device.id, this.handleDeviceDisconnected);
 
         debugLog(`Device ${device.id} connected`);
         this.updateDeviceConnectionStatusChange({
@@ -292,7 +277,7 @@ class BluetoothManager {
         return device;
     };
 
-    private handleConnectionError(deviceId: string, error: any) {
+    private handleConnectionError = (deviceId: DeviceId, error: any) => {
         errorLog('Error connecting to device', error);
         if (
             error.iosErrorCode === 14 /* CBError.Code.peerRemovedPairingInformation */ ||
@@ -308,7 +293,7 @@ class BluetoothManager {
                 connectionStatus: { type: 'connection-error', error: error.message },
             });
         }
-    }
+    };
 
     private discoverAndTestCharacteristics = async (device: Device) => {
         await device.discoverAllServicesAndCharacteristics();
@@ -343,7 +328,7 @@ class BluetoothManager {
         }
 
         try {
-            await this.attemptToWriteAfterConnect(device, writeCharacteristic.uuid);
+            await this.attemptToWriteAfterConnect(device, writeCharacteristic);
         } catch (error: any) {
             debugLog(`Device ${device.id} pairing canceled`);
             this.updateDeviceConnectionStatusChange({
@@ -363,9 +348,11 @@ class BluetoothManager {
                 if (error) {
                     debugLog('Error monitoring characteristic', error);
                 } else if (characteristic) {
-                    debugLog('Received data', characteristic.value);
-                    if (characteristic?.value) {
-                        this.addDeviceReadOutput(device.id, characteristic.value);
+                    const { value } = characteristic;
+                    debugLog('Received data', value);
+                    if (value) {
+                        debugLog('Processing device message', device.id, value);
+                        this.readBuffer.onMessage(device.id, Buffer.from(value, 'base64'));
                     }
                 } else {
                     errorLog('No characteristic received');
@@ -373,15 +360,17 @@ class BluetoothManager {
             },
         );
 
-        this.addConnectedDevice({
+        debugLog(`Adding device ${device.id} to connected devices`);
+        this.connectedDevices[device.id] = {
             bleDevice: device,
-            writeUuid: writeCharacteristic.uuid,
-            notifyUuid: notifyCharacteristic.uuid,
-            readOutputQueue: [],
-        });
+            writeCharacteristic,
+        };
     };
 
-    private attemptToWriteAfterConnect = async (device: Device, writeUuid: string) => {
+    private attemptToWriteAfterConnect = async (
+        device: Device,
+        writeCharacteristic: Characteristic,
+    ) => {
         const timeoutId = setTimeout(() => {
             // If we don't receive the write response in time, assume there is pairing in progress.
             this.updateDeviceConnectionStatusChange({
@@ -391,9 +380,7 @@ class BluetoothManager {
         }, 500);
 
         try {
-            await device.writeCharacteristicWithResponseForService(
-                SERVICE_UUID,
-                writeUuid,
+            await writeCharacteristic.writeWithResponse(
                 Buffer.from('Proof of connection').toString('base64'),
             );
         } finally {
@@ -401,88 +388,57 @@ class BluetoothManager {
         }
     };
 
-    private addConnectedDevice = (device: BleDeviceWithMetadata) => {
-        debugLog(`Adding device ${device.bleDevice.id} to connected devices`);
-        const existingDevice = this.findConnectedDevice(device.bleDevice.id);
-        if (!existingDevice) {
-            this.connectedDevices.push(device);
+    public disconnectDevice = ({ deviceId }: { deviceId: DeviceId }) => {
+        debugLog(`Disconnecting device ${deviceId}`);
+
+        const device = this.connectedDevices[deviceId];
+        if (device) {
+            return device.bleDevice.cancelConnection();
         }
     };
 
-    private removeConnectedDevice = (deviceId: string) => {
-        const existingDevice = this.findConnectedDevice(deviceId);
-        if (existingDevice) {
-            debugLog(`Removing device ${existingDevice.bleDevice.id} from connected devices`);
-            this.nearbyDevices = this.nearbyDevices.filter(d => d.id !== deviceId);
-            this.connectedDevices = this.connectedDevices.filter(d => d.bleDevice.id !== deviceId);
+    private handleDeviceDisconnected = (error: BleError | null, device: Device | null) => {
+        if (error) {
+            errorLog('Device disconnected error', error);
+        }
+        if (device) {
+            debugLog(`Device ${device.id} disconnected`);
+            this.readBuffer.cancelRead(device.id);
+            this.nearbyDevices = this.nearbyDevices.filter(d => d.id !== device.id);
+            delete this.connectedDevices[device.id];
+
             this.emitNearbyDevicesChange();
+            this.updateDeviceConnectionStatusChange({
+                deviceId: device.id,
+                connectionStatus: { type: 'disconnected' },
+            });
         }
     };
 
-    private addDeviceReadOutput = (deviceId: string, value: string) => {
-        const device = this.findConnectedDevice(deviceId);
-        if (!device) {
-            throw new Error(`Device ${deviceId} not found for adding read output`);
-        }
-
-        debugLog('Adding device read output', deviceId, value);
-        // Use performance.now() since Date.now() is not precise enough for correct sort order.
-        device.readOutputQueue.push({ value, timestamp: performance.now() });
-        // Sort the messages so that we may use pop() to read them in chronological order.
-        device.readOutputQueue.sort((a, b) => b.timestamp - a.timestamp);
-    };
-
-    public read = (deviceId: string): Promise<Base64String> => {
+    public read = (deviceId: DeviceId, signal?: AbortSignal) => {
         debugLog('Reading from', deviceId);
 
-        return new Promise<Base64String>((resolve, reject) => {
-            const startTime = Date.now();
+        const device = this.connectedDevices[deviceId];
+        if (!device) {
+            throw new Error('Device disconnected or not found.');
+        }
 
-            // Define a function that tries to read the last element of the array
-            const tryRead = () => {
-                const device = this.findConnectedDevice(deviceId);
-                if (!device) {
-                    reject(new Error('Device disconnected or not found.'));
-
-                    return;
-                }
-
-                if (device.readOutputQueue.length === 0) {
-                    debugLog('No data to read received yet... waiting');
-                    // If the array is empty, and we have not exceeded read timeout, we try again
-                    if (Date.now() - startTime < 60_000) {
-                        setTimeout(tryRead, 10); // Wait a while before trying again
-                    } else {
-                        // If we've waited more than 60 seconds, we reject the promise
-                        reject(new Error('Read TIMEOUT: No data received in timeframe.'));
-                    }
-                } else {
-                    const message = device.readOutputQueue.pop()!;
-                    debugLog('Reading from the message queue', message);
-                    debugLog(device.readOutputQueue.length, 'remaining message(s) in the queue');
-
-                    // If the array is not empty, we resolve the promise with the last element
-                    resolve(message.value);
-                }
-            };
-
-            tryRead();
-        });
+        return this.readBuffer.read(deviceId, signal);
     };
 
-    public write = async (deviceId: string, message: Base64String) => {
-        const device = this.findConnectedDevice(deviceId);
+    public cancelRead = (deviceId: DeviceId) => {
+        this.readBuffer.cancelRead(deviceId);
+    };
+
+    public write = async (deviceId: DeviceId, message: Buffer) => {
+        const device = this.connectedDevices[deviceId];
         if (!device) {
             throw new Error(`Device ${deviceId} not found for writing`);
         }
 
         debugLog('Writing to', deviceId, message);
         try {
-            await device.bleDevice.writeCharacteristicWithResponseForService(
-                SERVICE_UUID,
-                device.writeUuid,
-                message,
-            );
+            await device.writeCharacteristic.writeWithoutResponse(message.toString('base64'));
             debugLog('Write successful');
         } catch (error) {
             errorLog('Write failed', JSON.stringify(error));

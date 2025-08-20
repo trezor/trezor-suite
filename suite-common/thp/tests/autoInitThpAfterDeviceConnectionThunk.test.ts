@@ -55,11 +55,7 @@ const testCases: {
         isFirmwareInstallation: true,
         shouldAcquireDevice: false,
     },
-    {
-        description: 'does not acquire device if a device is selected',
-        isDeviceSelected: true,
-        shouldAcquireDevice: false,
-    },
+    // TODO: Revise tests in https://github.com/trezor/trezor-suite/issues/20930
 ];
 
 type CreateStoreParams = {

@@ -9,6 +9,7 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },
+        { "path": "../thp" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },

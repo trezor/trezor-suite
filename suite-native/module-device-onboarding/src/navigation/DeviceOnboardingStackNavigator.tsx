@@ -18,6 +18,10 @@ import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScree
 import { RecoveryInstructionsScreen } from '../screens/RecoveryInstructionsScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
+import { ThpCodeEntryScreen } from '../screens/ThpCodeEntryScreen';
+import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';
+import { ThpPairingInfoScreen } from '../screens/ThpPairingInfoScreen';
+import { ThpPairingSuccessScreen } from '../screens/ThpPairingSuccessScreen';
 import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
 import { WalletBackupRecapScreen } from '../screens/WalletBackupRecapScreen';
 import { WalletBackupTutorialScreen } from '../screens/WalletBackupTutorialScreen';
@@ -54,12 +58,28 @@ export const DeviceOnboardingStackNavigator = () => (
             component={SecurityCheckScreen}
         />
         <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate}
+            component={ConfirmFirmwareUpdateScreen}
+        />
+        <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.FirmwareInstallation}
             component={FirmwareInstallationScreen}
         />
         <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate}
-            component={ConfirmFirmwareUpdateScreen}
+            name={DeviceOnboardingStackRoutes.ThpPairingInfo}
+            component={ThpPairingInfoScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.ThpConfirmation}
+            component={ThpConfirmationScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.ThpCodeEntry}
+            component={ThpCodeEntryScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.ThpPairingSuccess}
+            component={ThpPairingSuccessScreen}
         />
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.DeviceAuthenticity}

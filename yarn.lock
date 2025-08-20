@@ -11021,6 +11021,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/thp": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -11444,6 +11445,7 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -11531,6 +11533,20 @@ __metadata:
     react: "npm:19.0.0"
     react-fela: "npm:^12.2.1"
     react-native: "npm:0.79.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/thp@workspace:*, @suite-native/thp@workspace:suite-native/thp":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/thp@workspace:suite-native/thp"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:19.0.0"
+    react-native: "npm:0.79.3"
+    react-native-svg: "npm:15.11.2"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     FirmwareUpdateResult,
     UseFirmwareInstallationParams,
     useFirmwareInstallation,
 } from '@suite-common/firmware';
+import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { setPriorityMode } from '@trezor/react-native-usb';
@@ -42,6 +43,12 @@ export const useFirmware = (
     const [isInitialFirmwareInstallationRunning, setIsInitialFirmwareInstallationRunning] =
         useState<boolean>(false);
 
+    // When the device is restarted after FW installation via Bluetooth, this flag changes to false
+    // for a moment which triggers firmwareUpdate again. => Use ref to prevent this.
+    const isDeviceConnectedViaBluetoothRef = useRef(
+        useSelector(selectIsDeviceConnectedViaBluetooth),
+    );
+
     const setIsFirmwareInstallationRunning = useCallback(
         (isRunning: boolean) => {
             dispatch(nativeFirmwareActions.setIsFirmwareInstallationRunning(isRunning));
@@ -75,7 +82,9 @@ export const useFirmware = (
     }, [progress, status, setMayBeStuckedTimeout, resetMayBeStuckedTimeout]);
 
     const firmwareUpdate = useCallback(async () => {
-        setPriorityMode(true);
+        if (!isDeviceConnectedViaBluetoothRef.current) {
+            setPriorityMode(true);
+        }
         const result = await firmwareUpdateCommon({ ignoreBaseUrl: true })
             .unwrap()
             .catch(error => {
@@ -87,7 +96,9 @@ export const useFirmware = (
             })
             .then(({ connectResponse }) => connectResponse)
             .finally(() => {
-                setPriorityMode(false);
+                if (!isDeviceConnectedViaBluetoothRef.current) {
+                    setPriorityMode(false);
+                }
                 resetMayBeStuckedTimeout();
             });
 
@@ -128,7 +139,7 @@ export const useFirmware = (
                 title: 'firmware.firmwareUpdateProgress.restarting.title',
                 subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
-        } else if (operation === 'completed' || status === 'done') {
+        } else if (operation === 'completed' || operation === 'thp' || status === 'done') {
             text = {
                 title: 'firmware.firmwareUpdateProgress.completed.title',
                 subtitle: 'firmware.firmwareUpdateProgress.completed.subtitle',

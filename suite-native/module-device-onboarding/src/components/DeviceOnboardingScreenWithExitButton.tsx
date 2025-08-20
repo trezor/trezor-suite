@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
@@ -23,10 +23,12 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {
+    screenHeaderRightIcon?: ReactNode;
     onAlertContinueButtonPress?: () => void;
 };
 
 export const DeviceOnboardingExitButtonScreenHeader = ({
+    screenHeaderRightIcon,
     onAlertContinueButtonPress,
 }: DeviceOnboardingExitButtonScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProps>();
@@ -50,12 +52,14 @@ export const DeviceOnboardingExitButtonScreenHeader = ({
             subtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
             closeActionType="close"
             closeAction={handleExitButtonPress}
+            rightIcon={screenHeaderRightIcon}
         />
     );
 };
 
 export const DeviceOnboardingScreenWithExitButton = ({
     children,
+    screenHeaderRightIcon,
     onAlertContinueButtonPress,
     ...screenProps
 }: ScreenProps & DeviceOnboardingExitButtonScreenHeaderProps) => (
@@ -63,6 +67,7 @@ export const DeviceOnboardingScreenWithExitButton = ({
         header={
             <DeviceOnboardingExitButtonScreenHeader
                 onAlertContinueButtonPress={onAlertContinueButtonPress}
+                screenHeaderRightIcon={screenHeaderRightIcon}
             />
         }
         {...screenProps}

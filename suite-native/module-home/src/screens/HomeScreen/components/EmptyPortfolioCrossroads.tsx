@@ -1,7 +1,9 @@
 import { Platform, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { acquireDevice, selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
@@ -40,17 +42,24 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const EmptyPortfolioCrossroads = () => {
-    const { applyStyle } = useNativeStyles();
+    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
     const isIosWithBluetoothEnabled = Platform.OS === 'ios' && isBluetoothEnabled;
+    const { applyStyle } = useNativeStyles();
+
+    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
 
     const handleConnectDevice = () => {
-        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: isIosWithBluetoothEnabled
-                ? AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice
-                : AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
-        });
+        if (isDeviceThpRequired) {
+            dispatch(acquireDevice({}));
+        } else {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: isIosWithBluetoothEnabled
+                    ? AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice
+                    : AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+            });
+        }
         analytics.report({
             type: EventType.EmptyDashboardClick,
             payload: { action: 'connectDevice' },

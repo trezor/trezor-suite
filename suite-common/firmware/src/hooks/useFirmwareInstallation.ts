@@ -8,6 +8,7 @@ import {
     selectFirmware,
 } from '@suite-common/firmware';
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { selectIsThpInProgress } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, FirmwareType, UI } from '@trezor/connect';
 import {
@@ -52,7 +53,7 @@ export type UseFirmwareInstallationParams =
     | undefined;
 
 export type FirmwareOperationStatus = {
-    operation: 'installing' | 'restarting' | 'completed' | null;
+    operation: 'installing' | 'restarting' | 'thp' | 'completed' | null;
     progress: number;
 };
 
@@ -77,6 +78,7 @@ export const useFirmwareInstallation = (
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
     const device = useSelector(selectSelectedDevice);
+    const isThpInProgress = useSelector(selectIsThpInProgress);
 
     const [reconnectEvent, buttonEvent, progressEvent] = useMemo(() => {
         if (firmware.uiEvent) {
@@ -149,6 +151,10 @@ export const useFirmwareInstallation = (
         isThpConfirmationRequested;
 
     const updateStatus = useMemo<FirmwareOperationStatus>(() => {
+        if (isThpInProgress) {
+            return { operation: 'thp', progress: 100 };
+        }
+
         if (firmware.status === 'done') {
             return {
                 operation: 'completed',
@@ -169,7 +175,7 @@ export const useFirmwareInstallation = (
         }
 
         return { operation: null, progress: 0 };
-    }, [firmware.status, reconnectEvent, progressEvent]);
+    }, [isThpInProgress, firmware.status, reconnectEvent, progressEvent]);
 
     const targetFirmwareType = useMemo(() => {
         const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
