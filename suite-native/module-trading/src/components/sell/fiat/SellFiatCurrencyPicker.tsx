@@ -1,10 +1,10 @@
 import { HStack } from '@suite-native/atoms';
 
 import { SellFiatAmountInput } from './SellFiatAmountInput';
+import { SellFiatCurrencySheet } from './SellFiatCurrencySheet';
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { FiatCurrencyButton } from '../../general/FiatCurrencyButton';
-import { FiatCurrencySheet } from '../../general/FiatCurrencySheet/FiatCurrencySheet';
 
 const FIAT_CURRENCY_PICKER_TEST_ID = '@trading/sell/fiat-button';
 
@@ -23,7 +23,7 @@ export const SellFiatCurrencyPicker = () => {
                 />
                 <SellFiatAmountInput />
             </HStack>
-            <FiatCurrencySheet
+            <SellFiatCurrencySheet
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onFiatSelect={setSelectedValue}

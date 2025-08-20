@@ -6,7 +6,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
+import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useListDataFilter } from '../../../../hooks/general/useListDataFilter';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellFiatCurrencyPicker } from '../SellFiatCurrencyPicker';
@@ -27,7 +27,7 @@ describe('SellFiatCurrencyPicker', () => {
     });
 
     const renderFiatCurrencyPicker = async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
+        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
         const { result } = await renderHookWithStoreProviderAsync(() => useSellForm(), {
             preloadedState,
         });
@@ -52,12 +52,12 @@ describe('SellFiatCurrencyPicker', () => {
         const { getByText, getByLabelText } = await renderFiatCurrencyPicker();
 
         fireEvent.press(getByLabelText('Select fiat currency'));
-        fireEvent.press(getByText('CZK'));
+        fireEvent.press(getByText('PLN'));
 
         // wait for validators to run
         await act(() => Promise.resolve());
 
-        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
+        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/PLN/);
     });
 
     it('should display empty component when filtered data is empty', async () => {

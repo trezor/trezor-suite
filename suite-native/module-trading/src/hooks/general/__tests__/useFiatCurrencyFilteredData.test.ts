@@ -1,16 +1,32 @@
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
+import { FiatCurrencyItem } from '../../../types/general';
 import { useFiatCurrencyFilteredData } from '../useFiatCurrencyFilteredData';
+
+const supportedFiatCurrencies: FiatCurrencyItem[] = [
+    {
+        displayValue: 'USD',
+        label: 'United States Dollar',
+        value: 'usd',
+    },
+    {
+        displayValue: 'EUR',
+        label: 'Euro',
+        value: 'eur',
+    },
+    {
+        displayValue: 'CZK',
+        label: 'Czech Koruna',
+        value: 'czk',
+    },
+];
 
 describe('useFiatCurrencyFilteredData', () => {
     const renderUseFiatCurrencyFilteredData = () =>
-        renderHookWithStoreProviderAsync(() => useFiatCurrencyFilteredData(), {
-            preloadedState: { wallet: { tradingNew: getInitializedTradingState() } },
-        });
+        renderHookWithBasicProvider(() => useFiatCurrencyFilteredData(supportedFiatCurrencies));
 
-    it('should return section list data structure', async () => {
-        const { result } = await renderUseFiatCurrencyFilteredData();
+    it('should return section list data structure', () => {
+        const { result } = renderUseFiatCurrencyFilteredData();
 
         expect(result.current.filteredData).toEqual([
             {
@@ -38,8 +54,8 @@ describe('useFiatCurrencyFilteredData', () => {
         ]);
     });
 
-    it('should filter by label case-insensitive', async () => {
-        const { result } = await renderUseFiatCurrencyFilteredData();
+    it('should filter by label case-insensitive', () => {
+        const { result } = renderUseFiatCurrencyFilteredData();
 
         act(() => {
             result.current.setFilterValue('unITed');
@@ -50,8 +66,8 @@ describe('useFiatCurrencyFilteredData', () => {
         ]);
     });
 
-    it('should filter by value case-insensitive', async () => {
-        const { result } = await renderUseFiatCurrencyFilteredData();
+    it('should filter by value case-insensitive', () => {
+        const { result } = renderUseFiatCurrencyFilteredData();
 
         act(() => {
             result.current.setFilterValue('uSd');
@@ -62,8 +78,8 @@ describe('useFiatCurrencyFilteredData', () => {
         ]);
     });
 
-    it('should return current filter value', async () => {
-        const { result } = await renderUseFiatCurrencyFilteredData();
+    it('should return current filter value', () => {
+        const { result } = renderUseFiatCurrencyFilteredData();
 
         act(() => {
             result.current.setFilterValue('usd');
