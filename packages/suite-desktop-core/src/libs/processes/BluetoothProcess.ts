@@ -9,6 +9,12 @@ export class BluetoothProcess extends BaseProcess {
     constructor(port = 21327) {
         super('bluetooth', 'trezor-bluetooth', {
             autoRestart: 0,
+            env: {
+                // https://github.com/electron/electron/blob/ab2a4fd836d539194bc5cde5f0d665eddeb6a134/docs/api/environment-variables.md?plain=1#L190
+                // Electron sometimes modifies the value of XDG_CURRENT_DESKTOP
+                XDG_CURRENT_DESKTOP:
+                    process.env.ORIGINAL_XDG_CURRENT_DESKTOP || process.env.XDG_CURRENT_DESKTOP,
+            },
         });
         this.port = port;
     }
