@@ -85,6 +85,8 @@ jobs:
           yarn coins simple cardano jws
           yarn coins simple solana jws
           yarn coins advanced solana json
+          yarn coins simple stellar jws
+          yarn coins advanced stellar json
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.ref == 'refs/heads/develop' }}
