@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
+import { firmwareActions } from '@suite-common/firmware';
 import { Badge, Box, Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -33,7 +34,7 @@ const bottomButtonsContainerStyle = prepareNativeStyle<{ isConfirmOnDeviceShown:
         position: 'absolute',
         left: utils.spacings.sp16,
         right: utils.spacings.sp16,
-        bottom: isConfirmOnDeviceShown ? 180 : 0,
+        bottom: isConfirmOnDeviceShown ? 180 : utils.spacings.sp52,
     }),
 );
 
@@ -109,6 +110,12 @@ export const FirmwareInstallationScreenContent = ({
     };
 
     useEffect(() => {
+        // On the first render, set the firmware installation status to 'initial'. A firmware update might have
+        // happened before, and we want to avoid showing any previous result when user returns to this screen.
+        dispatch(firmwareActions.setStatus('initial'));
+    }, [dispatch]);
+
+    useEffect(() => {
         if (!isTemporaryRememeberAllowed) return;
 
         // This will prevent device from being forgotten after firmware update, so discovery will not run again
@@ -126,9 +133,11 @@ export const FirmwareInstallationScreenContent = ({
             'FirmwareInstallationScreenContent: handleFirmwareUpdateFinished = authorize device thunk need to be replaced here',
         );
 
-        setIsFirmwareInstallationRunning(false);
+        if (operation !== 'thp') {
+            setIsFirmwareInstallationRunning(false);
+        }
         onFirmwareInstallationSuccess();
-    }, [onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
+    }, [operation, onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
 
     const handleCancel = useCallback(() => {
         setIsFirmwareInstallationRunning(false);
@@ -223,7 +232,7 @@ export const FirmwareInstallationScreenContent = ({
     }, []);
 
     const isError = status === 'error' && !isInitialFirmwareInstallationRunning;
-    const isDone = status === 'done';
+    const isDone = status === 'done' || operation === 'completed' || operation === 'thp';
 
     const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
         const isStarting = (status === 'started' && operation === null) || status === 'initial';
@@ -279,16 +288,19 @@ export const FirmwareInstallationScreenContent = ({
                             {translatedText.subtitle ?? ' '}
                         </Text>
                     </Box>
-                    {!isError && !isDone && (
-                        <Box paddingTop="sp24" alignItems="center" justifyContent="center">
+                    <Box paddingTop="sp24" alignItems="center" justifyContent="center">
+                        {!isError && !isDone ? (
                             <Badge
                                 variant="blue"
                                 label={
                                     <Translation id="firmware.firmwareUpdateProgress.dontCloseAppMessage" />
                                 }
                             />
-                        </Box>
-                    )}
+                        ) : (
+                            // Blank space to prevent layout shift when done
+                            <Text variant="hint"> </Text>
+                        )}
+                    </Box>
                 </Animated.View>
             </VStack>
             {isError && (

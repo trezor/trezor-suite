@@ -24,14 +24,14 @@ export class BluetoothApi extends AbstractApi {
         super(params);
         this.subscription = bluetoothManager.onDeviceConnectionStatusChange(event => {
             this.logger?.debug('onDeviceConnectionStatusChange', event);
-            this.emit('transport-interface-change', this.devicesToDescriptors());
+            this.emit('transport-interface-change', this.getDescriptors());
         });
     }
 
     public async enumerate() {
         this.logger?.debug('enumerate');
         try {
-            return this.success(this.devicesToDescriptors());
+            return this.success(this.getDescriptors());
         } catch (error) {
             this.logger?.error('enumerate error', error);
 
@@ -39,12 +39,12 @@ export class BluetoothApi extends AbstractApi {
         }
     }
 
-    private devicesToDescriptors() {
-        const connectedDevices = bluetoothManager.getAllConnectedDevices();
-        const descriptors: DescriptorApiLevel[] = connectedDevices.map(device => ({
-            path: device.id as PathInternal,
+    private getDescriptors() {
+        const connectedDeviceIds = bluetoothManager.getConnectedDeviceIds();
+        const descriptors: DescriptorApiLevel[] = connectedDeviceIds.map(deviceId => ({
+            path: deviceId as PathInternal,
             type: DEVICE_TYPE.TypeBluetooth,
-            id: device.id,
+            id: deviceId,
         }));
 
         return descriptors;
@@ -56,6 +56,7 @@ export class BluetoothApi extends AbstractApi {
 
     public async read(
         path: string,
+        signal?: AbortSignal,
     ): AsyncResultWithTypedError<
         Buffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -68,18 +69,17 @@ export class BluetoothApi extends AbstractApi {
     > {
         this.logger?.debug('read');
 
-        const device = bluetoothManager.findConnectedDevice(path);
-        if (!device) {
+        if (!bluetoothManager.isDeviceConnected(path)) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
         try {
-            const result = await bluetoothManager.read(path);
-            if (!result) {
+            const result = await bluetoothManager.read(path, signal);
+            if (!result.success) {
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
-            return this.success(Buffer.from(result, 'base64'));
+            return result;
         } catch (error) {
             this.logger?.error('read error', error);
 
@@ -90,8 +90,7 @@ export class BluetoothApi extends AbstractApi {
     public async write(path: string, buffer: Buffer) {
         this.logger?.debug('write', buffer);
 
-        const device = bluetoothManager.findConnectedDevice(path);
-        if (!device) {
+        if (!bluetoothManager.isDeviceConnected(path)) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
@@ -99,8 +98,7 @@ export class BluetoothApi extends AbstractApi {
             const chunk = Buffer.alloc(this.chunkSize);
             buffer.copy(chunk);
 
-            const base64Chunk = chunk.toString('base64');
-            await bluetoothManager.write(path, base64Chunk);
+            await bluetoothManager.write(path, chunk);
 
             return this.success(undefined);
         } catch (error) {
@@ -110,13 +108,17 @@ export class BluetoothApi extends AbstractApi {
         }
     }
 
-    public async openDevice(_path: string, _first: boolean) {
+    public async openDevice(path: string, _first: boolean) {
+        this.logger?.debug('openDevice', path);
+
         // BT does not need to be opened, it is opened when connected
         return this.success(undefined);
     }
 
-    public async closeDevice(_path: string) {
-        // BT does not need to be closed, it is closed when disconnected
+    public async closeDevice(path: string) {
+        this.logger?.debug('closeDevice', path);
+        bluetoothManager.cancelRead(path);
+
         return this.success(undefined);
     }
 

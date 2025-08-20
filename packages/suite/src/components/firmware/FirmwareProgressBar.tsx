@@ -26,6 +26,7 @@ export const FirmwareProgressBar = () => {
         restarting: isActiveOnboarding
             ? 'TR_RESTARTING_TREZOR'
             : 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',
+        thp: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
         completed: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
     };
 
