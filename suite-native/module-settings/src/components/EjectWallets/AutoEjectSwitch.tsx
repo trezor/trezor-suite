@@ -35,10 +35,9 @@ export const AutoEjectSwitch = () => {
             });
         }
         analytics.report({
-            type: EventType.AutoEjectChange,
+            type: EventType.SettingsAutoEjectToggle,
             payload: {
                 enabled: !isAutoEjectEnabled,
-                origin: 'settingsToggle',
             },
         });
         dispatch(toggleAutoEjectThunk());

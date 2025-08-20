@@ -225,8 +225,12 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
-          type: EventType.AutoEjectChange;
-          payload: { enabled: boolean; origin: 'autoEjectAlert' | 'settingsToggle' };
+          type: EventType.SettingsAutoEjectToggle;
+          payload: { enabled: boolean };
+      }
+    | {
+          type: EventType.AutoEjectModal;
+          payload: { value: 'enable' | 'skip' };
       }
     | {
           type: EventType.PassphraseMismatch;
