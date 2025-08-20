@@ -6,6 +6,7 @@ import { AnimatedBox, VStack } from '@suite-native/atoms';
 import { SellAlert } from './SellAlert';
 import { SellCard } from './SellCard';
 import { SellConfirmation } from './SellConfirmation';
+import { SellPaymentCard } from './payment/SellPaymentCard';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
@@ -56,7 +57,13 @@ const SellFormMemoized = memo(
                     {isAmountInputActive ? (
                         <AmountEditingDoneButton testID={AMOUNT_EDITING_DONE_BUTTON_TEST_ID} />
                     ) : (
-                        <SellConfirmation enteringAnimation={enteringAnimation} />
+                        <>
+                            <SellPaymentCard
+                                shouldAnimateEntering={shouldAnimateEntering}
+                                isFormMountedRecently={isFormMountedRecently}
+                            />
+                            <SellConfirmation enteringAnimation={enteringAnimation} />
+                        </>
                     )}
                 </VStack>
             </AnimatedBox>
