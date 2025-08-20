@@ -72,6 +72,8 @@ jobs:
   methods:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: methods.test
       serverHostname: dev.suite.sldev.cz
@@ -82,6 +84,8 @@ jobs:
   popup-close:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: popup-close.test
       serverHostname: dev.suite.sldev.cz
@@ -91,6 +95,8 @@ jobs:
   passphrase:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: passphrase.test
       serverHostname: dev.suite.sldev.cz
@@ -100,6 +106,8 @@ jobs:
   popup-pages:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: popup-pages.test
       serverHostname: dev.suite.sldev.cz
@@ -107,6 +115,8 @@ jobs:
   browser-support:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: browser-support.test
       serverHostname: dev.suite.sldev.cz
@@ -114,6 +124,8 @@ jobs:
   permissions:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: permissions.test
       serverHostname: dev.suite.sldev.cz
@@ -121,6 +133,8 @@ jobs:
   transport:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: transport.test
       serverHostname: dev.suite.sldev.cz
@@ -138,6 +152,8 @@ jobs:
   webextension-examples:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
     with:
       testName: webextension-example.test
       serverHostname: dev.suite.sldev.cz

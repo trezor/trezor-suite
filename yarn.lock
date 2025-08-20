@@ -12210,6 +12210,7 @@ __metadata:
   dependencies:
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
+    "@currents/playwright": "npm:^1.13.4"
     "@playwright/browser-chromium": "npm:^1.52.0"
     "@playwright/browser-firefox": "npm:^1.52.0"
     "@playwright/browser-webkit": "npm:^1.52.0"
@@ -12284,6 +12285,7 @@ __metadata:
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
     "@babel/preset-typescript": "npm:^7.27.1"
+    "@currents/playwright": "npm:^1.13.4"
     "@playwright/browser-chromium": "npm:^1.52.0"
     "@playwright/browser-firefox": "npm:^1.52.0"
     "@playwright/browser-webkit": "npm:^1.52.0"

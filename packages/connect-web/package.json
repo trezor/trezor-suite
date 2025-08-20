@@ -49,6 +49,7 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.27.1",
+        "@currents/playwright": "^1.13.4",
         "@playwright/browser-chromium": "^1.52.0",
         "@playwright/browser-firefox": "^1.52.0",
         "@playwright/browser-webkit": "^1.52.0",

@@ -8,7 +8,12 @@ const config: PlaywrightTestConfig = {
     use: {
         headless: process.env.HEADLESS === 'true',
         ignoreHTTPSErrors: true,
-        trace: 'retain-on-failure',
+        trace: 'on',
+        video: 'on',
+        screenshot: 'on',
     },
+    reporter: process.env.GITHUB_ACTION
+        ? [['@currents/playwright']] // CI run
+        : [['list']], // Default for local run
 };
 export default config;

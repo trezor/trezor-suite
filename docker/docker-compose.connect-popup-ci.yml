@@ -7,7 +7,9 @@ services:
     # network_mode: bridge # this makes docker reuse existing networks
 
   test-run:
-    image: mcr.microsoft.com/playwright:v1.41.2-jammy
+    build:
+      context: .
+      dockerfile: ./playwright/Dockerfile
     container_name: explorer-test-runner
     ipc: host
     depends_on:
@@ -24,6 +26,10 @@ services:
       - CORE_IN_POPUP=$CORE_IN_POPUP
       - MOBILE=$MOBILE
       - TREZOR_CONNECT_SRC=$TREZOR_CONNECT_SRC
+      - GITHUB_ACTION=$GITHUB_ACTION
+      - CURRENTS_PROJECT_ID=$CURRENTS_PROJECT_ID
+      - CURRENTS_RECORD_KEY=$CURRENTS_RECORD_KEY
+      - CURRENTS_CI_BUILD_ID=$CURRENTS_CI_BUILD_ID
     working_dir: /e2e
     command: bash -c "npx playwright install && yarn workspace @trezor/connect-popup test:e2e $TEST_FILE"
     volumes:
