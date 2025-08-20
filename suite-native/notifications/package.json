@@ -24,7 +24,7 @@
         "@trezor/styles": "workspace:*",
         "react": "19.0.0",
         "react-native": "0.79.3",
-        "react-native-gesture-handler": "~2.24.0",
+        "react-native-gesture-handler": "2.28.0",
         "react-native-reanimated": "^3.18.0",
         "react-redux": "9.2.0"
     }
