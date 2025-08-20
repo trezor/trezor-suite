@@ -581,7 +581,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     },
 ];
 
-const updateTimestamp: Array<
+const selectDevice: Array<
     Fixture<ReturnType<typeof deviceActions.selectDevice>> & {
         ts: number[];
     }
@@ -1024,7 +1024,7 @@ export default {
     connect,
     disconnect,
     changed,
-    updateTimestamp,
+    selectDevice,
     forget,
     remember,
 };
