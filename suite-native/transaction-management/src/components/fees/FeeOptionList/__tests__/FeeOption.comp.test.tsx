@@ -140,7 +140,7 @@ describe('FeeOption', () => {
         it('should show radio button when interactive', async () => {
             const { getByTestId } = await renderFeeOption();
 
-            expect(getByTestId('@transactionManagement/fees-level-normal')).toBeTruthy();
+            expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toBeTruthy();
         });
 
         it('should not show radio button when not interactive', async () => {
@@ -148,7 +148,7 @@ describe('FeeOption', () => {
                 isInteractive: false,
             });
 
-            expect(queryByTestId('@transactionManagement/fees-level-normal')).toBeNull();
+            expect(queryByTestId('@transactionManagement/fees-level-radio-normal')).toBeNull();
         });
 
         it('should show loading skeleton when isLoading is true', async () => {
@@ -164,20 +164,19 @@ describe('FeeOption', () => {
         it('should call onSelectedFeeLevel when pressed', async () => {
             const { getByTestId } = await renderFeeOption();
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-normal'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
 
             expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('normal');
         });
 
         it('should not call onSelectedFeeLevel when not interactive', async () => {
-            const { getByText } = await renderFeeOption({
+            const { getByTestId } = await renderFeeOption({
                 isInteractive: false,
             });
 
-            const container = getByText(/Normal/).parent;
-            if (container) {
-                await userEvent.press(container);
-            }
+            await userEvent.press(
+                getByTestId('@transactionManagement/fees-level-container-normal'),
+            );
 
             expect(mockOnSelectedFeeLevel).not.toHaveBeenCalled();
         });
@@ -187,7 +186,7 @@ describe('FeeOption', () => {
                 feeKey: 'economy',
             });
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-economy'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-economy'));
 
             expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('economy');
         });

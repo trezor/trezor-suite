@@ -28,13 +28,13 @@ class SendFeesActions {
 
         switch (feeType) {
             case 'low':
-                await element(by.id('@transactionManagement/fees-level-low')).tap();
+                await element(by.id('@transactionManagement/fees-level-radio-low')).tap();
                 break;
             case 'normal':
-                await element(by.id('@transactionManagement/fees-level-normal')).tap();
+                await element(by.id('@transactionManagement/fees-level-radio-normal')).tap();
                 break;
             case 'high':
-                await element(by.id('@transactionManagement/fees-level-high')).tap();
+                await element(by.id('@transactionManagement/fees-level-radio-high')).tap();
                 break;
             case 'custom':
                 await this.setCustomFee(customFeePerUnit);
