@@ -20,7 +20,7 @@ import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+import { selectIsDebugModeActive, selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
     validateDecimals,
     validateInteger,
@@ -89,7 +89,9 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         decimals = network.decimals;
     }
 
-    const withTokens = hasNetworkFeatures(account, 'tokens');
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+
+    const withTokens = hasNetworkFeatures(account, 'tokens', isDebugModeActive);
     const displayTicker = shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol);
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const inputState = isLowAnonymity ? 'warning' : getInputState(error);

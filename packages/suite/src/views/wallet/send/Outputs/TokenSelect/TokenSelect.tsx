@@ -51,7 +51,10 @@ import {
 import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
+import {
+    selectIsCopyAddressModalShown,
+    selectIsDebugModeActive,
+} from 'src/selectors/suite/suiteSelectors';
 import {
     enhanceTokensWithRates,
     getTokenAddressTranslationId,
@@ -175,12 +178,14 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const tokenWatch = watch(tokenInputName, null);
     const currencyValue = watch(currencyInputName);
 
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+
     useEffect(() => {
-        if (hasNetworkFeatures(account, 'tokens') && !isSetMaxActive) {
+        if (hasNetworkFeatures(account, 'tokens', isDebugModeActive) && !isSetMaxActive) {
             const amountValue = getValues(`outputs.${outputId}.amount`) as string;
             if (amountValue) setAmount(outputId, amountValue);
         }
-    }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
+    }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive, isDebugModeActive]);
 
     useEffect(() => {
         if (sendFormPrefill) {
@@ -402,10 +407,10 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             )}
                         </Column>
                     </Row>
-
-                    {!hasNoStandardTokens && (
-                        <IconButton icon="caretDown" variant="tertiary" size="medium" />
-                    )}
+                    {!hasNoStandardTokens &&
+                        hasNetworkFeatures(account, 'tokens', isDebugModeActive) && (
+                            <IconButton icon="caretDown" variant="tertiary" size="medium" />
+                        )}
                 </Row>
             </Card>
         </>

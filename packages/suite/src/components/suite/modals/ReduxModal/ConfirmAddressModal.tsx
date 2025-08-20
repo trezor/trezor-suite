@@ -19,6 +19,7 @@ import {
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 
@@ -36,6 +37,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     const isConnectPopup = useSelector(
         state => selectConnectPopupCall(state)?.state === 'address-confirmation',
     );
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const validateAddress = useCallback(
         () => showAddress(addressPath, value),
@@ -80,7 +82,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             return <Translation id="TR_RECEIVE" />;
         }
 
-        const hasTokens = hasNetworkFeatures(account, 'tokens');
+        const hasTokens = hasNetworkFeatures(account, 'tokens', isDebugModeActive);
         if (hasTokens) {
             return (
                 <Translation
