@@ -48,8 +48,8 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ steps.trezor-bot-token.outputs.token }}
-          title: "chore:(transport-bluetooth) update binaries"
-          commit-message: "chore:(transport-bluetooth) update binaries"
+          title: "chore(transport-bluetooth): update binaries"
+          commit-message: "chore(transport-bluetooth): update binaries"
           committer: ${{ steps.trezor-bot-token.outputs.app-slug }}[bot] <208941332+${{ steps.trezor-bot-token.outputs.app-slug }}[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           branch: transport-bluetooth-binaries-update-${{ github.sha }}
