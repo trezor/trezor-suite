@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType, SuiteNativeAnalyticsEvent, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -15,6 +15,8 @@ import { useToast } from '@suite-native/toasts';
 
 import viewOnlyLottie from '../../assets/view-only-lottie.json';
 
+type AutoEjectModalEvent = Extract<SuiteNativeAnalyticsEvent, { type: EventType.AutoEjectModal }>;
+
 export const useShowAutoEjectAlert = () => {
     const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
@@ -22,6 +24,16 @@ export const useShowAutoEjectAlert = () => {
 
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const hasAutoEjectAlertBeenDisplayed = useSelector(selectHasAutoEjectAlertBeenDisplayed);
+
+    const reportAutoEjectToAnalytics = useCallback(
+        (value: AutoEjectModalEvent['payload']['value']) => {
+            analytics.report({
+                type: EventType.AutoEjectModal,
+                payload: { value },
+            });
+        },
+        [],
+    );
 
     useEffect(() => {
         if (!hasAutoEjectAlertBeenDisplayed && shouldShowAutoEjectAlert) {
@@ -42,20 +54,17 @@ export const useShowAutoEjectAlert = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleSettings.viewOnly.autoEject.alert.primaryButtonTitle" />
                 ),
-                onPressPrimaryButton: () => dispatch(setHasAutoEjectAlertBeenDisplayed(true)),
+                onPressPrimaryButton: () => {
+                    reportAutoEjectToAnalytics('skip');
+                    dispatch(setHasAutoEjectAlertBeenDisplayed(true));
+                },
                 secondaryButtonTitle: (
                     <Translation id="moduleSettings.viewOnly.autoEject.alert.secondaryButtonTitle" />
                 ),
                 onPressSecondaryButton: () => {
                     dispatch(setHasAutoEjectAlertBeenDisplayed(true));
                     dispatch(toggleAutoEjectThunk());
-                    analytics.report({
-                        type: EventType.AutoEjectChange,
-                        payload: {
-                            enabled: true,
-                            origin: 'autoEjectAlert',
-                        },
-                    });
+                    reportAutoEjectToAnalytics('enable');
                     showToast({
                         message: (
                             <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />
@@ -72,6 +81,7 @@ export const useShowAutoEjectAlert = () => {
         dispatch,
         hasAutoEjectAlertBeenDisplayed,
         hideAlert,
+        reportAutoEjectToAnalytics,
         shouldShowAutoEjectAlert,
         showAlert,
         showToast,
