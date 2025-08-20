@@ -531,60 +531,60 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
         result = {
             type: 'page',
             id: '/',
-            locales: ['en'],
+            locales: ['en-us'],
             title: {
-                en: 'Locktime',
+                'en-us': 'Locktime',
             },
         } as GuideArticle;
     } else if (type === 'page' && id !== '/') {
         result = {
             type: 'page',
             id: '/suite-basics/send/locktime.md',
-            locales: ['en'],
+            locales: ['en-us'],
             title: {
-                en: 'Locktime',
+                'en-us': 'Locktime',
             },
         } as GuideArticle;
     } else {
         result = {
             type: 'category',
             id: '/',
-            locales: ['en'],
+            locales: ['en-us'],
             title: {
-                en: 'test title',
+                'en-us': 'test title',
             },
             children: [
                 {
                     type: 'category',
                     id: '/privacy',
-                    locales: ['en'],
+                    locales: ['en-us'],
                     title: {
-                        en: 'Privacy',
+                        'en-us': 'Privacy',
                     },
                     children: [],
                 },
                 {
                     type: 'category',
                     id: '/security',
-                    locales: ['en'],
+                    locales: ['en-us'],
                     title: {
-                        en: 'Security',
+                        'en-us': 'Security',
                     },
                     children: [
                         {
                             type: 'category',
                             id: '/security/suite-basics',
-                            locales: ['en'],
+                            locales: ['en-us'],
                             title: {
-                                en: 'Suite basics',
+                                'en-us': 'Suite basics',
                             },
                             children: [
                                 {
                                     type: 'category',
                                     id: '/security/suite-basics/send',
-                                    locales: ['en'],
+                                    locales: ['en-us'],
                                     title: {
-                                        en: 'Send',
+                                        'en-us': 'Send',
                                     },
                                     children: [],
                                 },

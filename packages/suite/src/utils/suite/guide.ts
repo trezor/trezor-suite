@@ -2,7 +2,7 @@ import { GuideCategory, GuideNode } from '@suite-common/suite-types';
 
 /** @returns title in given language or in english if not available. */
 export const getNodeTitle = (node: GuideNode, language: string): string =>
-    node.title[language] || node.title.en;
+    node.title[language.toLowerCase()] || node.title['en-us'];
 
 export const getNodeById = (id: string, root: GuideNode): GuideNode | undefined => {
     if (id === root.id) {

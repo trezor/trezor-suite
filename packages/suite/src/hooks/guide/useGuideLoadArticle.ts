@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 
 import type { GuideNode, Locale } from '@suite-common/suite-types';
 
-export const loadPageMarkdownFile = async (id: string, language = 'en'): Promise<string> => {
-    const file = await import(/* @vite-ignore */ `@trezor/suite-data/files/guide/${language}${id}`);
+export const loadPageMarkdownFile = async (id: string, language = 'en-US'): Promise<string> => {
+    const file = await import(
+        /* @vite-ignore */ `@trezor/suite-data/files/guide/${language.toLowerCase()}${id}`
+    );
     const md = await file.default;
 
     return md;
