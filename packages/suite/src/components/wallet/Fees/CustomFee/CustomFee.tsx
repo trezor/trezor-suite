@@ -57,6 +57,7 @@ type CustomFeeProps<TFieldValues extends FormState> = {
     getValues: UseFormGetValues<TFieldValues>;
     trigger: UseFormTrigger<TFieldValues>;
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
+    rbfForm?: boolean;
 };
 
 export const CustomFee = <TFieldValues extends FormState>({
@@ -66,6 +67,7 @@ export const CustomFee = <TFieldValues extends FormState>({
     register,
     control,
     transactionInfo,
+    rbfForm,
     ...props
 }: CustomFeeProps<TFieldValues>) => {
     const { translationString } = useTranslation();
@@ -102,7 +104,9 @@ export const CustomFee = <TFieldValues extends FormState>({
         <>
             <Column gap={spacings.xs}>
                 <CustomFeeTooLowBanner feePerUnitValue={feePerUnitValue} feeInfo={feeInfo} />
-                <CurrentFee networkType={networkType} networkSymbol={symbol} feeInfo={feeInfo} />
+                {!rbfForm && (
+                    <CurrentFee networkType={networkType} networkSymbol={symbol} feeInfo={feeInfo} />
+                )}
                 {networkType === 'ethereum' ? (
                     <CustomFeeEthereum
                         {...props}

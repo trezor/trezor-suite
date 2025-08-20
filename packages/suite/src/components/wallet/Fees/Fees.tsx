@@ -258,6 +258,7 @@ export const Fees = <TFieldValues extends FormState>({
                     setValue={setValue}
                     transactionInfo={transactionInfo}
                     trigger={trigger}
+                    rbfForm={rbfForm}
                 />
             )}
             {error && (
