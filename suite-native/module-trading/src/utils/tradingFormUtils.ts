@@ -14,6 +14,16 @@ import {
 import { FormState, FormStateTrading } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
 
+interface CreateFormStateForSendFormParams {
+    quote: ExchangeTrade | SellFiatTrade;
+    providers: Record<string, ExchangeProviderInfo> | { [name: string]: SellProviderInfo };
+    feeLevel?: Pick<FeeLevel, 'label' | 'feePerUnit' | 'feeLimit'>;
+    extraField?: string;
+    isSlip24Active?: boolean;
+    sendAccountKey: string | undefined;
+    receiveAccountKey?: string | undefined;
+}
+
 /**
  * Creates a FormState for transactions from exchange or sell quotes
  */
@@ -23,13 +33,9 @@ export const createFormStateForSendForm = ({
     feeLevel = { label: 'normal', feePerUnit: '' },
     extraField,
     isSlip24Active = false,
-}: {
-    quote: ExchangeTrade | SellFiatTrade;
-    providers: Record<string, ExchangeProviderInfo> | { [name: string]: SellProviderInfo };
-    feeLevel?: Pick<FeeLevel, 'label' | 'feePerUnit' | 'feeLimit'>;
-    extraField?: string;
-    isSlip24Active?: boolean;
-}): FormState => {
+    sendAccountKey,
+    receiveAccountKey,
+}: CreateFormStateForSendFormParams): FormState => {
     if (!isExchangeTrade(quote) && !isSellFiatTrade(quote)) {
         throw new Error('Invalid quote type: must be ExchangeTrade or SellFiatTrade');
     }
@@ -65,6 +71,8 @@ export const createFormStateForSendForm = ({
             providers: exchangeProviders,
             trade: exchangeQuote,
             isSlip24Active,
+            sendAccountKey,
+            receiveAccountKey,
         });
     } else {
         // Sell quote (crypto to fiat)
@@ -87,6 +95,8 @@ export const createFormStateForSendForm = ({
             providers: sellProviders,
             trade: sellQuote,
             isSlip24Active,
+            sendAccountKey,
+            receiveAccountKey,
         });
     }
     const formState: FormState = {

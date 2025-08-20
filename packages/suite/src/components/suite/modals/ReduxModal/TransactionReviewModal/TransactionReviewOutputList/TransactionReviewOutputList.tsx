@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { DeviceRootState, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
-    FormStateTrading,
     GeneralPrecomposedTransactionFinal,
     StakeFormState,
 } from '@suite-common/wallet-types';
@@ -31,7 +30,6 @@ export type TransactionReviewOutputListProps = {
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
-    tradingFormState: FormStateTrading | undefined;
     reviewStep: number;
     onTryAgain: (close: boolean) => void;
     isSending?: boolean;
@@ -66,7 +64,6 @@ export const TransactionReviewOutputList = ({
     outputs,
     buttonRequestsCount,
     isRbfAction,
-    tradingFormState,
     stakeType,
     deadline,
     reviewStep,
@@ -91,6 +88,8 @@ export const TransactionReviewOutputList = ({
         lastButtonRequestCode,
     });
 
+    const { trading } = precomposedForm;
+
     const isFirstStep = buttonRequestsCount <= 1;
 
     const isStaking = stakeType;
@@ -103,8 +102,6 @@ export const TransactionReviewOutputList = ({
     const summaryIndex = outputs.findIndex(
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
     );
-    const isSLIP24Active =
-        !!tradingFormState && 'send' in tradingFormState && 'receive' in tradingFormState;
 
     useEffect(() => {
         if (reviewStep === outputs.length || signedTx) {
@@ -119,7 +116,7 @@ export const TransactionReviewOutputList = ({
         isFirstOutputAddress &&
         isFirstStep &&
         !isStaking &&
-        !tradingFormState &&
+        !trading &&
         !isInternalTransfer &&
         !signedTx
     ) {
@@ -163,7 +160,7 @@ export const TransactionReviewOutputList = ({
                                 })}
                                 account={account}
                                 isRbf={isRbfAction}
-                                isTrading={!!tradingFormState}
+                                isTrading={!!trading}
                                 stakeType={stakeType}
                                 evmTxType={getEvmTransactionTextSignature(
                                     precomposedForm.ethereumDataHex,
@@ -189,7 +186,6 @@ export const TransactionReviewOutputList = ({
                             precomposedForm={precomposedForm}
                             stakeType={stakeType}
                             isRbf={isRbfAction}
-                            isSLIP24Active={isSLIP24Active}
                         />
                     </Column>
                 </Wrapper>

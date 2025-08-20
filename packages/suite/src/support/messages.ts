@@ -4116,6 +4116,11 @@ export default defineMessages({
         id: 'TOAST_TX_SENT',
         defaultMessage: '{amount} sent from {account}',
     },
+    TOAST_TX_EXCHANGE_BROADCASTED: {
+        id: 'TOAST_TX_EXCHANGE_BROADCASTED',
+        defaultMessage:
+            'Swap transaction of {sendAmount} {sendAsset} ({sendAccount}) to {receiveAmount} {receiveAsset} ({receiveAccount}) was broadcasted',
+    },
     TOAST_RAW_TX_SENT: {
         id: 'TOAST_RAW_TX_SENT',
         defaultMessage: 'Transaction sent. Tx ID: {txid}',

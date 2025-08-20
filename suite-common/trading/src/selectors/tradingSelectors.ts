@@ -627,10 +627,12 @@ export const selectTradingVerifiedAddress = (state: TradingRootState) =>
 export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndAccounts(
     [
         state => selectDeviceUnavailableCapabilities(state),
-        (_: TradingRootState, account: Account) => account,
-        (_: TradingRootState, __: Account, isSlip24Active: boolean) => isSlip24Active,
+        (_: TradingRootState, account: Account | undefined) => account,
+        (_: TradingRootState, __: Account | undefined, isSlip24Active: boolean) => isSlip24Active,
     ],
     (unavailableCapabilities, account, isSlip24Active) => {
+        if (!account) return false;
+
         const isFirmwareVersionSlip24Compatible = !unavailableCapabilities?.['slip24'];
         // TODO: slip24 - can be removed when slip24 is enabled for all networks
         const supportedNetworks: NetworkType[] = ['bitcoin', 'ethereum'];

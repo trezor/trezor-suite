@@ -13,6 +13,7 @@ import {
     asAmountSubunit,
     isApprovalFlowSupported,
     isEvmApprovalTx,
+    isExchangeTradingForm,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -52,16 +53,6 @@ export type RecomposeAndSignTxThunkProps = {
         paymentRequests,
     }: TradingSignAndPushSendFormTransactionProps) => Promise<TradingFulfillValue>;
 };
-
-const getTradingFormStateAccordingRestriction = (
-    tradingFormState: FormStateTrading,
-    isPaymentRequestsAllowed: boolean,
-): FormStateTrading =>
-    isPaymentRequestsAllowed
-        ? tradingFormState
-        : {
-              activeSection: tradingFormState.activeSection,
-          };
 
 /**
  * This thunk is particularly useful for scenarios where transaction details (e.g., fees, outputs) need to be recalculated
@@ -124,10 +115,6 @@ export const recomposeAndSignTxThunk = createThunk<
             !ethereumDataHex ||
             (isApprovalFlowSupported(device) && isEvmApprovalTx(ethereumDataHex));
 
-        const restrictedTradingFormState = getTradingFormStateAccordingRestriction(
-            tradingFormState,
-            isPaymentRequestsAllowed,
-        );
         // prepare the fee levels, set custom values from composed
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
         const formState: FormState = {
@@ -152,7 +139,7 @@ export const recomposeAndSignTxThunk = createThunk<
             ethereumDataHex,
             ethereumAdjustGasLimit,
             selectedUtxos: [],
-            trading: restrictedTradingFormState,
+            trading: tradingFormState,
         };
 
         // prepare form state for composeAction
@@ -250,12 +237,12 @@ export const recomposeAndSignTxThunk = createThunk<
         const formStateUpdated: FormState = {
             ...formState,
             trading: {
-                ...restrictedTradingFormState,
-                ...('send' in restrictedTradingFormState
+                ...tradingFormState,
+                ...(isPaymentRequestsAllowed && isExchangeTradingForm(tradingFormState)
                     ? {
                           send: {
-                              ...restrictedTradingFormState.send,
-                              amount: formattedMaxAmount ?? restrictedTradingFormState.send.amount,
+                              ...tradingFormState.send,
+                              amount: formattedMaxAmount ?? tradingFormState.send.amount,
                           },
                       }
                     : {}),
@@ -265,7 +252,7 @@ export const recomposeAndSignTxThunk = createThunk<
         const paymentRequests = isPaymentRequestsAllowed
             ? await dispatch(
                   tradingThunks.createPaymentRequestsThunk({
-                      type: restrictedTradingFormState.activeSection,
+                      type: tradingFormState.activeSection,
                       account,
                       composedLevels: precomposedToSign,
                       formattedMaxAmount,

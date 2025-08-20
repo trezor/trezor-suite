@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import {
     DeviceRootState,
@@ -17,6 +16,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { ExpiredTxValidity } from '../../UserContextModal/TxDetailModal/ExpiredTxValidity';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
@@ -116,7 +117,6 @@ export const TransactionReviewModalContent = ({
                 outputs={outputs}
                 buttonRequestsCount={buttonRequestsCount}
                 isRbfAction={isBumpFeeRbfAction}
-                tradingFormState={precomposedForm?.trading}
                 reviewStep={reviewStep}
                 isSending={isSending}
                 stakeType={stakeType || undefined}

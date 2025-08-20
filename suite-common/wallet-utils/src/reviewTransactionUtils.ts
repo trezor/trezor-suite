@@ -21,6 +21,7 @@ import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
 import { isApprovalFlowSupported as isApprovalSupported } from './deviceUtils';
 import { getEvmApprovalTxData, isEvmApprovalTx } from './ethUtils';
 import { getStakeType } from './ethereumStakingUtils';
+import { isExchangeTradingForm } from './sendFormUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 export const getTransactionReviewOutputState = (
@@ -369,7 +370,7 @@ const constructNewFlow = ({
                 }
             }
         });
-    } else if (trading && 'send' in trading && 'receive' in trading) {
+    } else if (precomposedForm.trading?.isSlip24Active && isExchangeTradingForm(trading)) {
         outputs.push({ type: 'recipient_name', value: trading.recipientName });
         outputs.push({
             type: 'traded_assets',

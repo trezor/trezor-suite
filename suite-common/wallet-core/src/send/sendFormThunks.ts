@@ -29,6 +29,7 @@ import {
     getPendingAccount,
     hasNetworkFeatures,
     isCardanoTx,
+    isExchangeTradingForm,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -367,6 +368,18 @@ export const pushSendFormTransactionThunk = createThunk<
                         isInfiniteApproval,
                         formattedAmount: amount,
                         tokenSymbol: token.symbol?.toUpperCase(),
+                        device,
+                        descriptor: selectedAccount.descriptor,
+                        symbol: selectedAccount.symbol,
+                        txid,
+                    }),
+                );
+            } else if (isExchangeTradingForm(precomposedForm?.trading)) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'tx-exchange',
+                        metadata: precomposedForm.trading,
+                        formattedAmount: precomposedForm.trading.send.amount,
                         device,
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,

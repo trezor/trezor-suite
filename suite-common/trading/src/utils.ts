@@ -318,13 +318,17 @@ type TradingGetFormStateExchangeProps = {
 type TradingGetFormStateProps = {
     providers: Record<string, ExchangeProviderInfo | SellProviderInfo> | undefined;
     isSlip24Active?: boolean;
+    sendAccountKey: string | undefined;
+    receiveAccountKey?: string | undefined;
 } & (TradingGetFormStateSellProps | TradingGetFormStateExchangeProps);
 
 export const getTradingFormState = ({
     activeSection,
     trade,
     providers,
-    isSlip24Active,
+    isSlip24Active = false,
+    sendAccountKey,
+    receiveAccountKey,
 }: TradingGetFormStateProps): FormStateTrading => {
     const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
 
@@ -333,6 +337,7 @@ export const getTradingFormState = ({
         case 'sell': {
             const defaultState = {
                 activeSection,
+                isSlip24Active,
             };
 
             if (
@@ -353,9 +358,12 @@ export const getTradingFormState = ({
             }
 
             return {
+                isSlip24Active,
                 activeSection,
                 recipientName: provider.companyName,
                 send: {
+                    cryptoId: trade.cryptoCurrency,
+                    accountKey: sendAccountKey,
                     symbol: networkData.network.symbol,
                     contractAddress: networkData.contractAddress,
                     amount: trade.cryptoStringAmount,
@@ -369,6 +377,7 @@ export const getTradingFormState = ({
         case 'exchange': {
             const defaultState = {
                 activeSection,
+                isSlip24Active,
             };
 
             if (
@@ -392,12 +401,17 @@ export const getTradingFormState = ({
             return {
                 activeSection,
                 recipientName: provider.companyName,
+                isSlip24Active,
                 send: {
+                    cryptoId: trade.send,
+                    accountKey: sendAccountKey,
                     symbol: sendNetworkData.network.symbol,
                     contractAddress: sendNetworkData.contractAddress,
                     amount: trade.sendStringAmount,
                 },
                 receive: {
+                    cryptoId: trade.receive,
+                    accountKey: receiveAccountKey,
                     symbol: receiveNetworkData.network.symbol,
                     contractAddress: receiveNetworkData.contractAddress,
                     amount: trade.receiveStringAmount,

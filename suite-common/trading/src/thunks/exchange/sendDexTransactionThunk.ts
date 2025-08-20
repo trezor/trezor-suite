@@ -9,16 +9,19 @@ import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
     selectTradingExchangeAccountKey,
+    selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { TradingSendRejectedProps } from '../../types';
+import { getTradingFormState } from '../../utils';
 import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
     account: Account;
     returnUrl: string;
     setMaxOutputId?: number | undefined;
+    isSlip24Active?: boolean;
 
     nextStep: () => void;
     processResponseData: (response: ExchangeTrade) => void;
@@ -39,6 +42,7 @@ export const sendDexTransactionThunk = createThunk<
             account,
             returnUrl,
             setMaxOutputId,
+            isSlip24Active,
             nextStep,
             processResponseData,
             triggerAnalyticsTradeConfirmation,
@@ -49,6 +53,7 @@ export const sendDexTransactionThunk = createThunk<
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
+        const providers = selectTradingExchangeProviders(getState());
 
         if (
             !selectedQuote ||
@@ -61,6 +66,15 @@ export const sendDexTransactionThunk = createThunk<
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
         }
+
+        const tradingFormState = getTradingFormState({
+            activeSection: 'exchange',
+            providers,
+            trade: selectedQuote,
+            isSlip24Active,
+            sendAccountKey: account.key,
+            receiveAccountKey,
+        });
 
         // after discussion with 1inch, adjust the gas limit by the factor of 1.25
         // swap can use different swap paths when mining tx than when estimating tx
@@ -76,9 +90,7 @@ export const sendDexTransactionThunk = createThunk<
                 ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
-                tradingFormState: {
-                    activeSection: 'exchange',
-                },
+                tradingFormState,
             }),
         );
 

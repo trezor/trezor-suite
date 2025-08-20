@@ -13,6 +13,7 @@ import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
+import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
 
 const simple = (
@@ -229,6 +230,17 @@ export const NotificationRenderer = ({
                     }}
                 />
             );
+        case 'tx-exchange': {
+            return (
+                <ExchangeInfoRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_EXCHANGE_BROADCASTED"
+                />
+            );
+        }
         case 'tx-sent':
             return (
                 <TransactionRenderer
