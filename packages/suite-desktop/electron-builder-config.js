@@ -104,9 +104,9 @@ module.exports = {
         entitlements: 'entitlements.mac.inherit.plist',
         entitlementsInherit: 'entitlements.mac.inherit.plist',
         extendInfo: {
+            NSBluetoothAlwaysUsageDescription:
+                'Allow Trezor Suite to use Bluetooth to securely connect and communicate with your Trezor device.',
             // Delete those keys from Info.plist, Electron adds them by default but Trezor Suite does not need these permissions
-            NSBluetoothAlwaysUsageDescription: undefined,
-            NSBluetoothPeripheralUsageDescription: undefined,
             NSMicrophoneUsageDescription: undefined,
             // Replace default "This app needs access to the camera" message with our own
             NSCameraUsageDescription:
