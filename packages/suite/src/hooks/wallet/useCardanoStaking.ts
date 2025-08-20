@@ -26,8 +26,8 @@ import { AppState } from 'src/types/suite';
 import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 
 const getDeviceAvailability = (
-    device: AppState['device']['selectedDevice'],
     isDeviceLocked: boolean,
+    device: AppState['device']['selectedDevice'],
 ) => {
     // Handle all external cases where it is not possible to make delegate or withdrawal action
     if (!device?.connected) {
@@ -345,7 +345,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         fee,
         loading,
         pendingStakeTx,
-        deviceAvailable: getDeviceAvailability(device, isDeviceLocked),
+        deviceAvailable: getDeviceAvailability(isDeviceLocked, device),
         delegatingAvailable,
         alreadyVoted,
         withdrawingAvailable,
