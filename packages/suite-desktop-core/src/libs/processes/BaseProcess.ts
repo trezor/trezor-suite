@@ -20,6 +20,7 @@ export type Options = {
     startupCooldown?: number;
     stopKillWait?: number;
     autoRestart?: number;
+    env?: Record<string, string | undefined>;
 };
 
 const defaultOptions: Options = {
@@ -125,7 +126,7 @@ export abstract class BaseProcess {
             !app.isPackaged ? system : '',
         );
         const processPath = path.join(processDir, `${this.processName}${ext}`);
-        const processEnv = { ...process.env };
+        const processEnv = { ...process.env, ...this.options.env };
         // library search path for macOS
         processEnv.DYLD_LIBRARY_PATH = processEnv.DYLD_LIBRARY_PATH
             ? `${processEnv.DYLD_LIBRARY_PATH}:${processDir}`
