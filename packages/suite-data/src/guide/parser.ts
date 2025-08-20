@@ -25,8 +25,8 @@ export class Parser {
     private isRootNode = (path: string): boolean =>
         // Handle the special case of the root of a locale
         // which doesn't contain a README.md.
-        // Strip last 3 chars because locale (always two letters) and separator.
-        path.slice(0, -3) === this.source;
+        // Strip last 6 chars because locale (always five chars) and separator.
+        path.slice(0, -6) === this.source;
 
     /** Returns a title of given directory. */
     private parseDirTitle(path: string): string {
@@ -83,7 +83,7 @@ export class Parser {
     private pathToId(path: string): string {
         // Remove the environment-specific part of the path
         // and the locale.
-        const id = path.slice(this.source.length + 3);
+        const id = path.slice(this.source.length + 6);
         if (id.length !== 0) {
             return id;
         }
@@ -184,8 +184,8 @@ export class Parser {
         // Use heuristics to distinguish locale directories from other files.
         return fs.readdirSync(this.source).filter(
             it =>
-                // All locales should be 2 letters long.
-                it.length === 2 &&
+                // Locales should follow follow correct format (e.g. en-us)
+                /[a-z]{2}-[a-z]{2}/.test(it) &&
                 // All locales should be GitBook groups and hence directories.
                 isDirectory(join(this.source, it)),
         );
@@ -203,12 +203,12 @@ export class Parser {
         // It serves as the canonical version and defines the content tree.
         // All other locales can only provide alternative content to the english
         // Pages and Categories but can't define their own.
-        const englishIndex = this.parseTree(join(this.source, 'en'), 'en');
+        const englishIndex = this.parseTree(join(this.source, 'en-us'), 'en-us');
 
         return (
             locales
                 // Take all locales except the english one
-                .filter(locale => locale !== 'en')
+                .filter(locale => locale !== 'en-us')
                 // and merge them together.
                 .reduce((englishIndex2, locale) => {
                     // Parse the locale's version of the content.
