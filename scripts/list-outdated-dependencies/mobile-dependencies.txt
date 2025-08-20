@@ -44,7 +44,6 @@ expo-linear-gradient
 expo-linking
 expo-local-authentication
 expo-localization
-expo-navigation-bar
 expo-secure-store
 expo-splash-screen
 expo-status-bar
