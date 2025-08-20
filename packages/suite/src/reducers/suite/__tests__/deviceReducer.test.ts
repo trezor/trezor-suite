@@ -57,7 +57,7 @@ describe('DEVICE.DISCONNECT', () => {
 });
 
 describe('SUITE.SELECT_DEVICE', () => {
-    fixtures.updateTimestamp.forEach(f => {
+    fixtures.selectDevice.forEach(f => {
         it(f.description, () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
