@@ -1,6 +1,8 @@
 import { forwardRef } from 'react';
 import { TextInput } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
@@ -18,11 +20,17 @@ export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProp
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
         const { watch, setValue } = useSellFormContext();
-        const [asset, amount, account] = watch(['sendAsset', 'cryptoStringAmount', 'sendAccount']);
+        const [asset, amount, account, amountInCrypto] = watch([
+            'sendAsset',
+            'cryptoStringAmount',
+            'sendAccount',
+            'amountInCrypto',
+        ]);
         const symbol = getSymbolFromTradeableAsset(asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const inputControls = useInputFieldControls('cryptoStringAmount', amount, setValue);
         const decimals = useAmountInputDecimals(account, asset?.contractAddress);
+        const isLoading = useSelector(selectTradingSellIsLoading);
 
         const isAssetSelected = !!asset;
 
@@ -38,6 +46,7 @@ export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProp
                 loadingAccessibilityLabel={translate(
                     'moduleTrading.tradingScreen.quotesLoadingLabel',
                 )}
+                isLoading={isLoading && !amountInCrypto}
             />
         );
     },

@@ -10,6 +10,7 @@ import {
 import { PROTO } from '@trezor/connect';
 
 import { btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
+import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellFormType } from '../../../../types/sell';
 import { SellSendAmountInput, SellSendAmountInputProps } from '../SellSendAmountInput';
@@ -154,5 +155,33 @@ describe('SellSendAmountInput', () => {
             { key: 'account-key', symbol: 'eth' },
             '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         );
+    });
+
+    it('should display loading skeleton while amountInCrypto is false and quotes are loading', async () => {
+        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
+        preloadedState.wallet!.tradingNew!.sell!.isLoading = true;
+        const form = await renderUseTradingSellForm(preloadedState);
+
+        act(() => {
+            form.setValue('amountInCrypto', false);
+        });
+
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+
+        expect(getByLabelText('Fetching offers...')).toBeTruthy();
+    });
+
+    it('should not display loading skeleton when amountInCrypto is true', async () => {
+        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
+        preloadedState.wallet!.tradingNew!.sell!.isLoading = true;
+        const form = await renderUseTradingSellForm(preloadedState);
+
+        act(() => {
+            form.setValue('amountInCrypto', true);
+        });
+
+        const { queryByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+
+        expect(queryByLabelText('Fetching offers...')).toBeNull();
     });
 });
