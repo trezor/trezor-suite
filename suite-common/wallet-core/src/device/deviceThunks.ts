@@ -428,7 +428,8 @@ export const wipeDeviceThunk = createThunk(
                 path: device.path,
             },
             // In bootloader mode we need the skip the final reload, otherwise we never get the resolution
-            skipFinalReload: isBootloaderMode,
+            // THP device will require pairing. THP state is cleared, credentials are invalid
+            skipFinalReload: isBootloaderMode || !!device.thp,
         });
 
         if (

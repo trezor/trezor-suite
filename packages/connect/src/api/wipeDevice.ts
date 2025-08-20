@@ -45,7 +45,6 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
             // device will require THP pairing in the next call
             // reset state and do not call GetFeatures (finalReload)
             thpState.resetState();
-            this.skipFinalReload = true;
         }
 
         return response.message;
