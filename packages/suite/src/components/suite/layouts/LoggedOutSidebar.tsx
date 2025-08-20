@@ -1,17 +1,24 @@
 import styled from 'styled-components';
 
-import { Route } from '@suite-common/suite-types';
 import { Column, ElevationUp, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import { TrezorLogo } from '@trezor/product-components';
+import {
+    Elevation,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+} from '@trezor/theme';
 
-import { selectIsInitialRun } from 'src/selectors/suite/suiteSelectors';
-
-import { SIDEBAR_MIN_WIDTH } from './SuiteLayout/Sidebar/Sidebar';
-import { useSelector } from '../../../hooks/suite';
 import { TrafficLightOffset } from '../TrafficLightOffset';
-import { Nav, SETTINGS_ROUTES } from './SuiteLayout/Sidebar/Navigation';
-import { NavItem } from './SuiteLayout/Sidebar/NavigationItem';
+import { Navigation } from './SuiteLayout/Sidebar/Navigation';
 import { QuickActions } from './SuiteLayout/Sidebar/QuickActions/QuickActions';
+
+const NavigationColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.sm};
+    padding: ${spacingsPx.sm};
+`;
 
 const SidebarWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};
@@ -24,35 +31,29 @@ const SidebarNavColumn = styled.div<{ $elevation: Elevation; $minWidth: number }
     height: 100%;
 `;
 
+// need wrapper to align it with icons in the nav col
+const TrezorLogoWrapper = styled.div`
+    margin-left: ${spacingsPx.sm};
+`;
+
+const LOGGED_OUT_SIDEBAR_MIN_WIDTH = 240;
+
 export const LoggedOutSidebar = () => {
     const { elevation } = useElevation();
-
-    const isInitialRun = useSelector(selectIsInitialRun);
-    const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
     return (
         <SidebarWrapper $elevation={elevation}>
             <ElevationUp>
-                <SidebarNavColumn $elevation={elevation} $minWidth={SIDEBAR_MIN_WIDTH}>
+                <SidebarNavColumn $elevation={elevation} $minWidth={LOGGED_OUT_SIDEBAR_MIN_WIDTH}>
                     <TrafficLightOffset>
                         <Column justifyContent="space-between" height="100%">
-                            <Nav $isSidebarCollapsed>
-                                <NavItem
-                                    nameId="TR_START"
-                                    icon="trezorLogo"
-                                    goToRoute={startRoute}
-                                    routes={[startRoute]}
-                                    data-testid="@suite/menu/suite-start"
-                                />
-                                <NavItem
-                                    nameId="TR_SETTINGS"
-                                    icon="gearSix"
-                                    goToRoute="settings-index"
-                                    routes={SETTINGS_ROUTES}
-                                    data-testid="@suite/menu/settings"
-                                />
-                            </Nav>
-                            <QuickActions hideDeviceUpdateStatusBar isSidebarCollapsed />
+                            <NavigationColumn>
+                                <TrezorLogoWrapper>
+                                    <TrezorLogo width="107px" type="horizontal" />
+                                </TrezorLogoWrapper>
+                                <Navigation margin={spacingsPx.zero} />
+                            </NavigationColumn>
+                            <QuickActions hideDeviceUpdateStatusBar isSidebarCollapsed={false} />
                         </Column>
                     </TrafficLightOffset>
                 </SidebarNavColumn>

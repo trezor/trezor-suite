@@ -1,22 +1,25 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 import styled from 'styled-components';
 
 import { Route } from '@suite-common/suite-types';
-import { spacingsPx } from '@trezor/theme';
+import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
+
+import { useSelector } from 'src/hooks/suite';
+import { selectIsInitialRun } from 'src/selectors/suite/suiteSelectors';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
-export const Nav = styled.nav<{ $isSidebarCollapsed: boolean }>`
+export const Nav = styled.nav<{ $isSidebarCollapsed: boolean; $margin: SpacingPxValues }>`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.xxs};
-    margin: ${spacingsPx.xs};
     align-items: stretch;
 
-    ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `align-items: center;`}
+    ${({ $isSidebarCollapsed, $margin }) =>
+        $isSidebarCollapsed && `align-items: center;margin: ${$margin};`}
 `;
 
 export const SETTINGS_ROUTES: Route['name'][] = [
@@ -27,32 +30,43 @@ export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-connected-apps',
 ] as const;
 
-const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [
-    {
-        nameId: 'TR_DASHBOARD',
-        icon: 'house',
-        goToRoute: 'suite-index',
-        routes: ['suite-index'],
-    },
-    {
-        nameId: 'TR_NOTIFICATIONS',
-        icon: 'bell',
-        CustomComponent: NotificationDropdown,
-    },
-    {
-        nameId: 'TR_SETTINGS',
-        icon: 'gearSix',
-        goToRoute: 'settings-index',
-        routes: SETTINGS_ROUTES,
-        'data-testid': '@suite/menu/settings',
-    },
-];
+type NavigationProps = {
+    margin?: SpacingPxValues;
+};
 
-export const Navigation = () => {
+export const Navigation = ({ margin = spacingsPx.xs }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
 
+    const isInitialRun = useSelector(selectIsInitialRun);
+    const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
+
+    const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
+        useMemo(
+            () => [
+                {
+                    nameId: 'TR_DASHBOARD',
+                    icon: 'house',
+                    goToRoute: startRoute,
+                    routes: [startRoute],
+                },
+                {
+                    nameId: 'TR_NOTIFICATIONS',
+                    icon: 'bell',
+                    CustomComponent: NotificationDropdown,
+                },
+                {
+                    nameId: 'TR_SETTINGS',
+                    icon: 'gearSix',
+                    goToRoute: 'settings-index',
+                    routes: SETTINGS_ROUTES,
+                    'data-testid': '@suite/menu/settings',
+                },
+            ],
+            [startRoute],
+        );
+
     return (
-        <Nav $isSidebarCollapsed={isSidebarCollapsed}>
+        <Nav $isSidebarCollapsed={isSidebarCollapsed} $margin={margin}>
             {navItems.map(item => {
                 const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
 
