@@ -302,5 +302,5 @@ jobs:
         if: ${{failure()}}
         uses: actions/upload-artifact@v4
         with:
-          name: failed-android-tests
+          name: failed-android-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
