@@ -1,7 +1,3 @@
-export type {
-    NativeSupportedPredefinedFeeLevel,
-    FeeLevelsMaxAmount,
-    NativeSupportedFeeLevel,
-} from './fees';
+export type * from './fees';
 
-export type { StatefulReviewOutput, ReviewSummaryOutput } from './outputs';
+export type * from './outputs';

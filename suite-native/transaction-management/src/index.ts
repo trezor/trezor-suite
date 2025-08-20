@@ -9,3 +9,4 @@ export * from './feesFormSchema';
 export * from './selectors';
 export * from './sendFormSlice';
 export * from './hooks/useFeesForm';
+export * from './hooks/useFeesFetching';
