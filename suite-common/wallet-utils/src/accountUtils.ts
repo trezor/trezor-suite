@@ -1115,8 +1115,19 @@ export const getNetworkAccountFeatures = ({
 export const hasNetworkFeatures = (
     account: Account | undefined,
     features: NetworkFeature | Array<NetworkFeature>,
+    isDebugMode?: boolean,
 ) => {
     if (!account) {
+        return false;
+    }
+
+    // For Stellar tokens feature, return false when not in debug mode
+    // TODO(stellar): remove this when we are ready to release it.
+    if (
+        isDebugMode === false &&
+        account.networkType === 'stellar' &&
+        (features === 'tokens' || (Array.isArray(features) && features.includes('tokens')))
+    ) {
         return false;
     }
 

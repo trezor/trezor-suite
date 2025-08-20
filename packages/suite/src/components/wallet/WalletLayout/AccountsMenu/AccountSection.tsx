@@ -3,6 +3,7 @@ import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { AccountItemType } from 'src/types/wallet';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
@@ -36,7 +37,13 @@ export const AccountSection = ({
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
-    const showGroup = ['ethereum', 'solana', 'cardano', 'stellar'].includes(networkType);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const showGroup = [
+        'ethereum',
+        'solana',
+        'cardano',
+        ...(isDebugModeActive ? ['stellar'] : []),
+    ].includes(networkType);
 
     const isStakeShownStored = useSelector(state =>
         selectAccountIsStakingActive(state, account.key),
