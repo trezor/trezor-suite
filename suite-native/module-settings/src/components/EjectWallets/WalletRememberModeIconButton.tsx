@@ -7,7 +7,6 @@ import {
     selectIsDeviceAutoEjectEnabled,
     toggleRememberDevice,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
 import { IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -20,11 +19,6 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
     const { showToast } = useToast();
 
     const handleEjectWallet = () => {
-        analytics.report({
-            type: EventType.AutoEjectChange,
-            payload: { enabled: !device.remember, origin: 'settingsToggle' },
-        });
-
         if (device.connected) {
             dispatch(toggleRememberDevice({ device }));
             if (device.remember) {
