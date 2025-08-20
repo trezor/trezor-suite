@@ -98,10 +98,6 @@ export const toggleRememberDevice = createThunk(
         ),
 );
 
-export type CreateDeviceInstanceError = {
-    error: 'passphrase-enabling-cancelled' | 'features-unavailable';
-};
-
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
