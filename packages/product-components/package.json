@@ -16,6 +16,7 @@
         "storybook-build": "storybook build -c .storybook -o .build-storybook"
     },
     "dependencies": {
+        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
