@@ -96,10 +96,18 @@ export const PassphraseStackNavigator = () => {
             )}
 
             {passphraseState === 'confirm-empty-passphrase' && (
-                <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseEmptyWallet}
-                    component={PassphraseEmptyWalletScreen}
-                />
+                <>
+                    <PassphraseStack.Screen
+                        name={AuthorizeDeviceStackRoutes.PassphraseEmptyWallet}
+                        component={PassphraseEmptyWalletScreen}
+                    />
+                    {/* The PassphraseVerifyEmptyWallet screen is shown when user confirms they want to use an empty passphrase */}
+
+                    <PassphraseStack.Screen
+                        name={AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet}
+                        component={PassphraseVerifyEmptyWalletScreen}
+                    />
+                </>
             )}
 
             {passphraseState === 'passphrase-mismatch' && (
@@ -119,14 +127,6 @@ export const PassphraseStackNavigator = () => {
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice}
                     component={PassphraseEnableOnDeviceScreen}
-                />
-            )}
-
-            {/* The PassphraseVerifyEmptyWallet screen is shown when user confirms they want to use an empty passphrase */}
-            {passphraseState === 'confirm-empty-passphrase' && (
-                <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet}
-                    component={PassphraseVerifyEmptyWalletScreen}
                 />
             )}
             {passphraseState === 'passphrase-checking-on-device' && (
