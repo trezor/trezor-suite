@@ -206,14 +206,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         // ignore whatever happens
                     }
                 } else {
+                    // transport is currently in "call-read" state, update sync bit
                     this.device.getThpState()?.sync('send', 'Cancel');
-                    await this.transport.send({
-                        name: 'Cancel',
-                        data: {},
-                        session: this.session,
-                        protocol: this.device.protocol,
-                        thpState: this.device.getThpState(),
-                    });
+                    await this.send('Cancel', {});
                 }
             }
 
