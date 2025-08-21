@@ -265,7 +265,7 @@ export const initDevices = createThunk(
 
         const device = selectSelectedDevice(getState());
 
-        if (!device && devices && devices[0]) {
+        if (!device && devices?.[0]) {
             // if there are force remember devices, forget them and pick the first one of them as selected device
             const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
             forcedDevices.forEach(d => {
