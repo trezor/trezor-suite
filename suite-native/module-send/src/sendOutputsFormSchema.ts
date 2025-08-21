@@ -3,7 +3,7 @@ import { G } from '@mobily/ts-belt';
 import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
-import { FeeInfo } from '@suite-common/wallet-types';
+import { FeeInfo, Output } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     isAddressDeprecated,
@@ -104,125 +104,120 @@ const hasEnoughBalanceForFees = (context?: SendFormFormContext) => {
     return amountBigNumber.gt(networkFeeInfo.minFee);
 };
 
-export const sendOutputsFormValidationSchema = yup.object({
-    outputs: yup
-        .array(
-            yup.object({
-                address: yup
-                    .string()
-                    .required()
-                    .test(
-                        'is-invalid-address',
-                        'The address format is incorrect.',
-                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            if (!value || !context) {
-                                return false;
-                            }
-                            const { symbol, isTaprootAvailable } = context;
+const outputSchema = yup.object({
+    address: yup
+        .string()
+        .required()
+        .test(
+            'is-invalid-address',
+            'The address format is incorrect.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                if (!value || !context) {
+                    return false;
+                }
+                const { symbol, isTaprootAvailable } = context;
 
-                            if (!symbol) return false;
+                if (!symbol) return false;
 
-                            const isTaprootValid =
-                                isTaprootAvailable || !isTaprootAddress(value, symbol);
+                const isTaprootValid = isTaprootAvailable || !isTaprootAddress(value, symbol);
 
-                            return (
-                                isAddressValid(value, symbol) &&
-                                !isAddressDeprecated(value, symbol) &&
-                                !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
-                                isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
-                            );
-                        },
-                    )
-                    .test(
-                        'ripple-is-sending-to-self',
-                        'Can`t send to myself.',
-                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            const { symbol, accountDescriptor } = context!;
-                            if (!symbol || !accountDescriptor) return true;
-
-                            if (getNetworkType(symbol) !== 'ripple') return true;
-
-                            return value !== accountDescriptor;
-                        },
-                    ),
-                amount: yup
-                    .string()
-                    .required('Amount is required.')
-                    .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
-                    .test(
-                        'is-dust-amount',
-                        'The value is lower than the dust limit.',
-                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
-                            !isAmountDust(value, context),
-                    )
-                    .test(
-                        'ripple-higher-than-reserve',
-                        'Amount is above the required unspendable reserve (1 XRP)',
-                        function (
-                            value,
-                            { options: { context } }: yup.TestContext<SendFormFormContext>,
-                        ) {
-                            const { symbol, availableBalance, feeLevelsMaxAmount } = context!;
-
-                            if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
-                                return true;
-
-                            const amountBigNumber = new BigNumber(value);
-
-                            if (
-                                feeLevelsMaxAmount?.normal &&
-                                amountBigNumber.gt(
-                                    formatNetworkAmount(
-                                        // availableBalance = balance - reserve
-                                        availableBalance,
-                                        symbol,
-                                    ),
-                                )
-                            ) {
-                                return false;
-                            }
-
-                            return true;
-                        },
-                    )
-                    .test(
-                        'has-enough-balance-for-fees',
-                        `Insufficient balance to cover the transaction fees.`,
-                        function (
-                            _,
-                            { options: { context } }: yup.TestContext<SendFormFormContext>,
-                        ) {
-                            return hasEnoughBalanceForFees(context);
-                        },
-                    )
-                    .test(
-                        'is-higher-than-balance',
-                        'You don’t have enough balance to send this amount.',
-                        function (
-                            value,
-                            { options: { context } }: yup.TestContext<SendFormFormContext>,
-                        ) {
-                            const isSendMaxEnabled = G.isNotNullable(
-                                this.from?.[1]?.value.setMaxOutputId,
-                            );
-
-                            return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
-                        },
-                    )
-                    .test(
-                        'too-many-decimals',
-                        'Too many decimals.',
-                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            const { decimals = 8 } = context!;
-
-                            return isDecimalsValid(value, decimals);
-                        },
-                    ),
-                fiat: yup.string(),
-                token: yup.string().required().nullable(),
-            }),
+                return (
+                    isAddressValid(value, symbol) &&
+                    !isAddressDeprecated(value, symbol) &&
+                    !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
+                    isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
+                );
+            },
         )
-        .required(),
+        .test(
+            'ripple-is-sending-to-self',
+            'Can`t send to myself.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                const { symbol, accountDescriptor } = context!;
+                if (!symbol || !accountDescriptor) return true;
+
+                if (getNetworkType(symbol) !== 'ripple') return true;
+
+                return value !== accountDescriptor;
+            },
+        ),
+    amount: yup
+        .string()
+        .required('Amount is required.')
+        .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
+        .test(
+            'is-dust-amount',
+            'The value is lower than the dust limit.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                !isAmountDust(value, context),
+        )
+        .test(
+            'ripple-higher-than-reserve',
+            'Amount is above the required unspendable reserve (1 XRP)',
+            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                const { symbol, availableBalance, feeLevelsMaxAmount } = context!;
+
+                if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
+                    return true;
+
+                const amountBigNumber = new BigNumber(value);
+
+                if (
+                    feeLevelsMaxAmount?.normal &&
+                    amountBigNumber.gt(
+                        formatNetworkAmount(
+                            // availableBalance = balance - reserve
+                            availableBalance,
+                            symbol,
+                        ),
+                    )
+                ) {
+                    return false;
+                }
+
+                return true;
+            },
+        )
+        .test(
+            'has-enough-balance-for-fees',
+            `Insufficient balance to cover the transaction fees.`,
+            function (_, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                return hasEnoughBalanceForFees(context);
+            },
+        )
+        .test(
+            'is-higher-than-balance',
+            'You don’t have enough balance to send this amount.',
+            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                const isSendMaxEnabled = G.isNotNullable(this.from?.[1]?.value.setMaxOutputId);
+
+                return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
+            },
+        )
+        .test(
+            'too-many-decimals',
+            'Too many decimals.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                const { decimals = 8 } = context!;
+
+                return isDecimalsValid(value, decimals);
+            },
+        ),
+    fiat: yup.string(),
+    token: yup.string().required().nullable(),
+    label: yup.string(),
+});
+
+export type OutputsFormValues = yup.InferType<typeof outputSchema>;
+
+// Must correspond with `suite-common/wallet-types/src/transaction.ts:Output` type.
+// This hacky core is here to somehow enforce it.
+((_: Omit<Output, 'type' | 'currency' | 'fiat'> & { fiat?: string }) => {})(
+    {} as unknown as OutputsFormValues,
+);
+
+export const sendOutputsFormValidationSchema = yup.object({
+    outputs: yup.array(outputSchema).required(),
     isDestinationTagEnabled: yup.boolean(),
     destinationTag: yup
         .string()

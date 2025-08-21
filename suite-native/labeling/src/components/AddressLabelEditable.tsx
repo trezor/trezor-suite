@@ -33,19 +33,23 @@ export const AddressLabelEditable = ({
             )?.label ?? null,
     );
 
+    const onSubmit = (newLabel: string) => {
+        dispatch(
+            updateAddressLabelThunk({
+                deviceStaticSessionId,
+                address,
+                label: newLabel,
+            }),
+        );
+    };
+
     return (
         <EditableLabelLayout label={label} justifyContent="center">
             {({ onClose }) => (
                 <LabelEditForm
                     label={label ?? ''}
-                    onSubmit={value => {
-                        dispatch(
-                            updateAddressLabelThunk({
-                                deviceStaticSessionId,
-                                address,
-                                label: value,
-                            }),
-                        );
+                    onSubmit={newLabel => {
+                        onSubmit(newLabel);
                         onClose();
                     }}
                 />

@@ -1,37 +1,46 @@
-import { D, pipe } from '@mobily/ts-belt';
+import { D, G, pipe } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { updateOutputLabelThunk } from '@suite-common/local-first-storage';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    PushTransactionError,
     SignTransactionError,
     SignTransactionTimeoutError,
     composeSendFormTransactionFeeLevelsThunk,
     deviceActions,
     enhancePrecomposedTransactionThunk,
+    pushSendFormTransactionThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
+    selectPrecomposedSendForm,
     selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
+    selectSendPrecomposedTx,
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
+    Account,
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
     TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures, isCardanoTx } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
     FeeLevelsMaxAmount,
     NativeSupportedFeeLevel,
     storeFeeLevels,
 } from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { Success } from '@trezor/connect';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
@@ -270,5 +279,96 @@ export const calculateCustomFeeLevelThunk = createThunk(
         if (!isFinalPrecomposedTransaction(feeLevels.custom)) {
             throw Error('Unable to compose custom fee level.');
         }
+    },
+);
+
+export const sendTransactionThunk = createThunk<
+    Success<{ txid: string }>,
+    { selectedAccount: Account; wasAppLeftDuringReview: boolean; tokenContract?: TokenAddress },
+    { rejectValue: PushTransactionError }
+>(
+    `${SEND_MODULE_PREFIX}/sendTransactionThunk`,
+    async (
+        { selectedAccount, wasAppLeftDuringReview, tokenContract },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
+    ) => {
+        const sendResponse = await dispatch(
+            pushSendFormTransactionThunk({
+                selectedAccount,
+            }),
+        );
+
+        if (sendResponse.payload === undefined) {
+            throw new Error('Todo: wtf? shall not be undefined');
+        }
+
+        if (!('success' in sendResponse.payload)) {
+            return rejectWithValue(sendResponse.payload);
+        }
+
+        const formValues = selectSendFormDraftByKey(getState(), selectedAccount.key, tokenContract);
+
+        if (formValues !== null) {
+            const precomposedTransaction = selectSendPrecomposedTx(getState());
+
+            if (precomposedTransaction) {
+                const precomposedForm = selectPrecomposedSendForm(getState());
+                const outputsPermutation = isCardanoTx(selectedAccount, precomposedTransaction)
+                    ? precomposedTransaction?.outputs.map((_o, i) => i) // cardano preserves order of outputs
+                    : precomposedTransaction?.outputsPermutation;
+
+                const transactionUtxoLabels = (precomposedForm?.outputs ?? []).reduce<
+                    {
+                        outputIndex: number;
+                        value: string;
+                    }[]
+                >((acc, formOutput, index) => {
+                    const { label } = formOutput;
+
+                    if (label) {
+                        // final ordering of outputs differs from order in send form
+                        // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
+                        // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
+                        const outputIndex = outputsPermutation.findIndex(p => p === index);
+
+                        acc.push({ outputIndex, value: label });
+                    }
+
+                    return acc;
+                }, []);
+
+                for (const label of transactionUtxoLabels) {
+                    await dispatch(
+                        updateOutputLabelThunk({
+                            deviceStaticSessionId: selectedAccount.deviceState,
+                            txId: sendResponse.payload.payload.txid,
+                            outputIndex: label.outputIndex,
+                            label: label.value,
+                        }),
+                    );
+                }
+            }
+
+            const tokenSymbol = selectAccountTokenSymbol(
+                getState(),
+                selectedAccount.key,
+                tokenContract,
+            );
+
+            analytics.report({
+                type: EventType.SendTransactionDispatched,
+                payload: {
+                    symbol: selectedAccount.symbol,
+                    tokenAddresses: tokenContract ? [tokenContract] : undefined,
+                    tokenSymbols: tokenSymbol ? [tokenSymbol] : undefined,
+                    outputsCount: formValues.outputs.length,
+                    selectedFee: formValues.selectedFee ?? 'normal',
+                    hasDestinationTag: G.isNotNullable(formValues.destinationTag),
+                    wasAppLeftDuringReview,
+                },
+            });
+        }
+
+        return fulfillWithValue(sendResponse.payload);
     },
 );

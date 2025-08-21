@@ -50,7 +50,7 @@ export const processMetadataMessageThunk = createThunk<
                 await dispatch(
                     updateAddressLabelThunk({
                         deviceStaticSessionId,
-                        address: payload.defaultValue, // WTF, but yet, this is the address fore example: `"bc1q9mnl3ae6dra54uu2n9hp3d4jwkt0c2ux5l79ja"`
+                        address: payload.defaultValue, // WTF, but this is the address. For example: `"bc1q9mnl3ae6dra54uu2n9hp3d4jwkt0c2ux5l79ja"`
                         // entityKey is for example `zpub6rY6av7j6m7Lnd6rgqw5jffjX2rgeirDWWivEmFDMCKxt7FkWD5XQSrXCSW2Vsh3vnqUo1r9XjoGZiW41jqfEBkrxxdPnS15QhwJFjwfZ1U-btc-momP8m1p6w1nteR3hNREZjNc48buvpPv8K@BCCD2503E021276E78A8EBB2:2`
                         label: value ?? null,
                     }),

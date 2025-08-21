@@ -106,7 +106,6 @@ export const TransactionDetailAddressesSection = ({
                         </Text>
                         {targetAddresses.slice(0, 2).map(({ address, n }) => (
                             <>
-                                <Text>{isOwn && 'OWN'}</Text>
                                 <TransactionUtxoAddress
                                     key={address}
                                     address={address}

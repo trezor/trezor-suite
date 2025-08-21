@@ -1,11 +1,12 @@
 import { ReactNode, Ref } from 'react';
-import { FlexStyle, Pressable } from 'react-native';
+import { FlexStyle } from 'react-native';
 
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { BottomSheetModal, HStack, Text, useBottomSheetModal } from '@suite-native/atoms';
-import { Icon, iconSizes } from '@suite-native/icons';
+import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+
+import { AddLabelButtonText } from './AddLabelButtonText';
 
 type EditableLabelLayoutParams = {
     children: (params: { onClose: () => void; ref: Ref<BottomSheetModalMethods> }) => ReactNode;
@@ -22,14 +23,7 @@ export const EditableLabelLayout = ({
 
     return (
         <>
-            <Pressable onPress={openModal}>
-                <HStack spacing="sp8" justifyContent={justifyContent}>
-                    <Text textAlign="center" color="textPrimaryDefault" testID="@receive/addLabel">
-                        {label ?? <Translation id="labeling.addLabel" />}
-                    </Text>
-                    <Icon name="pencil" color="textPrimaryDefault" size={iconSizes.mediumLarge} />
-                </HStack>
-            </Pressable>
+            <AddLabelButtonText onPress={openModal} justifyContent={justifyContent} label={label} />
             <BottomSheetModal
                 ref={bottomSheetRef}
                 title={<Translation id="labeling.label" />}

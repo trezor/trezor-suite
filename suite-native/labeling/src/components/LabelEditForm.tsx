@@ -11,7 +11,7 @@ const labelValidationSchema = yup.object({
 export type FormValues = yup.InferType<typeof labelValidationSchema>;
 
 type LabelEditFormParam = {
-    label: string;
+    label: string | null;
     onSubmit: (label: string) => void;
 };
 
