@@ -40,10 +40,6 @@ const determineNativePassphraseFlowState = (
         return 'passphrase-checking-on-device';
     }
 
-    if (discovery.status === 'starting') {
-        return 'enter-passphrase';
-    }
-
     return discovery.status;
 };
 
@@ -88,7 +84,7 @@ export const PassphraseStackNavigator = () => {
                 />
             )}
 
-            {passphraseState === 'enter-passphrase' && (
+            {passphraseState === 'starting' && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseForm}
                     component={PassphraseFormScreen}
