@@ -96,15 +96,14 @@ describe('protocol-thp', () => {
     });
 
     it('decodeSendAck', () => {
-        const thpError2 = decodeSendAck(decodeV2(Buffer.from('42122200050270303cfa', 'hex')));
-        expect(thpError2.type).toBe('ThpError');
+        const thpError = decodeSendAck(decodeV2(Buffer.from('42122200050270303cfa', 'hex')));
+        expect(thpError?.type).toBe('ThpError');
 
         const ack = decodeSendAck(decodeV2(Buffer.from('2812340004e98c8599', 'hex')));
-        expect(ack.type).toBe('ThpAck');
+        expect(ack?.type).toBe('ThpAck');
 
-        expect(() => decodeSendAck(decodeV2(Buffer.from('40ffff0004f9215951', 'hex')))).toThrow(
-            'Unexpected send response',
-        );
+        const unexpected = decodeSendAck(decodeV2(Buffer.from('40ffff0004f9215951', 'hex')));
+        expect(unexpected).toBe(undefined);
 
         expect(() => decodeSendAck(decodeV2(Buffer.from('40ffff000499999999', 'hex')))).toThrow(
             'Invalid CRC',
