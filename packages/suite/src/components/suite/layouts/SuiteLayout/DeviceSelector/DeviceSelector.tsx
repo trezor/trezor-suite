@@ -1,12 +1,16 @@
+import { useRef } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Icon, Tooltip } from '@trezor/components';
+import { Box, Icon, Tooltip } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
+import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
+import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
@@ -55,51 +59,74 @@ const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
 `;
 
+const RecentlyConnectedDeviceTooltipContent = () => {
+    const dispatch = useDispatch();
+
+    const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
+    // deviceName must stay at initial value to prevent flickering, because the tooltip disappearing animation takes some time.
+    const deviceNameRef = useRef(recentlyConnectedDevice?.name);
+    if (deviceNameRef.current === undefined) return null;
+
+    const handleClick = () => {
+        dispatch(openSwitchDeviceDialog());
+        dispatch(setRecentlyConnectedDevicePath(null));
+    };
+
+    return (
+        <Box onClick={handleClick}>
+            {deviceNameRef.current} <Translation id="TR_CONNECTED" />
+        </Box>
+    );
+};
+
 export const DeviceSelector = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
+    const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
 
     const handleSwitchDeviceClick = () => {
         if (!isDiscoveryRunning) {
-            dispatch(
-                goto('suite-switch-device', {
-                    params: {
-                        cancelable: true,
-                    },
-                }),
-            );
+            dispatch(openSwitchDeviceDialog());
+            dispatch(setRecentlyConnectedDevicePath(null));
         }
     };
 
     const { isSidebarCollapsed } = useResponsiveContext();
 
     return (
-        <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
-            <Tooltip
-                isActive={isDiscoveryRunning}
-                isFullWidth
-                placement="bottom"
-                cursor={isDiscoveryRunning ? 'not-allowed' : undefined}
-                content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
-            >
-                <InnerContainer
-                    onClick={handleSwitchDeviceClick}
-                    $isDisabled={isDiscoveryRunning}
-                    tabIndex={0}
-                    data-testid="@menu/switch-device"
+        <Tooltip
+            isOpen={recentlyConnectedDevice !== undefined}
+            content={<RecentlyConnectedDeviceTooltipContent />}
+            placement="right-end"
+            hasArrow
+        >
+            <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
+                <Tooltip
+                    isActive={isDiscoveryRunning}
+                    isFullWidth
+                    placement="bottom"
+                    cursor={isDiscoveryRunning ? 'not-allowed' : undefined}
+                    content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
                 >
-                    <SidebarDeviceStatus />
+                    <InnerContainer
+                        onClick={handleSwitchDeviceClick}
+                        $isDisabled={isDiscoveryRunning}
+                        tabIndex={0}
+                        data-testid="@menu/switch-device"
+                    >
+                        <SidebarDeviceStatus />
 
-                    <ExpandedSidebarOnly>
-                        {selectedDevice && selectedDevice.state && (
-                            <CaretContainer>
-                                <Icon size={20} name="caretCircleDown" />
-                            </CaretContainer>
-                        )}
-                    </ExpandedSidebarOnly>
-                </InnerContainer>
-            </Tooltip>
-        </Wrapper>
+                        <ExpandedSidebarOnly>
+                            {selectedDevice && selectedDevice.state && (
+                                <CaretContainer>
+                                    <Icon size={20} name="caretCircleDown" />
+                                </CaretContainer>
+                            )}
+                        </ExpandedSidebarOnly>
+                    </InnerContainer>
+                </Tooltip>
+            </Wrapper>
+        </Tooltip>
     );
 };

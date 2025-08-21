@@ -17,7 +17,6 @@ import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { appChanged, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
-import { handleDeviceConnect } from 'src/actions/wallet/handleDeviceConnectThunk';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
@@ -105,10 +104,6 @@ const suite =
                         }),
                     );
                 }
-                break;
-            case DEVICE.CONNECT:
-            case DEVICE.CONNECT_UNACQUIRED:
-                api.dispatch(handleDeviceConnect(action.payload.device));
                 break;
             case DEVICE.DISCONNECT:
                 api.dispatch(handleDeviceDisconnect(action.payload));

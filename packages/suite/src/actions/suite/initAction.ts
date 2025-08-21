@@ -18,6 +18,7 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
+import { handleDeviceConnect } from 'src/actions/wallet/handleDeviceConnectThunk';
 import type { AcquiredDevice, Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
@@ -74,7 +75,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
         await dispatch(
             trezorConnectActions.connectInitThunk({
-                [DEVICE.CONNECT]: (_device, prevConnectedDevices) => {
+                [DEVICE.CONNECT]: (device, prevConnectedDevices) => {
                     const previouslyConnectedUniqueDevices = prevConnectedDevices
                         .filter(device => device.connected)
                         .reduce<Map<string, AcquiredDevice>>((acc, device) => {
@@ -99,6 +100,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                         return acc;
                     }, new Map<string, AcquiredDevice>());
 
+                    // open device switcher only a new device connected and there are more already
                     if (
                         uniqueConnectedDevices.size > 1 &&
                         uniqueConnectedDevices.size > previouslyConnectedUniqueDevices.size
@@ -110,7 +112,11 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                                 },
                             }),
                         );
+
+                        return;
                     }
+                    // otherwise either automatically select, or just visually indicate new connected device
+                    dispatch(handleDeviceConnect(device));
                 },
                 [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
                     dispatch(

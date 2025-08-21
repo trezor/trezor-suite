@@ -127,6 +127,7 @@ export interface SuiteState {
     countryCode: CountryCode | null;
     prefillFields: PrefillFields;
     settings: SuiteSettings;
+    recentlyConnectedDeviceRef: string | null; // TODO use type DeviceRef from suite-types; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
     recentlyDisconnectedDevice: string | null;
     seenDisconnectNotificationForDeviceIds: string[];
 }
@@ -210,6 +211,7 @@ const initialState: SuiteState = {
         isCoinsFilterVisible: false,
         autoEject: false,
     },
+    recentlyConnectedDeviceRef: null,
     recentlyDisconnectedDevice: null,
     seenDisconnectNotificationForDeviceIds: [],
 };
@@ -283,6 +285,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 setFlag(draft, action.key, action.value);
                 break;
 
+            case SUITE.SET_RECENTLY_CONNECTED_DEVICE:
+                draft.recentlyConnectedDeviceRef = action.payload;
+                break;
             case SUITE.SET_RECENTLY_DISCONNECTED_DEVICE:
                 draft.recentlyDisconnectedDevice = action.payload;
                 break;
