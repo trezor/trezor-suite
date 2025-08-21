@@ -90,25 +90,15 @@ export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootStat
 export const selectCheckPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.checkPassphraseOnDevice;
 
-export const selectPassphraseError = (
+export const selectHasPassphraseError = (
     state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationState,
 ) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
-    if (!discovery || !discovery.isAddingHiddenWallet) {
-        return null;
-    }
-
-    switch (discovery.status) {
-        case 'failed':
-            return 'action-failed';
-        case 'cancelled':
-            return 'action-cancelled';
-        case 'passphrase-mismatch':
-            return 'passphrase-mismatch';
-        default:
-            return null;
-    }
+    return (
+        discovery?.isAddingExistingWallet &&
+        ['failed', 'cancelled', 'passphrase-mismatch'].includes(discovery.status)
+    );
 };
 
 export const selectHasVerificationCancelledError = (

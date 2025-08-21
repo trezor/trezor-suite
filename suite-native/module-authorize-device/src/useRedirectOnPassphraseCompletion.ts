@@ -11,9 +11,9 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
+    selectHasPassphraseError,
     selectHasVerificationCancelledError,
     selectPassphraseDiscoveryCompleted,
-    selectPassphraseError,
 } from '@suite-native/device-authorization';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
@@ -21,7 +21,7 @@ export const useRedirectOnPassphraseCompletion = () => {
     const device = useSelector(selectSelectedDevice);
 
     const passphraseDiscoveryCompleted = useSelector(selectPassphraseDiscoveryCompleted);
-    const hasPassphraseError = useSelector(selectPassphraseError);
+    const hasPassphraseError = useSelector(selectHasPassphraseError);
     const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
 
     const dispatch = useDispatch();
