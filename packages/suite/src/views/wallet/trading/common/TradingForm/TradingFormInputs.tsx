@@ -143,7 +143,7 @@ export const TradingFormInputs = () => {
                 />
                 <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
-                <TradingFormFeesDisclamer tradingType={context.type} />
+                <TradingFormFeesDisclamer />
             </>
         );
     }
@@ -242,7 +242,7 @@ export const TradingFormInputs = () => {
                     trigger={trigger}
                 />
                 <TradingFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
-                <TradingFormFeesDisclamer tradingType={context.type} />
+                <TradingFormFeesDisclamer />
             </>
         );
     }
@@ -270,7 +270,7 @@ export const TradingFormInputs = () => {
             />
             <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
             <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
-            <TradingFormFeesDisclamer tradingType={context.type} />
+            <TradingFormFeesDisclamer />
         </>
     );
 };
