@@ -3,8 +3,10 @@ import {
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
+    DeviceUniquePath,
     KnownDevice,
     PROTO,
+    StaticSessionId,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
@@ -67,3 +69,6 @@ export type AuthorizedDevice = AcquiredDevice & {
  * used when saving device to storage
  */
 export type DeviceWithEmptyPath = Omit<AcquiredDevice, 'path'> & { path: '' };
+
+type DeviceId = string;
+export type DeviceRef = StaticSessionId | DeviceId | DeviceUniquePath;

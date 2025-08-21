@@ -109,19 +109,20 @@ describe('redirectMiddleware', () => {
         });
 
         it('SUITE.SELECT_DEVICE reset wallet params', () => {
+            const device = getSuiteDevice(
+                {
+                    path: '2',
+                },
+                {
+                    device_id: 'previous-device',
+                },
+            );
             const store = initStore(
                 getInitialState(
                     undefined,
                     {
-                        devices: [],
-                        selectedDevice: getSuiteDevice(
-                            {
-                                path: '2',
-                            },
-                            {
-                                device_id: 'previous-device',
-                            },
-                        ),
+                        devices: [device],
+                        selectedDevice: device.features!.device_id!,
                     },
                     {
                         app: 'wallet',

@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions } from '@suite-common/wallet-core';
-import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
+import { Device, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, TorStatus } from 'src/types/suite';
@@ -326,7 +326,7 @@ const handleDeviceConnect: DeviceConnectFixture[] = [
     {
         description: `selects a newly connected physical device corresponding to selected remembered wallet `,
         state: {
-            device: { selectedDevice: SUITE_DEVICE },
+            device: { selectedDevice: SUITE_DEVICE.path, devices: [SUITE_DEVICE] },
             suite: {},
         },
         device: CONNECT_DEVICE,
@@ -335,7 +335,7 @@ const handleDeviceConnect: DeviceConnectFixture[] = [
     {
         description: `opens the wallet switcher when newly connected physical not seen before`,
         state: {
-            device: { selectedDevice: SUITE_DEVICE },
+            device: { selectedDevice: SUITE_DEVICE.path, devices: [SUITE_DEVICE] },
             suite: {},
         },
         device: { ...CONNECT_DEVICE, id: 'a-different-id' } as Device,
@@ -346,14 +346,19 @@ const handleDeviceConnect: DeviceConnectFixture[] = [
 const handleDeviceDisconnect = [
     {
         description: `no selected device in reducer`,
-        state: {},
+        state: {
+            device: {
+                devices: [],
+                selectedDevice: undefined,
+            },
+        },
         device: CONNECT_DEVICE,
     },
     {
         description: `disconnect not selected device`,
         state: {
             suite: {},
-            device: { selectedDevice: SUITE_DEVICE },
+            device: { selectedDevice: SUITE_DEVICE.path, devices: [SUITE_DEVICE] },
         },
         device: getConnectDevice({
             path: '2',
@@ -364,12 +369,13 @@ const handleDeviceDisconnect = [
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
                 devices: [SUITE_DEVICE],
             },
         },
         device: CONNECT_DEVICE,
         result: {
+            type: undefined,
             payload: undefined,
         },
     },
@@ -378,7 +384,7 @@ const handleDeviceDisconnect = [
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: '1stTestnetAddress@device_b_id:0',
                 devices: [
                     getSuiteDevice({
                         path: '1',
@@ -389,46 +395,13 @@ const handleDeviceDisconnect = [
             },
         },
         device: CONNECT_DEVICE,
-    },
-    {
-        description: `disconnected selected device (3 instances: 2 remembered, 1 stateless which will be removed, no action)`,
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [
-                    SUITE_DEVICE,
-                    getSuiteDevice({
-                        path: '1',
-                        state: '1stTestnetAddress@device_a_id:0',
-                        instance: 2,
-                        remember: true,
-                    }),
-                    getSuiteDevice({
-                        path: '1',
-                        state: '1stTestnetAddress@device_b_id:0',
-                        instance: 1,
-                        remember: true,
-                    }),
-                ],
-            },
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            type: deviceActions.selectDevice.type,
-            payload: getSuiteDevice({
-                state: '1stTestnetAddress@device_b_id:0',
-                instance: 1,
-                remember: true,
-            }),
-        },
     },
     {
         description: `switch to first unacquired device`,
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
                 devices: [
                     SUITE_DEVICE,
                     getSuiteDevice({
@@ -458,12 +431,13 @@ const handleDeviceDisconnect = [
             }),
         },
     },
+
     {
         description: `switch to first connected device`,
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
                 devices: [
                     getSuiteDevice(
                         {
@@ -510,12 +484,13 @@ const handleDeviceDisconnect = [
             ),
         },
     },
+
     {
         description: `switch to recently used device`,
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
                 devices: [
                     getSuiteDevice(
                         {
@@ -568,7 +543,7 @@ const forgetDisconnectedDevices = [
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE_UNACQUIRED,
+                selectedDevice: SUITE_DEVICE_UNACQUIRED.path,
                 devices: [SUITE_DEVICE_UNACQUIRED],
             },
         },
@@ -582,7 +557,7 @@ const forgetDisconnectedDevices = [
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
                 devices: [
                     SUITE_DEVICE,
                     getSuiteDevice({
@@ -603,7 +578,7 @@ const forgetDisconnectedDevices = [
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
                 devices: [
                     SUITE_DEVICE,
                     getSuiteDevice({
@@ -634,7 +609,7 @@ const forgetDisconnectedDevices = [
         state: {
             suite: {},
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
                 devices: [
                     getSuiteDevice({
                         path: '1',
@@ -650,78 +625,13 @@ const forgetDisconnectedDevices = [
     },
 ];
 
-const observeSelectedDevice = [
-    {
-        description: `ignored action`,
-        state: {},
-        action: {
-            type: 'foo',
-        },
-        changed: false,
-    },
-    {
-        description: `no selected device in reducer`,
-        state: {},
-        action: {
-            type: DEVICE.CONNECT,
-        },
-        changed: false,
-    },
-    {
-        description: `device not changed`,
-        action: {
-            type: DEVICE.CONNECT,
-        },
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [SUITE_DEVICE],
-            },
-        },
-        changed: false,
-    },
-    {
-        description: `device is changed`,
-        action: {
-            type: DEVICE.CONNECT,
-        },
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [
-                    getSuiteDevice({
-                        connected: true,
-                    }),
-                ],
-            },
-        },
-        result: deviceActions.updateSelectedDevice.type,
-        changed: true,
-    },
-    {
-        description: `device is changed (missing in reducer)`,
-        action: {
-            type: DEVICE.CONNECT,
-        },
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [],
-            },
-        },
-        changed: true,
-    },
-];
-
 const acquireDevice = [
     {
         description: `success`,
         state: {
             device: {
-                selectedDevice: SUITE_DEVICE,
+                devices: [SUITE_DEVICE],
+                selectedDevice: SUITE_DEVICE.path,
             },
         },
         result: '@suite/device/removeButtonRequests',
@@ -738,7 +648,8 @@ const acquireDevice = [
         description: `with TrezorConnect error`,
         state: {
             device: {
-                selectedDevice: SUITE_DEVICE,
+                selectedDevice: SUITE_DEVICE.path,
+                devices: [SUITE_DEVICE],
             },
         },
         getFeatures: {
@@ -762,6 +673,5 @@ export default {
     handleDeviceConnect,
     handleDeviceDisconnect,
     forgetDisconnectedDevices,
-    observeSelectedDevice,
     acquireDevice,
 };

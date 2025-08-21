@@ -19,7 +19,7 @@ describe('ExchangeTradeableAssetPicker', () => {
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
         initStore({
-            device: { selectedDevice: { firmwareType } },
+            device: { devices: [{ firmwareType, path: 'a' }], selectedDevice: 'a' },
             wallet: { tradingNew: getInitializedTradingState() },
         });
 

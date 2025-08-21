@@ -11,7 +11,7 @@ import { BACKUP } from 'src/actions/backup/constants';
 import { SUITE } from 'src/actions/suite/constants';
 import { configureStore } from 'src/support/tests/configureStore';
 
-const getInitialState = (override: any) => {
+const getInitialState = (override: any = {}) => {
     const defaults = {
         suite: {
             locks: [3],
@@ -19,15 +19,19 @@ const getInitialState = (override: any) => {
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
         device: {
-            selectedDevice: {
-                connected: true,
-                type: 'acquired',
-                features: {
-                    major_version: 2,
-                    internal_model: DeviceModelInternal.T2T1,
+            selectedDevice: 'device_id',
+            devices: [
+                {
+                    id: 'device_id',
+                    connected: true,
+                    type: 'acquired',
+                    features: {
+                        device_id: 'device_id',
+                        major_version: 2,
+                        internal_model: DeviceModelInternal.T2T1,
+                    },
                 },
-            },
-            devices: [],
+            ],
         },
         wallet: {
             settings: {
@@ -57,7 +61,7 @@ describe('Backup Actions', () => {
     it('backup success', async () => {
         testMocks.setTrezorConnectFixtures({ success: true });
 
-        const state = getInitialState({});
+        const state = getInitialState();
         const store = mockStore(state);
         await store.dispatch(connectInitThunk());
 

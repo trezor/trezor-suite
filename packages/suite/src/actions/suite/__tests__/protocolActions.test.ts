@@ -15,7 +15,8 @@ const getInitialState = (state?: ProtocolState) => ({
         ...state,
     },
     device: {
-        device: undefined,
+        devices: [],
+        selectedDevice: undefined,
     },
 });
 

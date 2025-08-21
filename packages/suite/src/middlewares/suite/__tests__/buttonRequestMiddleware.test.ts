@@ -15,7 +15,7 @@ import { Action, Dispatch } from 'src/types/suite';
 
 const { getSuiteDevice } = testMocks;
 
-const device = getSuiteDevice();
+const device = getSuiteDevice({ state: 'a@b:0' });
 
 const getInitialState = () => ({
     router: routerReducer(undefined, { type: 'foo' } as any),
@@ -29,7 +29,7 @@ const getInitialState = () => ({
     },
     device: {
         devices: [device],
-        selectedDevice: device,
+        selectedDevice: device.state!.staticSessionId!,
     },
     messageSystem: messageSystemInitialState,
     firmware: { firmwareUpdateSource: 'production' },

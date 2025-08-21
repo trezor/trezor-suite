@@ -9,11 +9,14 @@ import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useRecei
 describe('useReceiveAccountsListData', () => {
     const defaultPreloadedState = {
         device: {
-            selectedDevice: {
-                state: {
-                    staticSessionId: 'staticSessionId' as StaticSessionId,
+            devices: [
+                {
+                    state: {
+                        staticSessionId: 'staticSessionId' as StaticSessionId,
+                    },
                 },
-            },
+            ],
+            selectedDevice: 'staticSessionId',
         },
         wallet: { accounts: accounts as Account[] },
     };
@@ -152,11 +155,14 @@ describe('useReceiveAccountsListData', () => {
         it('should not display not visible accounts', async () => {
             const preloadedState = {
                 device: {
-                    selectedDevice: {
-                        state: {
-                            staticSessionId: 'staticSessionId' as StaticSessionId,
+                    devices: [
+                        {
+                            state: {
+                                staticSessionId: 'staticSessionId' as StaticSessionId,
+                            },
                         },
-                    },
+                    ],
+                    selectedDevice: 'staticSessionId',
                 },
                 wallet: {
                     accounts: [

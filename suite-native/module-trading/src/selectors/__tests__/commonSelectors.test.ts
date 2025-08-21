@@ -340,7 +340,10 @@ describe('commonSelectors', () => {
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                     transactions: { transactions: {} },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                    selectedDevice: testDeviceState,
+                },
                 tokenDefinitions: {},
                 fiat: { rates: {}, current: 'usd' },
             } as any;
@@ -378,7 +381,10 @@ describe('commonSelectors', () => {
                     accounts: [zeroBalanceAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    selectedDevice: testDeviceState,
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                },
                 tokenDefinitions: {},
                 fiat: { rates: {}, current: 'usd' },
             } as any;
@@ -428,7 +434,10 @@ describe('commonSelectors', () => {
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    selectedDevice: testDeviceState,
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                },
                 tokenDefinitions: {
                     eth: {
                         coin: {
@@ -487,7 +496,10 @@ describe('commonSelectors', () => {
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    selectedDevice: testDeviceState,
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                },
                 tokenDefinitions: {
                     eth: {
                         coin: {
@@ -542,7 +554,10 @@ describe('commonSelectors', () => {
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    selectedDevice: testDeviceState,
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                },
                 tokenDefinitions: {
                     eth: {
                         coin: {
@@ -595,7 +610,10 @@ describe('commonSelectors', () => {
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    selectedDevice: testDeviceState,
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                },
                 tokenDefinitions: {}, // No token definitions
                 fiat: { rates: {}, current: 'usd' },
             } as any;
@@ -628,7 +646,10 @@ describe('commonSelectors', () => {
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                     transactions: { transactions: {} },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    selectedDevice: testDeviceState,
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                },
                 tokenDefinitions: {},
                 fiat: { rates: {}, current: 'usd' },
             } as any;
@@ -659,7 +680,10 @@ describe('commonSelectors', () => {
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                     transactions: { transactions: {} },
                 },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                device: {
+                    selectedDevice: testDeviceState,
+                    devices: [{ state: { staticSessionId: testDeviceState } }],
+                },
                 tokenDefinitions: {},
                 fiat: { rates: {}, current: 'usd' },
             } as any;

@@ -66,7 +66,8 @@ const getInitialState = (state?: InitialState) => {
         metadata: metadataReducer(metadata, initAction),
         device: {
             devices: device ? [device] : [],
-            selectedDevice: device,
+            selectedDevice:
+                device?.state?.staticSessionId || device?.features?.device_id || device?.path,
             isDeviceAutoEjectEnabled: false,
         },
         suite: {

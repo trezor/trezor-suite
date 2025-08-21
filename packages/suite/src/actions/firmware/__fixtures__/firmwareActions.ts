@@ -5,10 +5,15 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 const { getSuiteDevice, getFirmwareReleaseConfigInfo } = testMocks;
 
-const bootloaderDevice = getSuiteDevice({ mode: 'bootloader', connected: true });
+const deviceId = 'device_id';
+const bootloaderDevice = getSuiteDevice(
+    { mode: 'bootloader', connected: true },
+    { device_id: deviceId },
+);
 const bootloaderDeviceNeedsIntermediary = {
     ...getSuiteDevice(
         {
+            path: 'a',
             mode: 'bootloader',
             connected: true,
             firmwareReleaseConfigInfo: {
@@ -22,12 +27,13 @@ const bootloaderDeviceNeedsIntermediary = {
                 },
             },
         },
-        { major_version: 1, internal_model: DeviceModelInternal.T1B1 },
+        { major_version: 1, internal_model: DeviceModelInternal.T1B1, device_id: deviceId },
     ),
 };
 const bootloaderDeviceNoIntermediaryT1 = {
     ...getSuiteDevice(
         {
+            path: 'a',
             mode: 'bootloader',
             connected: true,
             firmwareReleaseConfigInfo: {
@@ -43,7 +49,7 @@ const firmwareUpdateResponsePayload = {
     versionCheck: true,
 };
 
-export const actions = [
+export const fixtures = [
     {
         description: 'Success T2T1',
         action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
@@ -56,7 +62,7 @@ export const actions = [
         initialState: {
             device: {
                 devices: [bootloaderDevice],
-                selectedDevice: bootloaderDevice,
+                selectedDevice: deviceId,
             },
             suite: {},
         },
@@ -82,7 +88,7 @@ export const actions = [
         initialState: {
             device: {
                 devices: [bootloaderDevice],
-                selectedDevice: bootloaderDevice,
+                selectedDevice: deviceId,
             },
             suite: {},
         },
@@ -107,7 +113,7 @@ export const actions = [
         },
         initialState: {
             device: {
-                selectedDevice: bootloaderDeviceNeedsIntermediary,
+                selectedDevice: bootloaderDeviceNeedsIntermediary.path,
                 devices: [bootloaderDeviceNeedsIntermediary],
             },
             suite: {},
@@ -136,7 +142,7 @@ export const actions = [
         },
         initialState: {
             device: {
-                selectedDevice: bootloaderDeviceNoIntermediaryT1,
+                selectedDevice: bootloaderDeviceNoIntermediaryT1.path,
                 devices: [bootloaderDeviceNoIntermediaryT1],
             },
             suite: {},
@@ -172,7 +178,7 @@ export const actions = [
         action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
-                selectedDevice: bootloaderDevice,
+                selectedDevice: deviceId,
                 devices: [bootloaderDevice],
             },
             suite: {},
@@ -209,7 +215,7 @@ export const actions = [
         action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
-                selectedDevice: bootloaderDevice,
+                selectedDevice: deviceId,
                 devices: [bootloaderDevice],
             },
             suite: {},

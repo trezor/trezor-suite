@@ -34,7 +34,10 @@ const getInitialState = (custom?: any) => {
             ...suiteReducer(undefined, {} as Action),
             ...suite,
         },
-        device: {},
+        device: {
+            devices: [],
+            selectedDevice: undefined,
+        },
     };
 };
 

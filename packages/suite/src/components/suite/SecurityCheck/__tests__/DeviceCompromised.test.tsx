@@ -34,54 +34,70 @@ const deviceCompromisedFixtures: Array<{
     {
         description: 'Failed entropy check',
         device: {
+            devices: [{ id: 'deviceId' }],
             devicesWithFailedEntropyCheck: ['deviceId'],
-            selectedDevice: {
-                id: 'deviceId',
-            },
+            selectedDevice: 'deviceId',
         },
         result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
     },
     {
         description: 'Failed firmware hash check',
         device: {
-            selectedDevice: {
-                authenticityChecks: {
-                    firmwareHash: {
-                        error: 'hash-mismatch',
+            devices: [
+                {
+                    id: 'a',
+                    path: 'a',
+                    authenticityChecks: {
+                        firmwareHash: {
+                            error: 'hash-mismatch',
+                        },
                     },
+                    features: { device_id: 'a' },
                 },
-                features: {},
-            },
+            ],
+            selectedDevice: 'a',
         },
         result: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
     },
     {
         description: 'Firmware hash check other-error (1st occurrence)',
         device: {
-            selectedDevice: {
-                connected: true,
-                authenticityChecks: {
-                    firmwareHash: {
-                        error: 'other-error',
+            selectedDevice: 'deviceId',
+            devices: [
+                {
+                    id: 'deviceId',
+                    connected: true,
+                    authenticityChecks: {
+                        firmwareHash: {
+                            error: 'other-error',
+                        },
+                    },
+                    features: {
+                        device_id: 'deviceId',
                     },
                 },
-                features: {},
-            },
+            ],
         },
         result: 'TR_FAILED_VERIFY_DEVICE_TEXT',
     },
     {
         description: 'Firmware hash check other-error (2nd occurrence)',
         device: {
-            selectedDevice: {
-                connected: true,
-                authenticityChecks: {
-                    firmwareHash: {
-                        error: 'other-error',
+            devices: [
+                {
+                    id: 'deviceId',
+                    connected: true,
+                    authenticityChecks: {
+                        firmwareHash: {
+                            error: 'other-error',
+                        },
+                    },
+                    features: {
+                        device_id: 'deviceId',
                     },
                 },
-                features: {},
-            },
+            ],
+            selectedDevice: 'deviceId',
             lastConnectedAuthenticityChecks: {
                 firmwareHash: {
                     error: 'other-error',
@@ -93,14 +109,21 @@ const deviceCompromisedFixtures: Array<{
     {
         description: 'Failed firmware revision check',
         device: {
-            selectedDevice: {
-                authenticityChecks: {
-                    firmwareRevision: {
-                        error: 'revision-mismatch',
+            devices: [
+                {
+                    id: 'deviceId',
+                    connected: true,
+                    authenticityChecks: {
+                        firmwareRevision: {
+                            error: 'revision-mismatch',
+                        },
+                    },
+                    features: {
+                        device_id: 'deviceId',
                     },
                 },
-                features: {},
-            },
+            ],
+            selectedDevice: 'deviceId',
         },
         result: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
     },

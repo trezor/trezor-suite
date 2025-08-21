@@ -1,7 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { BackupType, TrezorDevice } from '@suite-common/suite-types';
+import { BackupType, DeviceRef, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getFwUpdateVersion, getStatus } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
@@ -20,9 +20,22 @@ import { DeviceRootState } from './deviceReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
-export const selectDevices = (state: DeviceRootState) => state.device?.devices;
-export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
-export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
+export const selectDevices = (state: DeviceRootState) => state.device.devices;
+export const selectDevicesCount = (state: DeviceRootState) => state.device.devices.length;
+
+export const selectDeviceByDeviceRef = (state: DeviceRootState, deviceRef: DeviceRef) =>
+    state.device.devices.find(
+        device =>
+            deviceRef === device.state?.staticSessionId ||
+            deviceRef === device?.id ||
+            deviceRef === device.path,
+    );
+
+export const selectSelectedDevice = (state: DeviceRootState) =>
+    state.device.selectedDevice
+        ? selectDeviceByDeviceRef(state, state.device.selectedDevice)
+        : undefined;
+
 export const selectIsDeviceAutoEjectEnabled = (state: DeviceRootState) =>
     state.device.isDeviceAutoEjectEnabled;
 

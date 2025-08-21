@@ -1,12 +1,7 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
-import {
-    getDeviceInstances,
-    getFirstDeviceInstance,
-    getSelectedDevice,
-    sortByTimestamp,
-} from '@suite-common/suite-utils';
+import { AcquiredDevice, DeviceRef, TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInstances, sortByTimestamp } from '@suite-common/suite-utils';
 import {
     autoInitThpAfterDeviceConnectionThunk,
     connectThpDeviceThunk,
@@ -36,6 +31,7 @@ import { isChanged } from '@trezor/utils';
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import {
+    selectDeviceByDeviceRef,
     selectDeviceById,
     selectDevices,
     selectPhysicalDevices,
@@ -46,6 +42,43 @@ import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
+};
+
+/**
+ * @param {(TrezorDevice)} device
+ * @param {TrezorDevice[]} devices
+ * @returns {TrezorDevice | undefined }
+ */
+const getSelectedDevice = (
+    device: Device | TrezorDevice,
+    devices: TrezorDevice[],
+): TrezorDevice | undefined => {
+    // selected device is not acquired
+
+    if ('ts' in device) {
+        const { path, instance } = device;
+
+        return devices.find(d => {
+            if ((!d.features || d.mode === 'bootloader') && d.path === path) {
+                return true;
+            }
+            if (d.instance === instance && d.features && d.id === device.id) {
+                return true;
+            }
+
+            // special case we need to use after wipe device (which changes device_id)
+            if (d.instance === instance && d.path.length > 0 && d.path === device.path) {
+                return true;
+            }
+
+            return false;
+        });
+    } else {
+        const instances = devices.filter(d => d.path === device.path);
+
+        return sortByTimestamp(instances)[0];
+    }
+    // todo: maybe select by staticSessionId || device_id || path
 };
 
 /**
@@ -60,18 +93,7 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
         const devices = selectDevices(getState());
 
         if (device) {
-            // "ts" is one of the field which distinguish Device from TrezorDevice
-            // (device from connect doesn't have timestamp but suite device has)
-            if ('ts' in device) {
-                // requested device is a @suite TrezorDevice type. get exact instance from reducer
-                payload = getSelectedDevice(device, devices);
-            } else {
-                // requested device is a @trezor/connect Device type
-                // find all instances and select recently used
-                const instances = devices.filter(d => d.path === device.path);
-
-                payload = sortByTimestamp(instances)[0];
-            }
+            payload = getSelectedDevice(device, devices);
         }
 
         dispatch(deviceActions.selectDevice(payload));
@@ -109,37 +131,70 @@ export const handleDeviceDisconnect = createThunk(
             selectors: { selectRouterApp },
         } = extra;
 
-        const selectedDevice = selectSelectedDevice(getState());
-        const routerApp = selectRouterApp(getState());
-        const devices = selectDevices(getState());
-        if (!selectedDevice) return;
-        if (selectedDevice.path !== device.path) return;
+        // eslint-disable-next-line no-restricted-syntax
+        const selectedDevice = getState().device.selectedDevice as DeviceRef;
+        // no device was selected
+        if (!selectedDevice) {
+            return;
+        }
+
+        // the device that got disconnected or forgotten was not selected
+        if (
+            selectedDevice !== device.path &&
+            selectedDevice !== device?.id &&
+            // @ts-expect-error todo: typing
+            selectedDevice !== device?.state?.staticSessionId
+        ) {
+            return;
+        }
+
+        // at this point, we know that the device that got disconnected was also the selected one
 
         /**
          * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
          * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
          */
+        const routerApp = selectRouterApp(getState());
         if (['onboarding', 'firmware', 'firmware-type'].includes(routerApp)) {
             dispatch(selectDeviceThunk({ device: undefined }));
 
             return;
         }
 
-        // selected device is disconnected, decide what to do next
-        // device is still present in reducer (remembered or candidate to remember)
-        const devicePresent = getSelectedDevice(selectedDevice, devices);
-        const deviceInstances = getDeviceInstances(selectedDevice, devices);
+        const devices = selectDevices(getState());
+
+        const devicePresent = selectDeviceByDeviceRef(
+            getState(),
+            selectedDevice.split(':')[0].split('@')[1], // use device_id only
+        );
+
+        // try to select another wallet instance of the same physical device
+        const deviceInstances = !devicePresent
+            ? []
+            : getDeviceInstances(devicePresent, devices).filter(
+                  d => d.id !== selectedDevice && d.state !== devicePresent.state,
+              );
         if (deviceInstances.length > 0) {
-            // if selected device is gone from reducer, switch to first instance
-            if (!devicePresent) {
-                dispatch(selectDeviceThunk({ device: deviceInstances[0] }));
-            }
+            dispatch(
+                selectDeviceThunk({
+                    device: deviceInstances[deviceInstances.length - 1],
+                }),
+            );
 
             return;
         }
-
-        const available = getFirstDeviceInstance(devices);
-        dispatch(selectDeviceThunk({ device: available[0] }));
+        // else select another physical device
+        const physicalDevices = selectPhysicalDevices(getState());
+        if (physicalDevices.length > 0) {
+            dispatch(
+                selectDeviceThunk({
+                    device: sortByTimestamp(physicalDevices)[0],
+                }),
+            );
+        } else {
+            // clear selectedDevice field
+            dispatch(selectDeviceThunk({ device: undefined }));
+        }
     },
 );
 
@@ -175,23 +230,16 @@ export const forgetDisconnectedDevices = createThunk(
  * Called from `suiteMiddleware`
  * Keep `suite` reducer synchronized with `devices` reducer
  */
-export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
-    const devices = selectDevices(getState());
-
-    const selectedDevice = selectSelectedDevice(getState());
-
-    if (!selectedDevice) return false;
-
-    const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
-    if (!deviceFromReducer) return true;
-
-    const changed = isChanged(selectedDevice, deviceFromReducer);
-    if (changed) {
-        dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
-    }
-
-    return changed;
-};
+export const observeSelectedDevice =
+    (prevSelectedDevice?: TrezorDevice) => (dispatch: any, getState: any) => {
+        const nextSelectedDevice = selectSelectedDevice(getState());
+        if (!nextSelectedDevice) return;
+        // todo: and this could be a performance issue, but I need to figure out a save way how to get rid of updateSelectedDevice or how to fire it in a different way
+        const changed = isChanged(prevSelectedDevice || undefined, nextSelectedDevice);
+        if (changed) {
+            dispatch(deviceActions.updateSelectedDevice(nextSelectedDevice));
+        }
+    };
 
 /**
  * Called from <AcquireDevice /> component
@@ -418,7 +466,6 @@ export const wipeDeviceThunk = createThunk(
         const devices = selectDevices(getState());
         // collect devices with old "device.id" to be removed (see description below)
         const deviceInstances = getDeviceInstances(device, devices);
-
         const result = await TrezorConnect.wipeDevice({
             device: {
                 path: device.path,
@@ -445,10 +492,7 @@ export const wipeDeviceThunk = createThunk(
                     extra.thunks.forgetBluetoothDevice({ bluetoothId: device.bluetoothProps.id }),
                 );
             }
-            const newDevice = selectSelectedDevice(getState());
-            const newDevices = selectDevices(getState());
 
-            deviceInstances.push(...getDeviceInstances(newDevice!, newDevices));
             deviceInstances.forEach(d => {
                 dispatch(deviceActions.forgetDevice({ device: d }));
             });

@@ -63,18 +63,6 @@ const fixture: Feature[] = [
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
-                    type: deviceActions.forgetDevice.type,
-                    payload: {
-                        device: {
-                            ...deviceChange,
-                            id: 'new-device-id',
-                            connected: true,
-                            available: true,
-                            features: { ...deviceChange.features, device_id: 'new-device-id' },
-                        },
-                    },
-                } satisfies ReturnType<typeof deviceActions.forgetDevice>,
-                {
                     type: notificationsActions.addToast.type,
                     payload: { type: 'device-wiped', context: 'toast', id: expect.any(Number) },
                 } satisfies ReturnType<typeof notificationsActions.addToast>,
@@ -163,46 +151,6 @@ const fixture: Feature[] = [
                             state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
                             features: { ...deviceChange.features, device_id: 'device-id' },
                             useEmptyPassphrase: true,
-                        },
-                    },
-                } satisfies ReturnType<typeof deviceActions.forgetDevice>,
-                {
-                    type: deviceActions.forgetDevice.type,
-                    payload: {
-                        device: {
-                            ...deviceChange,
-                            id: 'new-device-id',
-                            connected: true,
-                            available: true,
-                            features: { ...deviceChange.features, device_id: 'new-device-id' },
-                        },
-                    },
-                } satisfies ReturnType<typeof deviceActions.forgetDevice>,
-                {
-                    type: deviceActions.forgetDevice.type,
-                    payload: {
-                        device: {
-                            ...deviceChange,
-                            id: 'new-device-id',
-                            connected: true,
-                            available: true,
-                            instance: 1,
-                            state: { staticSessionId: '1stTestnetAddress@device_1_id:0' },
-                            features: { ...deviceChange.features, device_id: 'new-device-id' },
-                        },
-                    },
-                } satisfies ReturnType<typeof deviceActions.forgetDevice>,
-                {
-                    type: deviceActions.forgetDevice.type,
-                    payload: {
-                        device: {
-                            ...deviceChange,
-                            id: 'new-device-id',
-                            connected: true,
-                            available: true,
-                            instance: 2,
-                            state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
-                            features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,

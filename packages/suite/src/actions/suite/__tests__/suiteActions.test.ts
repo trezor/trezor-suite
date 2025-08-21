@@ -8,7 +8,6 @@ import {
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
-    observeSelectedDevice,
     prepareDeviceReducer,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
@@ -188,21 +187,6 @@ describe('Suite Actions', () => {
             actions.forEach((a, i) => {
                 expect(a.payload.device).toMatchObject(f.result[i]);
             });
-        });
-    });
-
-    fixtures.observeSelectedDevice.forEach(f => {
-        it(`observeSelectedDevice: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.device);
-            const store = initStore(state);
-            const changed = store.dispatch(observeSelectedDevice());
-            expect(changed).toEqual(f.changed);
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
-                expect(action?.type).toEqual(f.result);
-            }
         });
     });
 

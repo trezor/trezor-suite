@@ -87,6 +87,11 @@ interface InitialState {
     modal: ModalState;
 }
 
+const device = getSuiteDevice(
+    { id: 'a', available: true, connected: true, state: 'b@c:0' },
+    { device_id: 'a' },
+);
+
 const getInitialState = (state: Partial<InitialState> | undefined) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
@@ -112,7 +117,8 @@ const getInitialState = (state: Partial<InitialState> | undefined) => ({
     },
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),
-        selectedDevice: getSuiteDevice({ available: true, connected: true }),
+        selectedDevice: device.state?.staticSessionId,
+        devices: [device],
         ...state?.device,
     },
     messageSystem: messageSystemInitialState,

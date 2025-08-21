@@ -157,7 +157,10 @@ export default [
                 settings: { debug: {} },
             },
             device: {
-                selectedDevice: testMocks.getSuiteDevice({ connected: false }),
+                selectedDevice: testMocks.getSuiteDevice({ connected: false }, { device_id: 'a' })
+                    .features?.device_id,
+
+                devices: [testMocks.getSuiteDevice({ connected: false }, { device_id: 'a' })],
             },
         },
         mocks: {},
