@@ -67,39 +67,39 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     outputs:
-      dailyMatrix: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
-      dailyT3W1Matrix: ${{ steps.set-matrix-daily-t3w1.outputs.dailyT3W1Matrix }}
-      otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
-      allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.allFwsMatrix }}
-      allTransportsMatrix: ${{ steps.set-matrix-all-transports.outputs.allTransportsMatrix }}
-      modelOneMatrix: ${{ steps.set-matrix-model-one.outputs.modelOneMatrix }}
+      dailyMatrix: ${{ steps.set-matrix-daily.outputs.matrix }}
+      dailyT3W1Matrix: ${{ steps.set-matrix-daily-t3w1.outputs.matrix }}
+      otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.matrix }}
+      allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.matrix }}
+      allTransportsMatrix: ${{ steps.set-matrix-all-transports.outputs.matrix }}
+      modelOneMatrix: ${{ steps.set-matrix-model-one.outputs.matrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set daily T3W1 matrix
         id: set-matrix-daily-t3w1
-        run: echo "dailyT3W1Matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=all --groups=thp --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=all --groups=thp --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set all firmwares matrix
         id: set-matrix-all-firmwares
-        run: echo "allFwsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=all --env=all --groups=all --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=all --env=all --groups=all --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set all transports matrix
         id: set-matrix-all-transports
-        run: echo "allTransportsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --disable_cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --disable_cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
 
       - name: Set trezor model one matrix
         id: set-matrix-model-one
-        run: echo "modelOneMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [build, set-matrix]
