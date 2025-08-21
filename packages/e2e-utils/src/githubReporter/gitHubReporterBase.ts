@@ -184,9 +184,8 @@ abstract class GitHubReporterBase implements LoggingFunctions {
     protected async processTestResult(report: TestReportProviderBase): Promise<void> {
         return this.trackOperation(
             (async () => {
-                await this.waitForOnBeginInit();
-
                 try {
+                    await this.waitForOnBeginInit();
                     if (report.isRetryAttempt && this.createdIssuesMap.has(report.id)) {
                         await this.updateIssue(report);
                     } else {
@@ -354,6 +353,10 @@ abstract class GitHubReporterBase implements LoggingFunctions {
     }
 
     protected async createIssuePerOs(report: TestReportProviderBase): Promise<void> {
+        if (!report.osMatrix || report.osMatrix.length === 0) {
+            throw new Error(`No OS matrix found for test "${report.testTitle}"`);
+        }
+
         for (const operationSystem of report.osMatrix) {
             const issueNodeId = await scheduleAction(async () => {
                 // Random delay between 1-5 seconds to distribute load on GitHub API
@@ -374,6 +377,12 @@ abstract class GitHubReporterBase implements LoggingFunctions {
                     report.bodyDescription,
                 );
             }, RETRY_CONF);
+
+            if (!issueNodeId) {
+                throw new Error(
+                    `Draft issue creation returned no id for "(OS ${operationSystem}) ${report.testTitle}"`,
+                );
+            }
 
             this.createdIssuesMap.set(report.id, issueNodeId);
             this.log(

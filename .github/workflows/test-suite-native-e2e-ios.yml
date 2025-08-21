@@ -8,6 +8,11 @@ on:
   #   branches:
   #     - release-native/*
   workflow_dispatch:
+    inputs:
+      publishResultsToGitHub:
+        description: "(optional) Publish test report to GitHub Project"
+        required: false
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -98,6 +103,20 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn install
 
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      # Used by github reporter when publishing results of release run
+      - name: Extract Release Build
+        id: extract_branch
+        shell: bash
+        run: |
+          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+
       - name: Install macOS dependencies
         run: |
           brew tap wix/brew
@@ -118,6 +137,11 @@ jobs:
 
       - name: Run Detox E2E iOS tests
         working-directory: ./suite-native/app
+        env:
+          PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publishResultsToGitHub }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          GITHUB_REPORTER_VERBOSE: false
+          RELEASE_BUILD: ${{ env.release_build }}
         run: |
           $DETOX_BINARY_PATH clean-framework-cache && $DETOX_BINARY_PATH build-framework-cache
           yarn test:e2e ios.sim.release --headless --take-screenshots failing --record-videos failing
