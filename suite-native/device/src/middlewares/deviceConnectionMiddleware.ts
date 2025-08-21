@@ -6,27 +6,35 @@ import {
 } from '@reduxjs/toolkit';
 
 import {
+    deviceActions,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInitialized,
+    selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
+    AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
+    DeviceOnboardingStackRoutes,
+    HomeStackRoutes,
     RootStackRoutes,
-    checkIsRouteAccessAllowed,
+    checkIsActiveRouteAnyOf,
+    checkIsActiveRouteAnyOfBlacklisted,
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 
-import { NativeDeviceRootState, selectIsDeviceCompromised } from '../selectors';
+import {
+    DEVICE_CONNECTION_BLACKLISTED_ROUTES,
+    buildDisconnectionBlacklist,
+} from '../deviceNavigationConfig';
+import {
+    NativeDeviceRootState,
+    selectIsDeviceCompromised,
+    selectIsEntropyCheckEnabledAndFailed,
+} from '../selectors';
 import { isDeviceConnectAction } from '../utils';
-
-const DEVICE_CONNECTION_BLACKLISTED_ROUTES = [
-    RootStackRoutes.DeviceCompromisedModal,
-    RootStackRoutes.DeviceOnboardingStack,
-    RootStackRoutes.SendStack,
-];
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
 
@@ -58,12 +66,7 @@ deviceConnectionMiddleware.startListening({
         const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
         const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
 
-        if (
-            !checkIsRouteAccessAllowed({
-                blacklist: DEVICE_CONNECTION_BLACKLISTED_ROUTES,
-            })
-        )
-            return;
+        if (!checkIsActiveRouteAnyOfBlacklisted(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
 
         // During firmware installation, device restarts (disconnect + connect) and we want to ignore it.
         if (selectIsFirmwareInstallationRunning(getState())) return;
@@ -85,5 +88,33 @@ deviceConnectionMiddleware.startListening({
         if (isDeviceUsingPassphrase || isDeviceConnectedAndAuthorized) return;
 
         handleDeviceConnectNavigation({ isCoinEnablingInitFinished });
+    },
+});
+
+deviceConnectionMiddleware.startListening({
+    predicate: action => deviceActions.deviceDisconnect.match(action),
+    effect: (_action: UnknownAction, { getState }) => {
+        const isDeviceRemembered = selectIsDeviceRemembered(getState());
+        const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(getState());
+        const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
+
+        const isDeviceDisconnectionNavigationAllowed = checkIsActiveRouteAnyOfBlacklisted(
+            buildDisconnectionBlacklist(isEntropyCheckEnabledAndFailed, isDeviceRemembered),
+        );
+
+        if (!isDeviceDisconnectionNavigationAllowed || isFirmwareInstallationRunning) return;
+
+        if (checkIsActiveRouteAnyOf([RootStackRoutes.DeviceOnboardingStack])) {
+            navigationContainerRef.navigate(RootStackRoutes.DeviceOnboardingStack, {
+                screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+            });
+        } else {
+            navigationContainerRef.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
+        }
     },
 });
