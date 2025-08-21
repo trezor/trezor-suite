@@ -98,6 +98,9 @@ export interface BluetoothIpcApi {
     stopScan(): Promise<IpcResponse>;
     connectDevice(id: string): Promise<IpcResponse>;
     disconnectDevice(id: string): Promise<IpcResponse>;
+    /**
+     * Forget device by its Bluetooth Id. Supported only on Windows.
+     */
     forgetDevice(id: string): Promise<IpcResponse>;
     on: TypedManagerEvents['on'];
     off: TypedManagerEvents['off'];
