@@ -94,7 +94,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
             await onDeviceSettings.waitForSettingsScreen();
 
-            expect(element(by.label('new name'))).toBeVisible();
+            await waitFor(element(by.text('new name')))
+                .toBeVisible()
+                .withTimeout(10000);
         });
 
         test('Wipe device', async () => {
@@ -114,7 +116,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
             await onDeviceSettings.passCheckBackupFlow();
 
-            expect(element(by.label('Your backup is valid'))).toBeVisible();
+            await waitFor(element(by.text('Your backup is valid')))
+                .toBeVisible()
+                .withTimeout(10000);
         });
     });
 
@@ -139,8 +143,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();
 
             await onDeviceSettings.passCheckBackupFlow();
-
-            expect(element(by.label('Your backup is valid'))).toBeVisible();
+            await waitFor(element(by.text('Your backup is valid')))
+                .toBeVisible()
+                .withTimeout(10000);
         });
     });
 
@@ -162,9 +167,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         test('Device Check Backup with unsupported Device Model', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
 
-            expect(
-                element(by.label('To check your backup, use the web application.')),
-            ).toBeVisible();
+            await waitFor(element(by.text('To check your backup, use the web application.')))
+                .toBeVisible()
+                .withTimeout(10000);
         });
     });
 });
