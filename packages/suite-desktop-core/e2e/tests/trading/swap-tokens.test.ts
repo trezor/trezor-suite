@@ -17,7 +17,7 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${localizeNumber(swapQuotesSolanaTokens[0].receiveStringAmount!)} USDC`;
 const { sendAddress, receiveAddress, send: tetherMint, receive: usdcMint } = swapTradeSolanaTokens;
 const formattedSendAddress = formatAddress(sendAddress);
-const toastText = `${formattedSendAmount} sent from Solana #1`;
+const toastText = `Swap transaction of ${formattedSendAmount} (Solana #1) to ${formattedReceiveAmount} (Solana #1) was broadcasted`;
 
 test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -87,7 +87,7 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
-            await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
+            await expect(page.getByTestId('@toast/tx-exchange')).toContainText(toastText);
             await expect(tradingPage.transactionDetailStatus).toHaveText(
                 messages['TR_EXCHANGE_DETAIL_SUCCESS_TITLE'].defaultMessage,
             );
