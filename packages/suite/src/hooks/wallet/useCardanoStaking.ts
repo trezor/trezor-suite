@@ -22,13 +22,10 @@ import trezorConnect, { PROTO } from '@trezor/connect';
 import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
-import { AppState } from 'src/types/suite';
+import { TrezorDevice } from 'src/types/suite';
 import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 
-const getDeviceAvailability = (
-    isDeviceLocked: boolean,
-    device: AppState['device']['selectedDevice'],
-) => {
+const getDeviceAvailability = (isDeviceLocked: boolean, device?: TrezorDevice) => {
     // Handle all external cases where it is not possible to make delegate or withdrawal action
     if (!device?.connected) {
         return {
