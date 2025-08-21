@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
 import {
     selectCheckPassphraseOnDevice,
     selectDeviceRequestedPin,
@@ -30,19 +29,6 @@ import { useRedirectOnPassphraseCompletion } from '../useRedirectOnPassphraseCom
 
 export const PassphraseStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
 
-const determineNativePassphraseFlowState = (
-    discovery: DiscoveryStatus,
-    options: {
-        checkingOnDevice: boolean;
-    },
-) => {
-    if (options.checkingOnDevice) {
-        return 'passphrase-checking-on-device';
-    }
-
-    return discovery.status;
-};
-
 export const PassphraseStackNavigator = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
@@ -55,10 +41,7 @@ export const PassphraseStackNavigator = () => {
 
     if (!selectedDevice || !discovery) return null;
 
-    // Use the shared determinePassphraseFlowState function to get the current state
-    const passphraseState = determineNativePassphraseFlowState(discovery, {
-        checkingOnDevice,
-    });
+    const passphraseState = checkingOnDevice ? 'passphrase-checking-on-device' : discovery.status;
 
     return (
         <PassphraseStack.Navigator
