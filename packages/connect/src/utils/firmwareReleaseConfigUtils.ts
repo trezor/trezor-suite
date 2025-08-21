@@ -76,6 +76,7 @@ export const getFirmwareReleaseConfig = async () => {
 
     let finalJws = remoteJws;
     let finalSource = initialSource;
+    let config;
 
     if (initialSource === 'remote') {
         try {
@@ -91,6 +92,9 @@ export const getFirmwareReleaseConfig = async () => {
             if (localPayload.sequence >= remotePayload.sequence) {
                 finalJws = firmwareReleaseConfigAssets.jws;
                 finalSource = 'local';
+                config = localPayload;
+            } else {
+                config = remotePayload;
             }
         } catch (error) {
             console.error(`Error comparing remote/local JWS: ${error}. Using remote as is.`);
@@ -101,7 +105,10 @@ export const getFirmwareReleaseConfig = async () => {
     const publicKey = getJWSPublicKey('firmware-release', useProductionKey);
 
     verifyJwsSignature(finalJws, publicKey);
-    const config = decodeJwsPayload(finalJws);
+    // Only decode the JWS if we haven't already assigned the payload
+    if (!config) {
+        config = decodeJwsPayload(finalJws);
+    }
 
     return {
         config,

@@ -14,7 +14,6 @@ import { Features, FirmwareReleaseConfigInfo, FirmwareType } from '../types';
 import { DataManager } from './DataManager';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
-import { getOnlyLocalFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
 import {
     buildIntermediaryFirmwareFileName,
     buildLocalFirmwareFileName,
@@ -82,7 +81,7 @@ const getBundledFirmwareVersion = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
 ) => {
-    const { config: localFirmwareReleaseConfig } = getOnlyLocalFirmwareReleaseConfig();
+    const localFirmwareReleaseConfig = DataManager.getLocalFirmwareReleaseConfig();
     const modelReleases = localFirmwareReleaseConfig.releases[deviceModel];
     const bundledRelease = modelReleases?.[firmwareType];
     if (!bundledRelease) {
@@ -288,7 +287,7 @@ export const initializeFirmwareConfig = async (
     }
 
     // We had some issue getting remote so we use local data.
-    const { config: localFirmwareReleaseConfig } = getOnlyLocalFirmwareReleaseConfig();
+    const localFirmwareReleaseConfig = DataManager.getLocalFirmwareReleaseConfig();
     const localReleases = createLocalFirmwareConfig(localFirmwareReleaseConfig);
 
     return {

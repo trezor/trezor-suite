@@ -5,6 +5,7 @@ import coins from '@trezor/connect-common/files/coins.json';
 import {
     ConditionalRelease,
     DeviceModelInternal,
+    FirmwareReleaseConfig,
     FirmwareType,
     IntermediaryReleaseConfig,
     ReleasesConfig,
@@ -36,6 +37,7 @@ export class DataManager {
     private static firmwareIntermediaryReleasesConfig:
         | Record<keyof typeof DeviceModelInternal, IntermediaryReleaseConfig[]>
         | undefined;
+    private static localFirmwareReleaseConfig: FirmwareReleaseConfig;
 
     static async load(
         settings: ConnectSettings,
@@ -58,13 +60,22 @@ export class DataManager {
             ...this.assets.coinsEth,
         });
 
+        this.prepareLocalFirmwareReleaseData();
         await this.loadFirmwareRelaseConfig(onlyLocalFirmwareConfig);
+    }
+
+    static prepareLocalFirmwareReleaseData() {
+        const { config } = getOnlyLocalFirmwareReleaseConfig();
+        this.setLocalFirmwareReleaseConfig(config);
     }
 
     static async loadFirmwareRelaseConfig(onlyLocal: boolean): Promise<void> {
         let firmwareRelaseConfig;
         if (onlyLocal) {
-            firmwareRelaseConfig = getOnlyLocalFirmwareReleaseConfig();
+            firmwareRelaseConfig = {
+                config: this.getLocalFirmwareReleaseConfig(),
+                isRemote: false,
+            };
         } else {
             firmwareRelaseConfig = await getFirmwareReleaseConfig();
         }
@@ -94,6 +105,13 @@ export class DataManager {
     }
     static getLocalFirmwares(): LocalFirmwares {
         return this.localFirmwares;
+    }
+
+    static setLocalFirmwareReleaseConfig(localFirmwareReleaseConfig: FirmwareReleaseConfig) {
+        this.localFirmwareReleaseConfig = localFirmwareReleaseConfig;
+    }
+    static getLocalFirmwareReleaseConfig(): FirmwareReleaseConfig {
+        return this.localFirmwareReleaseConfig;
     }
 
     static setFirmwareReleaseConfig(releaseConfig: ReleasesConfig): void {
