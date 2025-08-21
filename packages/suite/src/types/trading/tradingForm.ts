@@ -42,7 +42,7 @@ import { Timer } from '@trezor/react-utils';
 
 import type { TranslationKey } from 'src/components/suite/Translation';
 import { AppState } from 'src/reducers/store';
-import { Dispatch, GetState } from 'src/types/suite';
+import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
     TradingAccountOptionsGroupOptionProps,
     TradingGetCryptoQuoteAmountProps,
@@ -90,7 +90,7 @@ interface TradingFormStateProps {
 }
 
 interface TradingCommonFormProps {
-    device: AppState['device']['selectedDevice'];
+    device: TrezorDevice | undefined;
     timer: Timer;
     account: Account;
     network: Network;
