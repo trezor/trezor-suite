@@ -320,6 +320,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         signal,
                         logger: this.logger,
                     });
+                    thpState?.sync('send', name);
                 } else {
                     sendResult = await sendChunks(chunks, apiWrite);
                 }
