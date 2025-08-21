@@ -4430,6 +4430,10 @@ export default defineMessages({
         id: 'TR_CANCEL',
         defaultMessage: 'Cancel',
     },
+    TR_DONE: {
+        id: 'TR_DONE',
+        defaultMessage: 'Done',
+    },
     TR_CANCELLED: {
         id: 'TR_CANCELLED',
         defaultMessage: 'Canceled',
