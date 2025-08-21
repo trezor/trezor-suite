@@ -169,4 +169,103 @@ describe('THP pairing', () => {
         });
         expect(address).toMatchObject({ success: true });
     });
+
+    it('ThpPairing cancelled', async () => {
+        const device = await waitForDevice({
+            pairingMethods: ['CodeEntry'],
+            knownCredentials: [],
+        });
+
+        const ERR = new Error('Unexpected success');
+        let result;
+
+        // 1. reject pairing tag request from host
+        TrezorConnect.on('ui-request_thp_pairing', () => {
+            TrezorConnect.cancel('Custom cancel');
+        });
+        result = await TrezorConnect.getFeatures({ device });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch('Custom cancel');
+
+        // 2. reject pairing tag request from Trezor
+        TrezorConnect.removeAllListeners('ui-request_thp_pairing');
+        TrezorConnect.on('ui-request_thp_pairing', () => {
+            controller.send({ type: 'emulator-press-no' });
+        });
+        result = await TrezorConnect.getFeatures({ device });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch('Cancelled');
+
+        // 3. reject pairing confirmation from Trezor
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.on('ui-button', () => {
+            controller.send({ type: 'emulator-press-no' });
+        });
+        result = await TrezorConnect.getFeatures({ device });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch('Cancelled');
+
+        // 3. reject pairing confirmation from host
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.on('ui-button', () => {
+            TrezorConnect.cancel('Custom canceled');
+        });
+        result = await TrezorConnect.getFeatures({ device });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch('Custom canceled');
+
+        // check if pairing is still responsive
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.removeAllListeners('ui-request_thp_pairing');
+        TrezorConnect.on('ui-button', () => {
+            controller.send({ type: 'emulator-press-yes' });
+        });
+        TrezorConnect.on('ui-request_thp_pairing', async ({ nfcData, ...rest }) => {
+            const state = await controller.getPairingInfo(rest.device.thp!.channel, nfcData);
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_thp_pairing_tag',
+                payload: { source: 'code-entry', tag: state.code_entry_code },
+            });
+        });
+        result = await TrezorConnect.getFeatures({ device });
+        expect(result).toMatchObject({ success: true });
+
+        // 4. reject ButtonRequest from host
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.on('ui-button', () => {
+            TrezorConnect.cancel('Custom canceled');
+        });
+        result = await TrezorConnect.getAddress({
+            device,
+            path: "m/44'/0'/0'/1/1",
+            showOnTrezor: true,
+        });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch('Custom canceled');
+
+        // 4. reject ButtonRequest from Trezor
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.on('ui-button', () => {
+            controller.send({ type: 'emulator-press-no' });
+        });
+        result = await TrezorConnect.getAddress({
+            device,
+            path: "m/44'/0'/0'/1/1",
+            showOnTrezor: true,
+        });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch('Cancelled');
+
+        // and finally check if device is still responsive
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.on('ui-button', () => {
+            controller.send({ type: 'emulator-press-yes' });
+        });
+        result = await TrezorConnect.getAddress({
+            device,
+            path: "m/44'/0'/0'/1/1",
+            showOnTrezor: true,
+        });
+        expect(result).toMatchObject({ success: true });
+    });
 });
