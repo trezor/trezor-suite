@@ -78,9 +78,12 @@ describe('useWatchAllTrades', () => {
                 ],
             },
             device: {
-                selectedDevice: {
-                    state: { staticSessionId: 'device1@test:123' },
-                },
+                devices: [
+                    {
+                        state: { staticSessionId: 'device1@test:123' },
+                    },
+                ],
+                selectedDevice: 'device1@test:123',
             },
         };
 

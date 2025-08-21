@@ -13,6 +13,7 @@ import {
     ExplorerConfig,
     FiatRatesState,
     TransactionsState,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
@@ -67,7 +68,7 @@ export const extraDependencies: ExtraDependencies = {
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
-        selectDevice: (state: AppState) => state.device.selectedDevice,
+        selectDevice: (state: AppState) => selectSelectedDevice(state),
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
         selectRouterApp: (state: AppState) => state.router.app,

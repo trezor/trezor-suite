@@ -47,11 +47,14 @@ const getPreloadedState = (): PreloadedState => ({
         accounts: fixturesAccounts as Account[],
     },
     device: {
-        selectedDevice: {
-            state: {
-                staticSessionId: 'staticSessionId' as StaticSessionId,
+        devices: [
+            {
+                state: {
+                    staticSessionId: 'staticSessionId' as StaticSessionId,
+                },
             },
-        },
+        ],
+        selectedDevice: 'staticSessionId',
     },
 });
 

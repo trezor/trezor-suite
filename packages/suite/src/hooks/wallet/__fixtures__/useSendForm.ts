@@ -270,7 +270,10 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
             },
             () => ({}),
         ),
-        device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
+        device: createReducer(
+            { selectedDevice: DEVICE.state!.staticSessionId!, devices: [DEVICE] },
+            () => {},
+        ),
         wallet: combineReducers({
             send: sendFormReducer,
             accounts: createReducer(

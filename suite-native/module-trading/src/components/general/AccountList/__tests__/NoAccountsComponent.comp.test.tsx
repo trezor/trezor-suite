@@ -13,11 +13,15 @@ describe('NoAccountsComponent', () => {
         renderWithStoreProviderAsync(<NoAccountsComponent isBottomRounded />, {
             preloadedState: {
                 device: {
-                    selectedDevice: {
-                        remember: true,
-                        connected: isConnected,
-                        id,
-                    },
+                    devices: [
+                        {
+                            remember: true,
+                            connected: isConnected,
+                            id,
+                            state: { staticSessionId: 'a@b:1' },
+                        },
+                    ],
+                    selectedDevice: id || 'a@b:1',
                 },
             },
         });

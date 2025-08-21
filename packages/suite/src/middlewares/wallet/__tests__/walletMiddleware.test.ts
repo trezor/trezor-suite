@@ -43,7 +43,8 @@ const getInitialState = ({ router, accounts, settings, selectedAccount, send }: 
     },
     suite: {},
     device: {
-        device: true, // device is irrelevant in this test
+        devices: [],
+        selectedDevice: undefined,
     },
     wallet: {
         accounts: accounts || accountsReducer(undefined, { type: 'foo' } as any),

@@ -1,5 +1,5 @@
 import { AnyAction } from '@suite-common/redux-utils';
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { AcquiredDevice, DeviceRef, TrezorDevice } from '@suite-common/suite-types';
 import { DEVICE, Device, DeviceEvent, KnownDevice, UnavailableCapability } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -454,3 +454,19 @@ export const getDeviceInternalModel = (device: Pick<Device, 'features' | 'thp'>)
 
 export const getDeviceColorVariant = (device: Pick<Device, 'features' | 'thp'>) =>
     device.features?.unit_color ?? device.thp?.properties?.model_variant;
+
+export const getDeviceRef = (device: TrezorDevice): DeviceRef => {
+    if (device.state?.staticSessionId) {
+        return device.state?.staticSessionId;
+    }
+
+    if (device.id) {
+        return device.id;
+    }
+
+    if (device.path) {
+        return device.path;
+    }
+
+    throw new Error('Device does not have a valid reference');
+};

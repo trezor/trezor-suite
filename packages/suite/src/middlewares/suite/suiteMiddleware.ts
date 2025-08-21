@@ -10,6 +10,7 @@ import {
     handleDeviceDisconnect,
     observeSelectedDevice,
     restartDiscoveryThunk,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
@@ -85,6 +86,11 @@ const suite =
             }
         }
 
+        let prevSelectedDevice;
+        if (isActionDeviceRelated(action)) {
+            prevSelectedDevice = selectSelectedDevice(api.getState());
+        }
+
         // pass action to reducers
         next(action);
 
@@ -123,9 +129,9 @@ const suite =
             default:
                 break;
         }
+
         if (isActionDeviceRelated(action)) {
-            // keep suite reducer synchronized with other reducers (selected device)
-            api.dispatch(observeSelectedDevice());
+            api.dispatch(observeSelectedDevice(prevSelectedDevice));
         }
 
         return action;

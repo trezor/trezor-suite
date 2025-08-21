@@ -10,13 +10,18 @@ const SIGNATURE = 'SIGNATURE';
 
 const { getSuiteDevice } = testMocks;
 
+const device = getSuiteDevice({ connected: true, available: true, state: 'a@b:0' });
+
 describe('Sign/Verify actions', () => {
     let store: any;
 
     beforeEach(() => {
         store = configureStore()({
             wallet: { selectedAccount: { account: { symbol: 'btc', networkType: 'bitcoin' } } },
-            device: { selectedDevice: getSuiteDevice({ connected: true, available: true }) },
+            device: {
+                selectedDevice: device.state!.staticSessionId!,
+                devices: [device],
+            },
             suite: { settings: { addressDisplayType: 'chunked' } },
         });
     });

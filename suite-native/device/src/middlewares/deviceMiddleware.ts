@@ -13,6 +13,7 @@ import {
     selectDeviceThunk,
     selectDiscoveryByDevicePath,
     selectIsDeviceForceRemembered,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
@@ -57,6 +58,11 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             if (discovery?.status === 'complete' && action.payload.mode === 'normal') {
                 dispatch(setShouldShowAutoEjectAlert(true));
             }
+        }
+
+        let prevSelectedDevice;
+        if (isActionDeviceRelated(action)) {
+            prevSelectedDevice = selectSelectedDevice(getState());
         }
 
         /* The `next` function has to be executed here, because the further dispatched actions of this middleware
@@ -138,7 +144,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (isActionDeviceRelated(action)) {
-            dispatch(observeSelectedDevice());
+            dispatch(observeSelectedDevice(prevSelectedDevice));
         }
 
         return action;

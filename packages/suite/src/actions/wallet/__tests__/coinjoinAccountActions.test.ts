@@ -35,7 +35,10 @@ const rootReducer = combineReducers({
         () => ({}),
     ),
     messageSystem: prepareMessageSystemReducer(extraDependencies),
-    device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
+    device: createReducer(
+        { devices: [DEVICE], selectedDevice: DEVICE.state?.staticSessionId },
+        () => ({}),
+    ),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,

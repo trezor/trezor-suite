@@ -34,11 +34,16 @@ const fixtures: Fixture[] = [
             router: { route: { app: 'dashboard' } },
             messageSystem: messageSystemInitialState,
             device: {
-                selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
-                    authenticityChecks: authenticityChecksSuccess,
-                },
+                devices: [
+                    {
+                        features: {
+                            device_id: 'deviceId',
+                        },
+                        id: 'deviceId',
+                        authenticityChecks: authenticityChecksSuccess,
+                    },
+                ],
+                selectedDevice: 'deviceId',
             },
             suite: suiteAllSettingsEnabled,
         },
@@ -50,11 +55,14 @@ const fixtures: Fixture[] = [
             router: { route: { app: 'settings' } },
             messageSystem: messageSystemInitialState,
             device: {
-                selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
-                    authenticityChecks: authenticityChecksFail,
-                },
+                devices: [
+                    {
+                        features: { device_id: 'deviceId' },
+                        id: 'deviceId',
+                        authenticityChecks: authenticityChecksFail,
+                    },
+                ],
+                selectedDevice: 'deviceId',
             },
             suite: suiteAllSettingsEnabled,
         },
@@ -66,11 +74,14 @@ const fixtures: Fixture[] = [
             router: { route: { app: 'dashboard' } },
             messageSystem: messageSystemInitialState,
             device: {
-                selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
-                    authenticityChecks: authenticityChecksFail,
-                },
+                devices: [
+                    {
+                        features: { device_id: 'deviceId' },
+                        id: 'deviceId',
+                        authenticityChecks: authenticityChecksFail,
+                    },
+                ],
+                selectedDevice: 'deviceId',
             },
             suite: suiteAllSettingsEnabled,
         },
@@ -83,11 +94,15 @@ const fixtures: Fixture[] = [
             messageSystem: messageSystemInitialState,
             device: {
                 dismissedSecurityChecks: { firmwareAuthenticity: ['deviceId'] },
-                selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
-                    authenticityChecks: authenticityChecksFail,
-                },
+
+                devices: [
+                    {
+                        features: { device_id: 'deviceId' },
+                        id: 'deviceId',
+                        authenticityChecks: authenticityChecksFail,
+                    },
+                ],
+                selectedDevice: 'deviceId',
             },
             suite: suiteAllSettingsEnabled,
         },
@@ -99,14 +114,17 @@ const fixtures: Fixture[] = [
             router: { route: { app: 'dashboard' } },
             messageSystem: messageSystemInitialState,
             device: {
-                selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
-                    authenticityChecks: {
-                        firmwareRevision: { success: false, error: 'revision-mismatch' },
-                        firmwareHash: { success: true },
+                devices: [
+                    {
+                        features: { device_id: 'deviceId' },
+                        id: 'deviceId',
+                        authenticityChecks: {
+                            firmwareRevision: { success: false, error: 'revision-mismatch' },
+                            firmwareHash: { success: true },
+                        },
                     },
-                },
+                ],
+                selectedDevice: 'deviceId',
             },
             suite: {
                 settings: {
@@ -127,11 +145,14 @@ const fixtures: Fixture[] = [
             messageSystem: messageSystemInitialState,
             device: {
                 devicesWithFailedEntropyCheck: ['deviceId'],
-                selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
-                    authenticityChecks: authenticityChecksSuccess,
-                },
+                devices: [
+                    {
+                        features: { device_id: 'deviceId' },
+                        id: 'deviceId',
+                        authenticityChecks: authenticityChecksSuccess,
+                    },
+                ],
+                selectedDevice: 'deviceId',
             },
             suite: suiteAllSettingsEnabled,
         },
@@ -144,11 +165,14 @@ const fixtures: Fixture[] = [
             messageSystem: messageSystemInitialState,
             device: {
                 devicesWithFailedEntropyCheck: ['deviceId'],
-                selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
-                    authenticityChecks: authenticityChecksSuccess,
-                },
+                devices: [
+                    {
+                        features: { device_id: 'deviceId' },
+                        id: 'deviceId',
+                        authenticityChecks: authenticityChecksSuccess,
+                    },
+                ],
+                selectedDevice: 'deviceId',
             },
             suite: { settings: { enabledSecurityChecks: { entropy: false } } },
         },

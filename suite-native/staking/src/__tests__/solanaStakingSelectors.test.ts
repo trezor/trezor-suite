@@ -131,12 +131,7 @@ const getTestState = ({
                 },
             } as TrezorDevice,
         ],
-        selectedDevice: {
-            state: {
-                sessionId: '1',
-                staticSessionId: staticStateString,
-            },
-        } as TrezorDevice,
+        selectedDevice: staticStateString,
         isDeviceAutoEjectEnabled: false,
     },
 });

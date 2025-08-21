@@ -49,7 +49,7 @@ const device = testMocks.getSuiteDevice({
 });
 
 const rootReducer = combineReducers({
-    device: createReducer({ devices: [device], selectedDevice: device }, () => {}),
+    device: createReducer({ devices: [device], selectedDevice: device.id }, () => {}),
     wallet: combineReducers({
         selectedAccount: createReducer(
             {

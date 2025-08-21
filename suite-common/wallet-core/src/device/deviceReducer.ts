@@ -5,7 +5,7 @@ import {
     deviceAuthenticityActions,
 } from '@suite-common/device-authenticity';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
+import { AcquiredDevice, ButtonRequest, DeviceRef, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
@@ -16,7 +16,12 @@ import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type DeviceReducerState = {
     devices: TrezorDevice[];
-    selectedDevice?: TrezorDevice;
+    /**
+     * StaticSessionId  - authorized device
+     * DeviceId         - unauthorized device
+     * DeviceUniquePath - unacquired device or device in bootloader mode
+     */
+    selectedDevice?: DeviceRef;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     devicesWithFailedEntropyCheck?: (string | null)[]; // protobuf allows null values and we want to store this even if a fake device has id set to null
     dismissedSecurityChecks?: {
@@ -363,6 +368,8 @@ const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
         }
     });
 
+    //
+
     if (isDeviceAcquired(device)) {
         draft.lastConnectedAuthenticityChecks = device.authenticityChecks;
     }
@@ -544,11 +551,14 @@ export const setDeviceAuthenticity = (
 // called after successful wipeDevice
 const requestDeviceReconnect = (draft: DeviceReducerState) => {
     // only acquired devices
-    if (!draft.selectedDevice?.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, draft.selectedDevice);
-    if (!draft.devices[index]) return;
-    draft.selectedDevice.reconnectRequested = true;
-    draft.devices[index].reconnectRequested = true;
+    const selectedDevice = draft.devices.find(
+        device =>
+            draft.selectedDevice === device.state?.staticSessionId ||
+            draft.selectedDevice === device.id,
+    );
+    if (!selectedDevice?.features) return;
+    // todo: test!
+    selectedDevice.reconnectRequested = true;
 };
 
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
@@ -562,7 +572,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
             addAuthorizedDevice(state, payload.device);
         })
-
         .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
             disconnectDevice(state, payload);
         })
@@ -586,10 +595,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.selectDevice, (state, { payload }) => {
             updateTimestamp(state, payload);
-            state.selectedDevice = payload;
-        })
-        .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
-            state.selectedDevice = payload;
+            state.selectedDevice = payload ? deviceUtils.getDeviceRef(payload) : undefined;
         })
         .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
             setDeviceAuthenticity(state, payload.device, payload.result);

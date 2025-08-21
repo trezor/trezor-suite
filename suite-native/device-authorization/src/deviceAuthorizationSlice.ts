@@ -4,6 +4,7 @@ import {
     DeviceRootState,
     DiscoveryRootState,
     selectDiscoveryByDevicePath,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
@@ -93,7 +94,9 @@ export const selectCheckPassphraseOnDevice = (state: DeviceAuthorizationRootStat
 export const selectHasPassphraseError = (
     state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationState,
 ) => {
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+    // todo: optimize
+    const selectedDevice = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, selectedDevice?.path);
 
     return (
         discovery?.isAddingExistingWallet &&
@@ -104,13 +107,15 @@ export const selectHasPassphraseError = (
 export const selectHasVerificationCancelledError = (
     state: DiscoveryRootState & DeviceRootState,
 ) => {
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+    const selectedDevice = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, selectedDevice?.path);
 
     return discovery?.status === 'cancelled';
 };
 
 export const selectHasPassphraseMismatchError = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+    const selectedDevice = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, selectedDevice?.path);
 
     return discovery?.status === 'passphrase-mismatch';
 };
@@ -118,7 +123,8 @@ export const selectHasPassphraseMismatchError = (state: DiscoveryRootState & Dev
 export const selectIsCreatingNewPassphraseWallet = (
     state: DiscoveryRootState & DeviceRootState,
 ) => {
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+    const selectedDevice = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, selectedDevice?.path);
 
     return discovery?.isAddingHiddenWallet;
 };
@@ -126,11 +132,12 @@ export const selectIsCreatingNewPassphraseWallet = (
 export const isPassphraseDeviceLoadingDone = (
     state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationRootState,
 ) => {
-    if (!state.device.selectedDevice?.state) {
+    const selectedDevice = selectSelectedDevice(state);
+    if (!selectedDevice?.state) {
         return false;
     }
 
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+    const discovery = selectDiscoveryByDevicePath(state, selectedDevice?.path);
 
     if (!discovery || !discovery.isAddingHiddenWallet) {
         return false;
@@ -140,7 +147,8 @@ export const isPassphraseDeviceLoadingDone = (
 };
 
 export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+    const selectedDevice = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, selectedDevice?.path);
 
     if (!discovery || !discovery.isAddingHiddenWallet) {
         return null;
@@ -157,7 +165,8 @@ export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & Devic
 };
 
 export const selectPassphraseDiscoveryCompleted = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+    const selectedDevice = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, selectedDevice?.path);
 
     if (!discovery || !discovery.isAddingHiddenWallet) {
         return null;

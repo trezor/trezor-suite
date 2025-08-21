@@ -87,8 +87,8 @@ export default [
         description: 'Show public key, device not connected',
         initialState: {
             device: {
-                selectedDevice: getSuiteDevice({ connected: false }),
-                devices: [],
+                selectedDevice: 'a',
+                devices: [getSuiteDevice({ connected: false, id: 'a' }, { device_id: 'a' })],
             },
         },
         mocks: {},

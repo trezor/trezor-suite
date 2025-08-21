@@ -1,13 +1,12 @@
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState } from '@suite-common/wallet-core';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 
-import { actions, reducerActions } from '../__fixtures__/firmwareActions';
+import { fixtures, reducerActions } from '../__fixtures__/firmwareActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
@@ -36,14 +35,8 @@ const getInitialState = (override?: InitialState): any => {
         },
         firmware: firmwareReducer(undefined, { type: 'foo' } as any),
         device: {
-            selectedDevice: {
-                connected: true,
-                type: 'acquired',
-                features: {
-                    major_version: 2,
-                    internal_model: DeviceModelInternal.T2T1,
-                },
-            },
+            selectedDevice: device?.devices?.[0]?.features?.device_id,
+            devices: [],
             ...device,
         },
         analytics: {
@@ -77,7 +70,7 @@ describe('Firmware Actions', () => {
         jest.clearAllMocks();
     });
 
-    actions.forEach(f => {
+    fixtures.forEach(f => {
         it(f.description, async () => {
             // set fixtures
             testMocks.setTrezorConnectFixtures(f.mocks?.connect);

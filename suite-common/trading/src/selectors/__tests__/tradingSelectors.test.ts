@@ -271,11 +271,14 @@ describe('tradingSelectors', () => {
                 },
             },
             device: {
-                selectedDevice: {
-                    state: {
-                        staticSessionId: 'staticSessionId' as StaticSessionId,
+                devices: [
+                    {
+                        state: {
+                            staticSessionId: 'staticSessionId' as StaticSessionId,
+                        },
                     },
-                },
+                ],
+                selectedDevice: 'staticSessionId',
             },
         }) as unknown as TradingRootStateWithDeviceAndAccounts;
 

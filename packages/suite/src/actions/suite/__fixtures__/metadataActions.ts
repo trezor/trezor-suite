@@ -644,7 +644,7 @@ const disposeMetadataKeys: Fixture<(typeof metadataActions)['disposeMetadataKeys
         description: 'keys',
         initialState: {
             device: {
-                state: '1stTestnetAddress@device_id:0',
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 metadata: { 1: { fileName: 'foo', aesKey: 'bar' } },
             },
             accounts: [
@@ -662,7 +662,9 @@ const disposeMetadataKeys: Fixture<(typeof metadataActions)['disposeMetadataKeys
         },
         params: [] as const,
         result: {
-            device: { selectedDevice: { state: '1stTestnetAddress@device_id:0', metadata: {} } },
+            device: {
+                selectedDevice: '1stTestnetAddress@device_id:0',
+            },
             wallet: {
                 accounts: [
                     {

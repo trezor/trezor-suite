@@ -36,8 +36,8 @@ describe('EmptyHomeRenderer', () => {
         await renderEmptyHomeRenderer({
             featureFlags: { isDeviceConnectEnabled: false },
             device: {
-                selectedDevice: { type: 'acquired' },
-                devices: [{ id: 'device_id' }],
+                selectedDevice: 'a',
+                devices: [{ type: 'acquired', path: 'a' }, { id: 'device_id' }],
             },
         });
 
@@ -49,11 +49,19 @@ describe('EmptyHomeRenderer', () => {
             await renderEmptyHomeRenderer({
                 featureFlags: { isDeviceConnectEnabled: true },
                 device: {
-                    selectedDevice: {
-                        connected: true,
-                        features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
-                    },
-                    devices: [{ id: 'device_id' }],
+                    selectedDevice: 'a',
+                    devices: [
+                        {
+                            id: 'a',
+                            connected: true,
+                            features: {
+                                device_id: 'a',
+                                initialized: false,
+                                internal_model: DeviceModelInternal.T3B1,
+                            },
+                        },
+                        { id: 'device_id' },
+                    ],
                 },
             });
 
@@ -64,11 +72,19 @@ describe('EmptyHomeRenderer', () => {
             await renderEmptyHomeRenderer({
                 featureFlags: { isDeviceConnectEnabled: true },
                 device: {
-                    selectedDevice: {
-                        connected: true,
-                        features: { initialized: false, internal_model: DeviceModelInternal.T1B1 },
-                    },
-                    devices: [{ id: 'device_id' }],
+                    selectedDevice: 'a',
+                    devices: [
+                        {
+                            id: 'a',
+                            connected: true,
+                            features: {
+                                initialized: false,
+                                internal_model: DeviceModelInternal.T1B1,
+                                device_id: 'a',
+                            },
+                        },
+                        { id: 'device_id' },
+                    ],
                 },
             });
 
@@ -79,11 +95,7 @@ describe('EmptyHomeRenderer', () => {
             await renderEmptyHomeRenderer({
                 featureFlags: { isDeviceConnectEnabled: true },
                 device: {
-                    selectedDevice: {
-                        connected: false,
-                        features: { initialized: true },
-                        state: {},
-                    },
+                    selectedDevice: 'PORTFOLIO_TRACKER_DEVICE_ID',
                     devices: [{ id: PORTFOLIO_TRACKER_DEVICE_ID }],
                 },
             });
@@ -95,12 +107,16 @@ describe('EmptyHomeRenderer', () => {
             await renderEmptyHomeRenderer({
                 featureFlags: { isDeviceConnectEnabled: true },
                 device: {
-                    selectedDevice: {
-                        connected: false,
-                        features: { initialized: true },
-                        state: undefined,
-                    },
-                    devices: [{ id: 'device_id' }],
+                    selectedDevice: 'a',
+                    devices: [
+                        {
+                            connected: false,
+                            features: { initialized: true, device_id: 'a' },
+                            state: undefined,
+                            id: 'a',
+                        },
+                        { id: 'device_id' },
+                    ],
                 },
             });
 
@@ -112,12 +128,16 @@ describe('EmptyHomeRenderer', () => {
         await renderEmptyHomeRenderer({
             featureFlags: { isDeviceConnectEnabled: true },
             device: {
-                selectedDevice: {
-                    connected: true,
-                    features: { initialized: true },
-                    state: {},
-                },
-                devices: [{ id: 'device_id' }],
+                selectedDevice: 'a',
+                devices: [
+                    {
+                        connected: true,
+                        features: { initialized: true, device_id: 'a' },
+                        state: {},
+                        id: 'a',
+                    },
+                    { id: 'device_id' },
+                ],
             },
         });
 

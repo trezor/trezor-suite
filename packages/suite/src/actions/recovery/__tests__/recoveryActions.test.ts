@@ -5,18 +5,23 @@ import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
 
+const device = {
+    state: {
+        staticSessionId: 'static-session-id',
+    },
+    features: {
+        major_version: 2,
+        internal_model: DeviceModelInternal.T2T1,
+    },
+};
 const getInitialState = (custom?: any): any => ({
     suite: {
         flags: {},
         locks: [],
     },
     device: {
-        selectedDevice: {
-            features: {
-                major_version: 2,
-                internal_model: DeviceModelInternal.T2T1,
-            },
-        },
+        selectedDevice: device.state.staticSessionId,
+        devices: [device],
     },
     recovery: {
         ...recoveryReducer(undefined, {} as Action),

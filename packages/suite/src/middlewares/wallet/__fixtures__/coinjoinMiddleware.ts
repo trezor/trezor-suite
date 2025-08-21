@@ -61,7 +61,7 @@ const COINJOIN_ACCOUNT_B = {
 const DEFAULT_STATE = {
     device: {
         devices: [DEVICE_A, DEVICE_B],
-        selectedDevice: DEVICE_A,
+        selectedDevice: DEVICE_A.state.staticSessionId,
     },
     suite: {
         torStatus: 'Enabled',

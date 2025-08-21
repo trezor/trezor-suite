@@ -22,6 +22,7 @@ const device = testMocks.getSuiteDevice({
         recvNonce: 0,
         expectedResponses: [],
     },
+    path: 'a',
 }) as Device;
 const initialThpState: ThpState = { step: null, lastThpCode: undefined, credentials: [] };
 const initialFirmwareState: FirmwareUpdateState = {
@@ -82,7 +83,7 @@ const createStore = ({ isFirmwareInstallation, isDeviceSelected }: CreateStorePa
                 : initialFirmwareState,
             device: {
                 devices: [device],
-                selectedDevice: isDeviceSelected ? device : undefined,
+                selectedDevice: isDeviceSelected ? device.path! : undefined,
             },
         },
     });
