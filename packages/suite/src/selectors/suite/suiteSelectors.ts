@@ -7,7 +7,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { RouterRootState, selectRouter } from 'src/reducers/suite/routerReducer';
 import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { AppState, TorStatus } from 'src/types/suite';
+import { AppState, TorStatus, TrezorDevice } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
@@ -104,3 +104,13 @@ export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
 export const selectIsAutoEjectEnabled = (state: SuiteRootState) => state.suite.settings.autoEject;
 export const selectIsTradingTermsDismissed = (state: AppState, tradingType: TradingType): boolean =>
     !!state.suite.dismissedTradingTerms?.[tradingType];
+
+// TODO use selectDeviceByDeviceRef from wallet-core; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
+export const selectRecentlyConnectedDevice = (state: AppState): TrezorDevice | undefined =>
+    state.suite.recentlyConnectedDeviceRef !== null
+        ? state.device.devices.find(
+              device =>
+                  state.suite.recentlyConnectedDeviceRef === device?.id ||
+                  state.suite.recentlyConnectedDeviceRef === device.path,
+          )
+        : undefined;
