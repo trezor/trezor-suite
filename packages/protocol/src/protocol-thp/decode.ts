@@ -198,8 +198,6 @@ export const decodeSendAck = (decodedMessage: MessageV2) => {
     if (magic === THP_READ_ACK_HEADER_BYTE) {
         return decodeReadAck();
     }
-
-    throw new Error('Unexpected send response: ' + magic);
 };
 
 // Decode protocol-v2 message from thp receive process

@@ -94,7 +94,7 @@ export const sendThpMessage = async ({
         // parse and check the result
         const decodedResult = protocolThp.decodeSendAck(protocolV2.decode(result.payload));
         // fail on ThpError
-        if (decodedResult.type === 'ThpError') {
+        if (decodedResult?.type === 'ThpError') {
             const { code, message } = decodedResult.message;
 
             return error({ error: code, message });
