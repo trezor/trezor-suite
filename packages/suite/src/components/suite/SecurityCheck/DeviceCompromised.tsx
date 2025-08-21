@@ -18,7 +18,6 @@ import {
     EntropyCheckSupportButton,
     FwAuthencityChecksCtas,
 } from './deviceCompromisedCtas';
-import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const hashCheckSubtitleMap: Record<
     // map only for active cases, and except 'other-error' because it has complex handling
@@ -96,9 +95,7 @@ const DeviceCompromisedContent = () => {
 };
 
 export const DeviceCompromised = () => (
-    <WelcomeLayout>
-        <Card data-testid="@device-compromised">
-            <DeviceCompromisedContent />
-        </Card>
-    </WelcomeLayout>
+    <Card data-testid="@device-compromised">
+        <DeviceCompromisedContent />
+    </Card>
 );

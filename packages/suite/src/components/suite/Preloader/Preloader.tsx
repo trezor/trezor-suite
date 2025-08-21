@@ -8,31 +8,19 @@ import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
-import {
-    selectIsLoggedOut,
-    selectIsTransportInitialized,
-    selectPrerequisite,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectIsTransportInitialized } from 'src/selectors/suite/suiteSelectors';
 import type { AppState } from 'src/types/suite';
 import { Onboarding } from 'src/views/onboarding';
-import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
-import { selectShouldDisplayDeviceCompromised } from './selectShouldDisplayDeviceCompromised';
 import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScreen';
-import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
-import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
-import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
-import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
-        case 'start':
-            return SuiteStart;
         case 'onboarding':
             return Onboarding;
         default:
@@ -46,9 +34,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const router = useSelector(state => state.router);
-    const prerequisite = useSelector(selectPrerequisite);
-    const isLoggedOut = useSelector(selectIsLoggedOut);
-    const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     useReportDeviceCompromised();
@@ -90,11 +75,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
         return <InitialLoading timeout={90 * 5} />;
     }
-
-    if (shouldDisplayDeviceCompromised) {
-        return <DeviceCompromised />;
-    }
-
     // TODO: murder the fullscreen app logic, there must be a better way
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
@@ -107,25 +87,10 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         return <SuiteLayout>{children}</SuiteLayout>;
     }
 
-    // display prerequisite for regular application as page view
-    // Fullscreen Apps should handle prerequisites by themselves!!!
-    if (prerequisite) {
-        return (
-            <WelcomeLayout>
-                <PrerequisitesGuide allowSwitchDevice />
-            </WelcomeLayout>
-        );
-    }
-
     // route does not exist, display error page in fullscreen mode
     // because if it is handled by Router it is wrapped in SuiteLayout
     if (!router.route) {
         return <ErrorPage />;
-    }
-
-    // if a device is not connected or initialized
-    if (isLoggedOut) {
-        return <LoggedOutLayout>{children}</LoggedOutLayout>;
     }
 
     // everything is set.

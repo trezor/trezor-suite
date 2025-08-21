@@ -198,6 +198,6 @@ export const initialRedirection = () => (dispatch: Dispatch, getState: GetState)
     if (route.isForegroundApp) {
         dispatch(goto(route.name));
     } else if (initialRun) {
-        dispatch(goto('suite-start'));
+        dispatch(goto('suite-index'));
     }
 };

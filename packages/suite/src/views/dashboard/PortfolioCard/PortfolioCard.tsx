@@ -147,3 +147,5 @@ export const PortfolioCard = memo(() => {
         </DashboardSection>
     );
 });
+
+PortfolioCard.displayName = 'PortfolioCard';

@@ -40,15 +40,10 @@ export const useOnboarding = () => {
         [dispatch],
     );
 
-    const goToSuite = (initialRedirection = false) => {
+    const goToSuite = () => {
         dispatch(suiteActions.initialRunCompleted());
         dispatch(onboardingActions.resetOnboarding());
-        dispatch(routerActions.closeModalApp(true));
-
-        // fixes a bug that user ends up in settings after initialization of a new device because he navigated to settings before
-        if (initialRedirection) {
-            dispatch(routerActions.goto('suite-index'));
-        }
+        dispatch(routerActions.goto('suite-index'));
     };
 
     const { activeStepId } = onboarding;

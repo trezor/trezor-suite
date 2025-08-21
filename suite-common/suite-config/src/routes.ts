@@ -9,14 +9,6 @@ export const modalAppParams = ['cancelable', 'variant'] as const;
 
 export const routes = [
     {
-        name: 'suite-start',
-        pattern: '/start',
-        app: 'start',
-        isFullscreenApp: true,
-        isForegroundApp: true,
-        clearUrl: true,
-    },
-    {
         name: 'suite-index',
         pattern: '/',
         app: 'dashboard',

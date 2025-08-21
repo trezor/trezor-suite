@@ -22,7 +22,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
 
     // device is not initialized, redirect to onboarding
     if (device.mode === 'initialize') {
-        dispatch(routerActions.goto('suite-start'));
+        dispatch(routerActions.goto('suite-index'));
     }
     // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
     if (
@@ -30,7 +30,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
         device.features &&
         device.features.firmware_present === false
     ) {
-        dispatch(routerActions.goto('suite-start'));
+        dispatch(routerActions.goto('suite-index'));
     }
     // device firmware update required, redirect to "firmware update"
     else if (device.firmware === 'required') {

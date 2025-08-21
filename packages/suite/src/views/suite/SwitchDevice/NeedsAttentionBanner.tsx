@@ -102,7 +102,7 @@ export const NeedsAttentionBanner = ({
             case 'bootloader': // Fresh or factory-reset device? Can also be initalized device manually put into BL,
                 // but we cannot tell (device.features.initialized is null)
                 selectDevice();
-                dispatch(goto('suite-start'));
+                dispatch(goto('suite-index'));
                 break;
 
             case 'seedless':

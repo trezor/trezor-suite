@@ -85,7 +85,7 @@ const fixtures: Fixture[] = [
         description: 'Successful initial run',
         options: {
             initialPath: '/accounts',
-            expectedApp: 'start',
+            expectedApp: 'wallet',
         },
         actions: [
             SUITE.INIT,

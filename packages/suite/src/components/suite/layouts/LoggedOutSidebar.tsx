@@ -4,14 +4,11 @@ import { Route } from '@suite-common/suite-types';
 import { Column, ElevationUp, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
-import { selectIsInitialRun } from 'src/selectors/suite/suiteSelectors';
-
-import { SIDEBAR_MIN_WIDTH } from './SuiteLayout/Sidebar/Sidebar';
-import { useSelector } from '../../../hooks/suite';
 import { TrafficLightOffset } from '../TrafficLightOffset';
 import { Nav, SETTINGS_ROUTES } from './SuiteLayout/Sidebar/Navigation';
 import { NavItem } from './SuiteLayout/Sidebar/NavigationItem';
 import { QuickActions } from './SuiteLayout/Sidebar/QuickActions/QuickActions';
+import { SIDEBAR_MIN_WIDTH } from './SuiteLayout/Sidebar/Sidebar';
 
 const SidebarWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};
@@ -27,8 +24,7 @@ const SidebarNavColumn = styled.div<{ $elevation: Elevation; $minWidth: number }
 export const LoggedOutSidebar = () => {
     const { elevation } = useElevation();
 
-    const isInitialRun = useSelector(selectIsInitialRun);
-    const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
+    const startRoute: Route['name'] = 'suite-index';
 
     return (
         <SidebarWrapper $elevation={elevation}>

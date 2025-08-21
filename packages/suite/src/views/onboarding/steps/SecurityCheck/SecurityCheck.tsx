@@ -309,7 +309,7 @@ export const SecurityCheck = () => {
     const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
 
     return (
-        <Card maxWidth={840}>
+        <Card>
             <SecurityCheckContent
                 goToDeviceAuthentication={goToDeviceAuthentication}
                 goToSuiteOrNextDevice={goToSuiteOrNextDevice}

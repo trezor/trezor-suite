@@ -15,6 +15,7 @@ import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanne
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { StakeEthCard } from './StakeEthCard/StakeEthCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
+import { StartContent } from '../start/StartContent';
 
 const Container = styled.div`
     display: flex;
@@ -28,15 +29,17 @@ export const Dashboard = () => {
 
     return (
         <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
-            <Container>
-                <ContextMessage context={Context.getGeneral('dashboard')} />
-                <DashboardPassphraseBanner />
-                <PortfolioCard />
-            </Container>
-            <DashboardPromoBanner />
-            <AssetsView />
-            <StakeEthCard />
-            <DashboardFooter />
+            <StartContent>
+                <Container>
+                    <ContextMessage context={Context.getGeneral('dashboard')} />
+                    <DashboardPassphraseBanner />
+                    <PortfolioCard />
+                </Container>
+                <DashboardPromoBanner />
+                <AssetsView />
+                <StakeEthCard />
+                <DashboardFooter />
+            </StartContent>
         </Column>
     );
 };
