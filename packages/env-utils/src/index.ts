@@ -35,5 +35,4 @@ export const {
     getOsName,
     getOsNameWeb,
     getOsFamily,
-    getJWSPublicKey,
 } = envUtils;

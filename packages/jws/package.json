@@ -1,0 +1,25 @@
+{
+    "name": "@trezor/jws",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@pagopa/io-react-native-jwt": "patch:@pagopa/io-react-native-jwt@npm%3A2.1.0#~/.yarn/patches/@pagopa-io-react-native-jwt-npm-2.1.0-b6860a041b.patch",
+        "@trezor/env-utils": "workspace:*",
+        "ecdsa-sig-formatter": "^1.0.11",
+        "jose": "^6.0.12",
+        "jwa": "^2.0.1",
+        "jws": "^4.0.0"
+    },
+    "devDependencies": {
+        "@types/jwa": "^2"
+    }
+}

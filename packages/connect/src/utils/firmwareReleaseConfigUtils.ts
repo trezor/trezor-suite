@@ -1,7 +1,5 @@
-import { decode, verify } from 'jws';
-
 import { FirmwareReleaseConfig } from '@trezor/device-utils';
-import { getJWSPublicKey } from '@trezor/env-utils';
+import { decodeJwsPayload, decodeVerifyJwsSignature } from '@trezor/jws';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
 import { FirmwareUpdateSource, getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
@@ -49,28 +47,6 @@ const fetchRemoteJWS = async (): Promise<JwsInfo> => {
     }
 };
 
-const decodeJwsPayload = (jws: string): any => {
-    const decoded = decode(jws);
-    if (!decoded || !decoded.payload) {
-        throw new Error('Failed to decode JWS or payload is missing.');
-    }
-
-    return JSON.parse(decoded.payload);
-};
-
-const verifyJwsSignature = (jws: string, publicKey: string): void => {
-    const decoded = decode(jws);
-    if (decoded?.header.alg !== JWS_CONFIG.SIGN_ALGORITHM) {
-        throw new Error(
-            `Invalid JWS algorithm: expected ${JWS_CONFIG.SIGN_ALGORITHM}, got ${decoded?.header.alg}`,
-        );
-    }
-
-    if (!verify(jws, JWS_CONFIG.SIGN_ALGORITHM, publicKey)) {
-        throw new Error('JWS signature is invalid.');
-    }
-};
-
 export const getFirmwareReleaseConfig = async () => {
     const { jws: remoteJws, source: initialSource, env } = await fetchRemoteJWS();
 
@@ -98,10 +74,13 @@ export const getFirmwareReleaseConfig = async () => {
     }
 
     const useProductionKey = ['test-signed', 'production'].includes(env) || finalSource === 'local';
-    const publicKey = getJWSPublicKey('firmware-release', useProductionKey);
 
-    verifyJwsSignature(finalJws, publicKey);
-    const config = decodeJwsPayload(finalJws);
+    const config = await decodeVerifyJwsSignature(
+        finalJws,
+        'firmware-release',
+        useProductionKey,
+        JWS_CONFIG.SIGN_ALGORITHM,
+    );
 
     return {
         config,
@@ -109,16 +88,19 @@ export const getFirmwareReleaseConfig = async () => {
     };
 };
 
-export const getOnlyLocalFirmwareReleaseConfig = (): {
+export const getOnlyLocalFirmwareReleaseConfig = async (): Promise<{
     config: FirmwareReleaseConfig;
     isRemote: false;
-} => {
+}> => {
     const localJws = firmwareReleaseConfigAssets.jws;
-    // For local-only, we always use the production signing key.
-    const publicKey = getJWSPublicKey('firmware-release', true);
 
-    verifyJwsSignature(localJws, publicKey);
-    const config = decodeJwsPayload(localJws);
+    const config = await decodeVerifyJwsSignature(
+        localJws,
+        'firmware-release',
+        // For local-only, we always use the production signing key.
+        true,
+        JWS_CONFIG.SIGN_ALGORITHM,
+    );
 
     return {
         config,

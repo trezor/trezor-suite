@@ -1,9 +1,9 @@
-import { D, G } from '@mobily/ts-belt';
-import { decode, verify } from 'jws';
+import { D } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
+import { decodeVerifyJwsSignature } from '@trezor/jws';
 import { TimerId } from '@trezor/type-utils';
 
 import {
@@ -48,30 +48,12 @@ export const getTokenDefinitionThunk = createThunk(
 
             const jws = await response.text();
 
-            const decodedJws = decode(jws);
-
-            if (!decodedJws) {
-                throw Error('Decoding of config failed');
-            }
-
-            const algorithmInHeader = decodedJws?.header.alg;
-            if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-                throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-            }
-
-            const authenticityPublicKey = getJWSPublicKey('token-definitions');
-
-            if (G.isNullable(authenticityPublicKey)) {
-                throw Error('Public key check token definitions authenticity was not found.');
-            }
-
-            const isAuthenticityValid = verify(jws, JWS_SIGN_ALGORITHM, authenticityPublicKey);
-
-            if (!isAuthenticityValid) {
-                throw Error('Config authenticity is invalid');
-            }
-
-            const data = JSON.parse(decodedJws.payload);
+            const data = await decodeVerifyJwsSignature(
+                jws,
+                'token-definitions',
+                false,
+                JWS_SIGN_ALGORITHM,
+            );
 
             return fulfillWithValue(data);
         } catch (error) {

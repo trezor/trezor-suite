@@ -25,8 +25,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "jws": "^4.0.0"
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "ajv": "^8.17.1"

@@ -1,8 +1,7 @@
-import { decode, verify } from 'jws';
-
 import { createThunk } from '@suite-common/redux-utils';
 import { MessageSystem } from '@suite-common/suite-types';
-import { getJWSPublicKey, isCodesignBuild, isNative } from '@trezor/env-utils';
+import { isCodesignBuild, isNative } from '@trezor/env-utils';
+import { decodeVerifyJwsSignature } from '@trezor/jws';
 import { scheduleAction } from '@trezor/utils';
 
 import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';
@@ -76,34 +75,12 @@ export const fetchConfigThunk = createThunk(
             try {
                 const { configJws, isRemote } = await getConfigJws();
 
-                const decodedJws = decode(configJws);
-
-                if (!decodedJws) {
-                    throw Error('Decoding of config failed');
-                }
-
-                const algorithmInHeader = decodedJws?.header.alg;
-                if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-                    throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-                }
-
-                const authenticityPublicKey = getJWSPublicKey('message-system');
-
-                if (!authenticityPublicKey) {
-                    throw Error('JWS public key is not defined!');
-                }
-
-                const isAuthenticityValid = verify(
+                const config: MessageSystem = await decodeVerifyJwsSignature(
                     configJws,
+                    'message-system',
+                    false,
                     JWS_SIGN_ALGORITHM,
-                    authenticityPublicKey,
                 );
-
-                if (!isAuthenticityValid) {
-                    throw Error('Config authenticity is invalid');
-                }
-
-                const config: MessageSystem = JSON.parse(decodedJws.payload);
 
                 if (VERSION !== config.version) {
                     throw Error('Config version is not supported');

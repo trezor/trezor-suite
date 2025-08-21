@@ -6548,6 +6548,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pagopa/io-react-native-jwt@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@pagopa/io-react-native-jwt@npm:2.1.0"
+  dependencies:
+    js-base64: "npm:^3.7.7"
+    zod: "npm:^3.22.4"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/33d859a128432b1f52d1ca860246334050dbafd30140d9cdf90dfd481fd22d0439f725fa59754466fd0c86e150b500ecfc43d3f3f216060458cfcd59c493af03
+  languageName: node
+  linkType: hard
+
+"@pagopa/io-react-native-jwt@patch:@pagopa/io-react-native-jwt@npm%3A2.1.0#~/.yarn/patches/@pagopa-io-react-native-jwt-npm-2.1.0-b6860a041b.patch":
+  version: 2.1.0
+  resolution: "@pagopa/io-react-native-jwt@patch:@pagopa/io-react-native-jwt@npm%3A2.1.0#~/.yarn/patches/@pagopa-io-react-native-jwt-npm-2.1.0-b6860a041b.patch::version=2.1.0&hash=0f15df"
+  dependencies:
+    js-base64: "npm:^3.7.7"
+    zod: "npm:^3.22.4"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/ed9faf72f0c6b69d8739b521d11e4479f3940269f3e7cbf4894b48ef67203d45816000cbb3e2ab4e8d40f91a889052696bd89f8587657778d7055b693f9110fe
+  languageName: node
+  linkType: hard
+
 "@parcel/watcher-android-arm64@npm:2.5.0":
   version: 2.5.0
   resolution: "@parcel/watcher-android-arm64@npm:2.5.0"
@@ -9699,7 +9725,6 @@ __metadata:
     "@types/semver": "npm:^7.7.0"
     fs-extra: "npm:^11.3.1"
     json-schema-to-typescript: "npm:^15.0.4"
-    jws: "npm:^4.0.0"
     react: "npm:19.0.0"
     react-redux: "npm:9.2.0"
     semver: "npm:^7.7.1"
@@ -9881,7 +9906,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.17.1"
-    jws: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -12377,7 +12401,6 @@ __metadata:
     bs58check: "npm:^4.0.0"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
-    jws: "npm:^4.0.0"
     karma: "npm:^6.4.4"
     karma-babel-preprocessor: "npm:^8.0.2"
     karma-chrome-launcher: "npm:^3.2.0"
@@ -12477,6 +12500,20 @@ __metadata:
 "@trezor/ipc-proxy@workspace:*, @trezor/ipc-proxy@workspace:packages/ipc-proxy":
   version: 0.0.0-use.local
   resolution: "@trezor/ipc-proxy@workspace:packages/ipc-proxy"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/jws@workspace:packages/jws":
+  version: 0.0.0-use.local
+  resolution: "@trezor/jws@workspace:packages/jws"
+  dependencies:
+    "@pagopa/io-react-native-jwt": "patch:@pagopa/io-react-native-jwt@npm%3A2.1.0#~/.yarn/patches/@pagopa-io-react-native-jwt-npm-2.1.0-b6860a041b.patch"
+    "@trezor/env-utils": "workspace:*"
+    "@types/jwa": "npm:^2"
+    ecdsa-sig-formatter: "npm:^1.0.11"
+    jose: "npm:^6.0.12"
+    jwa: "npm:^2.0.1"
+    jws: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -13919,6 +13956,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/0f8fe0a9221a00e8413cffba723dfe16553868724b830237256fb0052ecd5cac96498189d1235a001cfa815f352008261c9ceb373f0aa58227f891e0c7a12c4d
+  languageName: node
+  linkType: hard
+
+"@types/jwa@npm:^2":
+  version: 2.0.3
+  resolution: "@types/jwa@npm:2.0.3"
+  checksum: 10/f152d680c94f17767a219fdf38b61d9d771f6cd070a39738c1296f58538d4c2d09f7e869801b246a93de5aded611e43a78a8f229b6a864445525a868f2a245f2
   languageName: node
   linkType: hard
 
@@ -17388,7 +17432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer-equal-constant-time@npm:1.0.1":
+"buffer-equal-constant-time@npm:^1.0.1":
   version: 1.0.1
   resolution: "buffer-equal-constant-time@npm:1.0.1"
   checksum: 10/80bb945f5d782a56f374b292770901065bad21420e34936ecbe949e57724b4a13874f735850dd1cc61f078773c4fb5493a41391e7bda40d1fa388d6bd80daaab
@@ -21081,7 +21125,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ecdsa-sig-formatter@npm:1.0.11":
+"ecdsa-sig-formatter@npm:1.0.11, ecdsa-sig-formatter@npm:^1.0.11":
   version: 1.0.11
   resolution: "ecdsa-sig-formatter@npm:1.0.11"
   dependencies:
@@ -27947,6 +27991,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^6.0.12":
+  version: 6.0.12
+  resolution: "jose@npm:6.0.12"
+  checksum: 10/48b7aee43a88e157eb973c7e950f5835175264ecda01a7fcb1750ad6cc02672153e2bd486b65db969841b38c01b1596d86cb71f65e2ccb5311b67127ba4f8549
+  languageName: node
+  linkType: hard
+
 "jotai@npm:^2.12.5":
   version: 2.12.5
   resolution: "jotai@npm:2.12.5"
@@ -27966,6 +28017,13 @@ __metadata:
   version: 1.1.4
   resolution: "jpeg-exif@npm:1.1.4"
   checksum: 10/75699bd7161de1be99e847166917957bfb405ed736655361c58f0390e7182cc28999b2cbc31e650b71b6d2ad38843789439a121ac64988b2ccaa00f6832bb3d9
+  languageName: node
+  linkType: hard
+
+"js-base64@npm:^3.7.7":
+  version: 3.7.8
+  resolution: "js-base64@npm:3.7.8"
+  checksum: 10/4baa9a222bc094b072933e4894735653b59992477c731879784e3112f21862b08dd5c56b8b23b0b8e43bc5bb514d957621d1892a6c58950f29e12b731fe087b6
   languageName: node
   linkType: hard
 
@@ -28379,14 +28437,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwa@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "jwa@npm:2.0.0"
+"jwa@npm:^2.0.0, jwa@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "jwa@npm:2.0.1"
   dependencies:
-    buffer-equal-constant-time: "npm:1.0.1"
+    buffer-equal-constant-time: "npm:^1.0.1"
     ecdsa-sig-formatter: "npm:1.0.11"
     safe-buffer: "npm:^5.0.1"
-  checksum: 10/ab983f6685d99d13ddfbffef9b1c66309a536362a8412d49ba6e687d834a1240ce39290f30ac7dbe241e0ab6c76fee7ff795776ce534e11d148158c9b7193498
+  checksum: 10/b04312a1de85f912b96aa3a7211717b8336945fab5b4f7cbc7800f4c80934060c0a3111576fad8d76e41ad62887d6da4b21fd4c47e45c174197f8be7dc0c1694
   languageName: node
   linkType: hard
 
@@ -43291,6 +43349,13 @@ __metadata:
   version: 3.25.51
   resolution: "zod@npm:3.25.51"
   checksum: 10/88172dae4c14194bba23c006ae63dd64b96a0e885d9bdb00f8495d1191a4bfd6ed545ab9c60de579b1979589d52253f1bbca6637813fb6890124784c877baf01
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.22.4":
+  version: 3.25.76
+  resolution: "zod@npm:3.25.76"
+  checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
   languageName: node
   linkType: hard
 

@@ -1,0 +1,11 @@
+diff --git a/android/build.gradle b/android/build.gradle
+index bb9f45eaf56d976b365869dd05cbd9b2f3f43e22..c403c3425c772b0374bba0b42c26e153dce73e78 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -97,6 +97,5 @@ dependencies {
+   implementation "com.facebook.react:react-native:+"
+   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+   implementation 'com.nimbusds:nimbus-jose-jwt:9.30.2'
+-  implementation 'org.bouncycastle:bcprov-jdk15on:[1.56,)'
+ 
+ }
