@@ -108,7 +108,15 @@ const inputs = [
     },
     {
         key: 'groups',
-        value: Object.values(groups),
+        value: ({ model }) => {
+            return Object.values(groups).filter(group => {
+                if (['T3W1', 'T3T1', 'T3B1'].includes(model)) {
+                    // newer models discontinued support for these. Only supported for T2T1
+                    return !['nem', 'eos'].includes(group.name);
+                }
+                return group;
+            });
+        },
     },
     {
         key: 'env',
