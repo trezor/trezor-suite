@@ -48,4 +48,50 @@ describe('sellSlice', () => {
             expect(state.quotesRequest).toBeUndefined();
         });
     });
+
+    describe('sendAssetChanged', () => {
+        it('should clear amount limits and quotes request data', () => {
+            const prevState: TradingSellState = {
+                ...sellInitialState,
+                amountLimits: {
+                    currency: 'CZK',
+                    minFiat: '100',
+                },
+                quotesRequest: {
+                    fiatCurrency: 'czk',
+                    country: 'CZ',
+                    cryptoCurrency: 'bitcoin' as CryptoId,
+                    amountInCrypto: true,
+                },
+            };
+
+            const state = sellReducer(prevState, sellActions.sendAssetChanged());
+
+            expect(state.amountLimits).toBeUndefined();
+            expect(state.quotesRequest).toBeUndefined();
+        });
+    });
+
+    describe('fiatCurrencyChanged', () => {
+        it('should clear amount limits and quotes request data', () => {
+            const prevState: TradingSellState = {
+                ...sellInitialState,
+                amountLimits: {
+                    currency: 'CZK',
+                    minFiat: '100',
+                },
+                quotesRequest: {
+                    fiatCurrency: 'czk',
+                    country: 'CZ',
+                    cryptoCurrency: 'bitcoin' as CryptoId,
+                    amountInCrypto: true,
+                },
+            };
+
+            const state = sellReducer(prevState, sellActions.fiatCurrencyChanged());
+
+            expect(state.amountLimits).toBeUndefined();
+            expect(state.quotesRequest).toBeUndefined();
+        });
+    });
 });

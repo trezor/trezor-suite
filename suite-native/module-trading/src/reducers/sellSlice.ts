@@ -23,6 +23,14 @@ const sellSlice = createSlice({
             state.quotesRequest = undefined;
             state.quotes = [];
         },
+        sendAssetChanged: state => {
+            state.amountLimits = undefined;
+            state.quotesRequest = undefined;
+        },
+        fiatCurrencyChanged: state => {
+            state.amountLimits = undefined;
+            state.quotesRequest = undefined;
+        },
     },
 });
 
