@@ -2,15 +2,13 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useNavigationState } from '@react-navigation/native';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 import { selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
 import {
     selectIsDeviceConnected,
     selectIsDeviceInitialized,
-    selectIsDeviceRemembered,
     selectIsDeviceThpRequired,
-    selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
@@ -34,7 +32,6 @@ import {
     wasDeviceOnboardingCancelledAtom,
 } from '../deviceAtoms';
 import { selectIsDeviceCompromised, selectIsDeviceSetupSupported } from '../selectors';
-import { useDeviceChecks } from './useDeviceChecks';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
@@ -46,10 +43,8 @@ const pinMatrixBlacklistedScreens = [
 export const useHandleDeviceConnection = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
-    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
@@ -65,36 +60,21 @@ export const useHandleDeviceConnection = () => {
         isOnboardingDeviceDisconnectedAlertDisplayedAtom,
     );
 
-    const [wasDeviceOnboardingCancelled, setWasDeviceOnboardingCancelled] = useAtom(
-        wasDeviceOnboardingCancelledAtom,
-    );
+    const wasDeviceOnboardingCancelled = useAtomValue(wasDeviceOnboardingCancelledAtom);
 
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
-
-    // We encourage user to disconnect device when he is redirected to suspicious device screen.
-    // We should not redirect him away so he can read the screen content and decide what to do.
-    // If the device is connected again, he still should stay on that screen.
-    const isSuspiciousDeviceScreenFocused = useNavigationRouteMatch(
-        DeviceOnboardingStackRoutes.SuspiciousDevice,
-    );
 
     const isDeviceOnboardingConnectAndUnlockScreenFocused = useNavigationRouteMatch(
         DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
     );
 
     const lastRoute = useNavigationState(state => state.routes.at(-1)?.name);
-    const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
-    const isOnboardingStackFocused = lastRoute === RootStackRoutes.OnboardingStack;
     const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
     const isAuthorizeDeviceStackFocused = lastRoute === RootStackRoutes.AuthorizeDeviceStack;
-    const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
-    const isDeviceCompromisedModalFocused = lastRoute === RootStackRoutes.DeviceCompromisedModal;
     const isOnPinMatrixBlacklistedRoute = pinMatrixBlacklistedScreens.includes(
         lastRoute as RootStackRoutes,
     );
-
-    const { shouldKeepDeviceCompromisedModal } = useDeviceChecks(isDeviceCompromisedModalFocused);
 
     // Nothing can be accomplished before a THP connection is established.
     useEffect(() => {
@@ -160,52 +140,6 @@ export const useHandleDeviceConnection = () => {
         isDeviceCompromised,
         isAuthorizeDeviceStackFocused,
         navigateToInitialScreen,
-    ]);
-
-    // In case that the physical device is disconnected, redirect to the home screen and
-    // set connecting screen to be displayed again on the next device connection.
-    useEffect(() => {
-        if (isFirmwareInstallationRunning || !isOnboardingFinished) return;
-
-        if (isNoPhysicalDeviceConnected) {
-            if (shouldBlockSendReviewRedirect) {
-                return;
-            }
-            // DeviceCompromisedModal is persistent, so postpone navigating to away until it's dismissed
-            // TODO: this hook is getting very complex, and it's hard to understand the logic when it navigates there and back again.
-            //  Ideally there'd be a single source of truth, a function returning "where we should be as per current state"
-            //  rather than multiple useEffects with imperative instructions "go there when X changes"
-            if (shouldKeepDeviceCompromisedModal || isSuspiciousDeviceScreenFocused) {
-                return;
-            }
-
-            if (isDeviceOnboardingStackFocused) {
-                navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                    screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
-                });
-
-                return;
-            }
-
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-        }
-    }, [
-        isNoPhysicalDeviceConnected,
-        isOnboardingFinished,
-        navigation,
-        shouldBlockSendReviewRedirect,
-        isFirmwareInstallationRunning,
-        shouldKeepDeviceCompromisedModal,
-        isSuspiciousDeviceScreenFocused,
-        isOnboardingStackFocused,
-        isDeviceOnboardingStackFocused,
-        wasDeviceOnboardingCancelled,
-        setWasDeviceOnboardingCancelled,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
