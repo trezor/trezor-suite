@@ -6,8 +6,7 @@ import {
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
-import { Card, Column, Dropdown, Switch, Tooltip } from '@trezor/components';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { Card, Column, Dropdown, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -22,6 +21,7 @@ import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
+import { UnsupportedAssetsMessage, useUnsupportedAssetsMessage } from './UnsupportedAssetsMessage';
 
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -68,19 +68,18 @@ export const PortfolioCard = memo(() => {
     const isWalletError = discoveryStatus?.status === 'exception';
     const showGraphControls =
         !isWalletEmpty && !isWalletLoading && !isWalletError && !dashboardGraphHidden;
-
-    const showMissingDataTooltip =
-        showGraphControls &&
-        !hasBitcoinOnlyFirmware(device) &&
-        !!accounts.some(
-            account =>
-                account.history &&
-                (account.tokens?.length ||
-                    ['ripple', 'solana', 'stellar'].includes(account.networkType)),
-        );
+    const { affectedAssets } = useUnsupportedAssetsMessage({
+        showGraphControls,
+        device,
+        accounts,
+    });
 
     const goToReceive = () => dispatch(goto('wallet-receive'));
-    const heading = <Translation id="TR_MY_PORTFOLIO" />;
+    const heading = (
+        <>
+            <Translation id="TR_MY_PORTFOLIO" />
+        </>
+    );
     const header =
         discovery && discoveryStatus?.status === 'exception' ? null : (
             <PortfolioCardHeader
@@ -98,15 +97,8 @@ export const PortfolioCard = memo(() => {
 
     return (
         <DashboardSection
-            heading={
-                showMissingDataTooltip ? (
-                    <Tooltip hasIcon content={<Translation id="TR_GRAPH_MISSING_DATA" />}>
-                        {heading}
-                    </Tooltip>
-                ) : (
-                    heading
-                )
-            }
+            heading={heading}
+            subheading={<UnsupportedAssetsMessage affectedAssets={affectedAssets} />}
             actions={
                 !isWalletEmpty && !isWalletLoading && !isWalletError ? (
                     <Dropdown
