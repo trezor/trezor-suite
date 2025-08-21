@@ -12499,6 +12499,7 @@ __metadata:
     "@storybook/addon-links": "npm:^9.0.16"
     "@storybook/react": "npm:^9.0.16"
     "@storybook/react-webpack5": "npm:^9.0.16"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
