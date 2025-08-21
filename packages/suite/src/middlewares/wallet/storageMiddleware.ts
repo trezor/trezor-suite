@@ -187,15 +187,22 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 );
             }
 
-            if (deviceActions.updateSelectedDevice.match(action)) {
+            if (
+                deviceActions.addAuthorizedDevice.match(action) ||
+                deviceActions.setDeviceState.match(action)
+            ) {
+                const device =
+                    'device' in action.payload
+                        ? action.payload.device
+                        : selectSelectedDevice(api.getState());
                 const isAutoEjectEnabled = selectIsAutoEjectEnabled(api.getState());
 
                 if (
-                    isDeviceRemembered(action.payload) &&
-                    action.payload?.mode === 'normal' &&
+                    isDeviceRemembered(device) &&
+                    device?.mode === 'normal' &&
                     !isAutoEjectEnabled
                 ) {
-                    storageActions.saveDevice(action.payload);
+                    storageActions.saveDevice(device);
                 }
             }
 
