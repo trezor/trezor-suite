@@ -12,6 +12,11 @@ on:
     branches:
       - release/2*
   workflow_dispatch:
+    inputs:
+      publishResultsToGitHub:
+        description: "(optional) Publish test report to GitHub Project"
+        required: false
+        default: false
   workflow_call:
 
 concurrency:
@@ -85,4 +90,4 @@ jobs:
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
           github-token: ${{ steps.trezor-bot-token.outputs.token }}
           release-build: ${{ env.release_build }}
-          run-reporter: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' }}
+          run-reporter: ${{ inputs.publishResultsToGitHub == 'true' || github.event_name == 'workflow_call' }}
