@@ -252,7 +252,8 @@ type ApplyDeviceStateErrorThunkProps = {
     code: string | undefined;
     devicePath: DeviceUniquePath;
 };
-export const applyDeviceStateErrorThunk = createThunk(
+
+const applyDeviceStateErrorThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStateError`,
     ({ error, code, devicePath }: ApplyDeviceStateErrorThunkProps, { dispatch, getState }) => {
         // means that `cancelDiscoveryThunk` has been called and device returned code:Method_Cancel and this specific `error`
@@ -272,11 +273,7 @@ export const applyDeviceStateErrorThunk = createThunk(
         // The error is not from deliberate cancellation, so we mark the discovery as failed
         dispatch(
             discoveryActions.updateDiscovery(
-                {
-                    status: 'failed',
-                    error,
-                    errorCode: code,
-                },
+                { status: 'failed', error, errorCode: code },
                 devicePath,
             ),
         );
@@ -306,9 +303,7 @@ export const runDiscoveryThunk = createThunk(
             if (isAddingHiddenWallet && device.features && !device.features.passphrase_protection) {
                 dispatch(
                     discoveryActions.updateDiscovery(
-                        {
-                            status: 'passphrase-enable-on-device',
-                        },
+                        { status: 'passphrase-enable-on-device' },
                         device.path,
                     ),
                 );
@@ -319,12 +314,7 @@ export const runDiscoveryThunk = createThunk(
 
                 if (!response.success) {
                     dispatch(
-                        discoveryActions.updateDiscovery(
-                            {
-                                status: 'cancelled',
-                            },
-                            device.path,
-                        ),
+                        discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path),
                     );
 
                     return;
@@ -333,12 +323,7 @@ export const runDiscoveryThunk = createThunk(
 
             if (isAddingHiddenWallet) {
                 dispatch(
-                    discoveryActions.updateDiscovery(
-                        {
-                            status: 'enter-passphrase',
-                        },
-                        device.path,
-                    ),
+                    discoveryActions.updateDiscovery({ status: 'enter-passphrase' }, device.path),
                 );
             }
 
@@ -473,9 +458,7 @@ export const runDiscoveryThunk = createThunk(
             const result = await TrezorConnect.discoverAccounts({
                 device: {
                     instance,
-                    state: {
-                        staticSessionId: deviceStateResponse.payload._state.staticSessionId,
-                    },
+                    state: { staticSessionId: deviceStateResponse.payload._state.staticSessionId },
                 },
                 useEmptyPassphrase: !isAddingHiddenWallet,
                 accounts: accountsParam,
@@ -545,20 +528,13 @@ export const runDiscoveryThunk = createThunk(
 
             dispatch(
                 discoveryActions.updateDiscovery(
-                    {
-                        status: 'confirm-empty-passphrase',
-                        emptyWallet: true,
-                    },
+                    { status: 'confirm-empty-passphrase', emptyWallet: true },
                     device.path,
                 ),
             );
 
             const getDeviceState2Res = await TrezorConnect.getDeviceState({
-                device: {
-                    path: device.path,
-                    instance,
-                    state: undefined,
-                },
+                device: { path: device.path, instance, state: undefined },
                 useEmptyPassphrase: false,
             });
 
@@ -580,9 +556,7 @@ export const runDiscoveryThunk = createThunk(
             ) {
                 dispatch(
                     discoveryActions.updateDiscovery(
-                        {
-                            status: 'passphrase-mismatch',
-                        },
+                        { status: 'passphrase-mismatch' },
                         device.path,
                     ),
                 );
@@ -735,7 +709,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
             );
         }
 
-        // NOTE: keep here the previous device as default to prevent TS from screeming
+        // NOTE: keep here the previous device as default to prevent TS from screaming
         const updatedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId) ?? device;
 
         const result = await TrezorConnect.discoverAccounts({
@@ -748,22 +722,18 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-        if (!result.success) {
-            dispatch(
-                discoveryActions.updateDiscovery(
-                    {
-                        status: 'failed',
-                        error: result.payload.error,
-                        errorCode: result.payload.code,
-                    },
-                    updatedDevice.path,
-                ),
-            );
-
-            return;
-        }
-
-        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, updatedDevice.path));
+        dispatch(
+            discoveryActions.updateDiscovery(
+                result.success
+                    ? { status: 'complete' }
+                    : {
+                          status: 'failed',
+                          error: result.payload.error,
+                          errorCode: result.payload.code,
+                      },
+                updatedDevice.path,
+            ),
+        );
     },
 );
 
@@ -825,7 +795,7 @@ export const restartDiscoveryThunk = createThunk(
     (_, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
         if (!device) return;
-        const staticSessionId = device?.state?.staticSessionId;
+        const staticSessionId = device.state?.staticSessionId;
         if (staticSessionId) {
             // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
             dispatch(runAdditionalDiscoveryThunk(staticSessionId));
