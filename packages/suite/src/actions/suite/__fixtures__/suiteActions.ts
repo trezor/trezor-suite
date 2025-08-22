@@ -16,6 +16,7 @@ const SUITE_DEVICE_UNACQUIRED = getSuiteDevice({
     type: 'unacquired',
     path: '2',
 });
+const SUITE_DEVICE_REMEMBERED = getSuiteDevice({ connected: false });
 const CONNECT_DEVICE = getConnectDevice({ path: '1' });
 
 const reducerActions = [
@@ -303,42 +304,54 @@ const selectDevice = [
     },
 ];
 
-type DeviceConnectFixture = {
+type HandleDeviceConnectFixture = {
     description: string;
     state: {
         suite: Partial<AppState['suite']>;
         device: Partial<AppState['device']>;
     };
-    device: Device;
+    newlyConnectedDevice: Device;
     expectedNextActionType: string;
 };
 
-const handleDeviceConnect: DeviceConnectFixture[] = [
+const handleDeviceConnect: HandleDeviceConnectFixture[] = [
     {
         description: `selects a newly connected device if there are none`,
-        state: {
-            device: { devices: [SUITE_DEVICE] },
-            suite: {},
-        },
-        device: CONNECT_DEVICE,
+        state: { device: {}, suite: {} },
+        newlyConnectedDevice: CONNECT_DEVICE,
         expectedNextActionType: deviceActions.selectDevice.type,
     },
     {
         description: `selects a newly connected physical device corresponding to selected remembered wallet `,
         state: {
-            device: { selectedDevice: SUITE_DEVICE },
+            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
             suite: {},
         },
-        device: CONNECT_DEVICE,
+        newlyConnectedDevice: CONNECT_DEVICE,
         expectedNextActionType: deviceActions.selectDevice.type,
     },
     {
-        description: `opens the wallet switcher when newly connected physical not seen before`,
+        description: `marks device as recently connected if not seen before`,
         state: {
-            device: { selectedDevice: SUITE_DEVICE },
+            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
             suite: {},
         },
-        device: { ...CONNECT_DEVICE, id: 'a-different-id' } as Device,
+        newlyConnectedDevice: { ...CONNECT_DEVICE, id: 'a-different-id' } as Device,
+        expectedNextActionType: SUITE.SET_RECENTLY_CONNECTED_DEVICE,
+    },
+    {
+        description: `opens the wallet switcher if more than one physically connected device`,
+        state: {
+            device: {
+                devices: [
+                    getSuiteDevice({ path: '777', id: 'foo', connected: true }),
+                    getSuiteDevice({ path: '888', id: 'bar', connected: true }),
+                ],
+                selectedDevice: getSuiteDevice({ path: '777', id: 'foo', connected: true }),
+            },
+            suite: {},
+        },
+        newlyConnectedDevice: CONNECT_DEVICE,
         expectedNextActionType: openSwitchDeviceDialog.pending.type,
     },
 ];

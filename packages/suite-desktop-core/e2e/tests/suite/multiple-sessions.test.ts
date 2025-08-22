@@ -64,6 +64,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             });
 
             await test.step('Take Bridge session back', async () => {
+                await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.solveIssuesButton.click();
                 await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible();
             });
