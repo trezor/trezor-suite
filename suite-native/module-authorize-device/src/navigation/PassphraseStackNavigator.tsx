@@ -67,7 +67,7 @@ export const PassphraseStackNavigator = () => {
                 />
             )}
 
-            {passphraseState === 'starting' && (
+            {['starting', 'enter-passphrase'].includes(passphraseState) && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseForm}
                     component={PassphraseFormScreen}
