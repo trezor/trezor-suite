@@ -78,5 +78,6 @@ export const TOKEN_SELECT_SELECTABLE_NETWORKS: NetworkSymbol[] = [
     'bsc',
     'base',
     'op',
+    'avax',
     'arb',
 ];

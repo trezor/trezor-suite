@@ -17,6 +17,7 @@ export type NetworkSymbol =
     | 'arb'
     | 'base'
     | 'op'
+    | 'avax'
     | 'xlm'
     | 'test'
     | 'regtest'

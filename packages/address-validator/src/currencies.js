@@ -1467,6 +1467,11 @@ var CURRENCIES = [
         validator: ETHValidator,
     },
     {
+        name: 'Avalanche C-Chain',
+        symbol: 'avax',
+        validator: ETHValidator,
+    },
+    {
         name: 'EOS',
         symbol: 'eos',
         validator: EOSValidator,

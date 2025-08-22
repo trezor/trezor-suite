@@ -6,6 +6,8 @@ export const networkIcons = {
     ada_inverse: require('../cryptoAssets/networkIcons/ada_inverse.svg'),
     arb: require('../cryptoAssets/networkIcons/arb.svg'),
     arb_inverse: require('../cryptoAssets/networkIcons/arb_inverse.svg'),
+    avax: require('../cryptoAssets/networkIcons/avax.svg'),
+    avax_inverse: require('../cryptoAssets/networkIcons/avax_inverse.svg'),
     base: require('../cryptoAssets/networkIcons/base.svg'),
     base_inverse: require('../cryptoAssets/networkIcons/base_inverse.svg'),
     bch: require('../cryptoAssets/networkIcons/bch.svg'),
