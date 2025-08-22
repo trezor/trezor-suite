@@ -59,6 +59,29 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
+                "url": ["https://blockbook-dev.corp.sldev.cz:9199"]
+            },
+            "chain": "avax",
+            "chain_id": 43114,
+            "blocktime_seconds": 2,
+            "coingecko_id": "avalanche",
+            "is_testnet": false,
+            "label": "AVAX",
+            "name": "Avalanche C-Chain",
+            "shortcut": "AVAX",
+            "slip44": 9000,
+            "support": {
+                "T1B1": "1.9.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.3.5",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1",
+                "T3W1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
                 "url": [
                     "https://bsc1.trezor.io",
                     "https://bsc2.trezor.io",
