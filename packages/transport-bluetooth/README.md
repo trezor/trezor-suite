@@ -42,6 +42,12 @@ createIpcProxyHandler(ipcMain, 'Bluetooth', {
 
 `yarn workspace @trezor/transport-bluetooth build:server`
 
+### NAPI build
+
+For MacOS, we use [NAPI](https://napi.rs/) instead of a standalone process due to issues with pairing.
+
+`yarn workspace @trezor/transport-bluetooth build:napi`
+
 ### Server development
 
 Prerequisites: [RUST](https://www.rust-lang.org/tools/install)
