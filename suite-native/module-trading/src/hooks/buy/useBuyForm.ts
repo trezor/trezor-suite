@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { BuyCryptoPaymentMethod, BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
-import { useFormatters } from '@suite-common/formatters';
 import {
     TradingAmountLimitProps,
     getBestRatedQuote,
@@ -29,7 +28,7 @@ import { BuyFormType, BuyFormValues } from '../../types/buy';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
-import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
+import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
     const dispatch = useDispatch();
@@ -225,22 +224,14 @@ const useValidations = (
 };
 
 export const useBuyForm = (): BuyFormType => {
-    const { translate } = useTranslate();
-    const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const defaultValues = useSelector(selectBuyFormDefaultValues);
     const limits = useSelector(selectBuyAmountLimits);
-    const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
+    const { context } = useContextForTradingForm(limits);
 
     const form = useForm<BuyFormValues>({
         defaultValues,
         validation: buyFormValidationSchema,
-        context: {
-            ...limits,
-            translate,
-            FiatAmountFormatter: BaseCurrencyAmountFormatter,
-            CryptoAmountFormatter,
-            convertNumberToBaseUnit,
-        },
+        context,
     });
 
     useAmountAndCurrencyFieldsChangeEffect(form);

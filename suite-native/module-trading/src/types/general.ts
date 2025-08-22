@@ -1,10 +1,18 @@
-import { CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
+import type { CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
-import { TradingTradeType } from '@suite-common/trading';
-import { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Address } from '@trezor/blockchain-link-types';
+import type { Formatters } from '@suite-common/formatters';
+import type {
+    TradingAmountLimitProps,
+    TradingCountryOption,
+    TradingTradeType,
+} from '@suite-common/trading';
+import type { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import type { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import type { Translate } from '@suite-native/intl';
+import type { Address } from '@trezor/blockchain-link-types';
+
+import type { ConvertNumberToBaseUnit } from '../hooks/general/useConvertFormValueToBaseUnit';
 
 export type TradeableAsset = {
     symbol: NetworkSymbolExtended;
@@ -41,10 +49,30 @@ export type BaseFormValues<FocusedValue extends string, Quote extends TradingTra
     focusedValue: FocusedValue | undefined;
 } & Record<FocusedValue, string | undefined>;
 
+export type FormWithSendAccountValues = {
+    sendAsset: TradeableAsset | undefined;
+    sendAccount: Account | undefined;
+};
+
+export type FormWithFiatCurrencyValues = {
+    fiatCurrency: FiatCurrencyCode;
+    amountInCrypto: boolean;
+    country: TradingCountryOption;
+};
+
 export type QuotesCategory = 'fixed' | 'float' | 'dex';
 
 export type QuotesByCategories<T extends TradingTradeType> = { [Q in QuotesCategory]?: T[] };
 
 export type AbortablePromise<T = unknown> = Promise<T> & {
     abort: (message?: string) => void;
+};
+
+export type TradingFormContext = Partial<TradingAmountLimitProps> & {
+    translate: Translate;
+    FiatAmountFormatter: Formatters['BaseCurrencyAmountFormatter'];
+    CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
+    convertNumberToBaseUnit: ConvertNumberToBaseUnit;
+    sendSymbol: string | undefined;
+    balance: string | undefined;
 };

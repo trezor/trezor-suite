@@ -8,7 +8,7 @@ import {
     isSellFiatTrade,
     tradeFinalStatuses,
 } from '@suite-common/trading';
-import { useTranslate } from '@suite-native/intl';
+import { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
@@ -186,10 +186,7 @@ export const doesUrlContainCloseCallbackUrl = (url: string, closeCallbackUrl: st
 
 export const getRandomAccountDescriptor = () => getWeakRandomId(20);
 
-export const getTradeTitle = (
-    trade: TradingTransaction,
-    translate: ReturnType<typeof useTranslate>['translate'],
-) => {
+export const getTradeTitle = (trade: TradingTransaction, translate: Translate) => {
     const { tradeType } = trade;
     switch (tradeType) {
         case 'buy':
