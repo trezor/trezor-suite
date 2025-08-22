@@ -110,10 +110,10 @@ export const handleDeviceDisconnect = createThunk(
         } = extra;
 
         const selectedDevice = selectSelectedDevice(getState());
-        const routerApp = selectRouterApp(getState());
-        const devices = selectDevices(getState());
         if (!selectedDevice) return;
         if (selectedDevice.path !== device.path) return;
+
+        const routerApp = selectRouterApp(getState());
 
         /**
          * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
@@ -124,6 +124,8 @@ export const handleDeviceDisconnect = createThunk(
 
             return;
         }
+
+        const devices = selectDevices(getState());
 
         // selected device is disconnected, decide what to do next
         // device is still present in reducer (remembered or candidate to remember)
