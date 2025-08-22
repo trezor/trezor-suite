@@ -351,10 +351,14 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
+            const deviceState = deviceStateResponse.payload._state;
+
+            assertStaticSessionId(deviceState);
+
             if (!isAddingHiddenWallet) {
                 await dispatch(
                     applyDeviceStatesThunk({
-                        newDeviceState: deviceStateResponse.payload._state,
+                        newDeviceState: deviceState,
                         isAddingHiddenWallet,
                         devicePath: passedDevice.path,
                     }),
@@ -363,14 +367,12 @@ export const runDiscoveryThunk = createThunk(
 
             device = reselectDevice();
 
-            assertStaticSessionId(deviceStateResponse.payload._state);
-
             const duplicate = selectDevices(getState())
                 .filter(d => d.state?.staticSessionId)
                 .find(
                     d =>
                         d.state!.staticSessionId!.split(':')[0] ===
-                        deviceStateResponse.payload._state.staticSessionId!.split(':')[0],
+                        deviceState.staticSessionId!.split(':')[0],
                 );
 
             if (isAddingHiddenWallet && duplicate?.state?.staticSessionId) {
@@ -389,7 +391,7 @@ export const runDiscoveryThunk = createThunk(
 
             const accountsParam = selectDiscoveryAccountsParam(
                 getState(),
-                deviceStateResponse.payload._state.staticSessionId,
+                deviceState.staticSessionId,
             );
 
             // no networks to discover, complete discovery
@@ -400,7 +402,6 @@ export const runDiscoveryThunk = createThunk(
 
             // we do not create empty accounts right away, but store the progress events for later
             const accountQueue: CreateAccountActionProps[] = [];
-            const deviceState = deviceStateResponse.payload._state;
             const onBundleProgress = (event: ProgressEvent) => {
                 const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
                 if (!currentDiscovery) {
@@ -458,7 +459,7 @@ export const runDiscoveryThunk = createThunk(
             const result = await TrezorConnect.discoverAccounts({
                 device: {
                     instance,
-                    state: { staticSessionId: deviceStateResponse.payload._state.staticSessionId },
+                    state: { staticSessionId: deviceState.staticSessionId },
                 },
                 useEmptyPassphrase: !isAddingHiddenWallet,
                 accounts: accountsParam,
@@ -485,21 +486,13 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            assertStaticSessionId(deviceStateResponse.payload._state);
-
             if (!isAddingHiddenWallet) {
                 dispatch(
                     completeDiscoveryThunk({
-                        staticSessionId: deviceStateResponse.payload._state.staticSessionId,
+                        staticSessionId: deviceState.staticSessionId,
                         devicePath: device.path,
                     }),
                 );
-
-                return;
-            }
-
-            if (!deviceStateResponse.payload._state.staticSessionId) {
-                console.error('Discovery: staticSessionId missing in device state response');
 
                 return;
             }
@@ -511,7 +504,7 @@ export const runDiscoveryThunk = createThunk(
             if (!allAccountsEmpty) {
                 dispatch(
                     completeDiscoveryThunk({
-                        staticSessionId: deviceStateResponse.payload._state.staticSessionId,
+                        staticSessionId: deviceState.staticSessionId,
                         devicePath: device.path,
                     }),
                 );
@@ -552,7 +545,7 @@ export const runDiscoveryThunk = createThunk(
             if (
                 // todo: not sure about instance, now it looks that there are 2 devices created in connect
                 getDeviceState2Res.payload._state.staticSessionId?.split(':')[0] !==
-                deviceStateResponse.payload._state.staticSessionId?.split(':')[0]
+                deviceState.staticSessionId?.split(':')[0]
             ) {
                 dispatch(
                     discoveryActions.updateDiscovery(
@@ -566,7 +559,7 @@ export const runDiscoveryThunk = createThunk(
 
             await dispatch(
                 applyDeviceStatesThunk({
-                    newDeviceState: deviceStateResponse.payload._state,
+                    newDeviceState: deviceState,
                     isAddingHiddenWallet,
                     devicePath: passedDevice.path,
                 }),
@@ -574,7 +567,7 @@ export const runDiscoveryThunk = createThunk(
 
             dispatch(
                 completeDiscoveryThunk({
-                    staticSessionId: deviceStateResponse.payload._state.staticSessionId,
+                    staticSessionId: deviceState.staticSessionId,
                     devicePath: device.path,
                 }),
             );
