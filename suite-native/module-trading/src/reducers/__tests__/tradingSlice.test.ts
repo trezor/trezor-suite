@@ -16,7 +16,7 @@ import { sellQuotes } from '../../__fixtures__/sellQuotes';
 import { adaAsset, btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
 import { buyActions, buyInitialState } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';
-import { sellActions } from '../sellSlice';
+import { sellActions, sellInitialState } from '../sellSlice';
 import { TradingState, initialState, tradingActions, tradingSlice } from '../tradingSlice';
 
 describe('tradingSlice', () => {
@@ -150,7 +150,7 @@ describe('tradingSlice', () => {
             const prevState: TradingState = {
                 ...initialState,
                 sell: {
-                    ...initialState.sell,
+                    ...sellInitialState,
                     quotes: sellQuotes,
                     tradingAccountKey: 'account-key',
                     quotesRequest: {
@@ -267,7 +267,7 @@ describe('tradingSlice', () => {
             const tradingInitialState = {
                 ...initialState,
                 sell: {
-                    ...initialState.sell,
+                    ...sellInitialState,
                     quotes: sellQuotes,
                 },
             } as TradingState;

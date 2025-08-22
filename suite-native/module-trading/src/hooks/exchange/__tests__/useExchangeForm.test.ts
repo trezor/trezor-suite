@@ -24,6 +24,7 @@ describe('useExchangeForm', () => {
     const getInitializedStore = async (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({
+                tradeType: 'exchange',
                 bitcoinAmountUnit,
             }),
         };

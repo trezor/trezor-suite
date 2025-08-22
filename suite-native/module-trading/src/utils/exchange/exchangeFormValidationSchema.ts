@@ -1,7 +1,6 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { BuyFormContext } from '../../types/buy';
 import { ExchangeFormContext } from '../../types/exchange';
 
 const getAmountLimitContext = ({
@@ -20,7 +19,7 @@ const getAmountLimitContext = ({
 const formatCryptoAmount = (
     amount: string,
     currency: string,
-    CryptoAmountFormatter: BuyFormContext['CryptoAmountFormatter'],
+    CryptoAmountFormatter: ExchangeFormContext['CryptoAmountFormatter'],
 ) =>
     CryptoAmountFormatter.format(amount, {
         symbol: currency.toLowerCase() as NetworkSymbol,
