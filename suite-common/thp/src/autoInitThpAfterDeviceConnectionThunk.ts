@@ -14,6 +14,7 @@ export const autoInitThpAfterDeviceConnectionThunk = createThunk<
     AutoInitThpAfterDeviceConnectionThunkParams,
     void
 >(`${THP_PREFIX}/autoInitThpAfterDeviceConnectionThunk`, ({ device }, { dispatch, getState }) => {
+    if (device.thp === undefined) return;
     const isFwInstall = selectFirmware(getState()).status !== 'initial';
 
     // This needs to be re-selected to convert Device to TrezorDevice.
@@ -22,7 +23,7 @@ export const autoInitThpAfterDeviceConnectionThunk = createThunk<
         stateDevice => stateDevice.path === device.path,
     );
     // TODO: To be fixed properly in https://github.com/trezor/trezor-suite/issues/20930
-    if (device?.thp !== undefined && !isFwInstall) {
+    if (!isFwInstall) {
         dispatch(acquireDevice({ requestedDevice: reselectedTrezorDevice }));
     }
 });
