@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { WithLabelingState, selectAddressLabel } from '@suite-common/local-first-storage';
@@ -9,9 +10,10 @@ import { useIsLabelingEnabled } from './useIsLabelingEnabled';
 type AddressLabelEProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
+    fallback: ReactNode;
 };
 
-export const AddressLabel = ({ address, deviceStaticSessionId }: AddressLabelEProps) => {
+export const AddressLabel = ({ address, deviceStaticSessionId, fallback }: AddressLabelEProps) => {
     const isLabelingEnabled = useIsLabelingEnabled();
 
     const label = useSelector(
@@ -26,8 +28,8 @@ export const AddressLabel = ({ address, deviceStaticSessionId }: AddressLabelEPr
             )?.label ?? null,
     );
 
-    if (!isLabelingEnabled) {
-        return null;
+    if (!isLabelingEnabled || label === null) {
+        return fallback;
     }
 
     return <Text>{label}</Text>;

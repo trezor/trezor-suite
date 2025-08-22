@@ -1,7 +1,7 @@
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { AccountAddressFormatter } from '@suite-native/formatters';
-import { TransactionOutputLabelEditable } from '@suite-native/labeling';
+import { AddressLabel, TransactionOutputLabelEditable } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -29,11 +29,18 @@ export const TransactionUtxoAddress = ({
     return (
         <VStack>
             <HStack spacing={2}>
-                <AccountAddressFormatter
-                    key={address}
-                    value={address}
-                    style={applyStyle(addressTextStyle)}
+                <AddressLabel
+                    address={address}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                    fallback={
+                        <AccountAddressFormatter
+                            key={address}
+                            value={address}
+                            style={applyStyle(addressTextStyle)}
+                        />
+                    }
                 />
+
                 {isDebugEnv() && <Text>[{outputIndex}]</Text>}
             </HStack>
 

@@ -22,12 +22,14 @@ import {
     CryptoAmountFormatter,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { AddressLabel, TransactionOutputLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Utxo } from '@trezor/blockchain-link-types';
+import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const accountAddressFormatterStyle = prepareNativeStyle(() => ({
@@ -40,6 +42,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 export type Props = {
     utxo: Utxo;
+    deviceStaticSessionId: StaticSessionId;
     onToggle: (utxo: Utxo) => void;
     accountKey: AccountKey;
     symbol: NetworkSymbol;
@@ -51,7 +54,14 @@ type TransactionDetailNavigation = StackNavigationProps<
     RootStackRoutes.TransactionDetail
 >;
 
-export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = false }: Props) => {
+export const UtxoCard = ({
+    utxo,
+    onToggle,
+    deviceStaticSessionId,
+    accountKey,
+    symbol,
+    isSelected = false,
+}: Props) => {
     const { DateFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<TransactionDetailNavigation>();
@@ -119,12 +129,25 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = fals
                                 )}
                             </HStack>
 
-                            <AccountAddressFormatter
-                                style={applyStyle(accountAddressFormatterStyle)}
-                                value={utxo.address}
-                                variant="hint"
-                                color="textSubdued"
-                            />
+                            <HStack>
+                                <AddressLabel
+                                    address={utxo.address}
+                                    deviceStaticSessionId={deviceStaticSessionId}
+                                    fallback={
+                                        <AccountAddressFormatter
+                                            style={applyStyle(accountAddressFormatterStyle)}
+                                            value={utxo.address}
+                                            variant="hint"
+                                            color="textSubdued"
+                                        />
+                                    }
+                                />
+                                <TransactionOutputLabel
+                                    txId={utxo.txid}
+                                    outputIndex={utxo.vout}
+                                    deviceStaticSessionId={deviceStaticSessionId}
+                                />
+                            </HStack>
                         </VStack>
                         <CheckBox isChecked={isSelected} onChange={handleToggle} />
                     </HStack>

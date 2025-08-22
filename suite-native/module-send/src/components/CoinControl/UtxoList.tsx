@@ -6,6 +6,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { Utxo } from '@trezor/blockchain-link-types';
+import { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { UtxoCard } from './UtxoCard';
@@ -17,6 +18,7 @@ const spacerStyle = prepareNativeStyle(utils => ({
 }));
 
 type UtxoListProps = {
+    deviceStaticSessionId: StaticSessionId;
     accountKey: string;
     utxos: Utxo[];
     selectedUtxos: Utxo[];
@@ -25,8 +27,9 @@ type UtxoListProps = {
 };
 
 export const UtxoList = ({
-    utxos,
+    deviceStaticSessionId,
     accountKey,
+    utxos,
     selectedUtxos,
     onUtxoToggle,
     symbol,
@@ -46,9 +49,10 @@ export const UtxoList = ({
                 accountKey={accountKey}
                 utxo={item}
                 symbol={symbol}
+                deviceStaticSessionId={deviceStaticSessionId}
             />
         ),
-        [accountKey, onUtxoToggle, symbol, isSelected],
+        [accountKey, onUtxoToggle, symbol, isSelected, deviceStaticSessionId],
     );
 
     const rowSeparator = useCallback(() => <Box style={applyStyle(spacerStyle)} />, [applyStyle]);

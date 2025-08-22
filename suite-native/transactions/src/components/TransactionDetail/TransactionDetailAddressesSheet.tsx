@@ -76,8 +76,8 @@ const AddressRow = ({ address }: { address: string }) => {
 const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
     <Card>
         <VStack spacing="sp16">
-            {addresses.map(({ address }) => (
-                <AddressRow key={address} address={address} />
+            {addresses.map(({ address, outputIndex }) => (
+                <AddressRow key={outputIndex} address={address} />
             ))}
         </VStack>
     </Card>
