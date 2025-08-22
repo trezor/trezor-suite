@@ -218,31 +218,6 @@ const transformProgressEventData = (
     return { accountPayload, discoveryPayload };
 };
 
-const completeDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/complete`,
-    (
-        {
-            staticSessionId,
-            devicePath,
-        }: {
-            staticSessionId: StaticSessionId;
-            devicePath: DeviceUniquePath;
-        },
-        { dispatch, extra },
-    ) => {
-        dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'complete',
-                },
-                devicePath,
-            ),
-        );
-
-        dispatch(extra.thunks.fetchAndSaveMetadata(staticSessionId));
-    },
-);
-
 type ApplyDeviceStateErrorThunkProps = {
     error: string | undefined;
     code: string | undefined;
@@ -278,7 +253,7 @@ const applyDeviceStateErrorThunk = createThunk(
 
 export const runDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
-    async (passedDevice: TrezorDevice, { dispatch, getState }): Promise<void> => {
+    async (passedDevice: TrezorDevice, { dispatch, getState, extra }): Promise<void> => {
         try {
             let device: TrezorDevice = passedDevice;
 
@@ -483,12 +458,8 @@ export const runDiscoveryThunk = createThunk(
             }
 
             if (!isAddingHiddenWallet) {
-                dispatch(
-                    completeDiscoveryThunk({
-                        staticSessionId: deviceState.staticSessionId,
-                        devicePath: device.path,
-                    }),
-                );
+                dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
+                dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
 
                 return;
             }
@@ -498,12 +469,8 @@ export const runDiscoveryThunk = createThunk(
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
             if (!allAccountsEmpty) {
-                dispatch(
-                    completeDiscoveryThunk({
-                        staticSessionId: deviceState.staticSessionId,
-                        devicePath: device.path,
-                    }),
-                );
+                dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
+                dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
 
                 // finish here, device state was applied from bundle progress handler
                 return;
@@ -561,12 +528,8 @@ export const runDiscoveryThunk = createThunk(
                 }),
             );
 
-            dispatch(
-                completeDiscoveryThunk({
-                    staticSessionId: deviceState.staticSessionId,
-                    devicePath: device.path,
-                }),
-            );
+            dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
+            dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
         } catch (error) {
             dispatch(
                 discoveryActions.updateDiscovery({ status: 'failed', error }, passedDevice.path),
