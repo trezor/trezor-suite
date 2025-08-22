@@ -22,11 +22,13 @@ export type SellFormValues = BaseFormValues<
 
 export type SellFormContext = Partial<TradingAmountLimitProps> & {
     translate: ReturnType<typeof useTranslate>['translate'];
+    balance: string | undefined;
     FiatAmountFormatter: Formatters['BaseCurrencyAmountFormatter'];
     CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
     convertNumberToBaseUnit: ReturnType<
         typeof useConvertFormValueToBaseUnit
     >['convertNumberToBaseUnit'];
+    sendSymbol: string | undefined;
 };
 
 export type SellFormType = UseFormReturn<SellFormValues>;
