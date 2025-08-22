@@ -18,12 +18,17 @@ import {
     getNetwork,
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
+    networksCollection,
 } from '@suite-common/wallet-config';
 import type { Account, FormStateTrading } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './constants';
+import {
+    CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
+    CRYPTO_PLATFORM_SEPARATOR,
+    TOKEN_SELECT_SELECTABLE_NETWORKS,
+} from './constants';
 import { regional } from './regional';
 import {
     TradingCountryCode,
@@ -410,3 +415,15 @@ export const getTradingFormState = ({
             return exhaustive(activeSection);
     }
 };
+
+export const getTokenSelectableNetworks = (
+    isDebugMode = false,
+    allNetworks = networksCollection,
+): NetworkSymbol[] =>
+    allNetworks
+        .filter(
+            n =>
+                (!n.isDebugOnlyNetwork || isDebugMode) &&
+                TOKEN_SELECT_SELECTABLE_NETWORKS.includes(n.symbol),
+        )
+        .map(n => n.symbol);

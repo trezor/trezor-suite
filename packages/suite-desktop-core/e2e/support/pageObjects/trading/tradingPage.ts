@@ -23,7 +23,16 @@ const paymentMethodNameMap: Record<string, PaymentMethods> = {
     'Revolut Pay': 'revolutPay',
 };
 
-type AccountTabFilter = 'all-networks' | 'eth' | 'pol' | 'bsc' | 'arb' | 'base' | 'op' | 'sol';
+type AccountTabFilter =
+    | 'all-networks'
+    | 'eth'
+    | 'pol'
+    | 'bsc'
+    | 'arb'
+    | 'base'
+    | 'op'
+    | 'sol'
+    | 'avax';
 
 export class TradingPage {
     readonly fees: Fees;

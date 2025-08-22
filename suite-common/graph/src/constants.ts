@@ -10,6 +10,7 @@ export const LOCAL_BALANCE_HISTORY_COINS = [
     'bsc',
     'xrp',
     'arb',
+    'avax',
     'base',
     'op',
     'xlm',

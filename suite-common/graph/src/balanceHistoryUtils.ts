@@ -331,6 +331,7 @@ export const getAccountHistoryMovementFromTransactions = ({
         case 'arb':
         case 'op':
         case 'base':
+        case 'avax':
             return getAccountHistoryMovementItemETH({ transactions, from, to });
 
         default:

@@ -31,7 +31,14 @@ export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
     networks[symbol]?.backendTypes.some(backend => backend === 'blockbook');
 
 // TODO: move to networksConfig
-export const externalBackendTypeNetworks: NetworkSymbol[] = ['bsc', 'pol', 'op', 'arb', 'base'];
+export const externalBackendTypeNetworks: NetworkSymbol[] = [
+    'bsc',
+    'pol',
+    'op',
+    'arb',
+    'base',
+    'avax',
+];
 
 export const isTrezorInfraBasedNetwork = (symbol: NetworkSymbol) =>
     // https://github.com/trezor/trezor-suite/issues/18843

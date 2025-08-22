@@ -5,6 +5,7 @@ import { LegacyNetworkSymbol } from './coins';
 export const NETWORK_ICONS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     ada: require('../../images/networks/ada.svg'),
     arb: require('../../images/networks/arb.svg'),
+    avax: require('../../images/networks/avax.svg'),
     base: require('../../images/networks/base.svg'),
     bch: require('../../images/networks/bch.svg'),
     bsc: require('../../images/networks/bsc.svg'),
