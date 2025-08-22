@@ -114,18 +114,13 @@ export abstract class BaseProcess {
 
         this.stopped = false;
 
-        const { system, ext } = this.getPlatformInfo();
+        const { ext } = this.getPlatformInfo();
         // NOTE:
         // - unpacked app (dev || e2e-test)
         //   binaries are stored in suite-desktop/build/static/bin/{this.resourceName}/{system}/{this.processName} - see desktop.webpack.config.ts
         // - packed app (.dmg || .AppImage || .exe)
         //   binaries are stored in {app.resourcesPath}/bin/{this.resourceName}/{this.processName} - see electron-builder-config.js
-        const processDir = path.join(
-            global.resourcesPath,
-            'bin',
-            this.resourceName,
-            !app.isPackaged ? system : '',
-        );
+        const processDir = this.getProcessDir();
         const processPath = path.join(processDir, `${this.processName}${ext}`);
         const processEnv = { ...process.env, ...this.options.env };
         // library search path for macOS
@@ -290,5 +285,17 @@ export abstract class BaseProcess {
             default:
                 return process.platform;
         }
+    }
+
+    protected getProcessDir() {
+        const { system } = this.getPlatformInfo();
+        const processDir = path.join(
+            global.resourcesPath,
+            'bin',
+            this.resourceName,
+            !app.isPackaged ? system : '',
+        );
+
+        return processDir;
     }
 }

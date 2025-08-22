@@ -141,3 +141,6 @@ packages/suite-data/files/translations/master.json
 packages/suite-data/files/videos/lottie/*.json
 
 /.nx/cache
+
+# NAPI generated files 
+packages/transport-bluetooth/napi
