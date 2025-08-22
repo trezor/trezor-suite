@@ -114,12 +114,16 @@ export const init: ModuleInit = () => {
         bluetoothModuleState.getTransport = getBluetoothTransport;
     };
 
-    const onQuit = () => {
+    const dispose = () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
         unregisterProxy();
         killBluetoothProcess();
         bluetoothModuleState.getTransport = () => undefined;
     };
+
+    const onQuit = () => dispose();
+
+    ipcMain.once('app/restart', dispose);
 
     return { onLoad, onQuit };
 };
