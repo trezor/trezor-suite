@@ -1,4 +1,4 @@
-import { SpacingValuesPxNew } from './spacings';
+import { SpacingValuesNew, SpacingValuesPxNew } from './spacings';
 
 export const borders = {
     widths: {
@@ -18,7 +18,10 @@ export const borders = {
 } as const;
 
 export type Borders = typeof borders;
-export type BorderRadii = (typeof borders.radii)[keyof typeof borders.radii] | SpacingValuesPxNew;
+export type BorderRadii =
+    | (typeof borders.radii)[keyof typeof borders.radii]
+    | SpacingValuesPxNew
+    | SpacingValuesNew;
 export type BorderWidths =
     | (typeof borders.widths)[keyof typeof borders.widths]
     | SpacingValuesPxNew;

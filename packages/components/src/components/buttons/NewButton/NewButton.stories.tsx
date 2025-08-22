@@ -28,9 +28,13 @@ export const NewButton: StoryObj<NewButtonProps> = {
         isDisabled: false,
         isLoading: false,
         isInverse: false,
+        shortcut: undefined,
         ...getFramePropsStory(allowedNewButtonFrameProps).args,
     },
     argTypes: {
+        children: {
+            type: 'string',
+        },
         href: {
             type: 'string',
         },
@@ -65,6 +69,9 @@ export const NewButton: StoryObj<NewButtonProps> = {
         iconRight: {
             options: [null, ...variables.ICONS],
             control: { type: 'select' },
+        },
+        shortcut: {
+            control: { type: 'object' },
         },
         ...getFramePropsStory(allowedNewButtonFrameProps).argTypes,
     },

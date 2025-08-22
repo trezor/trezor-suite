@@ -29,8 +29,8 @@ export const Box: StoryObj<typeof BoxComponent> = {
         height: '300px',
     },
     argTypes: {
-        hasBackground: {
-            control: 'boolean',
+        backgroundColor: {
+            control: 'color',
         },
         borderWidth: {
             control: 'select',
