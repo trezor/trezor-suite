@@ -5,6 +5,8 @@ import { TxKeyPath } from './types';
 
 type FormatXMLElementFn<T, R = string | T | (string | T)[]> = (parts: Array<string | T>) => R;
 
+export type Translate = ReturnType<typeof useTranslate>['translate'];
+
 export const useTranslate = () => {
     const { formatMessage } = useIntl();
 
