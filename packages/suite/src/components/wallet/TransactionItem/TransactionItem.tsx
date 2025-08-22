@@ -120,8 +120,7 @@ export const TransactionItem = memo(
             (targets.length === 1 || transaction.type === 'self') &&
             !tokens.length &&
             !filteredInternalTransfers.length &&
-            transaction.cardanoSpecific?.subtype !== 'withdrawal' &&
-            transaction.cardanoSpecific?.subtype !== 'stake_registration';
+            !transaction.cardanoSpecific?.subtype;
 
         const noInputsOutputs =
             (!tokens.length && !filteredInternalTransfers.length && !targets.length) ||
