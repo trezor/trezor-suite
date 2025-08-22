@@ -55,7 +55,9 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                         <CardTitle>
                             <Translation id="moduleTrading.selectCoinToSell.title" />
                         </CardTitle>
-                        <SellSendAmountBadge />
+                        <Box alignItems="flex-end">
+                            <SellSendAmountBadge />
+                        </Box>
                     </HStack>
                     <SellSendAssetPicker />
                     <HStack
