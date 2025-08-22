@@ -2,10 +2,9 @@ import { ButtonHTMLAttributes } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { NewButtonIntent, NewButtonPriority, NewButtonSize } from './types';
 import {
+    addAlphaToHex,
     mapPropsToCSS,
     mapPropsToColor,
     mapSizeToBorderRadius,
@@ -20,6 +19,7 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
+import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
@@ -100,6 +100,7 @@ export type NewButtonProps = SelectedHTMLButtonProps &
         'data-testid'?: string;
         intent?: NewButtonIntent;
         priority?: NewButtonPriority;
+        shortcut?: string[];
     };
 
 export const NewButton = ({
@@ -113,6 +114,7 @@ export const NewButton = ({
     isInverse = false,
     isLoading = false,
     onClick,
+    shortcut,
     size = 'medium',
     tabIndex,
     target,
@@ -145,12 +147,7 @@ export const NewButton = ({
             $isInverse={isInverse}
             {...frameProps}
         >
-            <Row
-                gap={spacings.xs}
-                padding={mapSizeToPadding(size)}
-                justifyContent="center"
-                overflow="hidden"
-            >
+            <Row gap={4} padding={mapSizeToPadding(size)} justifyContent="center" overflow="hidden">
                 {isLoading && (
                     <Spinner
                         isGrey={false}
@@ -160,16 +157,37 @@ export const NewButton = ({
                     />
                 )}
                 {iconLeft && !isLoading && <Icon name={iconLeft} {...iconProps} />}
-                {/* TODO: use variant/intent instead of color after refactoring Text and Icon components */}
-                <Text
-                    as="div"
-                    typographyStyle={mapSizeToTypographyStyle(size)}
-                    color={color}
-                    ellipsisLineCount={1}
-                >
-                    {children}
-                </Text>
+                <Box padding={{ horizontal: 4 }} overflow="hidden">
+                    {/* TODO: use variant/intent instead of color after refactoring Text and Icon components */}
+                    <Text
+                        as="div"
+                        typographyStyle={mapSizeToTypographyStyle(size)}
+                        color={color}
+                        ellipsisLineCount={1}
+                    >
+                        {children}
+                    </Text>
+                </Box>
                 {iconRight && !isLoading && <Icon name={iconRight} {...iconProps} />}
+                {shortcut?.length && (
+                    <Row gap={2}>
+                        {shortcut.map((hotkey, index) => (
+                            <Box
+                                backgroundColor={addAlphaToHex(
+                                    theme.baseFillElementNeutralDark,
+                                    0.09,
+                                )}
+                                padding={{ horizontal: 4 }}
+                                borderRadius={4}
+                                key={index}
+                            >
+                                <Text typographyStyle="label" color={color} case="uppercase">
+                                    {hotkey}
+                                </Text>
+                            </Box>
+                        ))}
+                    </Row>
+                )}
             </Row>
         </Container>
     );

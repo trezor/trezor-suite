@@ -49,12 +49,6 @@ const Container = styled.div<
     border: 0 solid ${mapElevationToBorder};
     transition: background 0.2s ease;
 
-    ${({ $borderRadius }) =>
-        $borderRadius &&
-        css`
-            border-radius: ${$borderRadius};
-        `}
-
     ${({ $borderWidth }) =>
         $borderWidth &&
         (typeof $borderWidth === 'object'

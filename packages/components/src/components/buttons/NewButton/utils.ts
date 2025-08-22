@@ -1,6 +1,6 @@
 import { DefaultTheme, RuleSet, css } from 'styled-components';
 
-import { BorderRadii, CSSColor, TypographyStyle, borders, spacings } from '@trezor/theme';
+import { BorderRadii, CSSColor, TypographyStyle } from '@trezor/theme';
 
 import { NewButtonIntent, NewButtonPriority, NewButtonSize } from './types';
 import { Padding } from '../../../utils/frameProps';
@@ -33,9 +33,9 @@ export const addAlphaToHex = (hex: CSSColor, percent: number): CSSColor => {
 
 export const mapSizeToPadding = (size: NewButtonSize): Padding => {
     const paddingMap: Record<NewButtonSize, Padding> = {
-        large: { horizontal: spacings.lg, vertical: spacings.sm },
-        medium: { horizontal: spacings.md, vertical: spacings.xs },
-        small: { horizontal: spacings.sm, vertical: spacings.xxs },
+        large: { horizontal: 20, vertical: 10 },
+        medium: { horizontal: 16, vertical: 8 },
+        small: { horizontal: 10, vertical: 4 },
     };
 
     return paddingMap[size];
@@ -43,9 +43,9 @@ export const mapSizeToPadding = (size: NewButtonSize): Padding => {
 
 export const mapSizeToBorderRadius = (size: NewButtonSize): BorderRadii => {
     const borderRadiusMap: Record<NewButtonSize, BorderRadii> = {
-        large: borders.radii.sm,
-        medium: borders.radii.sm,
-        small: borders.radii.xs,
+        large: '12px',
+        medium: '10px',
+        small: '8px',
     };
 
     return borderRadiusMap[size];

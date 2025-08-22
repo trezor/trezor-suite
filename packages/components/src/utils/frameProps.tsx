@@ -182,7 +182,7 @@ export const withFrameProps = ({
     `};
     ${$borderRadius &&
     css`
-        border-radius: ${$borderRadius};
+        border-radius: ${getValueWithUnit($borderRadius)};
     `};
     ${$pointerEvents &&
     css`
