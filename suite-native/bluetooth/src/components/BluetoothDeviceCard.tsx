@@ -1,11 +1,10 @@
 import { Box, Button, Card, Text } from '@suite-native/atoms';
-// TODO: import directly from @suite-native/device leads to circular dependency
-import { DeviceImage } from '@suite-native/device/src/components/DeviceImage';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { models } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { BluetoothDevice } from '../types';
+import { DeviceColorImage } from './DeviceColorImage';
 
 type Variant = 'connect' | 'remove';
 
@@ -45,7 +44,7 @@ export const BluetoothDeviceCard = ({
     return (
         <Card style={applyStyle(cardStyle)}>
             <Box alignItems="center">
-                <DeviceImage deviceModel={deviceModel} size="small" />
+                <DeviceColorImage color={deviceColor} />
             </Box>
             <Box alignItems="center">
                 <Text variant="titleSmall">{modelConfig.name}</Text>
