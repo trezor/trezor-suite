@@ -1,4 +1,5 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
 import { ReviewOutput } from '@suite-common/wallet-types';
 import {
@@ -117,12 +118,17 @@ export const selectDiscoveryAccountsParam = (
     });
 };
 
-export const selectShouldRediscoverNetworks = (
+const selectShouldRediscoverHelper = (
     state: CompoundRootState,
-    staticSessionId?: StaticSessionId,
+    device: TrezorDevice | undefined,
+    allowUndiscovered: boolean,
 ) => {
+    const staticSessionId = device?.state?.staticSessionId;
     if (!staticSessionId) return false;
+
     if (selectHasRunningDiscovery(state)) return false;
+
+    if (allowUndiscovered && !device.discovered) return true;
 
     const symbols = selectEnabledSupportedNetworks(state);
     const accounts = selectAccountsByDeviceState(state, staticSessionId);
@@ -130,6 +136,12 @@ export const selectShouldRediscoverNetworks = (
 
     return symbols.some(symbol => !discoveredNetworks.has(symbol));
 };
+
+export const selectShowRediscoverButton = (state: CompoundRootState, device?: TrezorDevice) =>
+    selectShouldRediscoverHelper(state, device, false);
+
+export const selectShouldRediscover = (state: CompoundRootState, device?: TrezorDevice) =>
+    selectShouldRediscoverHelper(state, device, true);
 
 export const selectAccountsToBeForgotten = (
     state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,

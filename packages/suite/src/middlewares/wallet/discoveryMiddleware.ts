@@ -7,7 +7,7 @@ import {
     deviceActions,
     runAdditionalDiscoveryThunk,
     selectSelectedDevice,
-    selectShouldRediscoverNetworks,
+    selectShouldRediscover,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 
@@ -76,12 +76,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                         }),
                     );
                 } else if (device.state.staticSessionId) {
-                    const shouldRediscover = selectShouldRediscoverNetworks(
-                        getState(),
-                        device.state.staticSessionId,
-                    );
-
-                    if (shouldRediscover) {
+                    if (selectShouldRediscover(getState(), device)) {
                         dispatch(runAdditionalDiscoveryThunk(device.state.staticSessionId));
                     }
                 }
