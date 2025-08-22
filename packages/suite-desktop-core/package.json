@@ -27,6 +27,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",

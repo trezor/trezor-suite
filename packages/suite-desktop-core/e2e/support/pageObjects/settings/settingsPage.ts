@@ -1,6 +1,7 @@
 import { Locator, Page, test } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { CoinsTab } from './coinsTab';
@@ -16,10 +17,14 @@ export enum Theme {
 
 export enum Language {
     Spanish = 'es-ES',
+    Czech = 'cs-CZ',
+    English = 'en-US',
 }
 
 export const languageMap = {
     'es-ES': 'Español',
+    'cs-CZ': 'Čeština',
+    'en-US': 'English',
 };
 
 const backgroundImages = {
@@ -71,6 +76,12 @@ export class SettingsPage {
     readonly metadataSwitch: Locator;
     readonly analyticsSwitch: Locator;
     readonly showLogButton: Locator;
+    readonly fiatCurrencyInput: Locator;
+    readonly fiatCurrencyInputOption = (currency: BaseCurrencyCode) =>
+        this.page.getByTestId(`@settings/fiat-select/option/${currency}`);
+    readonly btcUnitsInput: Locator;
+    readonly btcUnitsInputOption = (unit: 'Bitcoin' | 'Satoshis') =>
+        this.page.getByTestId(`@settings/btc-units-select/option/${unit}`);
 
     constructor(private readonly page: Page) {
         this.coins = new CoinsTab(page);
@@ -105,6 +116,8 @@ export class SettingsPage {
         this.metadataSwitch = this.page.getByTestId('@settings/metadata-switch');
         this.analyticsSwitch = this.page.getByTestId('@analytics/toggle-switch');
         this.showLogButton = this.page.getByTestId('@settings/show-log-button');
+        this.fiatCurrencyInput = this.page.getByTestId('@settings/fiat-select/input');
+        this.btcUnitsInput = this.page.getByTestId('@settings/btc-units-select/input');
     }
 
     @step()
@@ -219,5 +232,23 @@ export class SettingsPage {
 
         await this.coins.activateCoinsButton.click();
         await this.page.discoveryShouldFinish();
+    }
+
+    @step()
+    async changeFiatCurrency(currency: BaseCurrencyCode) {
+        await this.page.selectDropdownOptionWithRetry(
+            this.fiatCurrencyInput,
+            this.fiatCurrencyInputOption(currency),
+        );
+        await expect(this.fiatCurrencyInput).toHaveText(currency.toUpperCase());
+    }
+
+    @step()
+    async changeBTCUnits(units: 'Bitcoin' | 'Satoshis') {
+        await this.page.selectDropdownOptionWithRetry(
+            this.btcUnitsInput,
+            this.btcUnitsInputOption(units),
+        );
+        await expect(this.btcUnitsInput).toHaveText(units);
     }
 }
