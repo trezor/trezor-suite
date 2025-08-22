@@ -33,6 +33,7 @@ export interface ExtendedDevice {
     temporaryRemember?: boolean; // device should be remembered only for fw update or this session
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
+    discovered?: boolean;
 
     instance?: number;
     ts: number;

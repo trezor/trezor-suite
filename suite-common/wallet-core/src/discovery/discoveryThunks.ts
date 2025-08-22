@@ -457,6 +457,7 @@ export const runDiscoveryThunk = createThunk(
                         device.path,
                     ),
                 );
+                dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, false));
 
                 return;
             }
@@ -464,6 +465,7 @@ export const runDiscoveryThunk = createThunk(
             if (!isAddingHiddenWallet) {
                 dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
                 dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
+                dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
 
                 return;
             }
@@ -475,6 +477,7 @@ export const runDiscoveryThunk = createThunk(
             if (!allAccountsEmpty) {
                 dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
                 dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
+                dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
 
                 // finish here, device state was applied from bundle progress handler
                 return;
@@ -505,6 +508,7 @@ export const runDiscoveryThunk = createThunk(
             if (!getDeviceState2Res.success) {
                 const { error, code } = getDeviceState2Res.payload;
                 dispatch(applyDeviceStateErrorThunk({ error, code, devicePath: device.path }));
+                dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, false));
 
                 return;
             }
@@ -534,6 +538,7 @@ export const runDiscoveryThunk = createThunk(
 
             dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
             dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
+            dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
         } catch (error) {
             dispatch(
                 discoveryActions.updateDiscovery({ status: 'failed', error }, passedDevice.path),
@@ -694,6 +699,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
                 updatedDevice.path,
             ),
         );
+        dispatch(deviceActions.setDiscovered(staticSessionId, result.success));
     },
 );
 

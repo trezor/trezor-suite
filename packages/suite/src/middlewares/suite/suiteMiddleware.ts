@@ -29,6 +29,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.forgetDevice,
             // ?
             deviceActions.setDeviceState,
+            deviceActions.setDiscovered,
         )(action)
     ) {
         return true;

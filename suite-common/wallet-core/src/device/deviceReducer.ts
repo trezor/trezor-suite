@@ -205,6 +205,7 @@ const connectDevice = (draft: DeviceReducerState, device: Device) => {
 
 const addAuthorizedDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
     device.walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
+    delete device.discovered;
     draft.devices.push(device);
 };
 
@@ -338,6 +339,7 @@ const setDeviceState = (
     affectedDevice[0].state = state;
     affectedDevice[0].useEmptyPassphrase = useEmptyPassphrase;
     affectedDevice[0].walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
+    delete affectedDevice[0].discovered;
 
     affectedDevice[0].remember = shouldDeviceBeRemembered({
         isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
@@ -626,6 +628,12 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.toggleConnectionModal, state => {
             state.isConnectionModalOpen = !state.isConnectionModalOpen;
+        })
+        .addCase(deviceActions.setDiscovered, (state, { payload }) => {
+            const device = state.devices.find(
+                d => d.state?.staticSessionId === payload.staticSessionId,
+            );
+            if (device) device.discovered = payload.success;
         })
         .addMatcher(
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
