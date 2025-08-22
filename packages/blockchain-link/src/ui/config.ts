@@ -247,6 +247,28 @@ export default [
     },
     {
         blockchain: {
+            name: 'Avalanche C-Chain',
+            worker: 'js/blockbook-worker.js',
+            server: ['https://blockbook-dev.corp.sldev.cz:9199'],
+            debug: true,
+        },
+        data: {
+            address: '',
+            accountInfoOptions: {
+                page: 1,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '',
+        },
+    },
+    {
+        blockchain: {
             name: 'Ethereum Classic',
             worker: 'js/blockbook-worker.js',
             server: ['https://etc1.trezor.io', 'https://etc2.trezor.io'],
