@@ -47,7 +47,9 @@ export const blockchainInitialState: BlockchainNetworks = networksCollection.red
                     ? {
                           selected: 'blockbook',
                           urls: {
-                              blockbook: ['http://localhost:19121'],
+                              // Todo: DO NOT MERGE THIS, original value: `blockbook: ['http://localhost:19121'],`
+                              _intentionalTsError: null,
+                              blockbook: ['http://192.168.1.115:19121/'],
                           },
                       }
                     : {},

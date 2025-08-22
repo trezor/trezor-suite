@@ -467,7 +467,9 @@ export const networks = {
         bip43Path: "m/84'/1'/i'",
         decimals: 8,
         testnet: true,
-        explorer: getExplorerUrls('http://localhost:19121', 'bitcoin'),
+        // Todo: DO NOT MERGE THIS, original value: `explorer: getExplorerUrls('http://localhost:19121', 'bitcoin'),`
+        _intentionalTsError: null,
+        explorer: getExplorerUrls('http://192.168.1.115:19121', 'bitcoin'),
         features: ['rbf', 'sign-verify', 'amount-unit'],
         backendTypes: ['blockbook', 'electrum'],
         accountTypes: {
