@@ -18,7 +18,6 @@ on:
       - "packages/protobuf/**"
       - "packages/protocol/**"
       - "packages/trezor-user-env-link/**"
-      - "packages/utils/**"
       - "docker/docker-compose.transport-test-ci.yml"
   workflow_dispatch:
 

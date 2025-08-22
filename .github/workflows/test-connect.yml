@@ -17,7 +17,6 @@ on:
       - "packages/protobuf/**"
       - "packages/schema-utils/**"
       - "packages/transport/**"
-      - "packages/utils/**"
       - "packages/utxo-lib/**"
       - "docker/**"
       - "submodules/trezor-common/**"
