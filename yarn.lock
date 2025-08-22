@@ -9971,6 +9971,7 @@ __metadata:
     "@suite-native/forms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/labeling": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/staking": "workspace:*"
     "@suite-native/test-utils": "workspace:*"

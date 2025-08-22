@@ -1,9 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAccountLabel } from '@suite-common/local-first-storage';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -22,12 +20,6 @@ export const AccountDetailContentScreen = ({
     account,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
-    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
-
-    const localFirstAccountLabel = useSelector((state: WithLabelingState) =>
-        selectAccountLabel({ state, walletDescriptor, accountKey: account.key }),
-    );
-
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, account.key, tokenContract),
     );
@@ -59,12 +51,7 @@ export const AccountDetailContentScreen = ({
                         accountKey={account.key}
                     />
                 ) : (
-                    <AccountDetailScreenHeader
-                        accountLabel={
-                            localFirstAccountLabel?.label ?? account?.accountLabel ?? null
-                        }
-                        accountKey={account.key}
-                    />
+                    <AccountDetailScreenHeader account={account} />
                 )
             }
             noHorizontalPadding

@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAccountLabel } from '@suite-common/local-first-storage';
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -14,6 +13,7 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { AccountLabel } from '@suite-native/labeling';
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
     TokensRootState,
@@ -62,8 +62,6 @@ export const AccountsListItem = ({
     isLast = false,
     showDivider = false,
 }: AccountListItemProps) => {
-    const { accountLabel } = account;
-
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
@@ -80,10 +78,6 @@ export const AccountsListItem = ({
     );
 
     const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
-
-    const localFirstAccountLabel = useSelector((state: WithLabelingState) =>
-        selectAccountLabel({ state, walletDescriptor, accountKey: account.key }),
-    );
 
     const handleOnPress = useCallback(() => {
         onPress?.({
@@ -119,7 +113,11 @@ export const AccountsListItem = ({
             icon={icon}
             title={
                 shouldShowAccountLabel ? (
-                    (localFirstAccountLabel?.label ?? accountLabel)
+                    <AccountLabel
+                        walletDescriptor={walletDescriptor}
+                        accountKey={account.key}
+                        fallbackLabel={account.accountLabel}
+                    />
                 ) : (
                     <NetworkDisplaySymbolNameFormatter value={account.symbol} />
                 )

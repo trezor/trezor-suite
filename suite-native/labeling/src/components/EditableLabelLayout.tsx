@@ -7,6 +7,7 @@ import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { AddLabelButtonText } from './AddLabelButtonText';
+import { useIsLabelingEnabled } from './useIsLabelingEnabled';
 
 type EditableLabelLayoutParams = {
     children: (params: { onClose: () => void; ref: Ref<BottomSheetModalMethods> }) => ReactNode;
@@ -20,6 +21,12 @@ export const EditableLabelLayout = ({
     justifyContent,
 }: EditableLabelLayoutParams) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const isLabelingEnabled = useIsLabelingEnabled();
+
+    if (!isLabelingEnabled) {
+        return null;
+    }
 
     return (
         <>
