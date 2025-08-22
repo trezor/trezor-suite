@@ -2,7 +2,7 @@ import React from 'react';
 
 import styled, { DefaultTheme, css } from 'styled-components';
 
-import { Elevation, SpacingValues, mapElevationToBorder } from '@trezor/theme';
+import { Elevation, SpacingValues, SpacingValuesNew, mapElevationToBorder } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -93,8 +93,8 @@ export const withDivider = ({
     $dividerColor,
 }: {
     theme: DefaultTheme;
-    $rowGap: SpacingValues;
-    $columnGap: SpacingValues;
+    $rowGap: SpacingValues | SpacingValuesNew;
+    $columnGap: SpacingValues | SpacingValuesNew;
     $direction: FlexDirection;
     $dividerColor?: string;
     $elevation: Elevation;
@@ -126,8 +126,8 @@ export const withDivider = ({
 `;
 
 type ContainerProps = TransientProps<AllowedFrameProps> & {
-    $rowGap: SpacingValues;
-    $columnGap: SpacingValues;
+    $rowGap: SpacingValues | SpacingValuesNew;
+    $columnGap: SpacingValues | SpacingValuesNew;
     $justifyContent: FlexJustifyContent;
     $alignItems: FlexAlignItems;
     $alignSelf: FlexAlignSelf;
@@ -162,9 +162,9 @@ const Container = styled.div<ContainerProps>`
 `;
 
 export type FlexProps = AllowedFrameProps & {
-    gap?: SpacingValues;
-    rowGap?: SpacingValues;
-    columnGap?: SpacingValues;
+    gap?: SpacingValues | SpacingValuesNew;
+    rowGap?: SpacingValues | SpacingValuesNew;
+    columnGap?: SpacingValues | SpacingValuesNew;
     /**
      * Distributes space between and around content items along the **main** axis
      */
