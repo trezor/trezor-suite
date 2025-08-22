@@ -10,7 +10,6 @@ on:
     paths:
       - "packages/connect/**"
       - "packages/connect-common/**"
-      - "packages/utils/**"
       - ".github/workflows/connect-web-e2e-test.yml"
   workflow_dispatch:
 
