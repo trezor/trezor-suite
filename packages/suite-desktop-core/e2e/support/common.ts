@@ -92,7 +92,7 @@ export const getVideoPath = (videoFolder: string): string | false => {
 };
 
 export const findLatestVersionForModel = (
-    model: 'T1B1' | 'T2B1' | 'T2T1' | 'T3B1' | 'T3T1',
+    model: 'T1B1' | 'T2T1' | 'T3B1' | 'T3T1' | 'T3W1',
 ): string => {
     const firmwareVersions = releases.firmware;
     const versions = Object.keys(firmwareVersions);

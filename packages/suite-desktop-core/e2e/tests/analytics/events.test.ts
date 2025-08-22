@@ -1,93 +1,109 @@
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { EventType } from '@trezor/suite-analytics';
 
 import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
+
+test.describe(
+    'Analytics Events',
+    { tag: ['@group=suite', '@webOnly', '@specificFirmware'] },
+    () => {
+        const firmwareVersion = findLatestVersionForModel('T3T1');
+        test.use({ emulatorStartConf: { model: 'T3T1', version: firmwareVersion, wipe: true } });
+        test.beforeEach(async ({ analytics, onboardingPage }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+        });
+
+        test(
+            'Analytics captures important events when started enabled by default',
+            {
+                annotation: createTestAnnotation({
+                    testCase:
+                        'Verify that analytics captures SuiteReady, DeviceConnect, TransportType, and DeviceDisconnect events when analytics is enabled by default',
+                    category: TestCategory.General,
+                    priority: TestPriority.High,
+                    stream: TestStream.Foundation,
+                }),
+            },
+            async ({ analytics, trezorUserEnvLink }) => {
+                await analytics.waitForAnalyticsRequests(3);
+
+                await test.step('Validate SuiteReady event', () => {
+                    const suiteReadyEvent = analytics.findAnalyticsEventByType<
+                        ExtractByEventType<EventType.SuiteReady>
+                    >(EventType.SuiteReady);
+                    expect(suiteReadyEvent).toContainSubObject({
+                        language: 'en-US',
+                        enabledNetworks: 'btc',
+                        customBackends: '',
+                        localCurrency: 'usd',
+                        bitcoinUnit: 'BTC',
+                        discreetMode: 'false',
+                        screenWidth: '1280',
+                        screenHeight: '720',
+                        platformLanguages: 'en-US',
+                        tor: 'false',
+                        labeling: '',
+                        rememberedStandardWallets: '0',
+                        rememberedHiddenWallets: '0',
+                        theme: 'light',
+                        earlyAccessProgram: 'false',
+                        experimentalFeatures: '',
+                        autodetectLanguage: 'true',
+                        autodetectTheme: 'true',
+                        isAutomaticUpdateEnabled: 'false',
+                    });
+                });
+
+                await test.step('Validate DeviceConnect event', () => {
+                    const deviceConnectEvent = analytics.findAnalyticsEventByType<
+                        ExtractByEventType<EventType.DeviceConnect>
+                    >(EventType.DeviceConnect);
+                    expect(deviceConnectEvent).toContainSubObject({
+                        mode: 'normal',
+                        firmware: firmwareVersion,
+                        bootloaderHash: '',
+                        backup_type: 'Bip39',
+                        pin_protection: 'false',
+                        passphrase_protection: 'false',
+                        totalInstances: '1',
+                        isBitcoinOnly: 'false',
+                        isBitcoinOnlyDevice: 'false',
+                        totalDevices: '1',
+                        language: 'en-US',
+                        model: 'T3T1',
+                        optiga_sec: '0',
+                    });
+                });
+
+                await test.step('Validate TransportType event', () => {
+                    const transportTypeEvent = analytics.findAnalyticsEventByType<
+                        ExtractByEventType<EventType.TransportType>
+                    >(EventType.TransportType);
+                    expect(transportTypeEvent.type).toBe('BridgeTransport');
+                    expect(parseInt(transportTypeEvent.version, 10)).not.toBeNaN();
+                });
+
+                await test.step('Stop emulator and validate DeviceDisconnect event', async () => {
+                    await trezorUserEnvLink.stopEmu();
+                    await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
+                    expect(
+                        analytics.findLatestRequestByType(EventType.DeviceDisconnect),
+                    ).toBeDefined();
+                });
+            },
+        );
+    },
+);
 
 test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
-    });
-
-    test('Analytics captures important events when started enabled', async ({
-        page,
-        analytics,
-        onboardingPage,
-        trezorUserEnvLink,
-        analyticsSection,
-    }) => {
-        await analyticsSection.continueButton.click();
-
-        const firmwareVersion = findLatestVersionForModel('T3T1');
-        await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1', version: firmwareVersion });
-        await trezorUserEnvLink.setupEmu({ passphrase_protection: true });
-
-        // reload to activate bridge and start testing app with enabled analytics
-        await trezorUserEnvLink.startBridge();
-        await page.waitForTimeout(2_000);
-        await page.reload();
-
-        await analytics.interceptAnalytics();
-        await onboardingPage.optionallyDismissFwHashCheckError();
-        await page.getByTestId('@onboarding/exit-app-button').click();
-
-        // 1 SuiteReady, 2 DeviceConnect, 3 TransportType
-        await analytics.waitForAnalyticsRequests(3);
-        const suiteReadyEvent = analytics.findAnalyticsEventByType<
-            ExtractByEventType<EventType.SuiteReady>
-        >(EventType.SuiteReady);
-        expect(suiteReadyEvent).toContainSubObject({
-            language: 'en-US',
-            enabledNetworks: 'btc',
-            customBackends: '',
-            localCurrency: 'usd',
-            bitcoinUnit: 'BTC',
-            discreetMode: 'false',
-            screenWidth: '1280',
-            screenHeight: '720',
-            platformLanguages: 'en-US',
-            tor: 'false',
-            labeling: '',
-            rememberedStandardWallets: '0',
-            rememberedHiddenWallets: '0',
-            theme: 'light',
-            earlyAccessProgram: 'false',
-            experimentalFeatures: '',
-            autodetectLanguage: 'true',
-            autodetectTheme: 'true',
-            isAutomaticUpdateEnabled: 'false',
-        });
-
-        const deviceConnectEvent = analytics.findAnalyticsEventByType<
-            ExtractByEventType<EventType.DeviceConnect>
-        >(EventType.DeviceConnect);
-        expect(deviceConnectEvent).toContainSubObject({
-            mode: 'normal',
-            firmware: firmwareVersion,
-            bootloaderHash: '',
-            backup_type: 'Bip39',
-            pin_protection: 'false',
-            passphrase_protection: 'true',
-            totalInstances: '1',
-            isBitcoinOnly: 'false',
-            totalDevices: '1',
-            language: 'en-US',
-            model: 'T3T1',
-            optiga_sec: '0',
-        });
-
-        const transportTypeEvent = analytics.findAnalyticsEventByType<
-            ExtractByEventType<EventType.TransportType>
-        >(EventType.TransportType);
-        expect(transportTypeEvent.type).toBe('BridgeTransport');
-        expect(parseInt(transportTypeEvent.version, 10)).not.toBeNaN();
-
-        await trezorUserEnvLink.stopEmu();
-
-        // device-disconnect is logged 4th
-        await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
-        expect(analytics.findLatestRequestByType(EventType.DeviceDisconnect)).toBeDefined();
     });
 
     test('Analytics capture suite-ready after getting enabled', async ({
@@ -98,116 +114,94 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         onboardingPage,
         trezorUserEnvLink,
     }) => {
-        // First: do NOT allow analytics, and expect no analytics are sent
-        await analyticsSection.toggleSwitch.click();
-        await analyticsSection.continueButton.click();
+        await test.step('Start suite with disabled analytics', async () => {
+            await onboardingPage.optionallyDismissFwHashCheckError();
+            await analyticsSection.toggleSwitch.click();
+            await analyticsSection.continueButton.click();
 
-        // Intercept analytic after we disable them, as if a user disables the analytics,
-        // the only message about the analytics being sent is the "settings/analytics" disabled.
-        await analytics.interceptAnalytics();
+            // Intercept analytic after we disable them, as if a user disables the analytics,
+            // the only message about the analytics being sent is the "settings/analytics" disabled.
+            await analytics.interceptAnalytics();
 
-        await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1' });
-        await trezorUserEnvLink.setupEmu({
-            passphrase_protection: true,
+            await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1' });
+            await trezorUserEnvLink.setupEmu({
+                passphrase_protection: true,
+            });
+
+            await trezorUserEnvLink.startBridge();
         });
 
-        await trezorUserEnvLink.startBridge();
-        await settingsPage.navigateTo('application');
-
-        // change language
-        await page.getByTestId('@settings/language-select/input').scrollIntoViewIfNeeded();
-        await page.getByTestId('@settings/language-select/input').click();
-        await page.getByTestId('@settings/language-select/option/cs-CZ').click();
-
-        // change language back to EN, otherwise `settingsPage.navigateTo` won't work
-        await page.getByTestId('@settings/language-select/input').scrollIntoViewIfNeeded();
-        await page.getByTestId('@settings/language-select/input').click();
-        await page.getByTestId('@settings/language-select/option/en-US').click();
-
-        // change fiat
-        await page.getByTestId('@settings/fiat-select/input').scrollIntoViewIfNeeded();
-        await page.getByTestId('@settings/fiat-select/input').click();
-        await page.getByTestId('@settings/fiat-select/option/czk').click();
-
-        // change BTC units
-        await page.getByTestId('@settings/btc-units-select/input').scrollIntoViewIfNeeded();
-        await page.getByTestId('@settings/btc-units-select/input').click();
-        await page.getByTestId('@settings/btc-units-select/option/Satoshis').click();
-
-        // change dark mode
-        await page.getByTestId('@theme/color-scheme-select/input').scrollIntoViewIfNeeded();
-        await page.getByTestId('@theme/color-scheme-select/input').click();
-        await page.getByTestId('@theme/color-scheme-select/option/dark').click();
-
-        // disable btc, enable ethereum and holesky
-        await page.getByTestId('@settings/menu/wallet').click();
-        await page.getByTestId('@settings/wallet/network/btc').click();
-        await page.getByTestId('@settings/wallet/network/eth').click();
-        await page.getByTestId('@settings/wallet/network/thol').click();
-
-        // custom eth backend
-        await page.getByTestId('@settings/wallet/network/eth/advance').click();
-        await page.getByTestId('@settings/advance/select-type/input').click();
-        await page.getByTestId('@settings/advance/select-type/option/blockbook').click();
-        await page.getByTestId('@settings/advance/url').fill('https://eth.marek.pl/');
-        await page.getByTestId('@settings/advance/button/save').click();
-
-        await settingsPage.closeSettings();
-        await onboardingPage.optionallyDismissFwHashCheckError();
-
-        expect(analytics.requests).toHaveLength(0);
-
-        // Go to settings and enable analytics
-        await settingsPage.navigateTo('application');
-        await settingsPage.analyticsSwitch.click();
-        await settingsPage.closeSettings();
-
-        await page.reload();
-
-        await page.getByTestId('@onboarding/exit-app-button').click();
-
-        await analytics.waitForAnalyticsRequests(3);
-        expect(analytics.requests[0]).toHaveProperty('c_type', EventType.SettingsAnalytics);
-        expect(analytics.requests[1]).toHaveProperty('c_type', EventType.RouterLocationChange);
-        expect(analytics.requests[2]).toHaveProperty('c_type', EventType.SuiteReady);
-
-        // settings/analytics
-        const settingsAnalyticsEvent = analytics.findAnalyticsEventByType<
-            ExtractByEventType<EventType.SettingsAnalytics>
-        >(EventType.SettingsAnalytics);
-        expect(settingsAnalyticsEvent.value).toBe('true');
-
-        // suite-ready reflects changes
-        const suiteReadyEvent = analytics.findAnalyticsEventByType<
-            ExtractByEventType<EventType.SuiteReady>
-        >(EventType.SuiteReady);
-        expect(suiteReadyEvent).toContainSubObject({
-            language: 'en-US',
-            enabledNetworks: 'eth,thol',
-            customBackends: 'eth',
-            localCurrency: 'czk',
-            bitcoinUnit: 'sat',
-            discreetMode: 'false',
-            screenWidth: '1280',
-            screenHeight: '720',
-            platformLanguages: 'en-US',
-            tor: 'false',
-            labeling: '',
-            rememberedStandardWallets: '0',
-            rememberedHiddenWallets: '0',
-            theme: 'dark',
-            earlyAccessProgram: 'false',
-            experimentalFeatures: '',
-            autodetectLanguage: 'false',
-            autodetectTheme: 'false',
-            isAutomaticUpdateEnabled: 'false',
+        await test.step('Change settings before enabling analytics', async () => {
+            await settingsPage.navigateTo('application');
+            await settingsPage.changeLanguage(Language.Czech);
+            await settingsPage.changeLanguage(Language.English);
+            await settingsPage.changeFiatCurrency('czk');
+            await settingsPage.changeBTCUnits('Satoshis');
+            await settingsPage.changeTheme(Theme.Dark);
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coins.enableNetwork('eth');
+            await settingsPage.coins.enableNetwork('thol');
+            await settingsPage.coins.disableNetwork('btc');
+            await settingsPage.coins.openNetworkAdvanceSettings('eth');
+            await settingsPage.coins.changeBackend('blockbook', 'https://eth.marek.pl/');
+            await settingsPage.closeSettings();
         });
-        expect(parseInt(suiteReadyEvent.suiteVersion, 10)).not.toBeNaN();
-        expect(parseInt(suiteReadyEvent.browserVersion, 10)).not.toBeNaN();
-        expect(suiteReadyEvent.osName).toBeDefined();
-        expect(parseInt(suiteReadyEvent.osVersion, 10)).not.toBeNaN();
-        const viewport = page.viewportSize();
-        expect(suiteReadyEvent.windowWidth).toBe(viewport?.width.toString());
-        expect(suiteReadyEvent.windowHeight).toBe(viewport?.height.toString());
+
+        await test.step('Enable analytics and reload', async () => {
+            expect(analytics.requests).toHaveLength(0);
+            await settingsPage.navigateTo('application');
+            await settingsPage.analyticsSwitch.click();
+            await settingsPage.closeSettings();
+            await page.reload();
+            await onboardingPage.onboardingContinueButton.click();
+        });
+
+        await test.step('Wait for analytics events and validate event types', async () => {
+            await analytics.waitForAnalyticsRequests(3);
+            expect(analytics.requests[0]).toHaveProperty('c_type', EventType.SettingsAnalytics);
+            expect(analytics.requests[1]).toHaveProperty('c_type', EventType.RouterLocationChange);
+            expect(analytics.requests[2]).toHaveProperty('c_type', EventType.SuiteReady);
+        });
+
+        await test.step('Validate SettingsAnalytics event', () => {
+            const settingsAnalyticsEvent = analytics.findAnalyticsEventByType<
+                ExtractByEventType<EventType.SettingsAnalytics>
+            >(EventType.SettingsAnalytics);
+            expect(settingsAnalyticsEvent.value).toBe('true');
+        });
+
+        await test.step('Validate SuiteReady event reflects changed settings', () => {
+            const suiteReadyEvent = analytics.findAnalyticsEventByType<
+                ExtractByEventType<EventType.SuiteReady>
+            >(EventType.SuiteReady);
+            expect(suiteReadyEvent).toContainSubObject({
+                language: 'en-US',
+                enabledNetworks: 'eth,thol',
+                customBackends: 'eth',
+                localCurrency: 'czk',
+                bitcoinUnit: 'sat',
+                discreetMode: 'false',
+                screenWidth: '1280',
+                screenHeight: '720',
+                platformLanguages: 'en-US',
+                tor: 'false',
+                labeling: '',
+                rememberedStandardWallets: '0',
+                rememberedHiddenWallets: '0',
+                theme: 'dark',
+                earlyAccessProgram: 'false',
+                experimentalFeatures: '',
+                autodetectLanguage: 'false',
+                autodetectTheme: 'false',
+                isAutomaticUpdateEnabled: 'false',
+            });
+            expect(parseInt(suiteReadyEvent.suiteVersion, 10)).not.toBeNaN();
+            expect(parseInt(suiteReadyEvent.browserVersion, 10)).not.toBeNaN();
+            expect(suiteReadyEvent.osName).toBeDefined();
+            expect(parseInt(suiteReadyEvent.osVersion, 10)).not.toBeNaN();
+            const viewport = page.viewportSize();
+            expect(suiteReadyEvent.windowWidth).toBe(viewport?.width.toString());
+            expect(suiteReadyEvent.windowHeight).toBe(viewport?.height.toString());
+        });
     });
 });
