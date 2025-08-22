@@ -136,7 +136,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         const fromSymbol = combined.find(t => t.type === 'sent')?.symbol;
         const toSymbol = combined.find(t => t.type === 'recv')?.symbol;
 
-        if (fromSymbol && toSymbol) {
+        if (fromSymbol && toSymbol && !transaction.cardanoSpecific) {
             return (
                 <BlurUrls
                     text={translationString('TR_SWAP_TRANSACTION', { fromSymbol, toSymbol })}
