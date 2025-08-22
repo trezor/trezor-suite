@@ -20,10 +20,10 @@ export const constructFormDraft = ({
     feeLevel?: Pick<FeeLevel, 'label' | 'feePerUnit' | 'feeLimit'>;
     selectedUtxos?: Utxo[];
 }): FormState => ({
-    outputs: outputs.map(({ address, amount, utxoLabel, fiat = '' }) => ({
+    outputs: outputs.map(({ address, amount, label, fiat = '' }) => ({
         address,
         amount,
-        utxoLabel,
+        label,
         type: 'payment',
         token: tokenContract ?? null,
         fiat,

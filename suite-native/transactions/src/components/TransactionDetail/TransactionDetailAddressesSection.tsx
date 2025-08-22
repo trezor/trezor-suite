@@ -104,12 +104,12 @@ export const TransactionDetailAddressesSection = ({
                                 values={{ count: formatAddressesCount(targetAddresses.length) }}
                             />
                         </Text>
-                        {targetAddresses.slice(0, 2).map(({ address, n }) => (
+                        {targetAddresses.slice(0, 2).map(({ address, outputIndex }) => (
                             <>
                                 <TransactionUtxoAddress
-                                    key={address}
+                                    key={outputIndex}
                                     address={address}
-                                    n={n}
+                                    outputIndex={outputIndex}
                                     deviceStaticSessionId={transaction.deviceState}
                                     txId={transaction.txid}
                                     // Todo: input not implemented yet. The idea is, that transaction input is just output
@@ -153,11 +153,11 @@ export const TransactionDetailAddressesSection = ({
                         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                             <Box>
                                 <ChangeAddressesHeader addressesCount={changeAddresses.length} />
-                                {changeAddresses.map(({ address, n }) => (
+                                {changeAddresses.map(({ address, outputIndex }) => (
                                     <TransactionUtxoAddress
-                                        key={address}
+                                        key={outputIndex}
                                         address={address}
-                                        n={n}
+                                        outputIndex={outputIndex}
                                         deviceStaticSessionId={transaction.deviceState}
                                         txId={transaction.txid}
                                         // Todo: input not implemented yet. The idea is, that transaction input is just output

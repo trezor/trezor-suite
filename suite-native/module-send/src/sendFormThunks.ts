@@ -292,11 +292,7 @@ export const sendTransactionThunk = createThunk<
         { selectedAccount, wasAppLeftDuringReview, tokenContract },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
-        const sendResponse = await dispatch(
-            pushSendFormTransactionThunk({
-                selectedAccount,
-            }),
-        );
+        const sendResponse = await dispatch(pushSendFormTransactionThunk({ selectedAccount }));
 
         if (sendResponse.payload === undefined) {
             throw new Error('Todo: wtf? shall not be undefined');
@@ -313,6 +309,7 @@ export const sendTransactionThunk = createThunk<
 
             if (precomposedTransaction) {
                 const precomposedForm = selectPrecomposedSendForm(getState());
+
                 const outputsPermutation = isCardanoTx(selectedAccount, precomposedTransaction)
                     ? precomposedTransaction?.outputs.map((_o, i) => i) // cardano preserves order of outputs
                     : precomposedTransaction?.outputsPermutation;

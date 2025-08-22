@@ -55,7 +55,9 @@ export const selectTransactionAddresses = createMemoizedSelector(
         if (networkType === 'ripple') {
             // For ripple, we don't have inputs (input is always the same address - account descriptor)
             if (addressesType === 'inputs') {
-                return [{ address: transaction.descriptor, isChangeAddress: false, n: 0 }];
+                return [
+                    { address: transaction.descriptor, isChangeAddress: false, outputIndex: 0 },
+                ];
             }
 
             // We have only one output so we don't need to sort it

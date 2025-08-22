@@ -28,7 +28,7 @@ export const mapTransactionInputsOutputsToAddresses = ({
                 (address): VinVoutAddress => ({
                     address,
                     isChangeAddress,
-                    n: target.n,
+                    outputIndex: target.n,
                 }),
             );
         }),
