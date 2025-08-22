@@ -11,7 +11,7 @@ use std::sync::Arc;
 use tokio::{net::TcpListener, sync::Mutex};
 
 use crate::server::{
-    adapter_manager::AdapterManager,
+    adapter_manager::{AdapterError, AdapterManager},
     connection_broadcast::{ConnectionBroadcast, ConnectionBroadcastError},
     handle_message,
     types::{AbortProcess, ChannelMessage},
@@ -31,6 +31,9 @@ pub enum ServerError {
 
     #[error("ConnectionBroadcastError: {0}")]
     ConnectionBroadcast(#[from] ConnectionBroadcastError),
+
+    #[error("AdapterManagerError: {0}")]
+    AdapterManager(#[from] AdapterError),
 }
 
 async fn handle_ws_connection(
@@ -151,6 +154,9 @@ async fn handle_http_request(
                     ServerError::ConnectionBroadcast(err) => {
                         log::warn!("ConnectionBroadcastError {err}");
                     }
+                    ServerError::AdapterManager(adapter_err) => {
+                        log::warn!("AdapterManagerError {adapter_err}");
+                    }
                 }
             }
         });
@@ -162,19 +168,17 @@ async fn handle_http_request(
 }
 
 pub async fn start_server(address: &str) -> Result<(), ServerError> {
-    let tcp_listener = TcpListener::bind(&address).await.expect("Failed to bind");
+    let tcp_listener = TcpListener::bind(&address).await?;
     info!("Version: {} Listening on: {}", utils::APP_VERSION, address);
 
-    let manager = AdapterManager::new()
-        .await
-        .expect("Failed to initialize AdapterManager");
+    let manager = AdapterManager::new().await?;
 
     let mut http = hyper::server::conn::http1::Builder::new();
     http.keep_alive(true);
 
     loop {
         let (stream, _) = tcp_listener.accept().await?;
-        let peer = stream.peer_addr().expect("Missing peer address");
+        let peer = stream.peer_addr()?;
         let manager = manager.clone();
         let service = hyper::service::service_fn(move |req| {
             handle_http_request(peer.to_string(), req, manager.clone())

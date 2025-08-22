@@ -109,7 +109,7 @@ impl TrezorDevice {
         } = &peripheral
             .properties()
             .await?
-            .expect("PeripheralProperties missing");
+            .ok_or("PeripheralProperties missing")?;
 
         let id = &peripheral.id();
         let name = local_name.clone().unwrap_or("".to_string());

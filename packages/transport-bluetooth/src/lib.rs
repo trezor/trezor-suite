@@ -4,7 +4,7 @@ mod server;
 
 #[napi]
 fn trezor_bluetooth_run(port: u16) {
-    pretty_env_logger::init();
+    pretty_env_logger::try_init();
 
     let addr = format!("127.0.0.1:{}", port);
 
@@ -12,9 +12,9 @@ fn trezor_bluetooth_run(port: u16) {
         tokio::runtime::Runtime::new()
             .unwrap()
             .block_on(async move {
-                server::start_server(&addr)
-                    .await
-                    .expect("Server unexpectedly stopped");
+                server::start_server(&addr).await.unwrap_or_else(|err| {
+                    log::error!("Error starting server: {}", err);
+                });
             });
     });
 }
