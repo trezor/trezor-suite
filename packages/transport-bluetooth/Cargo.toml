@@ -1,9 +1,11 @@
 [package]
 name = "trezor-bluetooth"
-version = "0.3.1"
+version = "0.4.0"
 edition = "2021"
 
 [dependencies]
+napi = { version = "3", features = ["async"], optional = true }
+napi-derive = { version = "3", optional = true }
 futures = "^0.3.31"
 hyper = {version="^1.6.0",features = ["server", "http1"]}
 hyper-tungstenite = "^0.17.0"
@@ -28,3 +30,13 @@ bluez-async = "0.7.2"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.57.0", features = ["Devices_Bluetooth", "Devices_Enumeration"] }
+
+[features]
+default = []
+napi = ["dep:napi", "dep:napi-derive", "dep:napi-build"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[build-dependencies]
+napi-build = { version = "2", optional = true }
