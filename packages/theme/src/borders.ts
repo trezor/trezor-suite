@@ -1,3 +1,5 @@
+import { SpacingValuesPxNew } from './spacings';
+
 export const borders = {
     widths: {
         small: '1px',
@@ -16,8 +18,10 @@ export const borders = {
 } as const;
 
 export type Borders = typeof borders;
-export type BorderRadii = (typeof borders.radii)[keyof typeof borders.radii];
-export type BorderWidths = (typeof borders.widths)[keyof typeof borders.widths];
+export type BorderRadii = (typeof borders.radii)[keyof typeof borders.radii] | SpacingValuesPxNew;
+export type BorderWidths =
+    | (typeof borders.widths)[keyof typeof borders.widths]
+    | SpacingValuesPxNew;
 
 type NativeRadiusValue = 4 | 6 | 8 | 12 | 16 | 20;
 

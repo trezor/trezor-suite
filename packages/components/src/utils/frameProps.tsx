@@ -1,32 +1,34 @@
 import { css } from 'styled-components';
 
-import { BorderRadii, SpacingValues, borders } from '@trezor/theme';
+import { BorderRadii, SpacingValues, SpacingValuesNew, borders } from '@trezor/theme';
 
 import { TransientProps, makePropsTransient } from './transientProps';
 import type { Flex } from '../components/Flex/Flex';
 
 export type Margin =
     | {
-          top?: SpacingValues | 'auto';
-          bottom?: SpacingValues | 'auto';
-          left?: SpacingValues | 'auto';
-          right?: SpacingValues | 'auto';
-          horizontal?: SpacingValues | 'auto';
-          vertical?: SpacingValues | 'auto';
+          top?: SpacingValues | SpacingValuesNew | 'auto';
+          bottom?: SpacingValues | SpacingValuesNew | 'auto';
+          left?: SpacingValues | SpacingValuesNew | 'auto';
+          right?: SpacingValues | SpacingValuesNew | 'auto';
+          horizontal?: SpacingValues | SpacingValuesNew | 'auto';
+          vertical?: SpacingValues | SpacingValuesNew | 'auto';
       }
     | SpacingValues
+    | SpacingValuesNew
     | 'auto';
 
 export type Padding =
     | {
-          top?: SpacingValues;
-          bottom?: SpacingValues;
-          left?: SpacingValues;
-          right?: SpacingValues;
-          horizontal?: SpacingValues;
-          vertical?: SpacingValues;
+          top?: SpacingValues | SpacingValuesNew;
+          bottom?: SpacingValues | SpacingValuesNew;
+          left?: SpacingValues | SpacingValuesNew;
+          right?: SpacingValues | SpacingValuesNew;
+          horizontal?: SpacingValues | SpacingValuesNew;
+          vertical?: SpacingValues | SpacingValuesNew;
       }
-    | SpacingValues;
+    | SpacingValues
+    | SpacingValuesNew;
 
 const overflows = [
     'auto',
