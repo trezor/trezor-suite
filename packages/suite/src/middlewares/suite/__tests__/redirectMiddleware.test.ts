@@ -83,28 +83,24 @@ describe('redirectMiddleware', () => {
         it('DEVICE.CONNECT mode=initialize', () => {
             const store = initStore(getInitialState());
 
-            const action: ReturnType<typeof deviceActions.connectDevice> = {
-                type: DEVICE.CONNECT,
-                payload: {
-                    device: getConnectDevice({ mode: 'initialize' }),
-                },
-            };
+            const connectDevice = getConnectDevice({ mode: 'initialize' });
+            store.dispatch({ type: DEVICE.CONNECT, payload: { device: connectDevice } });
 
-            store.dispatch(action);
+            const device = store.getState().device.devices.find(d => d.id === connectDevice.id);
+            store.dispatch({ type: deviceActions.selectDevice.type, payload: device });
+
             expect(goto).toHaveBeenNthCalledWith(1, 'suite-start');
         });
 
         it('DEVICE.CONNECT firmware=required', () => {
             const store = initStore(getInitialState());
 
-            const action: ReturnType<typeof deviceActions.connectDevice> = {
-                type: DEVICE.CONNECT,
-                payload: {
-                    device: getConnectDevice({ mode: 'normal', firmware: 'required' }),
-                },
-            };
+            const connectDevice = getConnectDevice({ mode: 'normal', firmware: 'required' });
+            store.dispatch({ type: DEVICE.CONNECT, payload: { device: connectDevice } });
 
-            store.dispatch(action);
+            const device = store.getState().device.devices.find(d => d.id === connectDevice.id);
+            store.dispatch({ type: deviceActions.selectDevice.type, payload: device });
+
             expect(goto).toHaveBeenNthCalledWith(1, 'firmware-index');
         });
 
