@@ -107,7 +107,7 @@ export const TransactionDetailAddressesSection = ({
                         {targetAddresses.slice(0, 2).map(({ address, outputIndex }) => (
                             <>
                                 <TransactionUtxoAddress
-                                    key={outputIndex}
+                                    key={`target:${outputIndex}`}
                                     address={address}
                                     outputIndex={outputIndex}
                                     deviceStaticSessionId={transaction.deviceState}
@@ -155,7 +155,7 @@ export const TransactionDetailAddressesSection = ({
                                 <ChangeAddressesHeader addressesCount={changeAddresses.length} />
                                 {changeAddresses.map(({ address, outputIndex }) => (
                                     <TransactionUtxoAddress
-                                        key={outputIndex}
+                                        key={`change:${outputIndex}`}
                                         address={address}
                                         outputIndex={outputIndex}
                                         deviceStaticSessionId={transaction.deviceState}

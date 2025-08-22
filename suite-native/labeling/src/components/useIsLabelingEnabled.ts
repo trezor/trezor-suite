@@ -8,5 +8,5 @@ import {
 
 export const useIsLabelingEnabled = () =>
     useSelector((state: FeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled),
+        selectIsFeatureFlagEnabled(state, FeatureFlag.IsLocalFirstStorageEnabled),
     );

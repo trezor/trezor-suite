@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectWalletLabel } from '@suite-common/local-first-storage';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -15,6 +14,7 @@ import {
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { WalletLabel } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
 
@@ -100,23 +100,15 @@ export const DeviceItemContent = React.memo(
             (isPortfolioTrackerDevice ? device?.name : device?.label) ??
             translate('deviceManager.defaultHeader');
 
-        const localFirstWalletLabel = useSelector((state: WithLabelingState) =>
-            selectWalletLabel({ state, deviceStaticSessionId: deviceState?.staticSessionId }),
-        );
-
         // todo: only makes sense device is already authorized (has state)
-        const walletNameLabel =
-            // eslint-disable-next-line no-nested-ternary
-            localFirstWalletLabel !== null ? (
-                localFirstWalletLabel
-            ) : device?.useEmptyPassphrase ? (
-                <Translation id="deviceManager.wallet.standard" />
-            ) : (
-                <Translation
-                    id="deviceManager.wallet.defaultPassphrase"
-                    values={{ index: device?.walletNumber }}
-                />
-            );
+        const fallbackLabel = device?.useEmptyPassphrase ? (
+            <Translation id="deviceManager.wallet.standard" />
+        ) : (
+            <Translation
+                id="deviceManager.wallet.defaultPassphrase"
+                values={{ index: device?.walletNumber }}
+            />
+        );
 
         if (!device) {
             return null;
@@ -146,7 +138,12 @@ export const DeviceItemContent = React.memo(
                             headerTextVariant={headerTextVariant}
                             isConnected={device.isConnected}
                             header={deviceHeader}
-                            subHeader={walletNameLabel}
+                            subHeader={
+                                <WalletLabel
+                                    deviceStaticSessionId={deviceState?.staticSessionId}
+                                    fallbackLabel={fallbackLabel}
+                                />
+                            }
                             isDeviceInBootloader={device.isDeviceInBootloaderMode}
                             isPortfolioTrackerDevice={isPortfolioTrackerDevice}
                         />

@@ -1,13 +1,13 @@
 import { Pressable } from 'react-native';
-import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectWalletLabel } from '@suite-common/local-first-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { HStack, Radio, Text } from '@suite-native/atoms';
+import { isDebugEnv } from '@suite-native/config';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { WalletLabel, useIsLabelingEnabled } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
@@ -17,7 +17,7 @@ type WalletItemBaseProps = {
     onPress: () => void;
     isSelectable: boolean;
     isSelected: boolean;
-    device: TrezorDevice;
+    device?: TrezorDevice;
     baseCurrencyAmount?: BaseCurrencyAmount;
 };
 
@@ -56,6 +56,23 @@ const labelStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
+const LocalFirstStorageDebug = ({ device }: { device?: TrezorDevice }) => {
+    const isLabelingEnabled = useIsLabelingEnabled();
+
+    if (!isDebugEnv() || !isLabelingEnabled || !device) {
+        return null;
+    }
+
+    const evoluDebug =
+        device.state?.staticSessionId?.split('@')[0].slice(-8) +
+        ' @ ' +
+        device.state?.staticSessionId?.slice(-8) +
+        ' E: ' +
+        device.localFirstStorageSecret?.evoluKeys?.ownerId.slice(-8);
+
+    return <Text>{evoluDebug}</Text>;
+};
+
 export const WalletItemBase = ({
     variant,
     onPress,
@@ -67,42 +84,29 @@ export const WalletItemBase = ({
     const { applyStyle } = useNativeStyles();
     const isStandard = variant === 'standard';
 
-    const localFirstWalletLabel = useSelector((state: WithLabelingState) =>
-        selectWalletLabel({ state, deviceStaticSessionId: device.state?.staticSessionId }),
+    const fallbackLabel = isStandard ? (
+        <Translation id="deviceManager.wallet.standard" />
+    ) : (
+        <Translation
+            id="deviceManager.wallet.defaultPassphrase"
+            values={{ index: device?.walletNumber }}
+        />
     );
-
-    const walletNameLabel =
-        // eslint-disable-next-line no-nested-ternary
-        localFirstWalletLabel !== null ? (
-            localFirstWalletLabel
-        ) : isStandard ? (
-            <Translation id="deviceManager.wallet.standard" />
-        ) : (
-            <Translation
-                id="deviceManager.wallet.defaultPassphrase"
-                values={{ index: device?.walletNumber }}
-            />
-        );
-
-    const debug =
-        device.state?.staticSessionId?.split('@')[0].slice(-8) +
-        ' @ ' +
-        device.state?.staticSessionId?.slice(-8) +
-        ' E: ' +
-        device.localFirstStorageSecret?.evoluKeys?.ownerId.slice(-8);
 
     return (
         <Pressable onPress={onPress}>
             <HStack style={applyStyle(walletItemBaseStyle, { isSelected, isSelectable })}>
-                <VStack>
-                    <HStack alignItems="center" flex={1}>
-                        <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
-                        <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>
-                            {walletNameLabel}
-                        </Text>
-                    </HStack>
-                    <Text>{debug}</Text>
-                </VStack>
+                <HStack alignItems="center" flex={1}>
+                    <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
+                    <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>
+                        <WalletLabel
+                            deviceStaticSessionId={device?.state?.staticSessionId}
+                            fallbackLabel={fallbackLabel}
+                        />
+                    </Text>
+                    <LocalFirstStorageDebug device={device} />
+                </HStack>
+
                 <HStack alignItems="center" spacing="sp12">
                     {baseCurrencyAmount && (
                         <BaseCurrencyAmountFormatter
