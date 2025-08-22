@@ -20,7 +20,6 @@ on:
       - "packages/trezor-user-env-link/**"
       - "packages/utils/**"
       - "docker/docker-compose.transport-test-ci.yml"
-      - "yarn.lock"
   workflow_dispatch:
 
 concurrency:

@@ -21,7 +21,6 @@ on:
       - "packages/utxo-lib/**"
       - "docker/**"
       - "submodules/trezor-common/**"
-      - "yarn.lock"
       - ".github/workflows/test-connect.yml"
       - ".github/workflows/template-connect-test-params.yml"
       - "docker/docker-connect-test.sh"

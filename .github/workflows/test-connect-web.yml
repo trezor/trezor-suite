@@ -12,7 +12,6 @@ on:
       - "packages/connect-common/**"
       - "packages/utils/**"
       - ".github/workflows/connect-web-e2e-test.yml"
-      - "yarn.lock"
   workflow_dispatch:
 
 concurrency:

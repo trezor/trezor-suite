@@ -24,7 +24,6 @@ on:
       - "packages/connect-explorer-theme/**"
       - "packages/trezor-user-env-link/**"
       - "submodules/trezor-common/**"
-      - "yarn.lock"
       - ".github/workflows/template-connect-popup-test-params.yml"
       - ".github/workflows/test-connect-popup.yml"
       - ".github/actions/release-connect/**"
