@@ -4,6 +4,7 @@ export const uiVariants = [
     'secondary',
     'tertiary',
     'info',
+    'infoLight',
     'warning',
     'destructive',
     'disabled',
