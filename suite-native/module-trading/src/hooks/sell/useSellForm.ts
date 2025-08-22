@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { TradingAmountLimitProps, selectTradingSellQuotesRequest } from '@suite-common/trading';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -28,6 +29,14 @@ const useSendAccountChangeEffect = ({ setValue }: SellFormType) => {
     }, [sendAccount, setValue]);
 };
 
+const useSelectedDeviceChangeEffect = ({ setValue }: SellFormType) => {
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const unqDeviceIdentifier = selectedDevice?.state?.staticSessionId;
+
+    useEffect(() => {
+        setValue('sendAsset', undefined, { shouldValidate: true });
+    }, [unqDeviceIdentifier, setValue]);
+};
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: SellFormType) => {
     const dispatch = useDispatch();
@@ -131,6 +140,7 @@ export const useSellForm = (): SellFormType => {
     });
 
     useSendAccountChangeEffect(form);
+    useSelectedDeviceChangeEffect(form);
     useAmountAndCurrencyFieldsChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setSendSymbol);
     useValidations(form, limits);
