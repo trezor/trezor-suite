@@ -118,6 +118,13 @@ const toggleIsDeviceAutoEjectEnabled = createAction(
 
 const toggleConnectionModal = createAction(`${DEVICE_MODULE_PREFIX}/toggleConnectionModal`);
 
+const setDiscovered = createAction(
+    `${DEVICE_MODULE_PREFIX}/setDiscovered`,
+    (staticSessionId: StaticSessionId, success: boolean) => ({
+        payload: { staticSessionId, success },
+    }),
+);
+
 export const deviceActions = {
     toggleConnectionModal,
     connectDevice,
@@ -139,4 +146,5 @@ export const deviceActions = {
     setEntropyCheckFail,
     setThpCredentials,
     toggleIsDeviceAutoEjectEnabled,
+    setDiscovered,
 };
