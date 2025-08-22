@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import {
     restartDiscoveryThunk,
     selectSelectedDevice,
-    selectShouldRediscoverNetworks,
+    selectShowRediscoverButton,
 } from '@suite-common/wallet-core';
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -48,7 +48,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const isSidebarCollapsed = useIsSidebarCollapsed();
     const isDiscoveryButtonVisible = useSelector(state =>
-        selectShouldRediscoverNetworks(state, selectedDevice?.state?.staticSessionId),
+        selectShowRediscoverButton(state, selectedDevice),
     );
 
     if (!selectedDevice?.connected) {
