@@ -247,18 +247,20 @@ export const transformTransaction = (
         // recalculate amount, amount spent is just a fee
         amount = blockfrostTxData.txData.fees;
 
+        const depositBn = new BigNumber(blockfrostTxData.txData.deposit || 0);
+        if (!depositBn.isZero()) {
+            // deposit paid for stake address registration
+            deposit = depositBn.abs().toString(); // +2ADA register, -2ADA deregister
+        }
+
         if (blockfrostTxData.txData.withdrawal_count > 0) {
             // output including fee is larger than the sum of all inputs,
             // so there must be more coin somewhere and that's the withdrawal amount
-            withdrawal = new BigNumber(totalOutput)
-                .plus(blockfrostTxData.txData.fees)
-                .minus(totalInput)
-                .toString();
-        }
-
-        if (new BigNumber(blockfrostTxData.txData.deposit).gt(0)) {
-            // deposit paid for stake address registration
-            deposit = blockfrostTxData.txData.deposit;
+            const extra = new BigNumber(totalOutput)
+                .plus(blockfrostTxData.txData.fees || 0)
+                .minus(totalInput);
+            const withdrawalBn = depositBn.isNegative() ? extra.minus(depositBn) : extra;
+            withdrawal = withdrawalBn.abs().toString();
         }
     } else if (outgoing.length === 0 && incoming.length > 0) {
         // none of the input is mine but and output or token transfer is mine

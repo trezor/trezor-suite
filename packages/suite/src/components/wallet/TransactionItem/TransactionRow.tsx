@@ -122,7 +122,11 @@ export const DepositRow = ({
     <CustomRow
         {...baseLayoutProps}
         title="TR_TX_DEPOSIT"
-        sign="negative"
+        sign={
+            transaction.cardanoSpecific?.subtype === 'stake_deregistration'
+                ? 'positive'
+                : 'negative'
+        }
         amount={formatCardanoDeposit(transaction) ?? '0'}
         transaction={transaction}
         useFiatValues={useFiatValues}
