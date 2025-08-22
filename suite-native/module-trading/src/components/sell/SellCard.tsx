@@ -11,6 +11,7 @@ import { useAnimatedBorderStyle } from '../../hooks/general/useAnimatedBorderSty
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { CardTitle } from '../general/CardTitle';
 import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
+import { SellSendAmountBadge } from './send/SellSendAmountBadge';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 
@@ -54,6 +55,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                         <CardTitle>
                             <Translation id="moduleTrading.selectCoinToSell.title" />
                         </CardTitle>
+                        <SellSendAmountBadge />
                     </HStack>
                     <SellSendAssetPicker />
                     <HStack
