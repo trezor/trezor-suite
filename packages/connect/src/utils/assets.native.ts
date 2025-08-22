@@ -14,7 +14,6 @@ export function httpRequest<T extends HttpRequestType>(
         })
             .then(response => {
                 if (!response.ok) {
-                    console.error('HTTP request failed', response);
                     throw new Error(
                         `HTTP request failed with status ${response.status} ${response.statusText}`,
                     );
@@ -29,7 +28,6 @@ export function httpRequest<T extends HttpRequestType>(
                 return response.text() as unknown as HttpRequestReturnType<T>;
             })
             .catch(error => {
-                console.error('HTTP request failed', error);
                 throw error;
             });
     }
