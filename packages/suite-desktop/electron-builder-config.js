@@ -32,7 +32,7 @@ module.exports = {
     files: [
         // defaults are https://www.electron.build/configuration#files
         'build/**/*',
-        'dist/**/*.{js,wasm}',
+        'dist/**/*.{js,wasm,node}',
         '!**/{tsconfig}*',
         '!**/*.{md,js.map}',
         'build/release-notes.md',

@@ -20,9 +20,19 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
-        "dev:server": "RUST_BACKTRACE=1 RUST_LOG=debug cargo run",
+        "dev:server": "RUST_BACKTRACE=1 RUST_LOG=debug cargo run --bin trezor-bluetooth",
         "build:server": "./scripts/build.sh",
+        "build:napi:apple-arm": "napi build -t aarch64-apple-darwin --release --platform --js index.js  --output-dir ./napi --features napi",
+        "build:napi:apple-intel": "napi build -t x86_64-apple-darwin --release --platform --js index.js  --output-dir ./napi --features napi",
+        "build:napi": "yarn build:napi:apple-arm && yarn build:napi:apple-intel",
         "build:ui": "webpack --config ./webpack/webpack.build.js"
+    },
+    "napi": {
+        "binaryName": "trezor_bluetooth",
+        "targets": [
+            "x86_64-apple-darwin",
+            "aarch64-apple-darwin"
+        ]
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",

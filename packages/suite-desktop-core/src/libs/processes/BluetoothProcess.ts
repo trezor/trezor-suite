@@ -1,5 +1,5 @@
 import { isDevEnv } from '@suite-common/suite-utils';
-import { isWindows } from '@trezor/env-utils';
+import { isMacOs, isWindows } from '@trezor/env-utils';
 
 import { BaseProcess, Status } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
@@ -57,10 +57,17 @@ export class BluetoothProcess extends BaseProcess {
         };
     }
 
-    start() {
+    async start() {
         if (isDevEnv || getSwitchValue('log-level') === 'debug') {
             process.env.RUST_LOG = 'debug';
             process.env.RUST_BACKTRACE = '1';
+        }
+
+        if (isMacOs()) {
+            const { trezorBluetoothRun } = await require('@trezor/transport-bluetooth/napi');
+            trezorBluetoothRun(this.port);
+
+            return;
         }
 
         return super.start(['-p', this.port.toString()]);
