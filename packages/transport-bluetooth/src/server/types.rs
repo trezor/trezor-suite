@@ -55,6 +55,8 @@ pub enum WsRequestMethod {
     ForgetDevice(String),
     OpenDevice(String),
     CloseDevice(String),
+    Write(WriteParams),
+    Read(String),
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -76,6 +78,7 @@ pub enum WsResponsePayload {
     },
     Peripherals(Vec<TrezorDevice>),
     Success(bool),
+    Read(Vec<u8>),
 }
 
 #[derive(serde::Serialize, Clone, Debug)]

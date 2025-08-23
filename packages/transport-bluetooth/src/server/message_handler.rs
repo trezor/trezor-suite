@@ -78,6 +78,8 @@ pub async fn handle_message(
         WsRequestMethod::ForgetDevice(id) => methods::forget_device(manager, broadcast, id).await,
         WsRequestMethod::OpenDevice(id) => methods::open_device(manager, broadcast, id).await,
         WsRequestMethod::CloseDevice(id) => methods::close_device(manager, broadcast, id).await,
+        WsRequestMethod::Read(id) => methods::read(manager, id).await,
+        WsRequestMethod::Write(params) => methods::write(manager, params).await,
     };
 
     match payload {
