@@ -10,7 +10,7 @@ import {
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, Button, Image, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
+import { Box, Button, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -18,32 +18,14 @@ import {
     DeviceOnboardingStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { getScreenHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
+import { DeviceModelImage } from '../components/DeviceModelImage';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
-const trezorImageStyle = prepareNativeStyle<{ hasDeviceFirmwareInstalled: boolean }>(
-    (_, { hasDeviceFirmwareInstalled }) => ({
-        width: '100%',
-        height: hasDeviceFirmwareInstalled ? 280 : 360,
-        maxHeight: (getScreenHeight() / 3) * 2,
-        alignItems: 'center',
-    }),
-);
-
-const trezorModelImageMap = {
-    [DeviceModelInternal.T2T1]: require('../assets/t2t1.png'),
-    [DeviceModelInternal.T2B1]: require('../assets/t3b1.png'),
-    [DeviceModelInternal.T3B1]: require('../assets/t3b1.png'),
-    [DeviceModelInternal.T3T1]: require('../assets/t3t1.png'),
-} as const satisfies Record<SetupSupportingDeviceModel, string>;
 
 const UninitializedDeviceLandingScreenContent = () => {
-    const { applyStyle } = useNativeStyles();
     const deviceModel = useSelector(selectDeviceModel) as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
 
@@ -71,12 +53,9 @@ const UninitializedDeviceLandingScreenContent = () => {
                     <HeaderUnderlineSvg />
                 </Box>
             )}
-            <Image
-                source={trezorModelImageMap[deviceModel]}
-                contentFit="contain"
-                style={applyStyle(trezorImageStyle, {
-                    hasDeviceFirmwareInstalled,
-                })}
+            <DeviceModelImage
+                deviceModel={deviceModel}
+                size={hasDeviceFirmwareInstalled ? 'small' : 'normal'}
             />
         </VStack>
     );
