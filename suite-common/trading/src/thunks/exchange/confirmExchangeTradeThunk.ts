@@ -10,7 +10,6 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
     selectTradingExchangeAccountKey,
-    selectTradingExchangeQuotesRequest,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
@@ -48,7 +47,6 @@ export const confirmExchangeTradeThunk = createThunk(
         triggerAnalyticsTradeConfirmation();
 
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
-        const quotesRequest = selectTradingExchangeQuotesRequest(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
@@ -59,7 +57,7 @@ export const confirmExchangeTradeThunk = createThunk(
             trade = selectedQuote;
         }
 
-        if (!quotesRequest || !trade || !refundAddress || !trade.quoteId) {
+        if (!trade || !refundAddress || !trade.quoteId) {
             return isConfirmationOk;
         }
 
