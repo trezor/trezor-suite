@@ -45,7 +45,6 @@ pub async fn handle_message(
         return Some(Message::text("PONG"));
     }
 
-    info!("WsRequest: {:?}", msg);
     let request = match serde_json::from_str::<WsRequest>(&msg) {
         Ok(req) => req,
         Err(err) => {
@@ -62,7 +61,7 @@ pub async fn handle_message(
             return Some(Message::text(json_error.to_string()));
         }
     };
-    info!("Method: {request:?}");
+    info!("Method: {:?}", request.method);
 
     let payload = match request.method.clone() {
         WsRequestMethod::GetInfo => methods::get_info(manager).await,
@@ -77,6 +76,8 @@ pub async fn handle_message(
             methods::disconnect_device(manager, broadcast, id).await
         }
         WsRequestMethod::ForgetDevice(id) => methods::forget_device(manager, broadcast, id).await,
+        WsRequestMethod::OpenDevice(id) => methods::open_device(manager, broadcast, id).await,
+        WsRequestMethod::CloseDevice(id) => methods::close_device(manager, broadcast, id).await,
     };
 
     match payload {
