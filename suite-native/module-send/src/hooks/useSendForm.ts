@@ -31,11 +31,14 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
-import { FeeLevelsMaxAmount, storeFeeLevels } from '@suite-native/transaction-management';
+import {
+    FeeLevelsMaxAmount,
+    storeFeeLevels,
+    useSubscribeForSolanaBlockUpdates,
+} from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
 import { useUtxoSelection } from './useUtxoSelection';
-import { useSubscribeForSolanaBlockUpdates } from '../hooks/useSubscribeForSolanaBlockUpdates';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
