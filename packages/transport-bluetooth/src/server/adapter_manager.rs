@@ -62,6 +62,12 @@ pub enum AdapterError {
     #[error("PeripheralNotFound")]
     PeripheralNotFound,
 
+    #[error("PeripheralNotConnected")]
+    PeripheralNotConnected,
+
+    #[error("PeripheralCharacteristicNotFound")]
+    PeripheralCharacteristicNotFound,
+
     #[error("PeripheralDiscovered")]
     PeripheralDiscovered,
 
