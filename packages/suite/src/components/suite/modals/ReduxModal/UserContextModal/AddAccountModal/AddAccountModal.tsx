@@ -2,12 +2,14 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, NetworkAccount, NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     accountsActions,
     changeCoinVisibility,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
+import { prepareNewAccountPayload } from '@suite-common/wallet-utils';
 import { CollapsibleBox, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -93,15 +95,17 @@ export const AddAccountModal = ({
 
     // Collect all empty accounts related to selected device and selected accountType
     const currentType = selectedAccount?.accountType ?? 'normal';
-    const emptyAccounts = selectedNetwork
-        ? accounts.filter(
-              a =>
-                  a.deviceState === device.state?.staticSessionId &&
-                  a.symbol === selectedNetwork.symbol &&
-                  a.accountType === currentType &&
-                  a.empty,
-          )
+    const scopedAccounts = selectedNetwork
+        ? accounts
+              .filter(
+                  a =>
+                      a.deviceState === device.state?.staticSessionId &&
+                      a.symbol === selectedNetwork.symbol &&
+                      a.accountType === currentType,
+              )
+              .toSorted((a, b) => a.index - b.index)
         : [];
+    const emptyAccounts = selectedNetwork ? scopedAccounts.filter(a => a.empty) : [];
 
     const filterNetworksBySymbol = (networks: Network[], symbol?: NetworkSymbol) =>
         symbol ? networks.filter(network => network.symbol === symbol) : networks;
@@ -176,9 +180,36 @@ export const AddAccountModal = ({
             }
         }
     };
-    const addAccount = (account: Account) => {
+
+    const enableAccount = async (account: Account) => {
         onCancel();
-        dispatch(accountsActions.changeAccountVisibility(account));
+        if (account.visible) {
+            const newAccount = await prepareNewAccountPayload({
+                accountType: account.accountType,
+                networkSymbol: account.symbol,
+                index: account.index + 1,
+                backendType: account.backendType != 'coinjoin' ? account.backendType : undefined,
+                selectedAccount,
+                accountTypes,
+                deviceState: device.state?.staticSessionId,
+            });
+
+            if (newAccount instanceof Error) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'discovery-error',
+                        error: newAccount.message,
+                    }),
+                );
+
+                return;
+            }
+
+            dispatch(accountsActions.createAccount(newAccount));
+        } else {
+            dispatch(accountsActions.changeAccountVisibility(account));
+        }
+
         onAddAccount?.(account);
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
@@ -191,6 +222,37 @@ export const AddAccountModal = ({
                     },
                 }),
             );
+        }
+    };
+
+    const addNewAccount = async () => {
+        if (selectedNetwork) {
+            const account = selectedNetwork.accountTypes[currentType];
+
+            if (account) {
+                const newAccount = await prepareNewAccountPayload({
+                    accountType: account.accountType,
+                    networkSymbol: selectedNetwork.symbol,
+                    index: 0,
+                    backendType:
+                        account.backendType != 'coinjoin' ? account.backendType : undefined,
+                    selectedAccount,
+                    accountTypes,
+                    deviceState: device.state?.staticSessionId,
+                });
+                if (newAccount instanceof Error) {
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'discovery-error',
+                            error: newAccount.message,
+                        }),
+                    );
+
+                    return;
+                }
+
+                dispatch(accountsActions.createAccount(newAccount));
+            }
         }
     };
 
@@ -311,8 +373,9 @@ export const AddAccountModal = ({
                     <AddAccountButton
                         network={selectedNetwork}
                         selectedAccount={selectedAccount}
-                        emptyAccounts={emptyAccounts}
-                        onEnableAccount={addAccount}
+                        scopedAccounts={scopedAccounts}
+                        onEnableAccount={enableAccount}
+                        onAddNewAccount={addNewAccount}
                     />
                 ) : (
                     <Modal.Button onClick={enableNetwork}>

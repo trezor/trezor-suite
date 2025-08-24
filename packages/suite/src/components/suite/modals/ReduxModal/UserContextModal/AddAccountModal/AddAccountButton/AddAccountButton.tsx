@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapability } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
@@ -18,7 +17,7 @@ const verifyAvailability = ({
     unavailableCapability,
 }: {
     emptyAccounts: Account[];
-    account: Account;
+    account?: Account;
     unavailableCapability?: UnavailableCapability;
 }) => {
     if (unavailableCapability === 'no-support') {
@@ -37,66 +36,69 @@ const verifyAvailability = ({
         // discovery failed?
         return 'MODAL_ADD_ACCOUNT_NO_ACCOUNT';
     }
-    if (emptyAccounts.length === 0) {
-        return 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT';
-    }
-    if (emptyAccounts.length > 1) {
-        // prev account is empty, do not add another
-        return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
-    }
-    if (account.index === 0 && account.empty && account.accountType === 'normal') {
-        // current (first normal) account is empty, do not add another
-        return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
-    }
-    if (account.index >= 10) {
-        return 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED';
+
+    if (account.networkType !== 'ethereum') {
+        if (emptyAccounts.length === 0) {
+            return 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT';
+        }
+        if (emptyAccounts.length > 1) {
+            // prev account is empty, do not add another
+            return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
+        }
+        if (account.index === 0 && account.empty && account.accountType === 'normal') {
+            // current (first normal) account is empty, do not add another
+            return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
+        }
     }
 };
 
 interface AddAccountButtonProps {
     network: Network;
     selectedAccount?: NetworkAccount;
-    emptyAccounts: Account[];
+    scopedAccounts: Account[];
     onEnableAccount: (account: Account) => void;
+    onAddNewAccount: () => void;
 }
 
 const AddDefaultAccountButton = ({
-    emptyAccounts,
+    scopedAccounts,
     onEnableAccount,
+    onAddNewAccount,
     network,
     selectedAccount,
 }: AddAccountButtonProps) => {
-    const defaultAccount = emptyAccounts[emptyAccounts.length - 1];
+    const defaultAccount = scopedAccounts.at(-1);
     const device = useSelector(selectSelectedDevice);
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
     const handleClick = useCallback(() => {
-        const { accountType: type, path, symbol } = defaultAccount;
-        onEnableAccount(defaultAccount);
-        // reset search string in account search box
-        setSearchString(undefined);
-        if (coinFilter && coinFilter !== symbol) {
-            // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
-            setCoinFilter(undefined);
+        if (defaultAccount) {
+            onEnableAccount(defaultAccount);
+            // reset search string in account search box
+            setSearchString(undefined);
+            if (coinFilter && coinFilter !== defaultAccount.symbol) {
+                // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
+                setCoinFilter(undefined);
+            }
+        } else {
+            onAddNewAccount();
         }
-        // just to log that account was added manually.
-        analytics.report({
-            type: EventType.AccountsNewAccount,
-            payload: {
-                type,
-                path,
-                symbol,
-            },
-        });
-    }, [defaultAccount, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
+    }, [
+        defaultAccount,
+        onEnableAccount,
+        setSearchString,
+        coinFilter,
+        onAddNewAccount,
+        setCoinFilter,
+    ]);
 
     const unavailableCapability = selectedAccount?.accountType
         ? device?.unavailableCapabilities?.[selectedAccount?.accountType]
         : undefined;
 
     const disabledMessage = verifyAvailability({
-        emptyAccounts,
+        emptyAccounts: scopedAccounts.filter(account => account.empty),
         account: defaultAccount,
         unavailableCapability,
     });
@@ -113,8 +115,9 @@ const AddDefaultAccountButton = ({
 export const AddAccountButton = ({
     network,
     selectedAccount,
-    emptyAccounts,
+    scopedAccounts,
     onEnableAccount,
+    onAddNewAccount,
 }: AddAccountButtonProps) => {
     switch (selectedAccount?.accountType) {
         case 'coinjoin':
@@ -124,8 +127,9 @@ export const AddAccountButton = ({
                 <AddDefaultAccountButton
                     network={network}
                     selectedAccount={selectedAccount}
-                    emptyAccounts={emptyAccounts}
+                    scopedAccounts={scopedAccounts}
                     onEnableAccount={onEnableAccount}
+                    onAddNewAccount={onAddNewAccount}
                 />
             );
     }
