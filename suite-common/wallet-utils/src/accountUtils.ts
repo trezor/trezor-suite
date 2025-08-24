@@ -3,10 +3,12 @@ import {
     type AccountType,
     type Bip43Path,
     type Bip43PathTemplate,
+    type NetworkAccount,
     type NetworkFeature,
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
+    type TrezorConnectBackendType,
     getNetwork,
     getNetworkDisplaySymbol,
     networkSymbolCollection,
@@ -26,7 +28,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
-import {
+import TrezorConnect, {
     AccountAddress,
     AccountAddresses,
     AccountInfo,
@@ -38,6 +40,7 @@ import {
     TokenInfo,
     TokenTransfer,
 } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
@@ -1228,5 +1231,58 @@ export const parseAccountKey = (accountKey: AccountKey) => {
         accountDescriptor: accountDescriptor as AccountDescriptor,
         networkSymbol: networkSymbol as NetworkSymbol,
         deviceStaticSessionId: deviceStaticSessionId as StaticSessionId,
+    };
+};
+
+export const prepareNewAccountPayload = async ({
+    accountType,
+    networkSymbol,
+    index,
+    backendType,
+    selectedAccount,
+    accountTypes,
+    deviceState,
+}: {
+    accountType: AccountType;
+    networkSymbol: NetworkSymbol;
+    index: number;
+    backendType?: TrezorConnectBackendType;
+    selectedAccount?: NetworkAccount;
+    accountTypes?: NetworkAccount[];
+    deviceState?: StaticSessionId;
+}) => {
+    const networkAccount =
+        selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
+
+    const newPath = networkAccount?.bip43Path.replace('i', String(index));
+
+    if (!newPath || !deviceState) return new Error('Missing path');
+
+    const res = await TrezorConnect.getAccountInfo({
+        path: newPath,
+        coin: networkSymbol,
+    });
+
+    if (!res.success) return new Error(res.payload.error);
+
+    // just to log that account was added manually.
+    analytics.report({
+        type: EventType.AccountsNewAccount,
+        payload: {
+            type: accountType,
+            path: newPath,
+            symbol: networkSymbol,
+        },
+    });
+
+    return {
+        accountInfo: res.payload,
+        visible: true,
+        deviceState,
+        symbol: networkSymbol,
+        index,
+        accountType,
+        path: newPath as Bip43Path,
+        backendType,
     };
 };
