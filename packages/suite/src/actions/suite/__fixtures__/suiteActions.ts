@@ -6,7 +6,6 @@ import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, TorStatus } from 'src/types/suite';
 
-import { openSwitchDeviceDialog } from '../../wallet/addWalletThunk';
 import * as suiteActions from '../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = testMocks;
@@ -338,21 +337,6 @@ const handleDeviceConnect: HandleDeviceConnectFixture[] = [
         },
         newlyConnectedDevice: { ...CONNECT_DEVICE, id: 'a-different-id' } as Device,
         expectedNextActionType: SUITE.SET_RECENTLY_CONNECTED_DEVICE,
-    },
-    {
-        description: `opens the wallet switcher if more than one physically connected device`,
-        state: {
-            device: {
-                devices: [
-                    getSuiteDevice({ path: '777', id: 'foo', connected: true }),
-                    getSuiteDevice({ path: '888', id: 'bar', connected: true }),
-                ],
-                selectedDevice: getSuiteDevice({ path: '777', id: 'foo', connected: true }),
-            },
-            suite: {},
-        },
-        newlyConnectedDevice: CONNECT_DEVICE,
-        expectedNextActionType: openSwitchDeviceDialog.pending.type,
     },
 ];
 

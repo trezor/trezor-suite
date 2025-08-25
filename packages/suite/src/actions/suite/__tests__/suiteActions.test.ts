@@ -151,10 +151,7 @@ describe('Suite Actions', () => {
             const store = initStore(state);
 
             const device = f.newlyConnectedDevice;
-            const prevConnectedDevices = f.state.device.devices ?? [];
-            // ensure the device is processed into redux, as handleDeviceConnect is called afterwards and counts on it
-            await store.dispatch(deviceActions.connectDevice({ device: f.newlyConnectedDevice }));
-            await store.dispatch(handleDeviceConnect({ device, prevConnectedDevices }));
+            await store.dispatch(handleDeviceConnect(device));
             // a lot of actions may get called, and the one we are interested in may not be the last one
             expect(store.getActions().some(a => a?.type === f.expectedNextActionType)).toBe(true);
         });
