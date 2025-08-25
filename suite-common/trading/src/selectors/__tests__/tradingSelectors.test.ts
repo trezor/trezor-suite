@@ -1,10 +1,11 @@
-import type {
+import {
     BuyTrade,
     Coins,
     CryptoId,
     FiatCurrenciesProps,
     FiatCurrencyCode,
     Platforms,
+    SellFiatTrade,
 } from 'invity-api';
 
 import {
@@ -15,6 +16,8 @@ import {
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeLoadingTimestampAndStatus,
     selectTradingSellLoadingTimestampAndStatus,
+    selectTradingSellQuotes,
+    selectValidTradingSellQuotes,
 } from '@suite-common/trading';
 import { StaticSessionId } from '@trezor/connect';
 
@@ -164,6 +167,47 @@ describe('tradingSelectors', () => {
             ] as CryptoId[],
             country: 'CZ',
         },
+        quotes: [
+            {
+                amountInCrypto: false,
+                country: 'CZ',
+                cryptoCurrency: 'ethereum',
+                cryptoStringAmount: '0.02539600',
+                exchange: 'banxa-sell',
+                fiatCurrency: 'USD',
+                fiatStringAmount: '100.00',
+                maxCrypto: 5.83997533,
+                maxFiat: 25000,
+                minCrypto: 0.01167995,
+                minFiat: 50,
+                orderId: '05a031d0-2c7a-4e7f-9001-67cec1253fae',
+                partnerData2: '6107',
+                paymentId: '7b9d5f99-5612-4fc3-98ab-ace3dad87e28',
+                paymentMethod: 'bankTransfer',
+                paymentMethodName: 'Bank Transfer',
+                rate: 3937.6279729091198,
+                tags: ['wantFiat'],
+            },
+            {
+                amountInCrypto: false,
+                country: 'CZ',
+                cryptoCurrency: 'ethereum',
+                cryptoStringAmount: '0.0233',
+                exchange: 'moonpay-sell',
+                fiatCurrency: 'USD',
+                fiatStringAmount: '90.17',
+                maxCrypto: 30000,
+                maxFiat: 30000,
+                minCrypto: 0.0011,
+                minFiat: 20,
+                orderId: 'b7bafcc9-700b-4a42-a0b1-48aabda25545',
+                paymentId: '2dc5bf90-ce56-4305-8583-06418c5248c5',
+                paymentMethod: 'creditCard',
+                paymentMethodName: 'Credit Card',
+                rate: 3869.9570815450643,
+                tags: ['wantFiat'],
+            },
+        ] as SellFiatTrade[],
     });
 
     const getExchangeState = () => ({
@@ -1066,6 +1110,40 @@ describe('tradingSelectors', () => {
         });
     });
 
+    describe('selectValidTradingSellQuotes', () => {
+        beforeEach(() => {
+            const quoteDraft = state.wallet.tradingNew.sell.quotes[0];
+
+            state.wallet.tradingNew.sell.quotes = [
+                {
+                    ...quoteDraft,
+                    rate: 20000,
+                    orderId: 'orderId1',
+                },
+                {
+                    ...quoteDraft,
+                    rate: 0,
+                    orderId: 'orderId2',
+                },
+                {
+                    ...quoteDraft,
+                    rate: undefined,
+                    orderId: 'orderId3',
+                },
+            ];
+        });
+
+        it('should return only quotes with non-zero rate', () => {
+            const validQuotes = selectValidTradingSellQuotes(state);
+
+            expect(validQuotes).toEqual([state.wallet.tradingNew.sell.quotes[0]]);
+        });
+
+        it('should be stable', () => {
+            expect(selectValidTradingSellQuotes(state)).toBe(selectValidTradingSellQuotes(state));
+        });
+    });
+
     describe('selectTradingBuyLoadingTimestampAndStatus', () => {
         it.each<[boolean, number]>([
             [true, 0],
@@ -1215,6 +1293,12 @@ describe('tradingSelectors', () => {
             it('should be true otherwise', () => {
                 expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(true);
             });
+        });
+    });
+
+    describe('selectTradingSellQuotes', () => {
+        it('should return quotes from trading sell state', () => {
+            expect(selectTradingSellQuotes(state)).toBe(state.wallet.tradingNew.sell.quotes);
         });
     });
 

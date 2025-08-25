@@ -6,13 +6,13 @@ import {
     HandleSellRequestThunkProps,
     cryptoIdToNetwork,
     selectTradingSellIsLoading,
+    selectValidTradingSellQuotes,
     sellThunks,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
 import { sellActions } from '../../reducers';
-import { selectSellQuotes } from '../../selectors/sellSelectors';
 import { AbortablePromise } from '../../types/general';
 import { SellFormType } from '../../types/sell';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
@@ -103,7 +103,7 @@ const useSellQuotesInvalidator = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const quotes = useSelector(selectSellQuotes);
+    const quotes = useSelector(selectValidTradingSellQuotes);
     const isLoading = useSelector(selectTradingSellIsLoading);
 
     useQuotesInvalidator({

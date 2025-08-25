@@ -468,4 +468,169 @@ describe('useSellForm', () => {
 
         expect(result.current.getValues('sendAsset')).toEqual(undefined);
     });
+
+    describe('on quotes change', () => {
+        const initFormAndQuoteRequest = (form: SellFormType) => {
+            act(() => {
+                form.setValue('sendAsset', btcAsset);
+                form.setValue('sendAccount', getBtcAccount('btc-account-1'));
+                form.setValue('amountInCrypto', false);
+                form.setValue('fiatStringAmount', '10');
+            });
+            act(() => {
+                store.dispatch(
+                    tradingSellActions.saveQuoteRequest({
+                        cryptoCurrency: btcAsset.cryptoId,
+                        amountInCrypto: true,
+                        fiatCurrency: 'USD',
+                    }),
+                );
+            });
+        };
+
+        it('if no quote is selected should select best rated quote with bankTransfer payment method', async () => {
+            const { result } = await renderUseSellForm();
+
+            initFormAndQuoteRequest(result.current);
+            act(() => {
+                store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+            });
+
+            expect(result.current.getValues('quote')).toEqual(sellQuotes[1]);
+        });
+
+        it('if no quote is selected and no bankTransferQuote is available should select best rated quote', async () => {
+            const { result } = await renderUseSellForm();
+            initFormAndQuoteRequest(result.current);
+
+            act(() => {
+                store.dispatch(tradingSellActions.saveQuotes([sellQuotes[0], sellQuotes[2]]));
+            });
+
+            expect(result.current.getValues('quote')).toEqual(sellQuotes[2]);
+        });
+
+        describe('when quote is selected and new quotes are fetched', () => {
+            it('should set quote to undefined when no quotes are available', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+
+                act(() => {
+                    result.current.setValue('quote', sellQuotes[0]);
+                });
+
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes([]));
+                });
+
+                expect(result.current.getValues('quote')).toBeUndefined();
+            });
+
+            it('should select quote with same payment method and provider', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+
+                act(() => {
+                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                });
+
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+                });
+
+                expect(result.current.getValues('quote')).toEqual(sellQuotes[2]);
+            });
+
+            it('should select quote with same payment method if provider is not available', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+
+                act(() => {
+                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                });
+
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes(sellQuotes.slice(0, 2)));
+                });
+
+                expect(result.current.getValues('quote')).toEqual(sellQuotes[0]);
+            });
+
+            it('should select best rated quote if neither same payment method nor provider are available', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+
+                act(() => {
+                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                });
+
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes([sellQuotes[1]]));
+                });
+
+                expect(result.current.getValues('quote')).toEqual(sellQuotes[1]);
+            });
+
+            it('should update cryptoValue when selected quote is changed and truncate it to 9 decimals', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+                });
+
+                act(() => {
+                    result.current.setValue('quote', sellQuotes[1]);
+                });
+
+                expect(result.current.getValues('cryptoStringAmount')).toBe('0.025396001');
+            });
+            it('should update fiatAmount when selected quote is changed and user inserted cryptoAmount and truncate it to 3 decimals', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+                act(() => {
+                    result.current.setValue('amountInCrypto', true);
+                    result.current.setValue('cryptoStringAmount', '0.1');
+                    store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+                });
+
+                act(() => {
+                    result.current.setValue('quote', sellQuotes[2]);
+                });
+
+                expect(result.current.getValues('fiatStringAmount')).toBe('100.062');
+            });
+
+            it('should clear cryptoValue when no quotes are available and user inserted fiatValue', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+                });
+
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes([]));
+                });
+
+                expect(result.current.getValues('cryptoStringAmount')).toBeUndefined();
+                expect(result.current.getValues('fiatStringAmount')).toBe('10');
+            });
+
+            it('should clear fiatValue when no quotes are available and user inserted cryptoValue', async () => {
+                const { result } = await renderUseSellForm();
+                initFormAndQuoteRequest(result.current);
+                act(() => {
+                    result.current.setValue('amountInCrypto', true);
+                    result.current.setValue('cryptoStringAmount', '0.1');
+                    store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+                });
+
+                act(() => {
+                    store.dispatch(tradingSellActions.saveQuotes([]));
+                });
+
+                expect(result.current.getValues('fiatStringAmount')).toBeUndefined();
+                expect(result.current.getValues('cryptoStringAmount')).toBe('0.1');
+            });
+        });
+    });
 });
