@@ -259,6 +259,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
                 case SUITE.SET_IS_COINS_FILTER_VISIBLE:
                 case SUITE.DISMISSED_TRADING_TERMS:
+                case SUITE.SET_AUTO_EJECT:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {
