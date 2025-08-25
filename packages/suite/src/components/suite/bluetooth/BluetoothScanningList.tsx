@@ -1,10 +1,9 @@
 import { selectScanStatus } from '@suite-common/bluetooth';
-import { ElevationUp, Spinner, Text } from '@trezor/components';
+import { Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { BluetoothDeviceList } from './BluetoothDeviceList';
 import { BluetoothDialogCard } from './BluetoothDialogCard';
-import { BluetoothScanFooter } from './BluetoothScanFooter';
 import { BluetoothTips } from './BluetoothTips';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
@@ -44,20 +43,6 @@ export const BluetoothScanningList = ({
     return (
         <BluetoothDialogCard
             floatingHeader={uiMode === 'spatial' && <Translation id="TR_CONNECT_VIA_BLUETOOTH" />}
-            footer={
-                uiMode === 'spatial' && (
-                    // Here we need to do +2 in elevation because of custom design on the welcome screen
-                    <ElevationUp>
-                        <ElevationUp>
-                            <BluetoothScanFooter
-                                onReScanClick={onReScanClick}
-                                numberOfDevices={devices.length}
-                                scanStatus={scanStatus}
-                            />
-                        </ElevationUp>
-                    </ElevationUp>
-                )
-            }
             cardHeader={
                 isScanning ? (
                     <>
@@ -80,14 +65,6 @@ export const BluetoothScanningList = ({
             headerOnClose={onClose}
         >
             {content}
-
-            {uiMode === 'card' && (
-                <BluetoothScanFooter
-                    onReScanClick={onReScanClick}
-                    numberOfDevices={devices.length}
-                    scanStatus={scanStatus}
-                />
-            )}
         </BluetoothDialogCard>
     );
 };
