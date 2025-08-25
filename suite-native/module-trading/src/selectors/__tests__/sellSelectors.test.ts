@@ -2,13 +2,11 @@ import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount } from '../../__fixtures__/account';
-import { sellQuotes } from '../../__fixtures__/sellQuotes';
 import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
     selectSellAmountLimits,
     selectSellFormDefaultValues,
-    selectSellQuotes,
     selectSellSelectedSendAccount,
     selectSellSupportedFiatCurrencies,
     selectSellSupportedFiatCurrenciesList,
@@ -237,14 +235,6 @@ describe('sellSelectors', () => {
             state.wallet.tradingNew.sell.tradingAccountKey = 'unknown_account_key';
 
             expect(selectSellSelectedSendAccount(state)).toBeUndefined();
-        });
-    });
-
-    describe('selectSellQuotes', () => {
-        it('should return quotes from trading sell state', () => {
-            state.wallet.tradingNew.sell.quotes = sellQuotes;
-
-            expect(selectSellQuotes(state)).toEqual(sellQuotes);
         });
     });
 });

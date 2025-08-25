@@ -520,6 +520,9 @@ export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
 export const selectTradingSellIsLoading = (state: TradingRootState) =>
     state.wallet.tradingNew.sell.isLoading;
 
+export const selectTradingSellQuotes = (state: TradingRootState) =>
+    state.wallet.tradingNew.sell.quotes;
+
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.formStep;
 
@@ -559,6 +562,15 @@ export const selectTradingAccountAccordingActiveSection =
 
 export const selectValidTradingBuyQuotes = createMemoizedSelector(
     [selectTradingBuyQuotes],
+    quotes => {
+        if (!quotes) return [];
+
+        return quotes.filter(item => item.rate && item.rate !== 0);
+    },
+);
+
+export const selectValidTradingSellQuotes = createMemoizedSelector(
+    [selectTradingSellQuotes],
     quotes => {
         if (!quotes) return [];
 

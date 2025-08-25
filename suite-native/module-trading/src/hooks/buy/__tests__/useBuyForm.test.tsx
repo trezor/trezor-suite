@@ -410,7 +410,7 @@ describe('useBuyForm', () => {
                 expect(form.getValues('quote')).toEqual(quotes[1]);
             });
 
-            it('should select 1st quote on new quotes when payment method is not available even with different payment method', () => {
+            it('should select 1st quote on new quotes when payment method is not available even with different provider', () => {
                 act(() => {
                     store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
                 });
