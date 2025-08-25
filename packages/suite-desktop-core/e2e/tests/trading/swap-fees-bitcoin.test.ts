@@ -44,7 +44,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
             await tradingPage.swapBestOfferButton.click();
             await tradingPage.confirmTrade('Ethereum #1');
             await tradingPage.finishTransactionButton.click();
-            await page.waitForTimeout(3000); // wait for compound data to be ready
+            await page.expectReduxObjectNotToBeEmpty('wallet.tradingNew.composedTransactionInfo');
             await tradingPage.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
             await devicePrompt.waitForPromptAndClick();
