@@ -131,15 +131,12 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
         });
 
         await test.step('Verify button opens provider support page in new tab', async () => {
-            // There was minor instability, so we are adding retry to this step group
-            await expect(async () => {
-                const partnerPagePromise = page.context().waitForEvent('page', { timeout: 5_000 });
-                await page.getByRole('link', { name: 'Go to provider support' }).click();
-                const partnerTab = await partnerPagePromise;
-                // Mocked data have URL changed to https://example.org/orders/{{orderId}} for stability reasons
-                await expect(partnerTab).toHaveURL(/https:\/\/example\.org\/orders\//);
-                await partnerTab.close();
-            }).toPass({ timeout: 20_000 });
+            const partnerPagePromise = page.context().waitForEvent('page');
+            await page.getByRole('link', { name: 'Go to provider support' }).click();
+            const partnerTab = await partnerPagePromise;
+            // Mocked data have URL changed to https://mocked.partner.site/orders/{{orderId}} for stability reasons
+            await expect(partnerTab).toHaveURL(/https:\/\/mocked\.partner\.site\/orders\//);
+            await partnerTab.close();
         });
 
         // Statuses: SENDING -> CONVERTING -> CONFIRMING -> SUCCESS
