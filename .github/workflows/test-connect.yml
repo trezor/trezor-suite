@@ -69,6 +69,7 @@ jobs:
     outputs:
       dailyMatrix: ${{ steps.set-matrix-daily.outputs.matrix }}
       dailyT3W1Matrix: ${{ steps.set-matrix-daily-t3w1.outputs.matrix }}
+      nightlyT3W1Matrix: ${{ steps.set-matrix-nightly-t3w1.outputs.matrix }}
       otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.matrix }}
       allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.matrix }}
       allTransportsMatrix: ${{ steps.set-matrix-all-transports.outputs.matrix }}
@@ -84,6 +85,10 @@ jobs:
       - name: Set daily T3W1 matrix
         id: set-matrix-daily-t3w1
         run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=all --groups=thp --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+
+      - name: Set nightly T3W1 matrix
+        id: set-matrix-nightly-t3w1
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=all --groups=all --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set all firmwares matrix
         id: set-matrix-all-firmwares
@@ -136,6 +141,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyT3W1Matrix) }}
+
+  PR-nightly-t3w1:
+    needs: [build, set-matrix]
+    name: PR-nightly-t3w1 ${{ matrix.key }}
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.groups.pattern }}
+      includeFilter: ${{ matrix.groups.includeFilter }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.nightlyT3W1Matrix) }}
 
   randomized-order:
     needs: [build, set-matrix]
