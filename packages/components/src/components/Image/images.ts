@@ -42,6 +42,7 @@ export type PngImage = keyof typeof PNG_IMAGES;
 export const PNG_IMAGES = {
     CLOUDY: 'cloudy.webp',
     CLOUDY_2x: 'cloudy@2x.webp',
+    CONNECTOR: 'connector.webp',
     CREATE_SHAMIR_GROUP: 'create-shamir-group.webp',
     CREATE_SHAMIR_GROUP_2x: 'create-shamir-group@2x.webp',
     BACKUP: 'backup.png',
