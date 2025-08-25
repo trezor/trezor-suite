@@ -4,7 +4,7 @@ const legacyResults = [
     {
         // not allowed for lower versions
         // not allowed for newer devices
-        rules: ['<1.10.1', '<2.4.0', '!T2B1', '!T3B1', '!T3T1'],
+        rules: ['<1.10.1', '<2.4.0', '!T2B1', '!T3B1', '!T3T1', '!T3W1'],
         success: false,
     },
 ];

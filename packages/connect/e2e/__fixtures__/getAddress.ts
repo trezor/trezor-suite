@@ -1,3 +1,10 @@
+const legacyResults = [
+    {
+        rules: ['!T3B1', '!T3T1', '!T3W1'],
+        success: false,
+    },
+];
+
 export default {
     method: 'getAddress',
     setup: {
@@ -93,6 +100,7 @@ export default {
             result: {
                 address: 'DsbjnfJrnL1orxJBCN8Kf39NjMwEktdfdWy',
             },
+            legacyResults,
         },
         {
             description: 'Decred Testnet first address',
@@ -103,6 +111,7 @@ export default {
             result: {
                 address: 'TsRQTRqf5TdEfqsnJ1gcQEDvPP363cEjr4B',
             },
+            legacyResults,
         },
         {
             description: 'Regtest P2PKH first address',

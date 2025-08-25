@@ -70,14 +70,14 @@ const tests = [
                 'Capability_Shamir',
                 'Capability_ShamirGroups',
                 'Capability_PassphraseEntry',
-                'Capability_NEM',
-                'Capability_EOS',
+                // 'Capability_NEM', // discontinued starting T3B1
+                // 'Capability_EOS', // discontinued starting T3B1
             ]),
             backup_type: 'Bip39',
             sd_card_present: expect.any(Boolean),
             sd_protection: false,
             wipe_code_protection: false,
-            session_id: expect.any(String),
+            // session_id: expect.any(String), // T3W1 in this case is not paired, thus returns null, other models should return a string
             passphrase_always_on_device: false,
             flags: expect.any(Number),
             fw_vendor: expect.any(String),
