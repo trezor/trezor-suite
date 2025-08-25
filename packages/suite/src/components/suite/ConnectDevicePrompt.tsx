@@ -11,14 +11,7 @@ import {
     variables,
 } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-    typography,
-} from '@trezor/theme';
+import { Elevation, mapElevationToBackground, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
@@ -28,21 +21,15 @@ import { TranslationKey } from './Translation';
 
 const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     display: flex;
-    min-height: 122px;
-    max-width: 360px;
+    flex-direction: column;
 
     padding: 10px;
     background: ${mapElevationToBackground};
-    border: 1px solid ${mapElevationToBorder};
     align-items: center;
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    gap: ${spacingsPx.xs};
-    flex-direction: column;
+    gap: ${spacingsPx.xxl};
     margin: 0;
-    border-radius: ${borders.radii.lg};
 
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
-        flex-direction: row;
         border-radius: 61px;
     }
 `;
@@ -64,7 +51,7 @@ const Text = styled.div`
     flex-direction: column;
     text-align: center;
 
-    ${typography.titleSmall}
+    ${typography.titleMedium}
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
         margin: 0 ${spacingsPx.xl} 0 ${spacingsPx.xs};
     }

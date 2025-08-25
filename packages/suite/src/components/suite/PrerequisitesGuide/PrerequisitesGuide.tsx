@@ -39,9 +39,7 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { Transport } from './Transport';
-import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothSelectors';
-import { BluetoothConnect } from '../bluetooth/BluetoothConnect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,10 +63,9 @@ const BluetoothWrapper = ({ children }: PropsWithChildren) => (
 
 type NonBluetoothProps = {
     allowSwitchDevice?: boolean;
-    setIsBluetoothConnectOpen: (isOpen: boolean) => void;
 };
 
-const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluetoothProps) => {
+const NonBluetooth = ({ allowSwitchDevice }: NonBluetoothProps) => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
@@ -83,7 +80,7 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                 case 'device-disconnect-required':
                     return <DeviceDisconnectRequired />;
                 case 'device-disconnected':
-                    return <DeviceConnect setIsBluetoothConnectOpen={setIsBluetoothConnectOpen} />;
+                    return <DeviceConnect />;
                 case 'device-unacquired':
                     return <DeviceAcquire />;
                 case 'device-busy':
@@ -111,11 +108,11 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                 case 'multi-share-backup-in-progress':
                     return <MultiShareBackupInProgress />;
 
-                case undefined:
+                default:
                     return <></>;
             }
         },
-        [prerequisite, device, setIsBluetoothConnectOpen],
+        [prerequisite, device],
     );
 
     const handleSwitchDeviceClick = () =>
@@ -130,7 +127,6 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                     <Translation id="TR_SWITCH_DEVICE" />
                 </Button>
             )}
-
             <ConnectDevicePrompt
                 connected={!!device}
                 deviceStatus={deviceStatus}
@@ -141,7 +137,6 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                 showWarningIcon={shouldDisplayInitialWarningIcon(deviceStatus)}
                 prerequisite={prerequisite}
             />
-
             <BottomAnimatedContainer
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -161,23 +156,17 @@ interface PrerequisitesGuideProps {
 
 export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
     const isBluetoothConnectOpen = useSelector(selectIsBluetoothListOpen);
-    const dispatch = useDispatch();
 
-    const setIsBluetoothConnectOpen = () => {
+    /*     const setIsBluetoothConnectOpen = () => {
         dispatch(setBluetoothListOpen({ isOpen: true }));
-    };
+    }; */
 
     return (
         <Wrapper>
             {isBluetoothConnectOpen ? (
-                <BluetoothWrapper>
-                    <BluetoothConnect uiMode="spatial" />
-                </BluetoothWrapper>
+                <BluetoothWrapper>{/* <BluetoothConnect uiMode="spatial" /> */}</BluetoothWrapper>
             ) : (
-                <NonBluetooth
-                    allowSwitchDevice={allowSwitchDevice}
-                    setIsBluetoothConnectOpen={setIsBluetoothConnectOpen}
-                />
+                <NonBluetooth allowSwitchDevice={allowSwitchDevice} />
             )}
         </Wrapper>
     );

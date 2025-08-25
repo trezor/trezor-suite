@@ -1,7 +1,7 @@
+import { ConnectionGlobalModal } from 'src/components/connection/ConnectionGlobalModal';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ForegroundAppModal } from './ForegroundAppModal';
-import { ThpGlobalModals } from '../../../thp/ThpGlobalModals';
 import { UnpairedBluetoothDeviceNeedsManualOsRemovalModal } from '../../bluetooth/UnpairedBluetoothDeviceNeedsManualOsRemovalModal';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 
@@ -30,7 +30,7 @@ export const ModalSwitcher = () => {
     return (
         <>
             <UnpairedBluetoothDeviceNeedsManualOsRemovalModal />
-            <ThpGlobalModals />
+            <ConnectionGlobalModal />
             <Inner modal={modal} />
         </>
     );
