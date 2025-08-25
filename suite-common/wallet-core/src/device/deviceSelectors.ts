@@ -192,6 +192,11 @@ export const selectHasDevicePassphraseEntryCapability = createMemoizedSelector(
     capabilities => !!capabilities?.includes('Capability_PassphraseEntry'),
 );
 
+export const selectHasDeviceBluetoothCapability = createMemoizedSelector(
+    [selectDeviceCapabilities],
+    capabilities => !!capabilities?.includes('Capability_BLE'),
+);
+
 export const selectDeviceStatus = createMemoizedSelector(
     [selectSelectedDevice],
     device => device && getStatus(device),

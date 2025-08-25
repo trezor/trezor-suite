@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useIsFocused } from '@react-navigation/native';
 
-import { selectIsDeviceAuthorized, selectIsDeviceConnected } from '@suite-common/wallet-core';
+import {
+    selectHasDeviceBluetoothCapability,
+    selectIsDeviceAuthorized,
+    selectIsDeviceConnected,
+} from '@suite-common/wallet-core';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
@@ -24,8 +28,9 @@ export const ConnectAndUnlockDeviceScreen = ({
     AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
     RootStackParamList
 >) => {
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
+    const isBluetoothFeatureFlagEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
 
+    const isBluetoothDevice = useSelector(selectHasDeviceBluetoothCapability);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isFocused = useIsFocused();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
@@ -55,6 +60,8 @@ export const ConnectAndUnlockDeviceScreen = ({
         }
     }, [isDeviceAuthorized, isDeviceConnected, isFocused, navigateBack]);
 
+    const isBluetoothConnectionAvailable = isBluetoothFeatureFlagEnabled && isBluetoothDevice;
+
     return (
         <Screen
             header={
@@ -69,7 +76,9 @@ export const ConnectAndUnlockDeviceScreen = ({
         >
             <ConnectAndUnlockDeviceScreenContent
                 onConnectViaBluetooth={
-                    isBluetoothEnabled ? navigateToTurnOnAndUnlockDeviceScreen : undefined
+                    isBluetoothConnectionAvailable
+                        ? navigateToTurnOnAndUnlockDeviceScreen
+                        : undefined
                 }
             />
         </Screen>
