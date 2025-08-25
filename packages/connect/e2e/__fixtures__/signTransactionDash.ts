@@ -5,7 +5,7 @@ const { TX_CACHE } = global.TestUtils;
 const legacyResults = [
     {
         // not allowed for newer devices
-        rules: ['!T2B1', '!T3B1', '!T3T1'],
+        rules: ['!T2B1', '!T3B1', '!T3T1', '!T3W1'],
         success: false,
     },
 ];
