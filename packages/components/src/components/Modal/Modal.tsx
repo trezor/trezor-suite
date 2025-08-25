@@ -18,7 +18,7 @@ import { ModalContext } from './ModalContext';
 import { ModalProvider } from './ModalProvider';
 import { ModalAlignment, ModalSize, ModalVariant } from './types';
 import { mapModalSizeToWidth } from './utils';
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { FrameProps, FramePropsKeys, Padding } from '../../utils/frameProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { Box } from '../Box/Box';
 import { Divider } from '../Divider/Divider';
@@ -64,6 +64,7 @@ type ModalProps = AllowedFrameProps & {
     size?: ModalSize;
     iconName?: IconName;
     'data-testid'?: string;
+    padding?: Padding;
 };
 
 const InnerModalBase = ({
@@ -79,6 +80,7 @@ const InnerModalBase = ({
     isBackdropCancelable,
     height,
     'data-testid': dataTest = '@modal',
+    padding,
 }: ModalProps) => {
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom } = useScrollShadow();
     const { elevation } = useElevation();
@@ -151,7 +153,7 @@ const InnerModalBase = ({
                     <Box position={{ type: 'relative' }} overflow="hidden" flex="1">
                         <ShadowTop />
                         <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                            <Column padding={spacings.md}>
+                            <Column padding={padding ? padding : spacings.md}>
                                 {iconName && (
                                     <Box
                                         margin={{
