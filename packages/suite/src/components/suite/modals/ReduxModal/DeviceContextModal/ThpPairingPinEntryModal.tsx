@@ -7,7 +7,7 @@ import { spacings } from '@trezor/theme';
 
 import { useDispatch } from '../../../../../hooks/suite';
 import messages from '../../../../../support/messages';
-import { ThpPairingCodeEntry } from '../../../../thp/ThpPairingCodeEntry';
+import { ThpPairingCodeEntry } from '../../../../connection/thp/ThpPairingCodeEntry';
 import { Translation } from '../../../Translation';
 
 export const ThpPairingPinEntryModal = () => {

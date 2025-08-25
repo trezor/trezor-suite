@@ -4,9 +4,9 @@ import { thpActions } from '@suite-common/thp';
 import { Button, Card, Column, Icon, List, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { startThpAutoconnectThunk } from '../../actions/thp/startThpAutoconnectThunk';
-import { useDevice, useDispatch } from '../../hooks/suite';
-import { Translation } from '../suite/Translation';
+import { startThpAutoconnectThunk } from '../../../actions/thp/startThpAutoconnectThunk';
+import { useDevice, useDispatch } from '../../../hooks/suite';
+import { Translation } from '../../suite/Translation';
 
 export const ThpAutoconnectInfoModal = () => {
     const [isLoading, setIsLoading] = useState(false);
