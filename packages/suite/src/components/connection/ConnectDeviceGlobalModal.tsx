@@ -121,7 +121,6 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             scannerTimerId.current = setTimeout(() => {
                 setShowHints(true);
                 dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
-                console.log('scanning timeout');
             }, SCAN_TIMEOUT);
 
         return clearScanTimer;
@@ -140,6 +139,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
         clearScanTimer();
         scannerTimerId.current = setTimeout(() => {
+            setShowHints(true);
             dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
     };
@@ -153,6 +153,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     const handleBluetoothConnectionCancel = () => {
         setSelectedDeviceId(null);
         onReScanClick();
+        toggleBluetoothMode();
     };
 
     const onConnect = async (deviceId: string) => {
@@ -169,7 +170,11 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     if (showHints) {
         return (
-            <DontSeeYourTrezorModal isBluetoothMode={isBluetoothMode} onGoBack={toggleShowHints} />
+            <DontSeeYourTrezorModal
+                isBluetoothMode={isBluetoothMode}
+                onRescan={onReScanClick}
+                onGoBack={toggleShowHints}
+            />
         );
     }
 

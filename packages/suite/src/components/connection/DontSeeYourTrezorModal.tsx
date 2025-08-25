@@ -24,6 +24,7 @@ import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 type DontSeeYourTrezorModalProps = {
     isBluetoothMode: boolean;
     onGoBack?: () => void;
+    onRescan?: () => void;
 };
 
 const commonCableTips = [
@@ -35,6 +36,7 @@ const commonCableTips = [
 export const DontSeeYourTrezorModal = ({
     onGoBack,
     isBluetoothMode,
+    onRescan,
 }: DontSeeYourTrezorModalProps) => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
@@ -71,11 +73,18 @@ export const DontSeeYourTrezorModal = ({
         return cableItem;
     }, [isBluetoothMode, cableItem]);
 
+    const handlePrimaryCta = () => {
+        if (isBluetoothMode) {
+            onRescan?.();
+        }
+        onGoBack?.();
+    };
+
     return (
         <Modal
             bottomContent={
                 <>
-                    <Button onClick={onGoBack} variant="info">
+                    <Button onClick={handlePrimaryCta} variant="info">
                         <Translation
                             id={isBluetoothMode ? 'TR_BLUETOOTH_SCAN_AGAIN' : 'TR_GOT_IT'}
                         />

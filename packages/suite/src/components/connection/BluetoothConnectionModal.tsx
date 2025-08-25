@@ -99,9 +99,7 @@ export const BluetoothConnectionModal = ({
                     uiMode="spatial"
                     onConnect={onConnect}
                     onReScanClick={onRescanClick}
-                    onClose={() => {
-                        alert('close!!');
-                    }}
+                    onClose={onCancel}
                 />
             </Modal>
         );
