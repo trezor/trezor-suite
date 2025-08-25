@@ -1,5 +1,7 @@
 import { produce } from 'immer';
 
+import { DeviceRootState } from '@suite-common/wallet-core';
+
 import { BackupStatus, ConfirmKey } from 'src/actions/backup/backupActions';
 import { BACKUP } from 'src/actions/backup/constants';
 import { Action } from 'src/types/suite';
@@ -10,13 +12,13 @@ export interface BackupRootState {
 
 export interface BackupState {
     userConfirmed: ConfirmKey[];
-    status: BackupStatus;
+    inProgress: boolean;
     error?: string;
 }
 
 const initialState: BackupState = {
     userConfirmed: [],
-    status: 'initial',
+    inProgress: false,
 };
 
 const handleToggleCheckboxByKey = (draft: BackupState, key: ConfirmKey) => {
@@ -37,11 +39,11 @@ const backup = (state: BackupState = initialState, action: Action) =>
             case BACKUP.TOGGLE_CHECKBOX_BY_KEY:
                 handleToggleCheckboxByKey(draft, action.payload);
                 break;
-            case BACKUP.SET_STATUS:
-                draft.status = action.payload;
+            case BACKUP.SET_IN_PROGRESS:
+                draft.inProgress = action.payload;
                 break;
             case BACKUP.SET_ERROR:
-                draft.status = 'error';
+                draft.inProgress = false;
                 draft.error = action.payload;
                 break;
             case BACKUP.RESET_REDUCER:
@@ -52,5 +54,13 @@ const backup = (state: BackupState = initialState, action: Action) =>
     });
 
 export const selectBackup = (state: BackupRootState) => state.backup;
+export const selectBackupStatus = (state: BackupRootState & DeviceRootState): BackupStatus => {
+    const backup_availability = state.device.selectedDevice?.features?.backup_availability;
+    if (backup_availability === 'Available' || backup_availability === 'NotAvailable')
+        return 'finished';
+    else if (state.backup.error !== undefined) return 'error';
+    else if (state.backup.inProgress) return 'in-progress';
+    else return 'initial';
+};
 
 export default backup;

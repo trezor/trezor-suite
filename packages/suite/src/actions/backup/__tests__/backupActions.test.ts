@@ -76,8 +76,8 @@ describe('Backup Actions', () => {
             payload: undefined,
         });
         expect(store.getActions().shift()).toEqual({
-            type: BACKUP.SET_STATUS,
-            payload: 'in-progress',
+            type: BACKUP.SET_IN_PROGRESS,
+            payload: true,
         });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
@@ -115,8 +115,8 @@ describe('Backup Actions', () => {
             payload: undefined,
         });
         expect(store.getActions().shift()).toEqual({
-            type: BACKUP.SET_STATUS,
-            payload: 'in-progress',
+            type: BACKUP.SET_IN_PROGRESS,
+            payload: true,
         });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });

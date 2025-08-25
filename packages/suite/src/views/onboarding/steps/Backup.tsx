@@ -20,6 +20,7 @@ import {
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectBackup, selectBackupStatus } from 'src/reducers/backup/backupReducer';
 import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { canContinue } from 'src/utils/backup';
 
@@ -30,7 +31,8 @@ const StyledImage = styled(Image)`
 
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const backup = useSelector(state => state.backup);
+    const backup = useSelector(selectBackup);
+    const backupStatus = useSelector(selectBackupStatus);
     const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const isActionAbortable = useSelector(selectIsActionAbortable);
@@ -67,7 +69,7 @@ export const BackupStep = () => {
             {showSkipConfirmation && (
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
-            {backup.status === 'initial' && (
+            {backupStatus === 'initial' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
@@ -95,7 +97,7 @@ export const BackupStep = () => {
                     </OptionsWrapper>
                 </OnboardingStepBox>
             )}
-            {backup.status === 'in-progress' && (
+            {backupStatus === 'in-progress' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
@@ -105,7 +107,7 @@ export const BackupStep = () => {
                 />
             )}
 
-            {backup.status === 'finished' && (
+            {backupStatus === 'finished' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TR_BACKUP_CREATED" />}
@@ -121,7 +123,7 @@ export const BackupStep = () => {
                     }
                 />
             )}
-            {backup.status === 'error' && (
+            {backupStatus === 'error' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TOAST_BACKUP_FAILED" />}
