@@ -20,8 +20,6 @@ import { BluetoothVersionNotCompatible } from './errors/BluetoothVersionNotCompa
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from '../../../actions/bluetooth/bluetoothConnectDeviceThunk';
 import { bluetoothDisconnectDeviceThunk } from '../../../actions/bluetooth/bluetoothDisconnectDeviceThunk';
-import { bluetoothStartScanningThunk } from '../../../actions/bluetooth/bluetoothStartScanningThunk';
-import { bluetoothStopScanningThunk } from '../../../actions/bluetooth/bluetoothStopScanningThunk';
 import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import { closeModalApp } from '../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../hooks/suite';
@@ -74,13 +72,13 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
             ? devices.find(device => device.id === selectedDeviceId)
             : undefined;
 
-    useEffect(() => {
+    /*   useEffect(() => {
         dispatch(bluetoothStartScanningThunk());
 
         return () => {
             dispatch(bluetoothStopScanningThunk());
         };
-    }, [dispatch]);
+    }, [dispatch]); */
 
     const clearScanTimer = useCallback(() => {
         if (scannerTimerId.current !== null) {
