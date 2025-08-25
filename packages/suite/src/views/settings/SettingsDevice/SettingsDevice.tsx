@@ -97,7 +97,7 @@ export const SettingsDevice = () => {
     const isBluetoothDevice = device.features?.capabilities.includes('Capability_BLE');
     const isBluetoothConnectedDevice = device?.bluetoothProps?.id !== undefined;
 
-    const isThpDevice = device?.thp?.properties !== undefined;
+    const isThpDevice = device?.thp !== undefined;
 
     return (
         <SettingsLayout>

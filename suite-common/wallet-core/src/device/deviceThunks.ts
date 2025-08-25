@@ -233,7 +233,7 @@ export const acquireDevice = createThunk(
                         error: response.payload.error,
                     }),
                 );
-                if (device?.thp?.properties !== undefined) {
+                if (device?.thp !== undefined) {
                     dispatch(thpActions.resetThpFlow());
                 }
             }
