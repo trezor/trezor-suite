@@ -109,9 +109,6 @@ module.exports = {
                 to: 'bin/bluetooth',
             },
         ]),
-        binaries: process.env.BLUETOOTH
-            ? ['Contents/Resources/bin/bluetooth/trezor-bluetooth']
-            : undefined,
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
         hardenedRuntime: true,
