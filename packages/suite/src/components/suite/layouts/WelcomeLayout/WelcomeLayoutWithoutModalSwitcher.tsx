@@ -26,7 +26,7 @@ import { LoggedOutSidebar } from '../LoggedOutSidebar';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
 import { PageName } from '../SuiteLayout/PageHeader/PageNames/PageName';
 
-const Content = styled.div<{ $elevation: Elevation }>`
+const Content = styled.div<{ $elevation: Elevation; $verticalCenter?: boolean }>`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -34,10 +34,24 @@ const Content = styled.div<{ $elevation: Elevation }>`
     align-items: center;
     overflow-y: auto;
     height: 100%;
+    ${props =>
+        props.$verticalCenter &&
+        `
+        justify-content: center;
+    `}
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: ${spacingsPx.sm};
     }
+`;
+
+const PureChildrenWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: ${MAX_ONBOARDING_WIDTH}px;
 `;
 
 const ChildrenWrapper = styled.div`
@@ -63,13 +77,28 @@ const WelcomePageHeaderWrapper = styled.div`
 
 export type WelcomeLayoutWithoutModalSwitcherProps = {
     children: ReactNode;
+    showPureChildren?: boolean;
     hideSidebar?: boolean;
 };
 
-const Right = ({ bannerSlot, children }: { bannerSlot?: ReactNode; children: ReactNode }) => {
+type RightContentProps = {
+    children: ReactNode;
+    showPureChildren: boolean;
+    bannerSlot?: ReactNode;
+};
+
+const RightSideContent = ({ bannerSlot, showPureChildren, children }: RightContentProps) => {
     const { elevation } = useElevation();
 
     const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
+
+    if (showPureChildren) {
+        return (
+            <Content $verticalCenter={true} $elevation={elevation}>
+                <PureChildrenWrapper>{children}</PureChildrenWrapper>
+            </Content>
+        );
+    }
 
     return (
         <Content $elevation={elevation}>
@@ -97,6 +126,7 @@ const Right = ({ bannerSlot, children }: { bannerSlot?: ReactNode; children: Rea
 export const WelcomeLayoutWithoutModalSwitcher = ({
     children,
     hideSidebar,
+    showPureChildren = false,
 }: WelcomeLayoutWithoutModalSwitcherProps) => {
     const theme = useSelector(state => state.suite.settings.theme);
 
@@ -115,7 +145,12 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                                 <LoggedOutSidebar />
                             </ElevationDown>
                         ) : null}
-                        <Right bannerSlot={<SuiteBanners fill />}>{children}</Right>
+                        <RightSideContent
+                            showPureChildren={showPureChildren}
+                            bannerSlot={<SuiteBanners fill />}
+                        >
+                            {children}
+                        </RightSideContent>
                         <GuideButton />
                         <GuideRouter />
                     </Modal.Provider>

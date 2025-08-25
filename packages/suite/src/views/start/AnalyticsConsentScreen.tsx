@@ -28,7 +28,7 @@ export const AnalyticsConsentScreen = () => {
     };
 
     return (
-        <WelcomeLayoutWithoutModalSwitcher hideSidebar={true}>
+        <WelcomeLayoutWithoutModalSwitcher showPureChildren={true} hideSidebar={true}>
             <Content>
                 <DataAnalytics
                     onConfirm={onConfirm}
