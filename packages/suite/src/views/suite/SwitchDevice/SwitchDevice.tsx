@@ -1,5 +1,5 @@
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectDevices } from '@suite-common/wallet-core';
+import { deviceActions, selectDevices } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -9,7 +9,6 @@ import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
-import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { BluetoothConnect } from '../../../components/suite/bluetooth/BluetoothConnect';
 
@@ -26,8 +25,9 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
         sortingFn: deviceUtils.sortDevicesForDeviceList,
     });
 
-    const openBluetoothList = () => {
-        dispatch(setBluetoothListOpen({ isOpen: true }));
+    const openDeviceConnectionModal = () => {
+        dispatch(deviceActions.toggleConnectionModal());
+        onCancel();
     };
 
     return (
@@ -49,7 +49,7 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
                             variant="tertiary"
                             icon="bluetooth"
                             isFullWidth
-                            onClick={openBluetoothList}
+                            onClick={openDeviceConnectionModal}
                         >
                             Pair Trezor Safe 7
                         </Button>

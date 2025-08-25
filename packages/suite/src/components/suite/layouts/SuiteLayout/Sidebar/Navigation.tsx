@@ -18,8 +18,8 @@ export const Nav = styled.nav<{ $isSidebarCollapsed: boolean; $margin: SpacingPx
     gap: ${spacingsPx.xxs};
     align-items: stretch;
 
-    ${({ $isSidebarCollapsed, $margin }) =>
-        $isSidebarCollapsed && `align-items: center;margin: ${$margin};`}
+    ${({ $margin }) => $margin && `margin: ${$margin};`}
+    ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `align-items: center;`}
 `;
 
 export const SETTINGS_ROUTES: Route['name'][] = [
