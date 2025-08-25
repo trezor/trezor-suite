@@ -58,6 +58,7 @@ const variantColorMap: Record<TextVariant, Color> = {
     secondary: 'textSecondaryHighlight',
     tertiary: 'textSubdued',
     info: 'textAlertBlue',
+    infoLight: 'textAlertBlue',
     warning: 'textAlertYellow',
     destructive: 'textAlertRed',
     purple: 'textAlertPurple',
