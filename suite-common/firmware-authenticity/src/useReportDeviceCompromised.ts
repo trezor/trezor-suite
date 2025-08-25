@@ -35,9 +35,13 @@ const useReportRevisionCheck = () => {
     const errorType = isError ? revisionCheck.error : null;
     const errorPayload = isError ? revisionCheck.errorPayload : null;
 
+    const shouldReport =
+        device?.connected === true &&
+        errorType !== null &&
+        revisionCheckErrorScenarios[errorType].shouldReport;
+
     useEffect(() => {
-        if (errorType === null) return;
-        if (revisionCheckErrorScenarios[errorType].shouldReport) {
+        if (shouldReport) {
             dispatch(
                 reportSecurityCheckThunk({
                     level: 'error',
@@ -47,7 +51,7 @@ const useReportRevisionCheck = () => {
                 }),
             );
         }
-    }, [dispatch, commonData, errorType, errorPayload]);
+    }, [dispatch, commonData, errorType, errorPayload, shouldReport]);
 };
 
 const useReportHashCheck = () => {
@@ -61,23 +65,28 @@ const useReportHashCheck = () => {
     const errorPayload = isError ? hashCheck.errorPayload : null;
     const attemptCount = isError ? hashCheck.attemptCount : null;
 
-    useEffect(() => {
-        if (errorType === null) return;
-        if (!hashCheckErrorScenarios[errorType].shouldReport) return;
-        const willBeRetried =
-            isArrayMember(errorType, FIRMWARE.HASH_CHECK_RETRIABLE_ERRORS) &&
-            (attemptCount ?? 0) < FIRMWARE.HASH_CHECK_MAX_ATTEMPTS;
-        if (willBeRetried) return;
+    const shouldReport =
+        device?.connected === true &&
+        errorType !== null &&
+        hashCheckErrorScenarios[errorType].shouldReport;
 
-        dispatch(
-            reportSecurityCheckThunk({
-                level: 'error',
-                checkType: 'Firmware hash',
-                contextData: { ...commonData, errorType, attemptCount },
-                payload: errorPayload,
-            }),
-        );
-    }, [dispatch, commonData, errorType, errorPayload, attemptCount]);
+    useEffect(() => {
+        if (shouldReport) {
+            const willBeRetried =
+                isArrayMember(errorType, FIRMWARE.HASH_CHECK_RETRIABLE_ERRORS) &&
+                (attemptCount ?? 0) < FIRMWARE.HASH_CHECK_MAX_ATTEMPTS;
+            if (willBeRetried) return;
+
+            dispatch(
+                reportSecurityCheckThunk({
+                    level: 'error',
+                    checkType: 'Firmware hash',
+                    contextData: { ...commonData, errorType, attemptCount },
+                    payload: errorPayload,
+                }),
+            );
+        }
+    }, [dispatch, commonData, errorType, errorPayload, attemptCount, shouldReport]);
 
     // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
     const isHashCheckSuccess = hashCheck && hashCheck.success;
