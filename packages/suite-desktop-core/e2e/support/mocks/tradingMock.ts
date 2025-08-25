@@ -138,13 +138,13 @@ export class TradingMock {
 
     @step()
     async routeDummyProviderSupportPage() {
-        await this.page.route(/https:\/\/example\.org\/orders\/.*/, async route => {
+        await this.page.context().route('https://mocked.partner.site/orders/*', async route => {
             const html = `
             <!DOCTYPE html>
             <html>
-            <head><title>Provider Support</title></head>
+            <head><title>Mocked Provider Support</title></head>
             <body>
-                <h1>Provider Support Page</h1>
+                <h1>Mocked Provider Support Page</h1>
                 <p>Order ID: ${route.request().url().split('/').pop()}</p>
             </body>
             </html>

@@ -24,7 +24,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
         },
     );
 
-    test('Swap custom fees for Bitcoin', async ({ tradingPage, devicePrompt }) => {
+    test('Swap custom fees for Bitcoin', async ({ page, tradingPage, devicePrompt }) => {
         let feeRate: string;
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fees.switchModeButton('custom').click();
@@ -44,6 +44,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
             await tradingPage.swapBestOfferButton.click();
             await tradingPage.confirmTrade('Ethereum #1');
             await tradingPage.finishTransactionButton.click();
+            await page.waitForTimeout(3000); // wait for compound data to be ready
             await tradingPage.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
             await devicePrompt.waitForPromptAndClick();
