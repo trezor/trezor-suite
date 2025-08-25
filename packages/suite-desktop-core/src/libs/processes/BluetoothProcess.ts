@@ -1,4 +1,7 @@
+import path from 'path';
+
 import { isDevEnv } from '@suite-common/suite-utils';
+import { isMacOs } from '@trezor/env-utils';
 
 import { BaseProcess, Status } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
@@ -61,10 +64,20 @@ export class BluetoothProcess extends BaseProcess {
         };
     }
 
-    start() {
+    async start() {
         if (isDevEnv || getSwitchValue('log-level') === 'debug') {
             process.env.RUST_LOG = 'debug';
             process.env.RUST_BACKTRACE = '1';
+        }
+
+        if (isMacOs()) {
+            const processPath = path.join(super.getProcessDir(), `index.js`);
+            this.logger.info(this.logTopic, `Loading bluetooth native module from ${processPath}`);
+
+            const { trezorBluetoothRun } = await import(/*webpackIgnore: true */ processPath);
+            trezorBluetoothRun(this.port);
+
+            return;
         }
 
         return super.start(['-p', this.port.toString()]);
