@@ -195,17 +195,31 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
 
     /** This should have zero overhead thanks to descriptor caching */
     private async filterCardanoDerivations(accounts: CardanoRequest[]) {
-        const tryGetDescriptor = (coin?: CardanoRequest) =>
-            coin && this.getDescriptor(coin.coinInfo, coin.account.path, coin.derivation, 0);
+        const legacyRequest = accounts.find(a => a.account.type === 'legacy');
+        const ledgerRequest = accounts.find(a => a.account.type === 'ledger');
+        const filterableRequest = legacyRequest ?? ledgerRequest;
 
-        const normal = await tryGetDescriptor(accounts.find(a => a.account.type === 'normal'));
-        const ledger = await tryGetDescriptor(accounts.find(a => a.account.type === 'ledger'));
-        const legacy = await tryGetDescriptor(accounts.find(a => a.account.type === 'legacy'));
+        const getDescriptor = (derivation: keyof typeof CARDANO_DERIVATIONS) =>
+            filterableRequest &&
+            this.getDescriptor(
+                filterableRequest.coinInfo,
+                filterableRequest.account.path,
+                CARDANO_DERIVATIONS[derivation],
+                0,
+            ).then(({ descriptor }) => descriptor);
 
-        // legacy omitted if normal or ledger is present and has the same descriptor
-        const omitLegacy = legacy && legacy.descriptor === (normal ?? ledger)?.descriptor;
-        // ledger omitted if normal is present and has the same descriptor
-        const omitLedger = ledger && ledger.descriptor === normal?.descriptor;
+        // normal descriptor or undefined when no legacy/ledger was requested as in that case it's useless
+        const normalDescriptor = await getDescriptor('normal');
+
+        // legacy omitted if it's requested and has the same descriptor as normal
+        const omitLegacy = legacyRequest && (await getDescriptor('legacy')) === normalDescriptor;
+
+        // ledger omitted if it's requested and has the same descriptor as normal,
+        // but if legacy was already checked and not omitted, ledger won't be as well
+        const omitLedger =
+            ledgerRequest &&
+            (!legacyRequest || omitLegacy) &&
+            (await getDescriptor('ledger')) === normalDescriptor;
 
         return arrayPartition(
             accounts.map(item =>
