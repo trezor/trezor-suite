@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Backup misc', { tag: ['@group=device-management'] }, () => {
+test.describe('Backup misc', { tag: ['@group=device-management', '@specificModel'] }, () => {
     test.use({
         emulatorStartConf: { model: 'T2T1', wipe: true },
         emulatorSetupConf: { needs_backup: true },

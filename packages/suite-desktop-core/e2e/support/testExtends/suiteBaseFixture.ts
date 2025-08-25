@@ -2,7 +2,13 @@
 import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
-import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import {
+    MODELS,
+    Model,
+    SetupEmu,
+    StartEmu,
+    TrezorUserEnvLinkClass,
+} from '@trezor/trezor-user-env-link';
 
 import {
     TrezorUserEnvLinkProxy,
@@ -135,13 +141,19 @@ const trezorEnvSetup = async (
     }
 };
 
+function getModelFromEnv(): Model {
+    const envValue = process.env.EMULATOR_MODEL as Model;
+
+    return MODELS.includes(envValue) ? envValue : 'T3T1';
+}
+
 // This is the base Suite text fixture containing all the necessary setup and core page object
 // Depending on the project type (desktop or web) it will launch the appropriate environment
 // and provide the necessary page object which is either electron window or web page
 const suiteBaseTest = base.extend<suiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
-    emulatorStartConf: { model: 'T3T1', wipe: true },
+    emulatorStartConf: { model: getModelFromEnv(), wipe: true },
     emulatorSetupConf: {},
     electronConf: {},
     ignoreJSExceptions: [],

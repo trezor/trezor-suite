@@ -1,0 +1,74 @@
+name: "[Test] T3W1 Suite Desktop e2e tests"
+# Nightly scheduled check on develop branch
+# Builds the desktop app
+# Runs full e2e test suite for Suite Desktop
+# Uses T3W1 emulator
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  # schedule:
+  #   - cron: "0 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-app:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and Upload Suite Desktop
+        uses: ./.github/actions/build-desktop
+
+  run-e2e-suite-desktop-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-24.04
+    needs:
+      - build-app
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.sha }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: desktop-app-build-e2e
+
+      - name: Extract build artifact
+        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+
+      - name: Run Playwright E2E Tests
+        uses: ./.github/actions/run-e2e-tests
+        env:
+          EMULATOR_MODEL: T3W1
+        with:
+          project: "desktop"
+          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
+          workspace-dependencies: "@trezor/suite-desktop"
+          test-group: ${{ matrix.TEST_GROUP }}
+          additional-grep-invert: "@specificModel"
+          fail-fast: false
+          currents-project-id: "4ytF0E"
+          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-tags: "T3W1"
+          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
