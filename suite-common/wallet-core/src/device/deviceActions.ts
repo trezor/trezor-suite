@@ -116,7 +116,10 @@ const toggleIsDeviceAutoEjectEnabled = createAction(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectDevices`,
 );
 
+const toggleConnectionModal = createAction(`${DEVICE_MODULE_PREFIX}/toggleConnectionModal`);
+
 export const deviceActions = {
+    toggleConnectionModal,
     connectDevice,
     createDeviceInstance,
     connectUnacquiredDevice,
