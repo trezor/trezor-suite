@@ -6,8 +6,8 @@ import { ThpAutoconnectInfoModal } from './ThpAutoconnectInfoModal';
 import { ThpAutoconnectionModal } from './ThpAutoconnectionModal';
 import { ThpConnectionModal } from './ThpConnectionModal';
 import { ThpPairingFailedModal } from './ThpPairingFailedModal';
-import { useSelector } from '../../hooks/suite';
-import { ThpPairingPinEntryModal } from '../suite/modals/ReduxModal/DeviceContextModal/ThpPairingPinEntryModal';
+import { useSelector } from '../../../hooks/suite';
+import { ThpPairingPinEntryModal } from '../../suite/modals/ReduxModal/DeviceContextModal/ThpPairingPinEntryModal';
 
 export const ThpGlobalModals = () => {
     const device = useSelector(selectSelectedDevice);

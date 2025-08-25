@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 
-import { ThpPairingCodeEntry } from '../../../components/thp/ThpPairingCodeEntry';
+import { ThpPairingCodeEntry } from '../../../components/connection/thp/ThpPairingCodeEntry';
 import messages from '../../../support/messages';
 
 export const ThpPairingStep = () => {

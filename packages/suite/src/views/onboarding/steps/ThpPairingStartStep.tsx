@@ -1,7 +1,7 @@
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 
-import { ThpPairingStart } from '../../../components/thp/ThpPairingStart';
+import { ThpPairingStart } from '../../../components/connection/thp/ThpPairingStart';
 
 export const ThpPairingStartStep = () => (
     <OnboardingStepBox

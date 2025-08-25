@@ -5,7 +5,7 @@ import { PinInput, Row, Spinner } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { SpacingValues, spacings } from '@trezor/theme';
 
-import { useDispatch } from '../../hooks/suite';
+import { useDispatch } from '../../../hooks/suite';
 
 const SPINNER_SIZE = 32;
 
