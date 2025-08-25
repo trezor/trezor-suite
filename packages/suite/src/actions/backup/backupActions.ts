@@ -18,7 +18,7 @@ export type BackupStatus = 'initial' | 'in-progress' | 'finished' | 'error';
 export type BackupAction =
     | { type: typeof BACKUP.RESET_REDUCER }
     | { type: typeof BACKUP.TOGGLE_CHECKBOX_BY_KEY; payload: ConfirmKey }
-    | { type: typeof BACKUP.SET_STATUS; payload: BackupStatus }
+    | { type: typeof BACKUP.SET_IN_PROGRESS; payload: boolean }
     | { type: typeof BACKUP.SET_ERROR; payload: string };
 
 export const toggleCheckboxByKey = (key: ConfirmKey): BackupAction => ({
@@ -26,9 +26,9 @@ export const toggleCheckboxByKey = (key: ConfirmKey): BackupAction => ({
     payload: key,
 });
 
-export const setStatus = (status: BackupStatus): BackupAction => ({
-    type: BACKUP.SET_STATUS,
-    payload: status,
+export const setInProgress = (in_progress: boolean): BackupAction => ({
+    type: BACKUP.SET_IN_PROGRESS,
+    payload: in_progress,
 });
 
 export const setError = (error: string): BackupAction => ({
@@ -54,8 +54,8 @@ export const backupDevice =
         }
 
         dispatch({
-            type: BACKUP.SET_STATUS,
-            payload: 'in-progress',
+            type: BACKUP.SET_IN_PROGRESS,
+            payload: true,
         });
 
         const result = await TrezorConnect.backupDevice({
@@ -90,8 +90,8 @@ export const backupDevice =
                 dispatch(notificationsActions.addToast({ type: 'backup-success' }));
             }
             dispatch({
-                type: BACKUP.SET_STATUS,
-                payload: 'finished',
+                type: BACKUP.SET_IN_PROGRESS,
+                payload: false,
             });
             analytics.report({
                 type: EventType.CreateBackup,

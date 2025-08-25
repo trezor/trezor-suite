@@ -23,7 +23,7 @@ export const BackupStep3Finished = ({
             variant="primary"
             data-testid="@backup"
             heading={<Translation id="TR_BACKUP_CREATED" />}
-            description={<BackupStepDescription backupStatus={backup.status} />}
+            description={<BackupStepDescription />}
             bottomContent={
                 <Modal.Button
                     isDisabled={!continueEnabled}

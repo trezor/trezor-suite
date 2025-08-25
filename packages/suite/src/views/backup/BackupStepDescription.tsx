@@ -1,9 +1,12 @@
-import { BackupStatus } from '../../actions/backup/backupActions';
+import { useSelector } from 'src/hooks/suite';
+import { selectBackupStatus } from 'src/reducers/backup/backupReducer';
+
 import { Translation } from '../../components/suite';
 
 const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
-export const BackupStepDescription = ({ backupStatus }: { backupStatus: BackupStatus }) => {
+export const BackupStepDescription = () => {
+    const backupStatus = useSelector(selectBackupStatus);
     const currentProgressBarStep = nonErrorBackupStatuses.some(status => status === backupStatus)
         ? nonErrorBackupStatuses.findIndex(s => s === backupStatus) + 1
         : undefined;

@@ -42,7 +42,7 @@ export const BackupStep1Initial = ({
             variant="primary"
             data-testid="@backup"
             heading={<Translation id="TR_CREATE_BACKUP" />}
-            description={<BackupStepDescription backupStatus={backup.status} />}
+            description={<BackupStepDescription />}
             bottomContent={
                 <>
                     <Modal.Button

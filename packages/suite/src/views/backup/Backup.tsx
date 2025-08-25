@@ -13,7 +13,7 @@ import { BackupStep1Initial } from './BackupStep1Initial';
 import { BackupStep2InProgress } from './BackupStep2InProgress';
 import { BackupStep3Finished } from './BackupStep3Finished';
 import { BackupStepError } from './BackupStepError';
-import { selectBackup } from '../../reducers/backup/backupReducer';
+import { selectBackup, selectBackupStatus } from '../../reducers/backup/backupReducer';
 
 const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
     if (unfinishedBackup) {
@@ -29,6 +29,7 @@ export const Backup = ({
 }: ForegroundAppProps): NonNullable<ReactNode> /* NonNullable return type is required here to prevent default return from switch-case */ => {
     const device = useSelector(selectSelectedDevice);
     const backup = useSelector(selectBackup);
+    const backupStatus = useSelector(selectBackupStatus);
 
     const isDeviceUnavailable = !isDeviceAcquired(device) || !device.connected;
 
@@ -51,7 +52,7 @@ export const Backup = ({
         with backup finished or failed. Either way, there is no way.
     */
     if (
-        backup.status !== 'finished' &&
+        backupStatus !== 'finished' &&
         !backup.error &&
         device.features.backup_availability !== 'Required' &&
         device.features.unfinished_backup !== null
@@ -84,11 +85,11 @@ export const Backup = ({
         );
     }
 
-    switch (backup.status) {
+    switch (backupStatus) {
         case 'initial':
             return <BackupStep1Initial onCancel={onCancel} backup={backup} />;
         case 'in-progress':
-            return <BackupStep2InProgress onCancel={onCancel} backup={backup} />;
+            return <BackupStep2InProgress onCancel={onCancel} />;
         case 'finished':
             return <BackupStep3Finished onCancel={onCancel} backup={backup} />;
         case 'error':
