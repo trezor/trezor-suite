@@ -16,10 +16,11 @@ import {
     restartApp,
 } from '../utils';
 
+const defaultEmulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
+
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
     beforeAll(async () => {
-        const emulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
-        await prepareTrezorEmulator(emulatorOptions);
+        await prepareTrezorEmulator(defaultEmulatorOptions);
         await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
         await onCoinEnabling.waitForInitScreen();
@@ -34,7 +35,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
     describe('Tests with T3T1 device model', () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator();
+            await prepareTrezorEmulator(defaultEmulatorOptions);
             await restartApp();
             await appIsFullyLoaded();
 
@@ -123,13 +124,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 
     describe('Tests with FW update required', () => {
-        const emulatorOptions: PrepareTrezorEmulatorProps = {
-            seed: MNEMONICS.mnemonic_all,
-            version: '2.8.9',
-        };
-
         beforeEach(async () => {
-            await prepareTrezorEmulator(emulatorOptions);
+            await prepareTrezorEmulator({ ...defaultEmulatorOptions, version: '2.8.9' });
             await restartApp({ args: { isFirmwareUpdateEnabled: true } });
             await appIsFullyLoaded();
 
@@ -150,13 +146,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 
     describe('Tests with T1B1 device model', () => {
-        const emulatorOptions: PrepareTrezorEmulatorProps = {
-            seed: MNEMONICS.mnemonic_all,
-            model: 'T1B1',
-        };
-
         beforeEach(async () => {
-            await prepareTrezorEmulator(emulatorOptions);
+            await prepareTrezorEmulator({ ...defaultEmulatorOptions, model: 'T1B1' });
             await restartApp();
             await appIsFullyLoaded();
 
