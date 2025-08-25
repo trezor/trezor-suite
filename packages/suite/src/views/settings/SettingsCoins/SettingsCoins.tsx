@@ -165,7 +165,11 @@ export const SettingsCoins = () => {
                                 isActive={isDeviceLocked}
                                 content={<Translation id="TR_CONNECT_YOUR_DEVICE" />}
                             >
-                                <Button onClick={startDiscovery} isDisabled={isDeviceLocked}>
+                                <Button
+                                    data-testid="@settings-coins/discovery-button"
+                                    onClick={startDiscovery}
+                                    isDisabled={isDeviceLocked}
+                                >
                                     <Translation id="TR_DISCOVERY_NEW_COINS" />
                                 </Button>
                             </Tooltip>
