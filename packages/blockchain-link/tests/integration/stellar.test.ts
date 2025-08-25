@@ -67,7 +67,7 @@ describe('Stellar', () => {
         const expectedBalance = toStroops(
             accountRawResp.balances[accountRawResp.balances.length - 1].balance,
         );
-        const expectedReverse = '15000000';
+        const expectedReverse = '20000000';
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
             availableBalance: expectedAvailableBalance,
@@ -83,6 +83,17 @@ describe('Stellar', () => {
                 reserve: expectedReverse,
                 stellarSequence: accountRawResp.sequence,
             },
+            tokens: [
+                {
+                    balance: '4052297',
+                    contract: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                    decimals: 7,
+                    name: 'USDC',
+                    standard: 'STELLAR-CLASSIC',
+                    symbol: 'usdc',
+                    type: 'STELLAR-CLASSIC',
+                },
+            ],
         });
     });
 
@@ -137,7 +148,7 @@ describe('Stellar', () => {
         const expectedBalance = toStroops(
             accountRawResp.balances[accountRawResp.balances.length - 1].balance,
         );
-        const expectedReverse = '15000000';
+        const expectedReverse = '20000000';
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
             availableBalance: expectedAvailableBalance,
@@ -154,6 +165,17 @@ describe('Stellar', () => {
                 stellarSequence: accountRawResp.sequence,
             },
             stellarCursor: expectedCursor,
+            tokens: [
+                {
+                    balance: '4052297',
+                    contract: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                    decimals: 7,
+                    name: 'USDC',
+                    standard: 'STELLAR-CLASSIC',
+                    symbol: 'usdc',
+                    type: 'STELLAR-CLASSIC',
+                },
+            ],
         });
     });
 
