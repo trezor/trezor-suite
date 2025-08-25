@@ -74,8 +74,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
         await dispatch(
             trezorConnectActions.connectInitThunk({
-                [DEVICE.CONNECT]: (device, prevConnectedDevices) => {
-                    dispatch(handleDeviceConnect({ device, prevConnectedDevices }));
+                [DEVICE.CONNECT]: device => {
+                    dispatch(handleDeviceConnect(device));
                 },
                 [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
                     dispatch(
