@@ -22,6 +22,9 @@ type MainHtmlProps = {
     supportedDevicesList?: boolean;
     supportedBrowsers?: SupportedBrowser[];
     shouldUpdate?: boolean;
+    iosAppBanner?: boolean;
+    androidAppBanner?: boolean;
+    metaTags?: string[];
 };
 
 window.addEventListener('load', () => {
@@ -66,7 +69,8 @@ window.addEventListener('load', () => {
                 <p class=${style.continueButton} id="continue-to-suite" data-testid="@continue-to-suite">Continue at my own risk</p>`
             : '';
 
-    const getMainHtml = (props: MainHtmlProps) => `
+    const getMainHtml = (props: MainHtmlProps) => ({
+        html: `
     <div id="unsupported-browser" class="${style.container}" data-testid="@browser-detect">
         <h1 class="${style.title}">${props.title}</h1>
         <p class="${style.subtitle}">${props.subtitle}</p>
@@ -74,7 +78,9 @@ window.addEventListener('load', () => {
         ${getSupportedBrowsersPartial(props)}
         ${getContinueToSuiteInfo(props)}
     </div>
-    `;
+    `,
+        metaTags: props.metaTags ?? [],
+    });
 
     // this should match browserslist config (packages/suite-build/browserslist)
     const supportedBrowsers = [
@@ -186,6 +192,10 @@ window.addEventListener('load', () => {
         subtitle:
             'We’re working hard to bring the Trezor Suite mobile web app to iOS. In the meantime, you can use Trezor Suite on the following platforms:',
         supportedDevicesList: true,
+        iosAppBanner: true,
+        metaTags: [
+            '<meta name="apple-itunes-app" content="app-id=1631884497, affiliate-data=, app-argument=https://trezor.io/suite" />',
+        ],
     });
 
     const browserName = getBrowserName();
@@ -217,11 +227,14 @@ window.addEventListener('load', () => {
         document.body.appendChild(appDiv);
     };
 
-    const setBody = (content: string) => {
+    const setBody = (content: { html: string; metaTags?: string[] }) => {
         document.body.innerHTML = '';
-        document.body.insertAdjacentHTML('afterbegin', content);
+        document.body.insertAdjacentHTML('afterbegin', content.html);
 
         document.getElementById('continue-to-suite')?.addEventListener('click', goToSuite);
+        content.metaTags?.forEach(metaTag => {
+            document.head.insertAdjacentHTML('beforeend', metaTag);
+        });
     };
 
     if (getOsNameWeb() === 'iOS') {
