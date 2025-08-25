@@ -1,4 +1,5 @@
 import { Locator, Page, expect, test } from '@playwright/test';
+import { get } from 'lodash';
 
 declare module '@playwright/test' {
     interface Page {
@@ -7,6 +8,15 @@ declare module '@playwright/test' {
         // Methods
         discoveryShouldFinish(): Promise<void>;
         selectDropdownOptionWithRetry(dropdown: Locator, option: Locator): Promise<void>;
+        expectReduxObjectNotToBeEmpty(
+            objectPath: string,
+            options?: { timeout?: number },
+        ): Promise<void>;
+        expectReduxObjectToEqual(
+            objectPath: string,
+            expectedValue: any,
+            options?: { timeout?: number },
+        ): Promise<void>;
     }
 }
 
@@ -38,6 +48,35 @@ export const enhancePage = (page: Page): Page => {
                 await expect(option).toBeVisible({ timeout: 2000 });
                 await option.click({ timeout: 2000 });
             }).toPass({ timeout: 10_000 });
+        });
+    };
+
+    page.expectReduxObjectNotToBeEmpty = async function (
+        objectPath: string,
+        options = { timeout: 5000 },
+    ) {
+        await test.step('Expect Redux object not to be empty', async () => {
+            await expect(async () => {
+                const state = await page.evaluate(() => window.store.getState());
+                const testedObject = get(state, objectPath);
+                expect(testedObject).toBeDefined();
+                expect(testedObject).not.toBeNull();
+                expect(testedObject).not.toEqual({});
+            }).toPass({ timeout: options.timeout });
+        });
+    };
+
+    page.expectReduxObjectToEqual = async function (
+        objectPath: string,
+        expectedValue: any,
+        options = { timeout: 5000 },
+    ) {
+        await test.step('Expect Redux object to equal', async () => {
+            await expect(async () => {
+                const state = await page.evaluate(() => window.store.getState());
+                const testedObject = get(state, objectPath);
+                expect(testedObject).toStrictEqual(expectedValue);
+            }).toPass({ timeout: options.timeout });
         });
     };
 
