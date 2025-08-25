@@ -2,7 +2,7 @@ import { test } from '../../../support/fixtures';
 
 test.describe(
     'Onboarding - recover wallet T1B1',
-    { tag: ['@group=device-management', '@firmware-ready'] },
+    { tag: ['@group=device-management', '@firmware-ready', '@specificModel'] },
     () => {
         test.use({
             emulatorStartConf: { model: 'T1B1', wipe: true },
