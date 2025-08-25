@@ -132,7 +132,7 @@ export type OnboardingStackParamList = {
 };
 
 export type DeviceOnboardingStackParamList = {
-    [DeviceOnboardingStackRoutes.ConnectAndUnlockDevice]: undefined;
+    [DeviceOnboardingStackRoutes.ConnectAndUnlockDeviceOnboarding]: undefined;
     [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
@@ -256,7 +256,7 @@ export type DeviceAuthenticityStackParamList = {
 };
 
 export type AuthorizeDeviceStackParamList = {
-    [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]:
+    [AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize]:
         | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
         | undefined;
     [AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice]: undefined;

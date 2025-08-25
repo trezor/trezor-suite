@@ -59,7 +59,7 @@ export const AuthorizeDeviceStackNavigator = () => {
                             component={RemoveBluetoothDeviceScreen}
                         />
                         <AuthorizeDeviceStack.Screen
-                            name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
+                            name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize}
                             component={ConnectAndUnlockDeviceScreen}
                             options={{ animationTypeForReplace: 'pop' }}
                         />

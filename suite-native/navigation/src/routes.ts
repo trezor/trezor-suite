@@ -40,14 +40,14 @@ export enum OnboardingStackRoutes {
 }
 
 export enum DeviceOnboardingStackRoutes {
-    ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    ConnectAndUnlockDeviceOnboarding = 'ConnectAndUnlockDeviceOnboarding',
     UninitializedDeviceLanding = 'UninitializedDeviceLanding',
     SuspiciousDevice = 'SuspiciousDevice',
     SecurityCheck = 'SecurityCheck',
-    FirmwareInstallation = 'FirmwareInstallation',
-    DeviceAuthenticity = 'DeviceAuthenticity ',
+    FirmwareInstallation = 'FirmwareInstallation', // FIXME
+    DeviceAuthenticity = 'DeviceAuthenticity ', // FIXME
     DeviceAuthenticitySuccess = 'DeviceAuthenticitySuccess',
-    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
+    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate', // FIXME
     DeviceTutorial = 'DeviceTutorial',
     CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',
     CreateWalletLoading = 'CreateWalletLoading',
@@ -73,24 +73,24 @@ export enum DeviceSettingsStackRoutes {
     PinProtection = 'PinProtection',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     FirmwareUpdateStack = 'FirmwareUpdateStack',
-    DeviceAuthenticity = 'DeviceAuthenticity',
+    DeviceAuthenticity = 'DeviceAuthenticity', // FIXME
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
-    ContinueOnTrezor = 'ContinueOnTrezor',
+    ContinueOnTrezor = 'ContinueOnTrezor', // FIXME
     WipeDeviceStack = 'WipeDeviceStack',
     DeviceNameStack = 'DeviceNameStack',
     DeviceCheckBackupStack = 'DeviceCheckBackupStack',
 }
 
 export enum DevicePinProtectionStackRoutes {
-    ContinueOnTrezor = 'ContinueOnTrezor',
+    ContinueOnTrezor = 'ContinueOnTrezor', // FIXME
     EnterCurrentPin = 'EnterCurrentPin',
     EnterNewPin = 'EnterNewPin',
     ConfirmNewPin = 'ConfirmNewPin',
 }
 
 export enum FirmwareUpdateStackRoutes {
-    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
-    FirmwareInstallation = 'FirmwareInstallation',
+    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate', // FIXME
+    FirmwareInstallation = 'FirmwareInstallation', // FIXME
 }
 
 export enum DeviceCheckBackupStackRoutes {
@@ -110,19 +110,19 @@ export enum DeviceAuthenticityStackRoutes {
 
 export enum WipeDeviceStackRoutes {
     WipeDevice = 'WipeDevice',
-    ContinueOnTrezor = 'ContinueOnTrezor',
+    ContinueOnTrezor = 'ContinueOnTrezor', // FIXME
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
     FactoryReset = 'FactoryReset',
 }
 
 export enum DeviceNameStackRoutes {
     DeviceName = 'DeviceName',
-    ContinueOnTrezor = 'ContinueOnTrezor',
+    ContinueOnTrezor = 'ContinueOnTrezor', // FIXME
     DeviceNameLoadingScreen = 'DeviceNameLoadingScreen',
 }
 
 export enum AuthorizeDeviceStackRoutes {
-    ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    ConnectAndUnlockDeviceAuthorize = 'ConnectAndUnlockDeviceAuthorize',
     TurnOnAndUnlockDevice = 'TurnOnAndUnlockDevice',
     ConnectBluetoothDevice = 'ConnectBluetoothDevice',
     RemoveBluetoothDevice = 'RemoveBluetoothDevice',
@@ -157,7 +157,7 @@ export enum AccountsStackRoutes {
 }
 
 export enum ReceiveStackRoutes {
-    ReceiveAccounts = 'ReceiveAccounts',
+    ReceiveAccounts = 'ReceiveAccounts', // FIXME
     ReceiveAccount = 'ReceiveAccount',
 }
 
@@ -191,7 +191,7 @@ export enum SettingsStackRoutes {
 
 export enum TradingStackRoutes {
     Trading = 'Trading',
-    ReceiveAccounts = 'ReceiveAccounts',
+    ReceiveAccounts = 'ReceiveAccounts', // FIXME
     TradingHistory = 'TradingHistory',
     TradingExchangePreview = 'TradingExchangePreview',
     TradingExchangeApproval = 'TradingExchangeApproval',

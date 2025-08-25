@@ -49,7 +49,7 @@ export const EmptyPortfolioCrossroads = () => {
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: isIosWithBluetoothEnabled
                 ? AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice
-                : AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+                : AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize,
         });
         analytics.report({
             type: EventType.EmptyDashboardClick,

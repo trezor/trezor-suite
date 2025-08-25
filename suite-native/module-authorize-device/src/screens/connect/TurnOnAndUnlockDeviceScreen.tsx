@@ -40,7 +40,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
     const unknownNearbyBluetoothDevices = useSelector(selectUnknownNearbyBluetoothDevices);
 
     const navigateToConnectAndUnlockDeviceScreen = () => {
-        navigation.replace(AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice);
+        navigation.replace(AuthorizeDeviceStackRoutes.ConnectAndUnlockDeviceAuthorize);
     };
 
     const navigateToRemoveBluetoothDeviceScreen = useCallback(() => {
