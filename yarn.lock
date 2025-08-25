@@ -12223,6 +12223,7 @@ __metadata:
     blakejs: "npm:^1.2.1"
     bs58: "npm:^6.0.0"
     bs58check: "npm:^4.0.0"
+    cbor: "npm:^10.0.10"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
     jws: "npm:^4.0.0"
@@ -17777,6 +17778,15 @@ __metadata:
   version: 0.1.0
   resolution: "cbor-js@npm:0.1.0"
   checksum: 10/763b1aebba89cb576874d0273976e0e51f2aec5665fd8ae05603eab3efa8bb3af6fec24d19f186ef801dfa79f9ce2486bc4b454b10b4fab0f012fd55516eb611
+  languageName: node
+  linkType: hard
+
+"cbor@npm:^10.0.10":
+  version: 10.0.10
+  resolution: "cbor@npm:10.0.10"
+  dependencies:
+    nofilter: "npm:^3.0.2"
+  checksum: 10/ec15770a37bb5f19f0ff6dfde1342c48035c11ff64c1083d3d22a2a3d3e0018f33c94a510d7db44fe2eb4022b3a90a2bd78da7249bd9c33e6e696a0095c93118
   languageName: node
   linkType: hard
 
@@ -32231,6 +32241,13 @@ __metadata:
   version: 1.15.0
   resolution: "node-stream-zip@npm:1.15.0"
   checksum: 10/3fb56144d23456e1b42fe9d24656999e4ef6aeccce3cae43fc97ba6c341ee448aeceb4dc8fb57ee78eab1a6da49dd46c9650fdb2f16b137630a335df9560c647
+  languageName: node
+  linkType: hard
+
+"nofilter@npm:^3.0.2":
+  version: 3.1.0
+  resolution: "nofilter@npm:3.1.0"
+  checksum: 10/f63d87231dfda4b783db17d75b15aac948f78e65f4f1043096ef441147f6667ff74cd4b3f57ada5dbe240be282d3e9838558ac863a66cb04ef25fff7b2b4be4e
   languageName: node
   linkType: hard
 

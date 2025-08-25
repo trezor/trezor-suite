@@ -34,6 +34,7 @@
 base-x
 browserify-bignum
 cbor-js
+cbor
 clsx
 codemirror-json-schema
 codemirror-json5
