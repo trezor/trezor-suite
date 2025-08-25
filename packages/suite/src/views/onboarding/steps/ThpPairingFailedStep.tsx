@@ -7,7 +7,7 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
-import { ThpPairingFailedForFirmwareInstallation } from '../../../components/thp/ThpPairingFailedForFirmwareInstallation';
+import { ThpPairingFailedForFirmwareInstallation } from '../../../components/connection/thp/ThpPairingFailedForFirmwareInstallation';
 import { useDispatch } from '../../../hooks/suite';
 
 export const ThpPairingFailedStep = () => {

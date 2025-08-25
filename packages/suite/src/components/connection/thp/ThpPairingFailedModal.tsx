@@ -6,8 +6,8 @@ import { Button, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
-import { useDevice, useDispatch, useSelector } from '../../hooks/suite';
-import { Translation } from '../suite/Translation';
+import { useDevice, useDispatch, useSelector } from '../../../hooks/suite';
+import { Translation } from '../../suite/Translation';
 
 export const ThpPairingFailedModal = () => {
     const [isLoading, setIsLoading] = useState(false);

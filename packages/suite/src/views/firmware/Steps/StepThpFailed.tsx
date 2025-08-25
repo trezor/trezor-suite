@@ -4,8 +4,8 @@ import { Button, Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
+import { ThpPairingFailedForFirmwareInstallation } from '../../../components/connection/thp/ThpPairingFailedForFirmwareInstallation';
 import { Translation } from '../../../components/suite';
-import { ThpPairingFailedForFirmwareInstallation } from '../../../components/thp/ThpPairingFailedForFirmwareInstallation';
 import { useDispatch } from '../../../hooks/suite';
 
 type StepThpFailedProps = {
