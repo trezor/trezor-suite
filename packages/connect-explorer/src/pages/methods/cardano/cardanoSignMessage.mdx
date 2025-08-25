@@ -89,10 +89,12 @@ TrezorConnect.cardanoSignMessage({
 {
     success: true,
     payload: {
-      signature: string,
-      payload: string,
-      pubKey: string,
-      headers: {
+      payload: string, // your payload
+      signature: string, // raw signature
+      pubKey: string, // raw public key
+      coseSignature: string, // COSE cbor encoded signature
+      coseKey: string, // COSE cbor encoded public key
+      headers: { // COSE headers
         protected: {
           1: -8, // EdDSA algorithm
           address: string,
