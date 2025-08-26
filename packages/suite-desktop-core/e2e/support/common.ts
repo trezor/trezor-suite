@@ -142,7 +142,7 @@ export const getBigNumberFromBalance = async (locator: Locator) => {
         throw new Error('Balance text content is empty');
     }
 
-    const hasEllipsis = originalBalanceText?.endsWith('…');
+    const hasEllipsis = originalBalanceText?.includes('…');
     if (hasEllipsis) {
         originalBalanceText = originalBalanceText.slice(0, -1);
     }
