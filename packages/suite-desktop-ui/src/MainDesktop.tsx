@@ -1,46 +1,30 @@
 /* eslint-disable import/order */
 import { Provider as ReduxProvider } from 'react-redux';
-import { HelmetProvider } from 'react-helmet-async';
 import { createRoot } from 'react-dom/client';
-import { Router } from 'react-router';
 import { init as initSentry } from '@sentry/electron/renderer';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { FormatterProvider } from '@suite-common/formatters';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import TrezorConnect from '@trezor/connect';
 
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { Metadata } from 'src/components/suite/Metadata';
-import {
-    AppRouter,
-    Preloader,
-    ToastContainer,
-    TrafficLightDraggableWindowHeader,
-} from 'src/components/suite';
+import { AppRouter, Preloader, ToastContainer } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
-import Resize from 'src/support/suite/Resize';
-import Autodetect from 'src/support/suite/Autodetect';
-import Protocol from 'src/support/suite/Protocol';
 import { useTor } from 'src/support/suite/useTor';
 import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop';
-import { useConnectPopupModals } from 'src/support/suite/useConnectPopupModals';
-import OnlineStatus from 'src/support/suite/OnlineStatus';
-import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
-import { RouterHandler } from 'src/support/suite/RouterHandler';
-import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
+import { Main } from 'src/support/suite/Main';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
-import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
+import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
-import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
 import { type History, createMemoryHistory } from 'history';
@@ -50,42 +34,19 @@ const MainDesktop = ({ history }: { history: History }) => {
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupDesktop();
-    useConnectPopupModals();
-    const formattersConfig = useFormattersConfig();
 
     return (
-        // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
-        // <StrictMode>
-        <HelmetProvider>
-            <TrafficLightDraggableWindowHeader />
-            <ConnectedThemeProvider>
-                <Router location={history.location} navigator={history}>
-                    <ResponsiveContextProvider>
-                        <ErrorBoundary>
-                            <Autodetect />
-                            <Resize />
-                            <Protocol />
-                            <OnlineStatus />
-                            <RouterHandler history={history} />
-                            <ConnectedIntlProvider>
-                                <FormatterProvider config={formattersConfig}>
-                                    <DesktopUpdater>
-                                        <Metadata />
-                                        <ToastContainer />
-                                        <BioAuthGuard>
-                                            <Preloader>
-                                                <AppRouter components={desktopComponents} />
-                                            </Preloader>
-                                        </BioAuthGuard>
-                                    </DesktopUpdater>
-                                </FormatterProvider>
-                            </ConnectedIntlProvider>
-                        </ErrorBoundary>
-                    </ResponsiveContextProvider>
-                </Router>
-            </ConnectedThemeProvider>
-        </HelmetProvider>
-        // </StrictMode>
+        <Main history={history}>
+            <DesktopUpdater>
+                <Metadata />
+                <ToastContainer />
+                <BioAuthGuard>
+                    <Preloader>
+                        <AppRouter components={desktopComponents} />
+                    </Preloader>
+                </BioAuthGuard>
+            </DesktopUpdater>
+        </Main>
     );
 };
 
