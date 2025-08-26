@@ -55,7 +55,7 @@ export const sellCexdirect = {
 } as SellProviderInfo;
 
 export const sellBanxa = {
-    name: 'banxa',
+    name: 'banxa-sell',
     companyName: 'Banxa',
     logo: 'banxa.svg',
     type: 'Fiat',
@@ -73,7 +73,7 @@ export const sellBanxa = {
 } as SellProviderInfo;
 
 export const sellMoonpay = {
-    name: 'moonpay',
+    name: 'moonpay-sell',
     companyName: 'MoonPay',
     logo: 'moonpay.svg',
     type: 'Fiat',
