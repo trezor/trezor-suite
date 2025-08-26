@@ -15,7 +15,6 @@ import {
     isEvmApprovalTx,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
-import { Success, Unsuccessful } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { tradingThunks } from '../';
@@ -25,11 +24,10 @@ import {
     selectTradingIsSlip24Allowed,
 } from '../../selectors/tradingSelectors';
 import type {
+    TradingFulfillValue,
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
-
-type FulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
 
 export type RecomposeAndSignTxThunkProps = {
     account: Account;
@@ -52,7 +50,7 @@ export type RecomposeAndSignTxThunkProps = {
         precomposedTransaction,
         selectedAccount,
         paymentRequests,
-    }: TradingSignAndPushSendFormTransactionProps) => Promise<FulfillValue>;
+    }: TradingSignAndPushSendFormTransactionProps) => Promise<TradingFulfillValue>;
 };
 
 const getTradingFormStateAccordingRestriction = (
@@ -76,7 +74,7 @@ const getTradingFormStateAccordingRestriction = (
  * 4. Handles errors gracefully and provides detailed error messages.
  */
 export const recomposeAndSignTxThunk = createThunk<
-    FulfillValue,
+    TradingFulfillValue,
     RecomposeAndSignTxThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
