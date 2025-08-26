@@ -35,6 +35,7 @@ const usedIcons = [
     'bank',
     'bluetooth',
     'bluetoothConnected',
+    'bluetoothSlash',
     'bookmarkSimple',
     'browsers',
     'bugBeetle',

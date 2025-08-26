@@ -765,8 +765,8 @@ export const en = {
             },
         },
         bluetooth: {
-            title: 'Bluetooth',
-            content: 'Connect to Trezor Suite via Bluetooth.',
+            title: 'Unpair Trezor',
+            content: 'Unpair your Trezor from this device',
             unpairTrezorButton: 'Unpair Trezor',
             info: {
                 title: 'Unpair Trezor',

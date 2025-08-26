@@ -53,10 +53,10 @@ export const DeviceSettingsModalScreen = () => {
                     {isCheckBackupAvailable && <DeviceCheckBackupCard />}
                     {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
                 </TitledSection>
-                {isDeviceConnectedViaBluetooth && <DeviceBluetoothCard />}
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.dangerZone" />}
                 >
+                    {isDeviceConnectedViaBluetooth && <DeviceBluetoothCard />}
                     <WipeDeviceCard />
                 </TitledSection>
             </VStack>

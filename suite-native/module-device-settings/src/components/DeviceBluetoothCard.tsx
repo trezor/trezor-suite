@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
-import { Button, CardWithIconLayout, Text, VStack } from '@suite-native/atoms';
+import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { useBluetoothDevice, useBluetoothSettings } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
 import {
@@ -46,24 +46,20 @@ export const DeviceBluetoothCard = () => {
             primaryButtonTitle: (
                 <Translation id="moduleDeviceSettings.bluetooth.unpairTrezorButton" />
             ),
+            primaryButtonVariant: 'redBold',
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+            secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: unpairTrezor,
         });
     };
 
     return (
-        <CardWithIconLayout
-            icon="bluetooth"
+        <CompactCardWithIconLayout
             title={<Translation id="moduleDeviceSettings.bluetooth.title" />}
-        >
-            <VStack marginTop="sp2" spacing="sp16">
-                <Text variant="body" color="textSubdued">
-                    <Translation id="moduleDeviceSettings.bluetooth.content" />
-                </Text>
-                <Button onPress={showInfoAlert} colorScheme="tertiaryElevation0" size="small">
-                    <Translation id="moduleDeviceSettings.bluetooth.unpairTrezorButton" />
-                </Button>
-            </VStack>
-        </CardWithIconLayout>
+            subtitle={<Translation id="moduleDeviceSettings.bluetooth.content" />}
+            icon="bluetoothSlash"
+            onPress={showInfoAlert}
+            variant="danger"
+        />
     );
 };
