@@ -41,6 +41,15 @@ The config is fetched at launch of the application and then every minute. It rem
 
 If fetching of a new config fails, the fetching process is repeated every 30 seconds.
 
+#### Data source (Remote vs Local)
+
+You can choose where Suite loads the message-system config from:
+
+- **Remote server (default)** – config is fetched on startup and then polled at a fixed interval (desktop/web vs. mobile may differ).
+- **Local file** – config is loaded from the repository bundle; no network (useful for development).
+
+This setting is available in **Settings → Debug → Message System info**.
+
 ### Schema
 
 The configuration structure is specified in JSON file using JSON schema. The file can be found in `suite-common/message-system/schema` folder. Its name is `config.schema.vX.json`.
@@ -335,6 +344,32 @@ To create an experiment for components, use ExperimentWrapper.tsx. It requires t
 1. Config is fetched on load of application and is stored in Redux state. To be persisted between sessions, is is mirrored into IndexDB.
 1. Conditions of config are evaluated on specific Redux actions. See `messageSystemMiddleware.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/middlewares/suite/messageSystemMiddleware.ts).
 1. If conditions of a message satisfy the user's stack, the message is accordingly propagated. If it is dismissible, its ID is saved to Redux state (IndexDB) on close, to avoid displaying it next time.
+
+### Message Manager (UI)
+
+Built-in UI to inspect and test messages:
+
+- Visual list of messages (banner/context/etc.) with details (translations, conditions, devices, CTA).
+
+- Filtering by category and active only.
+
+#### Development workflow (recommended)
+
+1. Go to **Settings → Debug → Message System info**
+
+1. Switch the **Config source** to **Local**
+
+1. Open **Message Manager** and click **Add new message**, fill the JSON (validated by the same schema).
+
+1. The message is added **only to app state** (not to the config file).
+
+1. Verify behavior in the UI.
+
+1. Use **Copy to clipboard** and paste the JSON into the config file to make it permanent.
+
+1. Run validation/signing (_yarn messages_).
+
+1. Test that everything works from a local file
 
 ### Followup
 
