@@ -42,7 +42,8 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             params: undefined,
         }),
         selectThpSettings: state => ({
-            hostName: Device.deviceName,
+            // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
+            hostName: Platform.OS === 'ios' ? Device.modelName : Device.deviceName,
             pairingMethods: ['CodeEntry', 'NFC'],
             staticKey: state.thp?.staticKey,
             knownCredentials: state.thp?.credentials,
