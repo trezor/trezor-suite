@@ -1,8 +1,6 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
@@ -10,13 +8,8 @@ import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
     ScreenFooterGradient,
-    StackNavigationProps,
     useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
@@ -24,11 +17,8 @@ import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 
-type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>;
-
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
-    const navigation = useNavigation<NavigationProps>();
     useHandleHardwareBackNavigation();
 
     const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
@@ -53,13 +43,6 @@ export const CoinEnablingInitScreen = () => {
         analytics.report({
             type: EventType.CoinEnablingInitState,
             payload: { enabledNetworks: values.enabledCoins },
-        });
-
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
         });
     });
 
