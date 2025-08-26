@@ -30,7 +30,7 @@ import {
     GeneralPrecomposedTransactionFinal,
     SelectedAccountStatus,
 } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
+import { PROTO, Success, Unsuccessful } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';
 import { PrimitiveType } from '@trezor/type-utils';
 
@@ -348,3 +348,5 @@ export type TradingRootStateWithDeviceAndAccounts = TradingRootState &
     DeviceRootState &
     AccountsRootState &
     SelectedAccountRootState;
+
+export type TradingFulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
