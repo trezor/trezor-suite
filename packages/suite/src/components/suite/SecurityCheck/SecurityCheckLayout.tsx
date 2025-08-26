@@ -1,6 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Box, Column, DeviceAnimation, Grid, Image } from '@trezor/components';
+import { Box, Column, Grid, Image } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceAnimation } from '@trezor/product-components';
 import { borders, spacings } from '@trezor/theme';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';

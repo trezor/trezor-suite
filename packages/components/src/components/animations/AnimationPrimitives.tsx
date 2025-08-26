@@ -2,7 +2,8 @@ import styled, { CSSProperties, css } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
-export type Shape = 'CIRCLE' | 'ROUNDED' | 'ROUNDED-SMALL';
+export const shapes = ['CIRCLE', 'ROUNDED', 'ROUNDED-SMALL'] as const;
+export type Shape = (typeof shapes)[number];
 
 export const AnimationWrapper = styled.div<{
     height?: CSSProperties['height'];

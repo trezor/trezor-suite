@@ -3,11 +3,11 @@ import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { AnimationWrapper, Shape } from '@trezor/components';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 
-import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
 
 const StyledVideo = styled.video`
@@ -15,13 +15,15 @@ const StyledVideo = styled.video`
     max-height: 100%;
 `;
 
-export type AnimationDeviceType =
-    | 'BOOTLOADER' // No longer available for T3T1
-    | 'BOOTLOADER_TWO_BUTTONS' // Only available for T1B1 with old FW
-    | 'NORMAL' // Only available for T1B1
-    | 'SUCCESS'
-    | 'HOLOGRAM'
-    | 'ROTATE';
+export const animationDeviceTypes = [
+    'BOOTLOADER', // No longer available for T3T1
+    'BOOTLOADER_TWO_BUTTONS', // Only available for T1B1 with old FW
+    'NORMAL', // Only available for T1B1
+    'SUCCESS',
+    'HOLOGRAM',
+    'ROTATE',
+] as const;
+export type AnimationDeviceType = (typeof animationDeviceTypes)[number];
 
 type DeviceAnimationProps = {
     height?: CSSProperties['height'];

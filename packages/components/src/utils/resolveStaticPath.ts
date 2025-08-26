@@ -4,5 +4,5 @@
 // https://github.com/trezor/trezor-suite/issues/8433
 export const resolveStaticPath = (
     path: string,
-    pathPrefix: string | undefined = process.env.ASSET_PREFIX,
+    pathPrefix: string | undefined = typeof process !== 'undefined' ? process.env.ASSET_PREFIX : '',
 ) => `${pathPrefix || ''}/static/${path.replace(/^\/+/, '')}`;

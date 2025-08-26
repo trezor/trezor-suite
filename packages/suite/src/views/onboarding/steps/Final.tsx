@@ -5,15 +5,8 @@ import useMeasure from 'react-use/lib/useMeasure';
 import styled, { css } from 'styled-components';
 
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
-import {
-    Button,
-    DeviceAnimation,
-    Menu,
-    Popover,
-    PopoverRef,
-    Tooltip,
-    variables,
-} from '@trezor/components';
+import { Button, Menu, Popover, PopoverRef, Tooltip, variables } from '@trezor/components';
+import { DeviceAnimation } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx, typography } from '@trezor/theme';
 
