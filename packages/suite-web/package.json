@@ -14,7 +14,6 @@
     },
     "dependencies": {
         "@sentry/browser": "^8.47.0",
-        "@suite-common/formatters": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@trezor/connect": "workspace:*",
@@ -23,9 +22,7 @@
         "history": "^5.3.0",
         "react": "19.0.0",
         "react-dom": "19.0.0",
-        "react-helmet-async": "^2.0.5",
-        "react-redux": "9.2.0",
-        "react-router": "^7.8.2"
+        "react-redux": "9.2.0"
     },
     "devDependencies": {
         "@trezor/connect": "workspace:*",
