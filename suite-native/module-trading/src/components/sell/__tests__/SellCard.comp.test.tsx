@@ -5,6 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { sellQuotes } from '../../../__fixtures__/sellQuotes';
 import { usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
@@ -16,11 +17,18 @@ describe('SellCard', () => {
 
     const renderForm = () => renderHookWithStoreProviderAsync(() => useSellForm());
 
-    const renderSellCard = (isAmountInputActive: boolean) =>
-        renderWithStoreProviderAsync(<SellCard isAmountInputActive={isAmountInputActive} />, {
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-            preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
-        });
+    const renderSellCard = (isAmountInputActive: boolean) => {
+        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
+        preloadedState.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+
+        return renderWithStoreProviderAsync(
+            <SellCard isAmountInputActive={isAmountInputActive} />,
+            {
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                preloadedState,
+            },
+        );
+    };
 
     beforeEach(async () => {
         const { result } = await renderForm();
@@ -36,11 +44,29 @@ describe('SellCard', () => {
         const { getByText, getByLabelText } = await renderSellCard(false);
 
         expect(getByText('You pay')).toBeOnTheScreen();
-        //expect(getByText('$99.00')).toBeOnTheScreen();
+        expect(getByText('$99.00')).toBeOnTheScreen();
         expect(getByLabelText('Select coin')).toHaveTextContent(/USDC/);
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You pay')).toHaveDisplayValue('100');
         expect(getByText('Balance:')).toBeOnTheScreen();
         expect(getByText('- USDC')).toBeOnTheScreen();
+    });
+
+    describe('with selected quote', () => {
+        beforeEach(() => {
+            act(() => {
+                form.setValue('sendAsset', usdcAsset);
+                form.setValue('amountInCrypto', true);
+                form.setValue('cryptoStringAmount', '100');
+
+                form.setValue('quote', sellQuotes[0]);
+            });
+        });
+
+        it('should render receive method', async () => {
+            const { getByText } = await renderSellCard(false);
+
+            expect(getByText('Receive method')).toBeOnTheScreen();
+        });
     });
 });

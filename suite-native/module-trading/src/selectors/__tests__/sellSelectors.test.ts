@@ -11,6 +11,7 @@ import {
     selectSellAmountLimits,
     selectSellBestQuotesForAvailablePaymentMethods,
     selectSellFormDefaultValues,
+    selectSellQuotesByPaymentMethod,
     selectSellSelectedSendAccount,
     selectSellSupportedFiatCurrencies,
     selectSellSupportedFiatCurrenciesList,
@@ -286,6 +287,27 @@ describe('sellSelectors', () => {
             state.wallet.tradingNew.sell.quotes = [quote];
 
             expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
+        });
+    });
+
+    describe('selectSellQuotesByPaymentMethod', () => {
+        beforeEach(() => {
+            state.wallet.tradingNew.sell.quotes = sellQuotes;
+        });
+
+        it('should select valid quotes', () => {
+            expect(selectSellQuotesByPaymentMethod(state, 'creditCard')).toEqual({
+                fixed: [
+                    expect.objectContaining({ orderId: 'order_id_2' }),
+                    expect.objectContaining({ orderId: 'order_id_0' }),
+                ],
+            });
+        });
+
+        it('should be stable', () => {
+            expect(selectSellQuotesByPaymentMethod(state, 'creditCard')).toBe(
+                selectSellQuotesByPaymentMethod(state, 'creditCard'),
+            );
         });
     });
 });

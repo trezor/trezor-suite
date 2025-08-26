@@ -6,6 +6,9 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { getBtcAccount } from '../../../__fixtures__/account';
+import { sellQuotes } from '../../../__fixtures__/sellQuotes';
+import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellFormType } from '../../../types/sell';
@@ -36,11 +39,21 @@ describe('SellForm', () => {
 
     describe('with preloaded sell data', () => {
         let form: SellFormType;
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
+        let preloadedState: PreloadedState;
 
         beforeEach(async () => {
+            preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
+            preloadedState.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+
             const { result } = await renderFormHook(preloadedState);
             form = result.current;
+            act(() => {
+                form.setValue('sendAsset', btcAsset);
+                form.setValue('sendAccount', getBtcAccount());
+                form.setValue('amountInCrypto', true);
+                form.setValue('cryptoStringAmount', '0.001');
+                form.setValue('quote', sellQuotes[1]);
+            });
         });
 
         it('should render with default values', async () => {
@@ -48,8 +61,9 @@ describe('SellForm', () => {
 
             expect(getByText('You pay')).toBeOnTheScreen();
             expect(getByLabelText('Select fiat currency')).toBeOnTheScreen();
-            expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
+            expect(getByLabelText('Select coin')).toHaveTextContent(/BTC/);
             expect(getByText('Country of residence')).toBeOnTheScreen();
+            expect(getByText('Provider')).toBeOnTheScreen();
         });
 
         it('should render only SellCard and Done when amount input is active', async () => {
@@ -63,6 +77,7 @@ describe('SellForm', () => {
 
             expect(queryByText('Continue')).toBeNull();
             expect(queryByText('Country of residence')).toBeNull();
+            expect(queryByText('Provider')).toBeNull();
         });
     });
 });

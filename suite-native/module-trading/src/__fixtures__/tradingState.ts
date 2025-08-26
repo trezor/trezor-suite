@@ -14,7 +14,7 @@ import coins from './coins.json';
 import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
 import { exchangeQuotes } from './exchangeQuotes';
 import platforms from './platforms.json';
-import { sellCexdirect, sellInvity, sellMercuryo } from './sellProviders';
+import { sellBanxa, sellCexdirect, sellInvity, sellMercuryo, sellMoonpay } from './sellProviders';
 import { TradingState, initialState } from '../reducers';
 
 export const getInitializedBuyState = () =>
@@ -94,6 +94,8 @@ export const getInitializedSellState = () =>
                 ['invity']: sellInvity,
                 ['mercuryo']: sellMercuryo,
                 ['cexdirect']: sellCexdirect,
+                ['banxa-sell']: sellBanxa,
+                ['moonpay-sell']: sellMoonpay,
             },
             supportedFiatCurrencies: ['usd', 'eur', 'pln'] as FiatCurrencyCode[],
             supportedCryptoCurrencies: [

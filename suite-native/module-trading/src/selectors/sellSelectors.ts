@@ -3,7 +3,9 @@ import { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'invity
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     TradingCountryCode,
+    TradingPaymentMethodProps,
     getBestRatedQuote,
+    getTradingQuotesByPaymentMethod,
     regional,
     selectTradingSellInfo,
     selectValidTradingSellQuotes,
@@ -98,4 +100,19 @@ export const selectSellBestQuotesForAvailablePaymentMethods = createMemoizedSele
             getBestRatedQuote(quotesForPaymentMethod, 'sell'),
         ) as SellFiatTrade[];
     },
+);
+
+export const selectSellQuotesByPaymentMethod = createMemoizedSelector(
+    [
+        selectValidTradingSellQuotes,
+        (_: TradingRootState, paymentMethod: TradingPaymentMethodProps | undefined) =>
+            paymentMethod,
+    ],
+    (quotes, paymentMethod) => ({
+        fixed: paymentMethod
+            ? getTradingQuotesByPaymentMethod<'sell'>(quotes, paymentMethod)?.sort(
+                  (a, b) => (b.rate ?? 0) - (a.rate ?? 0),
+              )
+            : [],
+    }),
 );
