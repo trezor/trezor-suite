@@ -23,7 +23,6 @@ const languages = {
     'pt-BR': { name: 'Português (BR)', en: 'Portuguese (BR)', type: 'official' },
     'ro-RO': { name: 'Română', en: 'Romanian' },
     'ru-RU': { name: 'Русский', en: 'Russian', type: 'community' },
-    'sk-SK': { name: 'Slovenčina', en: 'Slovak' },
     'sr-RS': { name: 'Српски', en: 'Serbian' },
     'sv-SE': { name: 'Svenska', en: 'Swedish' },
     'tr-TR': { name: 'Türkçe', en: 'Turkish', type: 'community' },
