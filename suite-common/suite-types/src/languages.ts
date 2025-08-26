@@ -1,7 +1,6 @@
 const languages = {
     'en-US': { name: 'English', en: 'English', type: 'official' },
     'es-ES': { name: 'Español', en: 'Spanish', type: 'official' },
-    'af-ZA': { name: 'Afrikaans', en: 'Afrikaans' },
     'ar-SA': { name: 'العربية‬', en: 'Arabic' },
     'ca-ES': { name: 'Català', en: 'Catalan' },
     'cs-CZ': { name: 'Čeština', en: 'Czech', type: 'official' },
