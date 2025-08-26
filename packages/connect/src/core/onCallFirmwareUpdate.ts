@@ -180,6 +180,66 @@ const waitForReconnectedDevice = async (
     return reconnectedDevice;
 };
 
+const getRebootMethod = async ({
+    deviceList,
+    device,
+    log,
+}: {
+    deviceList: DeviceList;
+    device: Device;
+    log: Log;
+}) => {
+    let method: ReconnectParams['method'] = 'wait';
+
+    // not a bluetooth device
+    if (!device.bluetoothProps) {
+        return method;
+    }
+
+    const ctrl = new AbortController();
+    // device disconnected before it was requested to disconnect by the BT api. see: UI.FIRMWARE_DISCONNECT
+    const disconnectedPromise = new Promise<void>(resolve => {
+        const handleDisconnect = () => {
+            log.info(`waitForBluetoothReboot device-disconnected. aborted: ${ctrl.signal.aborted}`);
+            if (!ctrl.signal.aborted) {
+                ctrl.abort();
+                method = 'auto'; // do not wait for disconnection
+            }
+
+            resolve();
+        };
+        deviceList.once('device-disconnect', handleDisconnect);
+        ctrl.signal.addEventListener('abort', () => {
+            deviceList.off('device-disconnect', handleDisconnect);
+            resolve();
+        });
+    });
+
+    // close device
+    await device.release();
+
+    // wait T3W1 countdown after FW installation
+    const restartPromise = new Promise<void>(resolve => {
+        resolveAfter(4000).then(() => {
+            log.info(`waitForBluetoothReboot restartPromise. aborted: ${ctrl.signal.aborted}`);
+            if (!ctrl.signal.aborted) {
+                ctrl.abort();
+                // request ui (suite) to disconnect the device
+                postMessage(
+                    createUiMessage(UI.FIRMWARE_DISCONNECT, {
+                        device: device.toMessageObject(),
+                    }),
+                );
+            }
+            resolve();
+        });
+    });
+
+    await Promise.race([disconnectedPromise, restartPromise]);
+
+    return method;
+};
+
 const getInstallationParams = (device: Device, params: Params) => {
     const btcOnly = params.btcOnly ?? device.firmwareType === FirmwareType.BitcoinOnly;
 
@@ -517,21 +577,10 @@ export const onCallFirmwareUpdate = async ({
         });
     }
 
-    if (device.bluetoothProps) {
-        // close device
-        await device.release();
-        // T3W1 countdown after FW installation
-        await resolveAfter(4000);
-        // request ui (suite) to disconnect the device
-        postMessage(
-            createUiMessage(UI.FIRMWARE_DISCONNECT, {
-                device: device.toMessageObject(),
-            }),
-        );
-    }
+    const method = await getRebootMethod({ deviceList, device, log });
 
     reconnectedDevice = await waitForReconnectedDevice(
-        { bootloader: false, method: 'wait' },
+        { bootloader: false, method },
         { ...context, device: reconnectedDevice },
     );
 
