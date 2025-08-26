@@ -45,6 +45,8 @@ export class WalletPage {
         this.page.getByTestId(`@account-menu/filter/${symbol}`);
     readonly showMoreButton: Locator;
     readonly topPanelBalance: Locator;
+    readonly segwitGroupButton: Locator;
+    readonly addAccountButton: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -78,6 +80,8 @@ export class WalletPage {
         this.fiatAmount = this.page.getByTestId('@wallet/account-top-panel/fiat-amount');
         this.showMoreButton = this.page.getByTestId('@wallet/receive/used-address/show-more');
         this.topPanelBalance = this.page.getByTestId('@wallet/account-top-panel/crypto-balance');
+        this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
+        this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
     }
 
     accountButton = ({
@@ -174,5 +178,18 @@ export class WalletPage {
     async exportTransactions(typeOfExport: ExportType) {
         await this.page.getByTestId('@wallet/accounts/export-transactions/dropdown').click();
         await this.page.getByTestId(`@wallet/accounts/export-transactions/${typeOfExport}`).click();
+    }
+
+    @step()
+    async searchAccounts(query: string) {
+        const input = this.accountSearch.first();
+        await input.click();
+        await input.fill(query);
+    }
+
+    @step()
+    async clearAccountSearch() {
+        const input = this.accountSearch.first();
+        await input.clear();
     }
 }

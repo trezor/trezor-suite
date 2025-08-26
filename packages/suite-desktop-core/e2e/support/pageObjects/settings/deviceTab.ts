@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
 import { step } from '../../common';
 
@@ -7,6 +7,12 @@ export class DeviceTab {
     readonly multiShareBackupGotItButton: Locator;
     private readonly firstInfoSubmitButton: Locator;
     private readonly secondInfoSubmitButton: Locator;
+    readonly customFirmwareModalButton: Locator;
+    readonly firmwareInstallButton: Locator;
+    readonly firmwareInputArea: Locator;
+    readonly firmwareConfirmSeedCheckbox: Locator;
+    readonly firmwareConfirmSeedButton: Locator;
+    readonly firmwareReconnectDevice: Locator;
 
     constructor(private readonly page: Page) {
         this.createMultiShareBackupButton = page.getByTestId(
@@ -19,6 +25,14 @@ export class DeviceTab {
         this.secondInfoSubmitButton = page.getByTestId(
             '@multi-share-backup/2nd-info/submit-button',
         );
+        this.customFirmwareModalButton = page.getByTestId(
+            '@settings/device/custom-firmware-modal-button',
+        );
+        this.firmwareInstallButton = page.getByTestId('@firmware/install-button');
+        this.firmwareInputArea = page.getByTestId('@firmware/input-area');
+        this.firmwareConfirmSeedCheckbox = page.getByTestId('@firmware/confirm-seed-checkbox');
+        this.firmwareConfirmSeedButton = page.getByTestId('@firmware/confirm-seed-button');
+        this.firmwareReconnectDevice = page.getByTestId('@firmware/reconnect-device');
     }
 
     @step()
@@ -27,5 +41,26 @@ export class DeviceTab {
         await this.page.getByTestId('@multi-share-backup/checkbox/2').click();
         await this.firstInfoSubmitButton.click();
         await this.secondInfoSubmitButton.click();
+    }
+
+    @step()
+    async openCustomFirmwareModal() {
+        await this.customFirmwareModalButton.click();
+        await expect(this.firmwareInstallButton).toBeDisabled();
+    }
+
+    @step()
+    async selectCustomFirmware(filePath: string) {
+        const fileChooserPromise = this.page.waitForEvent('filechooser');
+        await this.firmwareInputArea.click();
+        const fileChooser = await fileChooserPromise;
+        await fileChooser.setFiles(filePath);
+    }
+
+    @step()
+    async completeCustomFirmwareInstallation() {
+        await this.firmwareInstallButton.click();
+        await this.firmwareConfirmSeedCheckbox.click();
+        await this.firmwareConfirmSeedButton.click();
     }
 }

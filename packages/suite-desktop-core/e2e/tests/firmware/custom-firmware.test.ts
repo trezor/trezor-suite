@@ -10,24 +10,10 @@ test.describe('Custom firmware', { tag: ['@group=device-management'] }, () => {
         await settingsPage.navigateTo('device');
     });
 
-    test('Custom firmware installation', async ({ page }) => {
-        await test.step('Start `Install firmware` flow', async () => {
-            await page.getByTestId('@settings/device/custom-firmware-modal-button').click();
-            await expect(page.getByTestId('@firmware/install-button')).toBeDisabled();
-        });
-
-        await test.step('Select the custom firmware', async () => {
-            const fileChooserPromise = page.waitForEvent('filechooser');
-            await page.getByTestId('@firmware/input-area').click();
-            const fileChooser = await fileChooserPromise;
-            await fileChooser.setFiles(firmwarePath);
-        });
-
-        await test.step('Complete the FW installation on the device', async () => {
-            await page.getByTestId('@firmware/install-button').click();
-            await page.getByTestId('@firmware/confirm-seed-checkbox').click();
-            await page.getByTestId('@firmware/confirm-seed-button').click();
-            await expect(page.getByTestId('@firmware/reconnect-device')).toBeVisible();
-        });
+    test('Custom firmware installation', async ({ settingsPage }) => {
+        await settingsPage.device.openCustomFirmwareModal();
+        await settingsPage.device.selectCustomFirmware(firmwarePath);
+        await settingsPage.device.completeCustomFirmwareInstallation();
+        await expect(settingsPage.device.firmwareReconnectDevice).toBeVisible();
     });
 });
