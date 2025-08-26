@@ -293,25 +293,10 @@ export const useTradingSellForm = ({
         dispatch(tradingSellActions.setTradingAccountKey(account.key)); // save account for offers page
         navigateToSellOffers();
 
-        const {
-            label: cryptoLabel,
-            networkSymbol: cryptoNetworkSymbol,
-            contractAddress: cryptoContractAddress,
-        } = getTradingCryptoInfo(draftUpdated?.sendCryptoSelect);
-
         analytics.report({
-            type: EventType.TradingSell,
+            type: EventType.TradingCompareOffers,
             payload: {
-                action: 'continue',
-                step: 'sell-form',
-                cryptoLabel,
-                cryptoNetworkSymbol,
-                cryptoContractAddress,
-                receiveMethod: draftUpdated?.paymentMethod?.value,
-                countryOfResidence: draftUpdated?.countrySelect?.value,
-                fractionButton: helpers.fractionButton
-                    ? `${(100 / helpers.fractionButton).toString()}%`
-                    : undefined,
+                type: 'sell',
             },
         });
     };

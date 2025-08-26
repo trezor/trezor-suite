@@ -161,22 +161,10 @@ export const useTradingBuyForm = ({
 
         navigateToBuyOffers();
 
-        const {
-            label: cryptoLabel,
-            networkSymbol: cryptoNetworkSymbol,
-            contractAddress: cryptoContractAddress,
-        } = getTradingCryptoInfo(draftUpdated?.cryptoSelect);
-
         analytics.report({
-            type: EventType.TradingBuy,
+            type: EventType.TradingCompareOffers,
             payload: {
-                action: 'continue',
-                step: 'buy-form',
-                cryptoLabel,
-                cryptoNetworkSymbol,
-                cryptoContractAddress,
-                paymentMethod: draftUpdated?.paymentMethod?.value,
-                countryOfResidence: draftUpdated?.countrySelect?.value,
+                type: 'buy',
             },
         });
     };

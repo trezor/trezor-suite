@@ -521,33 +521,10 @@ export const useTradingExchangeForm = ({
 
         navigateToExchangeOffers();
 
-        const {
-            label: sendCryptoLabel,
-            networkSymbol: sendCryptoNetworkSymbol,
-            contractAddress: sendCryptoContractAddress,
-        } = getTradingCryptoInfo(sendCryptoSelect);
-
-        const {
-            label: receiveCryptoLabel,
-            networkSymbol: receiveCryptoNetworkSymbol,
-            contractAddress: receiveCryptoContractAddress,
-        } = getTradingCryptoInfo(receiveCryptoSelect);
-
         analytics.report({
-            type: EventType.TradingExchange,
+            type: EventType.TradingCompareOffers,
             payload: {
-                action: 'continue',
-                step: 'exchange-form',
-                sendCryptoLabel,
-                sendCryptoNetworkSymbol,
-                sendCryptoContractAddress,
-                receiveCryptoLabel,
-                receiveCryptoNetworkSymbol,
-                receiveCryptoContractAddress,
-                rateType,
-                fractionButton: helpers.fractionButton
-                    ? `${(100 / helpers.fractionButton).toString()}%`
-                    : undefined,
+                type: 'exchange',
             },
         });
     };
