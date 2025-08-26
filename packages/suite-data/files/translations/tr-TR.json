@@ -166,7 +166,6 @@
   "TOAST_ACQUIRE_ERROR": "Alma hatası {error}",
   "TOAST_AUTH_CONFIRM_ERROR": "Parola onaylama hatası: {error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "Geçersiz passphrase ",
-  "TOAST_AUTH_FAILED": "Yetkilendirme hatası: {error}",
   "TOAST_AUTO_UPDATER_ERROR": "Otomatik güncelleyici hatası ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "Yeni sürüm ({version}) başarıyla yüklendi.",
   "TOAST_AUTO_UPDATER_NO_NEW": "Yeni güncelleme yok.",

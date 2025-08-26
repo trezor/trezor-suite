@@ -2199,7 +2199,7 @@ export default defineMessages({
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
         defaultMessage:
-            'Your Trezor was disconnected during the wallet backup process. We strongly recommend that you use the factory reset option in Device settings to wipe your device and start the wallet backup process again.',
+            'Your Trezor was disconnected during the wallet backup setup. We strongly recommend that you use the factory reset option in Device settings to wipe your device and start the wallet backup setup again.',
         description: 'Error message. Instruction what to do.',
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
@@ -2578,11 +2578,12 @@ export default defineMessages({
         defaultMessage: '7d change',
     },
     TR_FAILED_BACKUP: {
-        defaultMessage: 'Wallet backup failed. Wipe your Trezor and start the setup process again.',
+        defaultMessage: 'Wallet backup has failed. Wipe your Trezor and start the setup again.',
         id: 'TR_FAILED_BACKUP',
     },
     TR_RECEIVE_ADDRESS_FAILED_BACKUP: {
-        defaultMessage: 'Wallet backup failed. Sending funds to this wallet is not secure.',
+        defaultMessage:
+            "Wallet backup has failed. Sending funds to this wallet isn't safe or secure.",
         id: 'TR_RECEIVE_ADDRESS_FAILED_BACKUP',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
@@ -2813,7 +2814,7 @@ export default defineMessages({
     },
     TR_AUTO_EJECT_DESCRIPTION: {
         defaultMessage:
-            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances will be removed from Trezor Suite until you reconnect your device.',
+            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances will be hidden from Trezor Suite until you reconnect your device.',
         id: 'TR_AUTO_EJECT_DESCRIPTION',
     },
     TR_AUTO_EJECT_CONFIRMATION_DESCRIPTION: {
@@ -6480,7 +6481,7 @@ export default defineMessages({
     TR_BACKUP_RECOVERY_SEED_FAILED_DESC: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
         defaultMessage:
-            "The wallet backup process has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
+            "Wallet backup has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
     },
     TR_BACKUP_FAILED: {
         id: 'TR_BACKUP_FAILED',
@@ -9001,7 +9002,7 @@ export default defineMessages({
     },
     TR_MOBILE_APP_PROMO_TEXT_FOOTER: {
         id: 'TR_MOBILE_APP_PROMO_TEXT_FOOTER',
-        defaultMessage: 'Sync & track on your phone with <b>Trezor Suite on mobile</b>',
+        defaultMessage: 'Sync & track your assets on the go with <b>Trezor Suite on mobile</b>',
     },
     TR_DASHBOARD_REFERRAL_BUTTON: {
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
@@ -9864,7 +9865,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON',
-        defaultMessage: 'Got it, continue',
+        defaultMessage: 'Got it',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE',
@@ -9889,7 +9890,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',
-        defaultMessage: 'A passphrase opens a wallet secured by that phrase.',
+        defaultMessage: 'A passphrase opens a wallet secured by that exact phrase.',
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM3: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
@@ -9906,7 +9907,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING',
-        defaultMessage: 'A few uncommon random words',
+        defaultMessage: 'Enter a few unique random words.',
     },
     TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION',
@@ -9931,15 +9932,15 @@ export default defineMessages({
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE',
-        defaultMessage: 'Your balances remain visible even after you disconnect your Trezor.',
+        defaultMessage: 'Your balances now stay visible even when your Trezor is disconnected.',
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1',
-        defaultMessage: 'Eject your wallets at any time.',
+        defaultMessage: 'Enable auto-eject to hide your balances when you disconnect your Trezor.',
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2',
-        defaultMessage: "Assets can't be moved without a connected device.",
+        defaultMessage: "Assets can't be moved or swapped without a connected device.",
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY',
@@ -9947,7 +9948,7 @@ export default defineMessages({
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY',
-        defaultMessage: 'Auto-eject wallets',
+        defaultMessage: 'Enable auto-eject',
     },
     TR_CONNECT_DEVICE_GENERIC_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_GENERIC_PROMO_TITLE',
@@ -10591,7 +10592,7 @@ export default defineMessages({
     },
     TR_CONTRACT_REVOKE_TITLE: {
         id: 'TR_CONTRACT_REVOKE_TITLE',
-        defaultMessage: 'Revoke from',
+        defaultMessage: 'Revoke approval from',
     },
     TR_CONTRACT_APPROVE_TITLE: {
         id: 'TR_CONTRACT_APPROVE_TITLE',

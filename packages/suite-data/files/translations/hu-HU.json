@@ -159,7 +159,6 @@
   "TOAST_ACQUIRE_ERROR": "Letöltési hiba {error}",
   "TOAST_AUTH_CONFIRM_ERROR": "Jelmondat megerősítési hiba: {error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "Hibás jelmondat",
-  "TOAST_AUTH_FAILED": "Hitelesítési hiba {error}",
   "TOAST_AUTO_UPDATER_ERROR": "Automatikus frissítő hibája ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "Új verzió ({version}) sikeresen telepítve.",
   "TOAST_AUTO_UPDATER_NO_NEW": "Nincs elérhető frissítés.",

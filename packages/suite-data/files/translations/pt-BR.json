@@ -170,7 +170,6 @@
   "TOAST_ACQUIRE_ERROR": "Erro de aquisição {error}",
   "TOAST_AUTH_CONFIRM_ERROR": "Erro de confirmação de senha: {error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "Senha inválida",
-  "TOAST_AUTH_FAILED": "Erro de autorização: {error}",
   "TOAST_AUTO_EJECT_SETTINGS": "Os saldos da carteira permanecem visíveis",
   "TOAST_AUTO_UPDATER_ERROR": "Erro ao atualizar ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "Nova versão ({version}) instalada com sucesso.",

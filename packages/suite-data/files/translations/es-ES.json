@@ -170,7 +170,6 @@
   "TOAST_ACQUIRE_ERROR": "Se ha producido un error de conexión: {error}",
   "TOAST_AUTH_CONFIRM_ERROR": "Error de confirmación de frase de contraseña: {error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "La frase de contraseña no es válida.",
-  "TOAST_AUTH_FAILED": "Error de autorización: {error}",
   "TOAST_AUTO_EJECT_SETTINGS": "Los saldos del monedero permanecen visibles",
   "TOAST_AUTO_UPDATER_ERROR": "Error de actualización ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "La nueva versión ({version}) se ha instalado correctamente.",

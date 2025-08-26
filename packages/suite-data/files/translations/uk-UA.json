@@ -142,7 +142,6 @@
   "TOAST_ACQUIRE_ERROR": "Помилка підключення {error}",
   "TOAST_AUTH_CONFIRM_ERROR": "Помилка підтвердження кодової фрази: {error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "Хибна кодова фраза!",
-  "TOAST_AUTH_FAILED": "Помилка авторизації: {error}",
   "TOAST_AUTO_UPDATER_ERROR": "Помилка автоматичного оновлення ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "Нову версію ({version}) успішно встановлено.",
   "TOAST_AUTO_UPDATER_NO_NEW": "Немає доступних оновлень",

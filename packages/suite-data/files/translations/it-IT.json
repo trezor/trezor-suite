@@ -157,7 +157,6 @@
   "TOAST_ACQUIRE_ERROR": "Errore acquisizione {error}",
   "TOAST_AUTH_CONFIRM_ERROR": "Errore conferma passphrase: {error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "Passphrase non valida",
-  "TOAST_AUTH_FAILED": "Errore autorizzazione: {error}",
   "TOAST_AUTO_UPDATER_ERROR": "Errore aggiornamento automatico ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "Nuova versione ({version}) installata correttamente.",
   "TOAST_AUTO_UPDATER_NO_NEW": "Nessun nuovo aggiornamento disponibile.",

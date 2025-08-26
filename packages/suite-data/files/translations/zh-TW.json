@@ -163,7 +163,6 @@
   "TIME_BOUNDS_IS_NOT_SET": "無限制",
   "TOAST_AUTH_CONFIRM_ERROR": "密碼確認失敗：{error}",
   "TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "密碼不符",
-  "TOAST_AUTH_FAILED": "授權時發生錯誤：{error}",
   "TOAST_AUTO_EJECT_SETTINGS": "錢包餘額持續可見",
   "TOAST_AUTO_UPDATER_ERROR": "更新失敗({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "新版({version})軟體安裝成功",
