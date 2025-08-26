@@ -5,14 +5,12 @@ import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/at
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-
 import { SellFormFieldErrorBadge } from './SellFormFieldErrorBadge';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
 import { SellReceiveMethodPicker } from './fiat/SellReceiveMethodPicker';
 import { useAnimatedBorderStyle } from '../../hooks/general/useAnimatedBorderStyle';
 import { CardTitle } from '../general/CardTitle';
 import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
-import { SellSendAmountBadge } from './send/SellSendAmountBadge';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
@@ -58,7 +56,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                             <Translation id="moduleTrading.selectCoinToSell.title" />
                         </CardTitle>
                         <Box alignItems="flex-end">
-                            <SellSendAmountBadge />
+                            <SellFormFieldErrorBadge fieldName="cryptoStringAmount" />
                         </Box>
                     </HStack>
                     <SellSendAssetPicker />
