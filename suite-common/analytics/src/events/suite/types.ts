@@ -342,6 +342,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.TradingCompareOffers;
+          payload: {
+              type: 'exchange' | 'buy' | 'sell';
+          };
+      }
+    | {
           type: EventType.TradingExchangeApproval;
           payload: {
               type: 'exchange-form';
