@@ -41,7 +41,10 @@
                 "EXPO_PUBLIC_FF_IS_DEVICE_CONNECT_ENABLED": "true",
                 "EXPO_PUBLIC_FF_IS_BLUETOOTH_ENABLED": "true"
             },
-            "developmentClient": false
+            "developmentClient": false,
+            "ios": {
+                "distribution": "store"
+            }
         },
         "production": {
             "extends": "base",
@@ -73,7 +76,14 @@
         "develop": {
             "ios": {
                 "bundleIdentifier": "io.trezor.suite.develop",
-                "ascAppId": "1631884497",
+                "ascAppId": "1632206646",
+                "appleTeamId": "C3P22XVH2C"
+            }
+        },
+        "adhoc": {
+            "ios": {
+                "bundleIdentifier": "io.trezor.suite.preview",
+                "ascAppId": "6739429089",
                 "appleTeamId": "C3P22XVH2C"
             }
         },
