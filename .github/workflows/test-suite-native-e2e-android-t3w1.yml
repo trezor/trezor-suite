@@ -4,18 +4,18 @@ permissions:
   id-token: write # for fetching the OIDC token (needed for aws s3 actions)
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
-  pull_request:
-    paths:
-      - "suite-native/**"
-      - "suite-common/**"
-      - "packages/connect/**"
-      - ".github/workflows/test-suite-native-e2e-android.yml"
-      - "!**.md"
-  push:
-    branches:
-      - release-native/*
+  # schedule:
+  #   - cron: "0 0 * * *"
+  # pull_request:
+  #   paths:
+  #     - "suite-native/**"
+  #     - "suite-common/**"
+  #     - "packages/connect/**"
+  #     - ".github/workflows/test-suite-native-e2e-android.yml"
+  #     - "!**.md"
+  # push:
+  #   branches:
+  #     - release-native/*
   workflow_dispatch:
     inputs:
       publishResultsToGitHub:
@@ -36,7 +36,8 @@ jobs:
     uses: ./.github/workflows/template-suite-native-e2e-android.yml
     needs: prepare_android_test_app
     with:
-      emulator_model: "T3T1"
+      emulator_model: "T3W1"
+      detox_extra_args: "--testNamePattern '^(?!.*@specificModel)'"
     secrets:
       TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
       TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}

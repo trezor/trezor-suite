@@ -34,9 +34,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         await TrezorUserEnvLink.stopEmu();
     });
 
-    describe('Tests with T3T1 device model', () => {
+    describe('Tests with T3T1 device model [@specificModel]', () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator();
+            await prepareTrezorEmulator({ model: 'T3T1' });
             await restartApp();
             await appIsFullyLoaded();
 
@@ -139,7 +139,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         });
     });
 
-    describe('Tests with T1B1 device model', () => {
+    describe('Tests with T1B1 device model [@specificModel]', () => {
         beforeEach(async () => {
             await prepareTrezorEmulator({ model: 'T1B1' });
             await restartApp();
