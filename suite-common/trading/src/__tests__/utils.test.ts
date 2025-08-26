@@ -254,7 +254,8 @@ describe('cryptoIdToNetworkAndContractAddress', () => {
             'eth',
             '0x1234123412341234123412341234123412341234',
         ],
-    ] as [CryptoId, NetworkSymbol | undefined, string | undefined][])(
+        [undefined, undefined, undefined],
+    ] as [CryptoId | undefined, NetworkSymbol | undefined, string | undefined][])(
         'should return correct symbol and contract for %s',
         (cryptoId, expectedSymbol, expectedContract) => {
             expect(cryptoIdToNetworkAndContractAddress(cryptoId).network?.symbol).toBe(

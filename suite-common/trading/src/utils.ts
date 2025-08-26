@@ -59,8 +59,12 @@ export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
 };
 
 export const cryptoIdToNetworkAndContractAddress = (
-    cryptoId: CryptoId,
+    cryptoId: CryptoId | undefined,
 ): NetworkAndContractAddress => {
+    if (!cryptoId) {
+        return { network: undefined, contractAddress: undefined };
+    }
+
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const network = contractAddress
         ? getNetworkByCoingeckoId(networkId)
