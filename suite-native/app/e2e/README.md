@@ -46,6 +46,20 @@ To test the app in the release mode, you need to build the app with the release 
 
 Some tests use Trezor-user-env to simulate the Trezor device. To make these tests work locally, make sure that the trezor-user-env is up and running. To do so, follow the [trezor-user-env documentation](https://github.com/trezor/trezor-user-env/blob/master/README.md).
 
+## Test tagging
+
+Since Detox/Jest doesn't natively support test tagging, we are using a common convention to achieve this goal. Tags are added as part of the test describe or test name. Tags are to be prefixed with @ and and wrapped in [] parentheses.
+Example:
+
+```
+describe('Tests with T3T1 device model [@specificModel]', () => {
+    test('Enable, change & disable PIN [@smoke]')
+}
+```
+
+Now you can also use these tags to run the tests:
+`yarn test:e2e android.emu.release --testNamePattern @smoke`
+
 ## Working with Launch Arguments
 
 You can pass launch arguments to the app when running tests. This is useful for testing specific scenarios. To do so you can pass arbitrary arguments via `openApp` or `restartApp` util functions.

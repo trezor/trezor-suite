@@ -3,7 +3,7 @@ import { resolveConfig } from 'detox/internals';
 
 import { LaunchArguments } from '@suite-native/config';
 import { PreloadedState } from '@suite-native/state';
-import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, MODELS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const platform = device.getPlatform();
 
@@ -132,6 +132,12 @@ export const appIsFullyLoaded = async () => {
         .withTimeout(35000);
 };
 
+function getModelFromEnv(): Model {
+    const envValue = process.env.EMULATOR_MODEL as Model;
+
+    return MODELS.includes(envValue) ? envValue : 'T3T1';
+}
+
 export type PrepareTrezorEmulatorProps = {
     seed?: string;
     passphrase_protection?: boolean;
@@ -143,7 +149,7 @@ export const prepareTrezorEmulator = async ({
     version,
     seed = MNEMONICS.mnemonic_immune,
     passphrase_protection = false,
-    model = 'T3T1',
+    model = getModelFromEnv(),
 }: PrepareTrezorEmulatorProps = {}) => {
     if (platform === 'android') {
         // Prepare Trezor device for test scenario
