@@ -2171,6 +2171,18 @@ export const en = {
             limitInfo:
                 'Skip future approvals and pay less fees. {companyName} will gain full access to your {symbol}.',
         },
+        tradingExchangeRevokeScreen: {
+            title: 'Revoke {symbol} approval',
+            subtitle:
+                'This stops the provider from using your {symbol}. You’ll need to approve again to swap.',
+            infoAlert:
+                'The approved amount is too low. To increase it, first revoke the current approval, then set a higher limit.',
+            from: 'From',
+            details: 'Details',
+            currentLimit: 'Current limit',
+            newLimit: 'New limit',
+            unlimited: 'Unlimited',
+        },
         exchangeApprovalLimitSheet: {
             title: 'Set limit',
             unlimitedCard: {

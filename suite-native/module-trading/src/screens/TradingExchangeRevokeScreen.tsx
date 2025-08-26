@@ -1,4 +1,3 @@
-import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
@@ -9,9 +8,15 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { TokenSymbol } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
+import {
+    BaseCurrencyAmountFormatter,
+    CryptoAmountFormatter,
+    TokenAmountFormatter,
+} from '@suite-native/formatters';
 import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
@@ -19,12 +24,10 @@ import { BigNumber } from '@trezor/utils';
 
 import { TradeInfoHeader } from '../components/TradeInfo/TradeInfoHeader';
 import { TradeInfoRow } from '../components/TradeInfo/TradeInfoRow';
-import { ExchangeApprovalLimitSheet } from '../components/exchange/ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
 import { ProviderLogo } from '../components/general/ProviderLogo';
-import { useBottomSheetControls } from '../hooks/general/useBottomSheetControls';
 import { selectExchangeSelectedSendAccount } from '../selectors/exchangeSelectors';
 
-export const TradingExchangeApprovalScreen = () => {
+export const TradingExchangeRevokeScreen = () => {
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     invariant(quote, 'quote must be defined');
@@ -39,8 +42,6 @@ export const TradingExchangeApprovalScreen = () => {
         selectTradingProviderByNameAndTradeType(state, quote.exchange, 'exchange'),
     );
 
-    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
-
     const coinSymbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
@@ -53,37 +54,29 @@ export const TradingExchangeApprovalScreen = () => {
                 <DynamicScreenHeader
                     title={
                         <Translation
-                            id="moduleTrading.tradingExchangeApprovalScreen.title"
+                            id="moduleTrading.tradingExchangeRevokeScreen.title"
                             values={{ symbol: coinSymbol }}
                         />
                     }
                     subtitle={
                         <Translation
-                            id="moduleTrading.tradingExchangeApprovalScreen.subtitle"
+                            id="moduleTrading.tradingExchangeRevokeScreen.subtitle"
                             values={{ symbol: coinSymbol }}
                         />
                     }
-                    closeActionType="close"
+                    closeActionType="back"
                 />
             }
         >
             <VStack spacing="sp16">
                 <InlineAlertBox
-                    title={
-                        <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
-                    }
-                    variant="success"
-                />
-                <InlineAlertBox
-                    title={
-                        <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
-                    }
-                    variant="info"
+                    title={<Translation id="moduleTrading.tradingExchangeRevokeScreen.infoAlert" />}
+                    variant="warning"
                 />
 
                 <Card noPadding>
                     <TradeInfoHeader
-                        title={<Translation id="moduleTrading.tradingExchangeApprovalScreen.for" />}
+                        title={<Translation id="moduleTrading.tradingExchangeRevokeScreen.from" />}
                         rightContent={
                             !!network?.symbol && (
                                 <HStack alignItems="center">
@@ -108,7 +101,7 @@ export const TradingExchangeApprovalScreen = () => {
                 <Card noPadding>
                     <TradeInfoHeader
                         title={
-                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.approvalDetailsTitle" />
+                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.details" />
                         }
                     />
                     <TradeInfoRow>
@@ -124,39 +117,54 @@ export const TradingExchangeApprovalScreen = () => {
                             </Text>
                         </HStack>
                     </TradeInfoRow>
-                    <Pressable onPress={showSheet}>
-                        <TradeInfoRow>
-                            <VStack>
-                                <HStack justifyContent="space-between" alignItems="center">
-                                    <Text variant="hint">
-                                        <Translation id="moduleTrading.tradingExchangeApprovalScreen.limitLabel" />
-                                    </Text>
-                                    <HStack alignItems="center">
-                                        {!!network?.symbol && (
-                                            <CryptoIcon
-                                                symbol={network.symbol}
-                                                contractAddress={contractAddress}
-                                                size="extraSmall"
-                                            />
-                                        )}
-                                        <Text variant="hint" color="textSubdued">
-                                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
-                                        </Text>
-                                        <Icon name="caretDown" size="medium" />
-                                    </HStack>
-                                </HStack>
-                                <Text variant="hint" color="textSubdued">
-                                    <Translation
-                                        id="moduleTrading.tradingExchangeApprovalScreen.limitInfo"
-                                        values={{
-                                            companyName: providerInfo?.companyName,
-                                            symbol: coinSymbol,
-                                        }}
+                    <TradeInfoRow>
+                        <Text variant="hint">
+                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.currentLimit" />
+                        </Text>
+                        <HStack alignItems="center">
+                            {!!network?.symbol && (
+                                <CryptoIcon
+                                    symbol={network.symbol}
+                                    contractAddress={contractAddress}
+                                    size="extraSmall"
+                                />
+                            )}
+                            <Text variant="hint" color="textSubdued">
+                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.unlimited" />
+                            </Text>
+                        </HStack>
+                    </TradeInfoRow>
+                    <TradeInfoRow>
+                        <Text variant="hint">
+                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.newLimit" />
+                        </Text>
+                        <HStack alignItems="center">
+                            {!!network?.symbol && (
+                                <CryptoIcon
+                                    symbol={network.symbol}
+                                    contractAddress={contractAddress}
+                                    size="extraSmall"
+                                />
+                            )}
+                            {!!coinSymbol &&
+                                (isNetworkSymbol(coinSymbol) ? (
+                                    <CryptoAmountFormatter
+                                        value={0}
+                                        symbol={coinSymbol}
+                                        isBalance={false}
+                                        variant="hint"
+                                        color="textSubdued"
                                     />
-                                </Text>
-                            </VStack>
-                        </TradeInfoRow>
-                    </Pressable>
+                                ) : (
+                                    <TokenAmountFormatter
+                                        value={0}
+                                        tokenSymbol={coinSymbol as TokenSymbol}
+                                        variant="hint"
+                                        color="textSubdued"
+                                    />
+                                ))}
+                        </HStack>
+                    </TradeInfoRow>
                     <TradeInfoRow>
                         <Text variant="hint">
                             <Translation id="transactions.detail.feeLabel" />
@@ -185,7 +193,6 @@ export const TradingExchangeApprovalScreen = () => {
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </Box>
-            <ExchangeApprovalLimitSheet isVisible={isSheetVisible} onDismiss={hideSheet} />
         </Screen>
     );
 };
