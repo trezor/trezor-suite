@@ -112,7 +112,9 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
                     await page.getByRole('button', { name: 'Max' }).click();
                     await expect
                         .soft(stakingSection.withdrawalWarning)
-                        .toHaveText('We’ve left 0.03 ETH out so you can pay for withdrawal fees.');
+                        .toHaveText(
+                            'We’ve left 0.03 ETH in your account so you can pay for withdrawal fees.',
+                        );
                     const expectedMax = new BigNumber(ethereumStakingBalance!)
                         .minus(WITHDRAWAL_BUFFER)
                         .minus(MOCKED_FEE_AMOUNT);
