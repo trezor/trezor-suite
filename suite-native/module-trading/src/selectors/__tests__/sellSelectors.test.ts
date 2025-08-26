@@ -1,11 +1,15 @@
+import { SellFiatTrade } from 'invity-api';
+
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount } from '../../__fixtures__/account';
+import { sellQuotes } from '../../__fixtures__/sellQuotes';
 import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
     selectSellAmountLimits,
+    selectSellBestQuotesForAvailablePaymentMethods,
     selectSellFormDefaultValues,
     selectSellSelectedSendAccount,
     selectSellSupportedFiatCurrencies,
@@ -17,7 +21,7 @@ describe('sellSelectors', () => {
     let state: TradingRootState & AccountsRootState;
 
     beforeEach(() => {
-        state = { wallet: getWalletState() };
+        state = { wallet: getWalletState({ tradeType: 'sell' }) };
     });
 
     it('selectTradingSell should select trading sell state', () => {
@@ -235,6 +239,53 @@ describe('sellSelectors', () => {
             state.wallet.tradingNew.sell.tradingAccountKey = 'unknown_account_key';
 
             expect(selectSellSelectedSendAccount(state)).toBeUndefined();
+        });
+    });
+
+    describe('selectSellBestQuotesForAvailablePaymentMethods', () => {
+        beforeEach(() => {
+            state.wallet.tradingNew.sell.quotes = sellQuotes;
+        });
+
+        it('should return only best quote for each payment method', () => {
+            expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([
+                expect.objectContaining({
+                    paymentMethod: 'creditCard',
+                    rate: 3940,
+                }),
+                expect.objectContaining({
+                    paymentMethod: 'bankTransfer',
+                    rate: 3937.6279729091198,
+                }),
+            ]);
+        });
+
+        it('should be stable', () => {
+            expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toBe(
+                selectSellBestQuotesForAvailablePaymentMethods(state),
+            );
+        });
+
+        it('should ignore quotes without payment method', () => {
+            const quote = {
+                ...sellQuotes[0],
+                paymentMethod: undefined,
+            } as unknown as SellFiatTrade;
+
+            state.wallet.tradingNew.sell.quotes = [quote];
+
+            expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
+        });
+
+        it('should ignore quotes without payment method name', () => {
+            const quote = {
+                ...sellQuotes[0],
+                paymentMethodName: undefined,
+            } as unknown as SellFiatTrade;
+
+            state.wallet.tradingNew.sell.quotes = [quote];
+
+            expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
     });
 });
