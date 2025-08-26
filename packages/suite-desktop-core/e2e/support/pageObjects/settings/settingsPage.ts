@@ -75,6 +75,7 @@ export class SettingsPage {
     readonly checkSeedButton: Locator;
     readonly metadataSwitch: Locator;
     readonly analyticsSwitch: Locator;
+    readonly analyticsSwitchInput: Locator;
     readonly showLogButton: Locator;
     readonly fiatCurrencyInput: Locator;
     readonly fiatCurrencyInputOption = (currency: BaseCurrencyCode) =>
@@ -115,6 +116,9 @@ export class SettingsPage {
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
         this.metadataSwitch = this.page.getByTestId('@settings/metadata-switch');
         this.analyticsSwitch = this.page.getByTestId('@analytics/toggle-switch');
+        this.analyticsSwitchInput = this.page
+            .getByTestId('@analytics/toggle-switch')
+            .locator('input');
         this.showLogButton = this.page.getByTestId('@settings/show-log-button');
         this.fiatCurrencyInput = this.page.getByTestId('@settings/fiat-select/input');
         this.btcUnitsInput = this.page.getByTestId('@settings/btc-units-select/input');

@@ -4,6 +4,7 @@ import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
+import { Model } from '@suite-common/suite-types';
 import { TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -91,9 +92,7 @@ export const getVideoPath = (videoFolder: string): string | false => {
     return path.join(videoFolder, videoFilenames[0]);
 };
 
-export const findLatestVersionForModel = (
-    model: 'T1B1' | 'T2T1' | 'T3B1' | 'T3T1' | 'T3W1',
-): string => {
+export const findLatestVersionForModel = (model: Model): string => {
     const firmwareVersions = releases.firmware;
     const versions = Object.keys(firmwareVersions);
 
