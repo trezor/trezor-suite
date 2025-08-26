@@ -10,6 +10,7 @@ import {
     sellThunks,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { useFormState } from '@suite-native/forms';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
 import { sellActions } from '../../reducers';
@@ -45,8 +46,18 @@ const defaultState: ShouldFetchSellQuotesRef = {
 
 const noop = () => {};
 
-const useShouldFetchSellQuotes = ({ watch }: SellFormType): ShouldFetchSellQuotes => {
+const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetchSellQuotes => {
     const prevState = useRef<ShouldFetchSellQuotesRef>(defaultState);
+
+    const { isValid } = useFormState({ control });
+    if (!isValid) {
+        prevState.current = defaultState;
+
+        return {
+            isFetchAllowed: false,
+            shouldFetchQuotes: false,
+        };
+    }
 
     const [
         sendAsset,

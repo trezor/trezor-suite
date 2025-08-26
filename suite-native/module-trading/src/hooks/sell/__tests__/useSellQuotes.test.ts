@@ -247,4 +247,27 @@ describe('useSellQuotes', () => {
         });
         expect(store.getState().wallet.tradingNew.sell.quotes).toEqual([]);
     });
+
+    it('should not query quotes when form contains error', async () => {
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseSellQuotes(store);
+
+        act(() => {
+            result.current.setValue('sendAsset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+            result.current.setValue('amountInCrypto', true);
+            result.current.setValue('cryptoStringAmount', '1');
+            result.current.setError('cryptoStringAmount', {
+                type: 'manual',
+                message: 'Some error',
+            });
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
 });
