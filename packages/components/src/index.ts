@@ -2,8 +2,8 @@ export * as variables from './config/variables';
 export * as animations from './config/animations';
 export { motionAnimation, motionEasing } from './config/motion';
 
+export { AnimationWrapper, shapes, type Shape } from './components/animations/AnimationPrimitives';
 export { Checkbox, type CheckboxProps } from './components/form/Checkbox/Checkbox';
-export * from './components/animations/DeviceAnimation';
 export * from './components/animations/LottieAnimation';
 export { recolorLottieAnimation } from './components/animations/recolorLottieAnimation';
 export { hexToRgbaArray } from '../../utils/src/hexToRgbaArray';

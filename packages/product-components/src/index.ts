@@ -24,3 +24,4 @@ export { InputWithOptions } from './components/InputWithOptions/InputWithOptions
 export { EditableText } from './components/EditableText/EditableText';
 export { CardButton } from './components/CardButton/CardButton';
 export { FeeRate } from './components/FeeRate/FeeRate';
+export { DeviceAnimation } from './components/DeviceAnimation/DeviceAnimation';

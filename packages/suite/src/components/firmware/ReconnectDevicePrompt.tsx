@@ -4,10 +4,10 @@ import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { BulletList, Column, DeviceAnimation, H2, Modal, Paragraph } from '@trezor/components';
+import { BulletList, Column, H2, Modal, Paragraph } from '@trezor/components';
 import { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevice, DeviceAnimation } from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
