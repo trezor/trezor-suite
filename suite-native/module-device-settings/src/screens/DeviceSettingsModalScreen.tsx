@@ -46,6 +46,7 @@ export const DeviceSettingsModalScreen = () => {
                 >
                     {isDeviceInitialized && <DevicePinProtectionCard />}
                     <DeviceFirmwareCard />
+                    {isDeviceConnectedViaBluetooth && <DeviceBluetoothCard />}
                 </TitledSection>
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
@@ -56,7 +57,6 @@ export const DeviceSettingsModalScreen = () => {
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.dangerZone" />}
                 >
-                    {isDeviceConnectedViaBluetooth && <DeviceBluetoothCard />}
                     <WipeDeviceCard />
                 </TitledSection>
             </VStack>

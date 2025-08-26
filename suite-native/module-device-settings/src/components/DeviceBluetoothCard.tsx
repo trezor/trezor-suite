@@ -46,9 +46,7 @@ export const DeviceBluetoothCard = () => {
             primaryButtonTitle: (
                 <Translation id="moduleDeviceSettings.bluetooth.unpairTrezorButton" />
             ),
-            primaryButtonVariant: 'redBold',
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-            secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: unpairTrezor,
         });
     };
@@ -59,7 +57,6 @@ export const DeviceBluetoothCard = () => {
             subtitle={<Translation id="moduleDeviceSettings.bluetooth.content" />}
             icon="bluetoothSlash"
             onPress={showInfoAlert}
-            variant="danger"
         />
     );
 };
