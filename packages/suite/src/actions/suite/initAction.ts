@@ -13,12 +13,13 @@ import * as walletConnectActions from '@suite-common/walletconnect';
 import { DEVICE, UI } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { arrayDistinct } from '@trezor/utils';
 
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import type { AcquiredDevice, Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 
 import { SUITE } from './constants';
 import { onSuiteReady, setFlag } from './suiteActions';
@@ -74,50 +75,29 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
         await dispatch(
             trezorConnectActions.connectInitThunk({
-                [DEVICE.CONNECT]: (_device, prevConnectedDevices) => {
-                    const previouslyConnectedUniqueDevices = prevConnectedDevices
-                        .filter(device => device.connected)
-                        .reduce<Map<string, AcquiredDevice>>((acc, device) => {
-                            if (device.id && !acc.has(device.id)) {
-                                acc.set(device.id, device);
-                            }
+                [DEVICE.CONNECT]: (_device, prevDevices) => {
+                    const getUniqueDeviceCount = (devices: TrezorDevice[]) =>
+                        devices
+                            .filter(device => device.connected && device.id)
+                            .map(device => device.id)
+                            .filter(arrayDistinct).length;
 
-                            return acc;
-                        }, new Map<string, AcquiredDevice>());
-
-                    const currentConnectedDevices = selectDevices(getState()).filter(
-                        device => device.connected,
-                    );
-
-                    const uniqueConnectedDevices = currentConnectedDevices.reduce<
-                        Map<string, AcquiredDevice>
-                    >((acc, device) => {
-                        if (device.id && !acc.has(device.id)) {
-                            acc.set(device.id, device);
-                        }
-
-                        return acc;
-                    }, new Map<string, AcquiredDevice>());
+                    const previouslyConnectedUniqueDevices = getUniqueDeviceCount(prevDevices);
+                    const uniqueConnectedDevices = getUniqueDeviceCount(selectDevices(getState()));
 
                     if (
-                        uniqueConnectedDevices.size > 1 &&
-                        uniqueConnectedDevices.size > previouslyConnectedUniqueDevices.size
+                        uniqueConnectedDevices > 1 &&
+                        uniqueConnectedDevices > previouslyConnectedUniqueDevices
                     ) {
                         dispatch(
                             routerActions.goto('suite-switch-device', {
-                                params: {
-                                    cancelable: true,
-                                },
+                                params: { cancelable: true },
                             }),
                         );
                     }
                 },
                 [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-                    dispatch(
-                        modalActions.openModal({
-                            type: UI.INVALID_PIN_ATTEMPTS_DEPLETED,
-                        }),
-                    );
+                    dispatch(modalActions.openModal({ type: UI.INVALID_PIN_ATTEMPTS_DEPLETED }));
                     dispatch(modalActions.preserve());
                 },
             }),
