@@ -1,6 +1,6 @@
 import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 
@@ -8,12 +8,7 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { AnimationWrapper, Shape } from '@trezor/components';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 
-import { resolveStaticPath } from '../../utils/resolveStaticPath';
-
-const StyledVideo = styled.video`
-    max-width: 100%;
-    max-height: 100%;
-`;
+import { Video } from './Video';
 
 export const animationDeviceTypes = [
     'BOOTLOADER', // No longer available for T3T1
@@ -52,7 +47,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             isOldT2B1Packaging,
             deviceUnitColor,
             sizeVariant,
-            onVideoMouseOver,
+            onVideoMouseOver: onMouseOver,
             ...props
         },
         videoRef,
@@ -75,83 +70,60 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 : getNarrowedDeviceModelInternal(deviceModelInternal)
         ).toLowerCase();
 
+        const getFrontColor = () => {
+            if (deviceModelInternal === DeviceModelInternal.T3W1) {
+                return deviceUnitColor === 2 ? 2 : 1;
+            }
+
+            return 1;
+        };
+
         // Key is used to force re-render of the video element. When `src` of the inner <source> tag
         // changes, the video element does not re-render. This is a workaround.
         const key = `${deviceModelInFilename}_${type.toLowerCase()}_${deviceUnitColor}_${themeSuffix}`;
 
+        const commonProps = {
+            key,
+            loop,
+            videoRef,
+            onMouseOver,
+        };
+
         return (
             <AnimationWrapper height={height} width={width} shape={shape} {...props}>
-                {['BOOTLOADER', 'SUCCESS'].includes(type) && (
-                    <StyledVideo
-                        loop={loop}
-                        autoPlay
-                        muted
-                        ref={videoRef}
-                        onMouseOver={onVideoMouseOver}
-                        key={key}
-                    >
-                        <source
-                            src={resolveStaticPath(
-                                `videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`,
-                            )}
-                            type="video/webm"
-                        />
-                    </StyledVideo>
+                {['BOOTLOADER'].includes(type) && (
+                    <Video
+                        src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`}
+                        {...commonProps}
+                    />
+                )}
+                {['SUCCESS'].includes(type) && (
+                    <Video
+                        src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}_frontcolor_${getFrontColor()}.webm`}
+                        {...commonProps}
+                    />
                 )}
                 {/* Images available only for T1B1 */}
                 {['BOOTLOADER_TWO_BUTTONS', 'NORMAL'].includes(type) && (
-                    <StyledVideo
-                        loop={loop}
-                        autoPlay
-                        muted
-                        ref={videoRef}
-                        onMouseOver={onVideoMouseOver}
-                        key={key}
-                    >
-                        <source
-                            src={resolveStaticPath(
-                                `videos/device/trezor_${DeviceModelInternal.T1B1.toLowerCase()}_${type.toLowerCase()}${themeSuffix}.webm`,
-                            )}
-                            type="video/webm"
-                        />
-                    </StyledVideo>
+                    <Video
+                        src={`videos/device/trezor_${DeviceModelInternal.T1B1.toLowerCase()}_${type.toLowerCase()}${themeSuffix}.webm`}
+                        {...commonProps}
+                    />
                 )}
                 {type === 'HOLOGRAM' && (
-                    <StyledVideo
-                        loop={loop}
-                        autoPlay
-                        muted
-                        ref={videoRef}
-                        onMouseOver={onVideoMouseOver}
-                        key={key}
-                    >
-                        <source
-                            src={resolveStaticPath(
-                                `videos/device/trezor_${deviceModelInFilename}_hologram.webm`,
-                            )}
-                            type="video/webm"
-                        />
-                    </StyledVideo>
+                    <Video
+                        src={`videos/device/trezor_${deviceModelInFilename}_hologram.webm`}
+                        {...commonProps}
+                    />
                 )}
                 {type === 'ROTATE' && (
-                    <StyledVideo
-                        loop={loop}
-                        autoPlay
-                        muted
-                        ref={videoRef}
-                        onMouseOver={onVideoMouseOver}
-                        key={key}
-                    >
-                        <source
-                            src={resolveStaticPath(
-                                `videos/device/trezor_${deviceModelInFilename}_rotate_color_${
-                                    // if device unit color is not set, use first color available
-                                    deviceUnitColor ?? 1
-                                }${sizeVariant ? `_${sizeVariant.toLowerCase()}` : ''}.webm`,
-                            )}
-                            type="video/webm"
-                        />
-                    </StyledVideo>
+                    <Video
+                        src={`videos/device/trezor_${deviceModelInFilename}_rotate_color_${
+                            // if device unit color is not set, use first color available
+                            deviceUnitColor ?? 1
+                        }${sizeVariant ? `_${sizeVariant.toLowerCase()}` : ''}.webm`}
+                        {...commonProps}
+                    />
                 )}
             </AnimationWrapper>
         );
