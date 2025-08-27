@@ -21,9 +21,11 @@ export type SettingsSliceRootState = {
 export const appSettingsInitialState: AppSettingsState = {
     isOnboardingFinished: false,
     isCoinEnablingInitFinished: false,
-    isDeviceAuthenticityCheckEnabled: true,
-    isFirmwareRevisionCheckEnabled: true,
-    isFirmwareHashCheckEnabled: true,
+    isDeviceAuthenticityCheckEnabled:
+        process.env.EXPO_PUBLIC_IS_DEVICE_AUTHENTITY_CHECK_ENABLED !== 'false',
+    isFirmwareRevisionCheckEnabled:
+        process.env.EXPO_PUBLIC_IS_FIRMWARE_REVISION_CHECK_ENABLED !== 'false',
+    isFirmwareHashCheckEnabled: process.env.EXPO_PUBLIC_IS_FIRMWARE_HASH_CHECK_ENABLED !== 'false',
     areTestnetsEnabled: isDetoxTestBuild(),
     shouldShowAutoEjectAlert: false,
     hasAutoEjectAlertBeenDisplayed: false,
