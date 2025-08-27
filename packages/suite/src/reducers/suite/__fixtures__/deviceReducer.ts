@@ -257,6 +257,7 @@ const disconnect = [
                 }),
             ],
             isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -273,6 +274,7 @@ const disconnect = [
         initialState: {
             devices: [SUITE_DEVICE],
             isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -293,6 +295,7 @@ const disconnect = [
                 }),
             ],
             isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -330,6 +333,7 @@ const disconnect = [
                 }),
             ],
             isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -374,6 +378,7 @@ const disconnect = [
                 }),
             ],
             isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -403,6 +408,7 @@ const disconnect = [
                 }),
             ],
             isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -417,7 +423,11 @@ const disconnect = [
     },
     {
         description: `Disconnect device which doesn't exists in reducer`,
-        initialState: { devices: [], isDeviceAutoEjectEnabled: false },
+        initialState: {
+            devices: [],
+            isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
+        },
         actions: [
             {
                 type: DEVICE.DISCONNECT,

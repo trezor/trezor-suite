@@ -68,6 +68,7 @@ const getInitialState = (state?: InitialState) => {
             devices: device ? [device] : [],
             selectedDevice: device,
             isDeviceAutoEjectEnabled: false,
+            isConnectionModalOpen: false,
         },
         suite: {
             ...suite,
