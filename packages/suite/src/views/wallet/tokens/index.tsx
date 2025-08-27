@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router';
 
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
@@ -37,6 +36,8 @@ export const Tokens = () => {
         return <WalletLayout title="TR_TOKENS" account={selectedAccount} />;
     }
 
+    const isHidden = routeName === 'wallet-tokens-hidden';
+
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount}>
             <Column gap={spacings.lg}>
@@ -45,26 +46,14 @@ export const Tokens = () => {
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
                 />
-                <Routes>
-                    <Route
-                        path="hidden"
-                        element={
-                            <HiddenTokensTable
-                                selectedAccount={selectedAccount}
-                                searchQuery={searchQuery}
-                            />
-                        }
+                {isHidden ? (
+                    <HiddenTokensTable
+                        selectedAccount={selectedAccount}
+                        searchQuery={searchQuery}
                     />
-                    <Route
-                        path="*"
-                        element={
-                            <CoinsTable
-                                selectedAccount={selectedAccount}
-                                searchQuery={searchQuery}
-                            />
-                        }
-                    />
-                </Routes>
+                ) : (
+                    <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
+                )}
             </Column>
         </WalletLayout>
     );

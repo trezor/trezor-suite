@@ -27,6 +27,7 @@ export type RouterAction =
           payload: {
               url: string;
               pathname: string;
+              search?: string;
               hash?: string;
               settingsBackRoute?: SettingsBackRoute;
               anchor?: AnchorType;
@@ -54,14 +55,15 @@ export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) 
  * @param {string} url
  */
 export const onLocationChange =
-    (url: string, anchor?: AnchorType) => (dispatch: Dispatch, getState: GetState) => {
+    (url: string, anchor?: AnchorType) =>
+    (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const unlocked = dispatch(onBeforePopState());
         const { router } = getState();
         if (!unlocked && router.loaded) return;
         if (router.url === url && router.app !== 'unknown') return null;
         // TODO: check if the view is not locked by the device request
 
-        const [pathname, hash] = url.split('#');
+        const { pathname, search, hash } = extra.routerServices.getLocation();
 
         const appWithParams = getAppWithParams(url);
 
@@ -70,7 +72,8 @@ export const onLocationChange =
             payload: {
                 url,
                 pathname,
-                hash,
+                search,
+                hash: hash?.replace('#', ''),
                 anchor,
                 ...appWithParams,
             },
@@ -91,8 +94,8 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
 export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const location = extra.routerServices.getLocation();
-        const url = location.pathname + location.hash;
+        const { pathname, search, hash } = extra.routerServices.getLocation();
+        const url = `${pathname}${search ?? ''}${hash ?? ''}`;
         dispatch(onLocationChange(url));
     }
 };
@@ -177,7 +180,11 @@ export const closeModalApp =
             extra.routerServices.navigate(getPrefixedURL(location.pathname));
         } else {
             // + history.location.hash is here to preserve params (e.g. nth account)
-            dispatch(onLocationChange(location.pathname + location.hash));
+            dispatch(
+                onLocationChange(
+                    `${location.pathname}${location.search ?? ''}${location.hash ?? ''}`,
+                ),
+            );
         }
     };
 
@@ -189,7 +196,9 @@ export const initialRedirection = createThunk(
     '@suite/initial-redirection',
     (_, { dispatch, getState, extra }) => {
         const location = extra.routerServices.getLocation();
-        const route = findRoute(location.pathname + location.hash);
+        const route = findRoute(
+            `${location.pathname}${location.search ?? ''}${location.hash ?? ''}`,
+        );
 
         const { initialRun } = getState().suite.flags;
         // only do initial redirection of route is valid

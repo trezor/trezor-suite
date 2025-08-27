@@ -5,10 +5,12 @@ export const init = [
         description: `success`,
         result: {
             app: 'dashboard',
-            hash: undefined,
+            hash: '',
             params: undefined,
             pathname: '/',
             loaded: true,
+            anchor: undefined,
+            search: '',
             url: '/',
             route: findRouteByName('suite-index'),
             settingsBackRoute: {

@@ -130,6 +130,7 @@ export type ExtraDependencies = {
             // but window.location does satisfies it, we can extend it depending of needs of using history object
             pathname: string;
             hash: string;
+            search: string;
         };
         navigate: (to: To, state?: LocationPushState) => void;
     };
