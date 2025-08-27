@@ -65,11 +65,13 @@ module.exports = {
         '/public/',
     ],
 
-    transformIgnorePatterns: ['/node_modules/(?!d3-(.*)|internmap|@walletconnect|uint8arrays)/'],
+    transformIgnorePatterns: [
+        '/node_modules/(?!d3-(.*)|internmap|@walletconnect|uint8arrays|@noble)/',
+    ],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
         '(d3-|internmap|esm).*\\.js$': ['babel-jest', babelConfig],
-        '\\.(ts|tsx)$': ['babel-jest', babelConfig],
+        '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],

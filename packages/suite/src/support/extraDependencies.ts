@@ -57,6 +57,8 @@ export const extraDependencies: ExtraDependencies = {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorData: cardanoStakingActions.fetchTrezorData,
         initMetadata: metadataLabelingActions.init,
+        subscribeLocalFirstStorage: () => () => {}, // Todo: will be implemented in next PR
+        unsubscribeAndDisposeLocalFirstStorage: () => () => {}, // Todo: will be implemented in next PR
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,

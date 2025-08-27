@@ -4,7 +4,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { changeNetworks } from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
 import { selectEnabledNetworks } from './walletSettingsReducer';
-import { accountsActions } from '../accounts/accountsActions';
+import { forgetAccountsThunk } from '../accounts/accountsThunks';
 import { selectAccountsToBeForgotten } from '../selectors';
 
 export const changeCoinVisibility = createThunk<
@@ -26,7 +26,7 @@ export const changeCoinVisibility = createThunk<
 
     const accountsToRemove = selectAccountsToBeForgotten(getState());
     if (accountsToRemove.length > 0) {
-        dispatch(accountsActions.removeAccount(accountsToRemove));
+        dispatch(forgetAccountsThunk({ accountsToRemove }));
     }
 
     // this seems to be only for analyticsMiddleware

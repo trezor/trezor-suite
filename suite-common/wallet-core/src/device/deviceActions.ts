@@ -1,6 +1,11 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { ButtonRequest, ThpSuiteCredentials, TrezorDevice } from '@suite-common/suite-types';
+import {
+    ButtonRequest,
+    EvoluKeys,
+    ThpSuiteCredentials,
+    TrezorDevice,
+} from '@suite-common/suite-types';
 import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
@@ -112,6 +117,13 @@ const setThpCredentials = createAction(
     }),
 );
 
+const setLocalFirstStorageSecret = createAction(
+    `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecret`,
+    ({ device, evoluKeys }: { device: TrezorDevice; evoluKeys: EvoluKeys }) => ({
+        payload: { device, evoluKeys },
+    }),
+);
+
 const toggleIsDeviceAutoEjectEnabled = createAction(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectDevices`,
 );
@@ -145,6 +157,7 @@ export const deviceActions = {
     removeButtonRequests,
     setEntropyCheckFail,
     setThpCredentials,
+    setLocalFirstStorageSecret,
     toggleIsDeviceAutoEjectEnabled,
     setDiscovered,
 };
