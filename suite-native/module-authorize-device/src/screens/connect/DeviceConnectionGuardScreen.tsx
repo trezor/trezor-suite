@@ -60,9 +60,6 @@ export const DeviceConnectionGuardScreen = ({
                     helpButton={null}
                 />
             }
-            noHorizontalPadding
-            noBottomPadding
-            hasBottomInset={false}
             isScrollable={false}
         >
             {isBluetoothVariantVisible ? (

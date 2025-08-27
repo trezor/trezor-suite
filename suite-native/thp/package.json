@@ -20,7 +20,6 @@
         "@trezor/styles": "workspace:*",
         "react": "19.0.0",
         "react-native": "0.79.3",
-        "react-native-svg": "15.12.1",
         "react-redux": "9.2.0"
     }
 }

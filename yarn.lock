@@ -11366,10 +11366,11 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/semver": "npm:^7.7.0"
+    expo: "npm:53.0.22"
     expo-haptics: "npm:~14.1.4"
     expo-linear-gradient: "npm:~14.1.5"
+    expo-video: "npm:2.2.2"
     jotai: "npm:2.13.1"
-    lottie-react-native: "npm:7.3.2"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
     react-native-gesture-handler: "npm:2.28.0"
@@ -12646,7 +12647,6 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
-    react-native-svg: "npm:15.12.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -24995,7 +24995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:^53.0.22":
+"expo@npm:53.0.22, expo@npm:^53.0.22":
   version: 53.0.22
   resolution: "expo@npm:53.0.22"
   dependencies:
