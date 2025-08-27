@@ -7,6 +7,7 @@ import {
     prepareSelectAllDevices,
     selectAdapterStatus,
     selectKnownDevices,
+    selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { Button, H2, Modal } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -24,10 +25,10 @@ import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
+import { CantSeeTrezorModal } from './CantSeeTrezorModal';
 import { CableConnectionAnimation } from './DeviceConnectionAnimation';
-import { DontSeeYourTrezorModal } from './DontSeeYourTrezorModal';
 
-const SCAN_TIMEOUT = 3000;
+const SCAN_TIMEOUT = 30_000;
 const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT = 15_000;
 
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
@@ -56,6 +57,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     const [showHints, setShowHints] = useState(false);
     const scannerTimerId = useRef<TimerId | null>(null);
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+    const [shouldPairAgain, setShouldPairAgain] = useState(false);
 
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
@@ -72,7 +74,12 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         setShowHints(!showHints);
     };
 
+    const toggleShouldPairAgain = () => {
+        setShouldPairAgain(!shouldPairAgain);
+    };
+
     const allDevices = useSelector(selectAllDevices);
+    const nearbyDevices = useSelector(selectNearbyDevices);
     const knownDevices = useSelector(selectKnownDevices);
 
     const lastUpdatedBoundaryTimestamp = Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
@@ -135,9 +142,9 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     const onReScanClick = () => {
         setSelectedDeviceId(null);
-        dispatch(bluetoothActions.scanStatusAction({ status: 'running' }));
-
         clearScanTimer();
+
+        dispatch(bluetoothStartScanningThunk());
         scannerTimerId.current = setTimeout(() => {
             setShowHints(true);
             dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
@@ -170,10 +177,11 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     if (showHints) {
         return (
-            <DontSeeYourTrezorModal
+            <CantSeeTrezorModal
                 isBluetoothMode={isBluetoothMode}
                 onRescan={onReScanClick}
                 onGoBack={toggleShowHints}
+                onStillDontWork={toggleShouldPairAgain}
             />
         );
     }
@@ -196,8 +204,11 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     if (bluetoothMode && devices.length > 0) {
         return (
             <BluetoothConnectionModal
+                nearbyDevices={nearbyDevices}
+                knownDevices={knownDevices}
                 devices={devices}
                 selectedDevice={selectedDevice}
+                shouldPairAgain={shouldPairAgain}
                 onPairingCancel={handlePairingCancel}
                 onRescanClick={onReScanClick}
                 onConnect={onConnect}
@@ -207,7 +218,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     }
 
     return (
-        <Modal.Backdrop>
+        <Modal.Backdrop onClick={onCancel}>
             <Button onClick={toggleShowHints} icon="question" variant="infoLight">
                 <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
             </Button>
@@ -221,20 +232,21 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                         <H2 align="center">
                             <Translation id="TR_CONNECT_YOUR_DEVICE" />
                         </H2>
-
-                        <Button
-                            icon={isBluetoothMode ? 'cableUsbC' : 'bluetooth'}
-                            onClick={toggleBluetoothMode}
-                            variant="tertiary"
-                        >
-                            <Translation
-                                id={
-                                    isBluetoothMode
-                                        ? 'TR_BLUETOOTH_TIP_CABLE_HEADER'
-                                        : 'TR_PAIR_NEW_BLUETOOTH_DEVICE'
-                                }
-                            />
-                        </Button>
+                        {isBluetoothEnabled && (
+                            <Button
+                                icon={isBluetoothMode ? 'cableUsbC' : 'bluetooth'}
+                                onClick={toggleBluetoothMode}
+                                variant="tertiary"
+                            >
+                                <Translation
+                                    id={
+                                        isBluetoothMode
+                                            ? 'TR_BLUETOOTH_TIP_CABLE_HEADER'
+                                            : 'TR_PAIR_NEW_BLUETOOTH_DEVICE'
+                                    }
+                                />
+                            </Button>
+                        )}
                     </HeadingWrapper>
                     <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
                 </Content>

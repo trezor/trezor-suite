@@ -7691,6 +7691,10 @@ export default defineMessages({
         id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
         defaultMessage: 'Don’t see your Trezor?',
     },
+    TR_STILL_NOT_WORKING: {
+        id: 'TR_STILL_NOT_WORKING',
+        defaultMessage: 'It’s still not working',
+    },
     TR_TROUBLE_SHOOTING_TIPS: {
         id: 'TR_TROUBLE_SHOOTING_TIPS',
         defaultMessage: 'Troubleshooting tips',
@@ -10311,6 +10315,10 @@ export default defineMessages({
     TR_BLUETOOTH_GHOST_DEVICE: {
         id: 'TR_BLUETOOTH_GHOST_DEVICE',
         defaultMessage: 'Trezor not found. Disconnect it and create a new connection.',
+    },
+    TR_PAIR_AGAIN: {
+        id: 'TR_PAIR_AGAIN',
+        defaultMessage: 'Pair again',
     },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',

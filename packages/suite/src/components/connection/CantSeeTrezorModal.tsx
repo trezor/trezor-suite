@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
+import { TranslationKey } from '@suite-common/intl-types';
 import { Button, Modal } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
@@ -23,8 +25,9 @@ import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type DontSeeYourTrezorModalProps = {
     isBluetoothMode: boolean;
-    onGoBack?: () => void;
-    onRescan?: () => void;
+    onGoBack: () => void;
+    onRescan: () => void;
+    onStillDontWork: () => void;
 };
 
 const commonCableTips = [
@@ -33,14 +36,19 @@ const commonCableTips = [
     TROUBLESHOOTING_TIP_USB,
 ];
 
-export const DontSeeYourTrezorModal = ({
+export const CantSeeTrezorModal = ({
     onGoBack,
     isBluetoothMode,
     onRescan,
+    onStillDontWork,
 }: DontSeeYourTrezorModalProps) => {
+    const nearbyDevices = useSelector(selectNearbyDevices);
+    const knownDevices = useSelector(selectKnownDevices);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     const bridgeDesktopApi = useBridgeDesktopApi();
+
+    const allowPairAgain = nearbyDevices?.length === 0 && knownDevices.length > 0;
 
     const openTrezorSupport = () => {
         window.open(TREZOR_SUPPORT_URL, '_blank');
@@ -73,11 +81,28 @@ export const DontSeeYourTrezorModal = ({
         return cableItem;
     }, [isBluetoothMode, cableItem]);
 
+    const tertiaryButtonTranslation: TranslationKey = useMemo(() => {
+        if (isBluetoothMode) {
+            return allowPairAgain ? 'TR_STILL_NOT_WORKING' : 'TR_CANCEL';
+        }
+
+        return 'TR_CONTACT_TREZOR_SUPPORT';
+    }, [isBluetoothMode, allowPairAgain]);
+
     const handlePrimaryCta = () => {
         if (isBluetoothMode) {
             onRescan?.();
         }
         onGoBack?.();
+    };
+
+    const handleTertiaryCta = () => {
+        if (isBluetoothMode) {
+            if (allowPairAgain) onStillDontWork();
+            onGoBack();
+        } else {
+            openTrezorSupport();
+        }
     };
 
     return (
@@ -89,13 +114,8 @@ export const DontSeeYourTrezorModal = ({
                             id={isBluetoothMode ? 'TR_BLUETOOTH_SCAN_AGAIN' : 'TR_GOT_IT'}
                         />
                     </Button>
-                    <Button
-                        variant="tertiary"
-                        onClick={isBluetoothMode ? onGoBack : openTrezorSupport}
-                    >
-                        <Translation
-                            id={isBluetoothMode ? 'TR_CANCEL' : 'TR_CONTACT_TREZOR_SUPPORT'}
-                        />
+                    <Button variant="tertiary" onClick={handleTertiaryCta}>
+                        <Translation id={tertiaryButtonTranslation} />
                     </Button>
                 </>
             }

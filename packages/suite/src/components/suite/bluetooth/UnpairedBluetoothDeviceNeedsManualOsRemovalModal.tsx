@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { deviceActions } from '@suite-common/wallet-core';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -30,6 +31,7 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
 
     const onCancel = () => {
         dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: false }));
+        dispatch(deviceActions.toggleConnectionModal());
     };
 
     if (isUnpairingDevice) {

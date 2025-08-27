@@ -5,9 +5,14 @@ import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPai
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
 
+import { BluetoothDeviceList } from '../suite/bluetooth/BluetoothDeviceList';
+
 type BluetoothConnectionModalProps = {
     devices: DesktopBluetoothDevice[];
     selectedDevice: DesktopBluetoothDevice | undefined;
+    nearbyDevices: DesktopBluetoothDevice[] | null;
+    knownDevices: DesktopBluetoothDevice[] | null;
+    shouldPairAgain: boolean;
     onPairingCancel: (deviceId: string) => Promise<void>;
     onRescanClick: () => void;
     onConnect: (deviceId: string) => Promise<void>;
@@ -33,6 +38,8 @@ const BluetoothModalConnectionHeading = ({
 
 export const BluetoothConnectionModal = ({
     devices,
+    nearbyDevices,
+    knownDevices,
     selectedDevice,
     onPairingCancel,
     onRescanClick,
@@ -74,16 +81,13 @@ export const BluetoothConnectionModal = ({
                     />
                 }
             >
-                <BluetoothSelectedDevice
-                    device={selectedDevice}
-                    onReScanClick={onRescanClick}
-                    onCancel={onPairingCancel}
-                />
+                <BluetoothSelectedDevice device={selectedDevice} onReScanClick={onRescanClick} />
             </Modal>
         );
     }
 
-    if (devices.length > 0 && !selectedDevice) {
+    // show result of scanning and let user connect
+    if (devices.length > 0 && !selectedDevice && nearbyDevices && nearbyDevices.length > 0) {
         return (
             <Modal
                 onCancel={onCancel}
@@ -96,10 +100,29 @@ export const BluetoothConnectionModal = ({
             >
                 <BluetoothScanningList
                     devices={devices}
-                    uiMode="spatial"
                     onConnect={onConnect}
                     onReScanClick={onRescanClick}
-                    onClose={onCancel}
+                />
+            </Modal>
+        );
+    }
+
+    // if there are no nearby devices, but we do have a know devices or cant connect -> pair again
+    if (nearbyDevices && nearbyDevices.length === 0 && knownDevices && knownDevices.length > 0) {
+        return (
+            <Modal
+                onCancel={onCancel}
+                heading={
+                    <BluetoothModalConnectionHeading
+                        heading="Pair your Trezor again"
+                        description="There might be some problem we can’t detect, please try pairing your Trezor again."
+                    />
+                }
+            >
+                <BluetoothDeviceList
+                    deviceList={knownDevices}
+                    onConnect={onConnect}
+                    isScanning={false}
                 />
             </Modal>
         );

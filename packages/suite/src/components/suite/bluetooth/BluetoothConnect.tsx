@@ -169,7 +169,6 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
             <BluetoothPairingPin
                 device={selectedDevice}
                 pairingPin={selectedDevice.connectionStatus.pin}
-                onCancel={handlePairingCancel}
             />
         );
     }
@@ -194,7 +193,6 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
     return (
         <BluetoothScanningList
             devices={devices}
-            uiMode={uiMode}
             onConnect={onConnect}
             onReScanClick={onReScanClick}
             onClose={onClose}

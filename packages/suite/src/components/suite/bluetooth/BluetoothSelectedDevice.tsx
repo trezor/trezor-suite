@@ -1,7 +1,7 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
 import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
-import { Card, Column, Row, Spinner, Text } from '@trezor/components';
+import { Card, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
@@ -11,21 +11,11 @@ import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBlueto
 import { Translation } from '../Translation';
 import { PairingState } from './PairingState';
 
-const Cancelling = () => (
-    <Row gap={spacings.xxs} alignItems="center">
-        <Spinner size={spacings.md} />
-        <Text variant="tertiary">
-            <Translation id="TR_BLUETOOTH_CANCELLING" />
-        </Text>
-    </Row>
-);
-
 export type OkComponentProps = {
     device: DesktopBluetoothDevice;
-    isCancelling: boolean;
 };
 
-const OkComponent = ({ device, isCancelling }: OkComponentProps) => {
+const OkComponent = ({ device }: OkComponentProps) => {
     const map: Record<DeviceBluetoothConnectionStatusType, ReactNode> = {
         disconnected: <PairingState isLoading text="TR_BLUETOOTH_DISCONNECTED_BUT_WAITING" />,
         pairing: <PairingState isLoading text="TR_BLUETOOTH_PAIRING" />,
@@ -41,7 +31,7 @@ const OkComponent = ({ device, isCancelling }: OkComponentProps) => {
             <BluetoothDeviceComponent device={device} flex="1" />
 
             <Column alignItems="center" gap={spacings.md}>
-                {isCancelling ? <Cancelling /> : map[device.connectionStatus.type]}
+                {map[device.connectionStatus.type]}
             </Column>
         </Row>
     );
@@ -63,36 +53,20 @@ const ErrorComponent = ({ device, onReScanClick }: ErrorComponentProps) => (
 export type BluetoothSelectedDeviceProps = {
     device: DesktopBluetoothDevice;
     onReScanClick: () => void;
-    onCancel: (deviceId: string) => Promise<void>;
 };
 
 export const BluetoothSelectedDevice = ({
     device,
     onReScanClick,
-    onCancel,
-}: BluetoothSelectedDeviceProps) => {
-    const [isCancelling, setIsCanceling] = useState(false);
-
-    const handleCancel = async () => {
-        setIsCanceling(true);
-        await onCancel(device.id);
-        setIsCanceling(false);
-    };
-
-    return (
-        <BluetoothDialogCard
-            cardHeader="Pairing"
-            headerOnClose={handleCancel}
-            floatingHeader={<Translation id="TR_CONNECT_VIA_BLUETOOTH" />}
-        >
-            {device.connectionStatus.type === 'connection-error' ||
-            device.connectionStatus.type === 'pairing-error' ? (
-                <ErrorComponent onReScanClick={onReScanClick} device={device} />
-            ) : (
-                <Card>
-                    <OkComponent device={device} isCancelling={isCancelling} />
-                </Card>
-            )}
-        </BluetoothDialogCard>
-    );
-};
+}: BluetoothSelectedDeviceProps) => (
+    <BluetoothDialogCard>
+        {device.connectionStatus.type === 'connection-error' ||
+        device.connectionStatus.type === 'pairing-error' ? (
+            <ErrorComponent onReScanClick={onReScanClick} device={device} />
+        ) : (
+            <Card>
+                <OkComponent device={device} />
+            </Card>
+        )}
+    </BluetoothDialogCard>
+);

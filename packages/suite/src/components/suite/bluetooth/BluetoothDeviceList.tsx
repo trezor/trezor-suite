@@ -19,17 +19,24 @@ type BluetoothDeviceListProps = {
     deviceList: DesktopBluetoothDevice[];
     onConnect: (deviceId: string) => Promise<void>;
     isScanning: boolean;
+    onPairAgain?: (deviceId: string) => Promise<void>;
 };
 
 export const BluetoothDeviceList = ({
     onConnect,
     deviceList,
     isScanning,
+    onPairAgain,
 }: BluetoothDeviceListProps) => (
-    <Card>
+    <Card paddingType="tiny">
         <Column gap={spacings.md} alignItems="stretch">
             {deviceList.map(device => (
-                <BluetoothDeviceListItem key={device.id} device={device} onConnect={onConnect} />
+                <BluetoothDeviceListItem
+                    key={device.id}
+                    device={device}
+                    onConnect={onConnect}
+                    onPairAgain={onPairAgain}
+                />
             ))}
             {isScanning && <SkeletonDevice />}
         </Column>
