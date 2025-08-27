@@ -15,14 +15,18 @@ import { MockedFormatterProvider } from '@suite-common/formatters';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
+import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
+
 // used in hooks tests
 export const renderWithProviders = (store: any, children: ReactNode): RenderResult => {
     const renderMethods = render(
         <Provider store={store}>
             <ConnectedThemeProvider>
-                <IntlProvider locale="en">
-                    <MockedFormatterProvider>{children}</MockedFormatterProvider>
-                </IntlProvider>
+                <ResponsiveContextProvider>
+                    <IntlProvider locale="en">
+                        <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                    </IntlProvider>
+                </ResponsiveContextProvider>
             </ConnectedThemeProvider>
         </Provider>,
     );

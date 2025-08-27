@@ -20,11 +20,12 @@ import { SuiteBanners } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsTEXDashboardPromoBannerShown } from 'src/selectors/suite/suiteSelectors';
+import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { DashboardPromoBanner } from 'src/views/dashboard/DashboardPromoBanner/DashboardPromoBanner';
 
 import { LoggedOutSidebar } from '../LoggedOutSidebar';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
-import { PageName } from '../SuiteLayout/PageHeader/PageNames/PageName';
+import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
 
 const Content = styled.div<{ $elevation: Elevation; $verticalCenter?: boolean }>`
     display: flex;
@@ -94,30 +95,35 @@ const RightSideContent = ({ bannerSlot, showPureChildren, children }: RightConte
 
     if (showPureChildren) {
         return (
-            <Content $verticalCenter={true} $elevation={elevation}>
-                <PureChildrenWrapper>{children}</PureChildrenWrapper>
+            <Content $elevation={elevation} $verticalCenter={true}>
+                {bannerSlot ?? null}
+                <PureChildrenWrapper>
+                    <ElevationUp>{children}</ElevationUp>
+                </PureChildrenWrapper>
             </Content>
         );
     }
 
     return (
-        <Content $elevation={elevation}>
-            {bannerSlot ?? null}
-            <WelcomePageHeaderWrapper>
-                <PageName />
-                <Divider />
-            </WelcomePageHeaderWrapper>
-            <ChildrenWrapper>
-                <ElevationUp>{children}</ElevationUp>
-            </ChildrenWrapper>
-            {shouldShowTEXDashboardPromoBanner && (
-                <>
+        <ResponsiveContextProvider>
+            <Content $elevation={elevation}>
+                {bannerSlot ?? null}
+                <WelcomePageHeaderWrapper>
+                    <BasicName nameId="TR_DASHBOARD" />
                     <Divider />
-                    <DashboardPromoBanner />
-                    <Divider />
-                </>
-            )}
-        </Content>
+                </WelcomePageHeaderWrapper>
+                <ChildrenWrapper>
+                    <ElevationUp>{children}</ElevationUp>
+                </ChildrenWrapper>
+                {shouldShowTEXDashboardPromoBanner && (
+                    <>
+                        <Divider />
+                        <DashboardPromoBanner />
+                        <Divider />
+                    </>
+                )}
+            </Content>
+        </ResponsiveContextProvider>
     );
 };
 
