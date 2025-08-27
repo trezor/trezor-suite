@@ -419,7 +419,12 @@ export const walletConnectInitThunk = createThunk(
 
 export const walletConnectPairThunk = createThunk<void, { uri: string }>(
     `${WALLETCONNECT_MODULE}/walletConnectPairThunk`,
-    async ({ uri }) => {
+    async ({ uri }, { dispatch }) => {
+        if (!walletKit) {
+            // May happen when Suite cold-starts from deeplink
+            await dispatch(walletConnectInitThunk());
+        }
+
         try {
             await walletKit.pair({ uri });
             analytics.report({
