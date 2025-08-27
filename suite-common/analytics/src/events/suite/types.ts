@@ -342,6 +342,60 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.TradingExchangeApproval;
+          payload: {
+              type: 'exchange-form';
+              action: 'approve' | 'revoke' | 'swap' | 'refresh';
+
+              sendCryptoLabel?: string;
+              sendCryptoNetworkSymbol?: string;
+              sendCryptoContractAddress?: string;
+
+              receiveCryptoLabel?: string;
+              receiveCryptoNetworkSymbol?: string;
+              receiveCryptoContractAddress?: string;
+
+              selectedFee?: string;
+              exchangeName?: string;
+          };
+      }
+    | {
+          type: EventType.TradingExchangeApproval;
+          payload: {
+              type: 'approve-modal';
+              action: 'continue' | 'cancel' | 'limit-exact' | 'limit-unlimited';
+
+              sendCryptoLabel?: string;
+              sendCryptoNetworkSymbol?: string;
+              sendCryptoContractAddress?: string;
+
+              receiveCryptoLabel?: string;
+              receiveCryptoNetworkSymbol?: string;
+              receiveCryptoContractAddress?: string;
+
+              selectedFee?: string;
+              exchangeName?: string;
+          };
+      }
+    | {
+          type: EventType.TradingExchangeApproval;
+          payload: {
+              type: 'revoke-modal';
+              action: 'continue' | 'cancel';
+
+              sendCryptoLabel?: string;
+              sendCryptoNetworkSymbol?: string;
+              sendCryptoContractAddress?: string;
+
+              receiveCryptoLabel?: string;
+              receiveCryptoNetworkSymbol?: string;
+              receiveCryptoContractAddress?: string;
+
+              selectedFee?: string;
+              exchangeName?: string;
+          };
+      }
+    | {
           type: EventType.StakingNavigate;
           payload: {
               action: 'navigate' | 'cancel';
