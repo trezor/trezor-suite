@@ -13,25 +13,16 @@ const deviceImageMap: Record<DeviceModelInternal, string> = {
 };
 
 type DeviceImageSize = 'normal' | 'large';
-type DeviceImageDimensions = {
-    width: number;
-    height: number;
-};
 
-export const sizeToDimensionsMap = {
-    normal: {
-        width: 92,
-        height: 151,
-    },
-    large: {
-        width: 243,
-        height: 400,
-    },
-} as const satisfies Record<DeviceImageSize, DeviceImageDimensions>;
+export const sizeToHeightMap = {
+    normal: 151,
+    large: 400,
+} as const satisfies Record<DeviceImageSize, number>;
 
 const imageStyle = prepareNativeStyle<{ size: DeviceImageSize; maxHeight?: number }>(
     (_, { size, maxHeight }) => ({
-        ...sizeToDimensionsMap[size],
+        width: '100%',
+        height: sizeToHeightMap[size],
         maxHeight,
         contentFit: 'contain',
     }),
