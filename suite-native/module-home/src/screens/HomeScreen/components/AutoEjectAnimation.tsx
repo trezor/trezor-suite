@@ -1,18 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
+import { selectIsBluetoothDevice } from '@suite-common/wallet-core';
 import { LottieAnimation } from '@suite-native/atoms';
 
 import autoEjectCableLottie from '../../../assets/auto-eject-cable-lottie.json';
 import autoEjectWirelessLottie from '../../../assets/auto-eject-wireless-lottie.json';
 
 export const AutoEjectAnimation = () => {
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
+    const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
 
     return (
         <LottieAnimation
-            source={isDeviceConnectedViaBluetooth ? autoEjectWirelessLottie : autoEjectCableLottie}
+            source={isBluetoothDevice ? autoEjectWirelessLottie : autoEjectCableLottie}
         />
     );
 };
