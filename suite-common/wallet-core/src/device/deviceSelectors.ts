@@ -132,7 +132,7 @@ export const selectIsDeviceConnected = createMemoizedSelector(
     device => !!device?.connected,
 );
 
-export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
+export const selectIsBluetoothDevice = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device?.bluetoothProps,
 );
