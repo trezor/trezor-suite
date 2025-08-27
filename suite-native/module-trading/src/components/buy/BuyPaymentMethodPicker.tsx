@@ -5,7 +5,7 @@ import { BuyTrade } from 'invity-api';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
@@ -50,7 +50,7 @@ const BuyPaymentMethodPickerRight = ({
             variant="body"
             accessibilityLabel={translate('moduleTrading.tradingScreen.noPaymentMethod')}
         >
-            {translate('moduleTrading.notSelected')}
+            <Translation id="moduleTrading.notSelected" />
         </Text>
     );
 };
