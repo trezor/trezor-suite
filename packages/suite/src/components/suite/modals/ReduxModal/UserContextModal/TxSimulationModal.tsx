@@ -473,6 +473,7 @@ export const TxSimulationModal = () => {
                                                                     explorer?.queryString
                                                                 }
                                                                 shouldAllowCopy
+                                                                typographyStyle="label"
                                                             />
                                                         ),
                                                     },
@@ -493,10 +494,16 @@ export const TxSimulationModal = () => {
                                                                 vertical: spacings.sm,
                                                             }}
                                                             alignItems="center"
-                                                            justifyContent="space-between"
+                                                            justifyContent="flex-start"
                                                         >
-                                                            <Text>{item.label}</Text>
-                                                            <Text>{item.value}</Text>
+                                                            <Text flex="1">{item.label}</Text>
+                                                            <Text
+                                                                flex="2"
+                                                                wordBreak="break-all"
+                                                                typographyStyle="label"
+                                                            >
+                                                                {item.value}
+                                                            </Text>
                                                         </Row>
                                                     ) : null,
                                                 )}
