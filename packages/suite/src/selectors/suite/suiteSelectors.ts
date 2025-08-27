@@ -89,6 +89,8 @@ export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 export const selectSuiteSettings = (state: SuiteRootState) => ({
     defaultWalletLoading: state.suite.settings.defaultWalletLoading,
+    isLocalFirstStorageEnabled: false, // Todo: will be implemented in next PR
+    localFirstStorageRelayUrl: null, // Todo: will be implemented in next PR
 });
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>

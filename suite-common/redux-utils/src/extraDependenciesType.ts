@@ -39,6 +39,8 @@ export type ExtraDependencies = {
         cardanoFetchTrezorData: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
+        subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
+        unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
@@ -64,6 +66,8 @@ export type ExtraDependencies = {
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectSuiteSettings: SuiteCompatibleSelector<{
             defaultWalletLoading: WalletType;
+            localFirstStorageRelayUrl: string | null;
+            isLocalFirstStorageEnabled: boolean;
         }>;
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined

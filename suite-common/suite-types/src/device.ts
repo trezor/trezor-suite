@@ -26,6 +26,12 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
         | NonNullable<PROTO.PinMatrixRequest>['type'];
 };
 
+export type EvoluKeys = {
+    ownerId: string;
+    writeKey: string;
+    encryptionKey: string;
+};
+
 export interface ExtendedDevice {
     useEmptyPassphrase?: boolean;
     remember?: boolean; // device should be remembered
@@ -40,6 +46,7 @@ export interface ExtendedDevice {
     firstConnectedTimestamp: number;
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
+    localFirstStorageSecret?: { evoluKeys?: EvoluKeys };
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice
