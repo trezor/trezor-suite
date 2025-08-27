@@ -79,7 +79,7 @@ export const en = {
     },
     moduleHome: {
         graphIgnoredNetworks: {
-            sol: 'Solana is not included in the graph.',
+            sol: 'Solana and all related tokens are reflected in the balance, but not in the graph.',
         },
         emptyState: {
             emptyDevice: {
