@@ -398,7 +398,7 @@
   "TR_BCH_ADDRESS_INFO": "Bitcoin Cash changed the address format to cashaddr. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}",
   "TR_BEFORE_ANY_FURTHER_ACTIONS": "In the unlikely event of a firmware update issue, you may need to access your wallet backup. If you're unsure about its accuracy, check your wallet backup before proceeding with the installation.",
   "TR_BIO_AUTH": "Biometric authentication",
-  "TR_BIO_AUTH_DESCRIPTION": "Use Touch ID or Windows Hello authentication to access Trezor Suite.",
+  "TR_BIO_AUTH_DESCRIPTION": "Use your fingerprint or PIN/Password to access Trezor Suite.",
   "TR_BIO_AUTH_FAILED": "Biometric authentication failed",
   "TR_BIO_AUTH_LOCKED_HEADING": "Trezor Suite is locked",
   "TR_BIO_AUTH_LOCKED_TEXT_MAC": "Use Touch ID to unlock",

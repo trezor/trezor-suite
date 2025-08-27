@@ -1722,7 +1722,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH',
     },
     TR_BIO_AUTH_DESCRIPTION: {
-        defaultMessage: 'Use Touch ID or Windows Hello authentication to access Trezor Suite.',
+        defaultMessage: 'Use your fingerprint or PIN/Password to access Trezor Suite.',
         id: 'TR_BIO_AUTH_DESCRIPTION',
     },
     TR_BIO_AUTH_FAILED: {
