@@ -69,8 +69,7 @@ const suite =
                 setTimeout(() => {
                     const hasModalContext = state.modal.context !== '@modal/context-none';
                     const { route } = state.router;
-                    const isForegroundApp =
-                        route && !route.isFullscreenApp && !!route.isForegroundApp;
+                    const isForegroundApp = !!route?.isForegroundApp;
                     const isModalActive = hasModalContext || isForegroundApp;
 
                     if (
