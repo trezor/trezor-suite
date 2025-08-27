@@ -83,7 +83,7 @@ export const extraDependencies: ExtraDependencies = {
             state.suite.settings.debug.invityServerEnvironment,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
         selectThpSettings: (state: AppState) => ({
-            appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
+            hostName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
             pairingMethods: ['CodeEntry'],
             staticKey: state.thp?.staticKey,
             knownCredentials: state.thp?.credentials,
