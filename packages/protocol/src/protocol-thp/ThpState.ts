@@ -287,7 +287,6 @@ export class ThpState {
     resetState() {
         this._phase = 'handshake';
         this._isPaired = false;
-        this._properties = undefined;
         this._pairingTagPromise = undefined;
         this._cancelablePromise = false;
         this._handshakeCredentials = undefined;
