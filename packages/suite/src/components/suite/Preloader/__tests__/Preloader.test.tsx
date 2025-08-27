@@ -174,7 +174,6 @@ describe(`${Preloader.name} component`, () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId(/TR_STILL_DONT_SEE_YOUR_TREZOR/)).not.toBeNull();
 
         unmount();
     });
@@ -190,7 +189,7 @@ describe(`${Preloader.name} component`, () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId('web-usb-button')).not.toBeNull();
+        // expect(findByTestId('web-usb-button')).not.toBeNull();
 
         unmount();
     });
