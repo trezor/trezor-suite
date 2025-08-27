@@ -29,6 +29,7 @@ import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
+import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
     const dispatch = useDispatch();
@@ -98,14 +99,6 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
         return unsubscribe;
     }, [dispatch, setValue, watch]);
-};
-
-const useReceiveAccountChangeEffect = ({ setValue }: BuyFormType) => {
-    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
-
-    useEffect(() => {
-        setValue('receiveAccount', selectedReceiveAccount);
-    }, [setValue, selectedReceiveAccount]);
 };
 
 const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
@@ -233,9 +226,10 @@ export const useBuyForm = (): BuyFormType => {
         validation: buyFormValidationSchema,
         context,
     });
+    const { setValue } = form;
 
     useAmountAndCurrencyFieldsChangeEffect(form);
-    useReceiveAccountChangeEffect(form);
+    useReceiveAccountChangeEffect(setValue, selectBuySelectedReceiveAccount);
     useBuyQuotesChangeEffect(form);
     useBuyQuoteChangeEffect(form);
     useValidations(form, limits);
