@@ -26,6 +26,7 @@ import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormV
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
+import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
 
 const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType) => {
     const providers = useSelector(selectTradingExchangeProviders);
@@ -97,14 +98,6 @@ const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => 
     }, [selectedQuote, isAmountInSats, symbol, setValue]);
 };
 
-const useSendAccountChangeEffect = ({ setValue }: ExchangeFormType) => {
-    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
-
-    useEffect(() => {
-        setValue('sendAccount', sendAccount);
-    }, [sendAccount, setValue]);
-};
-
 const useReceiveAccountChangeEffect = ({ setValue }: ExchangeFormType) => {
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
 
@@ -146,7 +139,7 @@ export const useExchangeForm = () => {
 
     useExchangeQuotesChangeEffect(form);
     useExchangeQuoteChangeEffect(form);
-    useSendAccountChangeEffect(form);
+    useSendAccountChangeEffect(form.setValue, selectExchangeSelectedSendAccount);
     useReceiveAccountChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setSendSymbol);
     useValidations(form, limits);
