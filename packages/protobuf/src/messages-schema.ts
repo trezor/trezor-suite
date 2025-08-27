@@ -1231,6 +1231,47 @@ export const CardanoTxBodyHash = Type.Object(
 export type CardanoSignTxFinished = Static<typeof CardanoSignTxFinished>;
 export const CardanoSignTxFinished = Type.Object({}, { $id: 'CardanoSignTxFinished' });
 
+export type CardanoSignMessageInit = Static<typeof CardanoSignMessageInit>;
+export const CardanoSignMessageInit = Type.Object(
+    {
+        protocol_magic: Type.Optional(Type.Number()),
+        network_id: Type.Optional(Type.Number()),
+        signing_path: Type.Array(Type.Number()),
+        payload_size: Type.Number(),
+        prefer_hex_display: Type.Boolean(),
+        address_parameters: Type.Optional(CardanoAddressParametersType),
+        derivation_type: EnumCardanoDerivationType,
+    },
+    { $id: 'CardanoSignMessageInit' },
+);
+
+export type CardanoMessageDataRequest = Static<typeof CardanoMessageDataRequest>;
+export const CardanoMessageDataRequest = Type.Object(
+    {
+        length: Type.Number(),
+        offset: Type.Number(),
+    },
+    { $id: 'CardanoMessageDataRequest' },
+);
+
+export type CardanoMessageDataResponse = Static<typeof CardanoMessageDataResponse>;
+export const CardanoMessageDataResponse = Type.Object(
+    {
+        data: Type.String(),
+    },
+    { $id: 'CardanoMessageDataResponse' },
+);
+
+export type CardanoMessageSignature = Static<typeof CardanoMessageSignature>;
+export const CardanoMessageSignature = Type.Object(
+    {
+        signature: Type.String(),
+        address: Type.String(),
+        pub_key: Type.String(),
+    },
+    { $id: 'CardanoMessageSignature' },
+);
+
 export type Success = Static<typeof Success>;
 export const Success = Type.Object(
     {
@@ -2130,6 +2171,17 @@ export const EthereumTypedDataSignature = Type.Object(
         address: Type.String(),
     },
     { $id: 'EthereumTypedDataSignature' },
+);
+
+export type EvoluGetNode = Static<typeof EvoluGetNode>;
+export const EvoluGetNode = Type.Object({}, { $id: 'EvoluGetNode' });
+
+export type EvoluNode = Static<typeof EvoluNode>;
+export const EvoluNode = Type.Object(
+    {
+        data: Type.String(),
+    },
+    { $id: 'EvoluNode' },
 );
 
 export enum Enum_BackupType {
@@ -3592,6 +3644,10 @@ export const MessageType = Type.Object(
         CardanoTxHostAck,
         CardanoTxBodyHash,
         CardanoSignTxFinished,
+        CardanoSignMessageInit,
+        CardanoMessageDataRequest,
+        CardanoMessageDataResponse,
+        CardanoMessageSignature,
         Success,
         Failure,
         ButtonRequest,
@@ -3670,6 +3726,8 @@ export const MessageType = Type.Object(
         EthereumVerifyMessage,
         EthereumSignTypedHash,
         EthereumTypedDataSignature,
+        EvoluGetNode,
+        EvoluNode,
         Initialize,
         GetFeatures,
         RecoveryDevice,

@@ -1,8 +1,33 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
 
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
 
-export const config = {
+type Config = {
+    webusb: typeof TREZOR_USB_DESCRIPTORS;
+    whitelist: Array<{ origin: string; priority: number }>;
+    management: Array<{ origin: string }>;
+    knownHosts: Array<{ origin: string; label: string }>;
+    onionDomains: Record<string, string>;
+    supportedBrowsers: Record<
+        string,
+        {
+            version: number;
+            download: string;
+            update: string;
+        }
+    >;
+    supportedFirmware: Array<{
+        coin?: string[]; // Todo: better type?
+        capabilities?: string[]; // Todo: better type?
+        methods?: string[]; // Todo: better type?
+        min: Partial<Record<DeviceModelInternal, string>>;
+        max?: undefined; // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
+        comment?: string[];
+    }>;
+};
+
+export const config: Config = {
     webusb: TREZOR_USB_DESCRIPTORS,
     whitelist: [
         { origin: 'chrome-extension://imloifkgjagghnncjkhggdhalmcnfklk', priority: 1 },
@@ -284,6 +309,16 @@ export const config = {
             methods: ['getNonce'],
             min: { T1B1: '0', T2T1: '2.9.1', T2B1: '2.9.1', T3B1: '2.9.1', T3T1: '2.9.1' },
             comment: ['Since firmware 2.9.1 SLIP-24 is supported'],
+        },
+        {
+            methods: ['evoluGetNode'],
+            min: {
+                T1B1: '0',
+                T2T1: '2.9.2',
+                T2B1: '2.9.2',
+                T3B1: '2.9.2',
+                T3T1: '2.9.2',
+            },
         },
     ],
 };
