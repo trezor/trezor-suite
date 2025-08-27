@@ -7,6 +7,7 @@ import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { ConfirmStakeModal } from './ConfirmStakeModal';
 import { StakeAvailableBalance } from './StakeAvailableBalance';
 import { StakeInputs } from './StakeInputs';
+import { StakeRegistrationDepositCard } from './StakeRegistrationDepositCard';
 
 export const StakeForm = () => {
     const {
@@ -26,7 +27,9 @@ export const StakeForm = () => {
         trigger,
     } = useStakeFormContext();
 
-    const { formattedBalance, symbol } = account;
+    const { formattedBalance, symbol, networkType } = account;
+
+    const isCardanoNetwork = networkType === 'cardano';
 
     return (
         <>
@@ -39,9 +42,18 @@ export const StakeForm = () => {
             )}
 
             <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
-                <StakeAvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
+                {isCardanoNetwork ? (
+                    <StakeRegistrationDepositCard account={account} />
+                ) : (
+                    <>
+                        <StakeAvailableBalance
+                            formattedBalance={formattedBalance}
+                            symbol={symbol}
+                        />
 
-                <StakeInputs />
+                        <StakeInputs />
+                    </>
+                )}
 
                 <Fees
                     control={control}
