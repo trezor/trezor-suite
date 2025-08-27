@@ -1,7 +1,6 @@
 import { HelmetProvider } from 'react-helmet-async';
-import { Router } from 'react-router';
 
-import type { History } from 'history';
+import { type History } from 'history';
 
 import { FormatterProvider } from '@suite-common/formatters';
 
@@ -29,22 +28,20 @@ export const Main = ({ history, children }: { history: History; children: React.
         <HelmetProvider>
             <TrafficLightDraggableWindowHeader />
             <ConnectedThemeProvider>
-                <Router location={history.location} navigator={history}>
-                    <ResponsiveContextProvider>
-                        <ErrorBoundary>
-                            <Autodetect />
-                            <Resize />
-                            <Protocol />
-                            <OnlineStatus />
-                            <RouterHandler history={history} />
-                            <ConnectedIntlProvider>
-                                <FormatterProvider config={formattersConfig}>
-                                    {children}
-                                </FormatterProvider>
-                            </ConnectedIntlProvider>
-                        </ErrorBoundary>
-                    </ResponsiveContextProvider>
-                </Router>
+                <ResponsiveContextProvider>
+                    <ErrorBoundary>
+                        <Autodetect />
+                        <Resize />
+                        <Protocol />
+                        <OnlineStatus />
+                        <RouterHandler history={history} />
+                        <ConnectedIntlProvider>
+                            <FormatterProvider config={formattersConfig}>
+                                {children}
+                            </FormatterProvider>
+                        </ConnectedIntlProvider>
+                    </ErrorBoundary>
+                </ResponsiveContextProvider>
             </ConnectedThemeProvider>
         </HelmetProvider>
         // </StrictMode>

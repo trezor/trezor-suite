@@ -1,8 +1,8 @@
-import { NavigateOptions, To } from 'react-router';
+import type { NavigateOptions, To } from 'react-router';
 
 import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
-import { type History, createMemoryHistory } from 'history';
+import { createBrowserHistory } from 'history';
 
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { ExtraDependencies } from '@suite-common/redux-utils';
@@ -55,9 +55,11 @@ const connectInitSettings = {
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
 };
 
-export const createRouterServices = (history: History) => ({
-    history,
-    navigate: (to: To, options?: NavigateOptions) => history.push(to, options),
+const browserHistory = createBrowserHistory();
+
+export const createRouterServices = () => ({
+    history: browserHistory,
+    navigate: (to: To, options?: NavigateOptions) => browserHistory.push(to, options),
 });
 
 export const extraDependencies: ExtraDependencies = {
@@ -218,5 +220,5 @@ export const extraDependencies: ExtraDependencies = {
         connectInitSettings,
         reportSecurityCheck,
     },
-    routerServices: createRouterServices(createMemoryHistory()),
+    routerServices: createRouterServices(),
 };

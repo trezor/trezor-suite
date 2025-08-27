@@ -27,6 +27,7 @@ export type RouterAction =
           payload: {
               url: string;
               pathname: string;
+              search?: string;
               hash?: string;
               settingsBackRoute?: SettingsBackRoute;
               anchor?: AnchorType;
@@ -61,7 +62,14 @@ export const onLocationChange =
         if (router.url === url && router.app !== 'unknown') return null;
         // TODO: check if the view is not locked by the device request
 
-        const [pathname, hash] = url.split('#');
+        const base =
+            typeof window !== 'undefined' && window.location?.origin
+                ? window.location.origin
+                : 'http://localhost';
+        const parsed = new URL(url, base);
+        const { pathname, search: rawSearch, hash: rawHash } = parsed;
+        const search = rawSearch || undefined;
+        const hash = rawHash || undefined;
 
         const appWithParams = getAppWithParams(url);
 
@@ -70,6 +78,7 @@ export const onLocationChange =
             payload: {
                 url,
                 pathname,
+                search,
                 hash,
                 anchor,
                 ...appWithParams,
@@ -92,7 +101,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
         const { location } = extra.routerServices.history;
-        const url = location.pathname + location.hash;
+        const url = `${location.pathname}${location.search ?? ''}${location.hash ?? ''}`;
         dispatch(onLocationChange(url));
     }
 };
@@ -177,7 +186,11 @@ export const closeModalApp =
             extra.routerServices.navigate(getPrefixedURL(location.pathname));
         } else {
             // + history.location.hash is here to preserve params (e.g. nth account)
-            dispatch(onLocationChange(location.pathname + location.hash));
+            dispatch(
+                onLocationChange(
+                    `${location.pathname}${location.search ?? ''}${location.hash ?? ''}`,
+                ),
+            );
         }
     };
 
@@ -189,7 +202,9 @@ export const initialRedirection = createThunk(
     '@suite/initial-redirection',
     (_, { dispatch, getState, extra }) => {
         const { location } = extra.routerServices.history;
-        const route = findRoute(location.pathname + location.hash);
+        const route = findRoute(
+            `${location.pathname}${location.search ?? ''}${location.hash ?? ''}`,
+        );
 
         const { initialRun } = getState().suite.flags;
         // only do initial redirection of route is valid

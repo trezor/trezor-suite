@@ -1,7 +1,7 @@
-import type { NavigateOptions } from 'react-router';
+import type { NavigateOptions, To } from 'react-router';
 
 import { createAction } from '@reduxjs/toolkit';
-import { To, createMemoryHistory } from 'history';
+import { createMemoryHistory } from 'history';
 
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
@@ -149,6 +149,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         return {
             history,
             navigate: (to: To, options?: NavigateOptions) => history.push(to, options),
-        };
+        } as const;
     })(),
 };

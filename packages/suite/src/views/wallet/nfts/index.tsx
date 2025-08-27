@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router';
 
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -7,6 +6,7 @@ import { spacings } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { NftsTablesSection } from './NftsTablesSection';
 import { TokensNavigation } from '../tokens/TokensNavigation';
@@ -15,6 +15,7 @@ export const Nfts = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const routeName = useSelector(selectRouteName);
 
     const dispatch = useDispatch();
 
@@ -31,6 +32,8 @@ export const Nfts = () => {
         return <WalletLayout title="TR_NAV_NFTS" account={selectedAccount} />;
     }
 
+    const isHidden = routeName === 'wallet-nfts-hidden';
+
     return (
         <WalletLayout title="TR_NAV_NFTS" account={selectedAccount} isSubpage={false}>
             <Column gap={spacings.lg}>
@@ -40,28 +43,11 @@ export const Nfts = () => {
                     setSearchQuery={setSearchQuery}
                     isNft
                 />
-                <Routes>
-                    <Route
-                        path="hidden"
-                        element={
-                            <NftsTablesSection
-                                selectedAccount={selectedAccount}
-                                searchQuery={searchQuery}
-                                isShown={false}
-                            />
-                        }
-                    />
-                    <Route
-                        path="*"
-                        element={
-                            <NftsTablesSection
-                                selectedAccount={selectedAccount}
-                                searchQuery={searchQuery}
-                                isShown
-                            />
-                        }
-                    />
-                </Routes>
+                <NftsTablesSection
+                    selectedAccount={selectedAccount}
+                    searchQuery={searchQuery}
+                    isShown={!isHidden}
+                />
             </Column>
         </WalletLayout>
     );

@@ -1,35 +1,42 @@
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import type { History } from 'history';
+import type { History, Update as HistoryUpdate } from 'history';
 
 import { onBeforePopState, onLocationChange } from 'src/actions/suite/routerActions';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
-export const RouterHandler = memo(({ history }: { history: History }) => {
+export const RouterHandler = ({ history }: { history: History }) => {
     const dispatch = useDispatch();
-
-    useEffect(
-        () =>
-            history.listen(() =>
-                dispatch(onLocationChange(history.location.pathname + history.location.hash)),
-            ),
-        [dispatch, history],
-    );
+    const routerLoaded = useSelector(state => state.router.loaded);
 
     useEffect(() => {
-        const onPopState = () => {
-            const canGoBack = dispatch(onBeforePopState());
-            if (!canGoBack) {
-                history.go(1);
+        const emitLocation = () => {
+            if (routerLoaded) {
+                const { pathname, hash } = history.location;
+                dispatch(onLocationChange(pathname + hash));
             }
         };
 
-        window.addEventListener('popstate', onPopState);
+        // initial sync
+        emitLocation();
 
-        return () => window.removeEventListener('popstate', onPopState);
-    }, [dispatch, history]);
+        const unlisten = history.listen((update: HistoryUpdate) => {
+            // If back navigation is blocked, re-go forward by 1 to cancel it
+            if (update.action === 'POP') {
+                const canGoBack = dispatch(onBeforePopState());
+                if (!canGoBack) {
+                    history.go(1);
+
+                    return;
+                }
+            }
+            emitLocation();
+        });
+
+        return () => {
+            unlisten();
+        };
+    }, [dispatch, routerLoaded, history]);
 
     return null;
-});
-
-RouterHandler.displayName = 'RouterHandler';
+};

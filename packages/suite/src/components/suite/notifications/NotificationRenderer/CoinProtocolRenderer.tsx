@@ -1,5 +1,3 @@
-import { useMatch } from 'react-router';
-
 import styled from 'styled-components';
 
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -11,6 +9,7 @@ import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import { Translation } from 'src/components/suite';
 import type { NotificationRendererProps } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
 
@@ -20,11 +19,11 @@ const Row = styled.span`
 
 const getIcon = (symbol?: NetworkSymbol) => symbol && <CoinLogo symbol={symbol} size={24} />;
 
-const useActionAllowed = (path: string, symbol?: NetworkSymbol) => {
+const useActionAllowed = (symbol?: NetworkSymbol) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const pathMatch = useMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
+    const routeName = useSelector(selectRouteName);
 
-    return !!pathMatch && selectedAccount?.network?.symbol === symbol;
+    return routeName === 'wallet-send' && selectedAccount?.network?.symbol === symbol;
 };
 
 export const CoinProtocolRenderer = ({
@@ -32,13 +31,10 @@ export const CoinProtocolRenderer = ({
     notification,
 }: NotificationRendererProps<'coin-scheme-protocol'>) => {
     const dispatch = useDispatch();
-    const allowed = useActionAllowed(
-        '/accounts/send',
-        getNetworkSymbolForProtocol(notification.scheme),
-    );
+    const allowed = useActionAllowed(getNetworkSymbolForProtocol(notification.scheme));
 
     const onAction = () => dispatch(fillSendForm(true));
-    const onCancel = () => dispatch(resetProtocol);
+    const onCancel = () => dispatch(resetProtocol());
 
     return (
         <ConditionalActionRenderer
