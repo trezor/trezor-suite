@@ -9437,6 +9437,73 @@ export default defineMessages({
         id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
         defaultMessage: 'Earn ~{apyPercent}% <t>APY</t> by staking your {symbol} with Trezor.',
     },
+    TR_STAKE_EARN_APY_BY_STAKING: {
+        id: 'TR_STAKE_EARN_APY_BY_STAKING',
+        defaultMessage: 'Earn ~{apyPercent}% APY by staking your {symbol}',
+    },
+    TR_STAKE_FULL_BALANCE_AND_EARN: {
+        id: 'TR_STAKE_FULL_BALANCE_AND_EARN',
+        defaultMessage:
+            'Stake your full balance and earn around {amount} {symbol}/year at the current APY. Your {symbol} stay in your account, ready to use anytime—while helping secure the network.',
+    },
+    TR_STAKE_KEEP_EARNING: {
+        id: 'TR_STAKE_KEEP_EARNING',
+        defaultMessage: 'Keep earning',
+    },
+    TR_STAKE_APY_INFO: {
+        id: 'TR_STAKE_APY_INFO',
+        defaultMessage:
+            'APY (Annual Percentage Yield) is your yearly return on staked funds, with compounding.',
+    },
+    TR_STAKE_USE_ANYTIME: {
+        id: 'TR_STAKE_USE_ANYTIME',
+        defaultMessage: 'Use anytime',
+    },
+    TR_STAKE_SEND_SWAP_SPEND_ANYTIME: {
+        id: 'TR_STAKE_SEND_SWAP_SPEND_ANYTIME',
+        defaultMessage: 'Send, swap, or spend your {symbol} whenever you want—even while staking.',
+    },
+    TR_STAKE_GET_MORE: {
+        id: 'TR_STAKE_GET_MORE',
+        defaultMessage: 'Get more',
+    },
+    TR_STAKE_CLAIM_REWARDS_TO_GROW: {
+        id: 'TR_STAKE_CLAIM_REWARDS_TO_GROW',
+        defaultMessage: 'Claim rewards to grow your stake and earn even more.',
+    },
+    TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE: {
+        id: 'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',
+        defaultMessage: 'Your {networkDisplaySymbol} stays accessible to you at all times.',
+    },
+    TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
+        id: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
+        defaultMessage: 'All your available {networkDisplaySymbol} is staked.',
+    },
+    TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED: {
+        id: 'TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED',
+        defaultMessage:
+            'A returnable deposit of 2 {networkDisplaySymbol} is required to register your staking key.',
+    },
+    TR_STAKE_ENTER_ACTIVATION_PERIOD: {
+        id: 'TR_STAKE_ENTER_ACTIVATION_PERIOD',
+        defaultMessage: 'Enter activation period',
+    },
+    TR_STAKE_INSTANTLY: {
+        id: 'TR_STAKE_INSTANTLY',
+        defaultMessage: 'Instantly',
+    },
+    TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT: {
+        id: 'TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT',
+        defaultMessage: 'Receive deposit in account',
+    },
+    TR_STAKE_YOUR_DEPOSIT_IS_RETURNED: {
+        id: 'TR_STAKE_YOUR_DEPOSIT_IS_RETURNED',
+        defaultMessage: 'Your deposit of 2 {networkDisplaySymbol} is returned',
+    },
+    TR_STAKE_TIME_TO_START_EARNING: {
+        id: 'TR_STAKE_TIME_TO_START_EARNING',
+        defaultMessage: 'Time it takes before you start earning rewards',
+    },
     TR_STAKE_APY_APPROX: {
         id: 'TR_STAKE_APY_APPROX',
         defaultMessage: '~{apyPercent}% APY',
@@ -9840,7 +9907,8 @@ export default defineMessages({
     },
     TR_STAKE_YOUR_FUNDS_MAINTAINED: {
         id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
-        defaultMessage: 'Your staked funds are maintained by Everstake.',
+        defaultMessage:
+            'Your {networkDisplaySymbol} stay in your wallet. Everstake handles the stake.',
     },
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',

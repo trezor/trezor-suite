@@ -61,3 +61,7 @@ export type CardanoStaking = {
     calculateFeeAndDeposit: (action: CardanoAction) => Promise<void>;
     error?: string;
 };
+
+export const supportedCardanoNetworkSymbols = ['ada', 'tada'] as const;
+
+export type SupportedCardanoNetworkSymbols = (typeof supportedCardanoNetworkSymbols)[number];

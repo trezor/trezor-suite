@@ -1,0 +1,4 @@
+export const BACKUP_CARDANO_APY = 4.5;
+export const ESTIMATED_YEARLY_REWARD_RATE = 2.22;
+export const CARDANO_ACTIVATION_PERIOD_DAYS = 10;
+export const CARDANO_EPOCH_DAYS = 5;

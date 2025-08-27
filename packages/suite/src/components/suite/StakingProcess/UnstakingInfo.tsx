@@ -51,6 +51,17 @@ const getInfoRowsData = (
                     />
                 ),
             };
+        case 'cardano':
+            return {
+                readyForClaimDays: <Translation id="TR_STAKE_INSTANTLY" />,
+                deactivatePeriodHeading: <Translation id="TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT" />,
+                deactivatePeriodSubheading: (
+                    <Translation
+                        id="TR_STAKE_YOUR_DEPOSIT_IS_RETURNED"
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(accountSymbol) }}
+                    />
+                ),
+            };
         default:
             return null;
     }
@@ -67,6 +78,8 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
         useSelector((state: StakeRootState) => selectValidatorsQueue(state, account?.symbol)) || {};
 
     if (!account) return null;
+
+    const isCardano = account.networkType === 'cardano';
 
     const daysToUnstake = getUnstakingPeriodInDays({
         networkType: account.networkType,
@@ -109,6 +122,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
                 text: <Translation id="TR_TRADING_NETWORK_FEE" />,
                 isBadge: true,
             },
+            isHidden: isCardano,
         },
         {
             heading: (
@@ -117,8 +131,11 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
                     values={{ networkDisplaySymbol: displaySymbol }}
                 />
             ),
+            isHidden: isCardano,
         },
     ];
+
+    const visibleInfoRows = infoRows.filter(row => !row.isHidden);
 
     return (
         <BulletList
@@ -127,7 +144,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
             bulletSize="small"
             titleGap={spacings.xxs}
         >
-            {infoRows.map(({ heading, content, subheading }, index) => (
+            {visibleInfoRows.map(({ heading, content, subheading }, index) => (
                 <InfoRow key={index} {...{ heading, subheading, content, isExpanded }} />
             ))}
         </BulletList>

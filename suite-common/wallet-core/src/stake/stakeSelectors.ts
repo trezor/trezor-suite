@@ -1,6 +1,14 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { BACKUP_APY, BACKUP_ETH_APY, BACKUP_SOL_APY } from '@suite-common/wallet-constants';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    BACKUP_APY,
+    BACKUP_CARDANO_APY,
+    BACKUP_ETH_APY,
+    BACKUP_SOL_APY,
+} from '@suite-common/wallet-constants';
+import {
+    isSupportedCardanoStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
 
 import { StakeRootState } from './stakeReducer';
 
@@ -19,6 +27,10 @@ export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSy
 
     if (isSupportedSolStakingNetworkSymbol(symbol)) {
         return data?.[symbol]?.stakingInfo?.data?.apy || BACKUP_SOL_APY;
+    }
+
+    if (isSupportedCardanoStakingNetworkSymbol(symbol)) {
+        return BACKUP_CARDANO_APY;
     }
 
     return data?.[symbol]?.poolStats?.data.ethApy || BACKUP_ETH_APY;

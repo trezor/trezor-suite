@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { getDaysToAddToPool } from '@suite-common/staking';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import {
+    CARDANO_ACTIVATION_PERIOD_DAYS,
+    CARDANO_EPOCH_DAYS,
+    SOLANA_EPOCH_DAYS,
+} from '@suite-common/wallet-constants';
 import {
     AccountsRootState,
     StakeRootState,
@@ -66,6 +70,23 @@ const getInfoRowsData = (
                     <Translation
                         id="TR_STAKE_EARN_REWARDS_EVERY"
                         values={{ days: SOLANA_EPOCH_DAYS }}
+                    />
+                ),
+            };
+        case 'cardano':
+            return {
+                payoutDays: (
+                    <Translation
+                        id="TR_STAKE_APPROXIMATE_DAYS"
+                        values={{ count: CARDANO_ACTIVATION_PERIOD_DAYS }}
+                    />
+                ),
+                rewardsPeriodHeading: <Translation id="TR_STAKE_ENTER_ACTIVATION_PERIOD" />,
+                rewardsPeriodSubheading: <Translation id="TR_STAKE_TIME_TO_START_EARNING" />,
+                rewardsEarningHeading: (
+                    <Translation
+                        id="TR_STAKE_EARN_REWARDS_EVERY"
+                        values={{ days: CARDANO_EPOCH_DAYS }}
                     />
                 ),
             };
