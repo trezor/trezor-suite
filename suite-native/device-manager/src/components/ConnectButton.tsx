@@ -3,8 +3,6 @@ import { Platform } from 'react-native';
 import { FadeInUp, FadeOutUp, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     selectHasRunningDiscovery,
@@ -14,15 +12,10 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { AnimatedBox, Button } from '@suite-native/atoms';
+import { useConnectDeviceHandler } from '@suite-native/device';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
-import {
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -36,17 +29,10 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
 }));
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.AppTabs,
-    RootStackParamList
->;
-
 export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
-    const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
     const device = useSelector(selectSelectedDevice);
@@ -58,19 +44,15 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
 
     const isConnectButtonVisible = !hasDiscovery && isNoPhysicalDeviceConnected;
 
-    const handleConnectDevice = () => {
-        const connectDeviceScreen = isOnlyBluetoothSupported
-            ? AuthorizeDeviceStackRoutes.ConnectBluetoothDevice
-            : AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice;
+    const { onConnectDevicePress } = useConnectDeviceHandler();
 
+    const handleConnectDevice = () => {
         if (device) {
             onSelectDevice(device);
         }
         setIsDeviceManagerVisible(false);
 
-        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: connectDeviceScreen,
-        });
+        onConnectDevicePress();
 
         analytics.report({
             type: EventType.DeviceManagerClick,
