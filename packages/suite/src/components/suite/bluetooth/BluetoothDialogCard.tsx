@@ -5,10 +5,6 @@ import { spacings } from '@trezor/theme';
 
 export type BluetoothDialogCardProps = {
     children: ReactNode;
-    footer?: ReactNode;
-    cardHeader?: ReactNode;
-    floatingHeader?: ReactNode;
-    headerOnClose?: () => void;
 };
 
 export const BluetoothDialogCard = ({ children }: BluetoothDialogCardProps) => (

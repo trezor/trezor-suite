@@ -1,10 +1,12 @@
+import { useCallback } from 'react';
+
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { Banner, Button, Column, Row } from '@trezor/components';
+import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
@@ -31,30 +33,33 @@ type GhostDeviceActionButtonProps = {
     device: DesktopBluetoothDevice;
     isConnectingDevice: boolean;
     isLoading: boolean;
+    onPairAgain?: (deviceId: string) => Promise<void>;
 };
 
 const GhostDeviceActionButton = ({
     device,
     isLoading,
     isConnectingDevice,
+    onPairAgain,
 }: GhostDeviceActionButtonProps) => {
     const dispatch = useDispatch();
 
-    const handleDelete = () =>
+    const handleDelete = useCallback(() => {
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
+        onPairAgain?.(device.id);
+    }, [dispatch, device.id, onPairAgain]);
 
     const isDisabled = isLoading || isConnectingDevice;
 
     return (
         <Button
-            variant="warning"
             size="small"
             margin={{ vertical: spacings.xxs }}
             isDisabled={isDisabled}
             isLoading={isLoading}
             onClick={handleDelete}
         >
-            <Translation id="TR_REMOVE" />
+            <Translation id="TR_PAIR_AGAIN" />
         </Button>
     );
 };
@@ -63,9 +68,10 @@ type ActionButtonProps = {
     isGhostDevice: boolean;
     device: DesktopBluetoothDevice;
     onConnect: (deviceId: string) => Promise<void>;
+    onPairAgain?: (deviceId: string) => Promise<void>;
 };
 
-const ActionButton = ({ isGhostDevice, device, onConnect }: ActionButtonProps) => {
+const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionButtonProps) => {
     const connectingDevicesIds = useSelector(selectConnectingDevices);
 
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
@@ -77,6 +83,7 @@ const ActionButton = ({ isGhostDevice, device, onConnect }: ActionButtonProps) =
         return (
             <Row gap={spacings.xs}>
                 <GhostDeviceActionButton
+                    onPairAgain={onPairAgain}
                     device={device}
                     isLoading={isLoading}
                     isConnectingDevice={isSuiteTryingToConnectToDevice}
@@ -107,9 +114,14 @@ const ActionButton = ({ isGhostDevice, device, onConnect }: ActionButtonProps) =
 type BluetoothDeviceItemProps = {
     device: DesktopBluetoothDevice;
     onConnect: (deviceId: string) => Promise<void>;
+    onPairAgain?: (deviceId: string) => Promise<void>;
 };
 
-export const BluetoothDeviceListItem = ({ device, onConnect }: BluetoothDeviceItemProps) => {
+export const BluetoothDeviceListItem = ({
+    device,
+    onConnect,
+    onPairAgain,
+}: BluetoothDeviceItemProps) => {
     const nearbyDevices = useSelector(selectNearbyDevices);
     const isNearbyDevice = (nearbyDevices ?? []).some(
         nearbyDevice => nearbyDevice.id === device.id,
@@ -126,16 +138,12 @@ export const BluetoothDeviceListItem = ({ device, onConnect }: BluetoothDeviceIt
                     <BluetoothDeviceComponent device={device} flex="1" />
 
                     <ActionButton
+                        onPairAgain={onPairAgain}
                         isGhostDevice={isGhostDevice}
                         device={device}
                         onConnect={onConnect}
                     />
                 </Row>
-                {isGhostDevice && (
-                    <Banner variant="warning">
-                        <Translation id="TR_BLUETOOTH_GHOST_DEVICE" />
-                    </Banner>
-                )}
             </Column>
         </>
     );
