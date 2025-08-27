@@ -1,7 +1,9 @@
 use btleplug::platform::Peripheral;
 
 pub trait PlatformDevice {
-    async fn is_paired(peripheral: &Peripheral) -> Result<bool, Box<dyn std::error::Error + Send + Sync>>;
+    async fn is_paired(
+        peripheral: &Peripheral,
+    ) -> Result<bool, Box<dyn std::error::Error + Send + Sync>>;
 
     fn get_address(peripheral: Peripheral) -> String;
 }

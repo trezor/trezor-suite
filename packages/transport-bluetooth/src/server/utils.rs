@@ -24,16 +24,6 @@ pub async fn scan_filter(adapter: &Adapter, id: &PeripheralId) -> Option<Periphe
         if service.is_some() {
             return Some(peripheral);
         }
-
-        // 2 types of advertisements:
-        // Primary Advertisement: basic data like flags, manufacturer-specific but lack of services and local_name
-        // Scan Response: additional details like services and local_name
-        // advertisements may be received in unexpected order
-        // linux / mac: props.services is empty. try by name
-        let name = props.local_name.unwrap_or("".to_string());
-        if name.contains("Trezor") {
-            return Some(peripheral);
-        }
     };
 
     None
