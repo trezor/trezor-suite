@@ -14,7 +14,7 @@ describe('readWithExpectedHeaders', () => {
             new Promise<any>((resolve, reject) => {
                 const listener = () => {
                     signal.removeEventListener('abort', listener);
-                    reject(new Error('Aborted'));
+                    reject(new Error('Aborted by signal in API'));
                 };
                 signal?.addEventListener('abort', listener);
 
@@ -35,10 +35,9 @@ describe('readWithExpectedHeaders', () => {
         });
 
         const resultPromise = read([Buffer.alloc(3)]);
-
+        await new Promise(resolve => setTimeout(resolve, 1));
         abortController.abort();
-        // error thrown from scheduleAction
-        await expect(() => resultPromise).rejects.toThrow('Aborted by signal');
+        await expect(() => resultPromise).rejects.toThrow('Aborted by signal in API');
     });
 
     it('read timeout', async () => {

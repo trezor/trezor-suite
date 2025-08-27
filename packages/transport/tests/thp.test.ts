@@ -33,11 +33,14 @@ describe('thp', () => {
             const abortController = new AbortController();
             let attempt = 0;
             const apiRead = jest.fn(
-                () =>
+                signal =>
                     new Promise<any>(resolve => {
                         if (++attempt < 5) {
                             resolve({ success: true, payload: Buffer.alloc(32) });
                         } else {
+                            signal?.addEventListener('abort', () => {
+                                resolve({ success: false, message: 'Aborted by signal in API' });
+                            });
                             abortController.abort();
                         }
                     }),
@@ -53,7 +56,7 @@ describe('thp', () => {
             });
 
             expect(apiRead).toHaveBeenCalledTimes(5);
-            expect(result).toMatchObject({ success: false, message: 'Aborted by signal' });
+            expect(result).toMatchObject({ success: false, message: 'Aborted by signal in API' });
         });
 
         it('api write failed', async () => {
