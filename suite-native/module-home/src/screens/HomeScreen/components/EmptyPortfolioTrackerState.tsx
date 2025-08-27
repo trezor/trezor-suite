@@ -2,7 +2,7 @@ import { Dimensions, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, Card, Image, Text, VStack } from '@suite-native/atoms';
+import { Button, CardWithTopAlert, Image, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
@@ -50,7 +50,7 @@ export const EmptyPortfolioTrackerState = () => {
 
     return (
         <VStack spacing="sp32">
-            <Card
+            <CardWithTopAlert
                 alertProps={{
                     title: <Translation id="moduleHome.emptyState.portfolioTracker.alert" />,
                     variant: 'info',
@@ -86,7 +86,7 @@ export const EmptyPortfolioTrackerState = () => {
                         </Button>
                     </View>
                 </VStack>
-            </Card>
+            </CardWithTopAlert>
         </VStack>
     );
 };

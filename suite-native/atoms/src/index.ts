@@ -37,6 +37,8 @@ export * from './TextDivider';
 export * from './TitledSection';
 export * from './ProgressBar';
 export * from './Card/Card';
+export * from './Card/CardWithTopAlert';
+export * from './Card/CardWithBottomAlert';
 export * from './Card/HeaderedCard';
 export * from './Card/CardDivider';
 export * from './Card/CardWithIconLayout';

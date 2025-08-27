@@ -6,7 +6,7 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { Box, Card, InlineAlertBoxProps } from '@suite-native/atoms';
+import { Box, Card, CardWithTopAlert, InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AddressQRCode } from '@suite-native/qr-code';
 
@@ -68,20 +68,37 @@ export const ReceiveAddressCard = ({
 
     return (
         <Animated.View layout={Layout}>
-            <Card alertProps={cardAlertProps}>
-                <Box paddingVertical="sp8">
-                    {isReceiveApproved ? (
-                        <AddressQRCode address={address} />
-                    ) : (
-                        <UnverifiedAddress
-                            address={address}
-                            isAddressRevealed={isUnverifiedAddressRevealed}
-                            isCardanoAddress={networkType === 'cardano'}
-                            onShowAddress={onShowAddress}
-                        />
-                    )}
-                </Box>
-            </Card>
+            {cardAlertProps ? (
+                <CardWithTopAlert alertProps={cardAlertProps}>
+                    <Box paddingVertical="sp8">
+                        {isReceiveApproved ? (
+                            <AddressQRCode address={address} />
+                        ) : (
+                            <UnverifiedAddress
+                                address={address}
+                                isAddressRevealed={isUnverifiedAddressRevealed}
+                                isCardanoAddress={networkType === 'cardano'}
+                                onShowAddress={onShowAddress}
+                            />
+                        )}
+                    </Box>
+                </CardWithTopAlert>
+            ) : (
+                <Card>
+                    <Box paddingVertical="sp8">
+                        {isReceiveApproved ? (
+                            <AddressQRCode address={address} />
+                        ) : (
+                            <UnverifiedAddress
+                                address={address}
+                                isAddressRevealed={isUnverifiedAddressRevealed}
+                                isCardanoAddress={networkType === 'cardano'}
+                                onShowAddress={onShowAddress}
+                            />
+                        )}
+                    </Box>
+                </Card>
+            )}
         </Animated.View>
     );
 };

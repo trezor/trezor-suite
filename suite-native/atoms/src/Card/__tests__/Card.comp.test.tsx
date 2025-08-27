@@ -20,53 +20,15 @@ describe('Card', () => {
         expect(getByText('hello')).toBeTruthy();
     });
 
-    it('should render only children if alertProps are not provided, even if alertPosition is set', () => {
-        const { queryByTestId, getByText } = renderComponent({ alertPosition: 'bottom' });
+    it('should not render alert test IDs since alerts are removed from base Card', () => {
+        const { queryByTestId, getByText } = renderComponent({});
 
         expect(getByText('hello')).toBeTruthy();
         expect(queryByTestId('@atom/card/alert/top')).toBeNull();
         expect(queryByTestId('@atom/card/alert/bottom')).toBeNull();
     });
 
-    it('should render alert only on top when alertPosition is not specified', () => {
-        const { getByTestId, getByText, queryByTestId } = renderComponent({
-            alertProps: { title: 'alert', variant: 'info' },
-        });
-
-        expect(getByText('hello')).toBeTruthy();
-
-        expect(getByText('alert')).toBeTruthy();
-        expect(getByTestId('@atom/card/alert/top')).toBeTruthy();
-        expect(queryByTestId('@atom/card/alert/bottom')).toBeNull();
-    });
-
-    it('should render alert only on top when alertPosition is top', () => {
-        const { getByTestId, getByText, queryByTestId } = renderComponent({
-            alertProps: { title: 'alert', variant: 'info' },
-            alertPosition: 'top',
-        });
-
-        expect(getByText('hello')).toBeTruthy();
-
-        expect(getByText('alert')).toBeTruthy();
-        expect(getByTestId('@atom/card/alert/top')).toBeTruthy();
-        expect(queryByTestId('@atom/card/alert/bottom')).toBeNull();
-    });
-
-    it('should render alert only on bottom when alertPosition is bottom', () => {
-        const { getByTestId, getByText, queryByTestId } = renderComponent({
-            alertProps: { title: 'alert', variant: 'info' },
-            alertPosition: 'bottom',
-        });
-
-        expect(getByText('hello')).toBeTruthy();
-
-        expect(getByText('alert')).toBeTruthy();
-        expect(getByTestId('@atom/card/alert/bottom')).toBeTruthy();
-        expect(queryByTestId('@atom/card/alert/top')).toBeNull();
-    });
-
-    it('should not reset border radiuses if alert is not present', () => {
+    it('should maintain normal border radiuses without alerts', () => {
         const { queryByTestId } = renderComponent({});
 
         expect(queryByTestId('@atom/card/alert/top')).toBeNull();

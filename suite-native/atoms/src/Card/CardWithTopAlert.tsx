@@ -1,20 +1,15 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { View } from 'react-native';
-import Animated from 'react-native-reanimated';
 
-import { G } from '@mobily/ts-belt';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { Card, CardProps } from './Card';
 
-const CARD_CONTAINER_TEST_ID = '@atom/card/container';
+const ALERT_TEST_ID = '@atom/card/alert/top';
 
-export type CardProps = {
-    children: ReactNode;
-    style?: NativeStyleObject;
-    noPadding?: boolean;
-    noShadow?: boolean;
-    borderColor?: Color;
+type CardWithTopAlertProps = CardProps & {
+    alertProps: InlineAlertBoxProps;
 };
 
 const cardOuterContainerStyle = prepareNativeStyle<{
@@ -25,16 +20,19 @@ const cardOuterContainerStyle = prepareNativeStyle<{
 
 const cardInnerContainerStyle = prepareNativeStyle<{
     noPadding: boolean;
-    borderColor?: Color;
+    borderColor?: CardProps['borderColor'];
     noShadow?: boolean;
 }>((utils, { noPadding, borderColor, noShadow }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp16,
+    // Remove top border radius to connect with alert
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
 
     extend: [
         {
-            condition: G.isNotNullable(borderColor),
+            condition: !!borderColor,
             style: {
                 borderColor: utils.colors[borderColor!],
                 borderWidth: utils.borders.widths.small,
@@ -53,21 +51,37 @@ const cardInnerContainerStyle = prepareNativeStyle<{
     ],
 }));
 
-export const Card = React.forwardRef<View, CardProps>(
+const alertBoxWrapperStyle = prepareNativeStyle((utils) => ({
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    paddingHorizontal: utils.spacings.sp4,
+    borderTopLeftRadius: utils.borders.radii.r16,
+    borderTopRightRadius: utils.borders.radii.r16,
+    paddingTop: utils.spacings.sp4,
+}));
+
+export const CardWithTopAlert = React.forwardRef<View, CardWithTopAlertProps>(
     (
         {
             children,
             style,
+            alertProps,
             borderColor,
             noPadding = false,
             noShadow = false,
-        }: CardProps,
+            ...restProps
+        }: CardWithTopAlertProps,
         ref,
     ) => {
         const { applyStyle } = useNativeStyles();
 
         return (
-            <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}>
+            <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })} {...restProps}>
+                <View
+                    style={applyStyle(alertBoxWrapperStyle)}
+                    testID={ALERT_TEST_ID}
+                >
+                    <InlineAlertBox {...alertProps} />
+                </View>
                 <View
                     style={[
                         applyStyle(cardInnerContainerStyle, {
@@ -77,8 +91,6 @@ export const Card = React.forwardRef<View, CardProps>(
                         }),
                         style,
                     ]}
-                    testID={CARD_CONTAINER_TEST_ID}
-                    // Ref must be here otherwise the animation will not work
                     ref={ref}
                 >
                     {children}
@@ -88,6 +100,4 @@ export const Card = React.forwardRef<View, CardProps>(
     },
 );
 
-Card.displayName = 'Card';
-export const AnimatedCard = Animated.createAnimatedComponent(Card);
-AnimatedCard.displayName = 'AnimatedCard';
+CardWithTopAlert.displayName = 'CardWithTopAlert';
