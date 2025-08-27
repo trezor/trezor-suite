@@ -103,10 +103,6 @@ export const en = {
                 title: 'Connect your Trezor',
                 description: 'Manage your coins with your Trezor connected.',
                 connectButton: 'Connect',
-                bluetooth: {
-                    title: 'Connect your Trezor Safe 7',
-                    connectButton: 'Connect via Bluetooth',
-                },
             },
             syncCoins: {
                 title: 'Track your coins',
