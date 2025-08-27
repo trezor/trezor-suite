@@ -18,6 +18,7 @@ export const NETWORK_SYMBOLS_WITH_TOKENS = [
     'op',
     'base',
     'arb',
+    'avax',
     'xlm',
 ] satisfies Array<NetworkSymbol>;
 export type NetworkSymbolWithTokens = (typeof NETWORK_SYMBOLS_WITH_TOKENS)[number];
