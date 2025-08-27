@@ -73,9 +73,6 @@ export const DeviceDisconnectedScreen = ({
     return (
         <Screen
             header={<ScreenHeader closeAction={navigateToHome} closeActionType="close" />}
-            noHorizontalPadding
-            noBottomPadding
-            hasBottomInset={false}
             isScrollable={false}
         >
             {wasDeviceConnectedViaBluetooth ? (

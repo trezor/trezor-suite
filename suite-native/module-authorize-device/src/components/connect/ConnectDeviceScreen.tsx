@@ -36,13 +36,7 @@ export const ConnectDeviceScreen = ({ children, helpButton }: ConnectDeviceScree
     );
 
     return (
-        <Screen
-            header={<ConnectDeviceScreenHeader helpButton={helpButton} />}
-            noHorizontalPadding
-            noBottomPadding
-            hasBottomInset={false}
-            isScrollable={false}
-        >
+        <Screen header={<ConnectDeviceScreenHeader helpButton={helpButton} />} isScrollable={false}>
             {children}
         </Screen>
     );

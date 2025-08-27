@@ -1,15 +1,20 @@
 import React from 'react';
 
-import Lottie from 'lottie-react-native';
+import { useActiveColorScheme } from '@suite-native/theme';
+import { ThemeColorVariant } from '@trezor/theme';
 
-import { NativeStyleObject } from '@trezor/styles';
+import { TrezorAnimation } from './TrezorAnimation';
+import { useMutedVideoPlayer } from '../hooks/useMutedVideoPlayer';
 
-import connectDeviceLottie from '../assets/connectDeviceLottie.json';
+const connectDeviceAnimations = {
+    debug: require('../assets/connect-device-standard.mp4'),
+    standard: require('../assets/connect-device-standard.mp4'),
+    dark: require('../assets/connect-device-dark.mp4'),
+} as const satisfies Record<ThemeColorVariant, string>;
 
-type ConnectDeviceAnimationProps = {
-    style?: NativeStyleObject;
+export const ConnectDeviceAnimation = () => {
+    const connectDeviceAnimation = connectDeviceAnimations[useActiveColorScheme()];
+    const videoPlayer = useMutedVideoPlayer(connectDeviceAnimation);
+
+    return <TrezorAnimation player={videoPlayer} />;
 };
-
-export const ConnectDeviceAnimation = ({ style }: ConnectDeviceAnimationProps) => (
-    <Lottie source={connectDeviceLottie} autoPlay style={style} loop={false} resizeMode="cover" />
-);

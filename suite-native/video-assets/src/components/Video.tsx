@@ -40,6 +40,7 @@ export const Video = ({ name, aspectRatio = 1 }: VideoProps) => {
     const videoPlayer = useVideoPlayer(videoSource, player => {
         player.play();
         player.loop = true;
+        player.audioMixingMode = 'auto';
         player.muted = true;
     });
 

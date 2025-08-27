@@ -59,7 +59,7 @@ export const ContinueOnTrezorScreenContent = ({
             )}
             <Box flex={1} alignItems="center" justifyContent="flex-end">
                 <DeviceImage
-                    deviceModel={deviceModel || DeviceModelInternal.T3T1}
+                    deviceModel={deviceModel || DeviceModelInternal.T3W1}
                     size="large"
                     maxHeight={0.42 * SCREEN_HEIGHT}
                 />
