@@ -61,6 +61,8 @@ export const extraDependenciesMock: ExtraDependencies = {
         cardanoFetchTrezorData: mockThunk('fetchTrezorData'),
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
         initMetadata: mockThunk('initMetadata'),
+        subscribeLocalFirstStorage: mockThunk('subscribeLocalFirstStorage'),
+        unsubscribeAndDisposeLocalFirstStorage: mockThunk('unsubscribeLocalFirstStorage'),
         addAccountMetadata: mockThunk('addAccountMetadata'),
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
     },
@@ -93,6 +95,8 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
         selectSuiteSettings: mockSelector('selectSuiteSettings', {
             defaultWalletLoading: 'standard',
+            localFirstStorageRelayUrl: null, // Todo: will be implemented in next PR
+            isLocalFirstStorageEnabled: false, // Todo: will be implemented in next PR
         }),
         selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: mockSelector('selectTradingEnvironment', 'localhost'),

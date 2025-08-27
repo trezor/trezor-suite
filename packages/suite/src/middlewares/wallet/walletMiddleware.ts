@@ -9,6 +9,7 @@ import {
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
     deviceActions,
+    forgetAccountsThunk,
     sendFormActions,
     setCustomBackendThunk,
     stakeActions,
@@ -36,7 +37,7 @@ const walletMiddleware =
             const accounts = api
                 .getState()
                 .wallet.accounts.filter(a => a.deviceState === deviceState);
-            api.dispatch(accountsActions.removeAccount(accounts));
+            api.dispatch(forgetAccountsThunk({ accountsToRemove: accounts }));
         }
 
         // propagate action to reducers, this needs to happen before addTransaction is dispatched because it needs to have account in redux already

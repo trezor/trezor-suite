@@ -18,6 +18,7 @@ export * from './device/deviceConstants';
 export * from './device/deviceReducer';
 export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
+export * from './device/initEvoluKeysThunk';
 export * from './device/publicKeyActions';
 export * from './device/usePinHook';
 export * from './discovery/discoveryActions';
