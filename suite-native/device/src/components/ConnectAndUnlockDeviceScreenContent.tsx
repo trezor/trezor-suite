@@ -1,24 +1,7 @@
-import { Button, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { getScreenHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectDeviceAnimation } from './ConnectDeviceAnimation';
-
-const ANIMATION_HEIGHT = getScreenHeight() * 0.6;
-
-const screenContentStyle = prepareNativeStyle(({ spacings }) => ({
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: spacings.sp24,
-}));
-
-const animationStyle = prepareNativeStyle(() => ({
-    // Both height and width has to be set https://github.com/lottie-react-native/lottie-react-native/blob/master/MIGRATION-5-TO-6.md#updating-the-style-props
-    height: ANIMATION_HEIGHT,
-    width: '100%',
-}));
 
 type ConnectAndUnlockDeviceScreenContentProps = {
     onConnectViaBluetooth?: () => void;
@@ -26,27 +9,25 @@ type ConnectAndUnlockDeviceScreenContentProps = {
 
 export const ConnectAndUnlockDeviceScreenContent = ({
     onConnectViaBluetooth,
-}: ConnectAndUnlockDeviceScreenContentProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <VStack style={applyStyle(screenContentStyle)}>
-            <VStack spacing="sp32">
-                <Text variant="titleMedium" textAlign="center">
-                    <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
-                </Text>
-                {onConnectViaBluetooth && (
-                    <Button
-                        size="medium"
-                        colorScheme="blueBold"
-                        viewLeft="bluetooth"
-                        onPress={onConnectViaBluetooth}
-                    >
-                        <Translation id="moduleConnectDevice.connectAndUnlockScreen.connectViaBluetoothButton" />
-                    </Button>
-                )}
-            </VStack>
-            <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
+}: ConnectAndUnlockDeviceScreenContentProps) => (
+    <VStack paddingTop="sp16" spacing="sp32" flex={1}>
+        <VStack spacing="sp32" alignItems="center">
+            <Text variant="titleMedium" textAlign="center">
+                <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
+            </Text>
+            {onConnectViaBluetooth && (
+                <Button
+                    size="medium"
+                    colorScheme="blueBold"
+                    viewLeft="bluetooth"
+                    onPress={onConnectViaBluetooth}
+                >
+                    <Translation id="moduleConnectDevice.connectAndUnlockScreen.connectViaBluetoothButton" />
+                </Button>
+            )}
         </VStack>
-    );
-};
+        <Box flex={1} alignItems="center">
+            <ConnectDeviceAnimation />
+        </Box>
+    </VStack>
+);

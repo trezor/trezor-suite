@@ -405,6 +405,8 @@ jest.mock('expo-constants', () => {
     return Constants;
 });
 
+jest.mock('expo-video', () => ({ VideoView: () => null }));
+
 jest.mock('redux-devtools-expo-dev-plugin', () => () => next => next);
 
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);

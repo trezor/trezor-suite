@@ -59,9 +59,6 @@ export const DeviceConnectionGuardScreen = ({
                     onCancelNavigationTarget={params?.onCancelNavigationTarget}
                 />
             }
-            noHorizontalPadding
-            noBottomPadding
-            hasBottomInset={false}
             isScrollable={false}
         >
             {isBluetoothVariantVisible ? (

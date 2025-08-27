@@ -11,5 +11,5 @@ type DeviceColorImageProps = {
 };
 
 export const DeviceColorImage = ({ color }: DeviceColorImageProps) => (
-    <Image source={deviceImageMap[color] ?? deviceImageMap[1]} width={68} height={112} />
+    <Image source={deviceImageMap[color] ?? deviceImageMap[1]} width={66} height={112} />
 );

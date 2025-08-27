@@ -11,5 +11,6 @@
         { "path": "../intl" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }
