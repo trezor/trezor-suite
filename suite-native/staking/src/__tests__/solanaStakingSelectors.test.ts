@@ -138,6 +138,7 @@ const getTestState = ({
             },
         } as TrezorDevice,
         isDeviceAutoEjectEnabled: false,
+        isConnectionModalOpen: false,
     },
 });
 
