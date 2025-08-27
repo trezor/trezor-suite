@@ -24,7 +24,6 @@ const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     flex-direction: column;
 
     padding: 10px;
-    background: ${mapElevationToBackground};
     align-items: center;
     gap: ${spacingsPx.xxl};
     margin: 0;

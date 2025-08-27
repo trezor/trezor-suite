@@ -111,6 +111,7 @@ const merge = (
  */
 const connectDevice = (draft: DeviceReducerState, device: Device) => {
     const currentTime = new Date().getTime();
+    draft.isConnectionModalOpen = false;
 
     const deviceCommonFields = {
         connected: true,
