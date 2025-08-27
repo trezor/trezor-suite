@@ -266,7 +266,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return readResult;
             },
-            { signal, timeout },
+            { signal, graceful: true, timeout },
         );
     }
 
@@ -333,7 +333,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return sendResult;
             },
-            { signal, timeout },
+            { signal, graceful: true, timeout },
         );
     }
 
@@ -391,7 +391,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return message;
             },
-            { signal, timeout },
+            { signal, graceful: true, timeout },
         );
     }
 

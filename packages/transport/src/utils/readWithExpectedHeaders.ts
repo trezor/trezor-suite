@@ -72,6 +72,7 @@ export function readWithExpectedHeaders<T extends Receiver>(receiver: T, options
                 readAndAssert(receiver, expectedHeaders, { ...options, signal: attemptSignal }),
             {
                 signal: options?.signal,
+                graceful: true,
                 attempts: options?.attempts || Infinity,
                 timeout: options?.timeout,
                 attemptFailureHandler: error => {
