@@ -25,6 +25,7 @@ export const useConnectPopupDesktop = () => {
             if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
                 desktopApi.on('connect-popup/call', async params => {
                     await queuePopupCall();
+                    const deferred = getPopupCallDeferred(true);
                     dispatch(
                         connectPopupCallThunk({
                             method: params.method as keyof typeof TrezorConnect,
@@ -41,7 +42,7 @@ export const useConnectPopupDesktop = () => {
                             },
                         }),
                     );
-                    const response = await getPopupCallDeferred(true).promise;
+                    const response = await deferred.promise;
                     desktopApi.connectPopupResponse({ ...response, id: params.id });
                 });
                 desktopApi.on('connect-popup/cancel', params => {
