@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { acquireDevice, selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
-import { DeviceImage } from '@suite-native/device';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
@@ -18,10 +17,10 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
+import { TurnOnTrezorSvg } from '../../../assets/TurnOnTrezorSvg';
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -76,39 +75,20 @@ export const EmptyPortfolioCrossroads = () => {
     return (
         <VStack spacing="sp16" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
-                {isIosWithBluetoothEnabled ? (
-                    <VStack marginTop="sp16" spacing="sp24" alignItems="center">
-                        <DeviceImage deviceModel={DeviceModelInternal.T3W1} />
-                        <CenteredTitleHeader
-                            title={
-                                <Translation id="moduleHome.emptyState.connectTrezor.bluetooth.title" />
-                            }
-                            subtitle={
-                                <Translation id="moduleHome.emptyState.connectTrezor.description" />
-                            }
-                        />
-                        <View style={applyStyle(buttonWrapperStyle)}>
-                            <Button viewLeft="bluetooth" onPress={handleConnectDevice}>
-                                <Translation id="moduleHome.emptyState.connectTrezor.bluetooth.connectButton" />
-                            </Button>
-                        </View>
-                    </VStack>
-                ) : (
-                    <VStack spacing="sp24" justifyContent="center" alignItems="center">
-                        <ConnectTrezorSvg />
-                        <CenteredTitleHeader
-                            title={<Translation id="moduleHome.emptyState.connectTrezor.title" />}
-                            subtitle={
-                                <Translation id="moduleHome.emptyState.connectTrezor.description" />
-                            }
-                        />
-                        <View style={applyStyle(buttonWrapperStyle)}>
-                            <Button onPress={handleConnectDevice}>
-                                <Translation id="moduleHome.emptyState.connectTrezor.connectButton" />
-                            </Button>
-                        </View>
-                    </VStack>
-                )}
+                <VStack spacing="sp24" justifyContent="center" alignItems="center">
+                    {isIosWithBluetoothEnabled ? <TurnOnTrezorSvg /> : <ConnectTrezorSvg />}
+                    <CenteredTitleHeader
+                        title={<Translation id="moduleHome.emptyState.connectTrezor.title" />}
+                        subtitle={
+                            <Translation id="moduleHome.emptyState.connectTrezor.description" />
+                        }
+                    />
+                    <View style={applyStyle(buttonWrapperStyle)}>
+                        <Button onPress={handleConnectDevice}>
+                            <Translation id="moduleHome.emptyState.connectTrezor.connectButton" />
+                        </Button>
+                    </View>
+                </VStack>
             </Card>
             <Card style={applyStyle(cardStyle, { flex: 1 })}>
                 <VStack spacing="sp24" justifyContent="center" alignItems="center">
