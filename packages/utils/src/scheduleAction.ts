@@ -14,6 +14,7 @@ export type ScheduleActionParams = {
         | number // How many attempts before failure (default = one, or infinite when deadline is set)
         | readonly AttemptParams[]; // Array of timeouts and gaps for every attempt (length = attempt count)
     signal?: AbortSignal;
+    graceful?: boolean; // Abort signalling will not throw immediately but let the action handle it instead (default = false)
     attemptFailureHandler?: (error: Error) => Error | void; // break attemptLoop if `Error` is set
 } & AttemptParams; // Ignored when attempts is AttemptParams[]
 
@@ -153,13 +154,28 @@ export const scheduleAction = async <T>(
     const getParams = isArray(attempts)
         ? (attempt: number) => attempts[attempt]
         : () => ({ timeout, gap });
-
     const errorDeadline = new ScheduleActionDeadlineError();
     const errorTimeout = new ScheduleActionTimeoutError();
 
+    const graceful = params.graceful && signal;
+    const actionAborter = new AbortController();
+    if (graceful) {
+        if (signal.aborted) {
+            actionAborter.abort();
+        } else {
+            const onAbort = () => {
+                signal.removeEventListener('abort', onAbort);
+                clear.removeEventListener('abort', onAbort);
+                actionAborter.abort();
+            };
+            signal.addEventListener('abort', onAbort);
+            clear.addEventListener('abort', onAbort);
+        }
+    }
+
     try {
         return await Promise.race([
-            rejectWhenAborted(signal, clear),
+            ...(graceful ? [] : [rejectWhenAborted(signal, clear)]),
             ...maybeRejectAfterMs(deadlineMs, errorDeadline, clear),
             resolveAfterMs(delay, clear).then(() =>
                 attemptLoop(
@@ -176,7 +192,7 @@ export const scheduleAction = async <T>(
                             ? Promise.reject(errorHandlerResult)
                             : resolveAfterMs(getParams(attempt).gap ?? 0, clear);
                     },
-                    clear,
+                    graceful ? actionAborter.signal : clear,
                 ),
             ),
         ]);

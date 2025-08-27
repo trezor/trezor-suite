@@ -239,6 +239,34 @@ describe('scheduleAction', () => {
         expect(checkListeners()).toBeUndefined();
     });
 
+    it("don't reject after abort (graceful: true)", async () => {
+        let ctrl = new AbortController();
+        const action = (sig?: AbortSignal) =>
+            new Promise(resolve => {
+                sig?.addEventListener('abort', () => {
+                    setTimeout(() => resolve({ success: false }), 1000);
+                });
+            });
+
+        let resultPromise = scheduleAction(action, {
+            signal: ctrl.signal,
+        });
+        new Promise(resolve => setTimeout(resolve, 1));
+        ctrl.abort();
+        await expect(() => resultPromise).rejects.toThrow(ERR_SIGNAL);
+
+        ctrl = new AbortController();
+        resultPromise = scheduleAction(action, {
+            signal: ctrl.signal,
+            graceful: true,
+            timeout: 2000,
+        });
+        await new Promise(resolve => setTimeout(resolve, 1));
+        ctrl.abort();
+        const result = await resultPromise;
+        expect(result).toEqual({ success: false });
+    });
+
     it('variable timeouts', async () => {
         const TIMEOUTS = [50, 150, 100];
         const MARGIN = 10;
