@@ -43,6 +43,8 @@ export const EmptyStakingCard = () => {
     const isDeviceConnected = device?.connected && device?.available;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
+    const isCardano = account?.networkType === 'cardano';
+
     const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
     const stakingData = getStakingDataForNetwork(account);
 
@@ -91,18 +93,43 @@ export const EmptyStakingCard = () => {
             },
             {
                 id: 1,
-                icon: 'lockLaminatedOpen' as const,
-                title: <Translation id="TR_STAKING_CARD_LOCK_IN_TITLE" />,
-                text: <Translation id="TR_STAKING_CARD_LOCK_IN_TEXT" />,
+                icon: isCardano ? ('wallet' as const) : ('lockLaminatedOpen' as const),
+                title: (
+                    <Translation
+                        id={isCardano ? 'TR_STAKE_USE_ANYTIME' : 'TR_STAKING_CARD_LOCK_IN_TITLE'}
+                    />
+                ),
+                text: (
+                    <Translation
+                        id={
+                            isCardano
+                                ? 'TR_STAKE_SEND_SWAP_SPEND_ANYTIME'
+                                : 'TR_STAKING_CARD_LOCK_IN_TEXT'
+                        }
+                        values={{ symbol: displaySymbol }}
+                    />
+                ),
             },
             {
                 id: 2,
-                icon: 'everstakeLogo' as const,
-                title: <Translation id="TR_STAKING_CARD_RESTAKE_TITLE" />,
-                text: <Translation id="TR_STAKING_CARD_RESTAKE_TEXT" />,
+                icon: isCardano ? ('handCoins' as const) : ('everstakeLogo' as const),
+                title: (
+                    <Translation
+                        id={isCardano ? 'TR_STAKE_GET_MORE' : 'TR_STAKING_CARD_RESTAKE_TITLE'}
+                    />
+                ),
+                text: (
+                    <Translation
+                        id={
+                            isCardano
+                                ? 'TR_STAKE_CLAIM_REWARDS_TO_GROW'
+                                : 'TR_STAKING_CARD_RESTAKE_TEXT'
+                        }
+                    />
+                ),
             },
         ],
-        [],
+        [isCardano, displaySymbol],
     );
 
     const openStakeInANutshellModal = () => {

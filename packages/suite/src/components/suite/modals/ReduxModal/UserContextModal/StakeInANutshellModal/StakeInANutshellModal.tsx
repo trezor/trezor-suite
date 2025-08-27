@@ -33,26 +33,47 @@ interface StakingDetails {
     translationId: TranslationKey;
 }
 
-const getStakingDetails = (networkType: NetworkType): StakingDetails[] => [
-    {
-        id: 0,
-        icon: 'lockSimple',
-        translationId: 'TR_STAKE_STAKED_AMOUNT_LOCKED',
-    },
-    {
-        id: 1,
-        icon: 'handCoins',
-        translationId: 'TR_STAKE_REWARDS_EARN',
-    },
-    {
-        id: 2,
-        icon: 'arrowBendDoubleUpLeft',
-        translationId:
-            networkType === 'ethereum'
-                ? 'TR_STAKE_ETH_UNSTAKING_TAKES'
-                : 'TR_STAKE_SOL_UNSTAKING_TAKES',
-    },
-];
+const getStakingDetails = (networkType: NetworkType): StakingDetails[] => {
+    if (networkType === 'cardano')
+        return [
+            {
+                id: 0,
+                icon: 'wallet',
+                translationId: 'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',
+            },
+            {
+                id: 1,
+                icon: 'piggyBank',
+                translationId: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
+            },
+            {
+                id: 2,
+                icon: 'scroll',
+                translationId: 'TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED',
+            },
+        ];
+
+    return [
+        {
+            id: 0,
+            icon: 'lockSimple',
+            translationId: 'TR_STAKE_STAKED_AMOUNT_LOCKED',
+        },
+        {
+            id: 1,
+            icon: 'handCoins',
+            translationId: 'TR_STAKE_REWARDS_EARN',
+        },
+        {
+            id: 2,
+            icon: 'arrowBendDoubleUpLeft',
+            translationId:
+                networkType === 'ethereum'
+                    ? 'TR_STAKE_ETH_UNSTAKING_TAKES'
+                    : 'TR_STAKE_SOL_UNSTAKING_TAKES',
+        },
+    ];
+};
 
 interface StakeInANutshellModalProps {
     onCancel: () => void;
@@ -64,6 +85,8 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
     const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
         selectValidatorsQueueData(state, account?.symbol),
     );
+
+    const isCardano = account?.networkType === 'cardano';
 
     const unstakingPeriod = getUnstakingPeriodInDays({
         networkType: account?.networkType,
@@ -108,7 +131,9 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
             heading: <Translation id="TR_STAKE_UNSTAKING_PROCESS" />,
             badge: (
                 <>
-                    <Translation id="TR_TX_CONFIRMATIONS" values={{ confirmationsCount: 2 }} />{' '}
+                    {!isCardano && (
+                        <Translation id="TR_TX_CONFIRMATIONS" values={{ confirmationsCount: 2 }} />
+                    )}{' '}
                     <Translation id="TR_TX_FEE" />
                 </>
             ),
