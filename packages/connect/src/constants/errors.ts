@@ -23,6 +23,7 @@ export const ERROR_CODES = {
     Method_Discovery_BundleException: '', // thrown by getAccountInfo method
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen
+    Method_Unsupported: 'Unsupported method', // 3rd party called a method unknown by current version
 
     Backend_NotSupported: 'BlockchainLink settings not found in coins.json', // thrown by methods which using backends, blockchainLink not defined for this coin
     Backend_WorkerMissing: '', // thrown by BlockchainLink class, worker not specified

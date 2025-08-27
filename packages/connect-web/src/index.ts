@@ -68,7 +68,7 @@ const impl = new TrezorConnectDynamic<
         // Handle desktop errors
         if (
             impl.getTargetType() === 'core-in-suite-desktop' &&
-            errorCode === 'Desktop_ConnectionMissing'
+            (errorCode === 'Desktop_ConnectionMissing' || errorCode === 'Method_Unsupported')
         ) {
             await impl.switchTarget('iframe');
 

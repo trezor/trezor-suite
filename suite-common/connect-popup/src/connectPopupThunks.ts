@@ -31,6 +31,8 @@ export const connectPopupCallThunkInner = createThunk<
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ method, payload, source }, { dispatch, getState, extra }) => {
         try {
+            if (!TrezorConnect[method]) throw TypedError('Method_Unsupported');
+
             // @ts-expect-error: method is dynamic
             const methodInfo = await TrezorConnect[method]({
                 ...payload,
@@ -147,7 +149,10 @@ export const connectPopupCallThunkInner = createThunk<
             if (error?.error === 'switching-device') {
                 // Do nothing, call will be restarted after device switch
                 return;
-            } else if (error?.code === 'Method_Cancel') {
+            } else if (
+                error?.code === 'Method_Cancel' ||
+                error?.code === 'Method_Unsupported' // handled by fallback mechanism in connect-web
+            ) {
                 dispatch(connectPopupActions.finishCall());
             } else {
                 dispatch(connectPopupActions.setError(serializeError(error)));
