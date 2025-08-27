@@ -123,10 +123,10 @@ export const useBuyFlow = (form: BuyFormType) => {
                     },
                 });
             },
-            request: async (_provider: string, _cryptoCurrency: string) => {
+            request: (_provider: string, _cryptoCurrency: string) => {
                 setIsConsentRequested(true);
 
-                return await waitForConsent();
+                return waitForConsent();
             },
         }),
         [quoteAnalyticsData],
