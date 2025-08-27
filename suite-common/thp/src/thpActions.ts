@@ -7,7 +7,7 @@ export const THP_PREFIX = '@suite/thp';
 
 const invalidCode = createAction(`${THP_PREFIX}/invalid-pin-action`);
 
-const resetThpFlow = createAction(`${THP_PREFIX}/cancel-thp-flow`);
+const resetThpFlow = createAction(`${THP_PREFIX}/reset-thp-flow`);
 
 export const showAutoconnectInfo = createAction(`${THP_PREFIX}/showAutoconnectInfo`);
 
