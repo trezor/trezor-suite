@@ -1,7 +1,11 @@
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
+    MAX_CARDANO_AMOUNT_FOR_STAKING,
     MAX_ETH_AMOUNT_FOR_STAKING,
     MAX_SOL_AMOUNT_FOR_STAKING,
+    MIN_CARDANO_AMOUNT_FOR_STAKING,
+    MIN_CARDANO_BALANCE_FOR_STAKING,
+    MIN_CARDANO_FOR_WITHDRAWALS,
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_BALANCE_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
@@ -80,6 +84,13 @@ export const getStakingLimitsByNetwork = (account: Account) => {
                 MAX_AMOUNT_FOR_STAKING: MAX_SOL_AMOUNT_FOR_STAKING,
                 MIN_FOR_WITHDRAWALS: MIN_SOL_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_STAKING: MIN_SOL_BALANCE_FOR_STAKING,
+            };
+        case 'cardano':
+            return {
+                MIN_AMOUNT_FOR_STAKING: MIN_CARDANO_AMOUNT_FOR_STAKING,
+                MAX_AMOUNT_FOR_STAKING: MAX_CARDANO_AMOUNT_FOR_STAKING,
+                MIN_FOR_WITHDRAWALS: MIN_CARDANO_FOR_WITHDRAWALS,
+                MIN_BALANCE_FOR_STAKING: MIN_CARDANO_BALANCE_FOR_STAKING,
             };
         default:
             throw new Error(`Unsupported network type: ${account.networkType}`);

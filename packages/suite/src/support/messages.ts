@@ -8131,6 +8131,23 @@ export default defineMessages({
         id: 'TR_STAKE_DEREGISTERED',
         defaultMessage: 'Deregistration of a stake address',
     },
+    TR_STAKE_ENTIRE_BALANCE: {
+        id: 'TR_STAKE_ENTIRE_BALANCE',
+        defaultMessage: 'Entire balance',
+    },
+    TR_STAKE_REGISTRATION_DEPOSIT: {
+        id: 'TR_STAKE_REGISTRATION_DEPOSIT',
+        defaultMessage: 'Registration deposit',
+    },
+    TR_STAKE_RETURNED_TO_ACCOUNT_WHEN_UNSTAKE: {
+        id: 'TR_STAKE_RETURNED_TO_ACCOUNT_WHEN_UNSTAKE',
+        defaultMessage: 'Returned to account when you unstake',
+    },
+    TR_STAKE_FUNDS_WARNING: {
+        id: 'TR_STAKE_FUNDS_WARNING',
+        defaultMessage:
+            'Your {networkDisplaySymbol} stays in your account while staked—you can send, swap, or spend it anytime.',
+    },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',
         defaultMessage: "Amount isn't enough",
