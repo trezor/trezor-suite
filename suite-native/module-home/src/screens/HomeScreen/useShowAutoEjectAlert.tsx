@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, SuiteNativeAnalyticsEvent, analytics } from '@suite-native/analytics';
-import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
+import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     selectHasAutoEjectAlertBeenDisplayed,
@@ -13,7 +13,7 @@ import {
 } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
 
-import viewOnlyLottie from '../../assets/view-only-lottie.json';
+import { AutoEjectAnimation } from './components/AutoEjectAnimation';
 
 type AutoEjectModalEvent = Extract<SuiteNativeAnalyticsEvent, { type: EventType.AutoEjectModal }>;
 
@@ -40,7 +40,7 @@ export const useShowAutoEjectAlert = () => {
             showAlert({
                 appendix: (
                     <VStack alignItems="center" spacing="sp24" testID="@home/alert/view-only">
-                        <LottieAnimation source={viewOnlyLottie} />
+                        <AutoEjectAnimation />
                         <CenteredTitleHeader
                             title={
                                 <Translation id="moduleSettings.viewOnly.autoEject.alert.title" />
