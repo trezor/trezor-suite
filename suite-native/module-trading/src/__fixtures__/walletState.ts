@@ -34,5 +34,9 @@ export const getWalletState = ({
         historic: {},
         lastWeek: {},
     } as FiatRatesState,
-    accounts: [getBtcAccount(), getEthAccount()] as Account[],
+    accounts: [
+        getBtcAccount('btc-account-1'),
+        getBtcAccount('btc-account-2'),
+        getEthAccount(),
+    ] as Account[],
 });

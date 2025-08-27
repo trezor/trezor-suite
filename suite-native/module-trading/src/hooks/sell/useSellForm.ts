@@ -10,11 +10,7 @@ import {
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    WalletSettingsRootState,
-    selectIsAmountInSats,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
@@ -33,23 +29,7 @@ import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetU
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
-
-const useSendAccountChangeEffect = ({ setValue }: SellFormType) => {
-    const sendAccount = useSelector(selectSellSelectedSendAccount);
-
-    useEffect(() => {
-        setValue('sendAccount', sendAccount);
-    }, [sendAccount, setValue]);
-};
-
-const useSelectedDeviceChangeEffect = ({ setValue }: SellFormType) => {
-    const selectedDevice = useSelector(selectSelectedDevice);
-    const unqDeviceIdentifier = selectedDevice?.state?.staticSessionId;
-
-    useEffect(() => {
-        setValue('sendAsset', undefined, { shouldValidate: true });
-    }, [unqDeviceIdentifier, setValue]);
-};
+import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: SellFormType) => {
     const dispatch = useDispatch();
@@ -232,8 +212,7 @@ export const useSellForm = (): SellFormType => {
         context,
     });
 
-    useSendAccountChangeEffect(form);
-    useSelectedDeviceChangeEffect(form);
+    useSendAccountChangeEffect(form.setValue, selectSellSelectedSendAccount);
     useAmountAndCurrencyFieldsChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setSendSymbol);
     useSellQuotesChangeEffect(form);

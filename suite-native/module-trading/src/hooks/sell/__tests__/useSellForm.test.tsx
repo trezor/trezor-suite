@@ -1,8 +1,6 @@
 import { SellFiatTrade } from 'invity-api';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import { tradingSellActions } from '@suite-common/trading';
-import { deviceActions } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
 import {
@@ -448,25 +446,6 @@ describe('useSellForm', () => {
                 expect(result.current.getValues('generalAlert')).toBeUndefined();
             });
         });
-    });
-
-    it('should clear sendAsset on device change', async () => {
-        const { result } = await renderUseSellForm();
-        act(() => {
-            result.current.setValue('sendAsset', btcAsset);
-        });
-
-        act(() => {
-            store.dispatch(
-                deviceActions.selectDevice({
-                    name: 'TEST_DEVICE',
-                    state: { staticSessionId: 'TEST_DEVICE_SESSION_ID' },
-                    id: 'TEST_DEVICE_ID',
-                } as unknown as TrezorDevice),
-            );
-        });
-
-        expect(result.current.getValues('sendAsset')).toEqual(undefined);
     });
 
     describe('on quotes change', () => {
