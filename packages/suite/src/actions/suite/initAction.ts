@@ -77,6 +77,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 [DEVICE.CONNECT]: device => {
                     dispatch(handleDeviceConnect(device));
                 },
+                [DEVICE.CONNECT_UNACQUIRED]: device => {
+                    dispatch(handleDeviceConnect(device));
+                },
                 [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
                     dispatch(
                         modalActions.openModal({
