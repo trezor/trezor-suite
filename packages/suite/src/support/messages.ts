@@ -7462,6 +7462,14 @@ export default defineMessages({
         id: 'TR_USE_CHAT',
         defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
     },
+    TR_CONNECT_YOUR_TREZOR: {
+        id: 'TR_CONNECT_YOUR_TREZOR',
+        defaultMessage: 'Connect your Trezor',
+    },
+    TR_CONNECT_YOUR_TREZOR_DESCRIPTION: {
+        id: 'TR_CONNECT_YOUR_TREZOR_DESCRIPTION',
+        defaultMessage: 'Please select a device to connect.',
+    },
     TR_DISCONNECT_YOUR_TREZOR: {
         id: 'TR_DISCONNECT_YOUR_TREZOR',
         defaultMessage: 'Reconnect your device',
