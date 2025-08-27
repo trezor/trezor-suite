@@ -17,6 +17,7 @@ import {
     Text,
 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -24,6 +25,7 @@ import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { tokenSupportsIncreasingAllowance } from 'src/utils/wallet/trading/tradingUtils';
@@ -64,6 +66,8 @@ export const RevokeModal = ({ onCancel }: RevokeModalProps) => {
         trigger,
     } = context;
 
+    const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
+
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
@@ -75,10 +79,32 @@ export const RevokeModal = ({ onCancel }: RevokeModalProps) => {
     }
 
     const confirmAndSend = async () => {
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'revoke-modal',
+                action: 'continue',
+                ...cryptoInfo,
+            },
+        });
+
         setIsConfirmButtonLoading(true);
         await sendTransaction();
         setIsConfirmButtonLoading(false);
         onCancel(true);
+    };
+
+    const onClose = (isSubmitting?: boolean) => {
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'revoke-modal',
+                action: 'cancel',
+                ...cryptoInfo,
+            },
+        });
+
+        onCancel(isSubmitting);
     };
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(selectedQuote.send);
@@ -93,7 +119,7 @@ export const RevokeModal = ({ onCancel }: RevokeModalProps) => {
 
     return (
         <Modal
-            onCancel={() => onCancel()}
+            onCancel={() => onClose()}
             variant="primary"
             size="small"
             heading={
@@ -113,7 +139,7 @@ export const RevokeModal = ({ onCancel }: RevokeModalProps) => {
                         <Translation id="TR_CONTINUE" />
                     </Modal.Button>
 
-                    <Modal.Button size="medium" variant="tertiary" onClick={() => onCancel()}>
+                    <Modal.Button size="medium" variant="tertiary" onClick={() => onClose()}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

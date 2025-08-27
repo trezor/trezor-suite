@@ -6,12 +6,14 @@ import styled, { DefaultTheme, keyframes } from 'styled-components';
 import { TradingExchangeType, tradingExchangeActions, useTradingInfo } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useTradingExchangeWatchApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchApproval';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { tokenSupportsIncreasingAllowance } from 'src/utils/wallet/trading/tradingUtils';
@@ -84,6 +86,8 @@ export const TradingFormApproval = ({
         },
         account,
     } = context;
+
+    const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const currentQuoteStatus = selectedQuote?.status;
     const previousQuoteStatus = usePrevious(currentQuoteStatus);
@@ -183,6 +187,15 @@ export const TradingFormApproval = ({
             return;
         }
 
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'exchange-form',
+                action: 'approve',
+                ...cryptoInfo,
+            },
+        });
+
         setApprovalType('APPROVE');
         setIsApproveButtonLoading(true);
 
@@ -197,6 +210,15 @@ export const TradingFormApproval = ({
             return;
         }
 
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'exchange-form',
+                action: 'revoke',
+                ...cryptoInfo,
+            },
+        });
+
         setApprovalType('REVOKE');
         setIsRevokeButtonLoading(true);
 
@@ -210,6 +232,15 @@ export const TradingFormApproval = ({
         if (!selectedQuote || !selectedQuote.receiveAddress) {
             return;
         }
+
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'exchange-form',
+                action: 'swap',
+                ...cryptoInfo,
+            },
+        });
 
         setIsSwapButtonLoading(true);
 
@@ -229,6 +260,15 @@ export const TradingFormApproval = ({
     };
 
     const onRefreshClick = async () => {
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'exchange-form',
+                action: 'refresh',
+                ...cryptoInfo,
+            },
+        });
+
         setIsRefreshButtonLoading(true);
 
         resetSelectedOffer();

@@ -22,6 +22,7 @@ import {
     Text,
 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -29,6 +30,7 @@ import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -78,6 +80,8 @@ export const ApproveModal = ({
         fetchFeesAndCompose,
     } = context;
 
+    const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
+
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const { cryptoIdToSymbolAndContractAddress, cryptoIdToCoinSymbol } = useTradingInfo();
@@ -105,6 +109,17 @@ export const ApproveModal = ({
     const selectApprovalValue = async (type: DexApprovalType) => {
         if (!selectedQuote.receiveAddress || approvalType === type) {
             return;
+        }
+
+        if (['MINIMAL', 'INFINITE'].includes(type)) {
+            analytics.report({
+                type: EventType.TradingExchangeApproval,
+                payload: {
+                    type: 'approve-modal',
+                    action: type === 'MINIMAL' ? 'limit-exact' : 'limit-unlimited',
+                    ...cryptoInfo,
+                },
+            });
         }
 
         setIsConfirmButtonLoading(true);
@@ -140,10 +155,32 @@ export const ApproveModal = ({
     };
 
     const confirmAndSend = async () => {
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'approve-modal',
+                action: 'continue',
+                ...cryptoInfo,
+            },
+        });
+
         setIsConfirmButtonLoading(true);
         await sendTransaction();
         setIsConfirmButtonLoading(false);
         onCancel(true);
+    };
+
+    const onClose = (isSubmitting?: boolean) => {
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'approve-modal',
+                action: 'cancel',
+                ...cryptoInfo,
+            },
+        });
+
+        onCancel(isSubmitting);
     };
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(selectedQuote.send);
@@ -157,7 +194,7 @@ export const ApproveModal = ({
 
     return (
         <Modal
-            onCancel={() => onCancel()}
+            onCancel={() => onClose()}
             variant="primary"
             size="small"
             heading={
@@ -179,7 +216,7 @@ export const ApproveModal = ({
                         </Modal.Button>
                     )}
 
-                    <Modal.Button size="medium" variant="tertiary" onClick={() => onCancel()}>
+                    <Modal.Button size="medium" variant="tertiary" onClick={() => onClose()}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

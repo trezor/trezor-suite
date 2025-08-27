@@ -58,6 +58,7 @@ export enum EventType {
     TradingSell = 'trade/sell',
     TradingStatus = 'trade/status',
     TradingConfirmTrade = 'trade/confirm-trade',
+    TradingExchangeApproval = 'trade/approval',
 
     StakingNavigate = 'staking/navigate',
     StakingStake = 'staking/stake',
