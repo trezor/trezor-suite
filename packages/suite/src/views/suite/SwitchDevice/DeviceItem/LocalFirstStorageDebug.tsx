@@ -1,5 +1,5 @@
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { Code, Row, Text, Tooltip } from '@trezor/components';
+import { Banner, Code, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
@@ -8,6 +8,11 @@ import { useSelector } from '../../../../hooks/suite';
 
 export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) => {
     const { isLocalFirstStorageDebugEnabled } = useSelector(selectSuiteFlags);
+
+    if (device.unavailableCapabilities.evolu) {
+        // Todo: better UX to cover this
+        return <Banner variant="warning">Upgrade Firmware for Evolu Labeling.</Banner>;
+    }
 
     return isLocalFirstStorageDebugEnabled && device.state?.staticSessionId ? (
         <Row gap={spacings.xxs}>

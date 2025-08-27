@@ -19,7 +19,7 @@ type InitCipherKeyThunkParams = {
 
 export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, void>(
     `${DEVICE_MODULE_PREFIX}/initEvoluKeysThunk`,
-    async ({ device: originalDevice }, { dispatch, getState, rejectWithValue }) => {
+    async ({ device: originalDevice }, { dispatch, getState }) => {
         if (originalDevice.state?.staticSessionId === undefined) {
             return;
         }
@@ -58,7 +58,7 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
 
             dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys }));
         } else {
-            return rejectWithValue(result.payload);
+            console.error('Error:', result.payload);
         }
     },
 );

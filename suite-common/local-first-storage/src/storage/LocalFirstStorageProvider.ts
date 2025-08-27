@@ -28,15 +28,17 @@ type CreateEvoluInstanceProps = {
 const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
     const evoluOwnerId = getOrThrow(OwnerId.from(createIdFromString(evoluKeys.ownerId)));
 
-    const name = SimpleName.from(`trezor-suite-v${VERSION}-${evoluOwnerId.replace('_', '-')}`);
-    if (!name.ok) {
-        console.error(name.error);
+    const sanitizedOwnerId = evoluOwnerId.replace('_', '-');
+    const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${sanitizedOwnerId}`);
 
-        throw name.error;
+    if (!databaseName.ok) {
+        console.error(databaseName.error);
+
+        throw databaseName.error;
     }
 
     const evolu = createEvolu(evoluDeps)(Schema, {
-        name: name.value,
+        name: databaseName.value,
         syncUrl: relayUrl,
         initialAppOwner: {
             type: 'AppOwner',
@@ -101,13 +103,4 @@ export class LocalFirstStorageProvider {
 
         this.storages.delete(ownerId);
     }
-
-    /**
-     * @deprecated Debug only!
-     */
-    _reset = async () => {
-        for (const storage of this.storages.values()) {
-            await storage._resetAppOwner();
-        }
-    };
 }

@@ -22,9 +22,4 @@ export class LocalFirstStorage {
             evolu as unknown as Evolu<typeof AddressLabelSchema>,
         );
     }
-
-    /**
-     * @deprecated Debug only!
-     */
-    _resetAppOwner = () => this.evolu.resetAppOwner({ reload: false });
 }

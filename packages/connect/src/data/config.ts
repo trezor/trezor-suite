@@ -311,6 +311,7 @@ export const config: Config = {
             comment: ['Since firmware 2.9.1 SLIP-24 is supported'],
         },
         {
+            capabilities: ['evolu'],
             methods: ['evoluGetNode'],
             min: {
                 T1B1: '0',
