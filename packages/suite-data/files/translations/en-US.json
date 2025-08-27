@@ -879,6 +879,8 @@
   "TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP": "Unavailable until device setup is complete.",
   "TR_DISABLED_SWITCH_TOOLTIP": "Connect & unlock device to change",
   "TR_DISABLING_TOR": "Disabling Tor",
+  "TR_CONNECT_YOUR_TREZOR": "Connect your Trezor",
+  "TR_CONNECT_YOUR_TREZOR_DESCRIPTION": "Please select a device to connect.",
   "TR_DISCONNECT": "Disconnect",
   "TR_DISCONNECTED": "Disconnected",
   "TR_DISCONNECT_YOUR_DEVICE": "Disconnect your Trezor",

@@ -1,3 +1,4 @@
+import { TranslationKey } from '@suite-common/intl-types';
 import { Flex, H3, Modal, Text } from '@trezor/components';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
@@ -5,6 +6,7 @@ import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPai
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
 
+import { Translation } from '../suite';
 import { BluetoothDeviceList } from '../suite/bluetooth/BluetoothDeviceList';
 
 type BluetoothConnectionModalProps = {
@@ -20,8 +22,8 @@ type BluetoothConnectionModalProps = {
 };
 
 type BluetoothModalConnectionHeadingProps = {
-    heading: string;
-    description: string;
+    heading: TranslationKey;
+    description: TranslationKey;
 };
 
 const BluetoothModalConnectionHeading = ({
@@ -29,9 +31,11 @@ const BluetoothModalConnectionHeading = ({
     description,
 }: BluetoothModalConnectionHeadingProps) => (
     <Flex direction="column">
-        <H3>{heading}</H3>
+        <H3>
+            <Translation id={heading} />
+        </H3>
         <Text typographyStyle="hint" variant="tertiary">
-            {description}
+            <Translation id={description} />
         </Text>
     </Flex>
 );
@@ -57,8 +61,8 @@ export const BluetoothConnectionModal = ({
                 onCancel={() => onPairingCancel(selectedDevice.id)}
                 heading={
                     <BluetoothModalConnectionHeading
-                        heading="Connect your Trezor"
-                        description="Please select a device to connect."
+                        heading="TR_CONNECT_YOUR_TREZOR"
+                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
                     />
                 }
             >
@@ -76,8 +80,8 @@ export const BluetoothConnectionModal = ({
                 onCancel={onCancel}
                 heading={
                     <BluetoothModalConnectionHeading
-                        heading="Connect your Trezor"
-                        description="Please select a device to connect."
+                        heading="TR_CONNECT_YOUR_TREZOR"
+                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
                     />
                 }
             >
@@ -93,8 +97,8 @@ export const BluetoothConnectionModal = ({
                 onCancel={onCancel}
                 heading={
                     <BluetoothModalConnectionHeading
-                        heading="Connect your Trezor"
-                        description="Please select a device to connect."
+                        heading="TR_CONNECT_YOUR_TREZOR"
+                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
                     />
                 }
             >
@@ -114,8 +118,8 @@ export const BluetoothConnectionModal = ({
                 onCancel={onCancel}
                 heading={
                     <BluetoothModalConnectionHeading
-                        heading="Pair your Trezor again"
-                        description="There might be some problem we can’t detect, please try pairing your Trezor again."
+                        heading="TR_CONNECT_YOUR_TREZOR"
+                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
                     />
                 }
             >
