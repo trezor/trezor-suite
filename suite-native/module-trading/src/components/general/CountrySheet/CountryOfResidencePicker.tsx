@@ -4,7 +4,7 @@ import { TradingType } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import type { UseFormReturn } from '@suite-native/forms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { BuyFormType, BuyFormValues } from '../../../types/buy';
@@ -77,7 +77,7 @@ export const CountryOfResidencePicker = <Form extends BuyFormType | SellFormType
                         )}
                         testID={testID + '/value'}
                     >
-                        {translate('moduleTrading.notSelected')}
+                        <Translation id="moduleTrading.notSelected" />
                     </Text>
                 )}
             </OverviewRow>

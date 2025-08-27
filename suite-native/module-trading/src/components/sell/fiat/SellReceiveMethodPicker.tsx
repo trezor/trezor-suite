@@ -5,7 +5,7 @@ import { SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { AnimatedBox, Text } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
@@ -55,7 +55,7 @@ const SellReceiveMethodPickerRight = ({
             accessibilityLabel={translate('moduleTrading.tradingScreen.noReceiveMethod')}
             testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
         >
-            {translate('moduleTrading.notSelected')}
+            <Translation id="moduleTrading.notSelected" />
         </Text>
     );
 };
