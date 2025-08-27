@@ -13,9 +13,7 @@ import {
     useGraphAtoms,
     useGraphForAllDeviceAccounts,
 } from '@suite-native/graph';
-import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { referencePointAtom, selectedPointAtom } from '../portfolioGraphAtoms';
 import { PortfolioHeader } from './PortfolioHeader';
@@ -24,21 +22,7 @@ export type PortfolioGraphRef = {
     refetchGraph: () => Promise<void>;
 };
 
-const ignoredNetworksContentStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    marginHorizontal: utils.spacings.sp16,
-    paddingHorizontal: utils.spacings.sp16,
-    paddingVertical: utils.spacings.sp12,
-    gap: utils.spacings.sp12,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
-    borderColor: utils.colors.backgroundTertiaryDefaultOnElevationNegative,
-    borderWidth: utils.borders.widths.small,
-    borderRadius: utils.borders.radii.r16,
-    alignItems: 'center',
-}));
-
 const IgnoredNetworksBanner = () => {
-    const { applyStyle } = useNativeStyles();
     const hasDeviceHistoryIgnoredAccounts = useSelector(selectHasDeviceHistoryIgnoredAccounts);
 
     if (!hasDeviceHistoryIgnoredAccounts) {
@@ -46,9 +30,8 @@ const IgnoredNetworksBanner = () => {
     }
 
     return (
-        <Box style={applyStyle(ignoredNetworksContentStyle)}>
-            <CryptoIcon symbol="sol" size="small" />
-            <Text variant="hint">
+        <Box paddingHorizontal="sp16">
+            <Text textAlign="center" variant="hint" color="textSubdued">
                 <Translation id="moduleHome.graphIgnoredNetworks.sol" />
             </Text>
         </Box>
