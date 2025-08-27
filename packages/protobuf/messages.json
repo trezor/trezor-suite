@@ -2193,6 +2193,87 @@
         "CardanoSignTxFinished": {
             "fields": {}
         },
+        "CardanoSignMessageInit": {
+            "fields": {
+                "protocol_magic": {
+                    "type": "uint32",
+                    "id": 1
+                },
+                "network_id": {
+                    "type": "uint32",
+                    "id": 2
+                },
+                "signing_path": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 3,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "payload_size": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 4
+                },
+                "prefer_hex_display": {
+                    "rule": "required",
+                    "type": "bool",
+                    "id": 5
+                },
+                "address_parameters": {
+                    "type": "CardanoAddressParametersType",
+                    "id": 6
+                },
+                "derivation_type": {
+                    "rule": "required",
+                    "type": "CardanoDerivationType",
+                    "id": 7
+                }
+            }
+        },
+        "CardanoMessageDataRequest": {
+            "fields": {
+                "length": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 1
+                },
+                "offset": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 2
+                }
+            }
+        },
+        "CardanoMessageDataResponse": {
+            "fields": {
+                "data": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "CardanoMessageSignature": {
+            "fields": {
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "pub_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
         "Success": {
             "fields": {
                 "message": {
@@ -4191,6 +4272,18 @@
                 "encoded_token": {
                     "type": "bytes",
                     "id": 2
+                }
+            }
+        },
+        "EvoluGetNode": {
+            "fields": {}
+        },
+        "EvoluNode": {
+            "fields": {
+                "data": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
                 }
             }
         },
@@ -6893,6 +6986,10 @@
                 "CardanoTxInlineDatumChunk": 335,
                 "CardanoTxReferenceScriptChunk": 336,
                 "CardanoTxReferenceInput": 337,
+                "CardanoSignMessageInit": 338,
+                "CardanoMessageDataRequest": 339,
+                "CardanoMessageDataResponse": 340,
+                "CardanoMessageSignature": 341,
                 "RippleGetAddress": 400,
                 "RippleAddress": 401,
                 "RippleSignTx": 402,
@@ -6908,7 +7005,9 @@
                 "SolanaGetAddress": 902,
                 "SolanaAddress": 903,
                 "SolanaSignTx": 904,
-                "SolanaTxSignature": 905
+                "SolanaTxSignature": 905,
+                "EvoluGetNode": 2100,
+                "EvoluNode": 2101
             }
         }
     }

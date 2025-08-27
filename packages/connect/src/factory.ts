@@ -110,6 +110,8 @@ export const factory = <
 
     cipherKeyValue: params => call({ ...params, method: 'cipherKeyValue' }),
 
+    evoluGetNode: params => call({ ...params, method: 'evoluGetNode' }),
+
     composeTransaction: params => call({ ...params, method: 'composeTransaction' }),
 
     discoverAccounts: params => call({ ...params, method: 'discoverAccounts' }),

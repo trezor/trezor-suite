@@ -822,6 +822,31 @@ export type CardanoTxBodyHash = {
 
 export type CardanoSignTxFinished = {};
 
+export type CardanoSignMessageInit = {
+    protocol_magic?: number;
+    network_id?: number;
+    signing_path: number[];
+    payload_size: number;
+    prefer_hex_display: boolean;
+    address_parameters?: CardanoAddressParametersType;
+    derivation_type: CardanoDerivationType;
+};
+
+export type CardanoMessageDataRequest = {
+    length: number;
+    offset: number;
+};
+
+export type CardanoMessageDataResponse = {
+    data: string;
+};
+
+export type CardanoMessageSignature = {
+    signature: string;
+    address: string;
+    pub_key: string;
+};
+
 export type Success = {
     message: string;
 };
@@ -1386,6 +1411,12 @@ export type EthereumSignTypedHash = {
 export type EthereumTypedDataSignature = {
     signature: string;
     address: string;
+};
+
+export type EvoluGetNode = {};
+
+export type EvoluNode = {
+    data: string;
 };
 
 export enum Enum_BackupType {
@@ -2360,6 +2391,10 @@ export type MessageType = {
     CardanoTxHostAck: CardanoTxHostAck;
     CardanoTxBodyHash: CardanoTxBodyHash;
     CardanoSignTxFinished: CardanoSignTxFinished;
+    CardanoSignMessageInit: CardanoSignMessageInit;
+    CardanoMessageDataRequest: CardanoMessageDataRequest;
+    CardanoMessageDataResponse: CardanoMessageDataResponse;
+    CardanoMessageSignature: CardanoMessageSignature;
     Success: Success;
     Failure: Failure;
     ButtonRequest: ButtonRequest;
@@ -2438,6 +2473,8 @@ export type MessageType = {
     EthereumVerifyMessage: EthereumVerifyMessage;
     EthereumSignTypedHash: EthereumSignTypedHash;
     EthereumTypedDataSignature: EthereumTypedDataSignature;
+    EvoluGetNode: EvoluGetNode;
+    EvoluNode: EvoluNode;
     Initialize: Initialize;
     GetFeatures: GetFeatures;
     RecoveryDevice: RecoveryDevice;

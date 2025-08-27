@@ -81,6 +81,7 @@ export { default as loadDevice } from './loadDevice';
 // blockchainUnsubscribeFiatRates
 // changePin
 // cipherKeyValue
+// evoluGetNode
 // firmwareUpdate
 // getCoinInfo
 // getDeviceState
