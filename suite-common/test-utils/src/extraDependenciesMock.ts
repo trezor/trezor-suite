@@ -152,6 +152,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         getLocation: () => ({
             pathname: 'mocked_path',
             hash: 'mocked_hash',
+            search: 'mocked_search',
         }),
         navigate: (to: To, state?: LocationPushState) =>
             console.warn(`Mock navigating to ${to} with state`, state),

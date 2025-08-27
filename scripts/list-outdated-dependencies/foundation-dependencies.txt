@@ -59,7 +59,6 @@ nx
 openpgp
 prettier
 react-hook-form
-react-router
 rimraf
 sort-package-json
 tiny-secp256k1
