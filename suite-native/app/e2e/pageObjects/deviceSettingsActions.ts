@@ -2,10 +2,12 @@ import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../utils';
 
-const insertAllSeed = async () => {
-    for (let i = 0; i < MNEMONICS.mnemonic_all.length; i++) {
-        await TrezorUserEnvLink.inputEmu('all');
-    }
+const insertSeed = async (seed: string = MNEMONICS.mnemonic_immune) => {
+    const seedWords = seed.split(' ');
+
+    await seedWords.forEach(async word => {
+        await TrezorUserEnvLink.inputEmu(word);
+    });
 };
 
 export const redirectToDeviceAuthenticityScreenButton = element(
@@ -19,7 +21,7 @@ class DeviceSettingsActions {
             .withTimeout(10000);
     }
 
-    async waitForHomescreenAndUninitializedTitle() {
+    async waitForHomeScreenAndUninitializedTitle() {
         await waitFor(element(by.id('@screen/Home')))
             .toBeVisible()
             .withTimeout(10000);
@@ -169,7 +171,12 @@ class DeviceSettingsActions {
         await TrezorUserEnvLink.pressYes();
         await TrezorUserEnvLink.selectNumOfWordsEmu(12);
         await TrezorUserEnvLink.pressYes();
-        await insertAllSeed();
+        await insertSeed();
+        await TrezorUserEnvLink.pressYes();
+
+        await waitFor(element(by.text('Your backup is valid')))
+            .toBeVisible()
+            .withTimeout(10000);
     }
 }
 

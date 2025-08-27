@@ -1,5 +1,5 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompleted } from '../fixtures/onboardingCompleted';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
@@ -8,7 +8,6 @@ import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySu
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import {
-    PrepareTrezorEmulatorProps,
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
     openApp,
@@ -16,11 +15,9 @@ import {
     restartApp,
 } from '../utils';
 
-const defaultEmulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
-
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
     beforeAll(async () => {
-        await prepareTrezorEmulator(defaultEmulatorOptions);
+        await prepareTrezorEmulator();
         await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
 
         await onCoinEnabling.waitForInitScreen();
@@ -33,9 +30,13 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         await device.terminateApp();
     });
 
+    afterEach(async () => {
+        await TrezorUserEnvLink.stopEmu();
+    });
+
     describe('Tests with T3T1 device model', () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator(defaultEmulatorOptions);
+            await prepareTrezorEmulator();
             await restartApp();
             await appIsFullyLoaded();
 
@@ -109,23 +110,19 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceSettings.confirmStepperItems(1);
             await TrezorUserEnvLink.pressYes();
 
-            await onDeviceSettings.waitForHomescreenAndUninitializedTitle();
+            await onDeviceSettings.waitForHomeScreenAndUninitializedTitle();
         });
 
         test('Device Check Backup', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
 
             await onDeviceSettings.passCheckBackupFlow();
-
-            await waitFor(element(by.text('Your backup is valid')))
-                .toBeVisible()
-                .withTimeout(10000);
         });
     });
 
     describe('Tests with FW update required', () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator({ ...defaultEmulatorOptions, version: '2.8.9' });
+            await prepareTrezorEmulator({ version: '2.8.9' });
             await restartApp({ args: { isFirmwareUpdateEnabled: true } });
             await appIsFullyLoaded();
 
@@ -139,15 +136,12 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();
 
             await onDeviceSettings.passCheckBackupFlow();
-            await waitFor(element(by.text('Your backup is valid')))
-                .toBeVisible()
-                .withTimeout(10000);
         });
     });
 
     describe('Tests with T1B1 device model', () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator({ ...defaultEmulatorOptions, model: 'T1B1' });
+            await prepareTrezorEmulator({ model: 'T1B1' });
             await restartApp();
             await appIsFullyLoaded();
 
