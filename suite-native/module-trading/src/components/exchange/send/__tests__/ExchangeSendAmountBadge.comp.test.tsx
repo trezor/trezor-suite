@@ -5,6 +5,7 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { PROTO } from '@trezor/connect';
 
 import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../../__fixtures__/walletState';
@@ -15,8 +16,8 @@ import { ExchangeSendAmountBadge } from '../ExchangeSendAmountBadge';
 describe('ExchangeSendAmountBadge', () => {
     let form: ExchangeFormType;
 
-    const getPreloadedState = (): PreloadedState => ({
-        wallet: getWalletState(),
+    const getPreloadedState = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): PreloadedState => ({
+        wallet: getWalletState({ tradeType: 'exchange', bitcoinAmountUnit }),
     });
 
     const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
@@ -101,6 +102,18 @@ describe('ExchangeSendAmountBadge', () => {
 
             expect(queryByText('VALIDATION_ERROR')).toBeNull();
             expect(getByText('$1.00')).toBeOnTheScreen();
+        });
+
+        it('should display correct value when using sats', async () => {
+            act(() => {
+                form.setValue('sendCryptoAmount', '1234567123456');
+            });
+
+            const { getByText } = await renderExchangeSendAmountBadge(
+                getPreloadedState(PROTO.AmountUnit.SATOSHI),
+            );
+
+            expect(getByText('$12.35')).toBeOnTheScreen();
         });
     });
 });

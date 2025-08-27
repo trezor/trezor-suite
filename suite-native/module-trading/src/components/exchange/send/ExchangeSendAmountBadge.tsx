@@ -1,14 +1,17 @@
 import { useSelector } from 'react-redux';
 
+import { invariant } from '@suite-common/suite-utils';
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { useConvertFormValueToBaseUnit } from '../../../hooks/general/useConvertFormValueToBaseUnit';
 import { TradingRootState } from '../../../reducers';
 import { selectAmountInBaseFiatCurrency } from '../../../selectors/commonSelectors';
 import { TradeableAsset } from '../../../types/general';
+import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
 import { FiatAmountBadge } from '../../general/FiatAmountBadge';
 
 type ExchangeSendFiatAmountBadgeProps = {
@@ -17,9 +20,16 @@ type ExchangeSendFiatAmountBadgeProps = {
 };
 
 const ExchangeSendFiatAmountBadge = ({ amount, asset }: ExchangeSendFiatAmountBadgeProps) => {
+    const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
+    const symbol = getSymbolFromTradeableAsset(asset);
+    invariant(symbol, 'Asset symbol is undefined');
+
+    const convertedAmount = convertStrToBaseUnit(amount, symbol);
+    invariant(convertedAmount, 'Amount could not be converted to base unit');
+
     const fiatAmount = useSelector(
         (state: FiatRatesRootState & WalletSettingsRootState & TradingRootState) =>
-            selectAmountInBaseFiatCurrency(state, asset, amount),
+            selectAmountInBaseFiatCurrency(state, asset, convertedAmount),
     );
 
     return <FiatAmountBadge amount={fiatAmount} />;
