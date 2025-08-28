@@ -1,40 +1,44 @@
-import type { BuyTrade } from 'invity-api';
+import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
 import { BottomSheetFlashList } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
 
-import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader';
+import {
+    ESTIMATED_HEADER_HEIGHT,
+    SimpleSheetHeader,
+    SimpleSheetHeaderProps,
+} from '../SimpleSheetHeader';
 import { PAYMENT_METHOD_LIST_ITEM_HEIGHT, PaymentMethodListItem } from './PaymentMethodListItem';
 
-export type PaymentMethodsSheetProps = {
-    quotes: BuyTrade[];
+export type PaymentMethodsSheetProps<T extends BuyTrade | SellFiatTrade> = {
+    quotes: T[];
     isVisible: boolean;
     onClose: () => void;
-    onQuoteSelect: (quote: BuyTrade) => void;
-    selectedQuote?: BuyTrade;
+    onQuoteSelect: (quote: T) => void;
+    selectedQuote?: T;
+    title: SimpleSheetHeaderProps['title'];
 };
 
 const EXTRA_LIST_PADDING = 20;
 
-const keyExtractor = (item: BuyTrade) => item.orderId ?? '';
+const keyExtractor = (item: BuyTrade | SellFiatTrade) => item.orderId ?? '';
 const getEstimatedListHeight = (itemsCount: number) =>
     itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
 
-export const PaymentMethodSheet = ({
+export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
     quotes,
     isVisible,
     onClose,
     onQuoteSelect,
     selectedQuote,
-}: PaymentMethodsSheetProps) => {
-    const { translate } = useTranslate();
-    const onQuoteSelectCallback = (quote: BuyTrade) => {
+    title,
+}: PaymentMethodsSheetProps<T>) => {
+    const onQuoteSelectCallback = (quote: T) => {
         onQuoteSelect(quote);
         onClose();
     };
 
     return (
-        <BottomSheetFlashList<BuyTrade>
+        <BottomSheetFlashList<T>
             isVisible={isVisible}
             onClose={onClose}
             renderItem={({ item }) => (
@@ -45,12 +49,7 @@ export const PaymentMethodSheet = ({
                     isSelected={item.orderId === selectedQuote?.orderId}
                 />
             )}
-            handleComponent={() => (
-                <SimpleSheetHeader
-                    onClose={onClose}
-                    title={translate('moduleTrading.tradingScreen.paymentMethod')}
-                />
-            )}
+            handleComponent={() => <SimpleSheetHeader onClose={onClose} title={title} />}
             data={quotes}
             estimatedListHeight={getEstimatedListHeight(quotes.length)}
             estimatedItemSize={PAYMENT_METHOD_LIST_ITEM_HEIGHT}

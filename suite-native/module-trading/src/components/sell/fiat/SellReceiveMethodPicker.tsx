@@ -4,14 +4,17 @@ import { useSelector } from 'react-redux';
 import { SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '../../../selectors/sellSelectors';
 import { OverviewRow } from '../../general/OverviewRow';
 import { OverviewValueSkeleton } from '../../general/OverviewValueSkeleton';
+import { PaymentMethodSheet } from '../../general/PaymentMethodSheet/PaymentMethodSheet';
 
 const RECEIVE_METHOD_PICKER_TEST_ID = '@trading/sell/receive-method-picker';
 
@@ -65,8 +68,9 @@ export const SellReceiveMethodPicker = () => {
     const { applyStyle } = useNativeStyles();
     const form = useSellFormContext();
     const quotes = useSelector(selectSellBestQuotesForAvailablePaymentMethods);
-    const quote = form.getValues('quote');
     const isLoading = useSelector(selectTradingSellIsLoading);
+    const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
+        useSheetControls(form, 'quote');
 
     const shouldShowPicker = quotes.length > 0 || isLoading;
 
@@ -74,16 +78,54 @@ export const SellReceiveMethodPicker = () => {
         return null;
     }
 
+    const showSheetConditionally = () => {
+        if (!isLoading) {
+            showSheet();
+        }
+    };
+
+    const handleQuoteSelect = (quote: SellFiatTrade) => {
+        setSelectedValue(quote);
+
+        if (selectedValue?.paymentMethod === quote.paymentMethod) return;
+
+        analytics.report({
+            type: EventType.TradingParameterChanged,
+            payload: {
+                type: 'sell',
+                parameter: 'paymentMethod',
+            },
+        });
+    };
+
     return (
-        <AnimatedBox style={applyStyle(pickerStyle)} entering={StretchInY} exiting={StretchOutY}>
-            <OverviewRow
-                title={translate('moduleTrading.tradingScreen.receiveMethod')}
-                noCaret={isLoading}
-                testID={RECEIVE_METHOD_PICKER_TEST_ID}
-                noBottomBorder
+        <>
+            <AnimatedBox
+                style={applyStyle(pickerStyle)}
+                entering={StretchInY}
+                exiting={StretchOutY}
             >
-                <SellReceiveMethodPickerRight isLoading={isLoading} selectedValue={quote} />
-            </OverviewRow>
-        </AnimatedBox>
+                <OverviewRow
+                    title={translate('moduleTrading.tradingScreen.receiveMethod')}
+                    onPress={showSheetConditionally}
+                    testID={RECEIVE_METHOD_PICKER_TEST_ID}
+                    noCaret={isLoading}
+                    noBottomBorder
+                >
+                    <SellReceiveMethodPickerRight
+                        isLoading={isLoading}
+                        selectedValue={selectedValue}
+                    />
+                </OverviewRow>
+            </AnimatedBox>
+            <PaymentMethodSheet
+                quotes={quotes}
+                isVisible={isSheetVisible}
+                onClose={hideSheet}
+                onQuoteSelect={handleQuoteSelect}
+                selectedQuote={selectedValue}
+                title={<Translation id="moduleTrading.tradingScreen.receiveMethod" />}
+            />
+        </>
     );
 };

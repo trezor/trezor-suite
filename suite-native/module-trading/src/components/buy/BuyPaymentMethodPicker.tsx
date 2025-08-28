@@ -105,6 +105,7 @@ export const BuyPaymentMethodPicker = () => {
                 onClose={hideSheet}
                 onQuoteSelect={handleQuoteSelect}
                 selectedQuote={selectedValue}
+                title={<Translation id="moduleTrading.tradingScreen.paymentMethod" />}
             />
         </>
     );
