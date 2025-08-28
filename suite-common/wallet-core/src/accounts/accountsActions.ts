@@ -76,7 +76,7 @@ const composeCreateAccountActionPayload = ({
             ...(discoveryItem.backendType === 'coinjoin'
                 ? {
                       backendType: 'coinjoin',
-                      status: discoveryItem.status,
+                      status: 'initial',
                   }
                 : {
                       backendType: discoveryItem.backendType,

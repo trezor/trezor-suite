@@ -2,7 +2,7 @@ import { Bip43Path } from '@suite-common/wallet-config';
 import type { DeviceUniquePath } from '@trezor/connect';
 import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
-import { Account, AccountBackendSpecific } from './account';
+import { Account } from './account';
 
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
@@ -58,18 +58,10 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
 export type Discovery = Record<DeviceUniquePath, DiscoveryStatus>;
 
 export type DiscoveryItem = {
-    // @trezor/connect
     path: Bip43Path;
     unlockPath?: Account['unlockPath'];
     coin: Account['symbol'];
-    identity?: string;
-    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
-    pageSize?: number;
-    suppressBackupWarning?: boolean;
-    // Useful to skip additional getFeatures call which is redundant in discovery
-    skipFinalReload?: boolean;
-    // wallet
     index: number;
     accountType: Account['accountType'];
-    derivationType?: 0 | 1 | 2;
-} & AccountBackendSpecific;
+    backendType?: Account['backendType'];
+};
