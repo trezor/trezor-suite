@@ -1,5 +1,8 @@
 import { spacingsPx } from '@trezor/theme';
 
+export const MAX_WELCOME_LAYOUT_WIDTH_NUMERIC = 1400;
+export const MAX_WELCOME_LAYOUT_WIDTH = `${MAX_WELCOME_LAYOUT_WIDTH_NUMERIC}px`;
+
 /** @deprecated */
 export const MAX_ONBOARDING_WIDTH = 1020; // old max width, kept for consistency@deprecated
 export const MAX_CONTENT_WIDTH_NUMERIC = 1200;
