@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -32,6 +32,7 @@ import { AddWalletButton } from './AddWalletButton';
 import { WalletInstance } from './WalletInstance';
 import { CardWithDevice } from '../CardWithDevice';
 import { EjectAllConfirmation } from './EjectAllConfirmation';
+import { TemporaryForgetDeviceButton } from './TemporaryForgetDeviceButton';
 
 type DeviceItemProps = {
     device: TrezorDevice;
@@ -39,7 +40,7 @@ type DeviceItemProps = {
     onCancel?: ForegroundAppProps['onCancel'];
 };
 
-const ListItem = ({ children, iconName }: { children: React.ReactNode; iconName: IconName }) => (
+const ListItem = ({ children, iconName }: { children: ReactNode; iconName: IconName }) => (
     <List.Item bulletComponent={<Icon name={iconName} variant="tertiary" size="mediumLarge" />}>
         <Paragraph typographyStyle="body" variant="tertiary" textWrap="pretty">
             {children}
@@ -95,16 +96,19 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
             onCancel={onCancel}
             device={device}
             actions={
-                instancesWithState.length > 0 && !isEjecting ? (
-                    <Tooltip content={<Translation id="TR_EJECT_ALL_HEADING" />}>
-                        <IconButton
-                            icon="eject"
-                            variant="tertiary"
-                            size="small"
-                            onClick={() => setIsEjecting(true)}
-                        />
-                    </Tooltip>
-                ) : null
+                <>
+                    {instancesWithState.length > 0 && !isEjecting ? (
+                        <Tooltip content={<Translation id="TR_EJECT_ALL_HEADING" />}>
+                            <IconButton
+                                icon="eject"
+                                variant="tertiary"
+                                size="small"
+                                onClick={() => setIsEjecting(true)}
+                            />
+                        </Tooltip>
+                    ) : null}
+                    <TemporaryForgetDeviceButton device={device} instances={instances} />
+                </>
             }
         >
             {isEjecting ? (

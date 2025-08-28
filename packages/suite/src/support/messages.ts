@@ -2849,6 +2849,46 @@ export default defineMessages({
         defaultMessage: 'Enable auto-eject?',
         id: 'TR_AUTO_EJECT_CONFIRMATION_TITLE',
     },
+    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE: {
+        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE',
+        defaultMessage: 'Store device-related data',
+    },
+    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION: {
+        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION',
+        defaultMessage:
+            'Securely stores minimal device information locally to enable advanced security features like anti-counterfeit checks and secure pairing.',
+    },
+    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_BUTTON: {
+        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_BUTTON',
+        defaultMessage: 'Change',
+    },
+    TR_STORE_DEVICE_DATA_MODAL_TITLE: {
+        id: 'TR_STORE_DEVICE_DATA_MODAL_TITLE',
+        defaultMessage: 'Store device-related data',
+    },
+    TR_STORE_DEVICE_DATA_MODAL_ENABLED: {
+        id: 'TR_STORE_DEVICE_DATA_MODAL_ENABLED',
+        defaultMessage: 'Enabled',
+    },
+    TR_STORE_DEVICE_DATA_MODAL_ENABLED_DESCRIPTION: {
+        id: 'TR_STORE_DEVICE_DATA_MODAL_ENABLED_DESCRIPTION',
+        defaultMessage:
+            'Suite locally stores and compares firmware, pairing credentials, and other device data for advanced security.',
+    },
+    TR_STORE_DEVICE_DATA_MODAL_DISABLED: {
+        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED',
+        defaultMessage: 'Disabled',
+    },
+    TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION: {
+        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION',
+        defaultMessage:
+            'No data gets stored, advanced security features are disabled. Requires secure pairing connection to be reestablished every time. For experienced users only. Use at your own risk.',
+    },
+    TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
+        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
+        defaultMessage:
+            'This will automatically eject all wallets when Trezor device is disconnected.',
+    },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
         id: 'TR_LANGUAGE',
@@ -4654,6 +4694,14 @@ export default defineMessages({
     TR_EJECT_ALL_HEADING: {
         id: 'TR_EJECT_ALL_HEADING',
         defaultMessage: 'Eject all wallets on this Trezor',
+    },
+    TR_FORGET_DEVICE_HEADING: {
+        id: 'TR_FORGET_DEVICE_HEADING',
+        defaultMessage: 'Forget this device',
+    },
+    TR_FORGET_DEVICE_DESCRIPTION: {
+        id: 'TR_FORGET_DEVICE_DESCRIPTION',
+        defaultMessage: 'Removes all device-related data from Trezor Suite',
     },
     TR_VIEW_ONLY_CALL_TO_ACTION: {
         id: 'TR_VIEW_ONLY_CALL_TO_ACTION',

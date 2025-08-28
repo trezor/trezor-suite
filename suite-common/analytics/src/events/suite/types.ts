@@ -654,6 +654,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsGeneralStoreDeviceData;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
           type: EventType.SettingsGeneralLabelingProvider;
           payload: {
               provider:

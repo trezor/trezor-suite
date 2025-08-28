@@ -25,6 +25,7 @@ export const SettingsAnchor = {
     AutomaticUpdate: '@general-settings/automatic-update',
     AutoEject: '@general-settings/auto-eject',
     MevProtection: '@general-settings/mev-protection',
+    StoreDeviceData: '@general-settings/store-device-data',
 
     BackupFailed: '@device-settings/backup-failed',
     BackupRecoverySeed: '@device-settings/backup-recovery-seed',
