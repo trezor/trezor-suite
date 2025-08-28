@@ -1,7 +1,12 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { getNetwork, networks } from '@suite-common/wallet-config';
-import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { getNetwork } from '@suite-common/wallet-config';
+import {
+    Account,
+    AccountBackendSpecific,
+    AccountFailureSpecific,
+    SelectedAccountStatus,
+} from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
     enhanceTokens,
@@ -38,84 +43,50 @@ export type CreateAccountActionProps = Pick<
     | 'symbol'
     | 'index'
     | 'accountType'
-    | 'backendType'
     | 'deviceState'
     | 'imported'
     | 'accountLabel'
     | 'visible'
 > & {
     accountInfo: AccountInfo;
-    error?: string;
-};
+} & AccountBackendSpecific &
+    AccountFailureSpecific;
 
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
-    ({
-        deviceState,
-        path,
-        unlockPath,
-        symbol,
-        index,
-        accountType,
-        backendType,
-        accountInfo,
-        imported,
-        accountLabel,
-        visible,
-        error,
-    }: CreateAccountActionProps): { payload: Account } => {
-        try {
-            const { chainId } = getNetwork(symbol);
-            const { networkType } = networks[symbol];
-            const isNonEthEvm = networkType === 'ethereum' && symbol !== 'eth';
+    ({ accountInfo, ...account }: CreateAccountActionProps): { payload: Account } => {
+        const { symbol, index, deviceState } = account;
+        const { descriptor, descriptorChecksum, legacyXpub } = accountInfo;
+        const { empty, balance, availableBalance, addresses, history, utxo, tokens } = accountInfo;
 
-            const metadataKey = isNonEthEvm
-                ? `${accountInfo.descriptor}-${chainId}`
-                : accountInfo.legacyXpub || accountInfo.descriptor;
+        try {
+            const { chainId, networkType } = getNetwork(symbol);
+
+            const isNonEthEvm = networkType === 'ethereum' && symbol !== 'eth';
+            const metadataKey = isNonEthEvm ? `${descriptor}-${chainId}` : legacyXpub || descriptor;
 
             const payload: Account = {
-                deviceState,
-                accountLabel,
-                imported,
-                ...(error !== undefined ? { error, failed: true } : { failed: undefined }),
-                index,
-                path,
-                unlockPath,
-                descriptor: accountInfo.descriptor,
-                descriptorChecksum: accountInfo.descriptorChecksum,
-                key: getAccountKey(accountInfo.descriptor, symbol, deviceState),
-                accountType,
-                symbol,
-                empty: accountInfo.empty,
-                ...(backendType === 'coinjoin'
-                    ? {
-                          backendType: 'coinjoin',
-                          status: 'initial',
-                      }
-                    : {
-                          backendType,
-                      }),
-                visible,
-                balance: accountInfo.balance,
-                availableBalance: accountInfo.availableBalance,
+                ...account,
+                descriptor,
+                descriptorChecksum,
+                empty,
+                balance,
+                availableBalance,
+                history,
+                key: getAccountKey(descriptor, symbol, deviceState),
                 formattedBalance: formatNetworkAmount(
                     // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
-                    isArrayMember(networkType, ['ripple', 'stellar'])
-                        ? accountInfo.balance
-                        : accountInfo.availableBalance,
+                    isArrayMember(networkType, ['ripple', 'stellar']) ? balance : availableBalance,
                     symbol,
                 ),
-                tokens: enhanceTokens(accountInfo.tokens),
+                tokens: enhanceTokens(tokens),
                 addresses: enhanceAddresses(accountInfo, {
                     networkType,
                     index,
-                    addresses: accountInfo.addresses,
+                    addresses,
                 }),
-                utxo: enhanceUtxo(accountInfo.utxo, networkType, index),
-                history: accountInfo.history,
-                metadata: {
-                    key: metadataKey,
-                },
+                utxo: enhanceUtxo(utxo, networkType, index),
+                metadata: { key: metadataKey },
                 ts: Date.now(),
                 ...getAccountSpecific(accountInfo, networkType),
             };

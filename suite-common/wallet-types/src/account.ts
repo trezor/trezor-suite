@@ -103,7 +103,9 @@ export type AccountBackendSpecific =
           syncing?: boolean;
       };
 
-type AccountFailureSpecific = { failed: true; error: string } | { failed?: false };
+export type AccountFailureSpecific =
+    | { failed: true; error: string }
+    | { failed?: false; error?: undefined };
 
 export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceStaticSessionId>
 export type AccountDescriptor = string & Branded<'AccountDescriptor'>; // Descriptor or xpub/zpub/..
