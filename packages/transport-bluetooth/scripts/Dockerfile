@@ -16,6 +16,9 @@ COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./build.rs ./build.rs
 
+ARG BUILD_VERSION_TAG
+ENV BUILD_VERSION_TAG=${BUILD_VERSION_TAG}
+
 # Build for Windows x64
 RUN rustup target add x86_64-pc-windows-gnu && \
   cargo build --target x86_64-pc-windows-gnu --release --bins && \

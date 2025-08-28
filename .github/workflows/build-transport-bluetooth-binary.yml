@@ -24,7 +24,8 @@ jobs:
       - name: Build transport-bluetooth binary
         working-directory: packages/transport-bluetooth
         run: |
-          docker build . -f ./scripts/Dockerfile -t trezor-bluetooth-image
+          BUILD_VERSION_TAG="${{ github.ref_name }}:${{ github.sha }}"
+          docker build . -f ./scripts/Dockerfile -t trezor-bluetooth-image --build-arg BUILD_VERSION_TAG=$BUILD_VERSION_TAG
           docker create --name trezor-bluetooth-container trezor-bluetooth-image
           docker cp trezor-bluetooth-container:/output/. ../suite-data/files/bin/bluetooth
 
@@ -49,7 +50,9 @@ jobs:
         with:
           token: ${{ steps.trezor-bot-token.outputs.token }}
           title: "chore(transport-bluetooth): update binaries"
-          commit-message: "chore(transport-bluetooth): update binaries"
+          commit-message: |
+            chore(transport-bluetooth): update binaries
+            build from: ${{ github.ref_name }}:${{ github.sha }}
           committer: ${{ steps.trezor-bot-token.outputs.app-slug }}[bot] <208941332+${{ steps.trezor-bot-token.outputs.app-slug }}[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           branch: transport-bluetooth-binaries-update-${{ github.sha }}

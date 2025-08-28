@@ -14,6 +14,7 @@ export interface TrezorBluetoothSettings {
 export type BluetoothInfo = {
     state: BluetoothAdapterState;
     api_version: string;
+    build: string;
     adapter_info: string;
     adapter_version: number;
 };
