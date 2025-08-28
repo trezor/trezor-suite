@@ -47,6 +47,7 @@ export const TradingBalance = ({
         amount: stringBalance || '',
         symbol,
         tokenAddress,
+        rateType: 'current',
     });
 
     if (showOnlyAmount) {
@@ -54,10 +55,9 @@ export const TradingBalance = ({
 
         return (
             <Text variant="tertiary" typographyStyle="label">
-                &asymp;{' '}
                 {!amountInCrypto ? (
                     <HiddenPlaceholder>
-                        {formattedBalance} {balanceCurrency}
+                        &asymp; {formattedBalance} {balanceCurrency}
                     </HiddenPlaceholder>
                 ) : (
                     stringBalance &&
@@ -67,6 +67,8 @@ export const TradingBalance = ({
                             amount={stringBalance}
                             symbol={symbol}
                             tokenAddress={tokenAddress}
+                            rateType="current"
+                            showApproximationIndicator
                         />
                     )
                 )}
@@ -88,6 +90,7 @@ export const TradingBalance = ({
                         amount={stringBalance}
                         symbol={symbol}
                         tokenAddress={tokenAddress}
+                        rateType="current"
                     />
                 </>
             )}

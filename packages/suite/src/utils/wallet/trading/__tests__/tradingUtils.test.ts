@@ -227,8 +227,8 @@ describe('trading utils', () => {
             inputLabel: 'TR_TRADING_SWAP_AMOUNT',
             offerLabel: 'TR_TRADING_YOU_GET',
             labelComparatorOffer: 'TR_TRADING_YOU_WILL_GET',
-            sendLabel: 'TR_TRADING_SWAP',
-            receiveLabel: 'TR_TRADING_YOU_RECEIVE',
+            sendLabel: 'TR_TRADING_YOU_PAY',
+            receiveLabel: 'TR_TRADING_YOU_GET',
         });
     });
 

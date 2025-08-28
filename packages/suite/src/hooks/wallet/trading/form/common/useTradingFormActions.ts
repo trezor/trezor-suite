@@ -82,7 +82,8 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         ? isZero(tokenData.balance || '0')
         : isZero(account.formattedBalance);
     const tradingFiatValues = useTradingFiatValues({
-        sendCryptoSelect,
+        cryptoId: sendCryptoSelect?.value,
+        amount: sendCryptoSelect?.balance,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
     const networkDecimals = getTradingNetworkDecimals({

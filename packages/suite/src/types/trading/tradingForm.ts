@@ -17,15 +17,18 @@ import type {
     TradingBuyFormProps,
     TradingBuyInfoSelector,
     TradingBuyType,
+    TradingComposedTransactionInfo,
     TradingCountryOption,
     TradingExchangeFormProps,
     TradingExchangeInfoSelector,
+    TradingExchangeStepType,
     TradingExchangeType,
     TradingFiatCurrencyOption,
     TradingPaymentMethodListProps,
     TradingPaymentMethodType,
     TradingSellFormProps,
     TradingSellInfoSelector,
+    TradingSellStepType,
     TradingSellType,
     TradingTradeType,
     TradingTransactionBuy,
@@ -149,6 +152,7 @@ export interface TradingSellFormContextProps
     sellInfo?: TradingSellInfoSelector;
     localCurrencyOption: { label: string; value: string };
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
+    composedTransactionInfo: TradingComposedTransactionInfo;
     quotesRequest: SellFiatTradeQuoteRequest | undefined;
     feeInfo: FeeInfo;
     quotes: SellFiatTrade[];
@@ -198,6 +202,7 @@ export interface TradingExchangeFormContextProps
     defaultCurrency: TradingFiatCurrencyOption;
     amountLimits?: CryptoAmountLimitProps;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
+    composedTransactionInfo: TradingComposedTransactionInfo;
     quotes: ExchangeTrade[];
     cexQuotes: ExchangeTrade[];
     dexQuotes: ExchangeTrade[];
@@ -367,4 +372,5 @@ export interface TradingOfferExchangeProps
 export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {
     selectedAccount?: Account;
     transactionId?: string;
+    formStep?: TradingExchangeStepType | TradingSellStepType;
 }

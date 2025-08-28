@@ -5,7 +5,8 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
+import { RateTypeWithoutHistoric, TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { SkeletonRectangle } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -38,6 +39,7 @@ type BaseCurrencyValueProps = UseFiatFromCryptoValueParams & {
     showLoadingSkeleton?: boolean;
     className?: string;
     isLoading?: boolean;
+    rateType?: RateTypeWithoutHistoric;
 };
 
 /**
@@ -69,14 +71,17 @@ export const BaseCurrencyValue = ({
     shouldConvert = true,
     showLoadingSkeleton,
     isLoading,
+    rateType,
 }: BaseCurrencyValueProps) => {
     const { shouldAnimate } = useLoadingSkeleton();
+    const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
     const { baseCurrencyCode, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
         symbol,
-        tokenAddress,
+        tokenAddress: isNativeToken ? undefined : tokenAddress,
         historicRate,
         useHistoricRate,
+        rateType,
     });
 
     const { BaseCurrencyAmountFormatter } = useFormatters();

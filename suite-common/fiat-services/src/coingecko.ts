@@ -1,4 +1,4 @@
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork, networks } from '@suite-common/wallet-config';
 import { HistoricRates, TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
@@ -15,11 +15,15 @@ interface HistoricalResponse extends HistoricRates {
     symbol: string;
 }
 
+interface FetchCurrentFiatRatesOptions {
+    skipCache?: boolean;
+}
+
 const rateLimiter = new RateLimiter(1_000, 15_000);
 
-const fetchCoinGecko = async (url: string) => {
+const fetchCoinGecko = async (url: string, init?: RequestInit) => {
     try {
-        const res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
+        const res = await rateLimiter.limit(signal => fetchUrl(url, { signal, ...init }));
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
 
@@ -40,7 +44,7 @@ const fetchCoinGecko = async (url: string) => {
  * @returns
  */
 const buildCoinUrls = (ticker: TickerId) => {
-    const { coingeckoId } = networks[ticker.symbol];
+    const { coingeckoId, settlementLayer } = getNetwork(ticker.symbol);
     if (!coingeckoId) {
         console.error('buildCoinUrls: cannot find coingecko asset platform id for ', ticker);
 
@@ -48,6 +52,10 @@ const buildCoinUrls = (ticker: TickerId) => {
     }
 
     const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${coingeckoId}`;
+
+    if (settlementLayer && !ticker.tokenAddress) {
+        return [`${COINGECKO_API_BASE_URL}/coins/${networks[settlementLayer].coingeckoId}`];
+    }
 
     if (!ticker.tokenAddress) {
         return [baseUrl];
@@ -80,16 +88,21 @@ const buildCoinUrls = (ticker: TickerId) => {
  * @param {TickerId} ticker
  * @returns
  */
-export const fetchCurrentFiatRates = async (ticker: TickerId) => {
+export const fetchCurrentFiatRates = async (
+    ticker: TickerId,
+    options?: FetchCurrentFiatRatesOptions,
+) => {
     const coinUrls = buildCoinUrls(ticker);
     if (!coinUrls || coinUrls.length === 0) return null;
 
     const urlParams =
         'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&localization=false';
 
+    const headers = options?.skipCache ? { 'X-Bypass-Cache': '1' } : undefined;
+
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}?${urlParams}`;
-        const rates = await fetchCoinGecko(url);
+        const rates = await fetchCoinGecko(url, { headers });
 
         if (rates) {
             return {

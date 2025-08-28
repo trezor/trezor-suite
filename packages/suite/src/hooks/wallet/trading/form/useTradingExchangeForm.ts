@@ -96,7 +96,8 @@ export const useTradingExchangeForm = ({
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
-    const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
+    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const { selectedFee, composed } = composedTransactionInfo;
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
@@ -176,9 +177,17 @@ export const useTradingExchangeForm = ({
     const { rateType, exchangeType, sendCryptoSelect, receiveCryptoSelect } = getValues();
     const output = values.outputs?.[0];
     const fiatValues = useTradingFiatValues({
-        sendCryptoSelect,
+        cryptoId: sendCryptoSelect?.value,
+        amount: sendCryptoSelect?.balance,
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
+
+    useTradingFiatValues({
+        cryptoId: receiveCryptoSelect?.value,
+        amount: receiveCryptoSelect?.balance,
+        fiatCurrency: output?.currency?.value as FiatCurrencyCode,
+    });
+
     const fiatOfBestScoredQuote = quotes?.[0]?.sendStringAmount
         ? (toFiatCurrency({
               amount: quotes?.[0]?.sendStringAmount,
@@ -868,6 +877,7 @@ export const useTradingExchangeForm = ({
         isFetchingApprovalStatus,
         setReceiveAccount,
         composeRequest,
+        composedTransactionInfo,
         changeFeeLevel,
         setAmountLimits,
         goToOffers,

@@ -28,6 +28,7 @@ type FiatRatesParams = {
     ticker: TickerId;
     localCurrency: BaseCurrencyCode;
     isElectrumBackend: boolean;
+    skipCache?: boolean;
 };
 
 const getConnectFiatRatesForTimestamp = async (
@@ -73,11 +74,14 @@ export const fetchCurrentFiatRates = ({
     ticker,
     localCurrency,
     isElectrumBackend,
+    skipCache,
 }: FiatRatesParams): Promise<FiatRatesResult | null> =>
     parallelRequestsCache.cache(
         ['fetchCurrentFiatRates', ticker.symbol, ticker.tokenAddress, localCurrency],
         async () => {
-            if (isBlockbookBasedNetwork(ticker.symbol)) {
+            // If skipCache is true, skip Blockbook support check and fetch fiat rates
+            // directly from Coingecko to ensure up-to-date values.
+            if (isBlockbookBasedNetwork(ticker.symbol) && !skipCache) {
                 if (!isElectrumBackend) {
                     const { success, payload } = await scheduleAction(
                         () =>
@@ -129,7 +133,9 @@ export const fetchCurrentFiatRates = ({
                     };
             }
 
-            const coingeckoResponse = await coingeckoService.fetchCurrentFiatRates(ticker);
+            const coingeckoResponse = await coingeckoService.fetchCurrentFiatRates(ticker, {
+                skipCache,
+            });
 
             if (!coingeckoResponse) {
                 return null;

@@ -736,7 +736,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_FLOAT',
     },
     TR_EXCHANGE_DEX: {
-        defaultMessage: 'Decentralized exchange offer',
+        defaultMessage: 'DEX',
         id: 'TR_EXCHANGE_DEX',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
@@ -1260,10 +1260,6 @@ export default defineMessages({
         defaultMessage: 'You get',
         id: 'TR_TRADING_YOU_GET',
     },
-    TR_TRADING_YOU_RECEIVE: {
-        defaultMessage: 'You receive',
-        id: 'TR_TRADING_YOU_RECEIVE',
-    },
     TR_TRADING_COUNTRY: {
         defaultMessage: 'Country of residence',
         id: 'TR_TRADING_COUNTRY',
@@ -1442,10 +1438,6 @@ export default defineMessages({
         defaultMessage: 'KYC is never required. Exceptional cases are automatically refunded.',
         id: 'TR_TRADING_KYC_NO_KYC',
     },
-    TR_TRADING_KYC_DEX: {
-        defaultMessage: 'KYC is never required. DEX swaps either succeed or fail.',
-        id: 'TR_TRADING_KYC_DEX',
-    },
     TR_TRADING_DCA_HEADING: {
         defaultMessage: 'Invest with Invity, secure with Trezor',
         id: 'TR_TRADING_DCA_HEADING',
@@ -1585,6 +1577,10 @@ export default defineMessages({
     TR_TRADING_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_TRADING_PROVIDER',
+    },
+    TR_TRADING_EXCHANGE_TYPE: {
+        defaultMessage: 'Exchange type',
+        id: 'TR_TRADING_EXCHANGE_TYPE',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

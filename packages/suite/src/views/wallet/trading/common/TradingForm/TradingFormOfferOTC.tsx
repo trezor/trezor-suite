@@ -65,6 +65,7 @@ export const TradingFormOfferOTC = () => {
         amount: cryptoAmount || '0',
         symbol: network?.symbol || 'btc',
         tokenAddress: contractAddress as TokenAddress | undefined,
+        rateType: 'current',
     });
 
     const fiatAmount = amountInCrypto ? fiatAmountConverted : fiatInput;

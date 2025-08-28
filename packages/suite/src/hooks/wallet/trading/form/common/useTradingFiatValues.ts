@@ -1,9 +1,13 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
-import { FiatCurrencyCode } from 'invity-api';
+import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
-import { cryptoIdToSymbol, mapTestnetSymbol } from '@suite-common/trading';
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import {
+    cryptoIdToNetworkAndContractAddress,
+    isCryptoIdForNativeToken,
+    mapTestnetSymbol,
+} from '@suite-common/trading';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
@@ -18,12 +22,11 @@ import {
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
-import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingBalanceProps {
-    sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
     fiatCurrency?: FiatCurrencyCode;
+    cryptoId?: CryptoId;
+    amount?: string;
 }
 
 interface TradingBalanceReturnProps {
@@ -41,28 +44,37 @@ interface TradingBalanceReturnProps {
 }
 
 export const useTradingFiatValues = ({
-    sendCryptoSelect,
+    cryptoId,
     fiatCurrency,
+    amount,
 }: TradingBalanceProps): TradingBalanceReturnProps | null => {
     const dispatch = useDispatch();
-    const defaultCryptoSymbol = 'btc';
-    const symbol = sendCryptoSelect
-        ? (cryptoIdToSymbol(sendCryptoSelect.value) ?? defaultCryptoSymbol)
-        : defaultCryptoSymbol;
-    const tokenAddressTyped = (sendCryptoSelect?.contractAddress ?? undefined) as
-        | TokenAddress
-        | undefined;
+
+    const isNativeToken = cryptoId && isCryptoIdForNativeToken(cryptoId);
+
+    const { network, contractAddress, symbol } = useMemo(() => {
+        const defaultCryptoSymbol = 'btc';
+        const assetInfo = cryptoId && cryptoIdToNetworkAndContractAddress(cryptoId);
+
+        return {
+            network: assetInfo?.network,
+            contractAddress: isNativeToken
+                ? undefined
+                : (assetInfo?.contractAddress as TokenAddress | undefined),
+            symbol: assetInfo?.network?.symbol ?? defaultCryptoSymbol,
+        };
+    }, [cryptoId, isNativeToken]);
+
     const symbolForFiat = mapTestnetSymbol(symbol);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(
         symbolForFiat,
         fiatCurrency ?? baseCurrencyCode,
-        tokenAddressTyped,
+        contractAddress,
     );
-    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
-    const balance = sendCryptoSelect?.balance;
 
-    const network = networks[symbol];
+    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const fiatRatesUpdater = useCallback(
@@ -71,18 +83,20 @@ export const useTradingFiatValues = ({
             currentTokenAddress?: TokenAddress,
         ): Promise<FiatRatesResult | null> => {
             if (!value) return null;
+            const tokenAddress = currentTokenAddress ?? contractAddress;
 
             const updateFiatRatesResult = await dispatch(
                 updateFiatRatesThunk({
                     tickers: [
                         {
                             symbol,
-                            tokenAddress: currentTokenAddress ?? tokenAddressTyped,
+                            tokenAddress: isNativeToken ? undefined : tokenAddress,
                         },
                     ],
                     baseCurrencyCode: value,
                     rateType: 'current',
                     fetchAttemptTimestamp: Date.now() as Timestamp,
+                    skipCache: true,
                 }),
             );
 
@@ -90,34 +104,30 @@ export const useTradingFiatValues = ({
 
             return updateFiatRatesResult.payload as FiatRatesResult;
         },
-        [dispatch, symbol, tokenAddressTyped],
+        [contractAddress, dispatch, symbol, isNativeToken],
     );
 
-    // update rates on mount
     useEffect(() => {
+        if (!fiatCurrency) return;
+
         fiatRatesUpdater(fiatCurrency);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [fiatCurrency, fiatRatesUpdater]);
 
-    if (!balance || !fiatCurrency) return null;
+    if (!amount || !fiatCurrency || !network) return null;
 
-    const decimals = getTradingNetworkDecimals({
-        sendCryptoSelect,
-        network,
-    });
     const formattedBalance = shouldSendInSats
-        ? convertAmountUnitsToSubunits(balance, decimals)
-        : balance;
-    const fiatValue = toFiatCurrency({ amount: balance, rate: fiatRate?.rate })?.toFixed(2) ?? null;
+        ? convertAmountUnitsToSubunits(amount, network.decimals)
+        : amount;
+    const fiatValue = toFiatCurrency({ amount, rate: fiatRate?.rate })?.toFixed(2) ?? null;
 
     return {
         fiatValue,
         fiatRate,
-        accountBalance: balance,
+        accountBalance: amount,
         formattedBalance,
         symbol,
-        networkDecimals: decimals,
-        tokenAddress: tokenAddressTyped,
+        networkDecimals: network.decimals,
+        tokenAddress: contractAddress,
         fiatRatesUpdater,
     };
 };

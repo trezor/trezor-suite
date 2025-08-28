@@ -22,6 +22,7 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
+import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ApproveModal';
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/RevokeModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -271,7 +272,7 @@ export const TradingFormOffer = () => {
     const selectedAssetCryptoId =
         !state.isLoadingOrInvalid && receiveCurrency
             ? receiveCurrency
-            : (selectedCrypto?.value as CryptoId);
+            : (selectedCrypto?.value as CryptoId | undefined);
 
     return (
         <Column gap={spacings.lg}>
@@ -297,14 +298,25 @@ export const TradingFormOffer = () => {
                     />
                 )}
                 {isTradingExchangeContext(context) && contractAddress && network && (
-                    <Paragraph typographyStyle="label" variant="tertiary">
-                        <Translation
-                            id="TR_TRADING_ON_NETWORK_CHAIN"
-                            values={{
-                                networkName: network,
-                            }}
-                        />
-                    </Paragraph>
+                    <ExperimentWrapper
+                        id="tradingFiatValues"
+                        components={[
+                            {
+                                variant: 'A',
+                                element: (
+                                    <Paragraph typographyStyle="label" variant="tertiary">
+                                        <Translation
+                                            id="TR_TRADING_ON_NETWORK_CHAIN"
+                                            values={{
+                                                networkName: network,
+                                            }}
+                                        />
+                                    </Paragraph>
+                                ),
+                            },
+                            { variant: 'B', element: <></> },
+                        ]}
+                    />
                 )}
             </Column>
             <Column gap={spacings.xxs}>
