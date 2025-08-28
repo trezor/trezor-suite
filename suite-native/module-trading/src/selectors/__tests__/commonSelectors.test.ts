@@ -680,5 +680,25 @@ describe('commonSelectors', () => {
             );
             expect(result[0].data[0].symbol).toBe('btc');
         });
+
+        it('should use network display symbol name for account asset name', () => {
+            const testDeviceState = 'test-device';
+
+            const stateWithDevice = {
+                wallet: getWalletState({ tradeType: 'exchange', deviceState: testDeviceState }),
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            const accountAsset = result[1].data[0];
+            expect(accountAsset.symbol).toBe('base');
+            expect(accountAsset.name).toBe('Base Ethereum');
+        });
     });
 });

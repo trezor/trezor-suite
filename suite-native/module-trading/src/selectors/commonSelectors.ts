@@ -18,7 +18,7 @@ import {
     selectTradingSellSellCryptoIds,
     toTokenCryptoId,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -235,7 +235,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
 
                     const accountAsset = {
                         symbol: account.symbol,
-                        name: account.accountLabel || '',
+                        name: getNetworkDisplaySymbolName(account.symbol),
                         balance: account.formattedBalance,
                         fiatBalance: getAccountFiatBalance({
                             account,
