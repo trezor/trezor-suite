@@ -24,7 +24,7 @@ _(in case of Linux with X11 support, skip to step 6.)_
 1. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
 1. In the terminal window, set two environment variables:
     - ``export HOSTNAME=`hostname` ``
-    - `export DISPLAY=${HOSTNAME}:0`
+    - `export DISPLAY=:0`
 1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
 1. In workspace `packages/suite-desktop-core` create a `.env` file according to the `.example.env`
 
