@@ -143,7 +143,7 @@ export const fetchTokenDefinitions = async (
         throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
     }
 
-    const authenticityPublicKey = getJWSPublicKey('token-definitions');
+    const authenticityPublicKey = getJWSPublicKey();
 
     if (G.isNullable(authenticityPublicKey)) {
         throw Error('Public key check token definitions authenticity was not found.');
