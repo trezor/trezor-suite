@@ -1,6 +1,10 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import { deviceActions } from '@suite-common/wallet-core';
+import {
+    DeviceReducerState,
+    deviceActions,
+    deviceReducerInitialState,
+} from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 
@@ -13,7 +17,7 @@ const SUITE_DEVICE = getSuiteDevice();
 type Fixture<TAction> = {
     description: string;
     actions: TAction[];
-    initialState: any;
+    initialState: DeviceReducerState;
     result: DeepPartial<TrezorDevice>[];
 };
 
@@ -23,7 +27,7 @@ const connect: Fixture<
 >[] = [
     {
         description: 'Connect device (0 connected, 0 affected)',
-        initialState: { devices: [] },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -44,6 +48,7 @@ const connect: Fixture<
     {
         description: 'Connect device (1 connected, 0 affected)',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
@@ -80,6 +85,7 @@ const connect: Fixture<
     {
         description: 'Connect device (1 connected, 1 affected)',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [SUITE_DEVICE],
         },
         actions: [
@@ -102,6 +108,7 @@ const connect: Fixture<
     {
         description: 'Connect device (1 connected, 2 instances, 2 affected)',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     instance: 1,
@@ -135,6 +142,7 @@ const connect: Fixture<
     {
         description: 'Connect device (2 connected, 1 affected)',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
@@ -171,6 +179,7 @@ const connect: Fixture<
     {
         description: 'Connect acquired device and replace unacquired',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     type: 'unacquired',
@@ -198,7 +207,7 @@ const connect: Fixture<
     },
     {
         description: 'Connect unacquired device',
-        initialState: { devices: [] },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: DEVICE.CONNECT_UNACQUIRED,
@@ -220,6 +229,7 @@ const connect: Fixture<
     {
         description: 'Connect unacquired device which already exists in reducer',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     type: 'unacquired',
@@ -251,13 +261,12 @@ const disconnect = [
     {
         description: 'Disconnect device using path',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     path: '1',
                 }),
             ],
-            isDeviceAutoEjectEnabled: false,
-            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -272,9 +281,8 @@ const disconnect = [
     {
         description: 'Disconnect device using device_id',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [SUITE_DEVICE],
-            isDeviceAutoEjectEnabled: false,
-            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -287,6 +295,7 @@ const disconnect = [
     {
         description: 'Disconnect remembered device',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     path: '1',
@@ -294,8 +303,6 @@ const disconnect = [
                     state: '1stTestnet@device_id:0',
                 }),
             ],
-            isDeviceAutoEjectEnabled: false,
-            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -319,6 +326,7 @@ const disconnect = [
     {
         description: 'Disconnect remembered device (2 instances)',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     path: '1',
@@ -332,8 +340,6 @@ const disconnect = [
                     state: '1stTestnet@device_id_2:0',
                 }),
             ],
-            isDeviceAutoEjectEnabled: false,
-            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -363,6 +369,7 @@ const disconnect = [
     {
         description: 'Disconnect device (2 connected, 1 affected)',
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(
                     {
@@ -377,8 +384,6 @@ const disconnect = [
                     path: '1',
                 }),
             ],
-            isDeviceAutoEjectEnabled: false,
-            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -401,14 +406,13 @@ const disconnect = [
     {
         description: `Disconnect unacquired device`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     type: 'unacquired',
                     path: '1',
                 }),
             ],
-            isDeviceAutoEjectEnabled: false,
-            isConnectionModalOpen: false,
         },
         actions: [
             {
@@ -423,11 +427,7 @@ const disconnect = [
     },
     {
         description: `Disconnect device which doesn't exists in reducer`,
-        initialState: {
-            devices: [],
-            isDeviceAutoEjectEnabled: false,
-            isConnectionModalOpen: false,
-        },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -442,6 +442,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     {
         description: `Change status available > occupied (using path)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(
                     {
@@ -480,6 +481,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     {
         description: `Change unacquired (busy) THP device`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     type: 'unacquired',
@@ -526,7 +528,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     },
     {
         description: `Change unacquired device`,
-        initialState: { devices: [] },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -541,6 +543,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     {
         description: `Change device (2 connected, 1 affected)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
@@ -573,7 +576,10 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     },
     {
         description: `Change device with on device with different "passphrase_protection" (shouldn't be changed)`,
-        initialState: { devices: [SUITE_DEVICE] },
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [SUITE_DEVICE],
+        },
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -598,7 +604,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     },
     {
         description: `Change device which doesn't exists in reducer`,
-        initialState: { devices: [] },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -610,6 +616,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     {
         description: `features are not overridden when device is locked`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(
                     // Reducer doesn't try to merge non-connected devices.
@@ -645,7 +652,10 @@ const selectDevice: Array<
 > = [
     {
         description: `Select device (1 connected, 1 affected)`,
-        initialState: { devices: [SUITE_DEVICE] },
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [SUITE_DEVICE],
+        },
         actions: [
             {
                 type: deviceActions.selectDevice.type,
@@ -664,6 +674,7 @@ const selectDevice: Array<
     {
         description: `Select device (2 connected, 1 affected)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
@@ -694,6 +705,7 @@ const selectDevice: Array<
     {
         description: `Select device instance (2 instances, 1 affected)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
         },
         actions: [
@@ -721,6 +733,7 @@ const selectDevice: Array<
     {
         description: `Select first then second instance (2 instances, 2 affected)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
         },
         actions: [
@@ -751,7 +764,7 @@ const selectDevice: Array<
     },
     {
         description: `Select device (0 connected, 0 affected)`,
-        initialState: { devices: [] },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: deviceActions.selectDevice.type,
@@ -763,7 +776,7 @@ const selectDevice: Array<
     },
     {
         description: `Select device which doesn't exist in reducer`,
-        initialState: { devices: [] },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: deviceActions.selectDevice.type,
@@ -779,6 +792,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
     {
         description: `Forget multiple instances (2 connected, 5 instances, 3 affected, last instance remains with undefined state)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
@@ -840,6 +854,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
     {
         description: `Forget three instances one by one (2 connected, 5 instances, 3 affected)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
@@ -890,7 +905,10 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
     },
     {
         description: `device is unacquired`,
-        initialState: { devices: [SUITE_DEVICE] },
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [SUITE_DEVICE],
+        },
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
@@ -909,7 +927,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
     },
     {
         description: `instance doesn't exist in reducer`,
-        initialState: { devices: [] },
+        initialState: deviceReducerInitialState,
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
@@ -923,7 +941,10 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
 const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     {
         description: `Remember unacquired device`,
-        initialState: { devices: [SUITE_DEVICE] },
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [SUITE_DEVICE],
+        },
         actions: [
             {
                 type: deviceActions.rememberDevice.type,
@@ -938,7 +959,10 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     },
     {
         description: `Remember stateless device`,
-        initialState: { devices: [SUITE_DEVICE] },
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [SUITE_DEVICE],
+        },
         actions: [
             {
                 type: deviceActions.rememberDevice.type,
@@ -953,7 +977,10 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     },
     {
         description: `Force remember device`,
-        initialState: { devices: [SUITE_DEVICE] },
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [SUITE_DEVICE],
+        },
         actions: [
             {
                 type: deviceActions.rememberDevice.type,
@@ -969,6 +996,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     {
         description: `Remember device success`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     state: '1stTestnet@device_id:0',
@@ -997,6 +1025,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     {
         description: `Remember device with multiple instances (few are stateless)`,
         initialState: {
+            ...deviceReducerInitialState,
             devices: [
                 getSuiteDevice({
                     state: '1stTestnet@device_id:0',

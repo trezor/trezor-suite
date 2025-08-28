@@ -109,6 +109,7 @@ const fixture: Feature[] = [
                     }),
                 ],
                 isDeviceAutoEjectEnabled: false,
+                persistentDeviceData: [],
             },
         },
         action: () => wipeDeviceThunk(),

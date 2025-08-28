@@ -24,6 +24,7 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
         devices: state.device?.devices ?? [DEVICE],
         selectedDevice: DEVICE,
         isDeviceAutoEjectEnabled: false,
+        persistentDeviceData: [],
         isConnectionModalOpen: false,
     },
     router: {},
