@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { exhaustive } from '@trezor/type-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
+import { ConnectionGlobalModal } from 'src/components/connection/ConnectionGlobalModal';
 import { OnboardingLayout } from 'src/components/onboarding';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import * as STEP from 'src/constants/onboarding/steps';
@@ -71,6 +72,7 @@ export const Onboarding = () => {
     return (
         <OnboardingLayout>
             {allowedModal && <ReduxModal {...allowedModal} />}
+            <ConnectionGlobalModal />
 
             <UnexpectedState>
                 <StepComponent />
