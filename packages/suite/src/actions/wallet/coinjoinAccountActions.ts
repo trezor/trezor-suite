@@ -622,8 +622,6 @@ export const createCoinjoinAccount =
                     accountType: account.accountType,
                     backendType: 'coinjoin',
                     coin: network.symbol,
-                    derivationType: 0,
-                    status: 'initial',
                 },
                 accountInfo: {
                     ...EMPTY_ACCOUNT_INFO,
