@@ -13,7 +13,8 @@ export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
     | 'nft-section'
-    | 'biometric-authentication';
+    | 'biometric-authentication'
+    | 'global-send-receive';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -74,5 +75,9 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 throw new Error('Could not change bio auth');
             }
         },
+    },
+    'global-send-receive': {
+        title: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE',
+        description: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION',
     },
 };
