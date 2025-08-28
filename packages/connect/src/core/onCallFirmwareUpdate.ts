@@ -184,10 +184,12 @@ const getRebootMethod = async ({
     deviceList,
     device,
     log,
+    postMessage,
 }: {
     deviceList: DeviceList;
     device: Device;
     log: Log;
+    postMessage: PostMessage;
 }) => {
     let method: ReconnectParams['method'] = 'wait';
 
@@ -577,7 +579,7 @@ export const onCallFirmwareUpdate = async ({
         });
     }
 
-    const method = await getRebootMethod({ deviceList, device, log });
+    const method = await getRebootMethod({ deviceList, device, log, postMessage });
 
     reconnectedDevice = await waitForReconnectedDevice(
         { bootloader: false, method },
