@@ -87,7 +87,7 @@ export const fetchConfigThunk = createThunk(
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const authenticityPublicKey = getJWSPublicKey('message-system');
+                const authenticityPublicKey = getJWSPublicKey();
 
                 if (!authenticityPublicKey) {
                     throw Error('JWS public key is not defined!');
