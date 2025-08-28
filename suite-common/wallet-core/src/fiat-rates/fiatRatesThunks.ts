@@ -259,11 +259,22 @@ type PeriodicFetchFiatRatesThunkPayload = {
 
 export const periodicFetchFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/periodicFetchFiatRates`,
-    async ({ rateType, localCurrency }: PeriodicFetchFiatRatesThunkPayload, { dispatch }) => {
+    async (
+        { rateType, localCurrency }: PeriodicFetchFiatRatesThunkPayload,
+        { dispatch, getState, extra },
+    ) => {
+        const {
+            selectors: { selectIsWindowVisible },
+        } = extra;
+        const isWindowVisible = selectIsWindowVisible(getState());
+
         if (ratesTimeouts[rateType]) {
             clearTimeout(ratesTimeouts[rateType]!);
         }
-        await dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
+
+        if (isWindowVisible) {
+            await dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
+        }
         ratesTimeouts[rateType] = setTimeout(() => {
             dispatch(periodicFetchFiatRatesThunk({ rateType, localCurrency }));
         }, REFETCH_INTERVAL[rateType]);
