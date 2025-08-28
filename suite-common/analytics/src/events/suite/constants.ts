@@ -97,6 +97,7 @@ export enum EventType {
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
     SettingsDeviceDefaultWalletLoading = 'settings/device/default-wallet-type',
 
+    SettingsGeneralBioAuth = 'settings/general/bio-auth',
     SettingsGeneralChangeLanguage = 'settings/general/change-language',
     SettingsGeneralChangeTheme = 'settings/general/change-theme',
     SettingsGeneralAddressDisplayType = 'settings/general/address-display-type',

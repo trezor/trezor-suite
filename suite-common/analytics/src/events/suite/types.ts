@@ -586,6 +586,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsGeneralBioAuth;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
           type: EventType.SettingsGeneralLabelingProvider;
           payload: {
               provider:
