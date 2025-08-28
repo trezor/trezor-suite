@@ -48,88 +48,84 @@ export type CreateAccountActionProps = Pick<
     error?: string;
 };
 
-const composeCreateAccountActionPayload = ({
-    deviceState,
-    path,
-    unlockPath,
-    symbol,
-    index,
-    accountType,
-    backendType,
-    accountInfo,
-    imported,
-    accountLabel,
-    visible,
-    error,
-}: CreateAccountActionProps): Account => {
-    try {
-        const { chainId } = getNetwork(symbol);
-        const { networkType } = networks[symbol];
-        const isNonEthEvm = networkType === 'ethereum' && symbol !== 'eth';
-
-        const metadataKey = isNonEthEvm
-            ? `${accountInfo.descriptor}-${chainId}`
-            : accountInfo.legacyXpub || accountInfo.descriptor;
-
-        const result: Account = {
-            deviceState,
-            accountLabel,
-            imported,
-            ...(error !== undefined ? { error, failed: true } : { failed: undefined }),
-            index,
-            path,
-            unlockPath,
-            descriptor: accountInfo.descriptor,
-            descriptorChecksum: accountInfo.descriptorChecksum,
-            key: getAccountKey(accountInfo.descriptor, symbol, deviceState),
-            accountType,
-            symbol,
-            empty: accountInfo.empty,
-            ...(backendType === 'coinjoin'
-                ? {
-                      backendType: 'coinjoin',
-                      status: 'initial',
-                  }
-                : {
-                      backendType,
-                  }),
-            visible,
-            balance: accountInfo.balance,
-            availableBalance: accountInfo.availableBalance,
-            formattedBalance: formatNetworkAmount(
-                // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
-                isArrayMember(networkType, ['ripple', 'stellar'])
-                    ? accountInfo.balance
-                    : accountInfo.availableBalance,
-                symbol,
-            ),
-            tokens: enhanceTokens(accountInfo.tokens),
-            addresses: enhanceAddresses(accountInfo, {
-                networkType,
-                index,
-                addresses: accountInfo.addresses,
-            }),
-            utxo: enhanceUtxo(accountInfo.utxo, networkType, index),
-            history: accountInfo.history,
-            metadata: {
-                key: metadataKey,
-            },
-            ts: Date.now(),
-            ...getAccountSpecific(accountInfo, networkType),
-        };
-
-        return result;
-    } catch (error) {
-        console.error('Error creating account payload:', error);
-        throw new Error('Failed to create account payload');
-    }
-};
-
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
-    (props: CreateAccountActionProps): { payload: Account } => ({
-        payload: composeCreateAccountActionPayload(props),
-    }),
+    ({
+        deviceState,
+        path,
+        unlockPath,
+        symbol,
+        index,
+        accountType,
+        backendType,
+        accountInfo,
+        imported,
+        accountLabel,
+        visible,
+        error,
+    }: CreateAccountActionProps): { payload: Account } => {
+        try {
+            const { chainId } = getNetwork(symbol);
+            const { networkType } = networks[symbol];
+            const isNonEthEvm = networkType === 'ethereum' && symbol !== 'eth';
+
+            const metadataKey = isNonEthEvm
+                ? `${accountInfo.descriptor}-${chainId}`
+                : accountInfo.legacyXpub || accountInfo.descriptor;
+
+            const payload: Account = {
+                deviceState,
+                accountLabel,
+                imported,
+                ...(error !== undefined ? { error, failed: true } : { failed: undefined }),
+                index,
+                path,
+                unlockPath,
+                descriptor: accountInfo.descriptor,
+                descriptorChecksum: accountInfo.descriptorChecksum,
+                key: getAccountKey(accountInfo.descriptor, symbol, deviceState),
+                accountType,
+                symbol,
+                empty: accountInfo.empty,
+                ...(backendType === 'coinjoin'
+                    ? {
+                          backendType: 'coinjoin',
+                          status: 'initial',
+                      }
+                    : {
+                          backendType,
+                      }),
+                visible,
+                balance: accountInfo.balance,
+                availableBalance: accountInfo.availableBalance,
+                formattedBalance: formatNetworkAmount(
+                    // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
+                    isArrayMember(networkType, ['ripple', 'stellar'])
+                        ? accountInfo.balance
+                        : accountInfo.availableBalance,
+                    symbol,
+                ),
+                tokens: enhanceTokens(accountInfo.tokens),
+                addresses: enhanceAddresses(accountInfo, {
+                    networkType,
+                    index,
+                    addresses: accountInfo.addresses,
+                }),
+                utxo: enhanceUtxo(accountInfo.utxo, networkType, index),
+                history: accountInfo.history,
+                metadata: {
+                    key: metadataKey,
+                },
+                ts: Date.now(),
+                ...getAccountSpecific(accountInfo, networkType),
+            };
+
+            return { payload };
+        } catch (error) {
+            console.error('Error creating account payload:', error);
+            throw new Error('Failed to create account payload');
+        }
+    },
 );
 
 const createAccountFromAccountInfo = createAction(
