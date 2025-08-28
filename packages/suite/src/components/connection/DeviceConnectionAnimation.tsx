@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 import { ConnectorImage } from './ConnectorImage';
 import { DeviceImage } from './DeviceImage';
@@ -46,7 +46,7 @@ export const CableConnectionAnimation = ({
 }: CableConnectionAnimationProps) => (
     <Wrapper>
         <DeviceWrapper>
-            <DeviceImage size="large" deviceModel={DeviceModelInternal.T3W1} />
+            <DeviceImage size="large" deviceModel={DEFAULT_FLAGSHIP_MODEL} />
         </DeviceWrapper>
         {!isBluetooth && (
             <CableWrapper>

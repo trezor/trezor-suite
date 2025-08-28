@@ -5,9 +5,10 @@ import { Image, PNG_IMAGES, PNG_PATH } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 // component taken from native part of app, edit for desktop & web usage only for one model
-type SupportedDeviceModels = DeviceModelInternal.T3W1;
+type SupportedDeviceModels = DeviceModelInternal.T3W1 | DeviceModelInternal.T3T1;
 
 const deviceImageMap: Record<SupportedDeviceModels, string> = {
+    [DeviceModelInternal.T3T1]: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TREZOR_T3T1_LARGE_2x}`),
     [DeviceModelInternal.T3W1]: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TREZOR_T3W1_LARGE_2x}`),
 };
 
