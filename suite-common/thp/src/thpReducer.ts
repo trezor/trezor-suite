@@ -85,6 +85,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                         ),
                 );
             })
+            .addCase(thpActions.removeAllCredentials, state => {
+                state.credentials = [];
+            })
             .addMatcher(isAnyOf(thpActions.finishThpFlow, thpActions.cancelThpFlow), state => {
                 state.step = null;
             })

@@ -41,12 +41,15 @@ export const removeCredentials = createAction(
     }),
 );
 
+export const removeAllCredentials = createAction(`${THP_PREFIX}/removeAllCredentials`);
+
 export const thpActions = {
     invalidCode,
     finishThpFlow,
     addCredential,
     cancelThpFlow,
     removeCredentials,
+    removeAllCredentials,
     setLastThpCode,
     showAutoconnectInfo,
     incrementCredentialConnectionCounter,
