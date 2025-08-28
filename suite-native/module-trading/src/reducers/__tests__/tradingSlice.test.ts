@@ -352,14 +352,16 @@ describe('tradingSlice', () => {
             expect(state.buy.tradingAccountKey).toBeUndefined();
         });
 
-        it('should clear exchange.receiveAccountKey', () => {
+        it('should clear exchange.receiveAccountKey and exchange.tradingAccountKey', () => {
             const actions = [
                 tradingExchangeActions.setReceiveAccountKey('account-key'),
+                tradingExchangeActions.setTradingAccountKey('account-key'),
                 deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
             expect(state.exchange.receiveAccountKey).toBeUndefined();
+            expect(state.exchange.tradingAccountKey).toBeUndefined();
         });
 
         it('should clear sell.tradingAccountKey', () => {

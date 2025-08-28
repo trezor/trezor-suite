@@ -95,6 +95,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             .addCase(deviceActions.selectDevice, state => {
                 state.buy.tradingAccountKey = undefined;
                 state.buy.receiveAddress = undefined;
+                state.exchange.tradingAccountKey = undefined;
                 state.exchange.receiveAccountKey = undefined;
                 state.exchange.receiveAddress = undefined;
                 state.sell.tradingAccountKey = undefined;
