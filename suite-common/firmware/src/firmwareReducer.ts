@@ -84,6 +84,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         })
         .addCase(firmwareActions.resetReducer, state => ({
             ...initialState,
+            firmwareUpdateSource: state.firmwareUpdateSource,
             useDevkit: state.useDevkit,
         }))
         .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
