@@ -6481,7 +6481,7 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA_INFO: {
         id: 'TR_GRAPH_MISSING_DATA_INFO',
         defaultMessage:
-            'and all related accounts are reflected in the balance but not in the graph',
+            "and all token amounts are included in the portfolio balance, but aren't currently supported in graph view.",
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
