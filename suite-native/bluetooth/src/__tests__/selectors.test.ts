@@ -108,17 +108,24 @@ describe('selectNearbyBluetoothDevices', () => {
 
 describe('selectNearbyPairableBluetoothDevices', () => {
     test.each([
-        ['null nearby devices', null, []],
-        ['empty nearby devices', [], []],
-        ['non-pairable nearby device', [knownDevice], []],
-        ['pairable nearby device', [pairableDevice], [pairableDevice]],
-        ['several nearby devices', [unknownDevice, knownDevice, pairableDevice], [pairableDevice]],
-    ])('returns correct value for %s', (_, nearbyDevices, expectedDevices) => {
+        ['null nearby devices', null, [], []],
+        ['empty nearby devices', [], [], []],
+        ['non-pairable nearby device', [knownDevice], [], []],
+        ['pairable nearby device', [pairableDevice], [], [pairableDevice]],
+        ['pairable known device', [pairableDevice], [pairableDevice], []],
+        [
+            'several nearby devices',
+            [unknownDevice, knownDevice, pairableDevice],
+            [],
+            [pairableDevice],
+        ],
+    ])('returns correct value for %s', (_, nearbyDevices, knownDevices, expectedDevices) => {
         expect(
             selectNearbyPairableBluetoothDevices({
                 bluetooth: {
                     ...initialState,
                     nearbyDevices,
+                    knownDevices,
                 },
             }),
         ).toStrictEqual(expectedDevices);
