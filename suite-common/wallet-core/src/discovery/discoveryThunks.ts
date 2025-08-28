@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { DiscoveryItem, DiscoveryStatus } from '@suite-common/wallet-types';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     AccountInfo,
@@ -185,14 +185,6 @@ const transformProgressEventData = (
 ) => {
     const { index, symbol, type: accountType, path, backendType } = response;
 
-    const discoveryItem: DiscoveryItem = {
-        symbol,
-        index,
-        accountType,
-        path: path as Bip43Path,
-        backendType: backendType as TrezorConnectBackendType | undefined,
-    };
-
     const accountInfo: AccountInfo = !response.failed
         ? response
         : {
@@ -205,7 +197,11 @@ const transformProgressEventData = (
 
     const accountPayload: CreateAccountActionProps = {
         deviceState,
-        discoveryItem,
+        symbol,
+        index,
+        accountType,
+        path: path as Bip43Path,
+        backendType: backendType as TrezorConnectBackendType | undefined,
         accountInfo,
         // first normal account is always visible on web & desktop
         visible: response.failed || !response.empty || (accountType === 'normal' && index === 0),

@@ -41,12 +41,10 @@ describe('Account Reducer', () => {
         store.dispatch(
             accountsActions.createAccount({
                 deviceState: '1stTestnetAddress@device_id:0',
-                discoveryItem: {
-                    index: 0,
-                    path: testBip43Path,
-                    accountType: 'normal',
-                    symbol: 'btc',
-                },
+                index: 0,
+                path: testBip43Path,
+                accountType: 'normal',
+                symbol: 'btc',
                 accountInfo: {
                     descriptor: 'XPUB',
                     path: testBip43Path,

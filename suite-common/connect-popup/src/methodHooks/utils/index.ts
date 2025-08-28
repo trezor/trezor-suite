@@ -8,12 +8,10 @@ export const createPlaceholderAccount = (
     accountsActions.createAccount({
         // Real device state not needed, this is also better to differentiate from real accounts
         deviceState: 'placeholder@connect:0',
-        discoveryItem: {
-            index: 0,
-            path,
-            accountType: 'placeholder',
-            symbol: network.symbol,
-        },
+        index: 0,
+        path,
+        accountType: 'placeholder',
+        symbol: network.symbol,
         accountInfo: {
             path,
             descriptor: '',

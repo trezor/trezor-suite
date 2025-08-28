@@ -615,14 +615,12 @@ export const createCoinjoinAccount =
         const coinjoinAccount = dispatch(
             accountsActions.createAccount({
                 deviceState: device!.state!.staticSessionId!,
-                discoveryItem: {
-                    index: 0,
-                    path,
-                    unlockPath: unlockPath.payload,
-                    accountType: account.accountType,
-                    backendType: 'coinjoin',
-                    symbol: network.symbol,
-                },
+                index: 0,
+                path,
+                unlockPath: unlockPath.payload,
+                accountType: account.accountType,
+                backendType: 'coinjoin',
+                symbol: network.symbol,
                 accountInfo: {
                     ...EMPTY_ACCOUNT_INFO,
                     descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
