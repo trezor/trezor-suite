@@ -10,7 +10,7 @@ const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
-export const FirmwareUpdate = () => {
+export const FirmwareUpdateEnvironmentSelect = () => {
     const firmwareUpdateSource = useSelector(selectFirmwareUpdateSource);
     const dispatch = useDispatch();
 

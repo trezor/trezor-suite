@@ -14,7 +14,7 @@ import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
-import { FirmwareUpdate } from './FirmwareUpdate';
+import { FirmwareUpdateEnvironmentSelect } from './FirmwareUpdateEnvironmentSelect';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
@@ -104,7 +104,7 @@ export const SettingsDebug = () => {
                 {isDesktop() && <ConnectPopup />}
             </SettingsSection>
             <SettingsSection title="Firmware update source">
-                <FirmwareUpdate />
+                <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <LocalFirstStorageSettings />
         </SettingsLayout>
