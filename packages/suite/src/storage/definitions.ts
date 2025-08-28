@@ -8,12 +8,12 @@ import type { MessageState } from '@suite-common/message-system';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,
+    PersistentDeviceData,
     ThpSuiteCredentials,
 } from '@suite-common/suite-types';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceReducerState } from '@suite-common/wallet-core';
 import type {
     BackendSettings,
     FormState,
@@ -159,11 +159,9 @@ export interface SuiteDBSchema extends DBSchema {
             firmwareUpdateSource: FirmwareUpdateSource;
         };
     };
-    security: {
-        key: 'security';
-        value: {
-            devicesWithFailedEntropyCheck: DeviceReducerState['devicesWithFailedEntropyCheck'];
-        };
+    persistentDeviceData: {
+        key: 'persistentDeviceData';
+        value: PersistentDeviceData[];
     };
     connect: {
         key: 'connect';

@@ -14,6 +14,7 @@ import {
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     BlockchainState,
+    DeviceReducerState,
     ExplorerConfig,
     FiatRatesState,
     TransactionsState,
@@ -189,9 +190,10 @@ export const extraDependencies: ExtraDependencies = {
             if (!device) return;
             device.passwords = metadata;
         },
-        storageLoadDevices: (state, { payload }: StorageLoadAction) => {
+        storageLoadDevices: (state: DeviceReducerState, { payload }: StorageLoadAction) => {
+            // @ts-expect-error loaded devices have empty path, TODO deviceReducer should have path nullable, because remembered wallets??
             state.devices = payload.devices;
-            state.devicesWithFailedEntropyCheck = payload.security?.devicesWithFailedEntropyCheck;
+            state.persistentDeviceData = payload.persistentDeviceData ?? [];
         },
         storageLoadFormDrafts: (state, { payload }: StorageLoadAction) => {
             payload.sendFormDrafts.forEach(d => {

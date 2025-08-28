@@ -1,5 +1,11 @@
 # Storage changelog
 
+## 25.10.0
+
+- create `persistentDeviceData` object store
+- migrate data from `security` to `persistentDeviceData` object store
+- remove `security` object store
+
 ## 25.9.2
 
 - clear `security.devicesWithFailedEntropyCheck` because of false positives in 25.8
