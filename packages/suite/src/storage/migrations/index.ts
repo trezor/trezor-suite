@@ -1167,6 +1167,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             }
         });
 
+        // @ts-expect-error security no longer exists
         db.createObjectStore('security');
     }
 
