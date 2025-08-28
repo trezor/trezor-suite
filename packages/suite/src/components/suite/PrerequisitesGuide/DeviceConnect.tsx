@@ -1,6 +1,6 @@
-import { deviceActions } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
+import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
@@ -14,7 +14,7 @@ export const DeviceConnect = () => {
     }
 
     return (
-        <Button onClick={() => dispatch(deviceActions.toggleConnectionModal())}>
+        <Button onClick={() => dispatch(toggleConnectionModal())}>
             <Translation id="TR_CONNECT" />
         </Button>
     );

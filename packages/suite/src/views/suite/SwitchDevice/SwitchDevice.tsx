@@ -1,8 +1,9 @@
 import * as deviceUtils from '@suite-common/suite-utils';
-import { deviceActions, selectDevices } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { ForegroundAppProps } from 'src/types/suite';
@@ -23,7 +24,8 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     });
 
     const openDeviceConnectionModal = () => {
-        dispatch(deviceActions.toggleConnectionModal());
+        dispatch(setConnectionMode('bluetooth'));
+        dispatch(toggleConnectionModal());
         onCancel();
     };
 

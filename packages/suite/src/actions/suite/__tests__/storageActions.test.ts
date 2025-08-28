@@ -3,7 +3,6 @@ import '@suite-common/test-utils/src/globalOverrides';
 import {
     changeCoinVisibility,
     deviceActions,
-    prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareSendFormReducer,
     selectDevices,
@@ -13,6 +12,7 @@ import {
 import * as discoveryActions from '@suite-common/wallet-core';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
+import { deviceSlice } from 'src/actions/device/deviceSlice';
 import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -30,7 +30,7 @@ import * as suiteActions from '../suiteActions';
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
-const deviceReducer = prepareDeviceReducer(extraDependencies);
+const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
 
@@ -240,6 +240,7 @@ describe('Storage actions', () => {
                     devices: [dev1, dev2, dev2Instance1],
                     isDeviceAutoEjectEnabled: false,
                     isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
                 },
                 wallet: {
                     accounts: [acc1, acc2],
@@ -332,6 +333,7 @@ describe('Storage actions', () => {
                     devices: [dev1, dev2],
                     isDeviceAutoEjectEnabled: false,
                     isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
                 },
                 wallet: {
                     accounts: [acc1, acc2],
@@ -376,6 +378,7 @@ describe('Storage actions', () => {
                     devices: [dev1Connected],
                     isDeviceAutoEjectEnabled: false,
                     isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
                 },
                 wallet: {
                     accounts: [acc1],
@@ -414,6 +417,7 @@ describe('Storage actions', () => {
                     devices: [dev1],
                     isDeviceAutoEjectEnabled: false,
                     isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
                 },
                 wallet: {
                     accounts: [acc1, accLtc],
@@ -465,6 +469,7 @@ describe('Storage actions', () => {
                     devices: [devNotRemembered],
                     isDeviceAutoEjectEnabled: false,
                     isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
                 },
             }),
         );

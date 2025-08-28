@@ -1,15 +1,15 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
+import { deviceSlice } from 'src/actions/device/deviceSlice';
 import { SUITE } from 'src/actions/suite/constants';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
-const deviceReducer = prepareDeviceReducer(extraDependencies);
+const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -22,6 +22,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
         devices: device?.devices || [],
         isDeviceAutoEjectEnabled: false,
         isConnectionModalOpen: false,
+        defaultConnectionMode: 'cable' as 'cable' | 'bluetooth',
     },
     wallet: {
         settings: {

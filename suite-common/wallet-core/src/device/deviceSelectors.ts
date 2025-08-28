@@ -30,8 +30,6 @@ export const selectDevicesCount = (state: DeviceRootState) => state.device?.devi
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
 export const selectIsDeviceAutoEjectEnabled = (state: DeviceRootState) =>
     state.device.isDeviceAutoEjectEnabled;
-export const selectIsConnectionModalOpen = (state: DeviceRootState) =>
-    state.device.isConnectionModalOpen;
 
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(

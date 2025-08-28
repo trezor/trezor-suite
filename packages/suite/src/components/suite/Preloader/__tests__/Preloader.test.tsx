@@ -1,11 +1,11 @@
 import { fireEvent, screen } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics';
-import { DeviceReducerState } from '@suite-common/wallet-core';
 import { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
 
+import { DesktopDeviceState } from 'src/actions/device/deviceSlice';
 import { AppState } from 'src/reducers/store';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
@@ -60,7 +60,7 @@ type GetInitialStateProps = {
     suite?: Partial<SuiteState>;
     router?: Partial<RouterState>;
     // I am not happy about `DeepPartial` here, but it would be hell to fix all the fixtures
-    device?: DeepPartial<DeviceReducerState>;
+    device?: DeepPartial<DesktopDeviceState>;
     analytics?: Partial<AnalyticsState>;
 };
 
@@ -72,7 +72,7 @@ const getInitialState = ({
 }: GetInitialStateProps = {}): AppState => ({
     ...initialAppState,
     router: { ...initialAppState.router, ...router } as unknown as RouterState,
-    device: { ...initialAppState.device, ...device } as DeviceReducerState,
+    device: { ...initialAppState.device, ...device } as DesktopDeviceState,
     analytics: { ...initialAppState.analytics, ...analytics },
 
     suite: {

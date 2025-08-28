@@ -24,17 +24,15 @@ export type DeviceReducerState = {
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
     isDeviceAutoEjectEnabled: boolean;
-    isConnectionModalOpen: boolean;
 };
 
-const initialState: DeviceReducerState = {
+export const deviceInitialState: DeviceReducerState = {
     devices: [],
     selectedDevice: undefined,
     isDeviceAutoEjectEnabled: false,
-    isConnectionModalOpen: false,
 };
 
-export const deviceReducerInitialState = initialState;
+export const deviceReducerInitialState = deviceInitialState;
 
 export type DeviceRootState = {
     device: DeviceReducerState;
@@ -111,7 +109,6 @@ const merge = (
  */
 const connectDevice = (draft: DeviceReducerState, device: Device) => {
     const currentTime = new Date().getTime();
-    draft.isConnectionModalOpen = false;
 
     const deviceCommonFields = {
         connected: true,
@@ -558,98 +555,98 @@ const requestDeviceReconnect = (draft: DeviceReducerState) => {
     draft.devices[index].reconnectRequested = true;
 };
 
-export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
-    builder
-        .addCase(deviceActions.deviceChanged, (state, { payload }) => {
-            changeDevice(state, payload, { connected: true, available: true });
-        })
-        .addCase(deviceActions.setDeviceState, (state, { payload }) => {
-            setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
-        })
-        .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
-            addAuthorizedDevice(state, payload.device);
-        })
+export const prepareDeviceReducer = createReducerWithExtraDeps(
+    deviceInitialState,
+    (builder, extra) => {
+        builder
+            .addCase(deviceActions.deviceChanged, (state, { payload }) => {
+                changeDevice(state, payload, { connected: true, available: true });
+            })
+            .addCase(deviceActions.setDeviceState, (state, { payload }) => {
+                setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
+            })
+            .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
+                addAuthorizedDevice(state, payload.device);
+            })
 
-        .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
-            disconnectDevice(state, payload);
-        })
-        .addCase(deviceActions.rememberDevice, (state, { payload }) => {
-            remember(state, payload.device, payload.remember, payload.forceRemember);
-        })
-        .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
-            setTemporaryRememberedDevice(state, payload.device, payload.temporaryRemember);
-        })
-        .addCase(deviceActions.forgetDevice, (state, { payload }) => {
-            forget(state, payload.device);
-        })
-        .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
-            addButtonRequest(state, payload.device, payload.buttonRequest);
-        })
-        .addCase(deviceActions.removeButtonRequests, (state, { payload }) => {
-            removeButtonRequests(state, payload.device, payload.buttonRequestCode);
-        })
-        .addCase(deviceActions.requestDeviceReconnect, state => {
-            requestDeviceReconnect(state);
-        })
-        .addCase(deviceActions.selectDevice, (state, { payload }) => {
-            updateTimestamp(state, payload);
-            state.selectedDevice = payload;
-        })
-        .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
-            state.selectedDevice = payload;
-        })
-        .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
-            setDeviceAuthenticity(state, payload.device, payload.result);
-        })
-        .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
-            if (!state.dismissedSecurityChecks) {
-                state.dismissedSecurityChecks = {};
-            }
-            if (!state.dismissedSecurityChecks.firmwareAuthenticity) {
-                state.dismissedSecurityChecks.firmwareAuthenticity = [];
-            }
-            state.dismissedSecurityChecks.firmwareAuthenticity.unshift(payload);
-        })
-        .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
-        .addCase(
-            extra.actionTypes.setDeviceMetadataPasswords,
-            extra.reducers.setDeviceMetadataPasswordsReducer,
-        )
-        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
-        .addCase(deviceActions.setEntropyCheckFail, (state, { payload }) => {
-            if (!state.devicesWithFailedEntropyCheck) {
-                state.devicesWithFailedEntropyCheck = [];
-            }
-            state.devicesWithFailedEntropyCheck.push(payload);
-        })
-        .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
-            createInstance(state, payload.device);
-        })
-        .addCase(
-            deviceActions.setLocalFirstStorageSecret,
-            (state, { payload: { device, evoluKeys } }) => {
-                if (!device.features) return;
-                const index = deviceUtils.findInstanceIndex(state.devices, device);
-                if (!state.devices[index]) return;
-                state.devices[index].localFirstStorageSecret = { evoluKeys };
-            },
-        )
-        .addCase(deviceActions.toggleIsDeviceAutoEjectEnabled, state => {
-            state.isDeviceAutoEjectEnabled = !state.isDeviceAutoEjectEnabled;
-        })
-        .addCase(deviceActions.toggleConnectionModal, state => {
-            state.isConnectionModalOpen = !state.isConnectionModalOpen;
-        })
-        .addCase(deviceActions.setDiscovered, (state, { payload }) => {
-            const device = state.devices.find(
-                d => d.state?.staticSessionId === payload.staticSessionId,
+            .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
+                disconnectDevice(state, payload);
+            })
+            .addCase(deviceActions.rememberDevice, (state, { payload }) => {
+                remember(state, payload.device, payload.remember, payload.forceRemember);
+            })
+            .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
+                setTemporaryRememberedDevice(state, payload.device, payload.temporaryRemember);
+            })
+            .addCase(deviceActions.forgetDevice, (state, { payload }) => {
+                forget(state, payload.device);
+            })
+            .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
+                addButtonRequest(state, payload.device, payload.buttonRequest);
+            })
+            .addCase(deviceActions.removeButtonRequests, (state, { payload }) => {
+                removeButtonRequests(state, payload.device, payload.buttonRequestCode);
+            })
+            .addCase(deviceActions.requestDeviceReconnect, state => {
+                requestDeviceReconnect(state);
+            })
+            .addCase(deviceActions.selectDevice, (state, { payload }) => {
+                updateTimestamp(state, payload);
+                state.selectedDevice = payload;
+            })
+            .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
+                state.selectedDevice = payload;
+            })
+            .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
+                setDeviceAuthenticity(state, payload.device, payload.result);
+            })
+            .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
+                if (!state.dismissedSecurityChecks) {
+                    state.dismissedSecurityChecks = {};
+                }
+                if (!state.dismissedSecurityChecks.firmwareAuthenticity) {
+                    state.dismissedSecurityChecks.firmwareAuthenticity = [];
+                }
+                state.dismissedSecurityChecks.firmwareAuthenticity.unshift(payload);
+            })
+            .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
+            .addCase(
+                extra.actionTypes.setDeviceMetadataPasswords,
+                extra.reducers.setDeviceMetadataPasswordsReducer,
+            )
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
+            .addCase(deviceActions.setEntropyCheckFail, (state, { payload }) => {
+                if (!state.devicesWithFailedEntropyCheck) {
+                    state.devicesWithFailedEntropyCheck = [];
+                }
+                state.devicesWithFailedEntropyCheck.push(payload);
+            })
+            .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
+                createInstance(state, payload.device);
+            })
+            .addCase(
+                deviceActions.setLocalFirstStorageSecret,
+                (state, { payload: { device, evoluKeys } }) => {
+                    if (!device.features) return;
+                    const index = deviceUtils.findInstanceIndex(state.devices, device);
+                    if (!state.devices[index]) return;
+                    state.devices[index].localFirstStorageSecret = { evoluKeys };
+                },
+            )
+            .addCase(deviceActions.toggleIsDeviceAutoEjectEnabled, state => {
+                state.isDeviceAutoEjectEnabled = !state.isDeviceAutoEjectEnabled;
+            })
+            .addCase(deviceActions.setDiscovered, (state, { payload }) => {
+                const device = state.devices.find(
+                    d => d.state?.staticSessionId === payload.staticSessionId,
+                );
+                if (device) device.discovered = payload.success;
+            })
+            .addMatcher(
+                isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
+                (state, { payload: { device } }) => {
+                    connectDevice(state, device);
+                },
             );
-            if (device) device.discovered = payload.success;
-        })
-        .addMatcher(
-            isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
-            (state, { payload: { device } }) => {
-                connectDevice(state, device);
-            },
-        );
-});
+    },
+);

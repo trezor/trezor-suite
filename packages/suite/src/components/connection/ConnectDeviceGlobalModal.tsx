@@ -19,6 +19,8 @@ import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConn
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { bluetoothStartScanningThunk } from 'src/actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from 'src/actions/bluetooth/bluetoothStopScanningThunk';
+import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
+import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
@@ -62,12 +64,14 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
 
-    const [isBluetoothMode, setIsBluetoothMode] = useState(false);
+    const defaultConnectionMode = useSelector(selectDeviceDefaultConnectionMode);
+
+    const isBluetoothMode = defaultConnectionMode === 'bluetooth';
 
     const bluetoothMode = isBluetoothMode && isBluetoothEnabled && isDesktop();
 
     const toggleBluetoothMode = () => {
-        setIsBluetoothMode(!isBluetoothMode);
+        dispatch(setConnectionMode(bluetoothMode ? 'cable' : 'bluetooth'));
     };
 
     const toggleShowHints = () => {
