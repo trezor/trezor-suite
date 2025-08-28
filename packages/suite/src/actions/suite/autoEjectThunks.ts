@@ -38,8 +38,6 @@ export const setAutoEjectEnabledThunk = createThunk(
             }
         });
 
-        dispatch(storageActions.saveSuiteSettings());
-
         dispatch(setAutoEject(true));
 
         const currentDevices = selectDevices(getState());
