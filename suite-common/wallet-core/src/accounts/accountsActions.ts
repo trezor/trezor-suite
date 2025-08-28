@@ -51,9 +51,9 @@ const composeCreateAccountActionPayload = ({
     error,
 }: CreateAccountActionProps): Account => {
     try {
-        const { chainId } = getNetwork(discoveryItem.coin);
-        const { networkType } = networks[discoveryItem.coin];
-        const isNonEthEvm = networkType === 'ethereum' && discoveryItem.coin !== 'eth';
+        const { chainId } = getNetwork(discoveryItem.symbol);
+        const { networkType } = networks[discoveryItem.symbol];
+        const isNonEthEvm = networkType === 'ethereum' && discoveryItem.symbol !== 'eth';
 
         const metadataKey = isNonEthEvm
             ? `${accountInfo.descriptor}-${chainId}`
@@ -69,9 +69,9 @@ const composeCreateAccountActionPayload = ({
             unlockPath: discoveryItem.unlockPath,
             descriptor: accountInfo.descriptor,
             descriptorChecksum: accountInfo.descriptorChecksum,
-            key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
+            key: getAccountKey(accountInfo.descriptor, discoveryItem.symbol, deviceState),
             accountType: discoveryItem.accountType,
-            symbol: discoveryItem.coin,
+            symbol: discoveryItem.symbol,
             empty: accountInfo.empty,
             ...(discoveryItem.backendType === 'coinjoin'
                 ? {
@@ -89,7 +89,7 @@ const composeCreateAccountActionPayload = ({
                 isArrayMember(networkType, ['ripple', 'stellar'])
                     ? accountInfo.balance
                     : accountInfo.availableBalance,
-                discoveryItem.coin,
+                discoveryItem.symbol,
             ),
             tokens: enhanceTokens(accountInfo.tokens),
             addresses: enhanceAddresses(accountInfo, {

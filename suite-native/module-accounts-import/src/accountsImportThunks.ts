@@ -65,7 +65,7 @@ export const importAccountThunk = createThunk(
                         index: deviceNetworkAccounts.length, // indexed from 0
                         path: (accountInfo?.path ?? '') as Bip43Path,
                         accountType,
-                        coin: symbol,
+                        symbol,
                     },
                     accountInfo,
                     imported,
