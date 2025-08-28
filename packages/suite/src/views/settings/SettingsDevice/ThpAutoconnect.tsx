@@ -1,3 +1,4 @@
+import { startThpAutoconnectThunk } from '@suite-common/thp';
 import { Switch } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -7,7 +8,6 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 import { removeThpAutoconnectThunk } from '../../../actions/thp/removeThpAutoconnectThunk';
-import { startThpAutoconnectThunk } from '../../../actions/thp/startThpAutoconnectThunk';
 
 interface PinProtectionProps {
     isDeviceLocked: boolean;

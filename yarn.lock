@@ -11369,6 +11369,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/thp@workspace:suite-native/thp"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-native/atoms": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
