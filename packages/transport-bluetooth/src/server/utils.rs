@@ -6,6 +6,10 @@ use btleplug::{
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const BUILD_VERSION_TAG: &str = match option_env!("BUILD_VERSION_TAG") {
+    Some(hash) => hash,
+    None => "unknown",
+};
 
 pub async fn scan_filter(adapter: &Adapter, id: &PeripheralId) -> Option<Peripheral> {
     let peripheral = match adapter.peripheral(id).await {

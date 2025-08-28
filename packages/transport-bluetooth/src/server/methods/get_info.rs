@@ -53,6 +53,7 @@ fn get_adapter_version() -> u8 {
 
 pub async fn get_info(manager: AdapterManager) -> MethodResult {
     let api_version = utils::APP_VERSION.to_string();
+    let build = utils::BUILD_VERSION_TAG.to_string();
 
     let info = match get_adapter_info().await {
         Ok(info) => info,
@@ -67,6 +68,7 @@ pub async fn get_info(manager: AdapterManager) -> MethodResult {
         return Ok(WsResponsePayload::Info {
             state,
             api_version,
+            build,
             adapter_info: info,
             adapter_version,
         });
@@ -75,6 +77,7 @@ pub async fn get_info(manager: AdapterManager) -> MethodResult {
     Ok(WsResponsePayload::Info {
         state,
         api_version,
+        build,
         adapter_info: info,
         adapter_version,
     })

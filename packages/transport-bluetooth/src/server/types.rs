@@ -64,6 +64,7 @@ pub enum WsResponsePayload {
     Info {
         state: AdapterState,
         api_version: String,
+        build: String,
         adapter_info: String,
         adapter_version: u8,
     },
