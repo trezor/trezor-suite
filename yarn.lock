@@ -13110,6 +13110,8 @@ __metadata:
 "@trezor/urls@workspace:*, @trezor/urls@workspace:packages/urls":
   version: 0.0.0-use.local
   resolution: "@trezor/urls@workspace:packages/urls"
+  dependencies:
+    "@trezor/env-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

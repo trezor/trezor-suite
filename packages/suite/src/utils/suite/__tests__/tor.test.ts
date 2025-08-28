@@ -1,6 +1,11 @@
 import { TOR_URLS } from '@trezor/urls';
+import { withPlatformUtm } from '@trezor/urls/src/platform-utm';
 
 import { getIsTorDomain, getTorUrlIfAvailable, isOnionUrl } from 'src/utils/suite/tor';
+
+jest.mock('@trezor/env-utils', () => ({
+    getEnvironment: jest.fn(() => 'web'),
+}));
 
 describe('tor', () => {
     beforeAll(() => {
@@ -37,6 +42,11 @@ describe('tor', () => {
                 desc: 'with query - coingecko',
                 in: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/history?date=13-1-2021',
                 out: `http://cdn.${TOR_URLS['trezor.io']}/dynamic/coingecko/api/v3/coins/bitcoin/history?date=13-1-2021`,
+            },
+            {
+                desc: 'with platform utm',
+                in: withPlatformUtm('https://trezor.io/refer-a-friend'),
+                out: `http://${TOR_URLS['trezor.io']}/refer-a-friend?utm_medium=web`,
             },
             {
                 desc: 'not valid domain',
