@@ -26,7 +26,7 @@ const Wrapper = styled.div`
     width: 100%;
     height: 100%;
     flex-direction: column;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation2};
+    /* background: ${({ theme }) => theme.backgroundSurfaceElevation2}; */
 `;
 
 const Body = styled.div`
@@ -60,9 +60,9 @@ const Header = styled.div`
     align-items: center;
     flex-direction: column;
     max-width: ${MAX_ONBOARDING_WIDTH}px;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    box-shadow: 0 ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.xxs}
-        ${({ theme }) => theme.backgroundSurfaceElevation2};
+    /* background: ${({ theme }) => theme.backgroundSurfaceElevation2}; */
+    /* box-shadow: 0 ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.xxs}
+        ${({ theme }) => theme.backgroundSurfaceElevation2}; */
     margin-bottom: ${spacingsPx.md};
     z-index: ${zIndices.base};
 
