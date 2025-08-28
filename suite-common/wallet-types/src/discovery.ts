@@ -1,8 +1,6 @@
 import type { DeviceUniquePath } from '@trezor/connect';
 import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
-import { Account } from './account';
-
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
@@ -55,8 +53,3 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
     );
 
 export type Discovery = Record<DeviceUniquePath, DiscoveryStatus>;
-
-export type DiscoveryItem = Pick<
-    Account,
-    'path' | 'unlockPath' | 'symbol' | 'index' | 'accountType' | 'backendType'
->;

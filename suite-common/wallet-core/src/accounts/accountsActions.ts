@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { getNetwork, networks } from '@suite-common/wallet-config';
-import { Account, DiscoveryItem, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
     enhanceTokens,
@@ -31,19 +31,31 @@ const removeAccount = createAction(
     }),
 );
 
-export type CreateAccountActionProps = {
-    deviceState: StaticSessionId;
-    discoveryItem: DiscoveryItem;
+export type CreateAccountActionProps = Pick<
+    Account,
+    | 'path'
+    | 'unlockPath'
+    | 'symbol'
+    | 'index'
+    | 'accountType'
+    | 'backendType'
+    | 'deviceState'
+    | 'imported'
+    | 'accountLabel'
+    | 'visible'
+> & {
     accountInfo: AccountInfo;
-    imported?: boolean;
-    accountLabel?: string;
     error?: string;
-    visible: boolean;
 };
 
 const composeCreateAccountActionPayload = ({
     deviceState,
-    discoveryItem,
+    path,
+    unlockPath,
+    symbol,
+    index,
+    accountType,
+    backendType,
     accountInfo,
     imported,
     accountLabel,
@@ -51,9 +63,9 @@ const composeCreateAccountActionPayload = ({
     error,
 }: CreateAccountActionProps): Account => {
     try {
-        const { chainId } = getNetwork(discoveryItem.symbol);
-        const { networkType } = networks[discoveryItem.symbol];
-        const isNonEthEvm = networkType === 'ethereum' && discoveryItem.symbol !== 'eth';
+        const { chainId } = getNetwork(symbol);
+        const { networkType } = networks[symbol];
+        const isNonEthEvm = networkType === 'ethereum' && symbol !== 'eth';
 
         const metadataKey = isNonEthEvm
             ? `${accountInfo.descriptor}-${chainId}`
@@ -64,22 +76,22 @@ const composeCreateAccountActionPayload = ({
             accountLabel,
             imported,
             ...(error !== undefined ? { error, failed: true } : { failed: undefined }),
-            index: discoveryItem.index,
-            path: discoveryItem.path,
-            unlockPath: discoveryItem.unlockPath,
+            index,
+            path,
+            unlockPath,
             descriptor: accountInfo.descriptor,
             descriptorChecksum: accountInfo.descriptorChecksum,
-            key: getAccountKey(accountInfo.descriptor, discoveryItem.symbol, deviceState),
-            accountType: discoveryItem.accountType,
-            symbol: discoveryItem.symbol,
+            key: getAccountKey(accountInfo.descriptor, symbol, deviceState),
+            accountType,
+            symbol,
             empty: accountInfo.empty,
-            ...(discoveryItem.backendType === 'coinjoin'
+            ...(backendType === 'coinjoin'
                 ? {
                       backendType: 'coinjoin',
                       status: 'initial',
                   }
                 : {
-                      backendType: discoveryItem.backendType,
+                      backendType,
                   }),
             visible,
             balance: accountInfo.balance,
@@ -89,15 +101,15 @@ const composeCreateAccountActionPayload = ({
                 isArrayMember(networkType, ['ripple', 'stellar'])
                     ? accountInfo.balance
                     : accountInfo.availableBalance,
-                discoveryItem.symbol,
+                symbol,
             ),
             tokens: enhanceTokens(accountInfo.tokens),
             addresses: enhanceAddresses(accountInfo, {
                 networkType,
-                index: discoveryItem.index,
+                index,
                 addresses: accountInfo.addresses,
             }),
-            utxo: enhanceUtxo(accountInfo.utxo, networkType, discoveryItem.index),
+            utxo: enhanceUtxo(accountInfo.utxo, networkType, index),
             history: accountInfo.history,
             metadata: {
                 key: metadataKey,
@@ -115,24 +127,8 @@ const composeCreateAccountActionPayload = ({
 
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
-    ({
-        deviceState,
-        discoveryItem,
-        accountInfo,
-        imported,
-        accountLabel,
-        visible,
-        error,
-    }: CreateAccountActionProps): { payload: Account } => ({
-        payload: composeCreateAccountActionPayload({
-            deviceState,
-            discoveryItem,
-            accountInfo,
-            imported,
-            accountLabel,
-            visible,
-            error,
-        }),
+    (props: CreateAccountActionProps): { payload: Account } => ({
+        payload: composeCreateAccountActionPayload(props),
     }),
 );
 

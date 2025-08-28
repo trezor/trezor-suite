@@ -61,12 +61,10 @@ export const importAccountThunk = createThunk(
             dispatch(
                 accountsActions.createAccount({
                     deviceState,
-                    discoveryItem: {
-                        index: deviceNetworkAccounts.length, // indexed from 0
-                        path: (accountInfo?.path ?? '') as Bip43Path,
-                        accountType,
-                        symbol,
-                    },
+                    index: deviceNetworkAccounts.length, // indexed from 0
+                    path: (accountInfo?.path ?? '') as Bip43Path,
+                    accountType,
+                    symbol,
                     accountInfo,
                     imported,
                     accountLabel,
