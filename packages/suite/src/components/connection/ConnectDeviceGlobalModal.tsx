@@ -19,6 +19,10 @@ import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConn
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { bluetoothStartScanningThunk } from 'src/actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from 'src/actions/bluetooth/bluetoothStopScanningThunk';
+import {
+    selectIsUnpairingDevice,
+    selectUnpairedDeviceNeedsManualOsRemoval,
+} from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
 import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
@@ -51,6 +55,9 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     const scannerTimerId = useRef<TimerId | null>(null);
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
     const [shouldPairAgain, setShouldPairAgain] = useState(false);
+
+    const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
+    const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
@@ -87,11 +94,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             // If the device is connected or paired (it may have been paired in the OS system directly)
             // => do not filter it based isDeviceUnresponsiveForTooLong
 
-            return (
-                it.connected ||
-                it.paired ||
-                knownDevices.some(knownDevice => knownDevice.id === it.id)
-            );
+            return it.connected;
         }
 
         return true;
@@ -169,6 +172,8 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             setSelectedDeviceId(null);
         }
     };
+
+    if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
 
     if (showHints) {
         return (
