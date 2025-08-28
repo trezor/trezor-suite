@@ -7,7 +7,7 @@ import { useAlert } from '@suite-native/alerts';
 import {
     selectBluetoothAdapterStatus,
     selectHasKnownBluetoothDevices,
-    selectUnknownNearbyBluetoothDevices,
+    selectNearbyPairableBluetoothDevices,
     useBluetoothManager,
 } from '@suite-native/bluetooth';
 import { TurnOnAndUnlockDeviceScreenContent } from '@suite-native/device';
@@ -37,7 +37,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
 
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
     const hasKnownBluetoothDevices = useSelector(selectHasKnownBluetoothDevices);
-    const unknownNearbyBluetoothDevices = useSelector(selectUnknownNearbyBluetoothDevices);
+    const nearbyPairableBluetoothDevices = useSelector(selectNearbyPairableBluetoothDevices);
 
     const navigateToConnectAndUnlockDeviceScreen = () => {
         navigation.replace(AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice);
@@ -91,11 +91,11 @@ export const TurnOnAndUnlockDeviceScreen = () => {
     );
 
     useEffect(() => {
-        if (unknownNearbyBluetoothDevices.length > 0) {
+        if (nearbyPairableBluetoothDevices.length > 0) {
             hideAlert();
             navigation.navigate(AuthorizeDeviceStackRoutes.ConnectBluetoothDevice);
         }
-    }, [unknownNearbyBluetoothDevices, hideAlert, navigation]);
+    }, [nearbyPairableBluetoothDevices, hideAlert, navigation]);
 
     useBluetoothManager();
 

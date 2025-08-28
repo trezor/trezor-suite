@@ -28,22 +28,21 @@ export const selectNearbyBluetoothDevices = createMemoizedSelector(
     nearbyDevices => nearbyDevices ?? [],
 );
 
-export const selectUnknownNearbyBluetoothDevices = createMemoizedSelector(
-    [selectNearbyBluetoothDevices, selectKnownBluetoothDevices],
-    (nearbyBluetoothDevices, knownBluetoothDevices) =>
-        nearbyBluetoothDevices.filter(nearbyDevice =>
-            knownBluetoothDevices.every(knownDevice => nearbyDevice.id !== knownDevice.id),
+export const selectNearbyPairableBluetoothDevices = createMemoizedSelector(
+    [selectNearbyBluetoothDevices],
+    nearbyBluetoothDevices =>
+        nearbyBluetoothDevices.filter(
+            ({ manufacturerData }) => manufacturerData.filterPolicy?.pairing === true,
         ),
 );
 
 export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
     [selectNearbyBluetoothDevices, selectKnownBluetoothDevices],
     (nearbyBluetoothDevices, knownBluetoothDevices) =>
-        nearbyBluetoothDevices.filter(nearbyDevice =>
-            knownBluetoothDevices.some(
-                knownDevice =>
-                    nearbyDevice.id === knownDevice.id &&
-                    knownDevice.connectionStatus.type === 'disconnected',
-            ),
+        nearbyBluetoothDevices.filter(
+            ({ id, manufacturerData, connectionStatus }) =>
+                knownBluetoothDevices.some(knownDevice => knownDevice.id === id) &&
+                manufacturerData.filterPolicy?.pairing !== true &&
+                connectionStatus.type === 'disconnected',
         ),
 );

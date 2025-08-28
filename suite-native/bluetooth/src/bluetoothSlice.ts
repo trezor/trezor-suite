@@ -11,7 +11,7 @@ import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
 import { BluetoothDevice, BluetoothPermissionStatus } from './types';
 
-type NativeBluetoothState = BluetoothState<BluetoothDevice> & {
+export type NativeBluetoothState = BluetoothState<BluetoothDevice> & {
     permissionStatus: BluetoothPermissionStatus;
 };
 

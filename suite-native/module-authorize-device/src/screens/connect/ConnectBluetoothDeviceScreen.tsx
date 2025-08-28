@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     BluetoothDeviceList,
     selectNearbyBluetoothDevices,
-    selectUnknownNearbyBluetoothDevices,
+    selectNearbyPairableBluetoothDevices,
     useBluetoothDevice,
 } from '@suite-native/bluetooth';
 import {
@@ -28,7 +28,7 @@ export const ConnectBluetoothDeviceScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const nearbyBluetoothDevices = useSelector(selectNearbyBluetoothDevices);
-    const unknownNearbyBluetoothDevices = useSelector(selectUnknownNearbyBluetoothDevices);
+    const nearbyPairableBluetoothDevices = useSelector(selectNearbyPairableBluetoothDevices);
 
     useEffect(() => {
         if (nearbyBluetoothDevices.length === 0) {
@@ -40,7 +40,7 @@ export const ConnectBluetoothDeviceScreen = () => {
         <Screen header={<BluetoothDeviceScreenHeader />}>
             <BluetoothDeviceList
                 variant="connect"
-                devices={unknownNearbyBluetoothDevices}
+                devices={nearbyPairableBluetoothDevices}
                 onDeviceButtonPress={connectBluetoothDevice}
             />
         </Screen>
