@@ -7,7 +7,6 @@ export const en = {
     generic: {
         trezorSuite: 'Trezor Suite',
         trezorSuiteLite: 'Trezor Suite Lite',
-        header: '<grey>About</grey> <green>Trezor Suite Lite</green>',
         buttons: {
             back: 'Back',
             cancel: 'Cancel',
@@ -136,6 +135,9 @@ export const en = {
         accountLabelFieldHint: {
             letterCount: '{current} / {max} letters',
         },
+        searchForm: {
+            placeholder: 'Search assets',
+        },
     },
     accountList: {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
@@ -187,6 +189,7 @@ export const en = {
         deviceCard: {
             connect: { actionButton: 'Connect' },
             remove: { actionButton: 'Pair again' },
+            unknownColor: 'Unknown',
         },
     },
     moduleAccountImport: {
@@ -227,6 +230,10 @@ export const en = {
                     address: 'Address is not valid',
                 },
             },
+            scanButton: {
+                xpub: 'Scan public key (XPUB)',
+                address: 'Scan receive address',
+            },
             hintBottomSheet: {
                 title: {
                     xpub: 'Where is my public key (XPUB)?',
@@ -237,6 +244,13 @@ export const en = {
                     address:
                         'To view the receive address of your account, open the Trezor Suite desktop app, plugin your Trezor device, select <emphasized>Accounts</emphasized>, choose <emphasized>Receive</emphasized>, and click on <emphasized>Show full address</emphasized>.',
                 },
+            },
+        },
+        accountImportLoaderScreen: {
+            loaderState: {
+                balances: 'Retrieving Balances',
+                assets: 'Confirming assets',
+                transactions: 'Checking transactions',
             },
         },
     },
@@ -1502,6 +1516,12 @@ export const en = {
                 title: 'Rename coin',
                 coinLabel: 'Coin label',
             },
+            removeAccountAlert: {
+                title: 'Do you really want to remove this coin from {trezorSuiteLiteHeader}?',
+                description:
+                    'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
+                primaryButton: 'Remove coin',
+            },
         },
         accountDetailContentScreen: {
             coinPriceCard: {
@@ -1579,6 +1599,36 @@ export const en = {
             stakeRegistration: 'Registration of a stake address',
             stakeDeregistration: 'Deregistration of a stake address',
         },
+        TransactionDetailScreen: {
+            inputsSheet: {
+                inputs: 'Inputs {inputsCount}',
+                outputs: 'Outputs {outputsCount}',
+                internalTransfers: 'Internal transfers',
+                tokenTransfers: 'Token transfers',
+            },
+            valuesSheet: {
+                today: 'Today {percentageDifference}',
+                transaction: 'Transaction',
+                input: 'Input',
+                fee: 'Output',
+                total: 'Total',
+            },
+            parametersSheet: {
+                confirmations: 'Confirmations',
+                feeRate: 'Fee rate',
+                rbf: 'RBF',
+                lockTime: 'Lock time',
+                broadcast: 'Broadcast',
+                transactionId: 'Transaction ID',
+                transactionIdCopied: 'Transaction ID copied',
+            },
+            addressesSheet: {
+                from: 'From {count}',
+                to: 'To {count}',
+                copied: 'Address copied to clipboard',
+            },
+            unknownTarget: 'Target or Origin of transaction is unknown.',
+        },
     },
     device: {
         title: {
@@ -1630,12 +1680,23 @@ export const en = {
         goToAccessories: 'Get swag for your device @ Trezor Shop',
     },
     qrCode: {
+        scanner: 'QR code scanner',
         addressCopied: 'Address copied',
         copyButton: 'Copy',
         shareButton: 'Share',
         qrCodeHint: 'Point the camera directly at the QR code',
         pickImageButton: 'Upload from gallery',
         pickImageError: 'QR code not found in the image.',
+        cautionWarning: {
+            title: 'Handle your public key (XPUB) with caution',
+            subtitle:
+                'Sharing your public key (XPUB) with a third party gives them the ability to view your transaction history.',
+        },
+        deniedWarning: {
+            title: 'Camera access denied.',
+            description: 'Please allow camera access in your device settings.',
+            grantPermissionButton: 'Grant permission',
+        },
     },
     graph: {
         retrievingData: 'Retrieving data...',
@@ -2194,6 +2255,7 @@ export const en = {
             },
             timeAt: '{date} at {time}',
             status: {
+                badge: 'Trade status badge',
                 loginRequest: 'Pending',
                 requesting: 'Requesting',
                 submitted: 'Submitted',
@@ -2295,6 +2357,13 @@ export const en = {
                 inputLabel: 'Slippage',
                 outOfRangeError: 'Slippage must be between 0.01% and 50%',
             },
+        },
+    },
+    notifications: {
+        transaction: {
+            incoming: 'Incoming transaction',
+            confirmed: 'Received transaction',
+            sending: 'Sending transaction',
         },
     },
     firmware: {

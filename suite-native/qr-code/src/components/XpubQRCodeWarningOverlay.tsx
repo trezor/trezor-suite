@@ -1,4 +1,5 @@
 import { Box, PictogramTitleHeader } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const overlayStyle = prepareNativeStyle(utils => ({
@@ -14,9 +15,8 @@ export const XpubOverlayWarning = () => {
         <Box style={applyStyle(overlayStyle)}>
             <PictogramTitleHeader
                 variant="warning"
-                title="Handle your public key (XPUB) with caution"
-                subtitle="Sharing your public key (XPUB) with a third party gives them the ability to
-                        view your transaction history."
+                title={<Translation id="qrCode.cautionWarning.title" />}
+                subtitle={<Translation id="qrCode.cautionWarning.subtitle" />}
             />
         </Box>
     );

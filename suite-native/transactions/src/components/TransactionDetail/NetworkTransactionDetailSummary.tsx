@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
@@ -75,7 +76,13 @@ export const NetworkTransactionDetailSummary = ({
     );
 
     if (!transaction) {
-        return <ErrorMessage errorMessage="Target or Origin of transaction is unknown." />;
+        return (
+            <ErrorMessage
+                errorMessage={
+                    <Translation id="transactions.TransactionDetailScreen.unknownTarget" />
+                }
+            />
+        );
     }
 
     return (

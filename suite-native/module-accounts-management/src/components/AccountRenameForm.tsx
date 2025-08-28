@@ -15,7 +15,7 @@ import {
 } from '@suite-native/accounts';
 import { Box, Button, InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 type AccountRenameFormProps = {
     accountKey: string;
@@ -82,7 +82,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         isDisabled={!isValid}
                         testID="@account-detail/settings/account-rename/confirm-button"
                     >
-                        Confirm
+                        <Translation id="generic.buttons.confirm" />
                     </Button>
                 </VStack>
             </Form>

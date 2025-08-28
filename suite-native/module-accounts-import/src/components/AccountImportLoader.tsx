@@ -7,6 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Box, Spinner, SpinnerLoadingState, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const LINE_VISIBILITY_DURATION = 1000;
@@ -81,7 +82,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
                             setLineHeight1(event.nativeEvent.layout.y);
                         }}
                     >
-                        Retrieving Balances
+                        <Translation id="moduleAccountImport.accountImportLoaderScreen.loaderState.balances" />
                     </Text>
                     <Text
                         variant="titleSmall"
@@ -90,7 +91,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
                             setLineHeight2(event.nativeEvent.layout.y);
                         }}
                     >
-                        Confirming assets
+                        <Translation id="moduleAccountImport.accountImportLoaderScreen.loaderState.assets" />
                     </Text>
                     <Text
                         variant="titleSmall"
@@ -99,7 +100,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
                             setLineHeight3(event.nativeEvent.layout.y);
                         }}
                     >
-                        Checking transactions
+                        <Translation id="moduleAccountImport.accountImportLoaderScreen.loaderState.transactions" />
                     </Text>
                 </Animated.View>
             </Box>

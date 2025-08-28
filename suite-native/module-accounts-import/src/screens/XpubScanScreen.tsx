@@ -30,7 +30,7 @@ import { AccountImportScreenHeader } from '../components/AccountImportScreenHead
 import { DevXpub } from '../components/DevXpub';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
-import { XpubImportSection, networkTypeToTitleMap } from '../components/XpubImportSection';
+import { XpubImportSection, networkTypeToTitleTxKeyMap } from '../components/XpubImportSection';
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;
 
@@ -204,7 +204,7 @@ export const XpubScanScreen = ({
                                     onPress={onXpubFormSubmit}
                                     size="large"
                                 >
-                                    Confirm
+                                    <Translation id="generic.buttons.confirm" />
                                 </Button>
                             </Animated.View>
                         )}
@@ -220,7 +220,7 @@ export const XpubScanScreen = ({
                 handleClose={closeXpubHint}
             />
             <ScanQRBottomSheet
-                title={networkTypeToTitleMap[networkType]}
+                title={<Translation id={networkTypeToTitleTxKeyMap[networkType]} />}
                 onCodeScanned={handleBarCodeScanned}
                 ref={scannerRef}
                 onClose={closeScanner}

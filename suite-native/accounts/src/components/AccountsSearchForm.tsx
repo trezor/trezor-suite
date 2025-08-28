@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 
 import { Box, HStack, SearchInput, TextButton } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AccountsSearchFormProps = {
@@ -24,6 +25,7 @@ const cancelButtonContainerStyle = prepareNativeStyle(() => ({
 }));
 
 export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSearchFormProps) => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
 
     const [inputText, setInputText] = useState('');
@@ -55,14 +57,16 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
                     style={applyStyle(searchFormInputStyle)}
                 >
                     <SearchInput
-                        placeholder="Search assets"
+                        placeholder={translate('accounts.searchForm.placeholder')}
                         onChange={setInputText}
                         maxLength={MAX_SEARCH_VALUE_LENGTH}
                     />
                 </Animated.View>
 
                 <Box style={applyStyle(cancelButtonContainerStyle)}>
-                    <TextButton onPress={onPressCancel}>Cancel</TextButton>
+                    <TextButton onPress={onPressCancel}>
+                        <Translation id="generic.buttons.cancel" />
+                    </TextButton>
                 </Box>
             </HStack>
         </Animated.View>

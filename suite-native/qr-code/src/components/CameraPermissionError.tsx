@@ -1,6 +1,7 @@
 import { Linking } from 'react-native';
 
 import { Box, Button, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const permissionTextContainerStyle = prepareNativeStyle(({ spacings }) => ({
@@ -20,14 +21,18 @@ export const CameraPermissionError = () => {
 
     return (
         <Box style={applyStyle(permissionTextContainerStyle)}>
-            <Text textAlign="center">Camera access denied.</Text>
-            <Text textAlign="center">Please allow camera access in your device settings.</Text>
+            <Text textAlign="center">
+                <Translation id="qrCode.deniedWarning.title" />
+            </Text>
+            <Text textAlign="center">
+                <Translation id="qrCode.deniedWarning.description" />
+            </Text>
 
             <Button
                 onPress={navigateToSystemSettings}
                 style={applyStyle(grantPermissionButtonStyle)}
             >
-                Grant permission
+                <Translation id="qrCode.deniedWarning.grantPermissionButton" />
             </Button>
         </Box>
     );

@@ -6,11 +6,11 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
-import { formatAddressLabel } from './TransactionDetailAddressesSheet';
+import { formatAddressesCount } from './TransactionDetailAddressesSheet';
 import { SummaryRow } from './TransactionSummaryRow';
 import { VinVoutAddress } from '../../types';
 
@@ -85,7 +85,10 @@ export const TransactionDetailAddressesSection = ({
         [addresses],
     );
 
-    const formattedTitle = formatAddressLabel(addressesType, targetAddresses.length);
+    const titleTxKey: TxKeyPath =
+        addressesType === 'inputs'
+            ? 'transactions.TransactionDetailScreen.addressesSheet.from'
+            : 'transactions.TransactionDetailScreen.addressesSheet.to';
 
     const isShowMoreButtonVisible = addresses.length > 2;
     const hiddenAddressesCount = targetAddresses.length - 2;
@@ -97,7 +100,10 @@ export const TransactionDetailAddressesSection = ({
                 <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                     <Box>
                         <Text color="textSubdued" variant="hint">
-                            {formattedTitle}
+                            <Translation
+                                id={titleTxKey}
+                                values={{ count: formatAddressesCount(targetAddresses.length) }}
+                            />
                         </Text>
                         {targetAddresses.slice(0, 2).map(({ address }) => (
                             <AccountAddressFormatter

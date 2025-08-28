@@ -1,7 +1,7 @@
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { Badge, BadgeVariant } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 
 export type TransactionStatusProps = {
@@ -98,6 +98,7 @@ const getLabel = (status: TradingTransactionStatus) => {
 };
 
 export const TradeStatusBadge = ({ status }: TransactionStatusProps) => {
+    const { translate } = useTranslate();
     if (!status) {
         return null;
     }
@@ -108,7 +109,7 @@ export const TradeStatusBadge = ({ status }: TransactionStatusProps) => {
             size="small"
             variant={getBadgeVariant(status)}
             icon={getBadgeIconName(status)}
-            accessibilityHint="Trade status badge"
+            accessibilityHint={translate('moduleTrading.tradeHistory.status.badge')}
         />
     );
 };
