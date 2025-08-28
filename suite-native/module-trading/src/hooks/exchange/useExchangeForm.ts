@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { ExchangeTrade } from 'invity-api';
+import { CryptoId, ExchangeTrade } from 'invity-api';
 
 import {
     TradingExchangeAmountLimitProps,
@@ -11,9 +11,11 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
+import { exchangeActions } from '../../reducers';
 import {
     selectExchangeAmountLimits,
     selectExchangeQuotes,
@@ -86,7 +88,7 @@ const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => 
     useEffect(() => {
         const amount = selectedQuote?.receiveStringAmount;
         if (!amount) {
-            setValue('receiveCryptoAmount', undefined);
+            setValue('receiveCryptoAmount', undefined, { shouldValidate: true });
 
             return;
         }
@@ -95,8 +97,58 @@ const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => 
             isAmountInSats && amount && symbol
                 ? convertAmountUnitsToSubunits(amount, getNetwork(symbol).decimals)
                 : amount;
-        setValue('receiveCryptoAmount', value);
+        setValue('receiveCryptoAmount', value, { shouldValidate: true });
     }, [selectedQuote, isAmountInSats, symbol, setValue]);
+};
+
+const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFormType) => {
+    const dispatch = useDispatch();
+    const prevSendCryptoId = useRef<CryptoId | undefined>(undefined);
+    const prevReceiveCryptoId = useRef<CryptoId | undefined>(undefined);
+
+    useEffect(() => {
+        const { unsubscribe } = watch(({ sendAsset, receiveAsset }, { name }) => {
+            switch (name) {
+                case 'sendAsset':
+                    if (sendAsset?.cryptoId !== prevSendCryptoId.current) {
+                        analytics.report({
+                            type: EventType.TradingParameterChanged,
+                            payload: {
+                                type: 'exchange',
+                                parameter: 'cryptoFrom',
+                            },
+                        });
+
+                        prevSendCryptoId.current = sendAsset?.cryptoId as CryptoId | undefined;
+                        setValue('sendCryptoAmount', undefined, { shouldValidate: true });
+                        dispatch(exchangeActions.sendAssetChanged());
+                    }
+                    break;
+
+                case 'receiveAsset':
+                    if (receiveAsset?.cryptoId !== prevReceiveCryptoId.current) {
+                        analytics.report({
+                            type: EventType.TradingParameterChanged,
+                            payload: {
+                                type: 'exchange',
+                                parameter: 'cryptoTo',
+                            },
+                        });
+
+                        prevReceiveCryptoId.current = receiveAsset?.cryptoId as
+                            | CryptoId
+                            | undefined;
+                        dispatch(exchangeActions.receiveAssetChanged());
+                    }
+                    break;
+
+                default:
+                // do nothing
+            }
+        });
+
+        return unsubscribe;
+    }, [setValue, watch, dispatch]);
 };
 
 const useValidations = (
@@ -135,6 +187,7 @@ export const useExchangeForm = () => {
     useExchangeQuoteChangeEffect(form);
     useSendAccountChangeEffect(setValue, selectExchangeSelectedSendAccount);
     useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount);
+    useAmountAndCurrencyFieldsChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setSendSymbol);
     useValidations(form, limits);
 

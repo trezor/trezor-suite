@@ -85,4 +85,52 @@ describe('exchangeSlice', () => {
             expect(state.quotesRequest).toBeUndefined();
         });
     });
+
+    describe('sendAssetChanged', () => {
+        it('should clear amount limits and quotes request data', () => {
+            const prevState: TradingExchangeState = {
+                ...exchangeInitialState,
+                amountLimits: {
+                    currency: 'BTC',
+                    minCrypto: '0.001',
+                    maxCrypto: '10',
+                },
+                quotesRequest: {
+                    send: 'bitcoin' as CryptoId,
+                    receive: 'ethereum' as CryptoId,
+                },
+            };
+
+            const state = exchangeReducer(prevState, exchangeActions.sendAssetChanged());
+
+            expect(state.amountLimits).toBeUndefined();
+            expect(state.quotesRequest).toBeUndefined();
+        });
+    });
+
+    describe('receiveAssetChanged', () => {
+        it('should clear amount limits, quotes request and receive account info', () => {
+            const prevState: TradingExchangeState = {
+                ...exchangeInitialState,
+                amountLimits: {
+                    currency: 'BTC',
+                    minCrypto: '0.001',
+                    maxCrypto: '10',
+                },
+                quotesRequest: {
+                    send: 'bitcoin' as CryptoId,
+                    receive: 'ethereum' as CryptoId,
+                },
+                receiveAccountKey: 'account-key1',
+                receiveAddress: { address: 'bc1qxyz' } as Address,
+            };
+
+            const state = exchangeReducer(prevState, exchangeActions.receiveAssetChanged());
+
+            expect(state.amountLimits).toBeUndefined();
+            expect(state.quotesRequest).toBeUndefined();
+            expect(state.receiveAccountKey).toBeUndefined();
+            expect(state.receiveAddress).toBeUndefined();
+        });
+    });
 });
