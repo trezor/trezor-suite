@@ -1,7 +1,9 @@
+import { EventType, analytics } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
     act,
+    fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
@@ -45,31 +47,79 @@ describe('SellReceiveMethodPicker', () => {
         expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
     });
 
-    it('should render loading skeleton when quotes are loaded and new quotes are loading', async () => {
-        preloadedState!.wallet!.tradingNew!.sell!.quotes = sellQuotes;
-        preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
-
-        const { getByLabelText } = await renderSellReceiveMethodPicker();
-
-        expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
-    });
-
-    it('should render selected payment method', async () => {
-        preloadedState!.wallet!.tradingNew!.sell!.quotes = sellQuotes;
-        act(() => {
-            form.setValue('quote', sellQuotes[1]);
-        });
-
-        const { getByLabelText } = await renderSellReceiveMethodPicker();
-
-        expect(getByLabelText('Selected receive method')).toHaveTextContent('Bank Transfer');
-    });
-
     it('should render "Not selected" when no quote is selected', async () => {
         preloadedState!.wallet!.tradingNew!.sell!.quotes = sellQuotes;
 
         const { getByLabelText } = await renderSellReceiveMethodPicker();
 
         expect(getByLabelText('No receive method selected')).toHaveTextContent('Not selected');
+    });
+
+    describe('with quotes loaded', () => {
+        beforeEach(() => {
+            preloadedState!.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+            act(() => {
+                form.setValue('quote', sellQuotes[1]);
+            });
+        });
+
+        it('should render selected receive method', async () => {
+            const { getByLabelText } = await renderSellReceiveMethodPicker();
+
+            expect(getByLabelText('Selected receive method')).toHaveTextContent('Bank Transfer');
+        });
+
+        it('should render loading skeleton when quotes are loaded and new quotes are loading', async () => {
+            preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+
+            const { getByLabelText } = await renderSellReceiveMethodPicker();
+
+            expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+        });
+
+        it('should allow to select receive method', async () => {
+            const { getByText, getByLabelText } = await renderSellReceiveMethodPicker();
+
+            fireEvent.press(getByText('Receive method'));
+            fireEvent.press(getByText('Credit Card'));
+
+            expect(getByLabelText('Selected receive method')).toHaveTextContent('Credit Card');
+        });
+
+        describe('analytics', () => {
+            const analyticsSpy = jest.spyOn(analytics, 'report');
+
+            beforeEach(() => {
+                analyticsSpy.mockClear();
+            });
+
+            afterAll(() => {
+                analyticsSpy.mockRestore();
+            });
+
+            it('should fire analytics event on receive method select', async () => {
+                const { getByText } = await renderSellReceiveMethodPicker();
+
+                fireEvent.press(getByText('Receive method'));
+                fireEvent.press(getByText('Credit Card'));
+
+                expect(analyticsSpy).toHaveBeenCalledWith({
+                    type: EventType.TradingParameterChanged,
+                    payload: {
+                        type: 'sell',
+                        parameter: 'paymentMethod',
+                    },
+                });
+            });
+
+            it('should not fire analytics event when same receive method is selected', async () => {
+                const { getAllByText } = await renderSellReceiveMethodPicker();
+
+                fireEvent.press(getAllByText('Bank Transfer')[0]); // open the sheet
+                fireEvent.press(getAllByText('Bank Transfer')[1]); // select the same receive method
+
+                expect(analyticsSpy).toHaveBeenCalledTimes(0);
+            });
+        });
     });
 });
