@@ -259,8 +259,8 @@ describe('useExchangeFlow', () => {
         });
     });
 
-    describe('resolvePushApproval', () => {
-        it('should set pushApprovalNeeded to false and resolve the promise', async () => {
+    describe('resolveConsent', () => {
+        it('should set isConsentRequested to false and resolve the promise', async () => {
             const store = await getInitializedStore();
 
             const { result } = await renderUseExchangeFlow({ store });
@@ -277,12 +277,12 @@ describe('useExchangeFlow', () => {
                 await result.current.signAndSendTransaction();
             });
 
-            // Now resolve the push approval
+            // Now resolve the push consent
             act(() => {
-                result.current.resolvePushApproval(true);
+                result.current.resolveConsent(true);
             });
 
-            expect(result.current.pushApprovalNeeded).toBe(false);
+            expect(result.current.isConsentRequested).toBe(false);
 
             // Restore the original mock
             require('@suite-common/trading').exchangeThunks.sendTransactionThunk =
@@ -316,7 +316,7 @@ describe('useExchangeFlow', () => {
     });
 
     describe('useEffect cleanup', () => {
-        it('should call TrezorConnect.cancel and cleanup pushApproval on unmount', async () => {
+        it('should call TrezorConnect.cancel on unmount', async () => {
             const store = await getInitializedStore();
             const { unmount } = await renderUseExchangeFlow({ store });
 
