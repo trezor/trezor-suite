@@ -495,6 +495,43 @@ export const toggleAutoEjectThunk = createThunk(
     },
 );
 
+type ForgetAllDeviceDataThunkParams = {
+    device: TrezorDevice;
+};
+
+/**
+ * This thunk is the central place to remove all persistent data related to a device.
+ */
+export const forgetSingleDevicePersistentDataThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
+    ({ device }: ForgetAllDeviceDataThunkParams, { dispatch }) => {
+        if (typeof device.id === 'string') {
+            dispatch(deviceActions.forgetDevicePersistentData({ deviceId: device.id }));
+        }
+        if (device.bluetoothProps !== undefined) {
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
+        }
+        // TODO: this works only for a connected device, as we intentionally do not link THP credentials in a remembered wallet.
+        if (device.thp !== undefined) {
+            dispatch(thpActions.removeCredentials({ credentials: device.thp.credentials }));
+        }
+    },
+);
+
+/**
+ * Helper thunk to do the same as `forgetSingleDevicePersistentDataThunk`, but for all devices.
+ * Rather than iterating through the devices, this thunk removes all data in a single swoop.
+ * This is also fully reliable for removing THP data, unlike the single device function.
+ */
+export const forgetAllDevicesPersistentDataThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/forgetAllDevicesPersistentDataThunk`,
+    (_, { dispatch }) => {
+        dispatch(deviceActions.forgetAllDevicesPersistentData());
+        dispatch(thpActions.removeAllCredentials());
+        dispatch(bluetoothActions.knownDevicesUpdateAction({ knownDevices: [] }));
+    },
+);
+
 type FailEntropyCheckParams = {
     device: AcquiredDevice;
     error: { code?: string; error: string };

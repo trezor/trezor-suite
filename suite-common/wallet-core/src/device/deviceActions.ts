@@ -68,9 +68,18 @@ const setTemporaryRememberedDevice = createAction(
 
 const forgetDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
-    (payload: { device: TrezorDevice }) => ({
-        payload,
-    }),
+    (payload: { device: TrezorDevice }) => ({ payload }),
+);
+
+// Forget persistent deviceReducer data for a device. See `forgetSingleDevicePersistentDataThunk` for all device-associated data.
+const forgetDevicePersistentData = createAction(
+    `${DEVICE_MODULE_PREFIX}/forgetDevicePersistentData`,
+    (payload: { deviceId: string }) => ({ payload }),
+);
+
+// Forget persistent deviceReducer data for all devices. See `forgetAllDevicesPersistentDataThunk` for all device-associated data.
+const forgetAllDevicesPersistentData = createAction(
+    `${DEVICE_MODULE_PREFIX}/forgetAllDevicesPersistentData`,
 );
 
 const addButtonRequest = createAction(
@@ -147,6 +156,8 @@ export const deviceActions = {
     rememberDevice,
     setTemporaryRememberedDevice,
     forgetDevice,
+    forgetDevicePersistentData,
+    forgetAllDevicesPersistentData,
     addButtonRequest,
     requestDeviceReconnect,
     selectDevice,

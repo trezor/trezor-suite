@@ -51,14 +51,12 @@ export const AutoEject = () => {
 
     const devices = useSelector(selectDevices);
 
-    const disconnectedDevices = devices.filter(device => !device.connected && device.state);
-    const hasAnyDisconnectedWallet = disconnectedDevices.length > 0;
+    const hasAnyDisconnectedWallet = devices.some(device => !device.connected && device.state);
 
     const toggleAutoEject = () => {
         const nextIsAutoEjectedEnabled = !isAutoEjectEnabled;
         dispatch(
             setAutoEjectEnabledThunk({
-                disconnectedDevices,
                 enabled: nextIsAutoEjectedEnabled,
             }),
         );

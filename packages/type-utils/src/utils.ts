@@ -1,4 +1,15 @@
 /**
+ * Pick a subset U of a union type T.
+ *
+ * Example:
+ *  ```
+ *  type T = 'a' | 'b' | 'c';
+ *  type U = UnionSubset<T, 'a' | 'c'>; // 'a' | 'c'
+ *  ```
+ */
+export type UnionSubset<T, U extends T> = U;
+
+/**
  * Make property of the object required.
  *
  * Example:

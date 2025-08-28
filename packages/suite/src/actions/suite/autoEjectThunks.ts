@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
 import { forgetDisconnectedDevices, selectDevices } from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
@@ -9,23 +8,20 @@ import { setAutoEject } from './suiteActions';
 
 const AUTO_EJECT_PREFIX = '@suite/autoEject';
 
-export const setAutoEjectEnabledThunk = createThunk(
+type SetAutoEjectEnabledThunkProps = { enabled: boolean };
+
+export const setAutoEjectEnabledThunk = createThunk<void, SetAutoEjectEnabledThunkProps, void>(
     `${AUTO_EJECT_PREFIX}/enableAutoEjectThunk`,
-    (
-        {
-            enabled,
-            disconnectedDevices,
-        }: {
-            enabled: boolean;
-            disconnectedDevices: TrezorDevice[];
-        },
-        { dispatch, getState },
-    ) => {
+    ({ enabled }, { dispatch, getState }) => {
         if (!enabled) {
             dispatch(setAutoEject(false));
 
             return;
         }
+
+        const devices = selectDevices(getState());
+
+        const disconnectedDevices = devices.filter(device => !device.connected && device.state);
 
         disconnectedDevices.forEach(device => {
             dispatch(forgetDisconnectedDevices({ device, forceForget: true }));

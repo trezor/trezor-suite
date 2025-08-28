@@ -9,13 +9,40 @@ import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
-import { Device, DeviceState, Features, KnownDevice, StaticSessionId } from '@trezor/connect';
+import {
+    Device,
+    DeviceState,
+    Features,
+    KnownDevice,
+    StaticSessionId,
+    VersionArray,
+} from '@trezor/connect';
+import { getFirmwareVersionArray } from '@trezor/device-utils';
+import { UnionSubset } from '@trezor/type-utils';
 
 import { deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
+export type PersistedFeatureKey = UnionSubset<
+    keyof Features,
+    | 'device_id'
+    | 'internal_model'
+    | 'fw_vendor'
+    | 'revision'
+    | 'unit_color'
+    | 'label'
+    | 'initialized'
+>;
+export type PersistentDeviceData = Pick<Features, PersistedFeatureKey> & {
+    firmwareVersion: VersionArray | null;
+    lastConnectedBy: 'bluetooth' | 'usb' | null;
+    // TODO move devicesWithFailedEntropyCheck to this object, including persistence & migration
+    // TODO move deviceAuthenticity to this object and newly introduce persistence
+};
+
 export type DeviceReducerState = {
     devices: TrezorDevice[];
+    persistentDeviceData: PersistentDeviceData[]; // is an array since there is not a single primary id, device can be matched by various criteria
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     devicesWithFailedEntropyCheck?: (string | null)[]; // protobuf allows null values and we want to store this even if a fake device has id set to null
@@ -28,6 +55,7 @@ export type DeviceReducerState = {
 
 export const deviceInitialState: DeviceReducerState = {
     devices: [],
+    persistentDeviceData: [],
     selectedDevice: undefined,
     isDeviceAutoEjectEnabled: false,
 };
@@ -554,12 +582,40 @@ const requestDeviceReconnect = (draft: DeviceReducerState) => {
     draft.selectedDevice.reconnectRequested = true;
     draft.devices[index].reconnectRequested = true;
 };
+
+const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | TrezorDevice) => {
+    if (!device.features) return; // do not persist data for unacquired/unreadable devices
+
+    const newPersistentData: PersistentDeviceData = {
+        device_id: device.features.device_id,
+        internal_model: device.features.internal_model,
+        fw_vendor: device.features.fw_vendor,
+        revision: device.features.revision,
+        unit_color: device.features.unit_color,
+        label: device.features.label,
+        initialized: device.features.initialized,
+        lastConnectedBy: device.bluetoothProps ? 'bluetooth' : 'usb',
+        firmwareVersion: getFirmwareVersionArray(device),
+    };
+
+    const index = draft.persistentDeviceData.findIndex(d => d.device_id === device.id);
+    if (index >= 0) {
+        draft.persistentDeviceData[index] = {
+            ...draft.persistentDeviceData[index],
+            ...newPersistentData,
+        };
+    } else {
+        draft.persistentDeviceData.push(newPersistentData);
+    }
+};
+
 export const prepareDeviceReducer = createReducerWithExtraDeps(
     deviceInitialState,
     (builder, extra) => {
         builder
             .addCase(deviceActions.deviceChanged, (state, { payload }) => {
                 changeDevice(state, payload, { connected: true, available: true });
+                updatePersistentDeviceData(state, payload);
             })
             .addCase(deviceActions.setDeviceState, (state, { payload }) => {
                 setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
@@ -579,6 +635,14 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             })
             .addCase(deviceActions.forgetDevice, (state, { payload }) => {
                 forget(state, payload.device);
+            })
+            .addCase(deviceActions.forgetDevicePersistentData, (state, { payload }) => {
+                state.persistentDeviceData = state.persistentDeviceData.filter(
+                    d => d.device_id !== payload.deviceId,
+                );
+            })
+            .addCase(deviceActions.forgetAllDevicesPersistentData, state => {
+                state.persistentDeviceData = [];
             })
             .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
                 addButtonRequest(state, payload.device, payload.buttonRequest);
@@ -645,6 +709,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
                 (state, { payload: { device } }) => {
                     connectDevice(state, device);
+                    updatePersistentDeviceData(state, device);
                 },
             );
     },
