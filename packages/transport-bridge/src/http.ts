@@ -234,6 +234,7 @@ export class TrezordNode {
                                 'sldev.cz',
                                 'trezor.io',
                                 'localhost',
+                                '0.0.0.0',
                                 // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
                                 // To allow it to be sent, you can go to about:config and set the attributes below:
                                 // "network.http.referer.hideOnionSource - false"

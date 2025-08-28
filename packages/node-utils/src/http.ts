@@ -492,7 +492,7 @@ export const checkOrigin = ({
             );
         } catch (error) {
             // If parsing URL fails we don't want it to crash but silently logs error.
-            logger.error(`Failed parsing URL: ${error}`);
+            logger.error(`Failed parsing URL: ${origin}. error: ${error}`);
         }
     }
 
