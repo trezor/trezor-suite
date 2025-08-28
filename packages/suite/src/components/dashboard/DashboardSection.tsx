@@ -49,24 +49,25 @@ export const DashboardSection = forwardRef(
                 <Column data-testid={dataTestId} gap={spacings.md}>
                     <Column width="100%" gap={spacings.xs}>
                         <Box>
-                    <Row as="header" justifyContent="space-between">
-                        {heading && (
-                            <H3>
-                                <Row as="span">{heading}</Row>
-                            </H3>
-                        )}
+                            <Row as="header" justifyContent="space-between">
+                                {heading && (
+                                    <H3>
+                                        <Row as="span">{heading}</Row>
+                                    </H3>
+                                )}
 
-                        {actions && <div>{actions}</div>}
-                    {collapsible && (
-                                <IconButton
-                                    icon={collapsed ? 'caretDown' : 'caretUp'}
-                                    size="small"
-                                    variant="tertiary"
-                                    onClick={() => setCollapsed(prev => !prev)}
-                                ></IconButton>
-                            )}</Row>
-                    {subheading}
-                </Box>
+                                {actions && <div>{actions}</div>}
+                                {collapsible && (
+                                    <IconButton
+                                        icon={collapsed ? 'caretDown' : 'caretUp'}
+                                        size="small"
+                                        variant="tertiary"
+                                        onClick={() => setCollapsed(prev => !prev)}
+                                    ></IconButton>
+                                )}
+                            </Row>
+                            {subheading}
+                        </Box>
                         {text && <Paragraph variant="tertiary">{text}</Paragraph>}
                     </Column>
                     {!collapsed && children}
