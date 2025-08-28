@@ -1,7 +1,7 @@
 import { decode, verify } from 'jws';
 
 import { FirmwareReleaseConfig } from '@trezor/device-utils';
-import { getJWSPublicKey } from '@trezor/env-utils';
+import { getFirmwareReleaseJwsPublicKey } from '@trezor/env-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
 import { FirmwareUpdateSource, getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
@@ -102,7 +102,7 @@ export const getFirmwareReleaseConfig = async () => {
     }
 
     const useProductionKey = ['test-signed', 'production'].includes(env) || finalSource === 'local';
-    const publicKey = getJWSPublicKey('firmware-release', useProductionKey);
+    const publicKey = getFirmwareReleaseJwsPublicKey(useProductionKey);
 
     verifyJwsSignature(finalJws, publicKey);
     // Only decode the JWS if we haven't already assigned the payload
@@ -122,7 +122,7 @@ export const getOnlyLocalFirmwareReleaseConfig = (): {
 } => {
     const localJws = firmwareReleaseConfigAssets.jws;
     // For local-only, we always use the production signing key.
-    const publicKey = getJWSPublicKey('firmware-release', true);
+    const publicKey = getFirmwareReleaseJwsPublicKey(true);
 
     verifyJwsSignature(localJws, publicKey);
     const config = decodeJwsPayload(localJws);
