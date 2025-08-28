@@ -1019,7 +1019,7 @@
   "TR_EXCHANGE_DETAIL_SUCCESS_BUTTON": "Make another Swap",
   "TR_EXCHANGE_DETAIL_SUCCESS_TEXT": "Your transaction was successful.",
   "TR_EXCHANGE_DETAIL_SUCCESS_TITLE": "Swap successful",
-  "TR_EXCHANGE_DEX": "Decentralized exchange offer",
+  "TR_EXCHANGE_DEX": "DEX",
   "TR_EXCHANGE_EXTRA_FIELD": "{extraFieldName}",
   "TR_EXCHANGE_EXTRA_FIELD_INVALID": "{extraFieldName} is invalid",
   "TR_EXCHANGE_EXTRA_FIELD_QUESTION_TOOLTIP": "{extraFieldDescription}",

@@ -9,6 +9,7 @@ import {
     type TradingBuyFormProps,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
+    cryptoIdToNetworkAndContractAddress,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -17,6 +18,7 @@ import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
@@ -209,14 +211,28 @@ export const TradingFormInputs = () => {
                                     />
                                 ))}
                             </Row>
-                            <TradingBalance
-                                balance={outputAmount}
-                                displaySymbol={sendCryptoSelect?.value}
-                                symbol={account.symbol}
-                                tokenAddress={tokenAddress}
-                                showOnlyAmount
-                                amountInCrypto={amountInCrypto}
-                                sendCryptoSelect={sendCryptoSelect}
+                            <ExperimentWrapper
+                                id="tradingFiatValues"
+                                components={[
+                                    {
+                                        variant: 'A',
+                                        element: <></>,
+                                    },
+                                    {
+                                        variant: 'B',
+                                        element: (
+                                            <TradingBalance
+                                                balance={outputAmount}
+                                                displaySymbol={sendCryptoSelect?.value}
+                                                symbol={account.symbol}
+                                                tokenAddress={tokenAddress}
+                                                showOnlyAmount
+                                                amountInCrypto={amountInCrypto}
+                                                sendCryptoSelect={sendCryptoSelect}
+                                            />
+                                        ),
+                                    },
+                                ]}
                             />
                         </Row>
                     )}
@@ -248,8 +264,11 @@ export const TradingFormInputs = () => {
     }
 
     const { buyInfo, device } = context;
-    const { currencySelect, cryptoSelect } = context.getValues();
+    const { currencySelect, cryptoSelect, amountInCrypto, cryptoInput } = context.getValues();
     const supportedCryptoCurrencies = buyInfo?.supportedCryptoCurrencies;
+
+    const tokenAddress = (cryptoSelect.contractAddress as TokenAddress | null) ?? undefined;
+    const { network } = cryptoIdToNetworkAndContractAddress(cryptoSelect.value);
 
     return (
         <>
@@ -260,14 +279,45 @@ export const TradingFormInputs = () => {
                 methods={{ ...context }}
                 isDisabled={hasBitcoinOnlyFirmware(device)}
             />
-            <TradingFormInputFiatCrypto<TradingBuyFormProps>
-                cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
-                fiatInputName={TRADING_FORM_FIAT_INPUT}
-                cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                currencySelectLabel={currencySelect.label}
-                cryptoCurrencyLabel={cryptoSelect.value}
-                methods={{ ...context }}
-            />
+            <Column gap={spacings.xs}>
+                <TradingFormInputFiatCrypto<TradingBuyFormProps>
+                    cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
+                    fiatInputName={TRADING_FORM_FIAT_INPUT}
+                    cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                    currencySelectLabel={currencySelect.label}
+                    cryptoCurrencyLabel={cryptoSelect.value}
+                    methods={{ ...context }}
+                />
+
+                {amountInCrypto && (
+                    <ExperimentWrapper
+                        id="tradingFiatValues"
+                        components={[
+                            {
+                                variant: 'A',
+                                element: <></>,
+                            },
+                            {
+                                variant: 'B',
+                                element: network?.symbol ? (
+                                    <Row justifyContent="end">
+                                        <TradingBalance
+                                            balance={cryptoInput}
+                                            displaySymbol={cryptoSelect?.label}
+                                            symbol={network?.symbol}
+                                            tokenAddress={tokenAddress}
+                                            showOnlyAmount
+                                            amountInCrypto={amountInCrypto}
+                                        />
+                                    </Row>
+                                ) : (
+                                    <></>
+                                ),
+                            },
+                        ]}
+                    />
+                )}
+            </Column>
             <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
             <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
             <TradingFormFeesDisclamer />

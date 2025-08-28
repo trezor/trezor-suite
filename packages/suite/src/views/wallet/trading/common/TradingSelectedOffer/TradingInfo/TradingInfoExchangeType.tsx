@@ -1,7 +1,7 @@
 import { ExchangeTrade } from 'invity-api';
 
 import type { TradingTradeType } from '@suite-common/trading';
-import { Row, Text, Tooltip } from '@trezor/components';
+import { InfoItem, Text, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
@@ -21,8 +21,8 @@ export const TradingInfoExchangeType = ({
         providers && exchangeQuote.exchange ? providers[exchangeQuote.exchange] : undefined;
 
     return (
-        <Row justifyContent="center" flex="auto">
-            <Text data-testid="@trading/offer/info/exchange-type" variant="tertiary">
+        <InfoItem label={<Translation id="TR_TRADING_EXCHANGE_TYPE" />} direction="row">
+            <Text data-testid="@trading/offer/info/exchange-type">
                 {provider?.isFixedRate && !exchangeQuote.isDex && (
                     <Tooltip content={<Translation id="TR_EXCHANGE_FIXED_OFFERS_INFO" />} hasIcon>
                         <Translation id="TR_EXCHANGE_FIXED" />
@@ -35,6 +35,6 @@ export const TradingInfoExchangeType = ({
                 )}
                 {exchangeQuote.isDex && <Translation id="TR_EXCHANGE_DEX" />}
             </Text>
-        </Row>
+        </InfoItem>
     );
 };

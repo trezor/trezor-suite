@@ -106,7 +106,9 @@ export const useTradingSellForm = ({
         selectIsTradingTermsDismissed(state, type),
     );
 
-    const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
+    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const { selectedFee, composed } = composedTransactionInfo;
+
     const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
         useTradingNavigation(account);
 
@@ -597,6 +599,7 @@ export const useTradingSellForm = ({
         quotesRequest,
         quotes: quotesByPaymentMethod,
         composedLevels,
+        composedTransactionInfo,
         localCurrencyOption,
         feeInfo,
         isComposing,

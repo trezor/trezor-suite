@@ -50,7 +50,11 @@ export const TradingOfferSell = (props: TradingOfferSellProps) => {
                 ))}
             </Card>
             <Card>
-                <TradingSelectedOfferInfo {...props} selectedAccount={sendAccount} />
+                <TradingSelectedOfferInfo
+                    {...props}
+                    selectedAccount={sendAccount}
+                    formStep={formStep}
+                />
             </Card>
         </>
     );

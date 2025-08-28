@@ -289,8 +289,6 @@ export const tradingGetAmountLabels = ({
     const youPay = 'TR_TRADING_YOU_PAY';
     const youWillGet = 'TR_TRADING_YOU_WILL_GET';
     const youWillPay = 'TR_TRADING_YOU_WILL_PAY';
-    const youReceive = 'TR_TRADING_YOU_RECEIVE';
-    const exchange = 'TR_TRADING_SWAP';
     const exchangeAmount = 'TR_TRADING_SWAP_AMOUNT';
 
     if (type === 'exchange') {
@@ -298,8 +296,8 @@ export const tradingGetAmountLabels = ({
             inputLabel: exchangeAmount,
             offerLabel: youGet,
             labelComparatorOffer: youWillGet,
-            sendLabel: exchange,
-            receiveLabel: youReceive,
+            sendLabel: youPay,
+            receiveLabel: youGet,
         };
     }
 

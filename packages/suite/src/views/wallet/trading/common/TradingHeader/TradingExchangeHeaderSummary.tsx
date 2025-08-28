@@ -73,6 +73,7 @@ export const TradingExchangeHeaderSummary = ({
                                 disableHiddenPlaceholder
                                 amount={feeAmount}
                                 symbol={symbol}
+                                rateType="current"
                             />
                         ),
                     }}

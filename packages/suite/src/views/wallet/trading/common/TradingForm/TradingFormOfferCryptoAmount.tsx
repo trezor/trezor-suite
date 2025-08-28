@@ -1,41 +1,76 @@
 import { CryptoId } from 'invity-api';
 
-import { useTradingInfo } from '@suite-common/trading';
-import { Row, Text } from '@trezor/components';
+import { cryptoIdToNetwork, useTradingInfo } from '@suite-common/trading';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 interface TradingCryptoAmountProps {
     amount: string | number;
-    cryptoId: CryptoId;
+    cryptoId: CryptoId | undefined;
 }
 
 export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCryptoAmountProps) => {
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
+    const network = cryptoId && cryptoIdToNetwork(cryptoId);
 
     if (!coinSymbol) {
         return;
     }
 
+    const hasAmount = amount && new BigNumber(amount).gt(0);
+
     return (
-        <Row gap={spacings.sm}>
-            <TradingCoinLogo cryptoId={cryptoId} />
-            <Text
-                data-testid="@trading/best-offer/amount"
-                typographyStyle="titleMedium"
-                ellipsisLineCount={2}
-            >
-                <FormattedCryptoAmount
-                    value={amount}
-                    symbol={coinSymbol}
-                    contractAddress={contractAddress}
-                    isRawString
-                    isBalance={false}
-                />
-            </Text>
-        </Row>
+        <Column alignItems="start">
+            <Row gap={spacings.xs} alignItems="center">
+                {cryptoId && <TradingCoinLogo cryptoId={cryptoId} />}
+                <Text
+                    data-testid="@trading/best-offer/amount"
+                    typographyStyle="titleMedium"
+                    ellipsisLineCount={2}
+                >
+                    <FormattedCryptoAmount
+                        value={amount}
+                        symbol={coinSymbol}
+                        contractAddress={contractAddress}
+                        isRawString
+                        isBalance={false}
+                    />
+                </Text>
+            </Row>
+            <ExperimentWrapper
+                id="tradingFiatValues"
+                components={[
+                    { variant: 'A', element: <></> },
+                    {
+                        variant: 'B',
+                        element:
+                            hasAmount && network ? (
+                                <Text
+                                    typographyStyle="hint"
+                                    variant="tertiary"
+                                    margin={{ left: spacings.xxl }}
+                                >
+                                    <BaseCurrencyValue
+                                        amount={amount.toString()}
+                                        tokenAddress={contractAddress as TokenAddress}
+                                        symbol={network.symbol}
+                                        rateType="current"
+                                        showApproximationIndicator
+                                    />
+                                </Text>
+                            ) : (
+                                <></>
+                            ),
+                    },
+                ]}
+            />
+        </Column>
     );
 };

@@ -67,8 +67,9 @@ export const TradingOfferExchange = ({
                     <Fragment key={index}>{step.isActive && step.component}</Fragment>
                 ))}
             </Card>
-            <Card>
+            <Card paddingType="large">
                 <TradingSelectedOfferInfo
+                    formStep={formStep}
                     account={account}
                     selectedAccount={tradingVerifyAccount.selectedAccountOption?.account}
                     selectedQuote={selectedQuote}

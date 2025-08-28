@@ -57,6 +57,7 @@ export const getCryptoQuoteAmountProps = (
 
     if (isTradingSellContext(context)) {
         const amountInCrypto = context.quotesRequest?.amountInCrypto;
+        const networkFee = context.composedTransactionInfo?.composed?.fee;
         const quote = quoteInput as SellFiatTrade;
 
         if (!quote || !context.quotesRequest) return null;
@@ -67,10 +68,12 @@ export const getCryptoQuoteAmountProps = (
             sendCurrency: quote?.fiatCurrency,
             receiveAmount: quote?.cryptoStringAmount ?? '',
             receiveCurrency: quote?.cryptoCurrency,
+            networkFee,
         };
     }
 
     const quote = quoteInput as ExchangeTrade;
+    const networkFee = context.composedTransactionInfo?.composed?.fee;
 
     return {
         amountInCrypto: false,
@@ -78,6 +81,7 @@ export const getCryptoQuoteAmountProps = (
         sendCurrency: quote?.send,
         receiveAmount: quote?.receiveStringAmount ?? '',
         receiveCurrency: quote?.receive,
+        networkFee,
     };
 };
 

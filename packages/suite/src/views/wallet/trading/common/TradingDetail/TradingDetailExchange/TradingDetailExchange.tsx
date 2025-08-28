@@ -4,7 +4,11 @@ import { usePrevious } from 'react-use';
 import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { type TradingExchangeType } from '@suite-common/trading';
+import {
+    type TradingExchangeType,
+    selectTradingComposedTransactionInfo,
+    selectTradingExchangeFormStep,
+} from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, InfoItem } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -58,6 +62,8 @@ export const TradingDetailExchange = () => {
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
     const previousTradeStatus = usePrevious(tradeStatus);
     const tradeStatusStep = getTradeStatusStep(tradeStatus);
+    const formStep = useSelector(selectTradingExchangeFormStep);
+    const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
 
     const exchange = trade?.data?.exchange;
     const provider =
@@ -70,6 +76,7 @@ export const TradingDetailExchange = () => {
         sendCurrency: trade?.data?.send,
         receiveAmount: trade?.data?.receiveStringAmount ?? '',
         receiveCurrency: trade?.data?.receive,
+        networkFee: composedTransaction?.composed?.fee,
     };
 
     useEffect(() => {
@@ -154,6 +161,7 @@ export const TradingDetailExchange = () => {
             </Column>
             <Card>
                 <TradingSelectedOfferInfo
+                    formStep={formStep}
                     account={sendAccount}
                     selectedAccount={receiveAccount}
                     selectedQuote={trade.data}

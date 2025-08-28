@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BuyTrade, BuyTradeResponse, CryptoId } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse, CryptoId, FiatCurrencyCode } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import {
@@ -48,6 +48,7 @@ import {
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 import { getTradingCryptoInfo } from 'src/utils/wallet/trading/tradingUtils';
 
+import { useTradingFiatValues } from './common/useTradingFiatValues';
 import { useTradingInitializer } from './common/useTradingInitializer';
 
 export const useTradingBuyForm = ({
@@ -81,6 +82,19 @@ export const useTradingBuyForm = ({
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
+
+    const fiatTradingValuesParams = selectedQuote
+        ? {
+              cryptoId: selectedQuote.receiveCurrency,
+              amount: selectedQuote.receiveAmount?.toString(),
+              fiatCurrency: selectedQuote.fiatCurrency as FiatCurrencyCode | undefined,
+          }
+        : {
+              cryptoId: quotesRequest?.receiveCurrency,
+              amount: quotesRequest?.cryptoStringAmount,
+              fiatCurrency: quotesRequest?.fiatCurrency as FiatCurrencyCode | undefined,
+          };
+    useTradingFiatValues(fiatTradingValuesParams);
 
     const {
         defaultValues,

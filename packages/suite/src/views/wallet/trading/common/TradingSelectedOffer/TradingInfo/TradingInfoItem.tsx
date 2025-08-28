@@ -1,13 +1,20 @@
 import { CryptoId } from 'invity-api';
 
-import { type TradingType } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import {
+    TradingExchangeStepType,
+    TradingSellStepType,
+    type TradingType,
+    cryptoIdToNetworkSymbolAndContractAddress,
+} from '@suite-common/trading';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Column, InfoItem, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Box, Column, InfoItem, Row, Text } from '@trezor/components';
+import { borders, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { AccountLabel, Translation } from 'src/components/suite';
+import { AccountLabel, BaseCurrencyValue, Translation } from 'src/components/suite';
+import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
+import { useTranslation } from 'src/hooks/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
@@ -20,6 +27,7 @@ interface TradingInfoItemProps {
     currency?: CryptoId;
     amount?: string;
     isReceive?: boolean;
+    formStep?: TradingExchangeStepType | TradingSellStepType;
 }
 
 export const TradingInfoItem = ({
@@ -29,21 +37,27 @@ export const TradingInfoItem = ({
     label,
     currency,
     amount,
-}: TradingInfoItemProps) => (
-    <InfoItem label={<Translation id={label} />} direction="row">
-        {type === 'exchange' || isReceive ? (
-            <Column alignItems="flex-end" gap={spacings.xxxs}>
-                <Row gap={spacings.xs}>
-                    {currency && (
-                        <>
-                            <TradingCoinLogo cryptoId={currency} size={20} />
-                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
-                        </>
-                    )}
-                </Row>
-                {account && (
-                    <Text variant="tertiary" typographyStyle="label" as="div">
-                        <Row gap={spacings.xxs}>
+    formStep,
+}: TradingInfoItemProps) => {
+    const { translationString } = useTranslation();
+    const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
+    const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
+
+    const shouldShowAccountLabel =
+        ((formStep && ['SEND_TRANSACTION', 'SIGN_DATA'].includes(formStep)) || !isReceive) &&
+        account &&
+        type !== 'sell';
+
+    return type === 'exchange' || isReceive ? (
+        <Column width="100%">
+            <Row justifyContent="space-between">
+                <Text variant="tertiary" typographyStyle="hint">
+                    <Translation id={label} />
+                </Text>
+                {shouldShowAccountLabel && (
+                    <Text variant="tertiary" typographyStyle="hint" as="div">
+                        <Row>
+                            {accountLabelPrefix}&nbsp;
                             <AccountLabel
                                 account={account}
                                 showAccountTypeBadge
@@ -52,8 +66,51 @@ export const TradingInfoItem = ({
                         </Row>
                     </Text>
                 )}
-            </Column>
-        ) : (
+            </Row>
+            <Box
+                margin={{ top: spacings.xs }}
+                borderWidth={borders.widths.medium}
+                borderRadius={borders.radii.sm}
+                padding={spacings.md}
+            >
+                {amount && currency && (
+                    <Row gap={spacings.xs} alignItems="start">
+                        <TradingCoinLogo cryptoId={currency} size={24} />
+                        <Column>
+                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
+                            <ExperimentWrapper
+                                id="tradingFiatValues"
+                                components={[
+                                    { variant: 'A', element: <></> },
+                                    {
+                                        variant: 'B',
+                                        element: currencyInfo?.symbol ? (
+                                            <Text variant="tertiary" typographyStyle="hint">
+                                                <BaseCurrencyValue
+                                                    amount={amount}
+                                                    symbol={currencyInfo.symbol}
+                                                    rateType="current"
+                                                    tokenAddress={
+                                                        currencyInfo.contractAddress as
+                                                            | TokenAddress
+                                                            | undefined
+                                                    }
+                                                    showApproximationIndicator
+                                                />
+                                            </Text>
+                                        ) : (
+                                            <></>
+                                        ),
+                                    },
+                                ]}
+                            />
+                        </Column>
+                    </Row>
+                )}
+            </Box>
+        </Column>
+    ) : (
+        <InfoItem label={<Translation id={label} />} direction="row">
             <Row data-testid="@trading/form/info/fiat-amount">
                 <TradingFiatAmount
                     amount={
@@ -64,6 +121,6 @@ export const TradingInfoItem = ({
                     currency={currency}
                 />
             </Row>
-        )}
-    </InfoItem>
-);
+        </InfoItem>
+    );
+};

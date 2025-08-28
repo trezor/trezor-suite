@@ -53,7 +53,8 @@ export const TradingFormInputAccount = <
         | TradingAccountOptionsGroupOptionProps
         | undefined;
     const fiatValues = useTradingFiatValues({
-        sendCryptoSelect: selectedOption,
+        amount: selectedOption?.balance,
+        cryptoId: selectedOption?.value,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
 

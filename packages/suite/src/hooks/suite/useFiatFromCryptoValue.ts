@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { RateTypeWithoutHistoric, TokenAddress } from '@suite-common/wallet-types';
 import { AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -9,6 +9,7 @@ interface CommonOwnProps {
     amount: string | AmountUnit; // Todo: remove `string` only for back compatibility
     symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
+    rateType?: RateTypeWithoutHistoric;
 }
 
 export interface UseFiatFromCryptoValueParams extends CommonOwnProps {
@@ -22,11 +23,14 @@ export const useFiatFromCryptoValue = ({
     tokenAddress,
     historicRate,
     useHistoricRate,
+    rateType,
 }: UseFiatFromCryptoValueParams) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
 
-    const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    const currentRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType),
+    );
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
     const fiatAmount = rate ? toFiatCurrency({ amount, rate }) : null;

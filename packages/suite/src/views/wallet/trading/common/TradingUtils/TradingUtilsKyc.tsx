@@ -35,8 +35,6 @@ const getKycPolicy = (kycPolicyType: ExchangeKYCType | undefined) => {
     if (kycPolicyType === KYC_NO_KYC) {
         return <Translation id="TR_TRADING_KYC_NO_KYC" />;
     }
-
-    return <Translation id="TR_TRADING_KYC_DEX" />;
 };
 
 export const TradingUtilsKyc = ({

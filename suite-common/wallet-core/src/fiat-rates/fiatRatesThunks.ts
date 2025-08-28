@@ -102,6 +102,7 @@ type UpdateCurrentFiatRatesThunkPayload = {
     fetchAttemptTimestamp: Timestamp;
     rateType: RateTypeWithoutHistoric;
     forceFetchToken?: boolean;
+    skipCache?: boolean;
 };
 
 export const updateFiatRatesThunk = createThunk<
@@ -110,7 +111,10 @@ export const updateFiatRatesThunk = createThunk<
     void
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateFiatRates`,
-    async ({ tickers, baseCurrencyCode, rateType, forceFetchToken }, { getState }) => {
+    async (
+        { tickers, baseCurrencyCode, rateType, forceFetchToken, skipCache = false },
+        { getState },
+    ) => {
         const fetchRate = async (ticker: TickerId) => {
             if (isTestnet(ticker.symbol)) {
                 throw new Error('Testnet');
@@ -140,6 +144,7 @@ export const updateFiatRatesThunk = createThunk<
                             ticker,
                             localCurrency: baseCurrencyCode,
                             isElectrumBackend,
+                            skipCache,
                         });
                     case 'lastWeek':
                         return fetchLastWeekFiatRates({
