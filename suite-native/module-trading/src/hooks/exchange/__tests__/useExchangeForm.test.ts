@@ -1,6 +1,7 @@
 import { ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     PreloadedState,
     TestStore,
@@ -14,6 +15,7 @@ import { getBtcAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../__fixtures__/walletState';
+import { exchangeActions } from '../../../reducers';
 import { ExchangeFormType } from '../../../types/exchange';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
@@ -101,7 +103,7 @@ describe('useExchangeForm', () => {
             expect(result.current.getValues('receiveCryptoAmount')).toBe('0.00089537');
         });
 
-        it('should sets receiveCryptoAmount in sats when using BTC and amount in sats', async () => {
+        it('should set receiveCryptoAmount in sats when using BTC and amount in sats', async () => {
             store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
             const { result } = await renderUseExchangeForm();
             act(() => {
@@ -203,6 +205,50 @@ describe('useExchangeForm', () => {
         });
     });
 
+    describe('sendAsset', () => {
+        it('should clear crypto amount on change', async () => {
+            const { result } = await renderUseExchangeForm();
+            act(() => {
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('sendCryptoAmount', '100');
+            });
+
+            act(() => {
+                result.current.setValue('sendAsset', usdcAsset);
+            });
+
+            expect(result.current.getValues('sendCryptoAmount')).toBeUndefined();
+        });
+
+        it('should report change to analytics', async () => {
+            const reportSpy = jest.spyOn(analytics, 'report');
+            const { result } = await renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('sendAsset', btcAsset);
+            });
+
+            expect(reportSpy).toHaveBeenCalledWith({
+                type: EventType.TradingParameterChanged,
+                payload: {
+                    type: 'exchange',
+                    parameter: 'cryptoFrom',
+                },
+            });
+        });
+
+        it('should dispatch sendAssetChanged action', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('sendAsset', btcAsset);
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
+        });
+    });
+
     describe('receiveAccount', () => {
         it('should be undefined by default', async () => {
             const { result } = await renderUseExchangeForm();
@@ -225,6 +271,36 @@ describe('useExchangeForm', () => {
         });
     });
 
+    describe('receiveAsset', () => {
+        it('should report change to analytics', async () => {
+            const reportSpy = jest.spyOn(analytics, 'report');
+            const { result } = await renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('receiveAsset', btcAsset);
+            });
+
+            expect(reportSpy).toHaveBeenCalledWith({
+                type: EventType.TradingParameterChanged,
+                payload: {
+                    type: 'exchange',
+                    parameter: 'cryptoTo',
+                },
+            });
+        });
+
+        it('should dispatch receiveAssetChanged action', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('receiveAsset', btcAsset);
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
+        });
+    });
+
     describe('validations', () => {
         it.each([
             ['0.00001', 'Minimum is 0.0001 BTC'],
@@ -234,8 +310,15 @@ describe('useExchangeForm', () => {
             const { result } = await renderUseExchangeForm();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
                 result.current.setValue('sendAsset', btcAsset);
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(
+                    tradingExchangeActions.setAmountLimits({
+                        minCrypto: '0.0001',
+                        maxCrypto: '50',
+                        currency: 'BTC',
+                    }),
+                );
                 result.current.setValue('sendCryptoAmount', amount);
             });
 
@@ -256,8 +339,15 @@ describe('useExchangeForm', () => {
             const { result } = await renderUseExchangeForm();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
                 result.current.setValue('sendAsset', btcAsset);
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(
+                    tradingExchangeActions.setAmountLimits({
+                        minCrypto: '0.0001',
+                        maxCrypto: '50',
+                        currency: 'BTC',
+                    }),
+                );
                 result.current.setValue('sendCryptoAmount', amount);
             });
 

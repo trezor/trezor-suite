@@ -13,7 +13,7 @@ import { PROTO } from '@trezor/connect';
 
 import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { btcAsset, ethAsset, usdcAsset, usdtAsset } from '../../../__fixtures__/tradeableAssets';
+import { btcAsset, ethAsset, usdtAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { ExchangeFormValues } from '../../../types/exchange';
 import { useExchangeForm } from '../useExchangeForm';
@@ -210,7 +210,6 @@ describe('useExchangeQuotes', () => {
     });
 
     it.each<[keyof ExchangeFormValues, ExchangeFormValues[keyof ExchangeFormValues]]>([
-        ['sendAsset', usdcAsset],
         ['receiveAsset', usdtAsset],
         ['sendCryptoAmount', '0.2'],
         ['sendAccount', getBtcAccount('btc-account-2')],
