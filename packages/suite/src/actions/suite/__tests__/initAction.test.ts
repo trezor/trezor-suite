@@ -25,6 +25,7 @@ import {
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import TrezorConnect from '@trezor/connect';
+import { initialBreakpointFlags } from '@trezor/theme';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { init } from 'src/actions/suite/initAction';
@@ -33,6 +34,7 @@ import metadataReducer from 'src/reducers/suite/metadataReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import windowReducer from 'src/reducers/suite/windowReducer';
 import walletReducers from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { setLocation, setNavigate } from 'src/support/suite/navigationService';
@@ -67,6 +69,7 @@ const getInitialState = (initialRun?: boolean) => ({
     device: deviceReducer(undefined, EMPTY_ACTION),
     metadata: metadataReducer(undefined, EMPTY_ACTION),
     firmware: { firmwareUpdateSource: 'production' },
+    window: windowReducer({ ...initialBreakpointFlags, isVisible: true }, EMPTY_ACTION),
 });
 
 type Fixture = {
