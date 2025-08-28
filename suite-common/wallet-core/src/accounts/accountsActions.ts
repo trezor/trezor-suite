@@ -163,7 +163,7 @@ const updateAccount = createAction(
                     visible: account.visible || !accountInfo.empty,
                     formattedBalance: formatNetworkAmount(
                         // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
-                        account.networkType === 'ripple' || account.networkType === 'stellar'
+                        ['ripple', 'stellar'].includes(account.networkType)
                             ? accountInfo.balance
                             : accountInfo.availableBalance,
                         account.symbol,

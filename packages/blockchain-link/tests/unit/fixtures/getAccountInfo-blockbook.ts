@@ -525,7 +525,7 @@ const fixtures: {
         },
     },
     {
-        description: 'ETH send receive tx',
+        description: 'ETH send receive tx, balance no change',
         params: {
             descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
         },
@@ -546,7 +546,7 @@ const fixtures: {
             descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
             empty: false,
             balance: '100',
-            availableBalance: '99',
+            availableBalance: '100',
             history: {},
             misc: {
                 nonce: '100',
