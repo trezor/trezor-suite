@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
-import { thpActions } from '@suite-common/thp';
+import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 import { Button, Card, Column, Icon, List, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { startThpAutoconnectThunk } from '../../../actions/thp/startThpAutoconnectThunk';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import { Translation } from '../../suite/Translation';
 

@@ -1,26 +1,18 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { thpActions } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 import { useAlert } from '@suite-native/alerts';
 import { Box, BulletListItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import TrezorConnect from '@trezor/connect';
 
 export const useThpAlerts = () => {
     const dispatch = useDispatch();
     const { showAlert } = useAlert();
 
-    const device = useSelector(selectSelectedDevice);
-
-    const turnOnAutoconnect = useCallback(async () => {
-        const response = await TrezorConnect.thpGetCredentials({ device });
-        if (response.success) {
-            dispatch(thpActions.addCredential({ credential: response.payload }));
-        }
-        dispatch(thpActions.resetThpFlow());
-    }, [device, dispatch]);
+    const turnOnAutoconnect = useCallback(() => {
+        dispatch(startThpAutoconnectThunk());
+    }, [dispatch]);
 
     const ignoreAutoconnect = useCallback(() => {
         dispatch(thpActions.resetThpFlow());

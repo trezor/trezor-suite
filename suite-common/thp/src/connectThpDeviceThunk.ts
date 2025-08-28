@@ -13,8 +13,9 @@ type ConnectThpDeviceThinkParams = {
 
 export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkParams, void>(
     `${THP_PREFIX}/connectThpDeviceThunk`,
-    ({ device }, { dispatch, getState }) => {
-        if (device.thp === undefined) return;
+    ({ device }, { dispatch, getState, rejectWithValue }) => {
+        if (device.thp === undefined) return rejectWithValue('not-thp-device');
+
         const credentials = selectThpCredentials(getState());
         const isFwInstall = selectFirmware(getState()).status !== 'initial';
 

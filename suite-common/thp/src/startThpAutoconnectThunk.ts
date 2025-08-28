@@ -1,10 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils/';
-import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { THP_PREFIX } from './thpActions';
+import { THP_PREFIX, thpActions } from './thpActions';
 
 export const startThpAutoconnectThunk = createThunk<void, void, void>(
     `${THP_PREFIX}/startThpAutoconnectThunk`,
