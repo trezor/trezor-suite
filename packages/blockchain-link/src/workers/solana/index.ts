@@ -152,7 +152,9 @@ const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidPar
     !!(tx && tx.meta && tx.transaction && tx.blockTime);
 
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
-    const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
+    const rawTx = request.payload.hex.startsWith('0x')
+        ? request.payload.hex.slice(2)
+        : request.payload.hex;
     const api = await request.connect();
 
     const txByteArray = getBase16Encoder().encode(rawTx);

@@ -5,10 +5,15 @@ import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectAccounts,
+    selectIsMevProtectionEnabled,
+    selectIsMevProtectionFeatureEnabled,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, sanitizeHex } from '@suite-common/wallet-utils';
+import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { CallMethodResponse } from '@trezor/connect';
 import { isAscii } from '@trezor/utils';
 
@@ -34,6 +39,9 @@ const ethereumRequestThunk = createThunk<
     }
 >(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
+    const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+    const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
+
     const getAccount = (address: string, chainId?: number) => {
         const account = selectAccounts(getState()).find(
             a =>
@@ -185,10 +193,17 @@ const ethereumRequestThunk = createThunk<
             const typedSignPayload =
                 signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
+            const txData = getMevProtectedTxData(
+                account.symbol,
+                typedSignPayload.serializedTx,
+                isMevProtectionEnabled,
+                isMevProtectionFeatureEnabled,
+            );
+
             const pushResponse = await TrezorConnect.pushTransaction({
+                tx: txData,
                 coin: account.symbol,
                 identity: getAccountIdentity(account),
-                tx: typedSignPayload.serializedTx,
             });
             if (!pushResponse.success) {
                 console.error('eth_sendTransaction push error', pushResponse);

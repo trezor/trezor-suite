@@ -218,7 +218,7 @@ const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTran
 const pushTransaction = async ({ connect, payload }: Request<MessageTypes.PushTransaction>) => {
     const client = await connect();
     // tx_blob hex must be in upper case
-    const info = await client.submit(payload.toUpperCase());
+    const info = await client.submit(payload.hex.toUpperCase());
 
     if (info.result.engine_result === 'tesSUCCESS' && info.result.tx_json.hash) {
         return {

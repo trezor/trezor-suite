@@ -53,7 +53,7 @@ describe('Stellar', () => {
             throw new Error('No transactions found');
         }
         const xdr = Buffer.from(latestTx.envelope_xdr, 'base64').toString('hex');
-        const result = await blockchain.pushTransaction(xdr);
+        const result = await blockchain.pushTransaction({ hex: xdr });
         expect(result).toEqual(latestTx.hash);
     });
 

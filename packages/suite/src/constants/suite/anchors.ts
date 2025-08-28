@@ -24,6 +24,7 @@ export const SettingsAnchor = {
     AutoStart: '@general-settings/auto-start',
     AutomaticUpdate: '@general-settings/automatic-update',
     AutoEject: '@general-settings/auto-eject',
+    MevProtection: '@general-settings/mev-protection',
 
     BackupFailed: '@device-settings/backup-failed',
     BackupRecoverySeed: '@device-settings/backup-recovery-seed',

@@ -81,7 +81,7 @@ const handleClick = (event: MouseEvent) => {
         case 'push-transaction': {
             const hexString = getInputValue('push-transaction-tx');
 
-            blockchain.pushTransaction(hexString).then(onResponse).catch(onError);
+            blockchain.pushTransaction({ hex: hexString }).then(onResponse).catch(onError);
             break;
         }
 

@@ -67,7 +67,8 @@ export type NetworkFeature =
     | 'staking'
     | 'coin-definitions'
     | 'nft-definitions'
-    | 'eip1559';
+    | 'eip1559'
+    | 'mev-protection';
 
 type Level = `/${number}'`;
 type MaybeApostrophe = `'` | '';

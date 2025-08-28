@@ -35,6 +35,11 @@ export type ChangeCoinVisibilityAction = {
     };
 };
 
+export type SetMevProtectionAction = {
+    type: typeof WALLET_SETTINGS.SET_MEV_PROTECTION;
+    payload: boolean;
+};
+
 export type SetHideBalanceAction = {
     type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE;
     toggled: boolean;
@@ -51,7 +56,8 @@ export type WalletSettingsAction =
     | ReturnType<typeof toggleHideSuspiciousTransactions>
     | ChangeCoinVisibilityAction
     | SetHideBalanceAction
-    | SetBitcoinAmountUnitsAction;
+    | SetBitcoinAmountUnitsAction
+    | SetMevProtectionAction;
 
 export const setDiscreetMode = (toggled: boolean): WalletSettingsAction => ({
     type: WALLET_SETTINGS.SET_HIDE_BALANCE,

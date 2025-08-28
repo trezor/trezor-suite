@@ -1,6 +1,9 @@
 import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import {
+    selectEnabledNetworks,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
@@ -31,6 +34,7 @@ import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
 import { Labeling } from './Labeling';
 import { Language } from './Language';
+import { MevProtection } from './MevProtection';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
 import { Theme } from './Theme';
@@ -63,6 +67,7 @@ export const SettingsGeneral = () => {
 
     const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
+    const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -108,10 +113,16 @@ export const SettingsGeneral = () => {
                 <VersionWithUpdate />
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="shield">
+            <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="lock">
                 <AutoEject />
                 {isDesktop() && !isLinux() && <BioAuthSettings />}
             </SettingsSection>
+
+            {isMevProtectionFeatureEnabled && (
+                <SettingsSection title={<Translation id="TR_SECURITY" />} icon="shield">
+                    <MevProtection />
+                </SettingsSection>
+            )}
 
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">

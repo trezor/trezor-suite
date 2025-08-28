@@ -59,6 +59,7 @@ export const networks = {
             'nft-definitions',
             'staking',
             'eip1559',
+            'mev-protection',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -123,7 +124,15 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://bscscan.com', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'nft-definitions',
+            'mev-protection',
+        ],
         backendTypes: ['blockbook'],
         accountTypes: {
             ledger: {
@@ -191,6 +200,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'eip1559',
+            'mev-protection',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {

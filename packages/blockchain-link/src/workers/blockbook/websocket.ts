@@ -115,8 +115,8 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
         return this.send('getTransaction', { txid });
     }
 
-    pushTransaction(hex: string) {
-        return this.send('sendTransaction', { hex });
+    pushTransaction(hex: string, disableAlternativeRPC?: boolean) {
+        return this.send('sendTransaction', { hex, disableAlternativeRPC });
     }
 
     estimateFee(payload: EstimateFeeParams) {

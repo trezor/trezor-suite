@@ -5,6 +5,7 @@ import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import {
     Account,
     AccountKey,
@@ -24,6 +25,7 @@ import {
     getAccountDecimals,
     getAreSatoshisUsed,
     getEvmApprovalTxData,
+    getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
     isCardanoTx,
@@ -80,6 +82,7 @@ import { selectSelectedDevice } from '../device/deviceSelectors';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
+    selectIsMevProtectionFeatureEnabled,
 } from '../settings/walletSettingsReducer';
 import {
     addFakePendingCardanoTxThunk,
@@ -313,6 +316,8 @@ export const pushSendFormTransactionThunk = createThunk<
         const serializedTx = selectSendSerializedTx(getState());
         const device = selectSelectedDevice(getState());
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
+        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
 
         if (!serializedTx || !precomposedTransaction)
             return rejectWithValue({
@@ -320,8 +325,15 @@ export const pushSendFormTransactionThunk = createThunk<
                 metadata: { success: false, payload: { error: 'Transaction not found.' } },
             });
 
+        const txData = getMevProtectedTxData(
+            serializedTx.symbol,
+            serializedTx.tx,
+            isMevProtectionEnabled,
+            isMevProtectionFeatureEnabled,
+        );
+
         const pushTxResponse = await TrezorConnect.pushTransaction({
-            tx: serializedTx.tx,
+            tx: txData,
             coin: serializedTx.symbol,
             identity: tryGetAccountIdentity(selectedAccount),
         });
@@ -422,10 +434,20 @@ export const pushSendFormRawTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async (
         payload: { tx: string; symbol: NetworkSymbol; identity?: string },
-        { dispatch, fulfillWithValue, rejectWithValue },
+        { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
+        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
+
+        const txData = getMevProtectedTxData(
+            payload.symbol,
+            payload.tx,
+            isMevProtectionEnabled,
+            isMevProtectionFeatureEnabled,
+        );
+
         const sentTx = await TrezorConnect.pushTransaction({
-            tx: payload.tx,
+            tx: txData,
             coin: payload.symbol,
             identity: payload.identity,
         });
