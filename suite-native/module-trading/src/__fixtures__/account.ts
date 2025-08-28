@@ -95,3 +95,41 @@ export const getEthAccount = (key = 'eth-account-1') =>
             total: 8,
         },
     }) as unknown as Account;
+
+export const getBaseAccount = (key = 'base-account-1') =>
+    ({
+        key,
+        deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
+        accountLabel: 'Base #1',
+        index: 0,
+        path: "m/44'/60'/0'/0/0",
+        descriptor: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+        accountType: 'normal',
+        symbol: 'base',
+        empty: false,
+        backendType: 'blockbook',
+        visible: true,
+        balance: '1000000000000000000',
+        availableBalance: '1000000000000000000',
+        formattedBalance: '1',
+        tokens: [],
+        history: {
+            total: 0,
+            unconfirmed: 0,
+            tokens: 0,
+        },
+        metadata: {
+            key: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+        },
+        ts: 1750315198255,
+        networkType: 'ethereum',
+        misc: {
+            nonce: '0',
+            addressAliases: {},
+        },
+        page: {
+            index: 1,
+            size: 1,
+            total: 1,
+        },
+    }) as unknown as Account;

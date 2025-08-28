@@ -3,17 +3,19 @@ import { FiatRatesState } from '@suite-common/wallet-core';
 import { Account, RatesByKey, type WalletSettings } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
-import { getBtcAccount, getEthAccount } from './account';
+import { getBaseAccount, getBtcAccount, getEthAccount } from './account';
 import { getInitializedTradingState } from './tradingState';
 
 type GetWalletStateParams = {
     bitcoinAmountUnit?: PROTO.AmountUnit;
     tradeType?: TradingType;
+    deviceState?: string;
 };
 
 export const getWalletState = ({
     bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN,
     tradeType = 'buy',
+    deviceState,
 }: GetWalletStateParams = {}) => ({
     tradingNew: getInitializedTradingState(tradeType),
     settings: {
@@ -35,8 +37,9 @@ export const getWalletState = ({
         lastWeek: {},
     } as FiatRatesState,
     accounts: [
-        getBtcAccount('btc-account-1'),
-        getBtcAccount('btc-account-2'),
-        getEthAccount(),
+        { ...getBtcAccount('btc-account-1'), ...(deviceState && { deviceState }) },
+        { ...getBtcAccount('btc-account-2'), ...(deviceState && { deviceState }) },
+        { ...getEthAccount(), ...(deviceState && { deviceState }) },
+        { ...getBaseAccount(), ...(deviceState && { deviceState }) },
     ] as Account[],
 });
