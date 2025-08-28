@@ -45,7 +45,7 @@ describe('Account Reducer', () => {
                     index: 0,
                     path: testBip43Path,
                     accountType: 'normal',
-                    coin: 'btc',
+                    symbol: 'btc',
                 },
                 accountInfo: {
                     descriptor: 'XPUB',

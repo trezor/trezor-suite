@@ -1,4 +1,3 @@
-import { Bip43Path } from '@suite-common/wallet-config';
 import type { DeviceUniquePath } from '@trezor/connect';
 import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
@@ -57,11 +56,7 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
 
 export type Discovery = Record<DeviceUniquePath, DiscoveryStatus>;
 
-export type DiscoveryItem = {
-    path: Bip43Path;
-    unlockPath?: Account['unlockPath'];
-    coin: Account['symbol'];
-    index: number;
-    accountType: Account['accountType'];
-    backendType?: Account['backendType'];
-};
+export type DiscoveryItem = Pick<
+    Account,
+    'path' | 'unlockPath' | 'symbol' | 'index' | 'accountType' | 'backendType'
+>;

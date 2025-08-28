@@ -183,10 +183,10 @@ const transformProgressEventData = (
     deviceState: StaticSessionId,
     discovery: DiscoveryStatus,
 ) => {
-    const { index, symbol: coin, type: accountType, path, backendType } = response;
+    const { index, symbol, type: accountType, path, backendType } = response;
 
     const discoveryItem: DiscoveryItem = {
-        coin,
+        symbol,
         index,
         accountType,
         path: path as Bip43Path,
@@ -196,7 +196,7 @@ const transformProgressEventData = (
     const accountInfo: AccountInfo = !response.failed
         ? response
         : {
-              descriptor: `failed:${index}:${coin}:${accountType}`,
+              descriptor: `failed:${index}:${symbol}:${accountType}`,
               balance: '0',
               availableBalance: '0',
               empty: true,
