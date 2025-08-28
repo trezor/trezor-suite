@@ -18,6 +18,7 @@ describe('featureFlagsSlice', () => {
             expect(initialState).toEqual({
                 isDeviceConnectEnabled: true,
                 isBluetoothEnabled: false,
+                areDebugOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
                 isConnectPopupEnabled: false,
                 isDebugKeysAllowed: false,
@@ -41,6 +42,7 @@ describe('featureFlagsSlice', () => {
             expect(initialState).toEqual({
                 isDeviceConnectEnabled: false,
                 isBluetoothEnabled: false,
+                areDebugOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
                 isConnectPopupEnabled: false,
                 isDebugKeysAllowed: false,

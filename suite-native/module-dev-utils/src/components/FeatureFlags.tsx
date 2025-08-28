@@ -9,6 +9,7 @@ import {
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
     [FeatureFlagEnum.IsBluetoothEnabled]: 'Bluetooth',
+    [FeatureFlagEnum.AreDebugOnlyNetworksEnabled]: '🧪 Debug only networks',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
