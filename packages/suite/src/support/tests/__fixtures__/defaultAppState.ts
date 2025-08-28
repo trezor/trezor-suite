@@ -2,8 +2,8 @@ import { FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { MetadataState } from '@suite-common/metadata-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { deviceReducerInitialState } from '@suite-common/wallet-core';
 
+import { initialState } from 'src/actions/device/deviceSlice';
 import { BackupState } from 'src/reducers/backup/backupReducer';
 import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { AppState } from 'src/reducers/store';
@@ -15,7 +15,7 @@ import WalletReducers from 'src/reducers/wallet';
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
-    device: deviceReducerInitialState,
+    device: initialState,
     bluetooth: {
         unpairedDeviceNeedsManualOsRemoval: false,
         isBluetoothListOpen: false,

@@ -128,8 +128,6 @@ const toggleIsDeviceAutoEjectEnabled = createAction(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectDevices`,
 );
 
-const toggleConnectionModal = createAction(`${DEVICE_MODULE_PREFIX}/toggleConnectionModal`);
-
 const setDiscovered = createAction(
     `${DEVICE_MODULE_PREFIX}/setDiscovered`,
     (staticSessionId: StaticSessionId, success: boolean) => ({
@@ -138,7 +136,6 @@ const setDiscovered = createAction(
 );
 
 export const deviceActions = {
-    toggleConnectionModal,
     connectDevice,
     createDeviceInstance,
     connectUnacquiredDevice,

@@ -1,11 +1,9 @@
 import { selectThpStep } from '@suite-common/thp';
-import {
-    deviceActions,
-    selectIsConnectionModalOpen,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
+import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
+import { toggleConnectionModal as toggleConnectionModalAction } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { ConnectDeviceGlobalModal } from './ConnectDeviceGlobalModal';
@@ -22,7 +20,7 @@ export const ConnectionGlobalModal = () => {
     const thpStep = useSelector(selectThpStep);
 
     const toggleConnectionModal = () => {
-        dispatch(deviceActions.toggleConnectionModal());
+        dispatch(toggleConnectionModalAction());
     };
 
     // handle THP modals first if we have a device and thpStep

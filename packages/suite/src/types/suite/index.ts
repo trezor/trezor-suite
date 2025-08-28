@@ -21,6 +21,7 @@ import { BlockchainEvent, DEVICE, DeviceEvent, TransportEvent, UiEvent } from '@
 import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
 import type { BackupAction } from 'src/actions/backup/backupActions';
+import { deviceSlice } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import { BioAuthAction } from 'src/actions/suite/bioAuthActions';
@@ -82,6 +83,9 @@ type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoo
 type BluetoothActionDesktop = ReturnType<
     (typeof bluetoothSlice.actions)[keyof typeof bluetoothSlice.actions]
 >;
+type DeviceActionDesktop = ReturnType<
+    (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
+>;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
@@ -113,6 +117,7 @@ export type Action =
     | ReturnType<typeof addLog>
     | BluetoothAction
     | BluetoothActionDesktop
+    | DeviceActionDesktop
     | ThpAction
     | GeolocationAction
     | BioAuthAction
