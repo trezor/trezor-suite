@@ -18,7 +18,7 @@ const excluded = [
     URLS.IMAGE_PROXY_API_URL, // returns 'unauthorized'
 ];
 
-describe('Test that all external links are alive', () => {
+describe.skip('Test that all external links are alive', () => {
     beforeEach(() => {
         jest.setTimeout(30000);
     });
