@@ -29,10 +29,12 @@ export const selectNearbyBluetoothDevices = createMemoizedSelector(
 );
 
 export const selectNearbyPairableBluetoothDevices = createMemoizedSelector(
-    [selectNearbyBluetoothDevices],
-    nearbyBluetoothDevices =>
+    [selectNearbyBluetoothDevices, selectKnownBluetoothDevices],
+    (nearbyBluetoothDevices, knownBluetoothDevices) =>
         nearbyBluetoothDevices.filter(
-            ({ manufacturerData }) => manufacturerData.filterPolicy?.pairing === true,
+            ({ id, manufacturerData }) =>
+                knownBluetoothDevices.every(knownDevice => knownDevice.id !== id) &&
+                manufacturerData.filterPolicy?.pairing === true,
         ),
 );
 

@@ -46,6 +46,15 @@ const errorLog = (...args: any[]) => {
     console.error('BluetoothManager', ...args);
 };
 
+const toBluetoothDevice = (device: Device): BluetoothDevice => ({
+    id: device.id,
+    name: device.name ?? 'Unknown',
+    // @suite-common utils expect the Bluetooth company identifier (first two bytes) to be trimmed
+    manufacturerData: Array.from(Buffer.from(device.manufacturerData ?? '', 'base64')).slice(2),
+    lastUpdatedTimestamp: Date.now(),
+    connectionStatus: { type: 'disconnected' },
+});
+
 class BluetoothManager {
     private bleManager: BleManager | null = null;
     private eventEmitter: EventEmitter = new EventEmitter();
@@ -115,27 +124,19 @@ class BluetoothManager {
             }
             if (scannedDevice) {
                 debugLog(`Scanned device ${scannedDevice}`);
+                const nearbyDevice = toBluetoothDevice(scannedDevice);
                 const nearbyDeviceIndex = this.nearbyDevices.findIndex(
-                    d => d.id === scannedDevice.id,
+                    d => d.id === nearbyDevice.id,
                 );
                 if (nearbyDeviceIndex >= 0) {
-                    this.nearbyDevices[nearbyDeviceIndex] = {
-                        ...this.nearbyDevices[nearbyDeviceIndex],
-                        lastUpdatedTimestamp: Date.now(),
-                    };
+                    const oldNearbyDevice = this.nearbyDevices[nearbyDeviceIndex];
+                    nearbyDevice.connectionStatus = oldNearbyDevice.connectionStatus;
+                    this.nearbyDevices[nearbyDeviceIndex] = nearbyDevice;
+                    if (nearbyDevice.manufacturerData[0] !== oldNearbyDevice.manufacturerData[0]) {
+                        this.emitNearbyDevicesChange();
+                    }
                 } else {
-                    const manufacturerDataBytes = Buffer.from(
-                        scannedDevice.manufacturerData ?? '',
-                        'base64',
-                    );
-                    this.nearbyDevices.unshift({
-                        id: scannedDevice.id,
-                        name: scannedDevice.name ?? 'Unknown',
-                        // Bluetooth company identifier is not expected to be present
-                        manufacturerData: Array.from(manufacturerDataBytes).slice(2),
-                        lastUpdatedTimestamp: Date.now(),
-                        connectionStatus: { type: 'disconnected' },
-                    });
+                    this.nearbyDevices.unshift(nearbyDevice);
                     this.emitNearbyDevicesChange();
                 }
             }
