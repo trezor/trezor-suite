@@ -11,8 +11,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { goto } from 'src/actions/suite/routerActions';
 import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { selectIsBioAuthAvailable } from 'src/reducers/bioAuth';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 type FeatureLineProps = {
@@ -23,7 +22,6 @@ type FeatureLineProps = {
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const dispatch = useDispatch();
     const checked = enabledFeatures.includes(feature);
-    const { translationString } = useTranslation();
 
     const config = EXPERIMENTAL_FEATURES[feature];
     const titleId = config.title;
@@ -34,7 +32,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
         const newValue = !checked;
 
         try {
-            await config?.onToggle?.({ dispatch, newValue, translationString });
+            await config?.onToggle?.({ dispatch, newValue });
             dispatch({
                 type: SUITE.SET_EXPERIMENTAL_FEATURES,
                 payload: {
@@ -92,8 +90,6 @@ const motionDivProps = {
 export const Experimental = () => {
     const enabledFeatures = useSelector(state => state.suite.settings.experimental);
     const isDebug = useSelector(selectIsDebugModeActive);
-    const { translationString } = useTranslation();
-    const isBioAuthAvailable = useSelector(selectIsBioAuthAvailable);
 
     const dispatch = useDispatch();
 
@@ -102,7 +98,6 @@ export const Experimental = () => {
             EXPERIMENTAL_FEATURES[feature]?.onToggle?.({
                 dispatch,
                 newValue: false,
-                translationString,
             }),
         );
 
@@ -118,10 +113,9 @@ export const Experimental = () => {
                 feature =>
                     !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({
                         isDebug,
-                        isBioAuthAvailable,
                     }),
             ),
-        [isDebug, isBioAuthAvailable],
+        [isDebug],
     );
 
     return (

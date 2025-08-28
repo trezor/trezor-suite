@@ -1,7 +1,7 @@
 import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import { isDesktop, isWeb } from '@trezor/env-utils';
+import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -21,6 +21,7 @@ import { AutoEject } from './AutoEject';
 import { AutoStart } from './AutoStart';
 import { AutomaticUpdate } from './AutomaticUpdate';
 import { BaseCurrency } from './BaseCurrency';
+import { BioAuthSettings } from './BioAuthSettings';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { ClearStorage } from './ClearStorage';
 import { ConnectLabelingProvider } from './ConnectLabelingProvider';
@@ -112,11 +113,16 @@ export const SettingsGeneral = () => {
                 <AutoEject />
             </SettingsSection>
 
+            {isDesktop() && !isLinux() && (
+                <SettingsSection title={<Translation id="TR_BIO_AUTH" />}>
+                    <BioAuthSettings />
+                </SettingsSection>
+            )}
+
             <SettingsSection title={<Translation id="TR_EXPERIMENTAL_FEATURES" />} icon="atom">
                 {desktopUpdate.enabled && <EarlyAccess />}
                 <Experimental />
             </SettingsSection>
-
             {isDesktop() && isExperimentalEnabled !== undefined && (
                 <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">
                     <AutoStart />
