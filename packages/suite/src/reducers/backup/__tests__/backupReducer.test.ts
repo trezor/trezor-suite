@@ -32,6 +32,7 @@ describe('selectBackupStatus', () => {
         device: {
             devices: [],
             isDeviceAutoEjectEnabled: false,
+            persistentDeviceData: [],
             isConnectionModalOpen: true,
             defaultConnectionMode: 'cable',
             selectedDevice: {

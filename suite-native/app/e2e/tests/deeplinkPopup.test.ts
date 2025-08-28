@@ -69,6 +69,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
                     },
                     device: {
                         isDeviceAutoEjectEnabled: true,
+                        persistentDeviceData: [],
                         devices: [],
                     },
                 },
