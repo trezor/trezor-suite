@@ -7,6 +7,7 @@ import {
     TradingTradeType,
     TradingType,
     isBuyTrade,
+    isSellFiatTrade,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
@@ -64,7 +65,7 @@ export const ProviderListItem = <T extends TradingTradeType>({
 
         isAnonymous = kycPolicy === 'noKYC' || isDex;
         kycWarning = getKycPolicyWarningTranslation(kycPolicy);
-    } else if (isBuyTrade(quote)) {
+    } else if (isBuyTrade(quote) || isSellFiatTrade(quote)) {
         kycWarning = <Translation id="moduleTrading.providerListItem.kycRequired" />;
     }
 
