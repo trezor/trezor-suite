@@ -12,6 +12,8 @@ on:
       - "suite-common/**"
       - "packages/connect/**"
       - ".github/workflows/test-suite-native-e2e-android.yml"
+      - ".github/workflows/template-suite-native-e2e-android.yml"
+      - ".github/workflows/template-suite-native-prepare-test-app-android.yml"
       - "!**.md"
   push:
     branches:
