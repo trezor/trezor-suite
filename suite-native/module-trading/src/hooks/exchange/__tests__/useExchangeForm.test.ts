@@ -18,7 +18,9 @@ import { ExchangeFormType } from '../../../types/exchange';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 describe('useExchangeForm', () => {
-    const renderUseExchangeForm = (store: TestStore) =>
+    let store: TestStore;
+
+    const renderUseExchangeForm = () =>
         renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
 
     const getInitializedStore = async (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
@@ -32,10 +34,13 @@ describe('useExchangeForm', () => {
         return await initStore(preloadedState);
     };
 
+    beforeEach(async () => {
+        store = await getInitializedStore();
+    });
+
     describe('on quotes change', () => {
         it('should select fixed quote with best rate', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
             act(() => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
@@ -48,8 +53,7 @@ describe('useExchangeForm', () => {
         });
 
         it('should select floating quote when fixed is not available', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
             act(() => {
                 store.dispatch(
                     tradingExchangeActions.saveQuotes([exchangeQuotes[2], exchangeQuotes[3]]),
@@ -64,8 +68,7 @@ describe('useExchangeForm', () => {
         });
 
         it('should select dex quote when no other quotes are available', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
             act(() => {
                 store.dispatch(tradingExchangeActions.saveQuotes([exchangeQuotes[3]]));
             });
@@ -78,8 +81,7 @@ describe('useExchangeForm', () => {
         });
 
         it('should set quote to undefined when no quotes are available', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
             act(() => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
@@ -91,8 +93,7 @@ describe('useExchangeForm', () => {
         });
 
         it('should set receiveCryptoAmount based on selected quote', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
             act(() => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
@@ -101,8 +102,8 @@ describe('useExchangeForm', () => {
         });
 
         it('should sets receiveCryptoAmount in sats when using BTC and amount in sats', async () => {
-            const store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
-            const { result } = await renderUseExchangeForm(store);
+            store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
+            const { result } = await renderUseExchangeForm();
             act(() => {
                 result.current.setValue('receiveAsset', btcAsset);
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
@@ -112,12 +113,10 @@ describe('useExchangeForm', () => {
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
-            let store: TestStore;
             let form: ExchangeFormType;
 
             beforeEach(async () => {
-                store = await getInitializedStore();
-                const { result } = await renderUseExchangeForm(store);
+                const { result } = await renderUseExchangeForm();
                 form = result.current;
 
                 act(() => {
@@ -188,15 +187,13 @@ describe('useExchangeForm', () => {
 
     describe('sendAccount', () => {
         it('should be undefined by default', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             expect(result.current.getValues('sendAccount')).toBeUndefined();
         });
 
         it('should update sendAccount value when account in redux store is changed', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
@@ -208,15 +205,13 @@ describe('useExchangeForm', () => {
 
     describe('receiveAccount', () => {
         it('should be undefined by default', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             expect(result.current.getValues('receiveAccount')).toBeUndefined();
         });
 
         it('should update receiveAccount value when account in redux store is changed', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 store.dispatch(tradingExchangeActions.setReceiveAccountKey('btc-account-1'));
@@ -236,8 +231,7 @@ describe('useExchangeForm', () => {
             ['100', 'Maximum is 50 BTC'],
             ['1', 'Insufficient balance'],
         ])('should display error for crypto amount %s BTC', async (amount, expectedValue) => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
@@ -258,8 +252,8 @@ describe('useExchangeForm', () => {
             ['10000000000', 'Maximum is 5000000000 sat'],
             ['10000000', 'Insufficient balance'],
         ])('should display error for crypto amount %s SATS', async (amount, expectedValue) => {
-            const store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
-            const { result } = await renderUseExchangeForm(store);
+            store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
@@ -276,8 +270,8 @@ describe('useExchangeForm', () => {
         });
 
         it('should correctly compute balance with SATS', async () => {
-            const store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
-            const { result } = await renderUseExchangeForm(store);
+            store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
@@ -296,8 +290,7 @@ describe('useExchangeForm', () => {
             ['1', false],
             ['2', true],
         ])('should use correct balance for USDC and amount %s', async (amount, expectedInvalid) => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey('eth-account-1'));
@@ -313,13 +306,12 @@ describe('useExchangeForm', () => {
         });
 
         it('should trigger validation once limits are loaded', async () => {
-            const store = await getInitializedStore();
             act(() => {
                 store.dispatch(tradingExchangeActions.setAmountLimits(undefined));
                 store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
             });
 
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 result.current.setValue('sendAsset', btcAsset);
@@ -344,8 +336,7 @@ describe('useExchangeForm', () => {
 
         describe('generalAlert', () => {
             it('should be undefined by default', async () => {
-                const store = await getInitializedStore();
-                const { result } = await renderUseExchangeForm(store);
+                const { result } = await renderUseExchangeForm();
 
                 act(() => {
                     store.dispatch(tradingExchangeActions.saveQuotes([] as ExchangeTrade[]));
@@ -356,8 +347,7 @@ describe('useExchangeForm', () => {
             });
 
             it('should be set when empty quotes are fetched and no limits are set', async () => {
-                const store = await getInitializedStore();
-                const { result } = await renderUseExchangeForm(store);
+                const { result } = await renderUseExchangeForm();
 
                 act(() => {
                     store.dispatch(
@@ -377,8 +367,7 @@ describe('useExchangeForm', () => {
             });
 
             it('should be undefined when empty quotes are fetched and limits are set', async () => {
-                const store = await getInitializedStore();
-                const { result } = await renderUseExchangeForm(store);
+                const { result } = await renderUseExchangeForm();
 
                 act(() => {
                     store.dispatch(
@@ -401,8 +390,7 @@ describe('useExchangeForm', () => {
             });
 
             it('should be undefined once quotes are fetched', async () => {
-                const store = await getInitializedStore();
-                const { result } = await renderUseExchangeForm(store);
+                const { result } = await renderUseExchangeForm();
 
                 act(() => {
                     store.dispatch(
@@ -420,8 +408,7 @@ describe('useExchangeForm', () => {
             });
 
             it('should be cleared once quotes are fetched', async () => {
-                const store = await getInitializedStore();
-                const { result } = await renderUseExchangeForm(store);
+                const { result } = await renderUseExchangeForm();
 
                 act(() => {
                     store.dispatch(
@@ -446,8 +433,7 @@ describe('useExchangeForm', () => {
 
     describe('clearExchangeFormQuoteData', () => {
         it('should clear quote, sendCryptoAmount, receiveCryptoAmount and generalAlert data', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeForm(store);
+            const { result } = await renderUseExchangeForm();
 
             act(() => {
                 result.current.setValue('quote', exchangeQuotes[0] as ExchangeTrade);
