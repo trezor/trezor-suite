@@ -18,20 +18,28 @@ export type ScheduleActionParams = {
     attemptFailureHandler?: (error: Error) => Error | void; // break attemptLoop if `Error` is set
 } & AttemptParams; // Ignored when attempts is AttemptParams[]
 
+export const SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE = 'Aborted by signal' as const;
+export class RejectWhenAbortedError extends Error {
+    constructor() {
+        super(SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE);
+    }
+}
+
 const isArray = (
     attempts: ScheduleActionParams['attempts'],
 ): attempts is readonly AttemptParams[] => Array.isArray(attempts);
 
 const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
     new Promise<void>((resolve, reject) => {
-        if (clear.aborted) return reject();
+        const errorSignal = new RejectWhenAbortedError();
+        if (clear.aborted) return reject(errorSignal);
         if (ms === undefined) return resolve();
         // eslint-disable-next-line prefer-const
         let timeout: TimerId;
         const onClear = () => {
             clearTimeout(timeout);
             clear.removeEventListener('abort', onClear);
-            reject();
+            reject(errorSignal);
         };
         timeout = setTimeout(() => {
             clear.removeEventListener('abort', onClear);
@@ -42,13 +50,14 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
 
 const rejectAfterMs = (ms: number, reason: Error, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
-        if (clear.aborted) return reject();
+        const errorSignal = new RejectWhenAbortedError();
+        if (clear.aborted) return reject(errorSignal);
         // eslint-disable-next-line prefer-const
         let timeout: TimerId | undefined;
         const onClear = () => {
             clearTimeout(timeout);
             clear.removeEventListener('abort', onClear);
-            reject();
+            reject(errorSignal);
         };
         timeout = setTimeout(() => {
             clear.removeEventListener('abort', onClear);
@@ -60,14 +69,6 @@ const rejectAfterMs = (ms: number, reason: Error, clear: AbortSignal) =>
 const maybeRejectAfterMs = (ms: number | undefined, reason: Error, clear: AbortSignal) =>
     ms === undefined ? [] : [rejectAfterMs(ms, reason, clear)];
 
-export const SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE = 'Aborted by signal' as const;
-
-export class RejectWhenAbortedError extends Error {
-    constructor() {
-        super(SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE);
-    }
-}
-
 const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         const errorSignal = new RejectWhenAbortedError();
@@ -78,7 +79,7 @@ const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) 
         const onClear = () => {
             signal?.removeEventListener('abort', onAbort);
             clear.removeEventListener('abort', onClear);
-            reject();
+            reject(errorSignal);
         };
         clear.addEventListener('abort', onClear);
     });
@@ -121,7 +122,9 @@ const attemptLoop = async <T>(
         }
     }
 
-    return clear.aborted ? Promise.reject() : attempt(attempts - 1, clear);
+    return clear.aborted
+        ? Promise.reject(new RejectWhenAbortedError())
+        : attempt(attempts - 1, clear);
 };
 
 export const SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE = 'Aborted by timeout' as const;
