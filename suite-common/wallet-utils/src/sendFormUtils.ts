@@ -9,7 +9,7 @@ import {
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { Network, NetworkType } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol, NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
@@ -656,3 +656,22 @@ export const getAmountValidationResult = ({
 
 export const isAmountTooHigh = (params: GetAmountValidationResultParams): boolean =>
     getAmountValidationResult(params).type !== 'ok';
+
+export const getMevProtectedTxData = (
+    symbol: NetworkSymbol,
+    hex: string,
+    isMevProtectionEnabled: boolean,
+    isMevProtectionFeatureEnabled: boolean,
+) => {
+    if (!isMevProtectionFeatureEnabled) {
+        return hex;
+    }
+
+    const isMevSupported = getNetwork(symbol).features.includes('mev-protection');
+
+    if (!isMevSupported) {
+        return hex;
+    }
+
+    return isMevProtectionEnabled ? hex : { hex, disableAlternativeRPC: true };
+};

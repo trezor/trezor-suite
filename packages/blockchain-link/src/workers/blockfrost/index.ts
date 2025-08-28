@@ -13,8 +13,8 @@ import {
     transformUtxos,
 } from '@trezor/blockchain-link-utils/src/blockfrost';
 
-import { BlockfrostAPI } from './websocket';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BlockfrostAPI } from './websocket';
 
 type Context = ContextType<BlockfrostAPI>;
 type Request<T> = T & Context;
@@ -81,7 +81,7 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
 
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const api = await request.connect();
-    const payload = await api.pushTransaction(request.payload);
+    const payload = await api.pushTransaction(request.payload.hex);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,

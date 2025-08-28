@@ -7,6 +7,7 @@ import BlockchainLink, {
 import { ERRORS } from '../constants';
 import { BLOCKCHAIN, CoreEventMessage, createBlockchainMessage } from '../events';
 import type { CoinInfo, Proxy } from '../types';
+import { PushTransaction } from '../types/api/pushTransaction';
 import {
     BlockbookWorker,
     BlockfrostWorker,
@@ -299,8 +300,10 @@ export class Blockchain {
         return this.unsubscribeBlocks();
     }
 
-    pushTransaction(tx: string) {
-        return this.link.pushTransaction(tx);
+    pushTransaction(tx: PushTransaction['tx']) {
+        const data = typeof tx === 'string' ? { hex: tx } : tx;
+
+        return this.link.pushTransaction(data);
     }
 
     disconnect() {

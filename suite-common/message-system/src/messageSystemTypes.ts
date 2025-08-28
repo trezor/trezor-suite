@@ -60,6 +60,7 @@ export const Feature = {
         },
     },
     dashboardPromoBanner: 'dashboard.promoBanner',
+    mevProtection: 'settings.mevProtection',
 } as const;
 
 type ExtractFeatureValues<T> =

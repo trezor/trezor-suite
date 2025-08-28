@@ -10,7 +10,7 @@ import type { CoinInfo } from '../types';
 import { PushTransaction as PushTransactionSchema } from '../types/api/pushTransaction';
 
 type Params = {
-    tx: string;
+    tx: PushTransactionSchema['tx'];
     coinInfo: CoinInfo;
     identity?: string;
 };
@@ -33,7 +33,10 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         // validate backend
         isBackendSupported(coinInfo);
 
-        if (coinInfo.type === 'bitcoin' && !/^[0-9A-Fa-f]*$/.test(payload.tx)) {
+        if (
+            coinInfo.type === 'bitcoin' &&
+            (typeof payload.tx !== 'string' || !/^[0-9A-Fa-f]*$/.test(payload.tx))
+        ) {
             throw ERRORS.TypedError('Method_InvalidParameter', 'Transaction must be hexadecimal');
         }
 

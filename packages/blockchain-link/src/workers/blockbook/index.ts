@@ -10,8 +10,8 @@ import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors'
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/blockbook';
 
-import { BlockbookAPI } from './websocket';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BlockbookAPI } from './websocket';
 
 type Context = ContextType<BlockbookAPI>;
 type Request<T> = T & Context;
@@ -146,7 +146,8 @@ const getTransactionHex = async (request: Request<MessageTypes.GetTransactionHex
 
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const api = await request.connect();
-    const resp = await api.pushTransaction(request.payload);
+    const { hex, disableAlternativeRPC } = request.payload;
+    const resp = await api.pushTransaction(hex, disableAlternativeRPC);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,

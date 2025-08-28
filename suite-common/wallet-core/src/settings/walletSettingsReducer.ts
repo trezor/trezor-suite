@@ -1,3 +1,8 @@
+import { selectIsFeatureEnabled } from '@suite-common/message-system/src/messageSystemSelectors';
+import {
+    Feature,
+    MessageSystemRootState,
+} from '@suite-common/message-system/src/messageSystemTypes';
 import { createReducerWithExtraDeps, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbol, getNetwork, networkSymbolCollection } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
@@ -23,6 +28,7 @@ const initialState: State = {
     enabledNetworks: isNative() ? [] : ['btc'],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
+    mevProtection: true,
 };
 export const initialWalletSettingsState: State = initialState;
 
@@ -32,6 +38,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof State> = [
     'enabledNetworks',
     'hideSuspiciousTransactions',
     'bitcoinAmountUnit',
+    'mevProtection',
 ];
 
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
@@ -64,6 +71,12 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
             WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
             (state, action: walletSettingsActions.SetBitcoinAmountUnitsAction) => {
                 state.bitcoinAmountUnit = action.payload;
+            },
+        );
+        builder.addCase(
+            WALLET_SETTINGS.SET_MEV_PROTECTION,
+            (state, action: walletSettingsActions.SetMevProtectionAction) => {
+                state.mevProtection = action.payload;
             },
         );
         builder.addCase(WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS, state => {
@@ -109,3 +122,9 @@ export const selectIsBaseCurrencyInSats = (state: WalletSettingsRootState) => {
 
     return isBaseCurrencyWithSats(baseCurrency) && areSatsAmountUnit;
 };
+
+export const selectIsMevProtectionEnabled = (state: WalletSettingsRootState) =>
+    state.wallet.settings.mevProtection;
+
+export const selectIsMevProtectionFeatureEnabled = (state: MessageSystemRootState) =>
+    selectIsFeatureEnabled(state, Feature.mevProtection, true);

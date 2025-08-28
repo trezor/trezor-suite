@@ -2800,6 +2800,23 @@ export default defineMessages({
         defaultMessage: 'Privacy',
         id: 'TR_PRIVACY',
     },
+    TR_SECURITY: {
+        defaultMessage: 'Security',
+        id: 'TR_SECURITY',
+    },
+    TR_MEV: {
+        defaultMessage: 'MEV protection',
+        id: 'TR_MEV',
+    },
+    TR_MEV_DESCRIPTION: {
+        defaultMessage:
+            'Stay safe and secure fair prices by preventing others from interfering with your transactions.',
+        id: 'TR_MEV_DESCRIPTION',
+    },
+    TR_MEV_AVAILABLE_ON: {
+        defaultMessage: 'Available on {supportedNetworks}.',
+        id: 'TR_MEV_AVAILABLE_ON',
+    },
     TR_CONFIRM_AUTO_EJECT: {
         defaultMessage: 'Enable auto-eject',
         id: 'TR_CONFIRM_AUTO_EJECT',

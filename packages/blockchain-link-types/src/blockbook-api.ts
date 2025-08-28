@@ -754,6 +754,8 @@ export interface WsLongTermFeeRateRes {
 export interface WsSendTransactionReq {
     /** Hex-encoded transaction data to broadcast. */
     hex: string;
+    /** Use alternative RPC method to broadcast transaction. */
+    disableAlternativeRPC?: boolean;
 }
 export interface WsSubscribeAddressesReq {
     /** List of addresses to subscribe for updates (e.g., new transactions). */

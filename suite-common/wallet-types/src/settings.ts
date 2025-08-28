@@ -23,4 +23,5 @@ export interface WalletSettings {
     enabledNetworks: NetworkSymbol[];
     hideSuspiciousTransactions: boolean;
     bitcoinAmountUnit: PROTO.AmountUnit;
+    mevProtection: boolean;
 }

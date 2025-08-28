@@ -2,6 +2,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     ComposeActionContext,
     replaceTransactionThunk,
+    selectIsMevProtectionEnabled,
+    selectIsMevProtectionFeatureEnabled,
     selectSelectedDevice,
     stakeActions,
     syncAccountsWithBlockchainThunk,
@@ -9,6 +11,7 @@ import {
 import { PrecomposedTransactionFinal, StakeFormState, StakeType } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
+    getMevProtectedTxData,
     isRbfBumpFeeTransaction,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
@@ -19,10 +22,10 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Dispatch, GetState } from 'src/types/suite';
 
-import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
-import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 import * as modalActions from '../suite/modalActions';
 import { openModal } from '../suite/modalActions';
+import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
+import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) => (dispatch: Dispatch) => {
@@ -65,10 +68,20 @@ const pushTransaction =
         const { serializedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
         const device = selectSelectedDevice(getState());
+        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
+
         if (!serializedTx || !precomposedTx || !account) return;
 
+        const txData = getMevProtectedTxData(
+            serializedTx.symbol,
+            serializedTx.tx,
+            isMevProtectionEnabled,
+            isMevProtectionFeatureEnabled,
+        );
+
         const sentTx = await TrezorConnect.pushTransaction({
-            tx: serializedTx.tx,
+            tx: txData,
             coin: account.symbol,
             identity: tryGetAccountIdentity(account),
         });

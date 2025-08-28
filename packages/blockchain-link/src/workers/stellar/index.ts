@@ -279,7 +279,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
 
 const pushTransaction = async ({ connect, payload }: Request<MessageTypes.PushTransaction>) => {
     const api = await connect();
-    const base64EncodedTx = Buffer.from(payload, 'hex').toString('base64');
+    const base64EncodedTx = Buffer.from(payload.hex, 'hex').toString('base64');
     const parsedTx = new StellarTransaction(base64EncodedTx, Networks.PUBLIC);
     try {
         const resp = await api.submitTransaction(parsedTx, { skipMemoRequiredCheck: true });

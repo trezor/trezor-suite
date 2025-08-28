@@ -8,7 +8,13 @@ import type { Params, Response } from '../params';
 
 export type PushTransaction = Static<typeof PushTransaction>;
 export const PushTransaction = Type.Object({
-    tx: Type.String(),
+    tx: Type.Union([
+        Type.String(),
+        Type.Object({
+            hex: Type.String(),
+            disableAlternativeRPC: Type.Optional(Type.Boolean()),
+        }),
+    ]),
     coin: Type.String(),
     identity: Type.Optional(Type.String()),
 });

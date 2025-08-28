@@ -217,7 +217,10 @@ declare function FSend(
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
-declare function FSend(method: 'sendTransaction', params: { hex: string }): Promise<Push>;
+declare function FSend(
+    method: 'sendTransaction',
+    params: { hex: string; disableAlternativeRPC?: boolean },
+): Promise<Push>;
 declare function FSend(
     method: 'getBalanceHistory',
     params: AccountBalanceHistoryParams,

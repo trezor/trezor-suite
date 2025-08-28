@@ -130,7 +130,10 @@ export interface Unsubscribe {
 
 export interface PushTransaction {
     type: typeof MESSAGES.PUSH_TRANSACTION;
-    payload: string;
+    payload: {
+        hex: string;
+        disableAlternativeRPC?: boolean;
+    };
 }
 
 export type Message =
