@@ -7,10 +7,12 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest --coverage"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@reduxjs/toolkit": "^2.8.2",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
@@ -21,6 +23,7 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/settings": "workspace:*",
+        "@suite-native/test-utils": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",

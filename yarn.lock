@@ -7685,7 +7685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:2.8.2":
+"@reduxjs/toolkit@npm:2.8.2, @reduxjs/toolkit@npm:^2.8.2":
   version: 2.8.2
   resolution: "@reduxjs/toolkit@npm:2.8.2"
   dependencies:
@@ -10446,6 +10446,7 @@ __metadata:
   resolution: "@suite-native/discovery@workspace:suite-native/discovery"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@reduxjs/toolkit": "npm:^2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -10456,6 +10457,7 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"

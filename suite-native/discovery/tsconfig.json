@@ -24,6 +24,7 @@
         { "path": "../device" },
         { "path": "../feature-flags" },
         { "path": "../settings" },
+        { "path": "../test-utils" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

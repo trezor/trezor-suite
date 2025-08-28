@@ -2,7 +2,12 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { type Network, type NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    getNetwork,
+    networksCollection,
+} from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -11,7 +16,11 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
-import { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import {
+    FeatureFlag,
+    FeatureFlagsRootState,
+    selectIsFeatureFlagEnabled,
+} from '@suite-native/feature-flags';
 import { SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 import {
     isCoinWithTokens,
@@ -58,13 +67,25 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
         selectDeviceSupportedNetworks,
         selectAreTestnetsEnabled,
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
     ],
-    (deviceNetworks, defaultAreTestnetsEnabled, forcedAreTestnetsEnabled) => {
+    (
+        deviceNetworks,
+        defaultAreTestnetsEnabled,
+        forcedAreTestnetsEnabled,
+        areDebugOnlyNetworksEnabled,
+    ) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? defaultAreTestnetsEnabled;
 
         return pipe(
             deviceNetworks,
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
+            networkSymbols =>
+                networkSymbols.filter(symbol =>
+                    (getNetwork(symbol).isDebugOnlyNetwork ?? false)
+                        ? areDebugOnlyNetworksEnabled
+                        : true,
+                ),
             filterUnavailableNetworks,
             sortNetworks,
             returnStableArrayIfEmpty,
