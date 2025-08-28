@@ -37,6 +37,7 @@ import { Language } from './Language';
 import { MevProtection } from './MevProtection';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
+import { StoreDeviceData } from './StoreDeviceData';
 import { Theme } from './Theme';
 import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
@@ -115,6 +116,7 @@ export const SettingsGeneral = () => {
 
             <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="lock">
                 <AutoEject />
+                <StoreDeviceData />
                 {isDesktop() && !isLinux() && <BioAuthSettings />}
             </SettingsSection>
 
