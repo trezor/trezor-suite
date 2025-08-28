@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import { getLocales } from 'expo-localization';
 
 import { firmwareConfigPublicKey, publicKey } from './jws';
-import { EnvUtils, JWSPublicKeyUse } from './types';
+import { EnvUtils } from './types';
 
 const isWeb = () => false;
 
@@ -79,15 +79,10 @@ const getOsNameWeb = () => '';
 
 const getOsFamily = (): 'Linux' => 'Linux';
 
-export const getJWSPublicKey = (use: JWSPublicKeyUse, useCodeSignKey = false) => {
-    if (['message-system', 'token-definitions'].includes(use)) {
-        return isCodesignBuild() ? publicKey.codesign : publicKey.dev;
-    }
+export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
 
-    return isCodesignBuild() || useCodeSignKey
-        ? firmwareConfigPublicKey.codesign
-        : firmwareConfigPublicKey.dev;
-};
+export const getFirmwareReleaseJwsPublicKey = (useCodeSignKey = false) =>
+    useCodeSignKey ? firmwareConfigPublicKey.codesign : firmwareConfigPublicKey.dev;
 
 export const envUtils: EnvUtils = {
     isWeb,
@@ -123,4 +118,5 @@ export const envUtils: EnvUtils = {
     getOsNameWeb,
     getOsFamily,
     getJWSPublicKey,
+    getFirmwareReleaseJwsPublicKey,
 };
