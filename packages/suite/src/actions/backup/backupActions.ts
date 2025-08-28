@@ -26,9 +26,9 @@ export const toggleCheckboxByKey = (key: ConfirmKey): BackupAction => ({
     payload: key,
 });
 
-export const setInProgress = (in_progress: boolean): BackupAction => ({
+export const setInProgress = (inProgress: boolean): BackupAction => ({
     type: BACKUP.SET_IN_PROGRESS,
-    payload: in_progress,
+    payload: inProgress,
 });
 
 export const setError = (error: string): BackupAction => ({
