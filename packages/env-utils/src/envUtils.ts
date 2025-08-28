@@ -1,7 +1,7 @@
 import { UAParser } from 'ua-parser-js';
 
 import { firmwareConfigPublicKey, publicKey } from './jws';
-import { EnvUtils, Environment, JWSPublicKeyUse } from './types';
+import { EnvUtils, Environment } from './types';
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 
@@ -143,15 +143,10 @@ const getOsFamily = () => {
 
 const getDeviceType = () => getUserAgentParser().getDevice().type;
 
-export const getJWSPublicKey = (use: JWSPublicKeyUse, useCodeSignKey = false) => {
-    if (['message-system', 'token-definitions'].includes(use)) {
-        return isCodesignBuild() ? publicKey.codesign : publicKey.dev;
-    }
+export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
 
-    return isCodesignBuild() || useCodeSignKey
-        ? firmwareConfigPublicKey.codesign
-        : firmwareConfigPublicKey.dev;
-};
+export const getFirmwareReleaseJwsPublicKey = (useCodeSignKey: boolean) =>
+    useCodeSignKey ? firmwareConfigPublicKey.codesign : firmwareConfigPublicKey.dev;
 
 export const envUtils: EnvUtils = {
     isWeb,
@@ -187,4 +182,5 @@ export const envUtils: EnvUtils = {
     getOsNameWeb,
     getOsFamily,
     getJWSPublicKey,
+    getFirmwareReleaseJwsPublicKey,
 };
