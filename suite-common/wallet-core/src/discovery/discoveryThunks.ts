@@ -205,7 +205,7 @@ const transformProgressEventData = (
         accountInfo,
         // first normal account is always visible on web & desktop
         visible: response.failed || !response.empty || (accountType === 'normal' && index === 0),
-        error: response.failed ? response.error : undefined,
+        ...(!response.failed ? { failed: undefined } : { failed: true, error: response.error }),
     };
 
     const discoveryPayload: DiscoveryStatus = {
