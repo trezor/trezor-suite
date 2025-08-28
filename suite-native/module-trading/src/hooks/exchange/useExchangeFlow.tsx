@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -39,6 +39,7 @@ import TrezorConnect from '@trezor/connect';
 import { selectExchangeSelectedSendAccount } from '../../selectors/exchangeSelectors';
 import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } from '../../thunks';
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
+import { useConsent } from '../general/useConsent';
 
 type TradingExchangeConfirmTradeProps = {
     receiveAddress: string;
@@ -47,19 +48,10 @@ type TradingExchangeConfirmTradeProps = {
     approvalFlow?: boolean;
 };
 
-let pushApprovalResolver: ((approved: boolean) => void) | null = null;
-
-const waitForPushApproval = (): Promise<boolean> =>
-    new Promise(resolve => {
-        pushApprovalResolver = resolve;
-    });
-
 export const useExchangeFlow = () => {
     const dispatch = useDispatch();
 
     const { showToast } = useToast();
-
-    const [pushApprovalNeeded, setPushApprovalNeeded] = useState(false);
 
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -86,6 +78,8 @@ export const useExchangeFlow = () => {
 
     const serializedTx = useSelector(selectSendSerializedTx);
 
+    const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
+
     invariant(sendAccount, 'Send account is required');
     invariant(selectedQuote?.send, 'Send cryptoId is required');
 
@@ -94,24 +88,8 @@ export const useExchangeFlow = () => {
     // TODO: slip24 - not implemented in mobile
     const isSlip24Active = false;
 
-    const resolvePushApproval = (approved: boolean) => {
-        setPushApprovalNeeded(false);
-        pushApprovalResolver?.(approved);
-        pushApprovalResolver = null;
-    };
-
-    useEffect(
-        () => () => {
-            // remove any possible request when the component unmounts
-            TrezorConnect.cancel();
-            if (pushApprovalResolver) {
-                pushApprovalResolver(false);
-                pushApprovalResolver = null;
-            }
-            setPushApprovalNeeded(false);
-        },
-        [],
-    );
+    // cancel txn signing on unmount
+    useEffect(() => () => TrezorConnect.cancel(), []);
 
     // whenever we get a form from the webview, we need to navigate to the webview screen
     const handleWebview = useCallback(
@@ -251,7 +229,7 @@ export const useExchangeFlow = () => {
             selectedAccount,
             paymentRequests,
         }: TradingSignAndPushSendFormTransactionProps): Promise<TradingFulfillValue> => {
-            setPushApprovalNeeded(true);
+            resolveConsent(true);
 
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
@@ -259,7 +237,7 @@ export const useExchangeFlow = () => {
                     precomposedTransaction,
                     selectedAccount,
                     paymentRequests,
-                    waitForPushApprovalPromise: waitForPushApproval,
+                    waitForPushApprovalPromise: waitForConsent,
                 }),
             );
 
@@ -313,7 +291,7 @@ export const useExchangeFlow = () => {
         fetchFeesAndCompose,
         signAndSendTransaction,
         serializedTx,
-        resolvePushApproval,
-        pushApprovalNeeded,
+        resolveConsent,
+        isConsentRequested,
     };
 };

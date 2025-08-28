@@ -47,8 +47,8 @@ export const TradingExchangePreviewScreen = () => {
         confirmTrade,
         fetchFeesAndCompose,
         signAndSendTransaction,
-        pushApprovalNeeded,
-        resolvePushApproval,
+        isConsentRequested,
+        resolveConsent,
     } = useExchangeFlow();
 
     const [flowStep, setFlowStep] = useState<FlowStep>('confirm');
@@ -84,10 +84,10 @@ export const TradingExchangePreviewScreen = () => {
     };
 
     useEffect(() => {
-        if (pushApprovalNeeded) {
+        if (isConsentRequested) {
             setFlowStep('sendTxn');
         }
-    }, [pushApprovalNeeded]);
+    }, [isConsentRequested]);
 
     const handleTapContinue = async () => {
         if (flowStep === 'confirm') {
@@ -99,7 +99,7 @@ export const TradingExchangePreviewScreen = () => {
             handleSignTransaction();
         } else if (flowStep === 'sendTxn') {
             setFlowStep('finished');
-            resolvePushApproval(true);
+            resolveConsent(true);
         } else {
             console.warn('Unknown flow step', flowStep);
         }

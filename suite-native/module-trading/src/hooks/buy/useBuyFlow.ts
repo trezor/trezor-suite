@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -30,24 +30,13 @@ import {
     getSourceForForm,
 } from '../../utils/general/formUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
+import { useConsent } from '../general/useConsent';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
     TradingStackRoutes.ReceiveAccounts,
     RootStackParamList
 >;
-
-let consentResolver: ((confirmed: boolean) => void) | null = null;
-
-const waitForConsent = (): Promise<boolean> =>
-    new Promise(resolve => {
-        consentResolver = resolve;
-    });
-
-const resolveConsent = (confirmed: boolean) => {
-    consentResolver?.(confirmed);
-    consentResolver = null;
-};
 
 const reportTradeConfirmation = () => {
     analytics.report({
@@ -67,7 +56,7 @@ export const useBuyFlow = (form: BuyFormType) => {
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
-    const [isConsentRequested, setIsConsentRequested] = useState(false);
+    const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
 
     const [asset, candidateQuote, receiveAccount] = form.watch([
         'asset',
@@ -99,7 +88,6 @@ export const useBuyFlow = (form: BuyFormType) => {
         () => ({
             give: () => {
                 resolveConsent(true);
-                setIsConsentRequested(false);
 
                 analytics.report({
                     type: EventType.TradingBuy,
@@ -112,7 +100,6 @@ export const useBuyFlow = (form: BuyFormType) => {
             },
             cancel: () => {
                 resolveConsent(false);
-                setIsConsentRequested(false);
 
                 analytics.report({
                     type: EventType.TradingBuy,
@@ -123,13 +110,9 @@ export const useBuyFlow = (form: BuyFormType) => {
                     },
                 });
             },
-            request: (_provider: string, _cryptoCurrency: string) => {
-                setIsConsentRequested(true);
-
-                return waitForConsent();
-            },
+            request: (_provider: string, _cryptoCurrency: string) => waitForConsent(),
         }),
-        [quoteAnalyticsData],
+        [quoteAnalyticsData, resolveConsent, waitForConsent],
     );
 
     const handleWebview = (formData: FormResponse['form'], returnUrl: string) => {
@@ -208,8 +191,6 @@ export const useBuyFlow = (form: BuyFormType) => {
 
             return;
         }
-
-        setIsConsentRequested(false);
 
         const returnUrl = buildTradingUrl({
             actionType: 'quote',

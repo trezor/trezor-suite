@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -19,24 +19,13 @@ import {
 } from '../../selectors/exchangeSelectors';
 import { ExchangeFormType } from '../../types/exchange';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
+import { useConsent } from '../general/useConsent';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
     TradingStackRoutes.ReceiveAccounts,
     RootStackParamList
 >;
-
-let consentResolver: ((confirmed: boolean) => void) | null = null;
-
-const waitForConsent = (): Promise<boolean> =>
-    new Promise(resolve => {
-        consentResolver = resolve;
-    });
-
-const resolveConsent = (confirmed: boolean) => {
-    consentResolver?.(confirmed);
-    consentResolver = null;
-};
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const dispatch = useDispatch();
@@ -50,7 +39,8 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const navigation = useNavigation<NavigationProps>();
 
     const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
-    const [isConsentRequested, setIsConsentRequested] = useState(false);
+
+    const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
 
     const canProceed = !isLoading && !!candidateQuote && !!sendAccount;
 
@@ -66,21 +56,11 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
     const handleConsent = useMemo(
         () => ({
-            give: () => {
-                resolveConsent(true);
-                setIsConsentRequested(false);
-            },
-            cancel: () => {
-                resolveConsent(false);
-                setIsConsentRequested(false);
-            },
-            request: () => {
-                setIsConsentRequested(true);
-
-                return waitForConsent();
-            },
+            give: () => resolveConsent(true),
+            cancel: () => resolveConsent(false),
+            request: () => waitForConsent(),
         }),
-        [],
+        [resolveConsent, waitForConsent],
     );
 
     const selectQuote = async () => {
