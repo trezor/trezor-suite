@@ -82,4 +82,15 @@ describe('ProviderListItem', () => {
 
         expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
     });
+
+    it('should render KYC warning for sell quote', async () => {
+        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.tradingNew.sell.quotes[0];
+
+        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+            tradingType: 'sell',
+        });
+
+        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+    });
 });

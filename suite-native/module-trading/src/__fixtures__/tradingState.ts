@@ -16,6 +16,7 @@ import { exchangeQuotes } from './exchangeQuotes';
 import platforms from './platforms.json';
 import { sellBanxa, sellCexdirect, sellInvity, sellMercuryo, sellMoonpay } from './sellProviders';
 import { TradingState, initialState } from '../reducers';
+import { sellQuotes } from './sellQuotes';
 
 export const getInitializedBuyState = () =>
     ({
@@ -137,6 +138,7 @@ export const getInitializedTradingStateWithQuotes = () => {
 
     state.buy.quotes = buyQuotes as TradingBuyState['quotes'];
     state.exchange.quotes = exchangeQuotes;
+    state.sell.quotes = sellQuotes;
 
     state.info.paymentMethods = [
         {
