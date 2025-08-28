@@ -76,7 +76,11 @@ export const TransactionDetailParametersSheet = ({
     const displayedParameters = networkTypeToDisplayedParametersMap[networkType];
     const parametersCardIsDisplayed = displayedParameters.length !== 0;
 
-    const handleClickCopy = () => copyToClipboard(transaction.txid, 'Transaction ID copied');
+    const handleClickCopy = () =>
+        copyToClipboard(
+            transaction.txid,
+            translate('transactions.TransactionDetailScreen.parametersSheet.transactionIdCopied'),
+        );
 
     return (
         <TransactionDetailSheet
@@ -87,7 +91,11 @@ export const TransactionDetailParametersSheet = ({
         >
             <VStack>
                 <Card>
-                    <TransactionDetailRow title="Transaction ID">
+                    <TransactionDetailRow
+                        title={translate(
+                            'transactions.TransactionDetailScreen.parametersSheet.transactionId',
+                        )}
+                    >
                         <Box
                             flexDirection="row"
                             alignItems="center"
@@ -107,7 +115,11 @@ export const TransactionDetailParametersSheet = ({
                             </Box>
                         </Box>
                     </TransactionDetailRow>
-                    <TransactionDetailRow title="Confirmations">
+                    <TransactionDetailRow
+                        title={translate(
+                            'transactions.TransactionDetailScreen.parametersSheet.confirmations',
+                        )}
+                    >
                         <Text>
                             <ConfirmationsCount txid={transaction.txid} accountKey={accountKey} />
                         </Text>
@@ -124,22 +136,38 @@ export const TransactionDetailParametersSheet = ({
                                 <EthereumParameters transaction={transaction} />
                             )}
                         {displayedParameters.includes('feeRate') && (
-                            <TransactionDetailRow title="Fee rate">
+                            <TransactionDetailRow
+                                title={translate(
+                                    'transactions.TransactionDetailScreen.parametersSheet.feeRate',
+                                )}
+                            >
                                 <FeeFormatter transaction={transaction} />
                             </TransactionDetailRow>
                         )}
                         {transaction.symbol === 'btc' && (
-                            <TransactionDetailRow title="RBF">
+                            <TransactionDetailRow
+                                title={translate(
+                                    'transactions.TransactionDetailScreen.parametersSheet.rbf',
+                                )}
+                            >
                                 {getEnabledTitle(!!transaction.rbf)}
                             </TransactionDetailRow>
                         )}
                         {displayedParameters.includes('broadcast') && (
-                            <TransactionDetailRow title="Broadcast">
+                            <TransactionDetailRow
+                                title={translate(
+                                    'transactions.TransactionDetailScreen.parametersSheet.broadcast',
+                                )}
+                            >
                                 {getEnabledTitle(!!transaction.blockHeight)}
                             </TransactionDetailRow>
                         )}
                         {displayedParameters.includes('lockTime') && (
-                            <TransactionDetailRow title="Locktime">
+                            <TransactionDetailRow
+                                title={translate(
+                                    'transactions.TransactionDetailScreen.parametersSheet.lockTime',
+                                )}
+                            >
                                 {getEnabledTitle(!!transaction.lockTime)}
                             </TransactionDetailRow>
                         )}

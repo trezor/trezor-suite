@@ -17,7 +17,7 @@ import {
     CryptoToFiatAmountFormatter,
     PercentageDifferenceFormatter,
 } from '@suite-native/formatters';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
@@ -59,11 +59,17 @@ const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellP
 
     return (
         <Text variant="hint" color="textSubdued">
-            Today{' '}
-            <PercentageDifferenceFormatter
-                oldValue={fiatTotalHistoryNumeric}
-                newValue={fiatTotalActualNumeric}
-                variant="hint"
+            <Translation
+                id="transactions.TransactionDetailScreen.valuesSheet.today"
+                values={{
+                    percentageDifference: (
+                        <PercentageDifferenceFormatter
+                            oldValue={fiatTotalHistoryNumeric}
+                            newValue={fiatTotalActualNumeric}
+                            variant="hint"
+                        />
+                    ),
+                }}
             />
         </Text>
     );
@@ -98,7 +104,9 @@ export const TransactionDetailValuesSheet = ({
                     <Table>
                         <Tr>
                             <Th />
-                            <Th>Transaction</Th>
+                            <Th>
+                                <Translation id="transactions.TransactionDetailScreen.valuesSheet.transaction" />
+                            </Th>
                             <Th>
                                 <TodayHeaderCell
                                     cryptoValue={transaction.amount}
@@ -109,7 +117,9 @@ export const TransactionDetailValuesSheet = ({
                         </Tr>
 
                         <Tr>
-                            <Th>Input</Th>
+                            <Th>
+                                <Translation id="transactions.TransactionDetailScreen.valuesSheet.input" />
+                            </Th>
                             <Td>
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
@@ -132,7 +142,9 @@ export const TransactionDetailValuesSheet = ({
                             </Td>
                         </Tr>
                         <Tr>
-                            <Th>Fee</Th>
+                            <Th>
+                                <Translation id="transactions.TransactionDetailScreen.valuesSheet.fee" />
+                            </Th>
                             <Td>
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
@@ -155,7 +167,9 @@ export const TransactionDetailValuesSheet = ({
                             </Td>
                         </Tr>
                         <Tr>
-                            <Th>Total</Th>
+                            <Th>
+                                <Translation id="transactions.TransactionDetailScreen.valuesSheet.total" />
+                            </Th>
                             <Td>
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"

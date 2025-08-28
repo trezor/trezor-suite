@@ -7,7 +7,7 @@ import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
@@ -27,7 +27,10 @@ const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderP
     <Box flexDirection="row" justifyContent="space-between" marginBottom="sp16">
         <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp8">
             <Text variant="hint" color="textSubdued">
-                Inputs · {inputsCount}
+                <Translation
+                    id="transactions.TransactionDetailScreen.inputsSheet.inputs"
+                    values={{ inputsCount: `· ${inputsCount}` }}
+                />
             </Text>
             <Box marginLeft="sp8">
                 <Icon name="arrowLineDown" color="iconSubdued" size="medium" />
@@ -36,7 +39,10 @@ const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderP
 
         <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp24">
             <Text variant="hint" color="textSubdued">
-                Outputs · {outputsCount}
+                <Translation
+                    id="transactions.TransactionDetailScreen.inputsSheet.outputs"
+                    values={{ outputsCount: `· ${outputsCount}` }}
+                />
             </Text>
             <Box marginLeft="sp8">
                 <Icon name="arrowLineUp" color="iconSubdued" size="medium" />
@@ -89,12 +95,16 @@ export const TransactionDetailInputsSheet = ({
                 />
 
                 <TransactionDetailInputsSheetSection
-                    header="Internal Transfers"
+                    header={
+                        <Translation id="transactions.TransactionDetailScreen.inputsSheet.internalTransfers" />
+                    }
                     transfers={internalTransfers}
                 />
 
                 <TransactionDetailInputsSheetSection
-                    header="Token Transfers"
+                    header={
+                        <Translation id="transactions.TransactionDetailScreen.inputsSheet.tokenTransfers" />
+                    }
                     transfers={tokenTransfers}
                 />
             </VStack>

@@ -49,7 +49,10 @@ export const BluetoothDeviceCard = ({
             <Box alignItems="center">
                 <Text variant="titleSmall">{modelConfig.name}</Text>
                 <Text variant="hint" color="textSubdued">
-                    {modelConfig.colors[deviceColor] ?? 'Unknown'} • {device.name}
+                    {modelConfig.colors[deviceColor] ?? (
+                        <Translation id="bluetooth.deviceCard.unknownColor" />
+                    )}{' '}
+                    • {device.name}
                 </Text>
             </Box>
             <Button

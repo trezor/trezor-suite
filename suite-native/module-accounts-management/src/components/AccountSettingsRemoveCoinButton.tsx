@@ -4,6 +4,7 @@ import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-c
 import { AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 type AccountSettingsRemoveCoinButtonProps = {
@@ -32,16 +33,20 @@ export const AccountSettingsRemoveCoinButton = ({
         showAlert({
             pictogramVariant: 'critical',
             title: (
-                <>
-                    Do you really want to remove this coin from <TrezorSuiteLiteHeader />?
-                </>
+                <Translation
+                    id="moduleAccountManagement.accountSettingsScreen.removeAccountAlert.title"
+                    values={{ trezorSuiteLiteHeader: <TrezorSuiteLiteHeader /> }}
+                />
             ),
-            description:
-                'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
-            primaryButtonTitle: 'Remove coin',
+            description: (
+                <Translation id="moduleAccountManagement.accountSettingsScreen.removeAccountAlert.description" />
+            ),
+            primaryButtonTitle: (
+                <Translation id="moduleAccountManagement.accountSettingsScreen.removeAccountAlert.primaryButton" />
+            ),
             primaryButtonVariant: 'redBold',
             onPressPrimaryButton: handleRemoveAccount,
-            secondaryButtonTitle: 'Cancel',
+            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
             secondaryButtonVariant: 'redElevation0',
             onPressSecondaryButton: () => hideAlert(),
         });
@@ -54,7 +59,7 @@ export const AccountSettingsRemoveCoinButton = ({
             colorScheme="redElevation0"
             testID="@account-detail/settings/remove-coin-button"
         >
-            Remove coin
+            <Translation id="moduleAccountManagement.accountSettingsScreen.removeAccountAlert.primaryButton" />
         </Button>
     );
 };

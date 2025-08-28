@@ -5,7 +5,7 @@ import { BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera
 
 import { Box, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeSpacings } from '@trezor/theme';
 
@@ -29,6 +29,7 @@ const cameraStyle = prepareNativeStyle(() => ({
 }));
 
 export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const { cameraPermissionStatus } = useCameraPermission();
 
@@ -85,7 +86,7 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
                             barcodeScannerSettings={{
                                 barcodeTypes: ['qr'],
                             }}
-                            accessibilityLabel="QR code scanner"
+                            accessibilityLabel={translate('qrCode.scanner')}
                         />
                     </Box>
                 </VStack>

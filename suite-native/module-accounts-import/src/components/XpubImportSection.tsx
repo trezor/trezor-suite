@@ -1,5 +1,6 @@
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { Box, Button } from '@suite-native/atoms';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { QrWithLaser } from './QRWithLaser';
@@ -17,20 +18,20 @@ const importSectionWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
 
-export const networkTypeToTitleMap: Record<NetworkType, string> = {
-    bitcoin: 'Scan public key (XPUB)',
-    cardano: 'Scan public key (XPUB)',
-    ethereum: 'Scan receive address',
-    ripple: 'Scan receive address',
-    solana: 'Scan receive address',
-    stellar: 'Scan receive address',
+export const networkTypeToTitleTxKeyMap: Record<NetworkType, TxKeyPath> = {
+    bitcoin: 'moduleAccountImport.xpubScanScreen.scanButton.xpub',
+    cardano: 'moduleAccountImport.xpubScanScreen.scanButton.xpub',
+    ethereum: 'moduleAccountImport.xpubScanScreen.scanButton.address',
+    ripple: 'moduleAccountImport.xpubScanScreen.scanButton.address',
+    solana: 'moduleAccountImport.xpubScanScreen.scanButton.address',
+    stellar: 'moduleAccountImport.xpubScanScreen.scanButton.address',
 };
 
 export const XpubImportSection = ({ onRequestCamera, symbol }: XpubImportSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
     const networkType = getNetworkType(symbol);
-    const buttonTitle = networkTypeToTitleMap[networkType];
+    const buttonTitleTxKey = networkTypeToTitleTxKeyMap[networkType];
 
     return (
         <Box style={applyStyle(importSectionWrapperStyle)}>
@@ -38,7 +39,7 @@ export const XpubImportSection = ({ onRequestCamera, symbol }: XpubImportSection
                 <QrWithLaser />
             </Box>
             <Button size="large" onPress={onRequestCamera}>
-                {buttonTitle}
+                <Translation id={buttonTitleTxKey} />
             </Button>
         </Box>
     );

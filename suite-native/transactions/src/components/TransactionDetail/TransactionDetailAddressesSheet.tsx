@@ -19,6 +19,7 @@ import {
 } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
@@ -40,20 +41,24 @@ const copyContainerStyle = prepareNativeStyle(utils => ({
     marginHorizontal: utils.spacings.sp8,
 }));
 
-export const formatAddressLabel = (addressType: AddressesType, count: number) => {
-    const labelPrefix = addressType === 'inputs' ? 'From' : 'To';
+export const formatAddressesCount = (count: number) => {
     if (count > 1) {
-        return `${labelPrefix} · ${count}`;
+        return `· ${count}`;
     }
 
-    return labelPrefix;
+    return '';
 };
 
 const AddressRow = ({ address }: { address: string }) => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const copyToClipboard = useCopyToClipboard();
 
-    const handleCopy = () => copyToClipboard(address, 'Address copied to clipboard');
+    const handleCopy = () =>
+        copyToClipboard(
+            address,
+            translate('transactions.TransactionDetailScreen.addressesSheet.copied'),
+        );
 
     return (
         <Box flex={1} flexDirection="row" justifyContent="space-between" alignItems="flex-start">
@@ -120,8 +125,18 @@ export const TransactionDetailAddressesSheet = ({
                 <Toggle
                     isToggled={displayedAddressesType === 'outputs'}
                     onToggle={toggleAddresses}
-                    leftLabel={formatAddressLabel('inputs', inputAddresses.length)}
-                    rightLabel={formatAddressLabel('outputs', outputAddresses.length)}
+                    leftLabel={
+                        <Translation
+                            id="transactions.TransactionDetailScreen.addressesSheet.from"
+                            values={{ count: formatAddressesCount(inputAddresses.length) }}
+                        />
+                    }
+                    rightLabel={
+                        <Translation
+                            id="transactions.TransactionDetailScreen.addressesSheet.to"
+                            values={{ count: formatAddressesCount(outputAddresses.length) }}
+                        />
+                    }
                 />
                 <Box marginVertical="sp16">
                     <VStack spacing="sp16">
@@ -136,7 +151,7 @@ export const TransactionDetailAddressesSheet = ({
                     </VStack>
                     <Box marginTop="sp24" paddingHorizontal="sp8">
                         <Button size="large" onPress={onClose}>
-                            Close
+                            <Translation id="generic.buttons.close" />
                         </Button>
                     </Box>
                 </Box>

@@ -19,6 +19,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TransactionType } from '@suite-common/wallet-types';
 import { Icon } from '@suite-native/icons';
+import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -35,7 +36,7 @@ type TransactionNotificationProps = {
 };
 
 type TransactionTypeProperties = {
-    title?: string;
+    titleTxKey?: TxKeyPath;
     prefix?: string;
     transactionType: TransactionType;
     isIconAnimated: boolean;
@@ -43,19 +44,19 @@ type TransactionTypeProperties = {
 
 const transactionTypeToContentMap = {
     'tx-received': {
-        title: 'Incoming transaction',
+        titleTxKey: 'notifications.transaction.incoming',
         prefix: 'from',
         transactionType: 'recv',
         isIconAnimated: true,
     },
     'tx-confirmed': {
-        title: 'Received transaction',
+        titleTxKey: 'notifications.transaction.confirmed',
         prefix: 'from',
         transactionType: 'recv',
         isIconAnimated: false,
     },
     'tx-sent': {
-        title: 'Sending transaction',
+        titleTxKey: 'notifications.transaction.sending',
         prefix: 'to',
         transactionType: 'sent',
         isIconAnimated: true,
@@ -66,6 +67,7 @@ export const TransactionNotification = ({
     notificationId,
     isHiddenAutomatically = true,
 }: TransactionNotificationProps) => {
+    const { translate } = useTranslate();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
     const dispatch = useDispatch();
@@ -95,7 +97,7 @@ export const TransactionNotification = ({
 
     if (!accountKey || !notification || !transactionTargetAddress) return null;
 
-    const { title, prefix, transactionType, isIconAnimated } =
+    const { titleTxKey, prefix, transactionType, isIconAnimated } =
         transactionTypeToContentMap[notification.type];
 
     const navigateToTransactionDetail = () => {
@@ -111,7 +113,7 @@ export const TransactionNotification = ({
             isHiddenAutomatically={isHiddenAutomatically}
             onHide={handleRemoveNotification}
             onPress={navigateToTransactionDetail}
-            title={title}
+            title={translate(titleTxKey)}
             description={
                 <TransactionNotificationDescription
                     amount={transaction?.amount ?? null}

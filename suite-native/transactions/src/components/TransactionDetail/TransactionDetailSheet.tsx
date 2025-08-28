@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { EventType, analytics } from '@suite-native/analytics';
 import { BottomSheetModal, Box, Button, Text, useBottomSheetModal } from '@suite-native/atoms/src';
 import { Icon, IconName } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 
 type TransactionDetailSheetProps = {
@@ -84,7 +85,7 @@ export const TransactionDetailSheet = ({
                     {children}
                     <Box paddingHorizontal="sp8" marginTop="sp24">
                         <Button size="large" onPress={closeModal}>
-                            Close
+                            <Translation id="generic.buttons.close" />
                         </Button>
                     </Box>
                 </Box>
