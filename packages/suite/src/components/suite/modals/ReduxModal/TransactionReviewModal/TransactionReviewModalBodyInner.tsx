@@ -105,7 +105,7 @@ export const TransactionReviewModalBodyInner = ({
 }: TransactionReviewModalBodyInnerProps) => {
     const dispatch = useDispatch();
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
-    const { symbol } = account;
+    const { symbol, networkType } = account;
     const { options } = precomposedForm;
     const { serializedTx } = txInfoState;
     const isActionAbortable = useSelector(selectIsActionAbortable);
@@ -136,10 +136,13 @@ export const TransactionReviewModalBodyInner = ({
 
     const [reviewStep, setReviewStep] = useState(0);
 
+    const isStellar = networkType === 'stellar';
+
     useEffect(() => {
         if (lastButtonRequestCount.current < buttonRequestsCount) {
             lastButtonRequestCount.current = buttonRequestsCount;
             if (
+                !isStellar && // We don't want to go back for Stellar transactions
                 reviewStep === 1 &&
                 totalRecipients === 1 && // Currently we only support going bak for =1
                 lastButtonRequestCode === 'ButtonRequest_ConfirmOutput' &&
@@ -152,6 +155,7 @@ export const TransactionReviewModalBodyInner = ({
             }
         }
     }, [
+        isStellar,
         buttonRequestsCount,
         lastButtonRequestCode,
         reviewStep,

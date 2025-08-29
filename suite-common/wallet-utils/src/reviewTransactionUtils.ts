@@ -53,6 +53,17 @@ export const getIsUpdatedEthereumSendFlow = (
     return versionUtils.isNewer(firmwareVersion, '2.6.0') || !!stakeType;
 };
 
+export const getIsUpdatedStellarSendFlow = (
+    device: TrezorDevice,
+    network: Account['networkType'],
+) => {
+    if (network !== 'stellar') return false;
+
+    const firmwareVersion = getFirmwareVersion(device);
+
+    return versionUtils.isNewer(firmwareVersion, '2.9.0');
+};
+
 const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
     // Transforms cardano's tokenBundle into outputs, 1 output per one token
     // since suite supports only 1 token per output it will return just one item
@@ -254,8 +265,10 @@ const constructNewFlow = ({
     precomposedForm,
     isApprovalFlowSupported,
     isUpdatedEthereumSendFlow,
+    isUpdatedStellarSendFlow,
 }: ConstructOutputsParams & {
     isUpdatedEthereumSendFlow: boolean;
+    isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
 }): ReviewOutput[] => {
     const outputs: ReviewOutput[] = [];
@@ -272,34 +285,27 @@ const constructNewFlow = ({
     const trading = precomposedForm?.trading;
 
     if (networkType === 'stellar') {
-        // stellar displays requests on device:
-        // 1. Signing with (address)
-        // 2. Network (only if it is testnet)
-        // 3. TimeBounds (no restriction)
-        // 4. Memo / destination-tag
-        // 5. Recipient
-        // 6. Amount
-        // 7. Fee
-        outputs.push({
-            type: 'signing-with',
-            value: account.descriptor,
-        });
-        if (account.symbol === 'txlm') {
+        if (!isUpdatedStellarSendFlow) {
             outputs.push({
-                type: 'network',
+                type: 'signing-with',
+                value: account.descriptor,
+            });
+            if (account.symbol === 'txlm') {
+                outputs.push({
+                    type: 'network',
+                    value: '',
+                });
+            }
+            outputs.push({
+                type: 'timebounds',
                 value: '',
             });
         }
-        outputs.push(
-            {
-                type: 'timebounds',
-                value: '',
-            },
-            {
-                type: 'destination-tag',
-                value: precomposedForm.destinationTag || '',
-            },
-        );
+
+        outputs.push({
+            type: 'destination-tag',
+            value: precomposedForm.destinationTag || '',
+        });
     }
 
     if (
@@ -475,7 +481,10 @@ export const constructTransactionReviewOutputs = ({
         device,
         params.account.networkType,
     ); // > 2.6.0 && isEthereum
-
+    const isUpdatedStellarSendFlow = getIsUpdatedStellarSendFlow(
+        device,
+        params.account.networkType,
+    ); // > 2.9.0 && isStellar
     if (!isUpdatedSendFlow) {
         return constructOldFlow(params);
     }
@@ -483,6 +492,7 @@ export const constructTransactionReviewOutputs = ({
     return constructNewFlow({
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
+        isUpdatedStellarSendFlow,
         ...params,
     });
 };
