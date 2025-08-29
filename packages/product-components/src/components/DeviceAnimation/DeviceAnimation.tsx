@@ -80,7 +80,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
 
         // Key is used to force re-render of the video element. When `src` of the inner <source> tag
         // changes, the video element does not re-render. This is a workaround.
-        const key = `${deviceModelInFilename}_${type.toLowerCase()}_${deviceUnitColor}_${themeSuffix}`;
+        const rerenderKey = `${deviceModelInFilename}_${type.toLowerCase()}_${deviceUnitColor}_${themeSuffix}`;
 
         const commonProps = {
             loop,
@@ -93,14 +93,14 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 {['BOOTLOADER'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`}
-                        key={key}
+                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}
                 {['SUCCESS'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}_frontcolor_${getFrontColor()}.webm`}
-                        key={key}
+                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}
@@ -108,14 +108,14 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 {['BOOTLOADER_TWO_BUTTONS', 'NORMAL'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${DeviceModelInternal.T1B1.toLowerCase()}_${type.toLowerCase()}${themeSuffix}.webm`}
-                        key={key}
+                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}
                 {type === 'HOLOGRAM' && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_hologram.webm`}
-                        key={key}
+                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}
@@ -125,7 +125,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                             // if device unit color is not set, use first color available
                             deviceUnitColor ?? 1
                         }${sizeVariant ? `_${sizeVariant.toLowerCase()}` : ''}.webm`}
-                        key={key}
+                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}

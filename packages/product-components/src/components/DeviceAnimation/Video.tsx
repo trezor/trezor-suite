@@ -13,10 +13,10 @@ type VideoProps = {
     loop: boolean;
     videoRef: React.Ref<HTMLVideoElement>;
     onMouseOver?: MouseEventHandler<HTMLVideoElement>;
-    key: string;
+    rerenderKey: string;
 };
 
-export const Video = ({ src, loop, videoRef, onMouseOver, key }: VideoProps) => {
+export const Video = ({ src, loop, videoRef, onMouseOver, rerenderKey }: VideoProps) => {
     const commonProps = {
         loop,
         autoPlay: true,
@@ -26,7 +26,7 @@ export const Video = ({ src, loop, videoRef, onMouseOver, key }: VideoProps) => 
     };
 
     return (
-        <StyledVideo key={key} {...commonProps}>
+        <StyledVideo key={rerenderKey} {...commonProps}>
             <source src={resolveStaticPath(src)} type="video/webm" />
         </StyledVideo>
     );
