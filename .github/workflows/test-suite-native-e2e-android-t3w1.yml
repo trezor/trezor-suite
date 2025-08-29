@@ -1,4 +1,4 @@
-name: "[Test] suite-native Android E2E"
+name: "[Test] suite-native Android E2E (T3W1)"
 
 permissions:
   id-token: write # for fetching the OIDC token (needed for aws s3 actions)

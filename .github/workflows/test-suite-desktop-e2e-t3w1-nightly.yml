@@ -1,4 +1,4 @@
-name: "[Test] T3W1 Suite Desktop e2e tests"
+name: "[Test] Suite Desktop e2e tests (T3W1)"
 # Nightly scheduled check on develop branch
 # Builds the desktop app
 # Runs full e2e test suite for Suite Desktop
