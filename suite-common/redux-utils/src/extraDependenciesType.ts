@@ -38,8 +38,6 @@ export type ExtraDependencies = {
         }>;
         cardanoFetchTrezorData: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
-        subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
-        unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
         subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
         unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;

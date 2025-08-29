@@ -24,7 +24,9 @@ export const subscribeLocalFirstStorageThunk = createThunk<
             return;
         }
 
-        if (subscriptionStorage[deviceStaticSessionId]) {
+        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+        if (subscriptionStorage[walletDescriptor]) {
             console.error(
                 `____${deviceStaticSessionId} was already subscribed! This shall NOT happen.`,
             );
@@ -32,7 +34,7 @@ export const subscribeLocalFirstStorageThunk = createThunk<
             return;
         }
 
-        console.log('____subscribeLabelingUpdatesThunk', deviceStaticSessionId);
+        console.log('____subscribeLabelingUpdatesThunk', walletDescriptor);
 
         if (device.localFirstStorageSecret === undefined) {
             await dispatch(initEvoluKeysThunk({ device }));
@@ -46,10 +48,10 @@ export const subscribeLocalFirstStorageThunk = createThunk<
         const evoluKeys = reselectedDevice?.localFirstStorageSecret?.evoluKeys;
 
         if (evoluKeys === undefined) {
+            console.log('____already got the keys: evoluKeys');
+
             return;
         }
-
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
         dispatch(subscribeLabelingUpdatesThunk({ evoluKeys, walletDescriptor }));
     },

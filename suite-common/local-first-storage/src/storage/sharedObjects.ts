@@ -1,13 +1,13 @@
 import { EvoluKeys } from '@suite-common/suite-types';
+import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { LocalFirstStorageProvider } from './LocalFirstStorageProvider';
 
-type WalletDescriptor = string; // First btc testnet address
-type SubscriptionKey = string; // for example: "labeling", ...
+type SubscriptionKey = 'labeling'; // for example: "labeling", ...
 
 export const subscriptionStorage: Record<
     WalletDescriptor,
-    Record<SubscriptionKey, () => void>
+    Partial<Record<SubscriptionKey, () => void>>
 > = {};
 
 export let localFirstStorageProvider: LocalFirstStorageProvider | null = null;

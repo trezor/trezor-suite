@@ -7,7 +7,7 @@ const loadEvoluCommon = async () => await import('@evolu/common');
 const loadNobleCyphersUtils = async () => await import('@noble/ciphers/utils');
 
 import { createThunk } from '@suite-common/redux-utils';
-import { EvoluKeys, TrezorDevice } from '@suite-common/suite-types';
+import { EvoluKeys, TrezorDevice, asDeviceEvoluOwnerId } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
@@ -49,7 +49,9 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             const evoluNode = hexToBytes(result.payload.data);
 
             const evoluKeys: EvoluKeys = {
-                ownerId: bytesToHex(deriveSlip21Node('Owner Id', evoluNode).slice(32, 64)),
+                ownerId: asDeviceEvoluOwnerId(
+                    bytesToHex(deriveSlip21Node('Owner Id', evoluNode).slice(32, 64)),
+                ),
                 writeKey: bytesToHex(deriveSlip21Node('Write Key', evoluNode).slice(32, 64)),
                 encryptionKey: bytesToHex(
                     deriveSlip21Node('Encryption Key', evoluNode).slice(32, 64),

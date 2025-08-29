@@ -121,14 +121,6 @@ export const prepareLabelingReducer = createReducerWithExtraDeps<LabelingState>(
                 }
             })
             .addCase(labelingActions.clearAllLabels, (state, { payload }) => {
-                const walletLabelState = getOrCreateWalletsLabelsState(
-                    state,
-                    payload.walletDescriptor,
-                );
-
-                walletLabelState.walletLabel = null;
-                walletLabelState.accountLabels = [];
-                walletLabelState.addressLabels = [];
-                walletLabelState.outputLabels = [];
+                delete state.walletsLabels[payload.walletDescriptor];
             }),
 );

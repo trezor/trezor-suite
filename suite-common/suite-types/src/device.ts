@@ -8,6 +8,7 @@ import {
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
+import { Branded } from '@trezor/type-utils';
 
 // Extend original ButtonRequestMessage from @trezor/connect
 // suite (deviceReducer) stores them in slightly different shape:
@@ -26,8 +27,11 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
         | NonNullable<PROTO.PinMatrixRequest>['type'];
 };
 
+export type DeviceEvoluOwnerId = string & Branded<DeviceEvoluOwnerId>;
+export const asDeviceEvoluOwnerId = (value: string) => value as DeviceEvoluOwnerId;
+
 export type EvoluKeys = {
-    ownerId: string;
+    ownerId: DeviceEvoluOwnerId;
     writeKey: string;
     encryptionKey: string;
 };

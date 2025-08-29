@@ -17,6 +17,8 @@ export const subscribeLabelingUpdatesThunk = createThunk<
 >(
     `${LABELING_PREFIX}/subscribeLabelingUpdatesThunk`,
     ({ evoluKeys, walletDescriptor }, { dispatch }) => {
+        console.log('____subscribeLabelingUpdatesThunk');
+
         const storage = getLocalFirstStorageProvider(evoluKeys);
 
         const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
@@ -41,6 +43,8 @@ export const subscribeLabelingUpdatesThunk = createThunk<
         }
 
         subscriptionStorage[walletDescriptor]['labeling'] = () => {
+            console.log('____unsubscribe');
+
             unsubscribeWalletLabels();
             unsubscribeAccountLabels();
             unsubscribeAddressLabels();
@@ -50,5 +54,7 @@ export const subscribeLabelingUpdatesThunk = createThunk<
             // Evolu DB is always the source of truth.
             dispatch(clearAllLabels({ walletDescriptor }));
         };
+
+        console.log('____subscriptionStorage', subscriptionStorage);
     },
 );
