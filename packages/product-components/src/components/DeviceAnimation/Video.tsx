@@ -23,11 +23,10 @@ export const Video = ({ src, loop, videoRef, onMouseOver, key }: VideoProps) => 
         muted: true,
         ref: videoRef,
         onMouseOver,
-        key,
     };
 
     return (
-        <StyledVideo {...commonProps}>
+        <StyledVideo key={key} {...commonProps}>
             <source src={resolveStaticPath(src)} type="video/webm" />
         </StyledVideo>
     );

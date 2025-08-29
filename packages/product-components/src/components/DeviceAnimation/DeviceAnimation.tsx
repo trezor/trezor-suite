@@ -83,7 +83,6 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         const key = `${deviceModelInFilename}_${type.toLowerCase()}_${deviceUnitColor}_${themeSuffix}`;
 
         const commonProps = {
-            key,
             loop,
             videoRef,
             onMouseOver,
@@ -94,12 +93,14 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 {['BOOTLOADER'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`}
+                        key={key}
                         {...commonProps}
                     />
                 )}
                 {['SUCCESS'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}_frontcolor_${getFrontColor()}.webm`}
+                        key={key}
                         {...commonProps}
                     />
                 )}
@@ -107,12 +108,14 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 {['BOOTLOADER_TWO_BUTTONS', 'NORMAL'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${DeviceModelInternal.T1B1.toLowerCase()}_${type.toLowerCase()}${themeSuffix}.webm`}
+                        key={key}
                         {...commonProps}
                     />
                 )}
                 {type === 'HOLOGRAM' && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_hologram.webm`}
+                        key={key}
                         {...commonProps}
                     />
                 )}
@@ -122,6 +125,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                             // if device unit color is not set, use first color available
                             deviceUnitColor ?? 1
                         }${sizeVariant ? `_${sizeVariant.toLowerCase()}` : ''}.webm`}
+                        key={key}
                         {...commonProps}
                     />
                 )}
