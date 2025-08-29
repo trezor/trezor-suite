@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { getNetworkType } from '@suite-common/wallet-config';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -27,7 +28,10 @@ export const Dashboard = () => {
     useLayout('Home', <PageHeader />);
     useNotificationForDisconnectedDevice();
 
-    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
+    const hasNonBitcoinNetwork = enabledNetworks
+        .map(getNetworkType)
+        .some(networkType => networkType !== 'bitcoin');
 
     return (
         <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
@@ -38,7 +42,7 @@ export const Dashboard = () => {
             </Container>
             <DashboardPromoBanner />
             <AssetsView />
-            {!hasBitcoinOnlyFirmware && <StakingDashboard />}
+            {hasNonBitcoinNetwork && <StakingDashboard />}
             <DashboardFooter />
         </Column>
     );
