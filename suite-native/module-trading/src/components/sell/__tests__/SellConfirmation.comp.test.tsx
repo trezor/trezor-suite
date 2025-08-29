@@ -1,28 +1,28 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { BuyConfirmation } from '../BuyConfirmation';
+import { SellConfirmation } from '../SellConfirmation';
 
-jest.mock('../../../hooks/buy/useBuyFlow', () => ({
-    useBuyFlow: jest.fn(),
+jest.mock('../../../hooks/sell/useSellFlow', () => ({
+    useSellFlow: jest.fn(),
 }));
 
-jest.mock('../../../hooks/buy/useBuyFormContext', () => ({
-    useBuyFormContext: () => ({
-        watch: () => ({ exchange: 'test-provider' }),
+jest.mock('../../../hooks/sell/useSellFormContext', () => ({
+    useSellFormContext: () => ({
+        watch: () => [{ exchange: 'test-provider' }, { symbol: 'btc' }],
     }),
 }));
 
-describe('BuyConfirmation', () => {
-    const mockUseBuyFlow = require('../../../hooks/buy/useBuyFlow').useBuyFlow;
+describe('SellConfirmation', () => {
+    const mockUseSellFlow = require('../../../hooks/sell/useSellFlow').useSellFlow;
 
     const renderConfirmation = () =>
-        renderWithStoreProviderAsync(<BuyConfirmation />, {
+        renderWithStoreProviderAsync(<SellConfirmation />, {
             preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } },
         });
 
     it('should render continue button when canProceed is true', async () => {
-        mockUseBuyFlow.mockReturnValue({
+        mockUseSellFlow.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
             isConsentRequested: false,
@@ -31,11 +31,12 @@ describe('BuyConfirmation', () => {
         });
 
         const { getByText } = await renderConfirmation();
+
         expect(getByText('Continue')).toBeTruthy();
     });
 
     it('should not render continue button when canProceed is false', async () => {
-        mockUseBuyFlow.mockReturnValue({
+        mockUseSellFlow.mockReturnValue({
             canProceed: false,
             selectQuote: jest.fn(),
             isConsentRequested: false,
