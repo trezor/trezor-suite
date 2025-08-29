@@ -2158,7 +2158,7 @@ export const en = {
                 infoSecurity2:
                     "You're buying cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
                 infoSecurity3:
-                    " You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+                    "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
                 subheaderPartners: 'Verified partners by Invity',
                 infoPartners:
                     "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
@@ -2206,6 +2206,24 @@ export const en = {
                     },
                 },
                 continueButton: "I'm ready to swap",
+            },
+            sell: {
+                title: 'Sell {symbol} with {companyName}',
+                subheaderSecurity: 'Security first with your Trezor',
+                infoSecurity1:
+                    "You're here to sell cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
+                infoSecurity2:
+                    "You're selling cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
+                infoSecurity3:
+                    "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+                subheaderPartners: 'Verified partners by Invity',
+                infoPartners:
+                    "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
+                subheaderLegal: 'Legal notice',
+                infoLegal1:
+                    "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+                infoLegal2:
+                    'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
             },
         },
         validators: {
