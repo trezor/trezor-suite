@@ -137,7 +137,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                             autocompoundBalance: '0',
                         },
                     ],
-                    nonce: '1',
+                    nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
             });
