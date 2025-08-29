@@ -148,7 +148,9 @@ export const useFirmwareInstallation = (
 
     const showConfirmationPill =
         (!showReconnectPrompt && progressEvent?.operation === 'downloading') ||
-        isThpConfirmationRequested;
+        isThpConfirmationRequested ||
+        firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT ||
+        firmware.uiEvent?.type === 'button';
 
     const updateStatus = useMemo<FirmwareOperationStatus>(() => {
         if (isThpInProgress) {

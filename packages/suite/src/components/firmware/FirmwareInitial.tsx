@@ -343,7 +343,7 @@ export const FirmwareInitial = ({
         };
     }
 
-    if (content) {
+    if (content) { 
         return (
             <>
                 {showSkipConfirmation && (
