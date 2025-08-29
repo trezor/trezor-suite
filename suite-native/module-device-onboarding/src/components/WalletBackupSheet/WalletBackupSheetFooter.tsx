@@ -2,8 +2,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { BackupType } from '@suite-common/suite-types';
 import { Box, Button } from '@suite-native/atoms';
-import { WalletBackupType } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
@@ -23,7 +23,7 @@ const linearGradientStyle = prepareNativeStyle(utils => ({
 
 interface CardFooterProps {
     onSubmit: () => void;
-    selectedType: WalletBackupType;
+    selectedType: BackupType;
 }
 
 const containerStyle = prepareNativeStyle<{ marginBottom: number }>((_, { marginBottom }) => ({

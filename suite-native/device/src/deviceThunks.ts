@@ -1,5 +1,6 @@
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
+import { BackupType } from '@suite-common/suite-types';
 import {
     deviceActions,
     failEntropyCheckThunk,
@@ -7,7 +8,6 @@ import {
     selectIsDeviceInitialized,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { WalletBackupType } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -41,7 +41,7 @@ export const setTemporaryRememberedDeviceThunk = createThunk(
     },
 );
 
-const getResetDeviceConfig = (walletBackupType: WalletBackupType): PROTO.ResetDevice => {
+const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice => {
     switch (walletBackupType) {
         case 'shamir-single':
             return {
@@ -64,10 +64,7 @@ const getResetDeviceConfig = (walletBackupType: WalletBackupType): PROTO.ResetDe
 
 export const createAndBackupWalletThunk = createThunk(
     `${NATIVE_DEVICE_MODULE_PREFIX}/createAndBackupWalletThunk`,
-    async (
-        { walletBackupType }: { walletBackupType: WalletBackupType },
-        { getState, dispatch },
-    ) => {
+    async ({ walletBackupType }: { walletBackupType: BackupType }, { getState, dispatch }) => {
         const device = selectSelectedDevice(getState());
         const devicePath = selectDevicePath(getState());
         const isDeviceInitialized = selectIsDeviceInitialized(getState());

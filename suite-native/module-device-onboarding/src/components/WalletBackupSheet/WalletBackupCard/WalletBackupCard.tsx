@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import { Pressable } from 'react-native';
 
+import { BackupType } from '@suite-common/suite-types';
 import { Card, CardDivider, FullAlertBox, FullAlertBoxProps, VStack } from '@suite-native/atoms';
-import { WalletBackupType } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -13,9 +13,9 @@ import { CardHeader } from './CardHeader';
 import { walletBackupSheetCopyByType } from '../presets';
 
 interface WalletTypeCardProps {
-    type: WalletBackupType;
+    type: BackupType;
     isSelected: boolean;
-    setSelectedType: (type: WalletBackupType) => void;
+    setSelectedType: (type: BackupType) => void;
     isVisible: boolean;
 }
 
@@ -24,7 +24,7 @@ const containerStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isS
     borderWidth: utils.borders.widths.large,
 }));
 
-const variantByWalletBackupType: Record<WalletBackupType, FullAlertBoxProps['variant']> = {
+const variantByWalletBackupType: Record<BackupType, FullAlertBoxProps['variant']> = {
     'shamir-single': 'success',
     'shamir-advanced': 'warning',
     '12-words': 'neutral',

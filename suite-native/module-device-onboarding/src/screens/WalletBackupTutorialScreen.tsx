@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
+import { BackupType } from '@suite-common/suite-types';
 import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
 import { SwipeableWalkthrough, SwipeableWalkthroughScreenHeader } from '@suite-native/atoms';
-import { WalletBackupType } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -32,8 +32,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const WalletBackupTutorialScreen = () => {
     const currentStepIndex = useSharedValue(0);
     const defaultBackupType = useSelector(selectDeviceDefaultBackupType);
-    const [selectedBackupType, setSelectedBackupType] =
-        useState<WalletBackupType>(defaultBackupType);
+    const [selectedBackupType, setSelectedBackupType] = useState<BackupType>(defaultBackupType);
 
     const navigation = useNavigation<NavigationProps>();
 

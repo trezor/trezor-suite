@@ -1,4 +1,4 @@
-import { WalletBackupType } from '@suite-native/device';
+import { BackupType } from '@suite-common/suite-types';
 
 import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../utils';
 
@@ -69,13 +69,13 @@ class DeviceOnboardingActions {
         await element(by.id(buttonId)).tap();
     }
 
-    async validateSelectedBackupType(selectedType: WalletBackupType) {
+    async validateSelectedBackupType(selectedType: BackupType) {
         await waitForElementByIdToBeVisible(
             `onboarding/WalletBackupTutorialStep5/selectedType=${selectedType}`,
         );
     }
 
-    async scrollToWalletBackupTypeAndSelect(selectedType: WalletBackupType) {
+    async scrollToWalletBackupTypeAndSelect(selectedType: BackupType) {
         const selectedTypeElement = element(
             by.id(
                 `@deviceOnboarding/WalletBackupTutorialStep5/WalletBackupCard/selectedType=${selectedType}`,

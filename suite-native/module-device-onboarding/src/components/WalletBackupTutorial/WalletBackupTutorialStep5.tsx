@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import * as Haptics from 'expo-haptics';
 
+import { BackupType } from '@suite-common/suite-types';
 import { selectIsDeviceInitialized } from '@suite-common/wallet-core';
 import {
     Box,
@@ -12,7 +13,6 @@ import {
     TitleHeader,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -48,8 +48,8 @@ const innerContainerStyle = prepareNativeStyle(_ => ({
 }));
 
 type WalletBackupTutorialStep5Props = {
-    selectedType: WalletBackupType;
-    onSelectType: (type: WalletBackupType) => void;
+    selectedType: BackupType;
+    onSelectType: (type: BackupType) => void;
 } & WalletBackupTutorialNumberedStepProps;
 
 export const WalletBackupTutorialStep5 = ({

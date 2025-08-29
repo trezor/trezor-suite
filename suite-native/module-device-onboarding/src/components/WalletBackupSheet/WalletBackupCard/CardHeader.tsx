@@ -1,5 +1,5 @@
+import { BackupType } from '@suite-common/suite-types';
 import { Box, HStack, Radio, Text, TitleHeader } from '@suite-native/atoms';
-import { WalletBackupType } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Color } from '@trezor/theme';
 
@@ -7,10 +7,10 @@ import { walletBackupSheetCopyByType } from '../presets';
 
 interface CardHeaderProps {
     isSelected: boolean;
-    type: WalletBackupType;
+    type: BackupType;
 }
 
-const descriptionColor: Record<WalletBackupType, Color> = {
+const descriptionColor: Record<BackupType, Color> = {
     'shamir-single': 'textSecondaryHighlight',
     'shamir-advanced': 'textAlertYellow',
     '12-words': 'textAlertBlue',
