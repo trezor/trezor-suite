@@ -40,7 +40,7 @@
             "env": {
                 "EXPO_PUBLIC_FF_IS_DEVICE_CONNECT_ENABLED": "true",
                 "EXPO_PUBLIC_FF_IS_BLUETOOTH_ENABLED": "true",
-                "EXPO_PUBLIC_IS_DEVICE_AUTHENTITY_CHECK_ENABLED": "false",
+                "EXPO_PUBLIC_IS_DEVICE_AUTHENTICITY_CHECK_ENABLED": "false",
                 "EXPO_PUBLIC_IS_FIRMWARE_REVISION_CHECK_ENABLED": "false",
                 "EXPO_PUBLIC_IS_FIRMWARE_HASH_CHECK_ENABLED": "false"
             },
