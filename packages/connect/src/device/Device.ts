@@ -691,8 +691,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return;
         }
 
-        // TODO(karliatto): We get bundled relase here, if it is not present it will try to get the it online inside `checkFirmwareRevision`
-        // by using `getReleaseByVersion` that checks the bundled and if not found then it tries to find it online.
         const release = getReleaseAsset(
             this.features.internal_model,
             firmwareVersion,
