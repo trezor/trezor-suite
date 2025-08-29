@@ -7,8 +7,6 @@ import {
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import { isPinButtonRequestCode } from './utils';
-
 export type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
     hasDeviceRequestedPassphrase: boolean;
@@ -48,7 +46,13 @@ export const deviceAuthorizationSlice = createSlice({
                 state.hasDeviceRequestedPassphrase = true;
             })
             .addCase(UI.REQUEST_BUTTON, (state, action) => {
-                if (isPinButtonRequestCode(action)) {
+                if (
+                    // @ts-expect-error Actions are not typed properly
+                    action.payload.code === 'ButtonRequest_PinEntry' || // T2 with PIN entry on device
+                    // @ts-expect-error Actions are not typed properly
+                    action.payload.code === 'PinMatrixRequestType_Current'
+                ) {
+                    // T1 with PIN matrix in app
                     state.hasDeviceRequestedPin = true;
                 } else {
                     state.hasDeviceRequestedPin = false;
