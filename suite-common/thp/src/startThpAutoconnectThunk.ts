@@ -23,6 +23,6 @@ export const startThpAutoconnectThunk = createThunk<void, void, void>(
                 notificationsActions.addToast({ type: 'error', error: response.payload.error }),
             );
         }
-        dispatch(thpActions.resetThpFlow());
+        dispatch(thpActions.finishThpFlow());
     },
 );

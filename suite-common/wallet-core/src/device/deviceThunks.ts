@@ -234,7 +234,7 @@ export const acquireDevice = createThunk(
                     }),
                 );
                 if (device?.thp !== undefined) {
-                    dispatch(thpActions.resetThpFlow());
+                    dispatch(thpActions.cancelThpFlow());
                 }
             }
         } else if (startDiscovery) {
@@ -395,7 +395,9 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
         switch (type) {
             case DEVICE.CONNECT:
                 dispatch(deviceActions.connectDevice({ device }));
-                dispatch(connectThpDeviceThunk({ device }));
+                if (device.thp !== undefined) {
+                    dispatch(connectThpDeviceThunk({ device }));
+                }
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(

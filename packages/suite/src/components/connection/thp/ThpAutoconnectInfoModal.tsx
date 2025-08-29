@@ -19,7 +19,7 @@ export const ThpAutoconnectInfoModal = () => {
     };
 
     const onCancel = () => {
-        dispatch(thpActions.resetThpFlow());
+        dispatch(thpActions.finishThpFlow());
     };
 
     return (

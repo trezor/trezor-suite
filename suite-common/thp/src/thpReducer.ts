@@ -1,4 +1,4 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { ThpSuiteCredentials } from '@suite-common/suite-types';
@@ -55,9 +55,6 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
     initialState,
     (builder, extra) =>
         builder
-            .addCase(thpActions.resetThpFlow, state => {
-                state.step = null;
-            })
             .addCase(thpActions.invalidCode, state => {
                 state.step = 'CodeInvalid';
             })
@@ -87,6 +84,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                                 stateCredential.credential === payloadCredential.credential,
                         ),
                 );
+            })
+            .addMatcher(isAnyOf(thpActions.finishThpFlow, thpActions.cancelThpFlow), state => {
+                state.step = null;
             })
             .addMatcher(
                 action => action.type === UI.REQUEST_THP_PAIRING,

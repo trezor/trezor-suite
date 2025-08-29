@@ -16,7 +16,7 @@ export const ThpPairingPinEntryModal = () => {
 
     const onCancel = () => {
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
-        dispatch(thpActions.resetThpFlow());
+        dispatch(thpActions.finishThpFlow());
     };
 
     return (

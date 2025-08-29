@@ -15,7 +15,7 @@ export const useThpAlerts = () => {
     }, [dispatch]);
 
     const ignoreAutoconnect = useCallback(() => {
-        dispatch(thpActions.resetThpFlow());
+        dispatch(thpActions.finishThpFlow());
     }, [dispatch]);
 
     const showThpAutoconnectAlert = useCallback(() => {

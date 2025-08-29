@@ -46,7 +46,7 @@ export const removeThpAutoconnectThunk = createThunk<
                 notificationsActions.addToast({ type: 'error', error: response.payload.error }),
             );
         }
-        dispatch(thpActions.resetThpFlow());
+        dispatch(thpActions.finishThpFlow());
 
         return fulfillWithValue(response);
     },

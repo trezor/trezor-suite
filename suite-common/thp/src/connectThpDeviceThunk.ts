@@ -13,9 +13,7 @@ type ConnectThpDeviceThinkParams = {
 
 export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkParams, void>(
     `${THP_PREFIX}/connectThpDeviceThunk`,
-    ({ device }, { dispatch, getState, rejectWithValue }) => {
-        if (device.thp === undefined) return rejectWithValue('not-thp-device');
-
+    ({ device }, { dispatch, getState }) => {
         const credentials = selectThpCredentials(getState());
         const isFwInstall = selectFirmware(getState()).status !== 'initial';
 
@@ -45,10 +43,10 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
             dispatch(
                 shallShowAutoConnectDialog
                     ? thpActions.showAutoconnectInfo()
-                    : thpActions.resetThpFlow(),
+                    : thpActions.finishThpFlow(),
             );
         } else {
-            dispatch(thpActions.resetThpFlow());
+            dispatch(thpActions.finishThpFlow());
         }
     },
 );

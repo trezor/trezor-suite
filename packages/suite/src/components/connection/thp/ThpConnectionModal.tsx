@@ -15,7 +15,7 @@ export const ThpConnectionModal = ({ device }: ThpConnectionModalProps) => {
 
     const onCancel = () => {
         TrezorConnect.cancel();
-        dispatch(thpActions.resetThpFlow());
+        dispatch(thpActions.finishThpFlow());
     };
 
     return (
