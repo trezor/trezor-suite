@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
+import { BackupType } from '@suite-common/suite-types';
 import { BottomSheetModal, BottomSheetModalRef, Button, VStack } from '@suite-native/atoms';
-import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -22,8 +22,8 @@ const legacyButtonStyle = prepareNativeStyle(utils => ({
 
 interface WalletBackupSheetProps {
     onCloseModal: () => void;
-    selectedType: WalletBackupType;
-    onSelectType: (type: WalletBackupType) => void;
+    selectedType: BackupType;
+    onSelectType: (type: BackupType) => void;
     ref: BottomSheetModalRef;
 }
 
@@ -32,7 +32,7 @@ const walletOptions = [
     'shamir-advanced',
     '12-words',
     '24-words',
-] as const satisfies WalletBackupType[];
+] as const satisfies BackupType[];
 
 export const WalletBackupSheet = ({
     onSelectType,

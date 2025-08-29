@@ -1,11 +1,11 @@
+import { BackupType } from '@suite-common/suite-types';
 import { VStack } from '@suite-native/atoms';
-import { WalletBackupType } from '@suite-native/device';
 
 import { CardContentRow } from './CardContentRow';
 import { walletBackupSheetCopyByType } from '../presets';
 
 type CardContentProps = {
-    type: WalletBackupType;
+    type: BackupType;
 };
 
 export const CardContent = ({ type }: CardContentProps) => {

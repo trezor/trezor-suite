@@ -1,4 +1,4 @@
-import { WalletBackupType } from '@suite-native/device';
+import { BackupType } from '@suite-common/suite-types';
 import { TxKeyPath } from '@suite-native/intl';
 
 type TranslationKeys = 'title' | 'description' | 'calloutLabel';
@@ -23,4 +23,4 @@ export const walletBackupTutorialCopyByType = {
         description: `moduleDeviceOnboarding.walletBackupTutorialScreen.step5.backupOptions.24-words.description`,
         calloutLabel: undefined,
     },
-} satisfies Record<WalletBackupType, Record<TranslationKeys, TxKeyPath | undefined>>;
+} satisfies Record<BackupType, Record<TranslationKeys, TxKeyPath | undefined>>;
