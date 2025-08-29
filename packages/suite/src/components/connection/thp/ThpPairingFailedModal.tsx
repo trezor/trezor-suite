@@ -22,7 +22,7 @@ export const ThpPairingFailedModal = () => {
     };
 
     const onCancel = () => {
-        dispatch(thpActions.resetThpFlow());
+        dispatch(thpActions.finishThpFlow());
     };
 
     return (
