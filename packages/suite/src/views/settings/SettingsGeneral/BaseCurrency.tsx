@@ -2,21 +2,23 @@ import { useMemo } from 'react';
 
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import {
+    BaseCurrency as BaseCurrencyType,
     BaseCurrencyCode,
+    baseCurrencies,
     fiatBaseCurrencies,
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { typedObjectKeys } from '@trezor/utils';
+import { typedObjectValues } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
-const buildCurrencyOption = (currency: BaseCurrencyCode) => ({
-    value: currency,
-    label: currency.toUpperCase(),
+const buildCurrencyOption = ({ code, label }: BaseCurrencyType) => ({
+    value: code,
+    label: `${code.toUpperCase()} · ${label}`,
 });
 
 export const BaseCurrency = () => {
@@ -24,7 +26,7 @@ export const BaseCurrency = () => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
 
-    const value = buildCurrencyOption(baseCurrencyCode);
+    const value = buildCurrencyOption(baseCurrencies[baseCurrencyCode]);
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
         dispatch(setBaseCurrency(option.value));
@@ -40,11 +42,11 @@ export const BaseCurrency = () => {
         () => [
             {
                 label: translationString('TR_BASE_CURRENCY_FIAT'),
-                options: typedObjectKeys(fiatBaseCurrencies).map(buildCurrencyOption),
+                options: typedObjectValues(fiatBaseCurrencies).map(buildCurrencyOption),
             },
             {
                 label: translationString('TR_BASE_CURRENCY_VALUABLES'),
-                options: typedObjectKeys(valuablesBaseCurrencies).map(buildCurrencyOption),
+                options: typedObjectValues(valuablesBaseCurrencies).map(buildCurrencyOption),
             },
         ],
         [translationString],
