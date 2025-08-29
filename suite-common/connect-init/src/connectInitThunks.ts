@@ -24,9 +24,9 @@ import TrezorConnect, {
     UI_EVENT,
     UI_REQUEST,
 } from '@trezor/connect';
-import { isDesktop } from '@trezor/env-utils';
+import { getBrowserName, isDesktop, isWeb } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
-import { getSynchronize } from '@trezor/utils';
+import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
 import { cardanoConnectPatch } from './cardanoConnectPatch';
@@ -178,6 +178,11 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         };
 
         const { transports, showConnectLogs } = selectDebugSettings(getState());
+        const thp = selectThpSettings(getState());
+        // desktop thp appName/hostName enhanced in ./packages/suite-desktop-core/src/modules/trezor-connect.ts
+        if (isWeb()) {
+            thp.hostName = capitalizeFirstLetter(getBrowserName());
+        }
 
         try {
             await TrezorConnect.init({
@@ -185,7 +190,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 binFilesBaseUrl,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports,
-                thp: selectThpSettings(getState()),
+                thp,
                 debug: showConnectLogs,
                 firmwareHashCheckTimeouts,
                 firmwareUpdateSource: getFirmwareUpdateSource(),
