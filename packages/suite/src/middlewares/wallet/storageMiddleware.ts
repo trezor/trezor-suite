@@ -22,6 +22,7 @@ import {
     selectDeviceByStaticSessionId,
     selectDevices,
     selectHistoricFiatRates,
+    selectIsAutoForgetDeviceDataEnabled,
     selectSelectedDevice,
     setBaseCurrency,
     transactionsActions,
@@ -200,7 +201,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
+            const isAutoForgetEnabled = selectIsAutoForgetDeviceDataEnabled(api.getState());
+
             if (
+                !isAutoForgetEnabled &&
                 isAnyOf(
                     deviceActions.connectDevice, // Known device is stored
                     deviceActions.connectUnacquiredDevice, // Known device is stored
@@ -228,10 +232,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (
-                deviceActions.setThpCredentials.match(action) ||
-                deviceActions.connectDevice.match(action) || // To save the `connectionCounter`
-                thpActions.removeCredentials.match(action) ||
-                action.type === 'device-thp_credentials_changed'
+                !isAutoForgetEnabled &&
+                (deviceActions.setThpCredentials.match(action) ||
+                    deviceActions.connectDevice.match(action) || // To save the `connectionCounter`
+                    thpActions.removeCredentials.match(action) ||
+                    action.type === 'device-thp_credentials_changed')
             ) {
                 api.dispatch(storageActions.saveThpCredentials());
             }
