@@ -11375,7 +11375,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
-    react-native-svg: "npm:15.11.2"
+    react-native-svg: "npm:15.12.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -35498,20 +35498,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/e6774f7db39fbdf403be119a33d51c274d2d0e5464240d4804a9c05f43f49334ab9df484d07e856043b7e5ce7be95ee5e93df9b2f8c6c20656995beb10965ef4
-  languageName: node
-  linkType: hard
-
-"react-native-svg@npm:15.11.2":
-  version: 15.11.2
-  resolution: "react-native-svg@npm:15.11.2"
-  dependencies:
-    css-select: "npm:^5.1.0"
-    css-tree: "npm:^1.1.3"
-    warn-once: "npm:0.1.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10/bab86df8fdd4f500ad3f242558726693b0409b5e9b2a97cb3e9b5c1dfdcef01fe73fd36f01926ef20b19f99928b6ab1fb9e942bbeb1308aab27aa0d6c4877a5e
   languageName: node
   linkType: hard
 
