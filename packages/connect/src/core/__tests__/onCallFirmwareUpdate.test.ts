@@ -225,7 +225,7 @@ const setupTest = () => {
 
 describe('onCallFirmwareUpdate', () => {
     beforeAll(async () => {
-        await DataManager.load(parseConnectSettings({}));
+        await DataManager.load(parseConnectSettings({}), true, true);
     });
     beforeEach(() => {
         if (!ASSETS_BASE_URL) {

@@ -31,7 +31,7 @@ const settings = {
 describe('data/DataManager', () => {
     beforeEach(async () => {
         try {
-            await DataManager.load(settings, false);
+            await DataManager.load(settings, false, true);
         } catch (err) {
             // eslint-disable-next-line jest/no-standalone-expect
             expect(err).toBe(undefined);

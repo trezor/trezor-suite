@@ -49,6 +49,7 @@ describe('workflow/handshake', () => {
                 ...parseConnectSettings({}),
             },
             true,
+            true,
         );
     });
 

@@ -28,7 +28,7 @@ describe('data/firmwareInfo', () => {
     });
     describe('getFirmwareReleaseConfigInfo', () => {
         beforeAll(async () => {
-            await DataManager.load(parseConnectSettings({}));
+            await DataManager.load(parseConnectSettings({}), true, true);
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({
