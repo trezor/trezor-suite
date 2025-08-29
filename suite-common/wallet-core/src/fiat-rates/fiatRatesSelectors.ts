@@ -24,6 +24,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
 import { FiatRatesRootState } from './fiatRatesTypes';
@@ -103,13 +104,15 @@ export const selectTickerFromAccounts = (
             {
                 symbol: account.symbol,
             } as TickerId,
-            ...(account.tokens || []).map(
-                token =>
-                    ({
-                        symbol: account.symbol,
-                        tokenAddress: token.contract,
-                    }) as TickerId,
-            ),
+            ...(account.tokens || [])
+                .filter(token => new BigNumber(token.balance ?? '0').gt(0))
+                .map(
+                    token =>
+                        ({
+                            symbol: account.symbol,
+                            tokenAddress: token.contract,
+                        }) as TickerId,
+                ),
         ]),
         A.flat,
         A.filter(
