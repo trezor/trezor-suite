@@ -38,8 +38,6 @@ export const deviceAuthorizationSlice = createSlice({
         builder
             .addCase(UI.REQUEST_PASSPHRASE, state => {
                 state.hasDeviceRequestedPassphrase = true;
-                // this is not fully substituted by button requests, since REQUEST_PASSPHRASE is not added into device.buttonRequests
-                // state.hasDeviceRequestedPin = false;
             })
             .addCase(UI.REQUEST_BUTTON, (state, action) => {
                 // @ts-expect-error Actions are not typed properly

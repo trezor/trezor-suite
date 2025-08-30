@@ -95,6 +95,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             switch (action.type) {
                 case UI.REQUEST_PIN:
                 case UI.INVALID_PIN:
+                case UI.REQUEST_PASSPHRASE:
                     dispatch(
                         deviceActions.addButtonRequest({
                             // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device

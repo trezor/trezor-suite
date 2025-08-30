@@ -25,6 +25,7 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
     code?:
         | 'ui-request_pin'
         | 'ui-invalid_pin'
+        | 'ui-request_passphrase'
         | DeviceButtonRequest['payload']['code']
         | NonNullable<PROTO.PinMatrixRequest>['type'];
 };
