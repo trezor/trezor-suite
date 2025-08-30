@@ -98,7 +98,41 @@ export const resetDevice =
             getState(),
             Feature.entropyCheck,
         );
+
+        // todo: this should be handled most likely in a component somewhere above
+        if (device?.status === 'used' || device?.status === 'occupied') {
+            const features = await TrezorConnect.getFeatures({ device: { path: device.path } });
+            if (!features.success) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: 'Device is unreadable',
+                    }),
+                );
+
+                return;
+            }
+            if (features.payload.initialized) {
+                // todo: decide what should happen next UX wise. At the moment, user only gets an error toast
+                // and stays stuck on the 'create new wallet' screen;
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: 'This device has already been initialized',
+                    }),
+                );
+
+                return;
+            }
+        }
+
         if (!device || !device.features) return;
+
+        if (device.mode !== 'initialize') {
+            console.error('resetDevice: device in invalid mode', device.mode);
+
+            return;
+        }
 
         const defaults = {
             strength: DEVICE.DEFAULT_STRENGTH[device.features.internal_model],
