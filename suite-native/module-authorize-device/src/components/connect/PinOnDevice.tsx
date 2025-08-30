@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
 import { ConnectorImage } from '@suite-native/device';
-import { DevicePinImage, selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';

@@ -3,13 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectDeviceRequestedPin, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import {
-    selectDeviceRequestedPin,
-    selectIsCreatingNewPassphraseWallet,
-} from '@suite-native/device-authorization';
+import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,

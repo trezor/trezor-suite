@@ -8,7 +8,6 @@ import {
 import { UI } from '@trezor/connect';
 
 export type DeviceAuthorizationState = {
-    hasDeviceRequestedPin: boolean;
     hasDeviceRequestedPassphrase: boolean;
     checkPassphraseOnDevice: boolean;
     inputPassphraseOnDevice: boolean;
@@ -19,7 +18,6 @@ type DeviceAuthorizationRootState = {
 };
 
 export const deviceAuthorizationInitialState: DeviceAuthorizationState = {
-    hasDeviceRequestedPin: false,
     hasDeviceRequestedPassphrase: false,
     checkPassphraseOnDevice: false,
     inputPassphraseOnDevice: false,
@@ -38,26 +36,12 @@ export const deviceAuthorizationSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addCase(UI.REQUEST_PIN, state => {
-                state.hasDeviceRequestedPin = true;
-            })
             .addCase(UI.REQUEST_PASSPHRASE, state => {
-                state.hasDeviceRequestedPin = false;
                 state.hasDeviceRequestedPassphrase = true;
+                // this is not fully substituted by button requests, since REQUEST_PASSPHRASE is not added into device.buttonRequests
+                // state.hasDeviceRequestedPin = false;
             })
             .addCase(UI.REQUEST_BUTTON, (state, action) => {
-                if (
-                    // @ts-expect-error Actions are not typed properly
-                    action.payload.code === 'ButtonRequest_PinEntry' || // T2 with PIN entry on device
-                    // @ts-expect-error Actions are not typed properly
-                    action.payload.code === 'PinMatrixRequestType_Current'
-                ) {
-                    // T1 with PIN matrix in app
-                    state.hasDeviceRequestedPin = true;
-                } else {
-                    state.hasDeviceRequestedPin = false;
-                }
-
                 // @ts-expect-error Actions are not typed properly
                 if (action.payload.code !== 'ButtonRequest_Other') {
                     state.hasDeviceRequestedPassphrase = false;
@@ -71,7 +55,6 @@ export const deviceAuthorizationSlice = createSlice({
                 }
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
-                state.hasDeviceRequestedPin = false;
                 state.hasDeviceRequestedPassphrase = false;
                 state.checkPassphraseOnDevice = false;
                 state.inputPassphraseOnDevice = false;
@@ -81,9 +64,6 @@ export const deviceAuthorizationSlice = createSlice({
             });
     },
 });
-
-export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.hasDeviceRequestedPin;
 
 export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.hasDeviceRequestedPassphrase;

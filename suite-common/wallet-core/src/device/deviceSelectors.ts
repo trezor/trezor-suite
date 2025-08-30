@@ -605,3 +605,13 @@ export const selectIsDevicePinLocked = createMemoizedSelector(
     [selectSelectedDevice],
     selectedDevice => selectedDevice && getStatus(selectedDevice) === 'device-pin-locked',
 );
+
+export const selectDeviceRequestedPin = (state: DeviceRootState) => {
+    const codes = selectDeviceButtonRequestsCodes(state);
+    const last = codes[codes.length - 1];
+    if (!last) return false;
+
+    return ['ui-request_pin', 'ButtonRequest_PinEntry', 'PinMatrixRequestType_Current'].includes(
+        last,
+    );
+};

@@ -7,6 +7,7 @@ import {
     DiscoveryRootState,
     selectDiscoveryByDevicePath,
     selectSelectedDevice,
+    selectDeviceRequestedPin,
 } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackParamList,
@@ -19,7 +20,6 @@ import {
 
 import {
     selectDeviceRequestedPassphrase,
-    selectDeviceRequestedPin,
     selectInputPassphraseOnDevice,
 } from '../deviceAuthorizationSlice';
 

@@ -2,10 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectDeviceRequestedPin,
+    selectDiscoveryForSelectedDevice,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import {
     selectCheckPassphraseOnDevice,
-    selectDeviceRequestedPin,
     selectInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
 import {

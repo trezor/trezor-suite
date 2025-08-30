@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
     IconButton,
@@ -7,7 +8,6 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { PIN_HELP_URL } from '@trezor/urls';
