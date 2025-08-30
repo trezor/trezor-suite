@@ -17,6 +17,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
@@ -32,6 +33,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "expo": "53.0.20",
         "react": "19.0.0",
         "react-native": "0.79.3",
         "react-redux": "9.2.0"

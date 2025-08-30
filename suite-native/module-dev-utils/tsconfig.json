@@ -9,6 +9,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../feature-flags" },
