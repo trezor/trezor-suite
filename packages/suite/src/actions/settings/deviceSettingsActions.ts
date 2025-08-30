@@ -107,11 +107,11 @@ export const resetDevice =
         };
 
         const result = await TrezorConnect.resetDevice({
+            ...defaults,
+            ...params,
             device: {
                 path: device.path,
             },
-            ...defaults,
-            ...params,
             entropy_check: isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem,
         });
 
