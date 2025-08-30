@@ -117,7 +117,7 @@ export const resetDevice =
 
         if (!result.success) {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
-            dispatch(failEntropyCheckThunk({ device, error: result.payload.error }));
+            dispatch(failEntropyCheckThunk({ device, error: result.payload }));
         }
 
         return result;

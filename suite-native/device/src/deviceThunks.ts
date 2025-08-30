@@ -124,7 +124,7 @@ export const createAndBackupWalletThunk = createThunk(
 
         const result = deviceResponse.payload;
         if (!result.success && result.payload.code === 'Failure_EntropyCheck') {
-            dispatch(failEntropyCheckThunk({ device, error: result.payload.error }));
+            dispatch(failEntropyCheckThunk({ device, error: result.payload }));
         }
 
         return result;
