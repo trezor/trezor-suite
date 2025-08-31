@@ -4,6 +4,7 @@
     "references": [
         { "path": "../toasts" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" }
     ]
 }

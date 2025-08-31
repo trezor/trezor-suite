@@ -18,6 +18,7 @@ import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
 
@@ -83,7 +84,9 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                                     <Link
                                         label={chunk}
                                         textVariant="hint"
-                                        href="https://trezor.io/learn/supported-assets/other-cryptocurrencies/destination-tags"
+                                        href={
+                                            HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
+                                        }
                                         isUnderlined
                                         textColor="textDefault"
                                         textPressedColor="textSubdued"

@@ -9,6 +9,7 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { HELP_CENTER_VERIFY_TREZOR_SUITE_LITE_ADDRESSES_URL } from '@trezor/urls';
 
 import { ReceiveAddressBottomSheetHeader } from './ReceiveAddressBottomSheetHeader';
 
@@ -21,9 +22,7 @@ export const AddressMismatchBottomSheet = ({ onClose, ref }: AddressMismatchBott
     const openLink = useOpenLink();
 
     const handleOpenSupportLink = () =>
-        openLink(
-            'https://trezor.io/guides/trezor-suite/trezor-suite-lite/what-is-trezor-suite-lite',
-        );
+        openLink(HELP_CENTER_VERIFY_TREZOR_SUITE_LITE_ADDRESSES_URL);
 
     return (
         <BottomSheetModal ref={ref} paddingHorizontal="sp24">

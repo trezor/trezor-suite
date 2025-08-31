@@ -36,7 +36,7 @@ export const DeviceCompromisedModalContent = ({
 }: DeviceCompromisedModalContentProps) => {
     const openLink = useOpenLink();
 
-    const handleContactSupportClick = () => openLink(contactSupportUrl);
+    const handleContactSupportClick = () => openLink(`${contactSupportUrl}#open-chat`);
 
     return (
         <Screen header={screenHeaderContent}>

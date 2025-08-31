@@ -10,8 +10,7 @@ import {
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-
-import { PIN_HELP_URL } from '../../constants/pinFormConstants';
+import { PIN_HELP_URL } from '@trezor/urls';
 
 export const ConnectingTrezorHelp = () => {
     const { bottomSheetRef, openModal } = useBottomSheetModal();

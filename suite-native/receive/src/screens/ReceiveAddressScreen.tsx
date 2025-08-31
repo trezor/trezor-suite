@@ -30,6 +30,7 @@ import { Link } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
 import { CloseActionType, useNavigateToInitialScreen } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
 import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
@@ -134,7 +135,9 @@ export const ReceiveAddressScreen = ({
                                         <Link
                                             label={chunk}
                                             textVariant="label"
-                                            href="https://trezor.io/learn/supported-assets/other-cryptocurrencies/destination-tags"
+                                            href={
+                                                HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
+                                            }
                                             isUnderlined
                                             textColor="textDefault"
                                             textPressedColor="textSubdued"

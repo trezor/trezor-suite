@@ -48,6 +48,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "jotai": "2.13.1",
         "react": "19.0.0",

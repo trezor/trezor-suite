@@ -1,40 +1,57 @@
 import { withPlatformUtm } from './platform-utm';
 import { Url } from './types';
 
-export const TREZOR_URL: Url = withPlatformUtm('https://trezor.io');
-export const TREZOR_FORUM_URL: Url = withPlatformUtm('https://forum.trezor.io/');
-export const TREZOR_START_URL: Url = withPlatformUtm('https://trezor.io/start');
-export const TREZOR_SUPPORT_URL: Url = withPlatformUtm('https://trezor.io/support');
-export const TREZOR_RESELLERS_URL: Url = withPlatformUtm('https://trezor.io/resellers/');
-export const TREZOR_COINS_URL: Url = withPlatformUtm('https://trezor.io/coins');
+// =====================
+// 🧩 TREZOR SUITE - CORE
+// =====================
 
-export const SUITE_WEB_URL = withPlatformUtm('https://suite.trezor.io/web/');
-export const DATA_URL: Url = withPlatformUtm('https://data.trezor.io/');
-export const DATA_TOS_URL: Url = withPlatformUtm('https://data.trezor.io/legal/wallet-terms.pdf');
-export const DATA_TOS_INVITY_URL: Url = withPlatformUtm(
-    'https://data.trezor.io/legal/invity-terms-of-use.pdf',
-);
+export const SUITE_WEB_URL = 'https://suite.trezor.io/web/';
+export const SUITE_URL: Url = 'https://trezor.io/trezor-suite';
+
+export const SUITE_BACKUP_URL: Url = 'https://suite.trezor.io/web/backup/';
+export const SUITE_FIRMWARE_URL: Url = 'https://suite.trezor.io/web/firmware/';
+export const SUITE_UDEV_URL: Url = 'https://suite.trezor.io/web/udev/';
+export const SUITE_WEB_DEVICE_SETTINGS_URL = (SUITE_WEB_URL + 'settings/device/') as Url;
+
+export const TREZOR_URL: Url = 'https://trezor.io';
+export const TREZOR_FORUM_URL: Url = 'https://forum.trezor.io/';
+export const TREZOR_START_URL: Url = 'https://trezor.io/start';
+export const TREZOR_RESELLERS_URL: Url = 'https://trezor.io/resellers/';
+export const TREZOR_COINS_URL: Url = 'https://trezor.io/coins';
+
+// =====================
+// 📜 LEGAL
+// =====================
+
+export const DATA_URL: Url = 'https://data.trezor.io/';
+export const DATA_TOS_URL: Url = 'https://data.trezor.io/legal/wallet-terms.pdf';
+export const DATA_TOS_INVITY_URL: Url = 'https://data.trezor.io/legal/invity-terms-of-use.pdf';
+
+export const DATA_TOS_MOBILE_URL: Url = 'https://data.trezor.io/legal/mobile-wallet-terms.pdf';
+
+export const DATA_PRIVACY_URL: Url = 'https://data.trezor.io/legal/privacy-policy.html';
 
 export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
     'https://docs.trezor.io/trezor-suite/analytics/',
 );
 
-export const SUITE_URL: Url = withPlatformUtm('https://trezor.io/trezor-suite');
+// =====================
+// 🆘 SUPPORT
+// =====================
 
-export const SUITE_REFERRAL: Url = withPlatformUtm('https://trezor.io/refer-a-friend');
-export const SUITE_BACKUP_URL: Url = withPlatformUtm('https://suite.trezor.io/web/backup/');
-export const SUITE_FIRMWARE_URL: Url = withPlatformUtm('https://suite.trezor.io/web/firmware/');
-export const SUITE_UDEV_URL: Url = withPlatformUtm('https://suite.trezor.io/web/udev/');
-export const SUITE_WEB_DEVICE_SETTINGS_URL = (SUITE_WEB_URL + 'settings/device/') as Url;
-
-export const SUITE_MOBILE_APP_STORE: Url = 'https://apps.apple.com/app/id1631884497';
-export const SUITE_MOBILE_PLAY_STORE: Url =
-    'https://play.google.com/store/apps/details?id=io.trezor.suite';
-
-// TODO: why the medium is suite desktop banner?
-export const DASHBOARD_BANNER_TEX_URL: Url = withPlatformUtm(
-    'https://trezor.io/trezor-expert-consultation?utm_source=trezor_suite&utm_medium=suite_desktop_banner&utm_campaign=expert_consultation',
+export const HOW_TO_CHOOSE_RIGHT_NETWORK_URL = withPlatformUtm(
+    'https://trezor.io/guides/sending-receiving-staking-funds/moving-funds-from-exchanges/how-to-choose-the-right-network',
 );
+
+export const RECOVERY_ISSUES_LINK = withPlatformUtm(
+    'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues#lost-wallet-backup',
+);
+
+export const PIN_HELP_URL = withPlatformUtm(
+    'https://trezor.io/support/troubleshooting/device-issues/how-to-enter-pin-on-model-one',
+);
+
+export const TREZOR_SUPPORT_URL: Url = withPlatformUtm('https://trezor.io/support');
 
 export const TREZOR_SUPPORT_DEVICE_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/trezor-suite-doesn-t-see-my-device',
@@ -67,9 +84,30 @@ export const TREZOR_SUPPORT_RESET_PIN: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/how-to-reset-your-pin',
 );
 
-export const TEST: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/what-is-trezor-suite-lite/',
+export const TREZOR_SUPPORT_MULTIPLE_ACCOUNTS: Url = withPlatformUtm(
+    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/multiple-accounts-in-trezor-suite',
 );
+
+// =====================
+// 📚 HELP CENTER
+// =====================
+
+export const HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL: Url = withPlatformUtm(
+    'https://trezor.io/learn/supported-assets/other-cryptocurrencies/destination-tags',
+);
+
+export const EXPERIMENTAL_PASSWORD_MANAGER_KB_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/bonus-tools/retrieve-dropbox-passwords-from-password-manager',
+);
+
+export const HELP_CENTER_WHAT_IS_TREZOR_SUITE_LITE_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/what-is-trezor-suite-lite',
+);
+
+export const HELP_CENTER_VERIFY_TREZOR_SUITE_LITE_ADDRESSES_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/verifying-trezor-suite-lite-addresses',
+);
+
 export const HELP_CENTER_PIN_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-devices/pin-protection-on-trezor-devices#trezor-model-one',
 );
@@ -106,6 +144,9 @@ export const HELP_CENTER_PACKAGING_T3B1_URL: Url = withPlatformUtm(
 export const HELP_CENTER_PACKAGING_T3T1_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-devices/trezor-safe-5/authenticate-trezor-safe-5',
 );
+
+export const HELP_CENTER_URL: Url = withPlatformUtm('https://trezor.io/learn');
+
 export const HELP_CENTER_PACKAGING_T3W1_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/a/authenticate-trezor-safe-7',
 );
@@ -233,12 +274,39 @@ export const HELP_CENTER_SOLANA_HELP_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/coins-tokens/where-is-my-solana',
 );
 
-export const INVITY_URL: Url = 'https://invity.io/invest-crypto/';
-export const INVITY_SCHEDULE_OF_FEES: Url = 'https://blog.invity.io/schedule-of-fees/';
+export const UNINSTALL_BRIDGE_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/deprecation-and-removal-of-standalone-trezor-bridge',
+);
+
+export const EXPERIMENTAL_FEATURES_KB_URL: Url = withPlatformUtm(
+    'https://trezor.io/learn/a/experimental-features-in-trezor-suite',
+);
+
+// =====================
+// 🛠️ SERVICES
+// =====================
+
+export const GEOLOCATION_API_URL = 'https://services.trezor.io/get-country/';
+export const IMAGE_PROXY_API_URL = 'https://services.trezor.io/image-proxy/';
+
+export const CROWDIN_URL: Url = 'https://crowdin.com/project/trezor-suite';
+
 export const HOMESCREEN_EDITOR_URL: Url = 'https://trezor.github.io/homescreen-editor/';
+
+// =====================
+// 💸 INVITY
+// =====================
+export const INVITY_URL: Url = 'https://invity.io/invest-crypto';
+export const INVITY_SCHEDULE_OF_FEES: Url = 'https://blog.invity.io/schedule-of-fees/';
 export const LTC_ADDRESS_INFO_URL: Url = withPlatformUtm(
     'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707',
 );
+
+export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://invity.onelink.me/yIY4/q7ltbnv0';
+
+// =====================
+// 🌐 CARDANO
+// =====================
 
 export const CARDANO_STAKE_POOL_MAINNET_URL: Url =
     'https://trezor-cardano-mainnet.blockfrost.io/api/v0/pools/';
@@ -249,32 +317,38 @@ export const CARDANO_MAINNET_DREP: Url =
 export const CARDANO_PREVIEW_DREP: Url =
     'https://trezor-cardano-preview.blockfrost.io/api/v0/dreps/';
 
-export const CHROME_URL: Url = 'https://www.google.com/chrome/';
-export const CHROME_UPDATE_URL: Url = 'https://support.google.com/chrome/answer/95414';
-export const CHROME_ANDROID_URL: Url =
-    'https://play.google.com/store/apps/details?id=com.android.chrome';
-export const EXPERIMENTAL_FEATURES_KB_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/a/experimental-features-in-trezor-suite',
-);
-export const EXPERIMENTAL_PASSWORD_MANAGER_KB_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/bonus-tools/retrieve-dropbox-passwords-from-password-manager',
-);
-export const CROWDIN_URL: Url = 'https://crowdin.com/project/trezor-suite';
+// =====================
+// 📣 PROMO
+// =====================
 
 export const TREZOR_SAFE_5_URL: Url = withPlatformUtm('https://trezor.io/trezor-safe-5');
 export const ESHOP_KEEP_METAL_SINGLE_SHARE_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-keep-metal-single-share',
 );
 
+export const SUITE_REFERRAL: Url = withPlatformUtm('https://trezor.io/refer-a-friend');
+
+export const DASHBOARD_BANNER_TEX_URL: Url =
+    'https://trezor.io/trezor-expert-consultation?utm_source=trezor_suite&utm_medium=suite_desktop_banner&utm_campaign=expert_consultation';
+
 export const ESHOP_KEEP_METAL_MULTI_SHARE_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-keep-metal-multi-share',
 );
 
-export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://invity.onelink.me/yIY4/q7ltbnv0';
+// =====================
+// 📱 SOCIAL MEDIA
+// =====================
 
-export const UNINSTALL_BRIDGE_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/deprecation-and-removal-of-standalone-trezor-bridge',
-);
+export const TREZOR_X_URL: Url = 'https://x.com/trezor';
 
-export const GEOLOCATION_API_URL = withPlatformUtm('https://services.trezor.io/get-country/');
-export const IMAGE_PROXY_API_URL = withPlatformUtm('https://services.trezor.io/image-proxy/');
+export const TREZOR_INSTAGRAM_URL: Url = 'https://www.instagram.com/trezor.io/';
+
+export const TREZOR_TIKTOK_URL: Url = 'https://www.tiktok.com/@trezor.io_official';
+
+// =====================
+// 🏪 STORES
+// =====================
+
+export const SUITE_MOBILE_APP_STORE: Url = 'https://apps.apple.com/app/id1631884497';
+export const SUITE_MOBILE_PLAY_STORE: Url =
+    'https://play.google.com/store/apps/details?id=io.trezor.suite';

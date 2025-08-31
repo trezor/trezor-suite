@@ -29,6 +29,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-haptics": "~14.1.4",
         "expo-linear-gradient": "~14.1.5",

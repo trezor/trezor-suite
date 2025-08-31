@@ -5,6 +5,7 @@ import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { isCoinWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
@@ -18,9 +19,6 @@ const cardStyle = prepareNativeStyle(utils => ({
 type CorrectNetworkMessageCardProps = {
     symbol: NetworkSymbol;
 };
-
-const LINK_URL =
-    'https://trezor.io/guides/sending-receiving-staking-funds/moving-funds-from-exchanges/how-to-choose-the-right-network';
 
 export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardProps) => {
     const { applyStyle } = useNativeStyles();
@@ -40,7 +38,7 @@ export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardP
                             networkName,
                             link: linkChunk => (
                                 <Link
-                                    href={LINK_URL}
+                                    href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
                                     label={linkChunk}
                                     isUnderlined
                                     textVariant="hint"

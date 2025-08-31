@@ -4,9 +4,7 @@ import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-
-const LINK_URL =
-    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/experimental-features-in-trezor-suite';
+import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
 
 export const AddressChecksumMessage = () => (
     <Animated.View entering={FadeIn} exiting={FadeOut}>
@@ -18,7 +16,7 @@ export const AddressChecksumMessage = () => (
                     values={{
                         link: linkChunk => (
                             <Link
-                                href={LINK_URL}
+                                href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
                                 label={linkChunk}
                                 textVariant="label"
                                 isUnderlined

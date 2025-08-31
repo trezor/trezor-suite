@@ -23,6 +23,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { TREZOR_SUPPORT_MULTIPLE_ACCOUNTS } from '@trezor/urls';
 
 import {
     AddCoinEnabledAccountType,
@@ -34,9 +35,6 @@ const GRADIENT_HEIGHT = 48;
 
 // for extra space on the bottom due to android showing odd SafeAreaInsets.bottom
 const EXTRA_BOTTOM_PADDING = 48;
-
-const ACCOUNT_TYPES_URL =
-    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/multiple-accounts-in-trezor-suite';
 
 const bulletsForKeyPath = (keyPath: TxKeyPath) => (
     <Box paddingLeft="sp8">
@@ -113,7 +111,7 @@ export const SelectAccountTypeScreen = ({
 
     const accountTypeKey = getAccountTypeTranslations(selectedAccountType)?.titleKey;
 
-    const handleMoreTap = () => openLink(ACCOUNT_TYPES_URL);
+    const handleMoreTap = () => openLink(TREZOR_SUPPORT_MULTIPLE_ACCOUNTS);
 
     const handleConfirmTap = () =>
         addCoinAccount({ symbol: networkSymbol, accountType: selectedAccountType, flowType });
