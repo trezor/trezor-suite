@@ -20,8 +20,6 @@ import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls
 
 import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
 
-const supportUrlWithChat = `${TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL}#open-chat`;
-
 type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList,
     RootStackRoutes.DeviceCompromisedModal,
@@ -62,7 +60,7 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
 
     return (
         <DeviceCompromisedModalContent
-            contactSupportUrl={supportUrlWithChat}
+            contactSupportUrl={TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL}
             screenHeaderContent={screenHeaderContent}
             closeButtonContent={closeButtonContent}
             subtitleContent={

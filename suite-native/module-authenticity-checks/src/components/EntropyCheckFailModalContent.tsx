@@ -8,8 +8,6 @@ import { HELP_CENTER_ENTROPY_CHECK_URL } from '@trezor/urls';
 
 import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
 
-const supportUrlWithChat = `${HELP_CENTER_ENTROPY_CHECK_URL}#open-chat`;
-
 export const EntropyCheckFailModalContent = () => {
     const navigation = useNavigation();
 
@@ -26,7 +24,7 @@ export const EntropyCheckFailModalContent = () => {
 
     return (
         <DeviceCompromisedModalContent
-            contactSupportUrl={supportUrlWithChat}
+            contactSupportUrl={HELP_CENTER_ENTROPY_CHECK_URL}
             screenHeaderContent={<ScreenHeader leftIcon={null} />}
             subtitleContent={
                 <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.entropy" />

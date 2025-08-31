@@ -35,6 +35,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "expo": "53.0.20",
         "react": "19.0.0",
         "react-native": "0.79.3",

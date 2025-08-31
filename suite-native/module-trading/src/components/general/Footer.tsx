@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { AnimatedBox, Button, HStack, Image, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { INVITY_URL } from '@trezor/urls';
 
 import { selectIsAmountInputActive } from '../../selectors/commonSelectors';
 
@@ -18,7 +19,7 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
     const shouldHideFooter = useSelector(selectIsAmountInputActive);
 
     const imageSource = useMemo(() => require('../../../assets/InvityLogo.png'), []);
-    const openLinkToInvity = () => openLink('https://invity.io/invest-crypto');
+    const openLinkToInvity = () => openLink(INVITY_URL);
 
     if (shouldHideFooter) {
         return null;

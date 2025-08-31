@@ -1,6 +1,7 @@
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { TREZOR_SUPPORT_MULTIPLE_ACCOUNTS } from '@trezor/urls';
 
 export const useAddCoinAccountAlerts = () => {
     const { translate } = useTranslate();
@@ -29,9 +30,7 @@ export const useAddCoinAccountAlerts = () => {
                 'moduleAddAccounts.alerts.anotherEmptyAccount.actionSecondary',
             ),
             onPressSecondaryButton: () => {
-                openLink(
-                    translate('moduleAddAccounts.alerts.anotherEmptyAccount.actionSecondaryUrl'),
-                );
+                openLink(TREZOR_SUPPORT_MULTIPLE_ACCOUNTS);
                 hideAlert();
             },
         });

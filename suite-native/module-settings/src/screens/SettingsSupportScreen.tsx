@@ -2,6 +2,7 @@ import { CompactCardWithIconLayout, TitledSection, VStack } from '@suite-native/
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { DATA_PRIVACY_URL, DATA_TOS_MOBILE_URL } from '@trezor/urls';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
 import { AppCommitHash } from '../components/AppCommitHash';
@@ -12,11 +13,11 @@ export const SettingsSupportScreen = () => {
     const openLink = useOpenLink();
 
     const handleOpenTermsAndConditions = () => {
-        openLink('https://data.trezor.io/legal/mobile-wallet-terms.pdf');
+        openLink(DATA_TOS_MOBILE_URL);
     };
 
     const handleOpenPrivacyPolicy = () => {
-        openLink('https://data.trezor.io/legal/privacy-policy.html');
+        openLink(DATA_PRIVACY_URL);
     };
 
     return (

@@ -5,6 +5,7 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { TREZOR_INSTAGRAM_URL, TREZOR_TIKTOK_URL, TREZOR_X_URL } from '@trezor/urls';
 
 const cardStyle = prepareNativeStyle<{ backgroundColor: Color }>((utils, { backgroundColor }) => ({
     paddingHorizontal: utils.spacings.sp24,
@@ -79,7 +80,7 @@ export const AboutUsBanners = () => {
                                 iconName="twitterLogo"
                                 accessibilityRole="link"
                                 accessibilityLabel="X"
-                                onPress={() => openLink('https://x.com/trezor', { enforce: true })}
+                                onPress={() => openLink(TREZOR_X_URL, { enforce: true })}
                             />
                             <IconButton
                                 size="large"
@@ -88,7 +89,7 @@ export const AboutUsBanners = () => {
                                 accessibilityRole="link"
                                 accessibilityLabel="tiktok"
                                 onPress={() =>
-                                    openLink('https://www.tiktok.com/@trezor.io_official', {
+                                    openLink(TREZOR_TIKTOK_URL, {
                                         enforce: true,
                                     })
                                 }
@@ -100,7 +101,7 @@ export const AboutUsBanners = () => {
                                 accessibilityRole="link"
                                 accessibilityLabel="instagram"
                                 onPress={() =>
-                                    openLink('https://www.instagram.com/trezor.io/', {
+                                    openLink(TREZOR_INSTAGRAM_URL, {
                                         enforce: true,
                                     })
                                 }

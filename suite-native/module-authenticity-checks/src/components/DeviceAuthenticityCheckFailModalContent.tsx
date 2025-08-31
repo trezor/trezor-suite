@@ -7,8 +7,6 @@ import { TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE_URL } from '@trezor/
 
 import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
 
-const supportUrlWithChat = `${TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE_URL}#open-chat`;
-
 export const DeviceAuthenticityCheckFailModalContent = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -25,7 +23,7 @@ export const DeviceAuthenticityCheckFailModalContent = () => {
 
     return (
         <DeviceCompromisedModalContent
-            contactSupportUrl={supportUrlWithChat}
+            contactSupportUrl={TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE_URL}
             screenHeaderContent={screenHeaderContent}
             subtitleContent={
                 <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.deviceAuthenticity" />

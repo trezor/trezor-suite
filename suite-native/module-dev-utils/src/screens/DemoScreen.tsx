@@ -34,6 +34,7 @@ import { Link } from '@suite-native/link';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
+import { TREZOR_URL } from '@trezor/urls';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r16,
@@ -399,7 +400,7 @@ export const DemoScreen = () => {
                                         Info AlerBox with a longer text that does not fit one row
                                         and it can also contain{' '}
                                         <Link
-                                            href="https://trezor.io"
+                                            href={TREZOR_URL}
                                             label="for example link"
                                             isUnderlined
                                             textColor="textDefault"

@@ -8,6 +8,7 @@ import {
 import { Button, TextButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { HELP_CENTER_VERIFY_TREZOR_SUITE_LITE_ADDRESSES_URL } from '@trezor/urls';
 
 import { ShowAddressViewOnlyBottomSheet } from './ShowAddressViewOnlyBottomSheet';
 
@@ -23,9 +24,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     const openLink = useOpenLink();
 
     const handleOpenEduLink = () => {
-        openLink(
-            'https://trezor.io/guides/trezor-suite/trezor-suite-lite/verifying-trezor-suite-lite-addresses',
-        );
+        openLink(HELP_CENTER_VERIFY_TREZOR_SUITE_LITE_ADDRESSES_URL);
     };
 
     const handleShowAddress = () => {

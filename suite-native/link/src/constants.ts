@@ -1,2 +1,3 @@
-export const SUITE_LITE_SUPPORT_URL =
-    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/what-is-trezor-suite-lite#open-chat';
+import { HELP_CENTER_WHAT_IS_TREZOR_SUITE_LITE_URL } from '@trezor/urls';
+
+export const SUITE_LITE_SUPPORT_URL = `${HELP_CENTER_WHAT_IS_TREZOR_SUITE_LITE_URL}#open-chat`;

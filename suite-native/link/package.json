@@ -13,6 +13,7 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "react": "19.0.0"
     },
     "peerDependencies": {

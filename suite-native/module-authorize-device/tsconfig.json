@@ -24,7 +24,8 @@
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/urls" }
     ],
     "include": [".", "**/*.json"]
 }

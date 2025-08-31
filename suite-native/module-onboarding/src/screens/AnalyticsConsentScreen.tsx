@@ -12,10 +12,9 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { DATA_PRIVACY_URL } from '@trezor/urls';
 
 import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
-
-const LEARN_MORE_LINK = 'https://data.trezor.io/legal/privacy-policy.html';
 
 const consentWrapperStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -55,7 +54,7 @@ export const AnalyticsConsentScreen = ({
     };
 
     const handleClickOnLearMoreLink = () => {
-        handleOpenLink(LEARN_MORE_LINK);
+        handleOpenLink(DATA_PRIVACY_URL);
     };
 
     const toggleAnalyticsConsent = () => {
