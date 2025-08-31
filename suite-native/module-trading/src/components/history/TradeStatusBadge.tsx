@@ -1,5 +1,6 @@
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { Badge, BadgeVariant } from '@suite-native/atoms';
+import { useCoinLabel } from '@suite-native/device';
 import { IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
@@ -45,7 +46,7 @@ export const getBadgeIconName = (status: TradingTransactionStatus): IconName | u
     }
 };
 
-const getLabel = (status: TradingTransactionStatus) => {
+const getLabel = (status: TradingTransactionStatus, coinLabel: string) => {
     switch (status) {
         case 'LOGIN_REQUEST':
             return <Translation id="moduleTrading.tradeHistory.status.loginRequest" />;
@@ -66,7 +67,14 @@ const getLabel = (status: TradingTransactionStatus) => {
         case 'SITE_ACTION_REQUEST':
             return <Translation id="moduleTrading.tradeHistory.status.siteActionRequest" />;
         case 'SEND_CRYPTO':
-            return <Translation id="moduleTrading.tradeHistory.status.sendCrypto" />;
+            return (
+                <Translation
+                    id="moduleTrading.tradeHistory.status.sendCrypto"
+                    values={{
+                        coinLabel,
+                    }}
+                />
+            );
         case 'PENDING':
             return <Translation id="moduleTrading.tradeHistory.status.pending" />;
         case 'CANCELLED':
@@ -98,13 +106,14 @@ const getLabel = (status: TradingTransactionStatus) => {
 };
 
 export const TradeStatusBadge = ({ status }: TransactionStatusProps) => {
+    const coinLabel = useCoinLabel();
     if (!status) {
         return null;
     }
 
     return (
         <Badge
-            label={getLabel(status)}
+            label={getLabel(status, coinLabel)}
             size="small"
             variant={getBadgeVariant(status)}
             icon={getBadgeIconName(status)}

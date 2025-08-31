@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
-import { SetupSupportingDeviceModel } from '@suite-native/device';
+import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
@@ -28,6 +28,7 @@ import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNa
 const UninitializedDeviceLandingScreenContent = () => {
     const deviceModel = useSelector(selectDeviceModel) as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
+    const coinLabel = useCoinLabel();
 
     if (!deviceModel) {
         return null;
@@ -48,7 +49,12 @@ const UninitializedDeviceLandingScreenContent = () => {
             ) : (
                 <Box alignItems="center">
                     <Text variant="titleMedium" textAlign="center" style={{ letterSpacing: -0.5 }}>
-                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.title" />
+                        <Translation
+                            id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.title"
+                            values={{
+                                coinLabel,
+                            }}
+                        />
                     </Text>
                     <HeaderUnderlineSvg />
                 </Box>

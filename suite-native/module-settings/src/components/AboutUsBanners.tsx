@@ -1,4 +1,5 @@
 import { Card, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import { useCoinLabel } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -24,6 +25,7 @@ const trezorDescriptionTextStyle = prepareNativeStyle(_ => ({
 export const AboutUsBanners = () => {
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
+    const coinLabel = useCoinLabel();
 
     return (
         <VStack spacing="sp20">
@@ -54,7 +56,12 @@ export const AboutUsBanners = () => {
                             variant="titleSmall"
                             style={applyStyle(trezorDescriptionTextStyle)}
                         >
-                            <Translation id="moduleSettings.aboutUs.body" />
+                            <Translation
+                                id="moduleSettings.aboutUs.body"
+                                values={{
+                                    coinLabel,
+                                }}
+                            />
                         </Text>
                     </VStack>
                 </Card>
