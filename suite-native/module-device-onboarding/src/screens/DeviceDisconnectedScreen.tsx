@@ -18,6 +18,7 @@ import {
     Screen,
     ScreenHeader,
     StackToStackCompositeScreenProps,
+    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 
 export const DeviceDisconnectedScreen = ({
@@ -35,6 +36,7 @@ export const DeviceDisconnectedScreen = ({
     const { translate } = useTranslate();
 
     const [isAlertDismissed, setIsAlertDismissed] = useState(false);
+    useOverrideBackNavigation();
 
     const navigateToHome = () =>
         navigation.popTo(RootStackRoutes.AppTabs, {
@@ -67,17 +69,6 @@ export const DeviceDisconnectedScreen = ({
         // This effect should be called only once during the first render.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            if (e.data.action.type === 'GO_BACK') {
-                // Prevent going back to device onboarding without device connected.
-                e.preventDefault();
-            }
-        });
-
-        return unsubscribe;
-    }, [navigation]);
 
     return (
         <Screen
