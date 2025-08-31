@@ -16,6 +16,7 @@ import {
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
     useNavigateToInitialScreen,
+    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -46,6 +47,8 @@ export const BootloaderModeScreen = () => {
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
+    useOverrideBackNavigation();
+
     const handleRedirectToFactoryReset = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
             screen: DeviceSettingsStackRoutes.WipeDeviceStack,
@@ -61,17 +64,6 @@ export const BootloaderModeScreen = () => {
             navigateToInitialScreen();
         }
     }, [shouldFactoryResetBeVisible, navigateToInitialScreen, navigation]);
-
-    useEffect(() => {
-        // Navigating back from the bootloader screen would get the user back to homescreen in incorrect state, so we'll avoid it by this.
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            if (e.data.action.type === 'GO_BACK') {
-                e.preventDefault();
-            }
-        });
-
-        return unsubscribe;
-    }, [navigation]);
 
     return (
         <Screen header={<DeviceManagerScreenHeader />}>

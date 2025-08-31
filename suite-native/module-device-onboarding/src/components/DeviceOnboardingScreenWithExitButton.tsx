@@ -1,26 +1,15 @@
-import React, { ReactNode, useEffect } from 'react';
-
-import { useNavigation } from '@react-navigation/core';
+import React, { ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     DynamicScreenHeader,
-    RootStackParamList,
     Screen,
     ScreenProps,
-    StackToStackCompositeNavigationProps,
+    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 
 import { useExitAlert } from '../hooks/useExitAlert';
-
-type NavigationProps = StackToStackCompositeNavigationProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    RootStackParamList
->;
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {
     screenHeaderRightIcon?: ReactNode;
@@ -31,20 +20,8 @@ export const DeviceOnboardingExitButtonScreenHeader = ({
     screenHeaderRightIcon,
     onAlertContinueButtonPress,
 }: DeviceOnboardingExitButtonScreenHeaderProps) => {
-    const navigation = useNavigation<NavigationProps>();
     const { handleExitButtonPress } = useExitAlert(onAlertContinueButtonPress);
-
-    useEffect(() => {
-        // Override default navigation GO_BACK action to align it with the exit button behavior.
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            if (e.data.action.type === 'GO_BACK') {
-                e.preventDefault();
-                handleExitButtonPress();
-            }
-        });
-
-        return unsubscribe;
-    }, [handleExitButtonPress, navigation]);
+    useOverrideBackNavigation({ onNavigateBack: handleExitButtonPress });
 
     return (
         <DynamicScreenHeader
