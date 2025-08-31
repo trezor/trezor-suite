@@ -65,7 +65,6 @@ const Container = styled.div`
             left: -15px;
             width: 1px;
             height: 130px;
-            background: ${({ theme }) => theme.legacy.STROKE_GREY};
         }
     }
 
