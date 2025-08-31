@@ -32,7 +32,12 @@ export const CheckBackupTutorialStep = ({
             currentStepIndex={currentStepIndex}
             totalSteps={CHECK_BACKUP_TUTORIAL_STEPS_COUNT}
         >
-            <Box flex={1} alignItems="center" style={applyStyle(innerContainerStyle)}>
+            <Box
+                flex={1}
+                justifyContent="center"
+                alignItems="center"
+                style={applyStyle(innerContainerStyle)}
+            >
                 <SwipeableWalkthroughStepHeader
                     callout={callout}
                     title={title}
