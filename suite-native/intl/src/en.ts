@@ -908,7 +908,7 @@ export const en = {
             usbEnabled: {
                 0: {
                     question: 'Can I connect my Trezor to Trezor Suite Lite?',
-                    answer: 'Yes, you can connect your Trezor Hardware Wallet and use limited functionality. It is designed to work as a companion to the desktop/web version of Trezor Suite, but we will gradually add more features to make it a standalone application to manage your crypto funds with Trezor Hardware Wallet.',
+                    answer: 'Yes, you can connect your Trezor Hardware Wallet and use limited functionality. It is designed to work as a companion to the desktop/web version of Trezor Suite, but we will gradually add more features to make it a standalone application to manage your {coinLabel} funds with Trezor Hardware Wallet.',
                 },
                 1: {
                     question:
@@ -960,8 +960,8 @@ export const en = {
                     answer: 'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
                 },
                 2: {
-                    question: 'How do I send crypto in Trezor Suite Lite?',
-                    answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send crypto using Trezor Suite Lite. To send crypto, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
+                    question: 'How do I send {coinLabel} in Trezor Suite Lite?',
+                    answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send {coinLabel} using Trezor Suite Lite. To send {coinLabel}, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
                 },
                 3: {
                     question: 'Why don’t I see my coin listed?',
@@ -991,7 +991,7 @@ export const en = {
             title: '<grey>About</grey> <green>Trezor Suite Lite</green>',
             followUs: 'Follow us',
             lastCommitHash: 'Last commit hash: {lastCommitHash}',
-            body: 'Trezor Suite Lite is a safe and secure way to stay connected to the crypto on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
+            body: 'Trezor Suite Lite is a safe and secure way to stay connected to the {coinLabel} on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
         },
         privacyAndSecurity: {
             title: 'Privacy & Security',
@@ -1209,7 +1209,7 @@ export const en = {
         },
         uninitializedDeviceLandingScreen: {
             noFirmware: {
-                title: 'Now it’s just you\nand your crypto',
+                title: 'Now it’s just you\nand your {coinLabel}',
                 button: "Let's get started",
             },
             firmware: {
@@ -2019,7 +2019,7 @@ export const en = {
             dex: {
                 title: 'DEX',
                 description:
-                    'A decentralized exchange (DEX) allows you to trade crypto directly on the blockchain without the need for a central authority or intermediary.',
+                    'A decentralized exchange (DEX) allows you to trade {coinLabel} directly on the blockchain without the need for a central authority or intermediary.',
             },
             filters: {
                 all: 'All',
@@ -2147,7 +2147,7 @@ export const en = {
             usedAddresses: 'Used addresses',
             step2Hint: 'Select to display account addresses',
             balanceFiat: 'Balance in fiat',
-            balanceCrypto: 'Balance in crypto',
+            balanceCrypto: 'Balance in {coinLabel}',
         },
         legalSheet: {
             buy: {
@@ -2295,7 +2295,7 @@ export const en = {
                 error: 'Rejected',
                 blocked: 'Blocked',
                 siteActionRequest: 'Site action requested',
-                sendCrypto: 'Send crypto',
+                sendCrypto: 'Send {coinLabel}',
                 pending: 'Pending',
                 cancelled: 'Canceled',
                 refunded: 'Refunded',

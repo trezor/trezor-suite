@@ -3,6 +3,7 @@ import { Pressable } from 'react-native';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { useCoinLabel } from '@suite-native/device';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
@@ -67,6 +68,7 @@ export const AccountListBaseItem = ({
 }: AccountListBaseItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
+    const coinLabel = useCoinLabel();
 
     const cryptoValue = isAddressDetail ? (address?.balance ?? '0') : account.availableBalance;
 
@@ -107,6 +109,7 @@ export const AccountListBaseItem = ({
                                 })}
                                 accessibilityLabel={translate(
                                     'moduleTrading.accountScreen.balanceCrypto',
+                                    { coinLabel },
                                 )}
                                 isBalance={false}
                                 decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}

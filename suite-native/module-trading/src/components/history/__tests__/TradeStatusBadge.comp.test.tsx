@@ -2,14 +2,16 @@ import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api
 
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { BadgeVariant } from '@suite-native/atoms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures__/trades';
 import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from '../TradeStatusBadge';
 
 describe('TradeStatusBadge', () => {
-    it('should render nothing when status is undefined', () => {
-        const { toJSON } = renderWithBasicProvider(<TradeStatusBadge status={undefined} />);
+    it('should render nothing when status is undefined', async () => {
+        const { toJSON } = await renderWithStoreProviderAsync(
+            <TradeStatusBadge status={undefined} />,
+        );
 
         expect(toJSON()).toBeNull();
     });
@@ -25,9 +27,9 @@ describe('TradeStatusBadge', () => {
         ['WAITING_FOR_USER', /Waiting for user/],
     ] as [BuyTradeStatus, RegExp][])(
         'should render badge with correct text for buy trade and status %s',
-        (status, expectedText) => {
+        async (status, expectedText) => {
             const buyTrade = getBuyTrade({ status });
-            const { getByAccessibilityHint } = renderWithBasicProvider(
+            const { getByAccessibilityHint } = await renderWithStoreProviderAsync(
                 <TradeStatusBadge status={buyTrade.data.status} />,
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
@@ -49,9 +51,9 @@ describe('TradeStatusBadge', () => {
         ['PENDING', /Pending/],
     ] as [ExchangeTradeStatus, RegExp][])(
         'should render badge with correct text for exchange trade and status %s',
-        (status, expectedText) => {
+        async (status, expectedText) => {
             const exchangeTrade = getExchangeTrade({ status });
-            const { getByAccessibilityHint } = renderWithBasicProvider(
+            const { getByAccessibilityHint } = await renderWithStoreProviderAsync(
                 <TradeStatusBadge status={exchangeTrade.data.status} />,
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
@@ -71,9 +73,9 @@ describe('TradeStatusBadge', () => {
         ['SEND_CRYPTO', /Send crypto/],
     ] as [SellTradeStatus, RegExp][])(
         'should render badge with correct text for sell trade and status %s',
-        (status, expectedText) => {
+        async (status, expectedText) => {
             const sellTrade = getSellTrade({ status });
-            const { getByAccessibilityHint } = renderWithBasicProvider(
+            const { getByAccessibilityHint } = await renderWithStoreProviderAsync(
                 <TradeStatusBadge status={sellTrade.data.status} />,
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);

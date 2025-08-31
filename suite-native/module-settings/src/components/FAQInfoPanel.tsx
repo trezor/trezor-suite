@@ -1,20 +1,34 @@
+import { ComponentProps } from 'react';
+
 import { AccordionList, Box, BulletListItem, Text, VStack } from '@suite-native/atoms';
+import { useCoinLabel } from '@suite-native/device';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 
-const AccordionContentText = ({ translationKey }: { translationKey: TxKeyPath }) => (
+const AccordionContentText = ({
+    translationKey,
+    values = {},
+}: {
+    translationKey: TxKeyPath;
+    values?: ComponentProps<typeof Translation>['values'];
+}) => (
     <Text variant="label">
-        <Translation id={translationKey} />
+        <Translation id={translationKey} values={values} />
     </Text>
 );
 
-const EnabledUsbFAQ = () => (
+const EnabledUsbFAQ = ({ coinLabel }: { coinLabel: string }) => (
     <AccordionList
         items={[
             {
                 title: <Translation id="moduleSettings.faq.usbEnabled.0.question" />,
                 content: (
-                    <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.0.answer" />
+                    <AccordionContentText
+                        translationKey="moduleSettings.faq.usbEnabled.0.answer"
+                        values={{
+                            coinLabel,
+                        }}
+                    />
                 ),
             },
             {
@@ -89,7 +103,7 @@ const EnabledUsbFAQ = () => (
     />
 );
 
-const DisabledUsbFAQ = () => (
+const DisabledUsbFAQ = ({ coinLabel }: { coinLabel: string }) => (
     <AccordionList
         items={[
             {
@@ -105,9 +119,21 @@ const DisabledUsbFAQ = () => (
                 ),
             },
             {
-                title: <Translation id="moduleSettings.faq.usbDisabled.2.question" />,
+                title: (
+                    <Translation
+                        id="moduleSettings.faq.usbDisabled.2.question"
+                        values={{
+                            coinLabel,
+                        }}
+                    />
+                ),
                 content: (
-                    <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.2.answer" />
+                    <AccordionContentText
+                        translationKey="moduleSettings.faq.usbDisabled.2.answer"
+                        values={{
+                            coinLabel,
+                        }}
+                    />
                 ),
             },
             {
@@ -134,10 +160,15 @@ const DisabledUsbFAQ = () => (
 
 export const FAQInfoPanel = () => {
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const coinLabel = useCoinLabel();
 
     return (
         <VStack paddingHorizontal="sp8">
-            {isUsbDeviceConnectFeatureEnabled ? <EnabledUsbFAQ /> : <DisabledUsbFAQ />}
+            {isUsbDeviceConnectFeatureEnabled ? (
+                <EnabledUsbFAQ coinLabel={coinLabel} />
+            ) : (
+                <DisabledUsbFAQ coinLabel={coinLabel} />
+            )}
         </VStack>
     );
 };
