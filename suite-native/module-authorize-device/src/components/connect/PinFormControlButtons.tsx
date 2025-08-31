@@ -15,8 +15,7 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import TrezorConnect, { DEVICE, UI } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { PIN_HELP_URL } from '../../constants/pinFormConstants';
+import { PIN_HELP_URL } from '@trezor/urls';
 
 const buttonsWrapperStyle = prepareNativeStyle(utils => ({
     position: 'absolute',

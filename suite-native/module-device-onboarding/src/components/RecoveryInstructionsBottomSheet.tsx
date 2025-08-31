@@ -21,6 +21,7 @@ import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { RECOVERY_ISSUES_LINK } from '@trezor/urls';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 
@@ -29,9 +30,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads,
     RootStackParamList
 >;
-
-const RECOVERY_ISSUES_LINK =
-    'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues#lost-wallet-backup';
 
 export const RecoveryInstructionsBottomSheet = forwardRef<BottomSheetModalMethods>(
     (_props, ref) => {

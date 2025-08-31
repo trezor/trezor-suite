@@ -1,9 +1,9 @@
 import * as semver from 'semver';
 
 import { getBrowserName, getBrowserVersion, getDeviceType, getOsNameWeb } from '@trezor/env-utils';
-import { CHROME_ANDROID_URL, CHROME_UPDATE_URL, CHROME_URL, SUITE_URL } from '@trezor/urls';
 
 import style from './styles.css';
+import { CHROME_ANDROID_URL, CHROME_UPDATE_URL, CHROME_URL, SUITE_URL } from './urls';
 import iconChrome from '../../files/images/browsers/chrome.svg';
 import iconDesktop from '../../files/images/browsers/desktop.svg';
 

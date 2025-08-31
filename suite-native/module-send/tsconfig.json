@@ -51,6 +51,7 @@
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/transport" },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]

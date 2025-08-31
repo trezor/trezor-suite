@@ -2,9 +2,7 @@ import { BottomSheetModal, BottomSheetModalRef, Button, Text, VStack } from '@su
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-const ACCOUNT_TYPES_URL =
-    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/multiple-accounts-in-trezor-suite';
+import { TREZOR_SUPPORT_MULTIPLE_ACCOUNTS } from '@trezor/urls';
 
 const descStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
@@ -56,7 +54,7 @@ export const AccountTypeDecisionBottomSheet = ({
                             ),
                             moreLink: chunks => (
                                 <Link
-                                    href={ACCOUNT_TYPES_URL}
+                                    href={TREZOR_SUPPORT_MULTIPLE_ACCOUNTS}
                                     label={chunks}
                                     isUnderlined
                                     textColor="textDefault"

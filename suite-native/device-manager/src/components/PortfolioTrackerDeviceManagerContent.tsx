@@ -14,6 +14,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { HELP_CENTER_URL, TREZOR_URL } from '@trezor/urls';
 
 import { DeviceManagerModal } from './DeviceManagerModal';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -55,7 +56,7 @@ export const PortfolioTrackerDeviceManagerContent = () => {
     };
 
     const handleOpenEduLink = () => {
-        openLink('https://trezor.io/learn');
+        openLink(HELP_CENTER_URL);
         analytics.report({
             type: EventType.DeviceManagerClick,
             payload: { action: 'educationLink' },
@@ -63,7 +64,7 @@ export const PortfolioTrackerDeviceManagerContent = () => {
     };
 
     const handleOpenEshopLink = () => {
-        openLink('https://trezor.io/');
+        openLink(TREZOR_URL);
         analytics.report({
             type: EventType.DeviceManagerClick,
             payload: { action: 'eshopLink' },

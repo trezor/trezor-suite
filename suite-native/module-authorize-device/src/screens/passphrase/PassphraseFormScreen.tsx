@@ -8,6 +8,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
@@ -59,9 +60,7 @@ export const PassphraseFormScreen = () => {
 
     const handleOpenLink = () => {
         analytics.report({ type: EventType.PassphraseArticleOpened });
-        openLink(
-            'https://trezor.io/guides/backups-recovery/advanced-wallets/passphrases-and-hidden-wallets',
-        );
+        openLink(HELP_CENTER_PASSPHRASE_URL);
     };
 
     const setWarningHeight = (height: number) => {

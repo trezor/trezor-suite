@@ -4,6 +4,7 @@ import { Box, Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { SUITE_URL } from '@trezor/urls';
 
 import { StakeClaimableCard } from './StakeClaimableCard';
 import { StakePendingCard } from './StakePendingCard';
@@ -31,7 +32,7 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleDesktopClick = () => {
-        openLink('https://trezor.io/trezor-suite');
+        openLink(SUITE_URL);
     };
 
     return (

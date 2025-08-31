@@ -18,6 +18,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
+import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
 import { TransactionDetailIncludedCoins } from './TransactionDetailIncludedCoins';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -72,7 +73,7 @@ export const TransactionDetailData = ({
                             values={{
                                 blogLink: chunks => (
                                     <Link
-                                        href="https://trezor.io/support/troubleshooting/coins-tokens/address-poisoning-attacks"
+                                        href={HELP_CENTER_ZERO_VALUE_ATTACKS}
                                         label={chunks}
                                         textColor="textDefault"
                                         isUnderlined

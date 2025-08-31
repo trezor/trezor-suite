@@ -269,8 +269,6 @@ export const messages = {
                 description: 'The last account you created for this coin has no transactions yet.',
                 actionPrimary: 'Close',
                 actionSecondary: 'Learn more',
-                actionSecondaryUrl:
-                    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/multiple-accounts-in-trezor-suite',
             },
             generalError: {
                 title: 'We couldn’t add your account.',
