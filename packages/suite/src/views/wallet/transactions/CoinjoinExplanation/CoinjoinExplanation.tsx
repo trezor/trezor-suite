@@ -1,17 +1,11 @@
 import styled from 'styled-components';
 
 import { Card, Icon, variables } from '@trezor/components';
-import { mediaQueries } from '@trezor/styles';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
 import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Container = styled(Card)`
-    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
-`;
 
 const Heading = styled.div`
     display: flex;
@@ -21,17 +15,12 @@ const Heading = styled.div`
     ${typography.hint};
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Steps = styled(Card)`
+const Steps = styled.div`
     box-shadow: none;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     justify-content: space-between;
     margin-bottom: ${spacingsPx.xl};
-
-    ${mediaQueries.dark_theme} {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation3};
-    }
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         display: block;
@@ -57,7 +46,7 @@ const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
 ];
 
 export const CoinjoinExplanation = () => (
-    <Container>
+    <Card>
         <Heading>
             <Icon name="question" margin={{ right: spacings.xxs }} size={15} />
             <Translation id="TR_COINJOIN_EXPLANATION_TITLE" />
@@ -68,5 +57,5 @@ export const CoinjoinExplanation = () => (
                 <CoinjoinProcessStep number={index + 1} key={step.image} {...step} />
             ))}
         </Steps>
-    </Container>
+    </Card>
 );
