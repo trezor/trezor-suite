@@ -1,4 +1,4 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { QuotesCategory } from '../../../../types/general';
 import {
@@ -8,14 +8,14 @@ import {
 
 describe('ProviderSheetSectionHeader', () => {
     const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>
-        renderWithBasicProvider(<ProviderSheetSectionHeader {...props} />);
+        renderWithStoreProviderAsync(<ProviderSheetSectionHeader {...props} />);
 
     it.each<[QuotesCategory, string]>([
         ['fixed', 'Fixed-rate CEX'],
         ['float', 'Floating-rate CEX'],
         ['dex', 'DEX'],
-    ])('should render correct section based on category [%s]', (category, expectedTitle) => {
-        const { getByText } = renderProviderSheetSectionHeader({ category });
+    ])('should render correct section based on category [%s]', async (category, expectedTitle) => {
+        const { getByText } = await renderProviderSheetSectionHeader({ category });
 
         expect(getByText(expectedTitle)).toBeOnTheScreen();
     });
