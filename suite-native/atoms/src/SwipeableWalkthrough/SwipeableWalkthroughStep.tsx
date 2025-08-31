@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useSwipeableWalkthroughStepHeight } from './useSwipeableWalkthroughStepHeight';
-import { AnimatedBox, Box } from '../Box';
+import { AnimatedBox } from '../Box';
 import { IconButton } from '../Button/IconButton';
 import { VStack } from '../Stack';
 import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
@@ -93,13 +93,11 @@ export const SwipeableWalkthroughStep = ({
                 })}
                 testID="@swipeableWalkthroughStep/scrollView"
             >
-                <Box flex={1}>
-                    <SwipeableWalkthroughStepHeader
-                        callout={callout}
-                        title={title}
-                        description={description}
-                    />
-                </Box>
+                <SwipeableWalkthroughStepHeader
+                    callout={callout}
+                    title={title}
+                    description={description}
+                />
                 <VStack spacing="sp24" alignItems="center" flex={1}>
                     {children}
                     {continueButton ?? (
