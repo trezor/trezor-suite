@@ -110,13 +110,8 @@ export const SettingsGeneral = () => {
 
             <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="shield">
                 <AutoEject />
+                {isDesktop() && !isLinux() && <BioAuthSettings />}
             </SettingsSection>
-
-            {isDesktop() && !isLinux() && (
-                <SettingsSection title={<Translation id="TR_BIO_AUTH" />}>
-                    <BioAuthSettings />
-                </SettingsSection>
-            )}
 
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">
