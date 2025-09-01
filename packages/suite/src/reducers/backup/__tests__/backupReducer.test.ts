@@ -1,5 +1,6 @@
-import type { DeviceRootState } from '@suite-common/wallet-core';
 import { BackupAvailability } from '@trezor/protobuf/src/messages';
+
+import type { DesktopDeviceRootState } from 'src/actions/device/deviceSlice';
 
 import { selectBackupStatus } from '../backupReducer';
 import type { BackupRootState, BackupState } from '../backupReducer';
@@ -26,12 +27,13 @@ describe('selectBackupStatus', () => {
     const getState = (
         backup: BackupState,
         backup_availability: BackupAvailability,
-    ): BackupRootState & DeviceRootState => ({
+    ): BackupRootState & DesktopDeviceRootState => ({
         backup: { ...baseBackup, ...backup },
         device: {
             devices: [],
             isDeviceAutoEjectEnabled: false,
             isConnectionModalOpen: true,
+            defaultConnectionMode: 'cable',
             selectedDevice: {
                 features: { backup_availability },
             } as any,
