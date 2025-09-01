@@ -43,14 +43,14 @@ export const BluetoothAdapterStatusModal = ({
         disabled: {
             title: 'TR_BLUETOOTH_TURNED_OFF',
             description: 'TR_BLUETOOTH_TURNED_OFF_TEXT',
-            ctaText: 'TR_BLUETOOTH_SETTINGS',
+            ctaText: 'TR_TURN_ON_BLUETOOTH_CTA',
             onCtaClick: openBluetoothEnableSettings,
             deeplinkFailed: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS',
         },
         'permission-denied': {
             title: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
             description: 'TR_BLUETOOTH_OR_CONNECT_VIA_CABLE',
-            ctaText: 'TR_BLUETOOTH_SETTINGS',
+            ctaText: 'TR_ALLOW_BLUETOOTH_CTA',
             onCtaClick: openBluetoothSecuritySettings,
             deeplinkFailed: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS',
         },
@@ -80,7 +80,7 @@ export const BluetoothAdapterStatusModal = ({
             }
         >
             <Flex gap={spacings.md} direction="column">
-                <Text>
+                <Text variant="tertiary">
                     <Translation id={status.description}></Translation>
                 </Text>
 
