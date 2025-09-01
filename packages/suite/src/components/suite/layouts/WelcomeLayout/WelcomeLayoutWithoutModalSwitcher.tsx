@@ -19,9 +19,7 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsTEXDashboardPromoBannerShown } from 'src/selectors/suite/suiteSelectors';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
-import { DashboardPromoBanner } from 'src/views/dashboard/DashboardPromoBanner/DashboardPromoBanner';
 
 import { LoggedOutSidebar } from '../LoggedOutSidebar';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
@@ -91,8 +89,6 @@ type RightContentProps = {
 const RightSideContent = ({ bannerSlot, showPureChildren, children }: RightContentProps) => {
     const { elevation } = useElevation();
 
-    const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
-
     if (showPureChildren) {
         return (
             <Content $elevation={elevation} $verticalCenter={true}>
@@ -115,13 +111,6 @@ const RightSideContent = ({ bannerSlot, showPureChildren, children }: RightConte
                 <ChildrenWrapper>
                     <ElevationUp>{children}</ElevationUp>
                 </ChildrenWrapper>
-                {shouldShowTEXDashboardPromoBanner && (
-                    <>
-                        <Divider />
-                        <DashboardPromoBanner />
-                        <Divider />
-                    </>
-                )}
             </Content>
         </ResponsiveContextProvider>
     );
