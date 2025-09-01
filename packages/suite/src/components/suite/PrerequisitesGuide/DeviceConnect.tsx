@@ -14,7 +14,7 @@ export const DeviceConnect = () => {
     }
 
     return (
-        <Button onClick={() => dispatch(toggleConnectionModal())}>
+        <Button minWidth={240} size="large" onClick={() => dispatch(toggleConnectionModal())}>
             <Translation id="TR_CONNECT" />
         </Button>
     );
