@@ -176,6 +176,10 @@ export const useFirmwareInstallation = (
             return { operation: 'restarting', progress: 100 };
         }
 
+        if (!progressEvent) {
+            return { operation: null, progress: 100 };
+        }
+
         return { operation: null, progress: 0 };
     }, [isThpInProgress, firmware.status, reconnectEvent, progressEvent]);
 
