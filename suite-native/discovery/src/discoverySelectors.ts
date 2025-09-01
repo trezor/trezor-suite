@@ -94,10 +94,7 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
 );
 
 export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
-    [
-        selectDiscoverySupportedNetworks,
-        (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
-    ],
+    [selectDiscoverySupportedNetworks],
     supportedNetworks => returnStableArrayIfEmpty(supportedNetworks.map(n => n.symbol)),
 );
 
