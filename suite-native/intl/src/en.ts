@@ -2538,6 +2538,14 @@ export const en = {
             },
         },
     },
+    navigation: {
+        tabs: {
+            home: 'Home',
+            accounts: 'My assets',
+            trade: 'Trade',
+            settings: 'Settings',
+        },
+    },
 };
 
 export type Translations = typeof en;

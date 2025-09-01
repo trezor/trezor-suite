@@ -6,14 +6,12 @@ const homeStack = enhanceTabOption({
     routeName: AppTabsRoutes.HomeStack,
     iconName: 'house',
     focusedIconName: 'houseFilled',
-    label: 'Home',
 });
 
 const accountsStack = enhanceTabOption({
     routeName: AppTabsRoutes.AccountsStack,
     iconName: 'discover',
     focusedIconName: 'discoverFilled',
-    label: 'My assets',
     params: {
         screen: AccountsStackRoutes.Accounts,
     },
@@ -23,14 +21,12 @@ const tradeStack = enhanceTabOption({
     routeName: AppTabsRoutes.TradeStack,
     iconName: 'arrowsLeftRight',
     focusedIconName: 'arrowsLeftRight',
-    label: 'Trade',
 });
 
 const settings = enhanceTabOption({
     routeName: AppTabsRoutes.Settings,
     iconName: 'gear',
     focusedIconName: 'gearFilled',
-    label: 'Settings',
 });
 
 export const rootTabsOptions = {

@@ -16,14 +16,12 @@ export const enhanceTabOption = <
     routeName,
     iconName,
     focusedIconName,
-    label,
     params,
-}: TabOption<ParamList, RouteName>) => ({
+}: Omit<TabOption<ParamList, RouteName>, 'label'>) => ({
     [routeName]: {
         routeName,
         iconName,
         focusedIconName,
-        label,
         params,
     },
 });
