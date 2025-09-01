@@ -1,5 +1,4 @@
 import type { Category, ExperimentsItem, MessageSystem } from '@suite-common/suite-types';
-import type { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
 export type MessageState = { [key in Category]: boolean };
@@ -83,7 +82,8 @@ const getAccountContext = (networkSymbol: NetworkSymbol, accountType?: AccountTy
 const getStakingContext = (networkSymbol: StakingNetworkSymbol) =>
     `accounts.${networkSymbol}.staking` as const;
 
-const getTradingContext = (type: TradingType) => `trading.${type}` as const;
+// Todo: fix TradingType see: https://github.com/trezor/trezor-suite/pull/21265
+const getTradingContext = (type: 'buy' | 'sell' | 'exchange') => `trading.${type}` as const;
 
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;

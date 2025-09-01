@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "exactOptionalPropertyTypes": true
+    },
+    "references": [
+        { "path": "../metadata-types" },
+        { "path": "../suite-types" },
+        { "path": "../wallet-core" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/utils" }
+    ]
+}

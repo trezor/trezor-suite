@@ -9566,6 +9566,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/local-first-storage@workspace:suite-common/local-first-storage":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/local-first-storage@workspace:suite-common/local-first-storage"
+  dependencies:
+    "@evolu/common": "npm:^6.0.1-preview.19"
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/logger@workspace:*, @suite-common/logger@workspace:suite-common/logger":
   version: 0.0.0-use.local
   resolution: "@suite-common/logger@workspace:suite-common/logger"

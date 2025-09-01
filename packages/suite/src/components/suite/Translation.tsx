@@ -48,10 +48,10 @@ export const Translation = (props: MsgType) => {
     return (
         <FormattedMessage
             id={props.id}
-            tagName={defaultTagName}
+            {...(defaultTagName === undefined ? {} : { tagName: defaultTagName })} // needed due to: "exactOptionalPropertyTypes": true
             defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
             // pass undefined to a 'values' prop in case of an empty values object
-            values={Object.keys(values).length === 0 ? undefined : values}
+            {...(Object.keys(values).length === 0 ? {} : { values })} // needed due to: "exactOptionalPropertyTypes": true
         />
     );
 };
