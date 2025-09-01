@@ -70,6 +70,36 @@ const config = {
                 };
             }
 
+            // Todo: This is hack because of the `unstable_enablePackageExports: false`.
+            //       See: https://github.com/trezor/trezor-suite/issues/20733
+            if (moduleName === '@evolu/react-native/expo-sqlite') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/react-native/dist/expo-sqlite.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === '@evolu/common') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/common/dist/src/index.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === '@evolu/common/evolu') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/common/dist/src/Evolu/Internal.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+            // Todo: ----- End of hack -----
+
             if (process.env.IS_DETOX_BUILD && moduleName === '@trezor/connect') {
                 // Mock some Trezor Connect methods to avoid network flakiness during e2e tests.
                 return {
