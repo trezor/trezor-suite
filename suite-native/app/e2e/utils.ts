@@ -24,7 +24,7 @@ const INITIAL_LAUNCH_ARGS: LaunchArgumentsWithPreloadedState = {
     isTradingBuyEnabled: true,
 };
 
-export const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
+const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
 
 export const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
 
