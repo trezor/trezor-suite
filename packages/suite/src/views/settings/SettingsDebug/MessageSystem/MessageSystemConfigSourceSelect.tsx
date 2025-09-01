@@ -8,9 +8,7 @@ import {
 } from '@suite-common/message-system';
 import { SelectBar } from '@trezor/components';
 
-import { SettingsSectionItem } from 'src/components/settings';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type ConfigSourceOption = {
@@ -42,7 +40,7 @@ export const MessageSystemConfigSourceSelect = () => {
     );
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.AddressDisplay}>
+        <SectionItem data-testid="@settings/debug/message-system/source">
             <TextColumn
                 title="Config Source"
                 description="Load config from remote file or use local override for debugging and testing."
@@ -55,6 +53,6 @@ export const MessageSystemConfigSourceSelect = () => {
                     size="small"
                 />
             </ActionColumn>
-        </SettingsSectionItem>
+        </SectionItem>
     );
 };

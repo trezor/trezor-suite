@@ -1,6 +1,7 @@
 import {
     CTAAction,
     Category,
+    Condition,
     CountryCode,
     FirmwareVariant,
     Model,
@@ -9,7 +10,7 @@ import {
 } from '@suite-common/suite-types';
 
 import { Context, Feature } from './messageSystemTypes';
-import { toMessageSystemOptions } from './messageSystemUtils';
+import { collectStringsDeep, toMessageSystemOptions } from './messageSystemUtils';
 import schema from '../schema/config.schema.v1.json';
 
 /*
@@ -42,13 +43,7 @@ export const CONFIG_URL_REMOTE = {
     develop: `${CONFIG_URL_REMOTE_BASE}/develop/${JWS_CONFIG_FILENAME_REMOTE}`,
 };
 
-export const FEATURE_LIST = Object.values(Feature)
-    .flatMap<string>(value =>
-        typeof value === 'string'
-            ? value
-            : Object.values(value).flatMap(v => (typeof v === 'string' ? v : Object.values(v))),
-    )
-    .sort();
+export const FEATURE_LIST = collectStringsDeep(Feature).sort();
 
 export const CONTEXT_PATTERNS = {
     getGeneral: {
@@ -77,7 +72,7 @@ export const CONTEXT_PATTERNS = {
     },
 } as const satisfies Record<keyof typeof Context, { pattern: string; regex: RegExp }>;
 
-export const CATEGORY_ENUM = schema.definitions.category.enum as readonly Category[];
+export const CATEGORY_ENUM = schema.definitions.category.enum.sort() as readonly Category[];
 export const VARIANT_ENUM = schema.properties.actions.items.properties.message.properties.variant
     .enum as readonly Variant[];
 export const COUNTRY_CODES = schema.definitions.countryCodes
@@ -91,12 +86,14 @@ export const FW_VARIANT_ENUM = schema.definitions.conditions.items.properties.de
 export const VENDOR_ENUM = schema.definitions.conditions.items.properties.devices.items.properties
     .vendor.enum as readonly Vendor[];
 
-export const CATEGORY_OPTIONS = toMessageSystemOptions(CATEGORY_ENUM.toSorted());
+export const CATEGORY_OPTIONS = toMessageSystemOptions(CATEGORY_ENUM);
 export const CATEGORY_FILTER_OPTIONS = toMessageSystemOptions([
     'all',
     ...(schema.definitions.category.enum as Category[]),
 ]);
 
-export const CONDITION_OPTIONS = toMessageSystemOptions(
-    Object.keys(schema.definitions.conditions.items.properties).toSorted(),
-);
+const CONDITION_KEYS = [
+    ...Object.keys(schema.definitions.conditions.items.properties),
+].sort() as readonly (keyof Condition)[];
+
+export const CONDITION_OPTIONS = toMessageSystemOptions(CONDITION_KEYS);

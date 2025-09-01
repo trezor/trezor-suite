@@ -16,7 +16,7 @@ export type MessageSystemState = {
     };
     validExperiments: string[];
     configSource: MessageSystemConfigSource;
-    inAppIds: Record<string, true>;
+    manuallyAddedMessageIds: Record<string, true>;
 };
 
 export type MessageSystemRootState = {

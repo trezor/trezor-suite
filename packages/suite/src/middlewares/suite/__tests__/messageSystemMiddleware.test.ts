@@ -177,11 +177,11 @@ describe('Message system middleware', () => {
         jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
         jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
 
-        const inAppId = 'inapp-1';
+        const manuallyAddedMessageId = 'inapp-1';
         const fileOldId = 'file-1';
         const fileNewId = 'file-2';
 
-        const inAppAction = makeTestAction(inAppId);
+        const inAppAction = makeTestAction(manuallyAddedMessageId);
         const fileOldAction = makeTestAction(fileOldId);
         const fileNewAction = makeTestAction(fileNewId);
 
@@ -194,8 +194,8 @@ describe('Message system middleware', () => {
                         timestamp: '123',
                         actions: [inAppAction, fileOldAction],
                     },
-                    inAppIds: {
-                        [inAppId]: true,
+                    manuallyAddedMessageIds: {
+                        [manuallyAddedMessageId]: true,
                     },
                 },
                 undefined,
@@ -217,9 +217,9 @@ describe('Message system middleware', () => {
         const { messageSystem } = store.getState();
         const ids = (messageSystem.config?.actions ?? []).map((a: any) => a.message.id);
 
-        expect(ids).toEqual([inAppId, fileNewId]);
+        expect(ids).toEqual([manuallyAddedMessageId, fileNewId]);
 
-        expect(messageSystem.inAppIds[inAppId]).toBe(true);
+        expect(messageSystem.manuallyAddedMessageIds[manuallyAddedMessageId]).toBe(true);
     });
 
     it('test of experiment action', () => {
