@@ -686,7 +686,7 @@
   "TR_CONNECT_POPUP_SUCCESS": "{appName} request successful",
   "TR_CONNECT_TREZOR_TO_SEND_BUTTON": "Connect Trezor to send",
   "TR_CONNECT_VIA_BLUETOOTH": "Connect via Bluetooth",
-  "TR_CONNECT_YOUR_DEVICE": "Connect & unlock your Trezor",
+  "TR_CONNECT_YOUR_DEVICE": "Connect your Trezor",
   "TR_CONTACT_SUPPORT": "Contact Trezor Support",
   "TR_CONTACT_TREZOR_SUPPORT": "Contact Trezor Support",
   "TR_CONTINUE": "Continue",

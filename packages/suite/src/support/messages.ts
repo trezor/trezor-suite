@@ -2115,9 +2115,14 @@ export default defineMessages({
         id: 'TR_NON_ASCII_CHARS',
     },
     TR_CONNECT_YOUR_DEVICE: {
-        defaultMessage: 'Connect & unlock your Trezor',
+        defaultMessage: 'Connect your Trezor',
         description: 'Prompt to user to connect his device.',
         id: 'TR_CONNECT_YOUR_DEVICE',
+    },
+    TR_CONNECT_DEVICE_DESCRIPTION: {
+        defaultMessage: 'Manage your coins with your Trezor connected.',
+        description: 'Description under the connection prompt',
+        id: 'TR_CONNECT_DEVICE_DESCRIPTION',
     },
     TR_CONNECT_VIA_BLUETOOTH: {
         defaultMessage: 'Connect via Bluetooth',
