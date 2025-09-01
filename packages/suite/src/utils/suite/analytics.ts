@@ -1,3 +1,4 @@
+import { selectActiveExperimentsWithVariants } from '@suite-common/message-system';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     selectRememberedHiddenWalletsCount,
@@ -39,6 +40,7 @@ export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproo
 export const getSuiteReadyPayload = async (
     state: AppState,
 ): Promise<SuiteAnalyticsEventSuiteReady['payload']> => {
+    const experimentVariants = selectActiveExperimentsWithVariants(state);
     const [osVersion, osCpuArch] = await Promise.all([getOsVersion(), getCpuArch()]);
 
     return {
@@ -78,6 +80,8 @@ export const getSuiteReadyPayload = async (
         autodetectTheme: state.suite.settings.autodetect.theme,
 
         isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
+
+        experimentVariants: experimentVariants.map(({ name, variant }) => `${name}:${variant}`),
     };
 };
 

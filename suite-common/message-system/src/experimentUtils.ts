@@ -1,6 +1,6 @@
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
-import { ExperimentId, ExperimentsItemType } from './messageSystemTypes';
+import { Experiment, ExperimentId, ExperimentKey, ExperimentsItemType } from './messageSystemTypes';
 
 type ExperimentCategoriesProps = {
     experiment: ExperimentsItemType | undefined;
@@ -46,7 +46,7 @@ export const getExperimentGroupByInclusion = ({
     )?.group;
 };
 
-export const selectActiveExperimentGroup = ({
+export const getActiveExperimentGroup = ({
     experiment,
     instanceId,
 }: ExperimentCategoriesProps): ExperimentsGroupType | undefined => {
@@ -61,4 +61,10 @@ export const selectActiveExperimentGroup = ({
     });
 
     return experimentRange;
+};
+
+export const getExperimentNameById = (id: ExperimentId) => {
+    if (!id) return null;
+
+    return (Object.keys(Experiment) as ExperimentKey[]).find(key => Experiment[key] === id);
 };
