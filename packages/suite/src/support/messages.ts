@@ -10337,11 +10337,23 @@ export default defineMessages({
     },
     TR_BLUETOOTH_TURNED_OFF: {
         id: 'TR_BLUETOOTH_TURNED_OFF',
-        defaultMessage: 'Bluetooth is turned off',
+        defaultMessage: 'Turn on Bluetooth',
+    },
+    TR_TURN_ON_BLUETOOTH_CTA: {
+        id: 'TR_TURN_ON_BLUETOOTH_CTA',
+        defaultMessage: 'Turn on Bluetooth',
+        description:
+            'Button text to turn on Bluetooth in the modal when the Bluetooth is turned off',
     },
     TR_BLUETOOTH_SETTINGS: {
         id: 'TR_BLUETOOTH_SETTINGS',
         defaultMessage: 'Open System Settings',
+    },
+    TR_ALLOW_BLUETOOTH_CTA: {
+        id: 'TR_ALLOW_BLUETOOTH_CTA',
+        defaultMessage: 'Allow',
+        description:
+            'Button text to allow Bluetooth permissions in the modal when the Bluetooth permissions are denied',
     },
     TR_BLUETOOTH_TURN_ON_BLUETOOTH: {
         id: 'TR_BLUETOOTH_TURN_ON_BLUETOOTH',
@@ -10358,11 +10370,12 @@ export default defineMessages({
     },
     TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS: {
         id: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
-        defaultMessage: 'Allow Bluetooth permissions',
+        defaultMessage: 'Allow Trezor Suite to use Bluetooth',
     },
     TR_BLUETOOTH_OR_CONNECT_VIA_CABLE: {
         id: 'TR_BLUETOOTH_OR_CONNECT_VIA_CABLE',
-        defaultMessage: 'Allow Bluetooth permissions',
+        defaultMessage:
+            'Bluetooth access is disabled for Trezor Suite. Enable access by going to the Bluetooth settings on your computer.',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS',
