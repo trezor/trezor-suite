@@ -3,15 +3,23 @@ import styled, { useTheme } from 'styled-components';
 
 import { ConnectedDeviceStatus, getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
+    Column,
     ElevationUp,
     Icon,
     LottieAnimation,
+    Text,
     motionEasing,
     useElevation,
     variables,
 } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { Elevation, mapElevationToBackground, spacingsPx, typography } from '@trezor/theme';
+import {
+    Elevation,
+    mapElevationToBackground,
+    spacings,
+    spacingsPx,
+    typography,
+} from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
@@ -25,7 +33,6 @@ const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
 
     padding: 10px;
     align-items: center;
-    gap: ${spacingsPx.xxl};
     margin: 0;
 
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
@@ -45,7 +52,7 @@ const Checkmark = styled.div`
     right: 0;
 `;
 
-const Text = styled.div`
+const HeadingText = styled.div`
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -94,13 +101,24 @@ const getMessageId = ({
     deviceStatus,
     showWarning,
     prerequisite,
-}: GetMessageIdParams): TranslationKey => {
-    const getDefaultKey = (): TranslationKey => {
+}: GetMessageIdParams): {
+    heading: TranslationKey;
+    description?: TranslationKey;
+} => {
+    const getDefaultKey = (): {
+        heading: TranslationKey;
+        description?: TranslationKey;
+    } => {
         if (connected) {
-            return getWarningMessage({ deviceStatus, showWarning });
+            return {
+                heading: getWarningMessage({ deviceStatus, showWarning }),
+            };
         }
 
-        return 'TR_CONNECT_YOUR_DEVICE';
+        return {
+            heading: 'TR_CONNECT_YOUR_DEVICE',
+            description: 'TR_CONNECT_DEVICE_DESCRIPTION',
+        };
     };
 
     const defaultKey = getDefaultKey();
@@ -109,12 +127,28 @@ const getMessageId = ({
         return defaultKey;
     }
 
-    const map: Record<PrerequisiteType, TranslationKey> = {
-        'no-transport': isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT',
-        'device-bootloader': 'TR_DEVICE_CONNECTED_BOOTLOADER',
-        'device-used-elsewhere': 'TR_DEVICE_CONNECTED_UNACQUIRED',
-        'device-unacquired': 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
-        'device-unacquired-requires-thp': 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
+    const map: Record<
+        PrerequisiteType,
+        {
+            heading: TranslationKey;
+            description?: TranslationKey;
+        }
+    > = {
+        'no-transport': {
+            heading: isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT',
+        },
+        'device-bootloader': {
+            heading: 'TR_DEVICE_CONNECTED_BOOTLOADER',
+        },
+        'device-used-elsewhere': {
+            heading: 'TR_DEVICE_CONNECTED_UNACQUIRED',
+        },
+        'device-unacquired': {
+            heading: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
+        },
+        'device-unacquired-requires-thp': {
+            heading: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
+        },
 
         'device-disconnect-required': defaultKey,
         'device-disconnected': defaultKey,
@@ -183,6 +217,13 @@ export const ConnectDevicePrompt = ({
 }: ConnectDevicePromptProps) => {
     const { elevation } = useElevation();
 
+    const texts = getMessageId({
+        connected,
+        showWarning: showWarningIcon ?? showWarning,
+        deviceStatus,
+        prerequisite,
+    });
+
     return (
         <Wrapper
             $elevation={elevation}
@@ -191,23 +232,25 @@ export const ConnectDevicePrompt = ({
             transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
             data-testid="@connect-device-prompt"
         >
-            <ElevationUp>
-                <ConnectImage
-                    connected={connected}
-                    showWarningIcon={showWarningIcon ?? showWarning}
-                />
+            <Column gap={spacings.sm}>
+                <Column alignItems="center" gap={spacings.xxl}>
+                    <ElevationUp>
+                        <ConnectImage
+                            connected={connected}
+                            showWarningIcon={showWarningIcon ?? showWarning}
+                        />
 
-                <Text>
-                    <Translation
-                        id={getMessageId({
-                            connected,
-                            showWarning: showWarningIcon ?? showWarning,
-                            deviceStatus,
-                            prerequisite,
-                        })}
-                    />
-                </Text>
-            </ElevationUp>
+                        <HeadingText>
+                            <Translation id={texts.heading} />
+                        </HeadingText>
+                    </ElevationUp>
+                </Column>
+                {texts.description && (
+                    <Text variant="tertiary">
+                        <Translation id={texts.description} />
+                    </Text>
+                )}
+            </Column>
         </Wrapper>
     );
 };
