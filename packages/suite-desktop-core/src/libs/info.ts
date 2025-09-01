@@ -3,7 +3,7 @@ import { app } from 'electron';
 import os from 'os';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { bytesToHumanReadable } from '@trezor/utils';
+import { bytesToHumanReadable, capitalizeFirstLetter } from '@trezor/utils';
 
 import { b2t } from './utils';
 
@@ -53,18 +53,23 @@ export const getComputerInfo = () => {
 };
 
 export const getComputerName = () => {
-    let name;
-    switch (process.platform) {
-        case 'win32':
-            name = process.env.COMPUTERNAME;
-            break;
-        case 'darwin':
-            name = execSync('scutil --get ComputerName').toString().trim();
-            break;
-        case 'linux':
-            name = execSync('hostnamectl --pretty').toString().trim();
-            break;
-    }
+    try {
+        let name;
+        switch (process.platform) {
+            case 'win32':
+                name = process.env.COMPUTERNAME;
+                break;
+            case 'darwin':
+                name = execSync('scutil --get ComputerName').toString().trim();
+                break;
+            case 'linux':
+                name = execSync('hostnamectl --pretty').toString().trim();
+                break;
+        }
 
-    return name || os.hostname();
+        return name || os.hostname();
+    } catch {
+        // Fallback - executed binaries might not be available
+        return os.hostname() || capitalizeFirstLetter(process.platform);
+    }
 };
