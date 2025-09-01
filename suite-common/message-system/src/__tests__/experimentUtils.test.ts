@@ -2,9 +2,9 @@ import { getWeakRandomId } from '@trezor/utils';
 
 import { experimentTest, getArrayOfInstanceIds } from '../__fixtures__/experimentUtils';
 import {
+    getActiveExperimentGroup,
     getExperimentGroupByInclusion,
     getInclusionFromInstanceId,
-    selectActiveExperimentGroup,
 } from '../experimentUtils';
 import { ExperimentId } from '../messageSystemTypes';
 
@@ -48,7 +48,7 @@ describe('testing experiment utils', () => {
         );
     };
 
-    it('test selectActiveExperimentGroup share of variant inclusion', () => {
+    it('test getActiveExperimentGroup share of variant inclusion', () => {
         const sampleSize = 1000;
         let groupACount = 0;
         let groupBCount = 0;
@@ -65,7 +65,7 @@ describe('testing experiment utils', () => {
         const arrayOfIds = [...arrayOfIdsAGroup, ...arrayOfIdsBGroup];
 
         arrayOfIds.forEach(id => {
-            const selectedGroup = selectActiveExperimentGroup({
+            const selectedGroup = getActiveExperimentGroup({
                 experiment: experimentTest,
                 instanceId: id,
             });
