@@ -31,6 +31,7 @@ const DeviceWrapper = styled.div`
 
 const CableWrapper = styled.div`
     animation: ${slideUp} 1.2s ease-out 0.3s both;
+    animation-delay: 2s;
     z-index: 1;
     margin-top: -20px; /* Overlap slightly with device for connection effect */
 `;

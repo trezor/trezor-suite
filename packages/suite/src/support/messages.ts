@@ -2114,6 +2114,11 @@ export default defineMessages({
         defaultMessage: '{label} (with non-recommended characters)',
         id: 'TR_NON_ASCII_CHARS',
     },
+    TR_CONNECT_UNLOCK_YOUR_DEVICE: {
+        defaultMessage: 'Connect & unlock your Trezor',
+        description: 'Prompt to user to connect and unlock device in modal.',
+        id: 'TR_CONNECT_UNLOCK_YOUR_DEVICE',
+    },
     TR_CONNECT_YOUR_DEVICE: {
         defaultMessage: 'Connect your Trezor',
         description: 'Prompt to user to connect his device.',

@@ -9,7 +9,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { Button, H2, Modal } from '@trezor/components';
+import { Button, Column, H2, Modal } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
@@ -42,16 +42,7 @@ const Content = styled.div`
     justify-content: space-between;
     max-height: calc(80vh - 86px);
     overflow-y: hidden;
-    gap: ${spacingsPx.xxxxl};
-`;
-
-const HeadingWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: ${spacingsPx.xxl};
-    max-width: 320px;
+    gap: ${spacingsPx.xxxl};
 `;
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
@@ -232,9 +223,14 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                 onCancel={onCancel}
             >
                 <Content>
-                    <HeadingWrapper>
+                    <Column
+                        alignItems="center"
+                        justifyContent="center"
+                        gap={spacings.xxl}
+                        maxWidth={320}
+                    >
                         <H2 align="center">
-                            <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                            <Translation id="TR_CONNECT_UNLOCK_YOUR_DEVICE" />
                         </H2>
                         {isBluetoothEnabled && (
                             <Button
@@ -251,7 +247,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                                 />
                             </Button>
                         )}
-                    </HeadingWrapper>
+                    </Column>
                     <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
                 </Content>
             </Modal.ModalBase>
