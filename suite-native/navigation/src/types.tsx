@@ -12,6 +12,8 @@ import type {
 
 import { IconName } from '@suite-native/icons';
 
+import { AppTabsRoutes } from './routes';
+
 export type TabProps<T extends ParamListBase, K extends keyof T> = BottomTabScreenProps<T, K>;
 export type TabNavigationProp<
     T extends ParamListBase,
@@ -62,10 +64,9 @@ export type StackToStackCompositeNavigationProps<
 
 export type TabsOptions = {
     [routeName: string]: {
-        routeName: string;
+        routeName: AppTabsRoutes;
         iconName: IconName;
         focusedIconName: IconName;
-        label: string;
         params?: Record<string, unknown>;
     };
 };

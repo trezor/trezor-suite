@@ -3,9 +3,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { Box } from '@suite-native/atoms';
+import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TabBarItem } from './TabBarItem';
+import { AppTabsRoutes } from '../routes';
 import { TabsOptions } from '../types';
 
 interface TabBarProps extends BottomTabBarProps {
@@ -29,7 +31,15 @@ const tabBarStyle = prepareNativeStyle<{
     paddingBottom: insetsBottom,
 }));
 
+const TabBarLabelTxKeys = {
+    [AppTabsRoutes.HomeStack]: 'navigation.tabs.home',
+    [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accounts',
+    [AppTabsRoutes.TradeStack]: 'navigation.tabs.trade',
+    [AppTabsRoutes.Settings]: 'navigation.tabs.settings',
+} as const satisfies Record<AppTabsRoutes, TxKeyPath>;
+
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
@@ -43,8 +53,8 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
         >
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
-                const { routeName, iconName, focusedIconName, label, params } =
-                    tabItemOptions[route.name];
+                const { routeName, iconName, focusedIconName, params } = tabItemOptions[route.name];
+                const tabBarLabelTxKey = TabBarLabelTxKeys[routeName];
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({
@@ -64,7 +74,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         isFocused={isFocused}
                         iconName={iconName}
                         focusedIconName={focusedIconName}
-                        title={label}
+                        title={translate(tabBarLabelTxKey)}
                         onPress={handleTabBarItemPress}
                         testID={route.name}
                     />
