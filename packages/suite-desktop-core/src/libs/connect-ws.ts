@@ -10,7 +10,7 @@ import {
     PopupHandshake,
     parseConnectSettings,
 } from '@trezor/connect';
-import { isMacOs, isWindows } from '@trezor/env-utils';
+import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { Deferred, createDeferred, resolveAfter } from '@trezor/utils';
@@ -170,7 +170,10 @@ export const exposeConnectWs = ({
                     // ts check, should be set
                     logger.error(LOG_PREFIX, 'processOnPort result not found');
 
-                    return;
+                    if (!isLinux()) {
+                        // we ignore missing process on linux because of AppImage/Flatpak sandboxing
+                        return;
+                    }
                 }
                 if (!settings?.manifest?.appName) {
                     // ts check, should be set - if not set, error should be returned client-side
@@ -210,12 +213,14 @@ export const exposeConnectWs = ({
                     method,
                     payload: rest,
                     origin,
-                    process: {
-                        name: processOnPort.name,
-                        fullPath: processOnPort.fullPath,
-                        warning: !!processOnPort.warning,
-                        icon: await getProcessIcon(processOnPort.fullPath),
-                    },
+                    process: processOnPort
+                        ? {
+                              name: processOnPort.name,
+                              fullPath: processOnPort.fullPath,
+                              warning: !!processOnPort.warning,
+                              icon: await getProcessIcon(processOnPort.fullPath),
+                          }
+                        : undefined,
                     manifest: {
                         appName: settings.manifest.appName,
                         appIcon: settings.manifest.appIcon,
