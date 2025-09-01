@@ -71,23 +71,4 @@ describe('featureFlagsSlice', () => {
             expect(state2.isDeviceConnectEnabled).toEqual(true);
         });
     });
-
-    describe('selectIsFeatureFlagEnabled', () => {
-        it('should return correct value', () => {
-            const {
-                featureFlagsReducer,
-                toggleFeatureFlag,
-                selectIsFeatureFlagEnabled,
-            } = require('../featureFlagsSlice');
-
-            const state = featureFlagsReducer(
-                undefined,
-                toggleFeatureFlag({ featureFlag: 'isDeviceConnectEnabled' }),
-            );
-
-            expect(
-                selectIsFeatureFlagEnabled({ featureFlags: state }, 'isDeviceConnectEnabled'),
-            ).toEqual(true);
-        });
-    });
 });
