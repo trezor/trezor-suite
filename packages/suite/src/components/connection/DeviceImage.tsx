@@ -4,11 +4,15 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Image, PNG_IMAGES, PNG_PATH } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+export const DEFAULT_CONNECT_DEVICE_NAME = 'T3T1-CONNECT-ON' as const;
 // component taken from native part of app, edit for desktop & web usage only for one model
 type SupportedDeviceModels = DeviceModelInternal.T3W1;
 
-const deviceImageMap: Record<SupportedDeviceModels, string> = {
+const deviceImageMap: Record<SupportedDeviceModels | typeof DEFAULT_CONNECT_DEVICE_NAME, string> = {
     [DeviceModelInternal.T3W1]: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TREZOR_T3W1_LARGE_2x}`),
+    [DEFAULT_CONNECT_DEVICE_NAME]: resolveStaticPath(
+        `${PNG_PATH}/${PNG_IMAGES.TREZOR_T3T1_ON_CONNECT}`,
+    ),
 };
 
 type DeviceImageSize = 'small' | 'normal' | 'large';
@@ -48,7 +52,7 @@ const ImageWrapper = styled.div<{
 `;
 
 export type DeviceImageProps = {
-    deviceModel: SupportedDeviceModels;
+    deviceModel: SupportedDeviceModels | typeof DEFAULT_CONNECT_DEVICE_NAME;
     size?: DeviceImageSize;
     maxHeight?: number;
 };
