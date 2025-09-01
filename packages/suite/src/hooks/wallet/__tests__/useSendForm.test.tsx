@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DeepPartial } from 'react-hook-form';
 
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { FormState } from '@suite-common/wallet-types';
@@ -230,13 +230,11 @@ describe('useSendForm hook', () => {
             async () => {
                 const store = initStore(f.store);
                 const callback: TestCallback = {};
-                const { unmount } = await act(() =>
-                    renderWithProviders(
-                        store,
-                        <SendIndex>
-                            <Component callback={callback} />
-                        </SendIndex>,
-                    ),
+                const { unmount } = renderWithProviders(
+                    store,
+                    <SendIndex>
+                        <Component callback={callback} />
+                    </SendIndex>,
                 );
                 // wait for first render
                 await waitForLoader();
@@ -328,13 +326,11 @@ describe('useSendForm hook', () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
                 const store = initStore(f.store);
                 const callback: TestCallback = {};
-                const { unmount } = await act(() =>
-                    renderWithProviders(
-                        store,
-                        <SendIndex>
-                            <Component callback={callback} />
-                        </SendIndex>,
-                    ),
+                const { unmount } = renderWithProviders(
+                    store,
+                    <SendIndex>
+                        <Component callback={callback} />
+                    </SendIndex>,
                 );
 
                 // wait for first render

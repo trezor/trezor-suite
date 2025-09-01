@@ -18,8 +18,8 @@ import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
 // used in hooks tests
-export const renderWithProviders = (store: any, children: ReactNode): RenderResult => {
-    const renderMethods = render(
+export const renderWithProviders = (store: any, children: ReactNode): RenderResult =>
+    render(
         <Provider store={store}>
             <ConnectedThemeProvider>
                 <ResponsiveContextProvider>
@@ -30,9 +30,6 @@ export const renderWithProviders = (store: any, children: ReactNode): RenderResu
             </ConnectedThemeProvider>
         </Provider>,
     );
-
-    return renderMethods;
-};
 
 export const waitForLoader = (text = /Loading/i) => {
     try {
@@ -88,7 +85,7 @@ export const actionSequence = <A extends UserAction[]>(
             p.then(async () => {
                 const element = findByTestId(action.element);
                 if (action.type === 'hover') {
-                    await act(() => user.hover(element));
+                    await user.hover(element);
                 }
                 if (action.type === 'click') {
                     const isDisabled = element.getAttributeNames().includes('disabled');
@@ -96,20 +93,20 @@ export const actionSequence = <A extends UserAction[]>(
                         throw new Error('Unable to perform pointer interaction');
                     }
 
-                    await act(() => user.click(element));
+                    await user.click(element);
                 } else if (action.type === 'input') {
                     const { value } = action;
                     const typeUser = userEvent.setup(
                         action.delay ? { delay: action.delay } : undefined,
                     );
                     if (!value) {
-                        await act(() => typeUser.clear(element));
+                        await typeUser.clear(element);
                     } else {
-                        await act(() => typeUser.type(element, value));
+                        await typeUser.type(element, value);
                     }
 
                     // NOTE: typing or clearing inputs requires extra user action for proper render
-                    await act(() => user.click(element));
+                    await user.click(element);
                 }
 
                 // wait for compose
