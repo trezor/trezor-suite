@@ -10235,6 +10235,10 @@ export default defineMessages({
         id: 'TR_BLUETOOTH',
         defaultMessage: 'Bluetooth',
     },
+    TR_DONE_REMOVING_TREZOR_FROM_SETTINGS: {
+        id: 'TR_DONE_REMOVING_TREZOR_FROM_SETTINGS',
+        defaultMessage: 'I’ve removed it',
+    },
     TR_CABLE: {
         id: 'TR_CABLE',
         defaultMessage: 'Cable',

@@ -65,7 +65,7 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
                         <Translation id="TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS" />
                     </Modal.Button>
                     <Modal.Button variant="tertiary" onClick={onCancel}>
-                        <Translation id="TR_DONE" />
+                        <Translation id="TR_DONE_REMOVING_TREZOR_FROM_SETTINGS" />
                     </Modal.Button>
                 </>
             }
