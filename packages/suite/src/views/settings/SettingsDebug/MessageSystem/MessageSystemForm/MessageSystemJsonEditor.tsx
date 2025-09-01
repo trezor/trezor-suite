@@ -1,0 +1,86 @@
+import styled from 'styled-components';
+
+import { ValidateError } from '@suite-common/message-system';
+import { Button, Column, Icon, Row, Text, Textarea } from '@trezor/components';
+import { useTextareaCursorPosition } from '@trezor/react-utils';
+import { spacings } from '@trezor/theme';
+
+const ErrorContainer = styled.div`
+    max-height: 16rem;
+    overflow-y: scroll;
+`;
+
+type MessageSystemJsonEditorProps = {
+    value: string;
+    isValid: boolean;
+    canFormat: boolean;
+    errors: ValidateError[];
+    onChange: (next: string) => void;
+    onFormat: () => void;
+};
+
+export const MessageSystemJsonEditor = ({
+    value,
+    isValid,
+    canFormat,
+    errors,
+    onChange,
+    onFormat,
+}: MessageSystemJsonEditorProps) => {
+    const { textareaRef, position } = useTextareaCursorPosition();
+
+    return (
+        <Row gap={spacings.md} alignItems="flex-start">
+            <Textarea
+                innerRef={textareaRef}
+                label="Message config"
+                rows={10}
+                value={value}
+                inputState={isValid ? 'default' : 'error'}
+                onChange={e => onChange(e.target.value)}
+                bottomText={
+                    <Row justifyContent="space-between" alignItems="center">
+                        <Text>
+                            Line {position.line}, Column {position.column}
+                        </Text>
+                        <Button
+                            isDisabled={!canFormat}
+                            size="tiny"
+                            variant="tertiary"
+                            onClick={onFormat}
+                        >
+                            Format JSON
+                        </Button>
+                    </Row>
+                }
+            />
+            <Column width="50%">
+                <Row gap={spacings.xs} margin={{ bottom: spacings.xs }}>
+                    {isValid ? (
+                        <>
+                            <Icon name="checkCircleFilled" variant="primary" size="extraLarge" />
+                            <span>Config is valid</span>
+                        </>
+                    ) : (
+                        <>
+                            <Icon name="xCircleFilled" variant="destructive" size="extraLarge" />
+                            <span>Config is invalid</span>
+                        </>
+                    )}
+                </Row>
+
+                <ErrorContainer>
+                    {!isValid && (
+                        <Column gap={spacings.xxs}>
+                            {errors.map((error, index) => (
+                                <Text variant="destructive" key={index}>
+                                    <strong>{error.field}</strong> {error.message}
+                                </Text>
+                            ))}
+                        </Column>
+                    )}
+                </ErrorContainer>
+            </Column>
+        </Row>
+    );
+};

@@ -505,7 +505,7 @@ export const forgetDeviceMetadataError =
 export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
-    const { dismissedMessages, config, currentSequence, configSource, inAppIds } =
+    const { dismissedMessages, config, currentSequence, configSource, manuallyAddedMessageIds } =
         getState().messageSystem;
 
     db.addItem(
@@ -515,7 +515,7 @@ export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: Get
             currentSequence,
             dismissedMessages,
             configSource,
-            inAppIds,
+            manuallyAddedMessageIds,
         },
         'suite',
         true,

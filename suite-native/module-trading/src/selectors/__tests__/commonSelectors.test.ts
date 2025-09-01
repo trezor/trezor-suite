@@ -111,7 +111,7 @@ const getPreloadedState = ({
             dismissedMessages: {},
             validExperiments: [],
             configSource: 'local' as const,
-            inAppIds: {},
+            manuallyAddedMessageIds: {},
         },
     };
 };

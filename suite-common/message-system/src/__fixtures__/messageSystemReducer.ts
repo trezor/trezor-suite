@@ -32,6 +32,8 @@ const initialState = {
     dismissedMessages: {},
 
     validExperiments: [],
+
+    manuallyAddedMessageIds: {},
 };
 
 export const fixtures = [

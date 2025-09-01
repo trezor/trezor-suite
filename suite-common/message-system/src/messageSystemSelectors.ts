@@ -140,10 +140,8 @@ export const selectIsFeatureDisabled = (
     return featureFlag !== undefined ? !featureFlag : (defaultValue ?? false);
 };
 
-export const selectAllMessages = (state: MessageSystemRootState) =>
-    state.messageSystem.config?.actions.map(a => a.message) ?? [];
-
-export const selectAllInAppIds = (state: MessageSystemRootState) => state.messageSystem.inAppIds;
+export const selectAllManuallyAddedMessageIds = (state: MessageSystemRootState) =>
+    state.messageSystem.manuallyAddedMessageIds;
 
 const selectValidMessages = (state: MessageSystemRootState) => state.messageSystem.validMessages;
 const selectValidExperiments = (state: MessageSystemRootState) =>

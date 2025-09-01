@@ -33,6 +33,7 @@ import {
     getOsName,
     getSuiteVersion,
 } from '@trezor/env-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import { getCachedOsVersion } from './cachedEnvData';
 import { ValidMessagesPayload } from './messageSystemActions';
@@ -339,16 +340,61 @@ export const toMessageSystemOptions = <T extends string>(
         label: value.replace(/^./, char => char.toUpperCase()),
     }));
 
-export const getDefaultActionByCategory = (category: Category): Action => {
-    const defaultLocalization = {
-        en: '',
-        cs: '',
-        es: '',
-        de: '',
-        fr: '',
-        pt: '',
-    };
+/** Recursively collects all string leaf values from arrays/objects. */
+export const collectStringsDeep = (value: unknown): string[] => {
+    if (typeof value === 'string') return [value];
+    if (Array.isArray(value)) return value.flatMap(collectStringsDeep);
+    if (value && typeof value === 'object') {
+        return Object.values(value as Record<string, unknown>).flatMap(collectStringsDeep);
+    }
 
+    return [];
+};
+
+/** Format a string or string[] into a single string joined by `separator` (default: ", "). */
+export const toCommaSeparated = (value: string | string[], separator = ', '): string =>
+    Array.isArray(value) ? value.join(separator) : value;
+
+const defaultLocalization = {
+    en: '',
+    cs: '',
+    es: '',
+    de: '',
+    fr: '',
+    pt: '',
+} as const satisfies Localization;
+
+type ExtraByCategory = {
+    modal: { modal: { title: Localization; image: string } };
+    context: { context: { domain: string } };
+    feature: { feature: Array<{ domain: string; flag: boolean }> };
+    banner: {};
+};
+
+const EXTRA_BY_CATEGORY = {
+    modal: {
+        modal: {
+            title: defaultLocalization,
+            image: '',
+        },
+    },
+    context: {
+        context: {
+            domain: '',
+        },
+    },
+    feature: {
+        feature: [
+            {
+                domain: '',
+                flag: true,
+            },
+        ],
+    },
+    banner: {},
+} as const satisfies Record<Category, ExtraByCategory[Category]>;
+
+export const getDefaultActionByCategory = (category: Category): Action => {
     const baseMessage = {
         id: uuidv4(),
         priority: 100,
@@ -358,46 +404,16 @@ export const getDefaultActionByCategory = (category: Category): Action => {
         content: defaultLocalization,
     };
 
-    const extraFields = (() => {
-        switch (category) {
-            case 'modal':
-                return {
-                    modal: {
-                        title: defaultLocalization,
-                        image: '',
-                    },
-                };
-            case 'context':
-                return {
-                    context: {
-                        domain: '',
-                    },
-                };
-            case 'feature':
-                return {
-                    feature: [
-                        {
-                            domain: '',
-                            flag: true,
-                        },
-                    ],
-                };
-            case 'banner':
-            default:
-                return {};
-        }
-    })();
-
     return {
         message: {
             ...baseMessage,
-            ...extraFields,
+            ...EXTRA_BY_CATEGORY[category],
         },
         conditions: [{}],
     };
 };
 
-export const getDefaultConditionValue = (key: string) => {
+export const getDefaultConditionValue = (key: keyof Condition): Condition[keyof Condition] => {
     switch (key) {
         case 'duration': {
             const now = new Date();
@@ -445,6 +461,6 @@ export const getDefaultConditionValue = (key: string) => {
             return ['CZ'];
 
         default:
-            return {};
+            return exhaustive(key);
     }
 };
