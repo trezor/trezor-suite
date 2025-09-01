@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, HStack, Text } from '@suite-native/atoms';
+import { DeviceItemIcon } from '@suite-native/device';
 import { useNativeStyles } from '@trezor/styles';
 
 import { DeviceConnectionStatus } from './DeviceItem/DeviceConnectionStatus';
@@ -10,7 +11,6 @@ import {
     contentWrapperStyle,
     itemStyle,
 } from './DeviceItem/DeviceItemContent';
-import { DeviceItemIcon } from './DeviceItem/DeviceItemIcon';
 import { headerStyle } from './DeviceItem/SimpleDeviceItemContent';
 
 export const BootloaderModeItemContent = () => {

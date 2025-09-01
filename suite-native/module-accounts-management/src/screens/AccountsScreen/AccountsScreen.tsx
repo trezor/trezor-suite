@@ -7,6 +7,7 @@ import {
     OnSelectAccount,
     SearchableAccountsListHeader,
 } from '@suite-native/accounts';
+import { RediscoveryNeededWarning } from '@suite-native/assets';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import {
@@ -48,6 +49,7 @@ export const AccountsScreen = () => {
                 onSearchInputChange={handleFilterChange}
                 flowType="accounts"
             />
+            <RediscoveryNeededWarning />
             <AccountsList
                 onSelectAccount={handleSelectAccount}
                 filterValue={accountsFilterValue}

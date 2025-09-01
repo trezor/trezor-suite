@@ -17,6 +17,7 @@ import {
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
+import { RediscoveryNeededWarning } from './RediscoveryNeededWarning';
 import { selectDeviceNetworksWithAssets } from '../assetsSelectors';
 import { AssetItem } from './AssetItem';
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
@@ -64,6 +65,7 @@ export const Assets = () => {
     return (
         <>
             <AnimatedCard noPadding layout={LinearTransition}>
+                <RediscoveryNeededWarning hasPadding />
                 {deviceNetworks.map(symbol => (
                     <Animated.View
                         entering={isLoading ? FadeInDown : undefined}

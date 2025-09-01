@@ -34,7 +34,7 @@ This file is for selectors that reach into more than one wallet-core reduce
 to prevent circular dependencies between reducers
 */
 
-type CompoundRootState = AccountsRootState &
+export type CompoundRootState = AccountsRootState &
     DeviceRootState &
     DiscoveryRootState &
     WalletSettingsRootState;

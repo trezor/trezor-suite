@@ -151,6 +151,7 @@ export const messages = {
         stakingDisabled: 'Staking is not available in this context.',
     },
     assets: {
+        rediscoveryNeeded: 'Reconnect your trezor to load all assets.',
         dashboard: {
             discoveryProgress: {
                 loading: 'Loading...',
