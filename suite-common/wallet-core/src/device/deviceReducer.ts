@@ -554,7 +554,6 @@ const requestDeviceReconnect = (draft: DeviceReducerState) => {
     draft.selectedDevice.reconnectRequested = true;
     draft.devices[index].reconnectRequested = true;
 };
-
 export const prepareDeviceReducer = createReducerWithExtraDeps(
     deviceInitialState,
     (builder, extra) => {
