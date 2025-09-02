@@ -5,6 +5,7 @@ import { selectTradingSellIsLoading } from '@suite-common/trading';
 
 import { SellFormType } from '../../types/sell';
 import { useConsent } from '../general/useConsent';
+import { useConsentDenier } from '../general/useConsentDenier';
 
 type SellFlowReturn = {
     canProceed: boolean;
@@ -15,10 +16,10 @@ type SellFlowReturn = {
 };
 
 export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
+    const candidateQuote = watch('quote');
     const isLoading = useSelector(selectTradingSellIsLoading);
     const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
-
-    const candidateQuote = watch('quote');
+    useConsentDenier(candidateQuote?.exchange, resolveConsent);
 
     const canProceed = !!candidateQuote && !isLoading;
 
