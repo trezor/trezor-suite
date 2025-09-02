@@ -15,7 +15,7 @@ import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send
 import { Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { CallMethodResponse } from '@trezor/connect';
-import { isAscii } from '@trezor/utils';
+import { isAscii, isHex } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
@@ -77,6 +77,9 @@ const ethereumRequestThunk = createThunk<
             const messageDecoded = message.startsWith('0x')
                 ? Buffer.from(message.slice(2), 'hex').toString('utf8')
                 : message;
+            const messageHex = isHex(message)
+                ? sanitizeHex(message)
+                : Buffer.from(message, 'utf8').toString('hex');
             const isReadable = isAscii(messageDecoded);
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
@@ -84,7 +87,7 @@ const ethereumRequestThunk = createThunk<
                     method: 'ethereumSignMessage',
                     payload: {
                         path: account.path,
-                        message: isReadable ? messageDecoded : sanitizeHex(message),
+                        message: isReadable ? messageDecoded : messageHex,
                         hex: !isReadable,
                     },
                 }),
