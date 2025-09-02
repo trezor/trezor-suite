@@ -237,6 +237,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                                 icon={isBluetoothMode ? 'cableUsbC' : 'bluetooth'}
                                 onClick={toggleBluetoothMode}
                                 variant="tertiary"
+                                size="small"
                             >
                                 <Translation
                                     id={
