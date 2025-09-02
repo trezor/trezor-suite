@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectAddressLabels } from '@suite-common/local-first-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Card, Column, GradientOverlay, Row, Table, Text } from '@trezor/components';
 import { AccountAddress } from '@trezor/connect';
@@ -37,9 +39,10 @@ type ItemProps = {
     symbol: NetworkSymbol;
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
+    account: Account;
 };
 
-const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
+const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
     const [isHovered, setIsHovered] = useState(false);
 
@@ -53,6 +56,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
             <Table.Cell>
                 <Text typographyStyle="hint" data-testid={`@wallet/receive/used-address/${index}`}>
                     <MetadataLabeling
+                        deviceStaticSessionId={account.deviceState}
                         payload={{
                             ...metadataPayload,
                         }}
@@ -100,7 +104,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
 };
 
 interface UsedAddressesProps {
-    account: AppState['wallet']['selectedAccount']['account'];
+    account: Account;
     addresses: AppState['wallet']['receive'];
     locked: boolean;
     pendingAddresses: string[];
@@ -116,9 +120,9 @@ export const UsedAddresses = ({
     const dispatch = useDispatch();
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
 
-    if (!account) {
-        return null;
-    }
+    const localFirstAddressLabels = useSelector(state =>
+        selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
+    );
 
     if (
         (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
@@ -169,6 +173,7 @@ export const UsedAddresses = ({
                     <Table.Body>
                         {list.slice(0, limit).map((addr, index) => (
                             <Item
+                                account={account}
                                 index={index}
                                 key={addr.path}
                                 addr={addr}
@@ -178,7 +183,10 @@ export const UsedAddresses = ({
                                     type: 'addressLabel',
                                     entityKey: account.key,
                                     defaultValue: addr.address,
-                                    value: addressLabels[addr.address],
+                                    value:
+                                        localFirstAddressLabels.find(
+                                            it => it.address === addr.address,
+                                        )?.label ?? addressLabels[addr.address],
                                 }}
                                 onClick={() => dispatch(showAddress(addr.path, addr.address))}
                             />

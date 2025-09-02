@@ -16,6 +16,7 @@ import { mergeDeepObject } from '@trezor/utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { prepareThpReducer } from '@suite-common/thp';
+import { prepareLabelingReducer } from '@suite-common/local-first-storage';
 import { accountsActions } from '@suite-common/wallet-core';
 
 import suiteMiddlewares from 'src/middlewares/suite';
@@ -43,6 +44,7 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
+const labelingReducer = prepareLabelingReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -56,6 +58,7 @@ const rootReducer = combineReducers({
     tokenDefinitions: tokenDefinitionsReducer,
     bluetooth: bluetoothReducer,
     thp: thpReducer,
+    labeling: labelingReducer,
     geolocation: geolocationReducer,
 });
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectWalletLabel } from '@suite-common/local-first-storage';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -24,6 +25,7 @@ import { spacings } from '@trezor/theme';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { MetadataLabeling, Translation, WalletLabeling } from 'src/components/suite';
+import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
@@ -32,7 +34,7 @@ import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer'
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
-import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
+import { LocalFirstStorageDebug } from './LocalFirstStorageDebug';
 
 type WalletInstanceProps = {
     instance: AcquiredDevice;
@@ -64,9 +66,16 @@ export const WalletInstance = ({
 
     const walletBalance = useTotalFiatBalance(deviceAccounts, baseCurrencyCode, currentFiatRates);
 
-    const { walletLabel } = useSelector(state =>
+    const { walletLabel: oldWalletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),
     );
+
+    const localFirstWalletLabel = useSelector(state =>
+        selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
+    );
+
+    const walletLabel = localFirstWalletLabel ?? oldWalletLabel;
+
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
@@ -144,25 +153,31 @@ export const WalletInstance = ({
                                         </Tooltip>
                                     )}
                                     {instance.state?.staticSessionId ? (
-                                        <MetadataLabeling
-                                            defaultVisibleValue={
-                                                walletLabel === undefined ||
-                                                walletLabel.trim() === ''
-                                                    ? defaultWalletLabel
-                                                    : walletLabel
-                                            }
-                                            payload={{
-                                                type: 'walletLabel',
-                                                entityKey: instance.state.staticSessionId,
-                                                defaultValue: instance.state.staticSessionId,
-                                                value: instance?.metadata[
-                                                    METADATA_LABELING.ENCRYPTION_VERSION
-                                                ]
-                                                    ? walletLabel
-                                                    : '',
-                                            }}
-                                            defaultEditableValue={defaultWalletLabel}
-                                        />
+                                        <Column>
+                                            <MetadataLabeling
+                                                deviceStaticSessionId={
+                                                    instance.state.staticSessionId
+                                                }
+                                                defaultVisibleValue={
+                                                    walletLabel === undefined ||
+                                                    walletLabel.trim() === ''
+                                                        ? defaultWalletLabel
+                                                        : walletLabel
+                                                }
+                                                payload={{
+                                                    type: 'walletLabel',
+                                                    entityKey: instance.state.staticSessionId,
+                                                    defaultValue: instance.state.staticSessionId,
+                                                    value: instance?.metadata[
+                                                        METADATA_LABELING.ENCRYPTION_VERSION
+                                                    ]
+                                                        ? walletLabel
+                                                        : '',
+                                                }}
+                                                defaultEditableValue={defaultWalletLabel}
+                                            />
+                                            <LocalFirstStorageDebug device={instance} />
+                                        </Column>
                                     ) : (
                                         <WalletLabeling device={instance} />
                                     )}

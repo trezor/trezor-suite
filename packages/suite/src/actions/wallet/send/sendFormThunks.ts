@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { processMetadataMessageThunk } from '@suite-common/local-first-storage';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -36,6 +37,7 @@ import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
+import { selectSuiteFlags } from '../../../selectors/suite/suiteSelectors';
 import { findLabelsToBeMovedOrDeletedThunk } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
 import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
 
@@ -108,23 +110,25 @@ const updateRbfLabelsThunk = createThunk<void, UpdateRbfLabelsThunkParams, void>
     },
 );
 
-const applySendFormMetadataLabelsThunk = createThunk(
-    `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
-    (
-        {
-            selectedAccount,
-            precomposedTransaction,
-            txid,
-        }: {
-            selectedAccount: Account;
-            precomposedTransaction: GeneralPrecomposedTransactionFinal;
-            txid: string;
-        },
-        { dispatch, getState },
-    ) => {
-        const metadata = selectMetadata(getState());
+type ApplySendFormMetadataLabelsThunkParams = {
+    selectedAccount: Account;
+    precomposedTransaction: GeneralPrecomposedTransactionFinal;
+    txid: string;
+};
 
-        if (!metadata.enabled) return;
+const applySendFormMetadataLabelsThunk = createThunk<
+    void,
+    ApplySendFormMetadataLabelsThunkParams,
+    void
+>(
+    `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
+    ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
+        const metadata = selectMetadata(getState());
+        const { isLocalFirstStorageEnabled } = selectSuiteFlags(getState());
+
+        if (!metadata.enabled && !isLocalFirstStorageEnabled) {
+            return;
+        }
 
         const precomposedForm = selectPrecomposedSendForm(getState());
         const outputsPermutation = isCardanoTx(selectedAccount, precomposedTransaction)
@@ -158,14 +162,24 @@ const applySendFormMetadataLabelsThunk = createThunk(
             .forEach((output, index, arr) => {
                 const isLast = index === arr.length - 1;
 
-                synchronize(() =>
-                    dispatch(
-                        metadataLabelingActions.addAccountMetadata({
-                            ...output,
-                            skipSave: !isLast,
-                        }),
-                    ),
-                );
+                synchronize(() => {
+                    if (isLocalFirstStorageEnabled) {
+                        return dispatch(
+                            processMetadataMessageThunk({
+                                payload: output,
+                                deviceStaticSessionId: selectedAccount.deviceState,
+                                value: output.value,
+                            }),
+                        );
+                    } else {
+                        return dispatch(
+                            metadataLabelingActions.addAccountMetadata({
+                                ...output,
+                                skipSave: !isLast,
+                            }),
+                        );
+                    }
+                });
             });
     },
 );

@@ -2,6 +2,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
+import {
+    subscribeLocalFirstStorageThunk,
+    unsubscribeAndDisposeLocalFirstStorageThunk,
+} from '@suite-common/local-first-storage';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
@@ -57,8 +61,8 @@ export const extraDependencies: ExtraDependencies = {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorData: cardanoStakingActions.fetchTrezorData,
         initMetadata: metadataLabelingActions.init,
-        subscribeLocalFirstStorage: () => () => {}, // Todo: will be implemented in next PR
-        unsubscribeAndDisposeLocalFirstStorage: () => () => {}, // Todo: will be implemented in next PR
+        subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
+        unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,

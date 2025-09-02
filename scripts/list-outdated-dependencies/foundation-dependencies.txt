@@ -3,6 +3,7 @@
 @electron/notarize
 @eslint/js
 @evolu/common
+@evolu/web
 @hookform/resolvers
 @noble/hashes
 @types/bn.js

@@ -2,10 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { processMetadataMessageThunk } from '@suite-common/local-first-storage';
 import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
-import type { TimerId } from '@trezor/type-utils';
+import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { Translation } from 'src/components/suite';
@@ -14,6 +15,7 @@ import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from 'src/reducers/suite/metadataReducer';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 import { ExtendedProps, Props } from './definitions';
@@ -282,6 +284,7 @@ export const MetadataLabeling = ({
     onSubmit,
     visible,
     updateFlag,
+    deviceStaticSessionId,
 }: Props) => {
     const metadata = useSelector(state => state.metadata);
     const dispatch = useDispatch();
@@ -293,6 +296,9 @@ export const MetadataLabeling = ({
     const dataTestBase = `@metadata/${payload.type}/${payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
+
+    const { isLocalFirstStorageEnabled } = useSelector(selectSuiteFlags);
+
     let timeout: TimerId | undefined;
     useEffect(() => {
         setPending(false);
@@ -317,6 +323,7 @@ export const MetadataLabeling = ({
     const activateEdit = () => {
         // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
+            !isLocalFirstStorageEnabled &&
             // Isn't initiation in progress?
             !metadata.initiating &&
             // Is there something that needs to be initiated?
@@ -355,22 +362,29 @@ export const MetadataLabeling = ({
     const defaultOnSubmit = async (value: string | undefined) => {
         isSubscribedToSubmitResult.current = payload.defaultValue;
         setPending(true);
-        const result = await dispatch(
-            addMetadata({
-                ...payload,
-                value: value || undefined,
-            }),
-        );
-        // payload.defaultValue might change during next render, this comparison
-        // ensures that success state does not appear if it is no longer relevant.
-        if (isSubscribedToSubmitResult.current === payload.defaultValue) {
-            setPending(false);
-            if (result) {
-                setShowSuccess(true);
-            }
+
+        if (isLocalFirstStorageEnabled) {
+            await dispatch(processMetadataMessageThunk({ payload, deviceStaticSessionId, value }));
+
+            setShowSuccess(true);
             timeout = setTimeout(() => {
                 setShowSuccess(false);
             }, 2000);
+            setPending(false);
+        } else {
+            const result = await dispatch(addMetadata({ ...payload, value: value || undefined }));
+
+            // payload.defaultValue might change during next render, this comparison
+            // ensures that success state does not appear if it is no longer relevant.
+            if (isSubscribedToSubmitResult.current === payload.defaultValue) {
+                setPending(false);
+                if (result) {
+                    setShowSuccess(true);
+                }
+                timeout = setTimeout(() => {
+                    setShowSuccess(false);
+                }, 2000);
+            }
         }
     };
 
@@ -387,7 +401,7 @@ export const MetadataLabeling = ({
     // Should "add label"/"edit label" button be visible?
     const showActionButton =
         !isDisabled &&
-        (isLabelingAvailable || isLabelingInitPossible) &&
+        (isLabelingAvailable || isLabelingInitPossible || isLocalFirstStorageEnabled) &&
         !showSuccess &&
         !editActive;
     const isVisible = pending || visible;
@@ -426,6 +440,7 @@ export const MetadataLabeling = ({
                         defaultEditableValue={defaultEditableValue}
                         defaultVisibleValue={defaultVisibleValue}
                         dropdownOptions={dropdownItems}
+                        deviceStaticSessionId={deviceStaticSessionId}
                     />
                     {showOutputLabelActionButton && (
                         <ActionButton
@@ -462,6 +477,7 @@ export const MetadataLabeling = ({
                         defaultEditableValue={defaultEditableValue}
                         defaultVisibleValue={defaultVisibleValue}
                         updateFlag={updateFlag}
+                        deviceStaticSessionId={deviceStaticSessionId}
                     />
 
                     {showActionButton && (

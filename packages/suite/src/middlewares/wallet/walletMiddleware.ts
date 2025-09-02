@@ -34,10 +34,10 @@ const walletMiddleware =
 
         if (deviceActions.forgetDevice.match(action)) {
             const deviceState = action.payload.device.state?.staticSessionId;
-            const accounts = api
+            const accountsToRemove = api
                 .getState()
                 .wallet.accounts.filter(a => a.deviceState === deviceState);
-            api.dispatch(forgetAccountsThunk({ accountsToRemove: accounts }));
+            api.dispatch(forgetAccountsThunk({ accountsToRemove }));
         }
 
         // propagate action to reducers, this needs to happen before addTransaction is dispatched because it needs to have account in redux already

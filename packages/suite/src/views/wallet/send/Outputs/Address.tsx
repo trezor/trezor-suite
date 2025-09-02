@@ -166,6 +166,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
     }, [amountInputName, composeTransaction, dispatch, inputName, setValue, symbol]);
 
+    if (device?.state?.staticSessionId === undefined) {
+        return;
+    }
+
     const getInputErrorProps = (): {
         learnMoreUrl?: InputErrorProps['learnMoreUrl'];
         buttonProps?: InputErrorProps['buttonProps'];
@@ -452,6 +456,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 metadataEnabled && broadcastEnabled ? (
                     <Box maxWidth={200}>
                         <MetadataLabeling
+                            deviceStaticSessionId={device.state.staticSessionId}
                             defaultVisibleValue=""
                             payload={{
                                 type: 'outputLabel',
