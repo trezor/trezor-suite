@@ -175,5 +175,34 @@ describe('useExchangeSelectQuote', () => {
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview');
         });
+
+        it('should call cancelConsent when quote provider changes', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            const { result, rerender } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            // simulate userConsent call (as we mock the thunk)
+            const { userConsent } = (dispatchCall as any).payload;
+            act(() => {
+                userConsent();
+            });
+            expect(result.current.isConsentRequested).toBe(true);
+
+            // change selected quote to quote with different provider
+            act(() => {
+                exchangeForm.setValue('quote', { ...exchangeQuotes[1], exchange: 'invity' });
+            });
+
+            // we need to manually rerender tested hook
+            rerender({});
+
+            // consent should not be requested anymore
+            expect(result.current.isConsentRequested).toBe(false);
+        });
     });
 });
