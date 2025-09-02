@@ -1,3 +1,4 @@
 export * from './deviceAuthorizationSlice';
 export * from './utils';
 export * from './hooks/useHandleDeviceRequestsPassphrase';
+export * from './components/DevicePinImage';

@@ -5,8 +5,8 @@ import { Box, Image } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const imageStyle = prepareNativeStyle<{ maxHeight?: number }>((_, { maxHeight }) => ({
-    width: 61,
-    height: 167,
+    width: '100%',
+    height: 170,
     maxHeight,
     contentFit: 'contain',
 }));

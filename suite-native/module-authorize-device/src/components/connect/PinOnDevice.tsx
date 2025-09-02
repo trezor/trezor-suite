@@ -3,29 +3,21 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Image, Text } from '@suite-native/atoms';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import { Box, Text } from '@suite-native/atoms';
+import { ConnectorImage } from '@suite-native/device';
+import { DevicePinImage, selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { deviceImageMap } from '../../constants/deviceImageConstants';
-
-const SCREEN_HEIGHT = getScreenHeight();
+const DEVICE_IMAGE_MAX_HEIGHT = 0.42 * getScreenHeight();
+const CONNECTOR_IMAGE_MAX_HEIGHT = 0.18 * getScreenHeight();
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'space-between',
-    alignItems: 'center',
     paddingTop: utils.spacings.sp24,
-}));
-const imageStyle = prepareNativeStyle(_ => ({
-    maxHeight: SCREEN_HEIGHT * 0.6,
-    width: 243,
-    height: 550,
-    alignItems: 'center',
-    contentFit: 'contain',
 }));
 
 type PinOnDeviceProps = {
@@ -60,7 +52,10 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
             <Text variant="titleMedium" textAlign="center">
                 <Translation id="moduleConnectDevice.pinScreen.title" />
             </Text>
-            <Image source={deviceImageMap[deviceModel]} style={applyStyle(imageStyle)} />
+            <Box alignItems="center" justifyContent="flex-end">
+                <DevicePinImage deviceModel={deviceModel} maxHeight={DEVICE_IMAGE_MAX_HEIGHT} />
+                <ConnectorImage maxHeight={CONNECTOR_IMAGE_MAX_HEIGHT} />
+            </Box>
         </Box>
     );
 };

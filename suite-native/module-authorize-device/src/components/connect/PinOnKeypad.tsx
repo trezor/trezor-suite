@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 import { PinFormValues, pinFormSchema } from '@suite-common/validators';
-import { Box, Card, HStack, Image, Loader, Text, VStack } from '@suite-native/atoms';
+import { Box, Card, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PinFormControlButtons } from './PinFormControlButtons';
 import { PinFormProgress } from './PinFormProgress';
 import { PinMatrixButton } from './PinMatrixButton';
-import { deviceImageMap } from '../../constants/deviceImageConstants';
+import { DevicePinImage } from '../../../../device-authorization/src/components/DevicePinImage';
 
 export type PinFormVariant = 'current' | 'new' | 'confirm';
 
@@ -97,7 +98,9 @@ export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
 
     return (
         <VStack spacing="sp16" alignItems="center" flex={1} marginTop="sp24">
-            {isImageDisplayed && <Image source={deviceImageMap.T1B1} width={161} height={194} />}
+            {isImageDisplayed && (
+                <DevicePinImage deviceModel={DeviceModelInternal.T1B1} maxHeight={193} />
+            )}
             <Form form={form}>
                 <VStack spacing="sp8" alignItems="center">
                     <Text color="textSubdued" textAlign="center">
