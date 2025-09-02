@@ -303,12 +303,12 @@ export const getLanguage = (languageBinPath: string) => {
     return httpRequest(url, 'binary');
 };
 
-const getCurrentVersion = (
-    features: Features,
-): {
+export type CurrentVersion = {
     bootloaderVersion: VersionArray | null;
-    firmwareVersion: VersionArray;
-} => {
+    firmwareVersion: VersionArray | null;
+};
+
+const getCurrentVersion = (features: Features): CurrentVersion => {
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided.');
     }
@@ -332,7 +332,7 @@ const getCurrentVersion = (
 
     // `fw_version` is the firmware version when in bootloader mode, in firmware mode it will be [null, null, null]
     // when device is factory reset will always be in bootloader mode.
-    const fw_version = [fw_major, fw_minor, fw_patch] as VersionArray;
+    const fw_version = [fw_major, fw_minor, fw_patch];
     // `version` is bootloader version when in bootloader mode, in firmware mode it is firmware version.
     const version = [major_version, minor_version, patch_version] as VersionArray;
 
@@ -342,11 +342,11 @@ const getCurrentVersion = (
     // Some old version of T1B1 do not report FW version in bootloader mode,
     // so it is not 100% true that in bootloader mode we will know the firmware version,
     // but we are handling it `getReleaseInfo` when device is T1B1 we use bootloader version.
-    const firmwareVersion = bootloader_mode ? fw_version : version;
+    const fwVersion = bootloader_mode ? fw_version : version;
 
     return {
         bootloaderVersion,
-        firmwareVersion,
+        firmwareVersion: fwVersion.includes(null) ? null : (fwVersion as VersionArray),
     };
 };
 
@@ -374,9 +374,11 @@ const getIntermediaryMessageRelease = (features: Features) => {
         );
     } else {
         const { firmwareVersion } = getCurrentVersion(features);
-        intermediary = deviceIntermediaryReleases.find(inter =>
-            versionUtils.isNewer(inter.min_firmware_version, firmwareVersion),
-        );
+        intermediary = firmwareVersion
+            ? deviceIntermediaryReleases.find(inter =>
+                  versionUtils.isNewer(inter.min_firmware_version, firmwareVersion),
+              )
+            : undefined;
     }
 
     return intermediary || undefined;
@@ -511,13 +513,14 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         : currentVersion.firmwareVersion;
     const minVersionKey = inBootloaderMode ? 'min_bootloader_version' : 'min_firmware_version';
 
-    const isCompatible = versionUtils.isNewerOrEqual(versionToCheck, release[minVersionKey]);
+    const isCompatible =
+        versionToCheck && versionUtils.isNewerOrEqual(versionToCheck, release[minVersionKey]);
 
     const compatibleRelease = isCompatible
         ? release
         : findBestCompatibleRelease(
               getReleasesAssetByDeviceModelAndFirmwareType(features.internal_model, firmwareType),
-              currentVersion.firmwareVersion,
+              currentVersion,
               minVersionKey,
           );
 

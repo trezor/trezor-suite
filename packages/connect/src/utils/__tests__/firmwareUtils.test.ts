@@ -15,7 +15,11 @@ describe('firmwareUtils', () => {
         describe('handling invalid input', () => {
             it('should return undefined for an empty data object', () => {
                 expect(
-                    findBestCompatibleRelease({}, [1, 0, 0], 'min_firmware_version'),
+                    findBestCompatibleRelease(
+                        {},
+                        { bootloaderVersion: null, firmwareVersion: [1, 0, 0] },
+                        'min_firmware_version',
+                    ),
                 ).toBeUndefined();
             });
         });
@@ -24,7 +28,7 @@ describe('firmwareUtils', () => {
             it('should return the newest compatible release', () => {
                 const compatibleRelease = findBestCompatibleRelease(
                     firmwareAssets.t2t1.universal,
-                    [2, 0, 7],
+                    { bootloaderVersion: null, firmwareVersion: [2, 0, 7] },
                     'min_firmware_version',
                 );
                 expect(compatibleRelease?.version).toEqual([2, 1, 1]);
@@ -34,7 +38,7 @@ describe('firmwareUtils', () => {
                 expect(
                     findBestCompatibleRelease(
                         firmwareAssets.t1b1.universal,
-                        [0, 8, 5],
+                        { bootloaderVersion: null, firmwareVersion: [0, 8, 5] },
                         'min_firmware_version',
                     ),
                 ).toBeUndefined();
@@ -44,13 +48,17 @@ describe('firmwareUtils', () => {
         describe('with checkProperty = "min_bootloader_version"', () => {
             it('should return undefined for an empty data object', () => {
                 expect(
-                    findBestCompatibleRelease({}, [1, 0, 0], 'min_bootloader_version'),
+                    findBestCompatibleRelease(
+                        {},
+                        { bootloaderVersion: null, firmwareVersion: [1, 0, 0] },
+                        'min_bootloader_version',
+                    ),
                 ).toBeUndefined();
             });
             it('should return the correct release based on bootloader version', () => {
                 const compatibleRelease = findBestCompatibleRelease(
                     firmwareAssets.t1b1.universal,
-                    [1, 6, 3],
+                    { bootloaderVersion: null, firmwareVersion: [1, 6, 3] },
                     'min_bootloader_version',
                 );
                 expect(compatibleRelease?.version).toEqual([1, 11, 2]);
@@ -60,7 +68,7 @@ describe('firmwareUtils', () => {
                 expect(
                     findBestCompatibleRelease(
                         firmwareAssets.t1b1.universal,
-                        [0, 8, 5],
+                        { bootloaderVersion: null, firmwareVersion: [0, 8, 5] },
                         'min_bootloader_version',
                     ),
                 ).toBeUndefined();
