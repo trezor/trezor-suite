@@ -20,6 +20,7 @@ import {
 import { ExchangeFormType } from '../../types/exchange';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConsent } from '../general/useConsent';
+import { useConsentDenier } from '../general/useConsentDenier';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -41,6 +42,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
 
     const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
+    useConsentDenier(candidateQuote?.exchange, resolveConsent);
 
     const canProceed = !isLoading && !!candidateQuote && !!sendAccount;
 
