@@ -6454,10 +6454,20 @@ export default defineMessages({
         id: 'TR_LABELING_REMOVE_OUTPUT',
         defaultMessage: 'Remove label',
     },
-    TR_GRAPH_MISSING_DATA_INFO: {
-        id: 'TR_GRAPH_MISSING_DATA_INFO',
+    TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
+        id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
         defaultMessage:
-            "and all token amounts are included in the portfolio balance, but aren't currently supported in graph view.",
+            "{networks} and all token amounts are included in the portfolio balance, but aren't currently supported in graph view.",
+    },
+    TR_GRAPH_MISSING_DATA_NETWORKS: {
+        id: 'TR_GRAPH_MISSING_DATA_NETWORKS',
+        defaultMessage:
+            "{networks} are included in the portfolio balance, but aren't currently supported in graph view.",
+    },
+    TR_GRAPH_MISSING_DATA_TOKENS: {
+        id: 'TR_GRAPH_MISSING_DATA_TOKENS',
+        defaultMessage:
+            "All token amounts are included in the portfolio balance, but aren't currently supported in graph view.",
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',

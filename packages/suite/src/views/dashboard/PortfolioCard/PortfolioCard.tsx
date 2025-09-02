@@ -21,7 +21,7 @@ import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
-import { UnsupportedAssetsMessage, useUnsupportedAssetsMessage } from './UnsupportedAssetsMessage';
+import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
 
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -68,18 +68,15 @@ export const PortfolioCard = memo(() => {
     const isWalletError = discoveryStatus?.status === 'exception';
     const showGraphControls =
         !isWalletEmpty && !isWalletLoading && !isWalletError && !dashboardGraphHidden;
-    const { affectedAssets } = useUnsupportedAssetsMessage({
+    const { affectedNetworks, hasTokens, showMissingDataTooltip } = useUnsupportedNetworkMessage({
         showGraphControls,
         device,
         accounts,
     });
 
     const goToReceive = () => dispatch(goto('wallet-receive'));
-    const heading = (
-        <>
-            <Translation id="TR_MY_PORTFOLIO" />
-        </>
-    );
+    const heading = <Translation id="TR_MY_PORTFOLIO" />;
+
     const header =
         discovery && discoveryStatus?.status === 'exception' ? null : (
             <PortfolioCardHeader
@@ -98,7 +95,14 @@ export const PortfolioCard = memo(() => {
     return (
         <DashboardSection
             heading={heading}
-            subheading={<UnsupportedAssetsMessage affectedAssets={affectedAssets} />}
+            subheading={
+                showMissingDataTooltip ? (
+                    <UnsupportedAssetsMessage
+                        affectedNetworks={affectedNetworks}
+                        hasTokens={hasTokens}
+                    />
+                ) : undefined
+            }
             actions={
                 !isWalletEmpty && !isWalletLoading && !isWalletError ? (
                     <Dropdown
