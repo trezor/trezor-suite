@@ -3,28 +3,17 @@ import { IntlProvider as ReactIntlProvider } from 'react-intl';
 // Polyfill to support plural syntax
 import 'intl-pluralrules';
 
-import { en } from './en';
+import { DEFAULT_LANGUAGE } from './constants';
+import { useLanguage } from './hooks/useLanguage';
+import { useTranslatedMessages } from './hooks/useTranslatedMessages';
 
-// flatten object to single level deep like { a: { b: { c: 1 } } } => { 'a.b.c': 1 }
-const flatten = (obj: Record<string, any>, prefix = '') => {
-    const result: Record<string, any> = {};
-    Object.keys(obj).forEach(key => {
-        const value = obj[key];
-        const prefixedKey = prefix ? `${prefix}.${key}` : key;
-        if (typeof value === 'object') {
-            Object.assign(result, flatten(value, prefixedKey));
-        } else {
-            result[prefixedKey] = value;
-        }
-    });
+export const IntlProvider = ({ children }: { children: React.ReactNode }) => {
+    const language = useLanguage();
+    const messages = useTranslatedMessages({ language });
 
-    return result;
+    return (
+        <ReactIntlProvider locale={language} defaultLocale={DEFAULT_LANGUAGE} messages={messages}>
+            {children}
+        </ReactIntlProvider>
+    );
 };
-
-const enFlat = flatten(en);
-
-export const IntlProvider = ({ children }: { children: React.ReactNode }) => (
-    <ReactIntlProvider locale="en" defaultLocale="en" messages={enFlat}>
-        {children}
-    </ReactIntlProvider>
-);

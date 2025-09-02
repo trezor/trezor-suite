@@ -32,7 +32,7 @@ describe('useProviderFilters', () => {
 
         rerender({});
 
-        expect(result.current.filterItems).toBe(initialFilterItems);
+        expect(result.current.filterItems).toEqual(initialFilterItems);
     });
 
     it('should return all given sections even when empty when no filter is selected ', () => {

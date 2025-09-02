@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/message-system"
         },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-core"
@@ -16,6 +19,7 @@
         { "path": "../firmware" },
         { "path": "../helpers" },
         { "path": "../icons" },
+        { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../sentry" },

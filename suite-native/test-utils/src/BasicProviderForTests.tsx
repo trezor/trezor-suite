@@ -5,9 +5,10 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { FormatterProvider, FormatterProviderConfig } from '@suite-common/formatters';
-import { IntlProvider } from '@suite-native/intl';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
+
+import { IntlProviderForTests } from './IntlProviderForTests';
 
 type ProviderProps = {
     children: ReactNode;
@@ -26,7 +27,7 @@ const DEFAULT_FORMATTERS_CONFIG: FormatterProviderConfig = {
 
 export const BasicProviderForTests = ({ children, formattersConfig }: ProviderProps) => (
     <SafeAreaProvider>
-        <IntlProvider>
+        <IntlProviderForTests>
             <StylesProvider theme={theme} renderer={renderer}>
                 <NavigationContainer>
                     <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
@@ -34,6 +35,6 @@ export const BasicProviderForTests = ({ children, formattersConfig }: ProviderPr
                     </FormatterProvider>
                 </NavigationContainer>
             </StylesProvider>
-        </IntlProvider>
+        </IntlProviderForTests>
     </SafeAreaProvider>
 );

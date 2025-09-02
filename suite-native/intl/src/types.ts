@@ -1,4 +1,4 @@
-import { Translations } from './en';
+import { Translations } from './messages';
 
 /**
  * Builds up valid keypaths for translations.

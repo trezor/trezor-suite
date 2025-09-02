@@ -34,6 +34,7 @@ import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
+import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { tradingSlice } from '@suite-native/module-trading';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
@@ -258,6 +259,13 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const localePersistedReducer = await preparePersistReducer({
+        reducer: localeReducer,
+        persistedKeys: localePersistWhitelist,
+        key: 'locale',
+        version: 1,
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             app: appReducer,
@@ -280,6 +288,7 @@ export const prepareRootReducers = async () => {
             bluetooth: bluetoothPersistedReducer,
             geolocation: geolocationReducer,
             thp: thpPersistedReducer,
+            locale: localePersistedReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
