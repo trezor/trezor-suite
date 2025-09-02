@@ -10,10 +10,8 @@ import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -61,11 +59,8 @@ export const CoinEnablingInitScreen = () => {
             payload: { enabledNetworks: values.enabledCoins },
         });
 
-        navigation.popTo(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
+        navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
         });
     });
 
