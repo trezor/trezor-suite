@@ -81,72 +81,97 @@ describe('useBuyFlow', () => {
             expect(result.current.canProceed).toBe(true);
         });
 
-        it('should handle user consent flow', async () => {
-            const btcAccount = getBtcAccount();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-            act(() => {
-                buyForm.setValue('receiveAccount', {
-                    account: btcAccount,
-                    address: btcAccount.addresses?.used?.[0],
-                });
-            });
-            const { result } = await renderUseTradingBuyFlow();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { userConsent } = dispatchCall.payload;
-
-            act(() => {
-                userConsent('provider', 'BTC');
-            });
-
-            expect(result.current.isConsentRequested).toBe(true);
-
-            act(() => {
-                result.current.giveConsent();
-            });
-
-            expect(result.current.isConsentRequested).toBe(false);
-        });
-
-        it('should call nextStep callback with correct address', async () => {
-            const btcAccount = getBtcAccount();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const expectedAddress =
-                btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
-
-            act(() => {
-                buyForm.setValue('receiveAccount', {
-                    account: btcAccount,
-                    address: btcAccount.addresses?.used?.[0],
+        describe('and receive account selected', () => {
+            beforeEach(() => {
+                const btcAccount = getBtcAccount();
+                act(() => {
+                    buyForm.setValue('receiveAccount', {
+                        account: btcAccount,
+                        address: btcAccount.addresses?.used?.[0],
+                    });
                 });
             });
 
-            const { result } = await renderUseTradingBuyFlow();
+            it('should handle user consent flow', async () => {
+                const dispatchSpy = jest.spyOn(store, 'dispatch');
+                const { result } = await renderUseTradingBuyFlow();
 
-            act(() => {
-                result.current.selectQuote();
+                act(() => {
+                    result.current.selectQuote();
+                });
+
+                const dispatchCall = dispatchSpy.mock.calls[0][0];
+                const { userConsent } = dispatchCall.payload;
+
+                act(() => {
+                    userConsent('provider', 'BTC');
+                });
+
+                expect(result.current.isConsentRequested).toBe(true);
+
+                act(() => {
+                    result.current.giveConsent();
+                });
+
+                expect(result.current.isConsentRequested).toBe(false);
             });
 
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { nextStep } = dispatchCall.payload;
+            it('should call nextStep callback with correct address', async () => {
+                const btcAccount = getBtcAccount();
+                const dispatchSpy = jest.spyOn(store, 'dispatch');
+                const expectedAddress =
+                    btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
 
-            act(() => {
-                nextStep();
-            });
+                const { result } = await renderUseTradingBuyFlow();
 
-            expect(store.dispatch).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    type: 'confirmTradeThunkMock',
-                    payload: expect.objectContaining({
-                        address: expectedAddress,
+                act(() => {
+                    result.current.selectQuote();
+                });
+
+                const dispatchCall = dispatchSpy.mock.calls[0][0];
+                const { nextStep } = dispatchCall.payload;
+
+                act(() => {
+                    nextStep();
+                });
+
+                expect(store.dispatch).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        type: 'confirmTradeThunkMock',
+                        payload: expect.objectContaining({
+                            address: expectedAddress,
+                        }),
                     }),
-                }),
-            );
+                );
+            });
+
+            it('should call cancelConsent when quote provider changes', async () => {
+                const dispatchSpy = jest.spyOn(store, 'dispatch');
+                const { result, rerender } = await renderUseTradingBuyFlow();
+
+                act(() => {
+                    result.current.selectQuote();
+                });
+
+                const dispatchCall = dispatchSpy.mock.calls[0][0];
+                // simulate userConsent call (as we mock the thunk)
+                const { userConsent } = dispatchCall.payload;
+                act(() => {
+                    userConsent();
+                });
+                expect(result.current.isConsentRequested).toBe(true);
+
+                // change selected quote to quote with different provider
+                act(() => {
+                    buyForm.setValue('quote', { ...quotes[2], exchange: 'invity-buy' } as BuyTrade);
+                });
+
+                // we need to manually rerender tested hook
+                rerender({});
+
+                // consent should not be requested anymore
+                expect(result.current.isConsentRequested).toBe(false);
+            });
         });
     });
 });
