@@ -316,6 +316,7 @@ export const config: Config = {
             comment: ['Cardano SignMessage call added in 2.9.1'],
         },
         {
+            capabilities: ['evolu'],
             methods: ['evoluGetNode'],
             min: {
                 T1B1: '0',
