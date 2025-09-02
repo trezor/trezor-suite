@@ -27,7 +27,8 @@
         "declarationMap": true,
         "incremental": true,
         "noEmitOnError": true,
-        "emitDeclarationOnly": true
+        "emitDeclarationOnly": true,
+        "exactOptionalPropertyTypes": true
     },
     "exclude": [
         "**/node_modules",
