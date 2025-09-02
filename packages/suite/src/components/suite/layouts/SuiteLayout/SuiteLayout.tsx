@@ -22,6 +22,7 @@ import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { DebugLegend } from './DebugLegend';
 import { MobileMenu } from './MobileMenu/MobileMenu';
 import { PassphraseFlow } from './PassphraseFlow';
+import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
 import { Sidebar } from './Sidebar/Sidebar';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { ContentContainer } from '../ContentContainer';
@@ -147,6 +148,8 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                             <ModalSwitcher />
                             <PassphraseFlow />
                             <AppShortcuts />
+
+                            <PowerMonitorManager />
 
                             {isBelowTablet && <CoinjoinBars />}
 
