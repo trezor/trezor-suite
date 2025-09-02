@@ -736,7 +736,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_FLOAT',
     },
     TR_EXCHANGE_DEX: {
-        defaultMessage: 'DEX',
+        defaultMessage: 'Decentralized exchange offer',
         id: 'TR_EXCHANGE_DEX',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
@@ -2120,7 +2120,7 @@ export default defineMessages({
         id: 'TR_CONNECT_UNLOCK_YOUR_DEVICE',
     },
     TR_CONNECT_YOUR_DEVICE: {
-        defaultMessage: 'Connect your Trezor',
+        defaultMessage: 'Connect & unlock your Trezor',
         description: 'Prompt to user to connect his device.',
         id: 'TR_CONNECT_YOUR_DEVICE',
     },
@@ -4801,7 +4801,7 @@ export default defineMessages({
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',
-        defaultMessage: 'Credit Card',
+        defaultMessage: 'Credit/Debit Card',
         dynamic: true,
     },
     TR_PAYMENT_METHOD_BANKTRANSFER: {
@@ -5306,11 +5306,12 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE: {
         id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE',
-        defaultMessage: 'Global send/receive',
+        defaultMessage: 'Global send & receive',
     },
     TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION',
-        defaultMessage: 'Send and receive transactions from the dashboard directly to any account.',
+        defaultMessage:
+            'Send and receive transactions from your dashboard directly to any account.',
     },
     TR_GO_TO_EXP_FEATURE: {
         id: 'TR_GO_TO_EXP_FEATURE',
@@ -7422,7 +7423,7 @@ export default defineMessages({
         id: 'TR_ONBOARDING_DEVICE_CHECK_4',
         description: 'Shown only if device has firmware already installed',
         defaultMessage:
-            "Firmware is already installed on this connected Trezor. Only continue with setup if you've used this Trezor before.",
+            'Firmware is already installed on this connected Trezor. Continue only if this is your device and you’ve set it up before, or if you started setup earlier and didn’t finish.',
     },
     TR_I_HAVE_NOT_USED_IT: {
         id: 'TR_I_HAVE_NOT_USED_IT',
@@ -7500,7 +7501,7 @@ export default defineMessages({
     },
     TR_CONNECT_YOUR_TREZOR_DESCRIPTION: {
         id: 'TR_CONNECT_YOUR_TREZOR_DESCRIPTION',
-        defaultMessage: 'Please select a device to connect.',
+        defaultMessage: 'Select a device to connect.',
     },
     TR_DISCONNECT_YOUR_TREZOR: {
         id: 'TR_DISCONNECT_YOUR_TREZOR',
@@ -9279,11 +9280,11 @@ export default defineMessages({
     },
     TR_STAKING_DASHBOARD_NOT_ACTIVE: {
         id: 'TR_STAKING_DASHBOARD_NOT_ACTIVE',
-        defaultMessage: 'Not active',
+        defaultMessage: 'Inactive',
     },
     TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
         id: 'TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE',
-        defaultMessage: 'Account balance',
+        defaultMessage: 'Account',
     },
     TR_STAKING_DASHBOARD_TABLE_APY: {
         id: 'TR_STAKING_DASHBOARD_TABLE_APY',
@@ -9319,7 +9320,7 @@ export default defineMessages({
     },
     TR_STAKING_DASHBOARD_IF_YOU_ADD: {
         id: 'TR_STAKING_DASHBOARD_IF_YOU_ADD',
-        defaultMessage: 'If you add {amount} {displaySymbol}',
+        defaultMessage: 'if you add {amount} {displaySymbol}',
     },
     TR_STAKING_DASHBOARD_STAKED: {
         id: 'TR_STAKING_DASHBOARD_STAKED',
@@ -10358,7 +10359,7 @@ export default defineMessages({
     },
     TR_BLUETOOTH_TURNED_OFF: {
         id: 'TR_BLUETOOTH_TURNED_OFF',
-        defaultMessage: 'Turn on Bluetooth',
+        defaultMessage: 'Bluetooth is turned off',
     },
     TR_TURN_ON_BLUETOOTH_CTA: {
         id: 'TR_TURN_ON_BLUETOOTH_CTA',
@@ -10406,12 +10407,11 @@ export default defineMessages({
     },
     TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS: {
         id: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
-        defaultMessage: 'Allow Trezor Suite to use Bluetooth',
+        defaultMessage: 'Allow Bluetooth permissions',
     },
     TR_BLUETOOTH_OR_CONNECT_VIA_CABLE: {
         id: 'TR_BLUETOOTH_OR_CONNECT_VIA_CABLE',
-        defaultMessage:
-            'Bluetooth access is disabled for Trezor Suite. Enable access by going to the Bluetooth settings on your computer.',
+        defaultMessage: 'Allow Bluetooth permissions',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS',
