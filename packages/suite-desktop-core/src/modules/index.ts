@@ -27,6 +27,7 @@ import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
 import * as menu from './menu';
 import * as metadata from './metadata';
+import * as powerMonitor from './power-monitor';
 import * as requestFilter from './request-filter';
 import * as requestInterceptor from './request-interceptor';
 import * as shortcuts from './shortcuts';
@@ -67,6 +68,7 @@ const MODULES: Module[] = [
     systemSettings,
     bluetooth,
     firmware,
+    powerMonitor,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];

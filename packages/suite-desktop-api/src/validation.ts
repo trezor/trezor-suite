@@ -47,5 +47,6 @@ const validChannels: Array<keyof RendererChannels> = [
     'connect-popup/call',
     'connect-popup/cancel',
     'app/auto-start/popup-request',
+    'power-monitor/screen-locked',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);
