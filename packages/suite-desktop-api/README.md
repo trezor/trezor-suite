@@ -36,6 +36,7 @@ export const desktopApi: DesktopApi;
 To invoke a method on the `main` process and return an asynchronous result to the `renderer` process
 
 - add a channel to `./src/api.ts InvokeChannels`
+- add a channel to validChannels in `./src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiInvoke<'your-new-channel'>`
 - process incoming request in `@trezor/suite-desktop/src/modules/*` using `ipcMain.handle('your-new-channel', (arg?: string) => { return 1; })`
 - trigger it from `@trezor/suite` using `const r = await desktopApi.yourNewFunction()`
@@ -43,12 +44,14 @@ To invoke a method on the `main` process and return an asynchronous result to th
 To receive an asynchronous event in `renderer` process
 
 - add a channel to `./src/api.ts RendererChannels`
+- add a channel to validChannels in `./src/validation.ts`
 - set a listener in `@trezor/suite` using `await desktopApi.on('your-new-channel', (payload) => {})`
 - trigger an event from `@trezor/suite-desktop/src/modules/*` using `mainWindow.webContents.send('your-new-channel', { foo: 'bar' })`
 
 To receive an asynchronous event in `main` process
 
 - add a channel to `./src/api.ts MainChannels`
+- add a channel to validChannels in `./src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiSend<'your-new-channel'>`
 - set a listener in `@trezor/suite-desktop/src/modules/*` using `ipcMain.on('your-new-channel', (_, { foo }) => {})`
 - trigger an event from `@trezor/suite` using `desktopApi.yourNewFunction({ foo: 'bar' })`
