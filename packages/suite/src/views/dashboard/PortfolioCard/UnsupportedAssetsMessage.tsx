@@ -1,23 +1,14 @@
-import styled from 'styled-components';
-
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { Translation } from '../../../components/suite';
 
-const Asset = styled.span`
-    display: inline-block;
-
-    &::first-letter {
-        text-transform: capitalize;
-    }
-`;
-
 const UNSUPPORTED_NETWORKS = ['ripple', 'solana', 'stellar'];
 
-export const useUnsupportedAssetsMessage = ({
+export const useUnsupportedNetworkMessage = ({
     showGraphControls,
     device,
     accounts,
@@ -26,39 +17,71 @@ export const useUnsupportedAssetsMessage = ({
     device?: TrezorDevice;
     accounts: Account[];
 }) => {
+    const hasAnyAccountWithTokens = (accounts: Account[]): boolean =>
+        accounts.some(account => {
+            const features = getNetworkFeatures(account.symbol);
+
+            return features?.includes('tokens') ?? false;
+        });
+
     const affectedAccounts =
         showGraphControls &&
         !hasBitcoinOnlyFirmware(device) &&
         accounts
             .filter(
-                account =>
-                    account.history &&
-                    (account.tokens?.length || UNSUPPORTED_NETWORKS.includes(account.networkType)),
+                account => account.history && UNSUPPORTED_NETWORKS.includes(account.networkType),
             )
             .map(({ networkType }) => networkType);
 
-    const affectedAssets = [...new Set(affectedAccounts || [])];
-    const showMissingDataTooltip = affectedAssets.length > 0;
+    const affectedNetworks = [...new Set(affectedAccounts || [])];
+    const hasTokens = hasAnyAccountWithTokens(accounts);
+    const showMissingDataTooltip = affectedNetworks.length > 0 || hasTokens;
 
-    return { affectedAssets, showMissingDataTooltip };
+    return { affectedNetworks, showMissingDataTooltip, hasTokens };
+};
+
+type MessageProps = {
+    affectedNetworks: string[];
+    hasTokens: boolean;
+};
+
+const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+const Message = ({ affectedNetworks, hasTokens }: MessageProps) => {
+    const hasNetworks = affectedNetworks.length > 0;
+    const networksString = affectedNetworks
+        .map(network => capitalizeFirstLetter(network))
+        .join(', ');
+
+    if (hasNetworks && hasTokens) {
+        return (
+            <Translation
+                id="TR_GRAPH_MISSING_DATA_WITH_TOKENS"
+                values={{ networks: networksString }}
+            />
+        );
+    } else if (hasNetworks) {
+        return (
+            <Translation
+                id="TR_GRAPH_MISSING_DATA_NETWORKS"
+                values={{ networks: networksString }}
+            />
+        );
+    } else {
+        return <Translation id="TR_GRAPH_MISSING_DATA_TOKENS" />;
+    }
 };
 
 type UnsupportedAssetsMessageProps = {
-    affectedAssets: string[];
+    affectedNetworks: string[];
+    hasTokens: boolean;
 };
 
-export const UnsupportedAssetsMessage = ({ affectedAssets }: UnsupportedAssetsMessageProps) => {
-    if (affectedAssets.length === 0) return null;
-
-    return (
-        <Text variant="tertiary" typographyStyle="hint">
-            {affectedAssets.map((asset, index) => (
-                <>
-                    <Asset key={asset}>{asset}</Asset>
-                    {affectedAssets.length - 1 > index ? ', ' : ''}
-                </>
-            ))}{' '}
-            <Translation id="TR_GRAPH_MISSING_DATA_INFO" />
-        </Text>
-    );
-};
+export const UnsupportedAssetsMessage = ({
+    affectedNetworks,
+    hasTokens,
+}: UnsupportedAssetsMessageProps) => (
+    <Text variant="tertiary" typographyStyle="hint">
+        <Message affectedNetworks={affectedNetworks} hasTokens={hasTokens} />
+    </Text>
+);
