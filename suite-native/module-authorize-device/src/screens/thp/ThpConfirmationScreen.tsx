@@ -44,7 +44,12 @@ export const ThpConfirmationScreen = ({
     ]);
 
     return (
-        <Screen header={<ThpScreenHeader />}>
+        <Screen
+            header={<ThpScreenHeader />}
+            isScrollable={false}
+            noBottomPadding={true}
+            hasBottomInset={false}
+        >
             <ContinueOnTrezorScreenContent />
         </Screen>
     );
