@@ -31,6 +31,7 @@ import {
 } from '../../utils/general/formUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConsent } from '../general/useConsent';
+import { useConsentDenier } from '../general/useConsentDenier';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -50,6 +51,11 @@ const reportTradeConfirmation = () => {
 export const useBuyFlow = (form: BuyFormType) => {
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
+    const [asset, candidateQuote, receiveAccount] = form.watch([
+        'asset',
+        'quote',
+        'receiveAccount',
+    ]);
 
     const timer = useTimer();
     const navigation = useNavigation<NavigationProps>();
@@ -57,12 +63,8 @@ export const useBuyFlow = (form: BuyFormType) => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
+    useConsentDenier(candidateQuote?.exchange, resolveConsent);
 
-    const [asset, candidateQuote, receiveAccount] = form.watch([
-        'asset',
-        'quote',
-        'receiveAccount',
-    ]);
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, candidateQuote?.receiveCurrency),
     );
