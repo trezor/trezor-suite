@@ -1220,6 +1220,10 @@
                 "all": {
                     "type": "bool",
                     "id": 1
+                },
+                "addr": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -4557,6 +4561,10 @@
                 "optiga_sec": {
                     "type": "uint32",
                     "id": 54
+                },
+                "soc": {
+                    "type": "uint32",
+                    "id": 55
                 }
             },
             "nested": {

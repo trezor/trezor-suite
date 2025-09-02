@@ -675,6 +675,7 @@ export type BleUnpair = Static<typeof BleUnpair>;
 export const BleUnpair = Type.Object(
     {
         all: Type.Optional(Type.Boolean()),
+        addr: Type.Optional(Type.String()),
     },
     { $id: 'BleUnpair' },
 );
@@ -2398,6 +2399,7 @@ export const Features = Type.Object(
         haptic_feedback: Type.Optional(Type.Boolean()),
         recovery_type: Type.Optional(RecoveryType),
         optiga_sec: Type.Optional(Type.Number()),
+        soc: Type.Optional(Type.Number()),
     },
     { $id: 'Features' },
 );
