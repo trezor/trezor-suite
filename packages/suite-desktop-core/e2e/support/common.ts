@@ -12,7 +12,7 @@ import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import releases from '../../../../submodules/trezor-common/releases.json';
 import { PlaywrightProjects } from '../playwright.config';
-import { PaymentMethods, PercentageOfBalanceParams } from './types';
+import { PercentageOfBalanceParams } from './types';
 
 export const isDesktopProject = (testInfo: TestInfo) =>
     testInfo.project.name === PlaywrightProjects.Desktop;
@@ -117,12 +117,6 @@ export const getCountryLabel = (country: TradingCountryCode) => {
 
     return labelWithFlag.substring(labelWithFlag.indexOf(' ') + 1);
 };
-
-export const paymentMethodToCamelCase = (text: string) =>
-    text
-        .split(' ')
-        .map((word, index) => (index === 0 ? word.toLowerCase() : word))
-        .join('') as PaymentMethods;
 
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
     if (params.balance === null) {
