@@ -1,5 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { LabelingState } from '@suite-common/local-first-storage';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';
@@ -411,6 +412,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
         ),
         router: createReducer({}, () => ({})),
         modal: createReducer({}, () => ({})),
+        labeling: createReducer({ walletsLabels: {} } satisfies LabelingState, state => state),
     });
 
 const DEFAULT_DRAFT = {

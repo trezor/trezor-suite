@@ -25,4 +25,5 @@ export {
 export type { WithLabelingState } from './labeling/labelingSelectors';
 export { labelingActions } from './labeling/labelingActions';
 export { prepareLabelingReducer, initialLabelingState } from './labeling/labelingReducer';
+export type { LabelingState } from './labeling/labelingReducer';
 export { processMetadataMessageThunk } from './labeling/processMetadataMessageThunk';

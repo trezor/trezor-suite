@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
+import { selectAccountLabel } from '@suite-common/local-first-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, typography, zIndices } from '@trezor/theme';
@@ -94,8 +96,22 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const [shouldAnimate, setShouldAnimate] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
+
+    const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
+
+    const localFirstAccountLabel = useSelector(state =>
+        selectAccountLabel({
+            state,
+            walletDescriptor,
+            accountKey: selectedAccount.key,
+        }),
+    );
+
+    const label = localFirstAccountLabel?.label ?? selectedAccountLabels.accountLabel;
+
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const { symbol, key, path, index, accountType, formattedBalance } = selectedAccount;
+    const { symbol, key, path, index, accountType, formattedBalance, deviceState } =
+        selectedAccount;
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     useEffect(() => {
@@ -122,7 +138,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             <AccountLabel
                                 account={{
                                     ...selectedAccount,
-                                    accountLabel: selectedAccountLabels.accountLabel,
+                                    accountLabel: label,
                                 }}
                                 showAccountTypeBadge
                             />
@@ -131,8 +147,9 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             type: 'accountLabel',
                             entityKey: key,
                             defaultValue: path,
-                            value: selectedAccountLabels.accountLabel,
+                            value: label,
                         }}
+                        deviceStaticSessionId={deviceState}
                         defaultEditableValue={getDefaultAccountLabel({
                             accountType,
                             symbol,

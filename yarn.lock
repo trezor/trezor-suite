@@ -3553,6 +3553,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@evolu/web@npm:^1.0.1-preview.5":
+  version: 1.0.1-preview.5
+  resolution: "@evolu/web@npm:1.0.1-preview.5"
+  dependencies:
+    "@sqlite.org/sqlite-wasm": "npm:3.50.4-build1"
+  peerDependencies:
+    "@evolu/common": ^6.0.1-preview.18
+  checksum: 10/0de67ce2df9f5ca5c6c99ff58387de7f609d8b8a0f952f9bb23d6d4b8a1bf44f5dbf160680bd2f3ff8e0fc42f7a54c2108ae670abdd6deff5a7ceaddfebe66f9
+  languageName: node
+  linkType: hard
+
 "@exodus/patch-broken-hermes-typed-arrays@npm:^1.0.0-alpha.1":
   version: 1.0.0-alpha.1
   resolution: "@exodus/patch-broken-hermes-typed-arrays@npm:1.0.0-alpha.1"
@@ -9095,6 +9106,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sqlite.org/sqlite-wasm@npm:3.50.4-build1":
+  version: 3.50.4-build1
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.50.4-build1"
+  bin:
+    sqlite-wasm: bin/index.js
+  checksum: 10/5c486213552029065d8b90de823186465972d9a71b921e2303a6834d271e66fd5c2181c63c4452c2847e0745e8fde4b25b5f6baacf53f377093b16e27bacb2a6
+  languageName: node
+  linkType: hard
+
 "@standard-schema/spec@npm:^1.0.0":
   version: 1.0.0
   resolution: "@standard-schema/spec@npm:1.0.0"
@@ -9559,7 +9579,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/local-first-storage@workspace:suite-common/local-first-storage":
+"@suite-common/local-first-storage@workspace:*, @suite-common/local-first-storage@workspace:suite-common/local-first-storage":
   version: 0.0.0-use.local
   resolution: "@suite-common/local-first-storage@workspace:suite-common/local-first-storage"
   dependencies:
@@ -12795,6 +12815,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/suite-local-first-storage@workspace:*, @trezor/suite-local-first-storage@workspace:packages/suite-local-first-storage":
+  version: 0.0.0-use.local
+  resolution: "@trezor/suite-local-first-storage@workspace:packages/suite-local-first-storage"
+  dependencies:
+    "@evolu/web": "npm:^1.0.1-preview.5"
+    "@suite-common/local-first-storage": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/suite-storage@workspace:*, @trezor/suite-storage@workspace:packages/suite-storage":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
@@ -12916,6 +12945,7 @@ __metadata:
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/suite-local-first-storage": "workspace:*"
     "@trezor/suite-storage": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"

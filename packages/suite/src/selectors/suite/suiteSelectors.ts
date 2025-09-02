@@ -26,6 +26,9 @@ export const selectTorState = (state: SuiteRootState) => {
     };
 };
 
+export const selectLocalFirstStorageRelayUrl = (state: SuiteRootState) =>
+    state.suite.settings.localFirstStorageRelayUrl;
+
 // TODO: use this selector in all places where we need to check if debug mode is active
 export const selectIsDebugModeActive = (state: SuiteRootState) =>
     state.suite.settings.debug.showDebugMenu;
@@ -89,8 +92,8 @@ export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 export const selectSuiteSettings = (state: SuiteRootState) => ({
     defaultWalletLoading: state.suite.settings.defaultWalletLoading,
-    isLocalFirstStorageEnabled: false, // Todo: will be implemented in next PR
-    localFirstStorageRelayUrl: null, // Todo: will be implemented in next PR
+    isLocalFirstStorageEnabled: state.suite.flags.isLocalFirstStorageEnabled,
+    localFirstStorageRelayUrl: state.suite.settings.localFirstStorageRelayUrl,
 });
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>

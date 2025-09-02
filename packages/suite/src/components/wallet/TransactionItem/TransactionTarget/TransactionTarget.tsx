@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { selectOutputLabels } from '@suite-common/local-first-storage';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectBaseCurrency,
@@ -72,6 +73,9 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
+    const localFirstOutputLabels = useSelector(state =>
+        selectOutputLabels(state, transaction.deviceState),
+    );
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
 
     const amount = useMemo(() => {
@@ -142,7 +146,9 @@ export const TransactionTarget = ({
                 return exhaustive(type);
         }
     }, [type, payload]);
+
     const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[metadataId];
+
     const defaultMetadataValue = `${transaction.txid}-${metadataId}`;
     const isBeingEdited = defaultMetadataValue === labelingValueBeingEdited;
 
@@ -176,6 +182,7 @@ export const TransactionTarget = ({
                         accountMetadata={accountMetadata}
                         target={payload}
                         type={transaction.type}
+                        deviceStaticSessionId={transaction.deviceState}
                     />
                 );
             case 'token':
@@ -200,6 +207,7 @@ export const TransactionTarget = ({
             useHiddenPlaceholder={!isBeingEdited}
             addressLabel={
                 <MetadataLabeling
+                    deviceStaticSessionId={transaction.deviceState}
                     isDisabled={isActionDisabled}
                     defaultVisibleValue={label}
                     dropdownOptions={[
@@ -215,7 +223,10 @@ export const TransactionTarget = ({
                         txid: transaction.txid,
                         outputIndex: metadataId,
                         defaultValue: defaultMetadataValue,
-                        value: targetMetadata,
+                        value:
+                            localFirstOutputLabels.find(
+                                it => it.txId === transaction.txid && it.outputIndex == metadataId,
+                            )?.label ?? targetMetadata,
                     }}
                 />
             }

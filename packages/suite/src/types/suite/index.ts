@@ -6,6 +6,7 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { firmwareActions } from '@suite-common/firmware';
 import { geolocationActions } from '@suite-common/geolocation';
+import { labelingActions } from '@suite-common/local-first-storage';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';
@@ -87,6 +88,7 @@ type DeviceActionDesktop = ReturnType<
     (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
 >;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
+type LabelingAction = ReturnType<(typeof labelingActions)[keyof typeof labelingActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
 
@@ -119,6 +121,7 @@ export type Action =
     | BluetoothActionDesktop
     | DeviceActionDesktop
     | ThpAction
+    | LabelingAction
     | GeolocationAction
     | BioAuthAction
     | FeeAction;

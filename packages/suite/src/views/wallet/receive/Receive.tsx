@@ -58,12 +58,14 @@ export const Receive = () => {
                     pendingAddresses={pendingAddresses}
                     isDeviceConnected={isDeviceConnected}
                 />
-                <UsedAddresses
-                    account={account}
-                    addresses={receive}
-                    locked={isDeviceLocked}
-                    pendingAddresses={pendingAddresses}
-                />
+                {account && (
+                    <UsedAddresses
+                        account={account}
+                        addresses={receive}
+                        locked={isDeviceLocked}
+                        pendingAddresses={pendingAddresses}
+                    />
+                )}
             </Column>
 
             <ConfirmEvmExplanationModal account={account} route="wallet-receive" />
