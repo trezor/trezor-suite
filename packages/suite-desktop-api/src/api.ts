@@ -99,6 +99,7 @@ export interface RendererChannels {
               message: string;
           };
     'bio-auth/is-available': boolean;
+    'power-monitor/screen-locked': void;
 }
 
 // Invocation from renderer process
