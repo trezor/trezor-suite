@@ -511,7 +511,7 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         : currentVersion.firmwareVersion;
     const minVersionKey = inBootloaderMode ? 'min_bootloader_version' : 'min_firmware_version';
 
-    const isCompatible = versionUtils.isNewer(versionToCheck, release[minVersionKey]);
+    const isCompatible = versionUtils.isNewerOrEqual(versionToCheck, release[minVersionKey]);
 
     const compatibleRelease = isCompatible
         ? release
