@@ -25,6 +25,8 @@ export type SignVerifyFields = {
     path?: string;
     signature?: string;
     isElectrum?: boolean;
+    pubKey?: string;
+    cardanoPubKeyCose?: boolean;
 };
 
 const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
@@ -55,6 +57,8 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
     }),
     hex: yup.boolean().required(),
     isElectrum: yup.boolean(),
+    pubKey: yup.string(),
+    cardanoPubKeyCose: yup.boolean(),
 });
 
 const DEFAULT_VALUES: SignVerifyFields = {
@@ -64,6 +68,8 @@ const DEFAULT_VALUES: SignVerifyFields = {
     path: '',
     signature: '',
     hex: false,
+    pubKey: '',
+    cardanoPubKeyCose: false,
 };
 
 export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
@@ -108,6 +114,10 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         control,
         name: 'isElectrum',
     });
+    const { field: cardanoPubKeyCoseField } = useController({
+        control,
+        name: 'cardanoPubKeyCose',
+    });
 
     useEffect(() => {
         if (formValues.message) {
@@ -116,8 +126,18 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
     }, [trigger, formValues.message, formValues.hex]);
 
     useEffect(() => {
-        if (isSignPage) setValue('signature', '');
-    }, [setValue, isSignPage, formValues.address, formValues.message, formValues.isElectrum]);
+        if (isSignPage) {
+            setValue('signature', '');
+            setValue('pubKey', '');
+        }
+    }, [
+        setValue,
+        isSignPage,
+        formValues.address,
+        formValues.message,
+        formValues.isElectrum,
+        formValues.cardanoPubKeyCose,
+    ]);
 
     useEffect(() => {
         const overrideValues =
@@ -141,7 +161,10 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         formSubmit: handleSubmit,
         formValues,
         formErrors: errors,
-        formSetSignature: (value: string) => setValue('signature', value),
+        formSetSignature: ({ signature, pubKey }: { signature: string; pubKey?: string }) => {
+            setValue('signature', signature);
+            setValue('pubKey', pubKey || '');
+        },
         register,
         hexField: {
             isChecked: hexField.value,
@@ -165,6 +188,10 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         isElectrumField: {
             selectedOption: isElectrumField.value,
             onChange: isElectrumField.onChange,
+        },
+        cardanoPubKeyCoseField: {
+            selectedOption: cardanoPubKeyCoseField.value,
+            onChange: cardanoPubKeyCoseField.onChange,
         },
     };
 };
