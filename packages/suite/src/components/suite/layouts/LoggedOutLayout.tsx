@@ -9,17 +9,11 @@ import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 
 import { Metadata } from '../Metadata';
+import { ContentContainer } from './ContentContainer';
 import { LoggedOutSidebar } from './LoggedOutSidebar';
 import { SuiteBanners } from '../banners';
 import { DebugLegend } from './SuiteLayout/DebugLegend';
-import {
-    AppWrapper,
-    Body,
-    Columns,
-    ContentWrapper,
-    PageWrapper,
-    Wrapper,
-} from './SuiteLayout/SuiteLayout';
+import { AppWrapper, Body, Columns, PageWrapper, Wrapper } from './SuiteLayout/SuiteLayout';
 import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 
 interface LoggedOutLayout {
@@ -59,7 +53,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                                         >
                                             {layoutHeader}
                                             <ElevationUp>
-                                                <ContentWrapper>{children}</ContentWrapper>
+                                                <ContentContainer>{children}</ContentContainer>
                                             </ElevationUp>
                                         </AppWrapper>
                                     </Column>

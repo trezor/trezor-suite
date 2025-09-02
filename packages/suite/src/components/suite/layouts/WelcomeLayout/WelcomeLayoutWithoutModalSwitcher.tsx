@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
+    Card,
     Column,
     Divider,
     ElevationDown,
@@ -12,7 +13,7 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
-import { Elevation, borders, spacingsPx } from '@trezor/theme';
+import { Elevation, spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
@@ -20,6 +21,7 @@ import { SuiteBanners } from 'src/components/suite/banners';
 import { useSelector } from 'src/hooks/suite';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
+import { ContentContainer } from '../ContentContainer';
 import { LoggedOutSidebar } from '../LoggedOutSidebar';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
 import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
@@ -49,19 +51,6 @@ const PureChildrenWrapper = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-`;
-
-const ChildrenWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap: ${spacingsPx.md};
-    padding: ${spacingsPx.xxl};
-    border-radius: ${borders.radii.md};
-    border: ${borders.widths.small} solid ${({ theme }) => theme.borderElevation1};
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
 `;
 
 const WelcomePageHeaderWrapper = styled.div`
@@ -105,9 +94,11 @@ const RightSideContent = ({ bannerSlot, showPureChildren, children }: RightConte
                     <BasicName nameId="TR_DASHBOARD" />
                     <Divider />
                 </WelcomePageHeaderWrapper>
-                <ChildrenWrapper>
-                    <ElevationUp>{children}</ElevationUp>
-                </ChildrenWrapper>
+                <ContentContainer>
+                    <ElevationUp>
+                        <Card>{children}</Card>
+                    </ElevationUp>
+                </ContentContainer>
             </Content>
         </ResponsiveContextProvider>
     );
