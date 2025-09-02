@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import {
     PreloadedState,
     TestStore,
@@ -11,7 +9,7 @@ import {
 import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { ExchangeFormValues } from '../../../types/exchange';
+import { ExchangeFormType } from '../../../types/exchange';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
@@ -46,6 +44,9 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('useExchangeSelectQuote', () => {
+    let exchangeForm: ExchangeFormType;
+    let store: TestStore;
+
     const getInitializedStore = async ({ isLoading }: { isLoading?: boolean }) => {
         const btcAccount = getBtcAccount('btc-account-key');
         const ethAccount = getEthAccount('eth-account-key');
@@ -66,131 +67,113 @@ describe('useExchangeSelectQuote', () => {
         return await initStore(preloadedState);
     };
 
-    const renderUseExchangeSelectQuote = ({
-        store,
-        ...formValues
-    }: Partial<ExchangeFormValues> & { store: TestStore }) =>
-        renderHookWithStoreProviderAsync(
-            () => {
-                const form = useExchangeForm();
-                const { setValue } = form;
+    const renderExchangeForm = () =>
+        renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
 
-                useEffect(() => {
-                    // Set all provided form values
-                    (async () => {
-                        await act(() => {
-                            Object.entries(formValues).forEach(([key, value]) => {
-                                setValue(key as keyof ExchangeFormValues, value);
-                            });
-
-                            return Promise.resolve();
-                        });
-                    })();
-                }, [setValue]);
-
-                return useExchangeSelectQuote(form);
-            },
-            { store },
-        );
+    const renderUseExchangeSelectQuote = () =>
+        renderHookWithStoreProviderAsync(() => useExchangeSelectQuote(exchangeForm), { store });
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should canProceed be false when loading', async () => {
-        const store = await getInitializedStore({ isLoading: true });
+    describe('while loading quotes', () => {
+        beforeEach(async () => {
+            store = await getInitializedStore({ isLoading: true });
 
-        const { result } = await renderUseExchangeSelectQuote({ store });
-        expect(result.current.canProceed).toBe(false);
+            const { result } = await renderExchangeForm();
+            exchangeForm = result.current;
+        });
+
+        it('should canProceed be false when loading', async () => {
+            const { result } = await renderUseExchangeSelectQuote();
+            expect(result.current.canProceed).toBe(false);
+        });
     });
 
-    it('should canProceed be true when not loading and quote exists', async () => {
-        const store = await getInitializedStore({ isLoading: false });
+    describe('with quote loaded and selected', () => {
+        beforeEach(async () => {
+            store = await getInitializedStore({ isLoading: false });
 
-        const { result } = await renderUseExchangeSelectQuote({
-            store,
-            quote: exchangeQuotes[1],
+            const { result } = await renderExchangeForm();
+            exchangeForm = result.current;
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
         });
 
-        await act(() => Promise.resolve());
+        it('should canProceed be true when not loading and quote exists', async () => {
+            const { result } = await renderUseExchangeSelectQuote();
 
-        expect(result.current.canProceed).toBe(true);
-    });
+            await act(() => Promise.resolve());
 
-    it('should handle user consent flow', async () => {
-        const store = await getInitializedStore({ isLoading: false });
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-        const { result } = await renderUseExchangeSelectQuote({
-            store,
-            quote: exchangeQuotes[2],
+            expect(result.current.canProceed).toBe(true);
         });
 
-        act(() => {
-            result.current.selectQuote();
+        it('should handle user consent flow', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { userConsent } = (dispatchCall as any).payload;
+
+            act(() => {
+                userConsent('provider', 'BTC', 'ETH');
+            });
+
+            expect(result.current.isConsentRequested).toBe(true);
+
+            act(() => {
+                result.current.giveConsent();
+            });
+
+            expect(result.current.isConsentRequested).toBe(false);
         });
 
-        const dispatchCall = dispatchSpy.mock.calls[0][0];
-        const { userConsent } = (dispatchCall as any).payload;
+        it('should call selectQuoteThunk when selectQuote is called', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-        act(() => {
-            userConsent('provider', 'BTC', 'ETH');
-        });
+            const { result } = await renderUseExchangeSelectQuote();
 
-        expect(result.current.isConsentRequested).toBe(true);
+            act(() => {
+                result.current.selectQuote();
+            });
 
-        act(() => {
-            result.current.giveConsent();
-        });
-
-        expect(result.current.isConsentRequested).toBe(false);
-    });
-
-    it('should call selectQuoteThunk when selectQuote is called', async () => {
-        const store = await getInitializedStore({ isLoading: false });
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-        const { result } = await renderUseExchangeSelectQuote({
-            store,
-            quote: exchangeQuotes[1],
-        });
-
-        act(() => {
-            result.current.selectQuote();
-        });
-
-        expect(dispatchSpy).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: 'selectQuoteThunkMock',
-                payload: expect.objectContaining({
-                    quote: exchangeQuotes[1],
-                    timer: mockTimerReturn,
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'selectQuoteThunkMock',
+                    payload: expect.objectContaining({
+                        quote: exchangeQuotes[1],
+                        timer: mockTimerReturn,
+                    }),
                 }),
-            }),
-        );
-    });
-
-    it('should navigate to TradingExchangePreview when nextStep callback is executed', async () => {
-        const store = await getInitializedStore({ isLoading: false });
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-        const { result } = await renderUseExchangeSelectQuote({
-            store,
-            quote: exchangeQuotes[1],
+            );
         });
 
-        act(() => {
-            result.current.selectQuote();
+        it('should navigate to TradingExchangePreview when nextStep callback is executed', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { nextStep } = (dispatchCall as any).payload;
+
+            // Execute the nextStep callback to simulate successful quote selection
+            act(() => {
+                nextStep();
+            });
+
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview');
         });
-
-        const dispatchCall = dispatchSpy.mock.calls[0][0];
-        const { nextStep } = (dispatchCall as any).payload;
-
-        // Execute the nextStep callback to simulate successful quote selection
-        act(() => {
-            nextStep();
-        });
-
-        expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview');
     });
 });
