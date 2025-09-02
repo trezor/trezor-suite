@@ -242,9 +242,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         'Failure_UnknownMessage';
 
                     // pass code and message from firmware error
-                    return error(
-                        new ERRORS.TrezorError((code as any) || 'Failure_UnknownCode', err),
-                    );
+                    return error(new ERRORS.TrezorError(code || 'Failure_UnknownCode', err));
                 }
                 case 'ButtonRequest': {
                     if (res.message.code === 'ButtonRequest_PassphraseEntry') {

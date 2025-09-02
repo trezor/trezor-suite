@@ -1,6 +1,6 @@
 import { thp as protocolThp } from '@trezor/protocol';
 
-import { ERRORS } from '../../constants';
+import { TypedError } from '../../constants/errors';
 import { DEVICE } from '../../events';
 import type { Device } from '../Device';
 
@@ -53,12 +53,12 @@ export const thpCall = async <T extends MessageKey>(
 ): Promise<ThpCallResponse[T]> => {
     const thpState = device.getThpState();
     if (!thpState) {
-        throw ERRORS.TypedError('Device_ThpStateMissing');
+        throw TypedError('Device_ThpStateMissing');
     }
 
     const result = await device.getCurrentSession().call(name, data);
     if (!result.success) {
-        throw ERRORS.serializeError({ code: result.error, message: result.error.message });
+        throw result.error;
     }
 
     thpState.setCancelablePromise(false);
@@ -76,11 +76,13 @@ export const thpCall = async <T extends MessageKey>(
     }
 
     if (result.payload.type === 'Failure') {
-        throw ERRORS.serializeError(result.payload.message);
+        const { code, message } = result.payload.message;
+        throw TypedError(code || 'Failure_UnknownCode', message);
     }
 
     if (result.payload.type === 'ThpError') {
-        throw ERRORS.serializeError(result.payload.message);
+        const { code, message } = result.payload.message;
+        throw TypedError(code, message);
     }
 
     return result.payload as ThpCallResponse[T];

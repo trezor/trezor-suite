@@ -1,3 +1,6 @@
+import { Messages } from '@trezor/protobuf';
+import { thp } from '@trezor/protocol';
+
 export const ERROR_CODES = {
     Init_NotInitialized: 'TrezorConnect not initialized', // race condition: call on not initialized Core (usually hot-reloading)
     Init_AlreadyInitialized: 'TrezorConnect has been already initialized', // thrown by .init called multiple times
@@ -48,21 +51,15 @@ export const ERROR_CODES = {
     Device_ThpStateMissing: 'ThpState missing', // thrown by thp related actions
     Device_ThpPairingMethodsException: 'No common pairing methods', // device doesn't support requested pairing method(s)
 
-    Failure_ActionCancelled: 'Action canceled by user',
-    Failure_FirmwareError: 'Firmware installation failed',
-    Failure_Busy: 'Device busy',
     Failure_UnknownCode: 'Unknown error',
-    Failure_PinCancelled: 'PIN canceled',
-    Failure_PinInvalid: 'PIN invalid',
-    Failure_PinMismatch: 'PIN mismatch',
-    Failure_WipeCodeMismatch: 'Wipe code mismatch',
-    Failure_ProcessError: 'Process failed',
     Failure_EntropyCheck: '', // message from verifyEntropy process
 
     Deeplink_VersionMismatch: 'Not compatible with current version of the app',
 } as const;
 
-export type ErrorCode = keyof typeof ERROR_CODES;
+type TypedErrorCode = keyof typeof ERROR_CODES;
+
+export type ErrorCode = TypedErrorCode | Messages.FailureType | thp.ThpError['code'];
 
 export class TrezorError extends Error {
     code: ErrorCode;
@@ -89,7 +86,7 @@ export const nestError = (cause: Error) =>
 export class TransportError extends Error {}
 
 export const TypedError = (id: ErrorCode, message?: string) =>
-    new TrezorError(id, message || ERROR_CODES[id]);
+    new TrezorError(id, message || ERROR_CODES[id as TypedErrorCode] || id);
 
 // serialize Error/TypeError object into payload error type (Error object/class is converted to string while sent via postMessage)
 export const serializeError = (payload: any) => {
