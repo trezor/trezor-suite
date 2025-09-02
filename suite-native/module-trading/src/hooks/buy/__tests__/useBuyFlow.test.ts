@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { BuyTrade } from 'invity-api';
 
 import {
@@ -13,7 +11,7 @@ import {
 import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/buyQuotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { BuyFormValues } from '../../../types/buy';
+import { BuyFormType } from '../../../types/buy';
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
 
@@ -32,6 +30,9 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('useBuyFlow', () => {
+    let buyForm: BuyFormType;
+    let store: TestStore;
+
     const getInitializedStore = async ({ isLoading }: { isLoading?: boolean }) => {
         const preloadedState: PreloadedState = {
             wallet: { tradingNew: getInitializedTradingStateWithQuotes() },
@@ -43,112 +44,109 @@ describe('useBuyFlow', () => {
         return await initStore(preloadedState);
     };
 
-    const renderUseTradingBuyFlow = ({
-        store,
-        ...formValues
-    }: Partial<BuyFormValues> & { store: TestStore }) =>
-        renderHookWithStoreProviderAsync(
-            () => {
-                const form = useBuyForm();
-                const { setValue } = form;
+    const renderBuyForm = () => renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
 
-                useEffect(() => {
-                    // Set all provided form values
-                    (async () => {
-                        await act(() => {
-                            Object.entries(formValues).forEach(([key, value]) => {
-                                setValue(key as keyof BuyFormValues, value);
-                            });
+    const renderUseTradingBuyFlow = () =>
+        renderHookWithStoreProviderAsync(() => useBuyFlow(buyForm), { store });
 
-                            return Promise.resolve();
-                        });
-                    })();
-                }, [setValue]);
+    describe('while loading quotes', () => {
+        beforeEach(async () => {
+            store = await getInitializedStore({ isLoading: true });
 
-                return useBuyFlow(form);
-            },
-            { store },
-        );
+            const { result } = await renderBuyForm();
+            buyForm = result.current;
+        });
 
-    it('should canProceed be false when loading', async () => {
-        const store = await getInitializedStore({ isLoading: true });
-
-        const { result } = await renderUseTradingBuyFlow({ store });
-        expect(result.current.canProceed).toBe(false);
+        it('should canProceed be false when loading', async () => {
+            const { result } = await renderUseTradingBuyFlow();
+            expect(result.current.canProceed).toBe(false);
+        });
     });
 
-    it('should canProceed be true when not loading and orderId filters one in quotes', async () => {
-        const store = await getInitializedStore({ isLoading: false });
+    describe('with quote loaded and selected', () => {
+        beforeEach(async () => {
+            store = await getInitializedStore({ isLoading: false });
 
-        const { result } = await renderUseTradingBuyFlow({
-            store,
-            quote: quotes[1] as BuyTrade,
+            const { result } = await renderBuyForm();
+            buyForm = result.current;
+
+            act(() => {
+                buyForm.setValue('quote', quotes[2] as BuyTrade);
+            });
         });
 
-        expect(result.current.canProceed).toBe(true);
-    });
+        it('should canProceed be true when not loading and orderId filters one in quotes', async () => {
+            const { result } = await renderUseTradingBuyFlow();
 
-    it('should handle user consent flow', async () => {
-        const store = await getInitializedStore({ isLoading: false });
-        const btcAccount = getBtcAccount();
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-        const { result } = await renderUseTradingBuyFlow({
-            store,
-            quote: quotes[2] as BuyTrade,
-            receiveAccount: { account: btcAccount, address: btcAccount.addresses?.used?.[0] },
+            expect(result.current.canProceed).toBe(true);
         });
 
-        act(() => {
-            result.current.selectQuote();
+        it('should handle user consent flow', async () => {
+            const btcAccount = getBtcAccount();
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            act(() => {
+                buyForm.setValue('receiveAccount', {
+                    account: btcAccount,
+                    address: btcAccount.addresses?.used?.[0],
+                });
+            });
+            const { result } = await renderUseTradingBuyFlow();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { userConsent } = dispatchCall.payload;
+
+            act(() => {
+                userConsent('provider', 'BTC');
+            });
+
+            expect(result.current.isConsentRequested).toBe(true);
+
+            act(() => {
+                result.current.giveConsent();
+            });
+
+            expect(result.current.isConsentRequested).toBe(false);
         });
 
-        const dispatchCall = dispatchSpy.mock.calls[0][0];
-        const { userConsent } = dispatchCall.payload;
+        it('should call nextStep callback with correct address', async () => {
+            const btcAccount = getBtcAccount();
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const expectedAddress =
+                btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
 
-        act(() => {
-            userConsent('provider', 'BTC');
-        });
+            act(() => {
+                buyForm.setValue('receiveAccount', {
+                    account: btcAccount,
+                    address: btcAccount.addresses?.used?.[0],
+                });
+            });
 
-        expect(result.current.isConsentRequested).toBe(true);
+            const { result } = await renderUseTradingBuyFlow();
 
-        act(() => {
-            result.current.giveConsent();
-        });
+            act(() => {
+                result.current.selectQuote();
+            });
 
-        expect(result.current.isConsentRequested).toBe(false);
-    });
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { nextStep } = dispatchCall.payload;
 
-    it('should call nextStep callback with correct address', async () => {
-        const store = await getInitializedStore({ isLoading: false });
-        const btcAccount = getBtcAccount();
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const expectedAddress = btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
+            act(() => {
+                nextStep();
+            });
 
-        const { result } = await renderUseTradingBuyFlow({
-            store,
-            quote: quotes[2] as BuyTrade,
-            receiveAccount: { account: btcAccount, address: btcAccount.addresses?.used?.[0] },
-        });
-
-        act(() => {
-            result.current.selectQuote();
-        });
-
-        const dispatchCall = dispatchSpy.mock.calls[0][0];
-        const { nextStep } = dispatchCall.payload;
-
-        act(() => {
-            nextStep();
-        });
-
-        expect(store.dispatch).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: 'confirmTradeThunkMock',
-                payload: expect.objectContaining({
-                    address: expectedAddress,
+            expect(store.dispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'confirmTradeThunkMock',
+                    payload: expect.objectContaining({
+                        address: expectedAddress,
+                    }),
                 }),
-            }),
-        );
+            );
+        });
     });
 });
