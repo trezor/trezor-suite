@@ -10736,4 +10736,8 @@ export default defineMessages({
         defaultMessage:
             'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
     },
+    TR_PUBLIC_KEY: {
+        id: 'TR_PUBLIC_KEY',
+        defaultMessage: 'Public key',
+    },
 } as const);

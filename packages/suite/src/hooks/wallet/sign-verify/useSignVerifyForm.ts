@@ -25,6 +25,7 @@ export type SignVerifyFields = {
     path?: string;
     signature?: string;
     isElectrum?: boolean;
+    pubKey?: string;
 };
 
 const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
@@ -55,6 +56,7 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
     }),
     hex: yup.boolean().required(),
     isElectrum: yup.boolean(),
+    pubKey: yup.string(),
 });
 
 const DEFAULT_VALUES: SignVerifyFields = {
@@ -64,6 +66,7 @@ const DEFAULT_VALUES: SignVerifyFields = {
     path: '',
     signature: '',
     hex: false,
+    pubKey: '',
 };
 
 export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
@@ -116,7 +119,10 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
     }, [trigger, formValues.message, formValues.hex]);
 
     useEffect(() => {
-        if (isSignPage) setValue('signature', '');
+        if (isSignPage) {
+            setValue('signature', '');
+            setValue('pubKey', '');
+        }
     }, [setValue, isSignPage, formValues.address, formValues.message, formValues.isElectrum]);
 
     useEffect(() => {
@@ -141,7 +147,10 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         formSubmit: handleSubmit,
         formValues,
         formErrors: errors,
-        formSetSignature: (value: string) => setValue('signature', value),
+        formSetSignature: ({ signature, pubKey }: { signature: string; pubKey?: string }) => {
+            setValue('signature', signature);
+            setValue('pubKey', pubKey || '');
+        },
         register,
         hexField: {
             isChecked: hexField.value,

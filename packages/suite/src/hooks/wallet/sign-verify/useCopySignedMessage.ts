@@ -1,4 +1,5 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Network } from '@suite-common/wallet-config';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -25,17 +26,25 @@ ${signature}
 
 export const useCopySignedMessage = <T extends SignedMessageData>(
     { message, address, signature }: T,
-    network?: string,
+    network?: Network,
 ) => {
     const dispatch = useDispatch();
 
     const canCopy = address && signature;
 
-    const copy = () => {
-        const formatted = format(
+    const formatMessage = () => {
+        if (network?.networkType === 'cardano') {
+            return signature || '';
+        }
+
+        return format(
             { message, address, signature },
-            (network || '').split('(')[0].toUpperCase(),
+            (network?.name || '').split('(')[0].toUpperCase(),
         );
+    };
+
+    const copy = () => {
+        const formatted = formatMessage();
 
         const result = copyToClipboard(formatted);
 
