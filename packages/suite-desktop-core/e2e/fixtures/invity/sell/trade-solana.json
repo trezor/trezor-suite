@@ -11,7 +11,7 @@
         "amountInCrypto": true,
         "exp": "D2jSTmfl+NCtueFHot1j2Q==",
         "country": "CZ",
-        "paymentMethodName": "Credit Card",
+        "paymentMethodName": "Credit/Debit Card",
         "fiatStringAmount": "8.183",
         "cryptoStringAmount": "0.049",
         "minFiat": 20,

@@ -12,7 +12,6 @@ import {
     calculatePercentageOfBalance,
     formatAddress,
     getCountryLabel,
-    paymentMethodToCamelCase,
     step,
 } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -31,6 +30,15 @@ const accountTabFilters = [
     'op',
     'sol',
 ] as const;
+
+const paymentMethodNameMap: Record<string, PaymentMethods> = {
+    'Credit/Debit Card': 'creditCard',
+    'Bank Transfer': 'bankTransfer',
+    'Google Pay': 'googlePay',
+    'Apple Pay': 'applePay',
+    Paypal: 'paypal',
+    'Revolut Pay': 'revolutPay',
+};
 
 type AccountTabFilter = (typeof accountTabFilters)[number];
 
@@ -415,7 +423,7 @@ export class TradingPage {
             throw new Error('Payment method dropdown is empty or not a string');
         }
 
-        return paymentMethodToCamelCase(dropdownText);
+        return paymentMethodNameMap[dropdownText];
     }
 
     @step()

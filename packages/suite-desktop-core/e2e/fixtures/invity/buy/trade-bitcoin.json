@@ -12,7 +12,7 @@
         "wantCrypto": false,
         "exp": "t+vWC5JpkRwVcd4SrCj7LQ==",
         "country": "CZ",
-        "paymentMethodName": "Credit Card",
+        "paymentMethodName": "Credit/Debit Card",
         "fiatStringAmount": "1234",
         "receiveStringAmount": "0.00048773",
         "minFiat": 252.72,
