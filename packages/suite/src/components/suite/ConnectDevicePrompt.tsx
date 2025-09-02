@@ -1,28 +1,23 @@
 import { motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-import { ConnectedDeviceStatus, getDeviceInternalModel } from '@suite-common/suite-utils';
+import { ConnectedDeviceStatus } from '@suite-common/suite-utils';
 import {
+    Box,
     Column,
     ElevationUp,
     Icon,
-    LottieAnimation,
+    Image,
     Text,
     motionEasing,
     useElevation,
     variables,
 } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
-import {
-    Elevation,
-    mapElevationToBackground,
-    spacings,
-    spacingsPx,
-    typography,
-} from '@trezor/theme';
+import { Elevation, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDevice } from 'src/hooks/suite';
 import type { PrerequisiteType } from 'src/types/suite';
 
 import { TranslationKey } from './Translation';
@@ -38,11 +33,6 @@ const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
         border-radius: 61px;
     }
-`;
-
-const ImageWrapper = styled.div`
-    display: flex;
-    position: relative;
 `;
 
 const Checkmark = styled.div`
@@ -65,11 +55,6 @@ const HeadingText = styled.div`
     button {
         margin-top: 10px;
     }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLottieAnimation = styled(LottieAnimation)<{ $elevation: Elevation }>`
-    background: ${mapElevationToBackground};
 `;
 
 const getWarningMessage = ({
@@ -179,32 +164,25 @@ const ConnectImage = ({
     showWarningIcon,
 }: Pick<ConnectDevicePromptProps, 'connected' | 'showWarningIcon'>) => {
     const theme = useTheme();
-    const { device } = useDevice();
-    const { elevation } = useElevation();
 
     return (
-        <ImageWrapper>
-            <StyledLottieAnimation
-                $elevation={elevation}
-                type="CONNECT"
-                deviceModelInternal={
-                    device !== undefined ? getDeviceInternalModel(device) : undefined
-                }
-                loop={!connected}
-                shape="CIRCLE"
-                size={100}
+        <Box position={{ type: 'relative' }}>
+            <Image
+                maxHeight={300}
+                isFilterActive={false}
+                image={`TREZOR_${DeviceModelInternal.T3T1}_LARGE`}
             />
 
             <Checkmark>
                 {connected && !showWarningIcon && (
-                    <Icon name="checkCircleFilled" size={24} color={theme.legacy.TYPE_GREEN} />
+                    <Icon name="checkCircleFilled" size={30} color={theme.legacy.TYPE_GREEN} />
                 )}
 
                 {showWarningIcon && (
-                    <Icon name="warning" size={24} color={theme.legacy.TYPE_ORANGE} />
+                    <Icon name="warningFilled" size={30} color={theme.legacy.TYPE_ORANGE} />
                 )}
             </Checkmark>
-        </ImageWrapper>
+        </Box>
     );
 };
 
