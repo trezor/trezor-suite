@@ -40,7 +40,6 @@ import TrezorConnect, {
     TokenInfo,
     TokenTransfer,
 } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
@@ -1264,16 +1263,6 @@ export const prepareNewAccountPayload = async ({
     });
 
     if (!res.success) return new Error(res.payload.error);
-
-    // just to log that account was added manually.
-    analytics.report({
-        type: EventType.AccountsNewAccount,
-        payload: {
-            type: accountType,
-            path: newPath,
-            symbol: networkSymbol,
-        },
-    });
 
     return {
         accountInfo: res.payload,

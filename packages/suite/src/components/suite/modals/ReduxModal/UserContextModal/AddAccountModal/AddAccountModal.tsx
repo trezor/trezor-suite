@@ -240,6 +240,7 @@ export const AddAccountModal = ({
                     accountTypes,
                     deviceState: device.state?.staticSessionId,
                 });
+
                 if (newAccount instanceof Error) {
                     dispatch(
                         notificationsActions.addToast({
