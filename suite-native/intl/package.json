@@ -9,11 +9,17 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/suite-types": "workspace:*",
+        "expo-localization": "16.1.6",
         "intl-pluralrules": "^2.0.1",
         "react": "19.0.0",
-        "react-intl": "^7.1.11"
+        "react-intl": "^7.1.11",
+        "react-native": "0.79.3",
+        "react-redux": "9.2.0"
     }
 }

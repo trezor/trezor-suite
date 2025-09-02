@@ -1,5 +1,11 @@
+export type LocaleInfo = {
+    name: string;
+    en: string;
+    type?: 'official' | 'community';
+};
+
 // If you are adding language, add it to suite/package.json translations:download script too
-const languages = {
+export const LANGUAGES = {
     'en-US': { name: 'English', en: 'English', type: 'official' },
     'es-ES': { name: 'Español', en: 'Spanish', type: 'official' },
     'cs-CZ': { name: 'Čeština', en: 'Czech', type: 'official' },
@@ -14,14 +20,16 @@ const languages = {
     'uk-UA': { name: 'Українська', en: 'Ukrainian', type: 'community' },
     'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified', type: 'community' },
     'zh-TW': { name: '中文(繁體)', en: 'Chinese Traditional', type: 'community' },
-} as const;
+} as const satisfies Record<string, LocaleInfo>;
 
-export type Locale = keyof typeof languages;
+export type Locale = keyof typeof LANGUAGES;
 
-export type LocaleInfo = {
-    name: string;
-    en: string;
-    type?: 'official' | 'community';
+export const NATIVE_LANGUAGES = {
+    'en-US': LANGUAGES['en-US'],
+    'cs-CZ': LANGUAGES['cs-CZ'],
 };
 
-export const LANGUAGES = languages as { [code in Locale]: LocaleInfo };
+export type NativeLocale = keyof typeof NATIVE_LANGUAGES;
+
+export const isSupportedNativeLocale = (locale: string): locale is NativeLocale =>
+    locale in NATIVE_LANGUAGES;

@@ -96,8 +96,8 @@ const AppComponent = () => {
 
 const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <IntlProvider>
-            <StoreProvider>
+        <StoreProvider>
+            <IntlProvider>
                 <KeyboardProvider>
                     <SafeAreaProvider>
                         <StylesProvider>
@@ -107,8 +107,8 @@ const PureApp = () => (
                         </StylesProvider>
                     </SafeAreaProvider>
                 </KeyboardProvider>
-            </StoreProvider>
-        </IntlProvider>
+            </IntlProvider>
+        </StoreProvider>
     </GestureHandlerRootView>
 );
 

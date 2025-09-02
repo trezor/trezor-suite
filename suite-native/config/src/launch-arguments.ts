@@ -15,6 +15,7 @@ export type LaunchArguments = {
     areDebugOnlyNetworksEnabled?: boolean;
     preloadedState?: Record<string, unknown>;
     isFirmwareUpdateEnabled?: boolean;
+    isLocalizationEnabled?: boolean;
 };
 
 export const launchArguments = LaunchArguments.value<LaunchArguments>();

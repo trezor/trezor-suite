@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { PrimitiveType, useIntl } from 'react-intl';
 
-import { TxKeyPath } from './types';
+import { TxKeyPath } from '../types';
 
 type FormatXMLElementFn<T, R = string | T | (string | T)[]> = (parts: Array<string | T>) => R;
 

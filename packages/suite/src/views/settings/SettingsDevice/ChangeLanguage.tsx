@@ -7,7 +7,7 @@ import { changeLanguage } from '../../../actions/settings/deviceSettingsActions'
 import { SettingsAnchor } from '../../../constants/suite/anchors';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 
-const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en-US'].name }];
+const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en-US'].name as string }];
 
 interface ChangeLanguageProps {
     isDeviceLocked: boolean;
