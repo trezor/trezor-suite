@@ -7,9 +7,11 @@ import { Account } from '@suite-common/wallet-types';
 import addressValidator from '@trezor/address-validator';
 import { AccountInfo } from '@trezor/blockchain-link-types';
 
-const getNetworkType = (symbol: Account['symbol']) => {
+const getNetworkType = (symbol: Account['symbol'], address: string) => {
     if (symbol === 'regtest') return symbol;
     const testnets = getTestnetSymbols();
+
+    if (symbol === 'ada' && address.startsWith('stake')) return 'stake';
 
     return testnets.includes(symbol) ? 'testnet' : 'prod';
 };
@@ -36,7 +38,7 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 };
 
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(symbol, address);
     const updatedSymbol = getCoinFromTestnet(symbol);
 
     return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
@@ -55,7 +57,7 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
 };
 
 export const isTaprootAddress = (address: string, symbol: Account['symbol']) => {
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(symbol, address);
     const updatedSymbol = getCoinFromTestnet(symbol);
 
     return (
