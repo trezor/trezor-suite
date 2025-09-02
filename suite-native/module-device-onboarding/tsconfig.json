@@ -4,6 +4,7 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../device" },
+        { "path": "../device-authorization" },
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },

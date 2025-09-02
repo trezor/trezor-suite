@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/core';
 
 import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { Box, Image, TitleHeader } from '@suite-native/atoms';
+import { Box, TitleHeader } from '@suite-native/atoms';
 import { usePinAction } from '@suite-native/device';
+import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation, TxKeyPath } from '@suite-native/intl';
-import { deviceImageMap } from '@suite-native/module-authorize-device';
 import {
     AppTabsRoutes,
     DeviceOnboardingStackParamList,
@@ -28,15 +28,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useReportOnboardingSuccessAnalytics } from '../hooks/useReportOnboardingSuccessAnalytics';
 
-const SCREEN_HEIGHT = getScreenHeight();
-
-const imageStyle = prepareNativeStyle(_ => ({
-    maxHeight: SCREEN_HEIGHT * 0.6,
-    width: 262.6,
-    height: 584,
-    alignItems: 'center',
-    contentFit: 'contain',
-}));
+const DEVICE_IMAGE_MAX_HEIGHT = 0.6 * getScreenHeight();
 
 const containerStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -117,11 +109,7 @@ export const CreatePinScreen = () => {
     };
 
     return (
-        <Screen
-            header={<ScreenHeader closeAction={onCancel} />}
-            hasBottomInset={false}
-            isScrollable={false}
-        >
+        <Screen header={<ScreenHeader closeAction={onCancel} />} isScrollable={false}>
             <Box style={applyStyle(containerStyle)}>
                 <TitleHeader
                     titleVariant="titleMedium"
@@ -129,9 +117,9 @@ export const CreatePinScreen = () => {
                     subtitle={<Translation id="moduleDeviceOnboarding.createPinScreen.subtitle" />}
                     textAlign="center"
                 />
-                <Image
-                    source={deviceImageMap[deviceModel || DeviceModelInternal.UNKNOWN]}
-                    style={applyStyle(imageStyle)}
+                <DevicePinImage
+                    deviceModel={deviceModel || DeviceModelInternal.UNKNOWN}
+                    maxHeight={DEVICE_IMAGE_MAX_HEIGHT}
                 />
             </Box>
         </Screen>
