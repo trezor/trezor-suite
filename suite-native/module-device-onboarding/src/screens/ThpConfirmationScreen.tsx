@@ -27,7 +27,11 @@ export const ThpConfirmationScreen = ({
     }, [thpStep, navigation]);
 
     return (
-        <DeviceOnboardingScreenWithExitButton>
+        <DeviceOnboardingScreenWithExitButton
+            isScrollable={false}
+            noBottomPadding={true}
+            hasBottomInset={false}
+        >
             <ContinueOnTrezorScreenContent />
         </DeviceOnboardingScreenWithExitButton>
     );

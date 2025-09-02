@@ -37,8 +37,8 @@ export const ThpConfirmationScreen = () => {
     }, [thpStep, navigation, dispatch, navigateToInitialScreen]);
 
     return (
-        <Screen>
-            <Box marginTop="sp64">
+        <Screen isScrollable={false} noBottomPadding={true} hasBottomInset={false}>
+            <Box marginTop="sp64" flex={1}>
                 <ContinueOnTrezorScreenContent />
             </Box>
         </Screen>
