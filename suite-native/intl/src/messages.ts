@@ -76,6 +76,10 @@ export const messages = {
             cta: 'Download latest version',
         },
     },
+    labeling: {
+        label: 'Label',
+        addLabel: 'Add label',
+    },
     moduleHome: {
         graphIgnoredNetworks: {
             sol: 'Solana and all related tokens are reflected in the balance, but not in the graph.',

@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { FlexStyle, Pressable } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -19,6 +19,7 @@ type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
     isUnderlined?: boolean;
     variant?: TextButtonVariant;
     isBold?: boolean;
+    justifyContent?: FlexStyle['justifyContent'];
 };
 
 const variantToColorsMap = {
@@ -77,6 +78,7 @@ export const TextButton = ({
     isDisabled = false,
     isUnderlined = false,
     isBold = false,
+    justifyContent,
     ...pressableProps
 }: TextButtonProps) => {
     const { applyStyle, utils } = useNativeStyles();
@@ -120,7 +122,7 @@ export const TextButton = ({
             style={applyStyle(buttonContainerStyle)}
             {...pressableProps}
         >
-            <HStack alignItems="center">
+            <HStack alignItems="center" justifyContent={justifyContent}>
                 {viewLeft && (
                     <ButtonAccessoryView element={viewLeft} iconColor={iconColor} iconSize={size} />
                 )}

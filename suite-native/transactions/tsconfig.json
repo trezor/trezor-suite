@@ -33,6 +33,7 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../tokens" },

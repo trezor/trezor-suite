@@ -82,8 +82,7 @@ export const init = async (container: HTMLElement) => {
     const preloadAction = await preloadStore();
     const store = initStore(preloadAction);
 
-    // This needs to be initialized to subscribe to all Remembered Wallets
-    await store.dispatch(initSuiteLocalFirstStorageThunk());
+    store.dispatch(initSuiteLocalFirstStorageThunk());
 
     root.render(
         <ReduxProvider store={store}>

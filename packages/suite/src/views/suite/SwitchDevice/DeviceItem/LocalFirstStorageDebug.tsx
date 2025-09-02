@@ -1,4 +1,5 @@
 import { AcquiredDevice } from '@suite-common/suite-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -20,6 +21,8 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
         return;
     }
 
+    const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(device.state.staticSessionId);
+
     return isLocalFirstStorageEnabled ? (
         <Row gap={spacings.xxs}>
             🐞
@@ -27,11 +30,11 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
             {isLocalFirstStorageEnabled && (
                 <>
                     <Text typographyStyle="hint" variant="warning">
-                        <Code>{device.state.staticSessionId.split('@')[0].slice(-8)}</Code>
+                        <Code>{walletDescriptor.slice(-8)}</Code>
                     </Text>
                     @
                     <Text typographyStyle="hint" variant="purple">
-                        <Code>{device.state.staticSessionId.slice(-8)}</Code>
+                        <Code>{deviceId.slice(-8)}</Code>
                     </Text>
                     <Tooltip
                         content={
@@ -39,7 +42,7 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
                         }
                     >
                         <Text typographyStyle="hint" variant="purple">
-                            E:{' '}
+                            E:
                             <Code>
                                 {device.localFirstStorageSecret?.evoluKeys?.ownerId.slice(-8)}
                             </Code>

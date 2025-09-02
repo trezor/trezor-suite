@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/local-first-storage"
+        },
+        {
+            "path": "../../suite-common/validators"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../atoms" },
+        { "path": "../feature-flags" },
+        { "path": "../forms" },
+        { "path": "../intl" },
+        { "path": "../../packages/connect" }
+    ]
+}

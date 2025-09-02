@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
-
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { AccountLabel } from '@suite-native/labeling';
 import {
     AccountsStackParamList,
     RootStackParamList,
@@ -15,8 +15,7 @@ import {
 } from '@suite-native/navigation';
 
 type AccountDetailScreenHeaderProps = {
-    accountLabel: string | null;
-    accountKey: string;
+    account: Account;
 };
 
 type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
@@ -25,32 +24,24 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const AccountDetailScreenHeaderContent = ({
-    accountLabel,
-    accountKey,
-}: AccountDetailScreenHeaderProps) => {
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
-
-    if (!symbol) {
-        return null;
-    }
+const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => {
+    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
 
     return (
         <HStack alignItems="center">
-            <CryptoIconWithNetwork symbol={symbol} size="small" />
+            <CryptoIconWithNetwork symbol={account.symbol} size="small" />
             <Text variant="highlight" adjustsFontSizeToFit numberOfLines={1}>
-                {accountLabel}
+                <AccountLabel
+                    walletDescriptor={walletDescriptor}
+                    accountKey={account.key}
+                    fallbackLabel={account.accountLabel}
+                />
             </Text>
         </HStack>
     );
 };
 
-export const AccountDetailScreenHeader = ({
-    accountLabel,
-    accountKey,
-}: AccountDetailScreenHeaderProps) => {
+export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeaderProps) => {
     const navigation = useNavigation<AccountDetailNavigationProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
@@ -58,18 +49,13 @@ export const AccountDetailScreenHeader = ({
 
     const handleSettingsNavigation = () => {
         navigation.navigate(RootStackRoutes.AccountSettings, {
-            accountKey,
+            accountKey: account.key,
         });
     };
 
     return (
         <ScreenHeader
-            customContent={
-                <AccountDetailScreenHeaderContent
-                    accountLabel={accountLabel}
-                    accountKey={accountKey}
-                />
-            }
+            customContent={<AccountDetailScreenHeaderContent account={account} />}
             rightIcon={
                 <IconButton
                     colorScheme="tertiaryElevation0"

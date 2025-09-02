@@ -14,6 +14,7 @@ import {
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { WalletLabel } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
 
@@ -100,7 +101,7 @@ export const DeviceItemContent = React.memo(
             translate('deviceManager.defaultHeader');
 
         // todo: only makes sense device is already authorized (has state)
-        const walletNameLabel = device?.useEmptyPassphrase ? (
+        const fallbackLabel = device?.useEmptyPassphrase ? (
             <Translation id="deviceManager.wallet.standard" />
         ) : (
             <Translation
@@ -137,7 +138,12 @@ export const DeviceItemContent = React.memo(
                             headerTextVariant={headerTextVariant}
                             isConnected={device.isConnected}
                             header={deviceHeader}
-                            subHeader={walletNameLabel}
+                            subHeader={
+                                <WalletLabel
+                                    deviceStaticSessionId={deviceState?.staticSessionId}
+                                    fallbackLabel={fallbackLabel}
+                                />
+                            }
                             isDeviceInBootloader={device.isDeviceInBootloaderMode}
                             isPortfolioTrackerDevice={isPortfolioTrackerDevice}
                         />

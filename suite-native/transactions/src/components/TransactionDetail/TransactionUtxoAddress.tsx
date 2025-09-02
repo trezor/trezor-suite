@@ -1,0 +1,61 @@
+import { HStack, Text, VStack } from '@suite-native/atoms';
+import { isDebugEnv } from '@suite-native/config';
+import { AccountAddressFormatter } from '@suite-native/formatters';
+import {
+    AddressLabel,
+    TransactionOutputLabelEditable,
+    useIsLabelingEnabled,
+} from '@suite-native/labeling';
+import type { StaticSessionId } from '@trezor/connect';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+const addressTextStyle = prepareNativeStyle(_ => ({
+    maxWidth: '80%',
+}));
+
+type TransactionUtxoAddressProps = {
+    address: string;
+    outputIndex: number;
+    txId: string;
+    deviceStaticSessionId: StaticSessionId;
+    showLabels?: boolean;
+};
+
+export const TransactionUtxoAddress = ({
+    deviceStaticSessionId,
+    txId,
+    outputIndex,
+    address,
+    showLabels,
+}: TransactionUtxoAddressProps) => {
+    const { applyStyle } = useNativeStyles();
+    const isLabelingEnabled = useIsLabelingEnabled();
+
+    return (
+        <VStack>
+            <HStack spacing={2}>
+                <AddressLabel
+                    address={address}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                    fallback={
+                        <AccountAddressFormatter
+                            key={address}
+                            value={address}
+                            style={applyStyle(addressTextStyle)}
+                        />
+                    }
+                />
+
+                {isLabelingEnabled && isDebugEnv() && <Text>[{outputIndex}]</Text>}
+            </HStack>
+
+            {showLabels && (
+                <TransactionOutputLabelEditable
+                    txId={txId}
+                    outputIndex={outputIndex}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                />
+            )}
+        </VStack>
+    );
+};

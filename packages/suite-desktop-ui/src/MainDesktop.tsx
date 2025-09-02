@@ -156,8 +156,7 @@ export const init = async (container: HTMLElement) => {
     // init bluetooth module
     await store.dispatch(initBluetoothThunk());
 
-    // This needs to be initialized to subscribe to all Remembered Wallets
-    await store.dispatch(initSuiteLocalFirstStorageThunk());
+    store.dispatch(initSuiteLocalFirstStorageThunk());
 
     // finally render whole app
     root.render(

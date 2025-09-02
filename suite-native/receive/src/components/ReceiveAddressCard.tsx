@@ -9,11 +9,13 @@ import {
 import { Box, Card, InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AddressQRCode } from '@suite-native/qr-code';
+import type { StaticSessionId } from '@trezor/connect';
 
 import { UnverifiedAddress } from './UnverifiedAddress';
 
 type ReceiveAddressCardProps = {
     address: string;
+    deviceStaticSessionId: StaticSessionId;
     isReceiveApproved: boolean;
     isUnverifiedAddressRevealed: boolean;
     symbol: NetworkSymbol;
@@ -23,6 +25,7 @@ type ReceiveAddressCardProps = {
 
 export const ReceiveAddressCard = ({
     address,
+    deviceStaticSessionId,
     isUnverifiedAddressRevealed,
     isReceiveApproved,
     onShowAddress,
@@ -71,7 +74,10 @@ export const ReceiveAddressCard = ({
             <Card alertProps={cardAlertProps}>
                 <Box paddingVertical="sp8">
                     {isReceiveApproved ? (
-                        <AddressQRCode address={address} />
+                        <AddressQRCode
+                            address={address}
+                            deviceStaticSessionId={deviceStaticSessionId}
+                        />
                     ) : (
                         <UnverifiedAddress
                             address={address}

@@ -5,7 +5,7 @@ import {
     transactionWithTargetInOutputs,
 } from './fixtures/transactions';
 
-describe('mapTransactionInputsOutputsToAddresses', () => {
+describe(mapTransactionInputsOutputsToAddresses.name, () => {
     test('should return an empty array when input is empty', () => {
         expect(
             mapTransactionInputsOutputsToAddresses({
@@ -18,8 +18,16 @@ describe('mapTransactionInputsOutputsToAddresses', () => {
 
     test('should return correct concatenated non-null addresses for transaction inputs', () => {
         const expectedOutput: VinVoutAddress[] = [
-            { address: 'bc1q39kuc35n722fmy0nw3qqhpvg0ch8f0a6rt22xs', isChangeAddress: false },
-            { address: 'bc346cd7c787e903ac4b41e4fd2e038a81cb696d5dbf87', isChangeAddress: false },
+            {
+                address: 'bc1q39kuc35n722fmy0nw3qqhpvg0ch8f0a6rt22xs',
+                isChangeAddress: false,
+                outputIndex: 0,
+            },
+            {
+                address: 'bc346cd7c787e903ac4b41e4fd2e038a81cb696d5dbf87',
+                isChangeAddress: false,
+                outputIndex: 0,
+            },
         ];
         expect(
             mapTransactionInputsOutputsToAddresses({
@@ -32,8 +40,16 @@ describe('mapTransactionInputsOutputsToAddresses', () => {
 
     test('should return correct concatenated non-null addresses for Target input', () => {
         const expectedOutput: VinVoutAddress[] = [
-            { address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs', isChangeAddress: false },
-            { address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw', isChangeAddress: false },
+            {
+                address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs',
+                isChangeAddress: false,
+                outputIndex: 0,
+            },
+            {
+                address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw',
+                isChangeAddress: false,
+                outputIndex: 1,
+            },
         ];
         expect(
             mapTransactionInputsOutputsToAddresses({
@@ -45,7 +61,7 @@ describe('mapTransactionInputsOutputsToAddresses', () => {
     });
 });
 
-describe('sortTargetAddressesToBeginning', () => {
+describe(sortTargetAddressesToBeginning.name, () => {
     test('should return an empty array when both inputs and targets are empty', () => {
         expect(sortTargetAddressesToBeginning([], [])).toEqual([]);
     });
@@ -100,8 +116,16 @@ describe('sortTargetAddressesToBeginning', () => {
         });
 
         const expectedResult: VinVoutAddress[] = [
-            { address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw', isChangeAddress: false },
-            { address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs', isChangeAddress: false },
+            {
+                address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs',
+                isChangeAddress: false,
+                outputIndex: 0,
+            },
+            {
+                address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw',
+                isChangeAddress: false,
+                outputIndex: 1,
+            },
         ];
 
         expect(sortTargetAddressesToBeginning(outputAddresses, targetAddresses)).toEqual(
@@ -122,8 +146,16 @@ describe('sortTargetAddressesToBeginning', () => {
         });
 
         const expectedResult: VinVoutAddress[] = [
-            { address: 'bc1ql2ntmq4jlq5g2q53q89c7f7d27s35se96jq6kw', isChangeAddress: false },
-            { address: 'bc1qt5mjvp7nt4lpq77s4c3trvyre2smtcxz4zmmjs', isChangeAddress: true },
+            {
+                address: 'bc1ql2ntmq4jlq5g2q53q89c7f7d27s35se96jq6kw',
+                isChangeAddress: false,
+                outputIndex: 1,
+            },
+            {
+                address: 'bc1qt5mjvp7nt4lpq77s4c3trvyre2smtcxz4zmmjs',
+                isChangeAddress: true,
+                outputIndex: 0,
+            },
         ];
 
         expect(sortTargetAddressesToBeginning(outputAddresses, targetAddresses)).toEqual(

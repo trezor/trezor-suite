@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@trezor/styles": "workspace:*",
-        "expo": "53.0.20",
+        "expo": "^53.0.22",
         "expo-video": "2.2.2",
         "prettier": "^3.6.2",
         "react": "19.0.0",

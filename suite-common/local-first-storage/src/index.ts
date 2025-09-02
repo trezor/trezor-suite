@@ -13,15 +13,13 @@ export { updateAddressLabelThunk } from './labeling/updateAddressLabelThunk';
 export {
     selectWalletLabel,
     selectAccountLabels,
-    findAccountLabel,
-    findOutputLabel,
     selectAddressLabels,
     selectAddressLabel,
-    findAddressLabel,
     selectAccountLabel,
     selectOutputLabels,
     selectOutputLabel,
 } from './labeling/labelingSelectors';
+export { findAccountLabel, findOutputLabel, findAddressLabel } from './labeling/selectorUtils';
 export type { WithLabelingState } from './labeling/labelingSelectors';
 export { labelingActions } from './labeling/labelingActions';
 export { prepareLabelingReducer, initialLabelingState } from './labeling/labelingReducer';

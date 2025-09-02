@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -12,6 +13,7 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { AccountLabel } from '@suite-native/labeling';
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
     TokensRootState,
@@ -60,8 +62,6 @@ export const AccountsListItem = ({
     isLast = false,
     showDivider = false,
 }: AccountListItemProps) => {
-    const { accountLabel } = account;
-
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
@@ -76,6 +76,8 @@ export const AccountsListItem = ({
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
         selectAccountFiatBalance(state, account.key, accountHasStaking),
     );
+
+    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
 
     const handleOnPress = useCallback(() => {
         onPress?.({
@@ -111,7 +113,11 @@ export const AccountsListItem = ({
             icon={icon}
             title={
                 shouldShowAccountLabel ? (
-                    accountLabel
+                    <AccountLabel
+                        walletDescriptor={walletDescriptor}
+                        accountKey={account.key}
+                        fallbackLabel={account.accountLabel}
+                    />
                 ) : (
                     <NetworkDisplaySymbolNameFormatter value={account.symbol} />
                 )
