@@ -10349,6 +10349,21 @@ export default defineMessages({
         description:
             'Button text to turn on Bluetooth in the modal when the Bluetooth is turned off',
     },
+    TR_BLUETOOTH_DEVICE_TURNED_ON_UNLOCKED_HEADING: {
+        id: 'TR_BLUETOOTH_DEVICE_TURNED_ON_UNLOCKED_HEADING',
+        defaultMessage: 'Make sure your Trezor is turned on and unlocked.',
+        description: 'Displayed as hints of bluetooth connection in connect modal',
+    },
+    TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING: {
+        id: 'TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING',
+        defaultMessage: 'Try manually pairing your Trezor:',
+        description: 'Displayed as hints of bluetooth connection in connect modal',
+    },
+    TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_DESCRIPTION: {
+        id: 'TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_DESCRIPTION',
+        defaultMessage: "Go to your Trezor's Menu > Pair & Connect > Pair new device",
+        description: 'Displayed as hints of bluetooth connection in connect modal',
+    },
     TR_BLUETOOTH_SETTINGS: {
         id: 'TR_BLUETOOTH_SETTINGS',
         defaultMessage: 'Open System Settings',
