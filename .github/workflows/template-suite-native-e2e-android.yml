@@ -159,7 +159,7 @@ jobs:
       - name: Set failure flag for Slack webhook
         id: aggregate-result
         if: ${{ failure() && github.event_name == 'schedule' }}
-        run: echo "is_failure=true" >> $GITHUB_ENV
+        run: echo "is_failure=true" >> $GITHUB_OUTPUT
 
   notify_scheduled_failure_to_slack:
     if: ${{ needs.run_android_e2e_tests.outputs.is_failure == 'true' }}
