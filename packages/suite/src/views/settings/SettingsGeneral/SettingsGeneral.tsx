@@ -103,16 +103,6 @@ export const SettingsGeneral = () => {
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="appWindow">
-                <Theme />
-                <AddressDisplay />
-                <Analytics />
-                <ShowApplicationLog />
-                <ClearStorage />
-                <AutomaticUpdate />
-                <VersionWithUpdate />
-            </SettingsSection>
-
             <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="lock">
                 <AutoEject />
                 {isDesktop() && !isLinux() && <BioAuthSettings />}
@@ -124,12 +114,21 @@ export const SettingsGeneral = () => {
                 </SettingsSection>
             )}
 
-            {isDesktop() && (
-                <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">
-                    <AutoStart />
-                    <ShowOnTray />
-                </SettingsSection>
-            )}
+            <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="appWindow">
+                <Theme />
+                <AddressDisplay />
+                {isDesktop() && (
+                    <>
+                        <AutoStart />
+                        <ShowOnTray />
+                    </>
+                )}
+                <Analytics />
+                <ShowApplicationLog />
+                <ClearStorage />
+                <AutomaticUpdate />
+                <VersionWithUpdate />
+            </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_EXPERIMENTAL_FEATURES" />} icon="atom">
                 {desktopUpdate.enabled && <EarlyAccess />}
