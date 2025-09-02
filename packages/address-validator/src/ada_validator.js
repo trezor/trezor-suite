@@ -51,7 +51,12 @@ function isValidBech32Address(address, currency, networkType) {
         return false;
     }
 
-    if (dec === null || dec.prefix !== hrp || dec.words.length < 1 || dec.words[0] > 16) {
+    if (
+        dec === null ||
+        dec.prefix !== hrp ||
+        dec.words.length < 1 ||
+        (dec.words[0] > 16 && networkType !== 'stake')
+    ) {
         return false;
     }
 
