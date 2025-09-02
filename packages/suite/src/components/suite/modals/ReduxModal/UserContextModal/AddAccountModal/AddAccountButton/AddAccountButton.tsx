@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapability } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
@@ -81,6 +82,15 @@ const AddDefaultAccountButton = ({
                 // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
                 setCoinFilter(undefined);
             }
+
+            analytics.report({
+                type: EventType.AccountsNewAccount,
+                payload: {
+                    type: defaultAccount.accountType,
+                    path: defaultAccount.path,
+                    symbol: defaultAccount.symbol,
+                },
+            });
         } else {
             onAddNewAccount();
         }
