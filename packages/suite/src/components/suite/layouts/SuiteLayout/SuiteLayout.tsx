@@ -4,14 +4,12 @@ import styled from 'styled-components';
 
 import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
 import { useDebounce } from '@trezor/react-utils';
-import { spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { Metadata } from 'src/components/suite';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
 import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
-import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
@@ -26,6 +24,7 @@ import { MobileMenu } from './MobileMenu/MobileMenu';
 import { PassphraseFlow } from './PassphraseFlow';
 import { Sidebar } from './Sidebar/Sidebar';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
+import { ContentContainer } from '../ContentContainer';
 
 export const ScrollContext = createContext<React.RefObject<HTMLDivElement | null>>({
     current: null,
@@ -75,20 +74,6 @@ export const AppWrapper = styled.div`
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         overflow-x: hidden;
-    }
-`;
-
-export const ContentWrapper = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    width: 100%;
-    max-width: ${MAX_CONTENT_WIDTH};
-    padding: ${spacingsPx.xxl} ${HORIZONTAL_LAYOUT_PADDINGS} 134px ${HORIZONTAL_LAYOUT_PADDINGS};
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        padding-bottom: 90px;
     }
 `;
 
@@ -187,7 +172,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                                     )}
                                                     {layoutHeader}
 
-                                                    <ContentWrapper>{children}</ContentWrapper>
+                                                    <ContentContainer>{children}</ContentContainer>
                                                 </ElevationUp>
                                             </AppWrapper>
                                         </MainContent>
