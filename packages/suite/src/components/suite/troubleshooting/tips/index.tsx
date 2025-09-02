@@ -8,7 +8,6 @@ import { Translation } from 'src/components/suite/Translation';
 import { BridgeStatus, BridgeToggle, SuiteDesktopTip, Wrapper } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';
 import { TroubleshootingTipsItem } from '../TroubleshootingTips';
-import { BluetoothSettingsDescription } from './BluetoothSettingsDescription';
 
 export const TROUBLESHOOTING_TIP_BRIDGE_STATUS: TroubleshootingTipsItem = {
     key: 'bridge-status',
@@ -139,37 +138,20 @@ export const TROUBLESHOOTING_TIP_CLOSE_ALL_TABS: TroubleshootingTipsItem = {
     ),
 };
 
-const TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY: TroubleshootingTipsItem = {
-    key: 'bluetooth-proximity',
-    heading: <Translation id="TR_BLUETOOTH_TIP_PROXIMITY_HEADER" />,
-    description: <Translation id="TR_BLUETOOTH_TIP_PROXIMITY_TEXT" />,
-    icon: 'desktop',
+const TROUBLESHOOTING_TIP_DEVICE_TURNED_ON_UNLOCKED: TroubleshootingTipsItem = {
+    key: 'trezor-turned-on-unlocked',
+    heading: <Translation id="TR_BLUETOOTH_DEVICE_TURNED_ON_UNLOCKED_HEADING" />,
+    icon: 'power',
 };
 
-const TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE: TroubleshootingTipsItem = {
-    key: 'bluetooth-pairing-mode',
-    heading: <Translation id="TR_BLUETOOTH_TIP_PARING_MODE_HEADER" />,
-    description: <Translation id="TR_BLUETOOTH_TIP_PARING_MODE_TEXT" />,
-    icon: 'bluetooth',
-};
-
-const TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS: TroubleshootingTipsItem = {
-    key: 'bluetooth-settings',
-    heading: <Translation id="TR_BLUETOOTH_TIP_SETTINGS_HEADER" />,
-    description: <BluetoothSettingsDescription />,
-    icon: 'gear',
-};
-
-const TROUBLESHOOTING_TIP_BLUETOOTH_CABLE: TroubleshootingTipsItem = {
-    key: 'bluetooth-cable',
-    heading: <Translation id="TR_BLUETOOTH_TIP_CABLE_HEADER" />,
-    description: <Translation id="TR_BLUETOOTH_TIP_CABLE_TEXT" />,
-    icon: 'usb',
+const TROUBLESHOOTING_TIP_MANUAL_PAIRING_GUIDE: TroubleshootingTipsItem = {
+    key: 'manually-pair-device-guide',
+    heading: <Translation id="TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING" />,
+    description: <Translation id="TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_DESCRIPTION" />,
+    icon: 'trezorSafe5',
 };
 
 export const TROUBLESHOOTING_ALL_BLUETOOTH_TIPS: TroubleshootingTipsItem[] = [
-    TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY,
-    TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE,
-    TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS,
-    TROUBLESHOOTING_TIP_BLUETOOTH_CABLE,
+    TROUBLESHOOTING_TIP_DEVICE_TURNED_ON_UNLOCKED,
+    TROUBLESHOOTING_TIP_MANUAL_PAIRING_GUIDE,
 ];
