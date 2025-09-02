@@ -123,5 +123,19 @@ describe('useSellFlow', () => {
 
             expect(result.current.isConsentRequested).toEqual(false);
         });
+
+        it('should reset consent when quote provider changes', async () => {
+            const { result, rerender } = await renderUseSellFlow();
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            act(() => {
+                sellForm.setValue('quote', { ...sellQuotes, exchange: 'invity-sell' });
+            });
+            rerender({});
+
+            expect(result.current.isConsentRequested).toEqual(false);
+        });
     });
 });
