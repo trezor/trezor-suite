@@ -15,9 +15,10 @@ import {
     Textarea,
     Tooltip,
 } from '@trezor/components';
+import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
-import { sign, verify } from 'src/actions/wallet/signVerifyActions';
+import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { Translation } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
@@ -56,11 +57,12 @@ const SignVerify = () => {
         addressField,
         pathField,
         isElectrumField,
+        cardanoPubKeyCoseField,
     } = useSignVerifyForm(isSignPage, selectedAccount.account!);
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
-    const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network?.name);
+    const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network);
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -69,9 +71,11 @@ const SignVerify = () => {
     const pathError = getErrorMessage(formErrors.path);
     const addressError = getErrorMessage(formErrors.address);
     const signatureError = getErrorMessage(formErrors.signature);
+    const pubKeyError = getErrorMessage(formErrors.pubKey);
 
     const { ref: messageRef, ...messageField } = register('message');
     const { ref: signatureRef, ...signatureField } = register('signature');
+    const { ref: pubKeyRef, ...pubKeyField } = register('pubKey');
 
     const signatureProps = {
         label: translationString('TR_SIGNATURE'),
@@ -81,6 +85,14 @@ const SignVerify = () => {
         innerRef: signatureRef,
         ...signatureField,
     };
+    const pubKeyProps = {
+        label: translationString('TR_PUBLIC_KEY'),
+        inputState: getInputState(formErrors.pubKey) as ReturnType<typeof getInputState>,
+        bottomText: pubKeyError,
+        'data-testid': '@sign-verify/pubKey',
+        innerRef: pubKeyRef,
+        ...pubKeyField,
+    };
 
     useEffect(() => {
         if (isSignPage && formValues.signature) return;
@@ -89,10 +101,10 @@ const SignVerify = () => {
     }, [isSignPage, formValues.message, formValues.address, formValues.signature]);
 
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, isElectrum } = data;
+        const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
 
         if (isSignPage && path !== undefined) {
-            const result = await dispatch(sign(path, message, hex, isElectrum));
+            const result = await dispatch(sign(path, message, hex, isElectrum, cardanoPubKeyCose));
 
             if (result) {
                 formSetSignature(result);
@@ -112,10 +124,16 @@ const SignVerify = () => {
         selectedAccount.account?.networkType === 'bitcoin' &&
         selectedAccount.account?.accountType !== 'legacy' &&
         Object.keys(selectedAccount.network?.accountTypes ?? {}).length >= 1;
+    const canVerify = isVerifySupported(selectedAccount.account);
+    const isCardano = selectedAccount.network?.networkType === 'cardano';
 
     return (
-        <WalletLayout title="TR_NAV_SIGN_VERIFY" isSubpage account={selectedAccount}>
-            <WalletSubpageHeading title="TR_NAV_SIGN_VERIFY">
+        <WalletLayout
+            title={canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE'}
+            isSubpage
+            account={selectedAccount}
+        >
+            <WalletSubpageHeading title={canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE'}>
                 {isFormDirty && (
                     <Button type="button" size="small" variant="tertiary" onClick={resetForm}>
                         <Translation id="TR_CLEAR_ALL" />
@@ -134,13 +152,15 @@ const SignVerify = () => {
                     >
                         <Translation id="TR_SIGN" />
                     </Tabs.Item>
-                    <Tabs.Item
-                        id="verify"
-                        onClick={() => setPage('verify')}
-                        data-testid="@sign-verify/navigation/verify"
-                    >
-                        <Translation id="TR_VERIFY" />
-                    </Tabs.Item>
+                    {canVerify && (
+                        <Tabs.Item
+                            id="verify"
+                            onClick={() => setPage('verify')}
+                            data-testid="@sign-verify/navigation/verify"
+                        >
+                            <Translation id="TR_VERIFY" />
+                        </Tabs.Item>
+                    )}
                 </Tabs>
                 <form onSubmit={formSubmit(onSubmit)}>
                     <Column gap={spacings.md} margin={{ bottom: spacings.xxl }}>
@@ -217,6 +237,23 @@ const SignVerify = () => {
                                         />
                                     )}
                                 </Row>
+                                {isCardano && (
+                                    <SelectBar
+                                        label={<Translation id="TR_PUBLIC_KEY_FORMAT" />}
+                                        options={[
+                                            {
+                                                value: false,
+                                                label: <Translation id="TR_PUBLIC_KEY_RAW" />,
+                                            },
+                                            {
+                                                value: true,
+                                                label: <Translation id="TR_PUBLIC_KEY_COSE" />,
+                                            },
+                                        ]}
+                                        data-testid="@sign-verify/cardano-pubkey-format"
+                                        {...cardanoPubKeyCoseField}
+                                    />
+                                )}
                                 <Divider margin={{}} />
                                 <Input
                                     maxLength={MAX_LENGTH_SIGNATURE}
@@ -235,12 +272,44 @@ const SignVerify = () => {
                                                 icon="copy"
                                                 size="tiny"
                                             >
-                                                <Translation id="TR_COPY_SIGNED_MESSAGE" />
+                                                <Translation
+                                                    id={
+                                                        isCardano
+                                                            ? 'TR_COPY_TO_CLIPBOARD'
+                                                            : 'TR_COPY_SIGNED_MESSAGE'
+                                                    }
+                                                />
                                             </Button>
                                         ) : undefined
                                     }
                                     {...signatureProps}
                                 />
+                                {isCardano && (
+                                    <Input
+                                        type="text"
+                                        readOnly={isSignPage}
+                                        isDisabled={!formValues.pubKey?.length}
+                                        placeholder={translationString(
+                                            'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
+                                        )}
+                                        innerAddon={
+                                            canCopy ? (
+                                                <Button
+                                                    type="button"
+                                                    variant="tertiary"
+                                                    onClick={() =>
+                                                        copyToClipboard(formValues.pubKey || '')
+                                                    }
+                                                    icon="copy"
+                                                    size="tiny"
+                                                >
+                                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
+                                                </Button>
+                                            ) : undefined
+                                        }
+                                        {...pubKeyProps}
+                                    />
+                                )}
                             </>
                         ) : (
                             <>

@@ -39,7 +39,8 @@ describe('Sign/Verify actions', () => {
             },
         });
         const res = await store.dispatch(sign(PATH, MESSAGE));
-        expect(res).toStrictEqual(SIGNATURE);
+        expect(res.address).toStrictEqual(ADDRESS);
+        expect(res.signature).toStrictEqual(SIGNATURE);
     });
 
     it('verify', async () => {

@@ -278,7 +278,7 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
-        features: ['tokens', 'staking', 'coin-definitions'],
+        features: ['tokens', 'staking', 'coin-definitions', 'sign-verify'],
         explorer: getExplorerUrls('https://cexplorer.io', 'cardano'),
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',

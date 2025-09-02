@@ -10736,4 +10736,20 @@ export default defineMessages({
         defaultMessage:
             'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
     },
+    TR_PUBLIC_KEY: {
+        id: 'TR_PUBLIC_KEY',
+        defaultMessage: 'Public key',
+    },
+    TR_PUBLIC_KEY_FORMAT: {
+        id: 'TR_PUBLIC_KEY_FORMAT',
+        defaultMessage: 'Public key format',
+    },
+    TR_PUBLIC_KEY_RAW: {
+        id: 'TR_PUBLIC_KEY_RAW',
+        defaultMessage: 'Raw key (default)',
+    },
+    TR_PUBLIC_KEY_COSE: {
+        id: 'TR_PUBLIC_KEY_COSE',
+        defaultMessage: 'COSE (CIP-30)',
+    },
 } as const);

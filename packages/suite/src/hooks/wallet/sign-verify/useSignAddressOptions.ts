@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { getStakingPath } from '@suite-common/wallet-utils';
+
 import { useTranslation } from 'src/hooks/suite';
 import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
@@ -49,6 +51,35 @@ export const useSignAddressOptions = (
                         'TR_ADDRESSES_CHANGE',
                     ),
                 };
+            case 'cardano': {
+                const stakingPath = getStakingPath(account);
+
+                return {
+                    ...reduceAddresses(
+                        [
+                            {
+                                path: stakingPath,
+                                address: account.misc.staking.address,
+                            },
+                        ],
+                        'TR_STAKING_STAKE_ADDRESS',
+                    ),
+                    ...reduceAddresses(
+                        revealedAddresses.length
+                            ? revealedAddresses
+                            : (account.addresses?.unused || []).slice(0, 1),
+                        'TR_ADDRESSES_FRESH',
+                    ),
+                    ...reduceAddresses(
+                        account.addresses?.used?.slice().reverse() || [],
+                        'TR_ADDRESSES_USED',
+                    ),
+                    ...reduceAddresses(
+                        account.addresses?.change?.slice().reverse() || [],
+                        'TR_ADDRESSES_CHANGE',
+                    ),
+                };
+            }
             case 'ethereum':
                 return {
                     [account.path]: {
