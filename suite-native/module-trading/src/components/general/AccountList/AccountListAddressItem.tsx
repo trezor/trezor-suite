@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { WithLabelingState, selectAddressLabel } from '@suite-common/local-first-storage';
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -22,6 +25,14 @@ export const AccountListAddressItem = ({
     const { applyStyle } = useNativeStyles();
     const { address } = receiveAccount;
 
+    const addressLabel = useSelector((state: WithLabelingState) =>
+        selectAddressLabel({
+            state,
+            address: address?.address,
+            deviceStaticSessionId: receiveAccount.account.deviceState,
+        }),
+    );
+
     if (!address) {
         return null;
     }
@@ -29,7 +40,7 @@ export const AccountListAddressItem = ({
     return (
         <AccountListBaseItem
             receiveAccount={receiveAccount}
-            label={<AccountAddress address={address.address} form="full" />}
+            label={<AccountAddress address={addressLabel ?? address.address} form="full" />}
             isAddressDetail={true}
             info={
                 <Text variant="hint" style={applyStyle(labelTextStyle)}>

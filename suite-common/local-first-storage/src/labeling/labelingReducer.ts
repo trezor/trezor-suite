@@ -5,7 +5,7 @@ import { AccountLabel } from './evolu/accountLabels';
 import { AddressLabel } from './evolu/addressLabels';
 import { OutputLabel } from './evolu/outputLabels';
 import { labelingActions } from './labelingActions';
-import { findAccountLabel, findAddressLabel, findOutputLabel } from './labelingSelectors';
+import { findAccountLabel, findAddressLabel, findOutputLabel } from './selectorUtils';
 
 export type WalletLabelState = {
     walletLabel: string | null;

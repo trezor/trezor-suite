@@ -16,6 +16,7 @@ export type LaunchArguments = {
     preloadedState?: Record<string, unknown>;
     isFirmwareUpdateEnabled?: boolean;
     isLocalizationEnabled?: boolean;
+    isLocalFirstStorageEnabled?: boolean;
 };
 
 export const launchArguments = LaunchArguments.value<LaunchArguments>();

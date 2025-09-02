@@ -45,6 +45,7 @@
         { "path": "../discovery" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../local-first-storage" },
         { "path": "../message-system" },
         { "path": "../module-accounts-import" },
         {

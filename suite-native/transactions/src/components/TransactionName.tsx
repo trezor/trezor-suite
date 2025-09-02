@@ -1,9 +1,12 @@
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 type TransactionNameProps = {
     transaction: WalletAccountTransaction;
     isPending: boolean;
+    variant?: NativeTypographyStyle;
 };
 
 interface GetSelfTransactionMessageByTypeProps {
@@ -52,13 +55,15 @@ export const getTransactionName = (
     }
 };
 
-export const TransactionName = ({ transaction, isPending }: TransactionNameProps) => {
+export const TransactionName = ({ transaction, isPending, variant }: TransactionNameProps) => {
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
 
-    // use name of eth txns, but not for recv or sent Transfer
-    if (ethName) {
-        return ethName;
-    }
-
-    return <Translation id={getTransactionName(transaction, isPending)} />;
+    return (
+        <Text variant={variant}>
+            {
+                // use name of eth txns, but not for recv or sent Transfer
+                ethName ? ethName : <Translation id={getTransactionName(transaction, isPending)} />
+            }
+        </Text>
+    );
 };

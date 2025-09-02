@@ -1,14 +1,16 @@
-import { D, pipe } from '@mobily/ts-belt';
+import { D, G, pipe } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    PushTransactionError,
     SignTransactionError,
     SignTransactionTimeoutError,
     composeSendFormTransactionFeeLevelsThunk,
     deviceActions,
     enhancePrecomposedTransactionThunk,
+    pushSendFormTransactionThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectSelectedDevice,
@@ -18,6 +20,7 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
+    Account,
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
@@ -25,15 +28,19 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
     FeeLevelsMaxAmount,
     NativeSupportedFeeLevel,
     storeFeeLevels,
 } from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { Success } from '@trezor/connect';
 
-const SEND_MODULE_PREFIX = '@suite-native/send';
+import { SEND_MODULE_PREFIX } from './constants';
+import { sendFormAddLabelingThunk } from './sendFormAddLabelingThunk';
 
 export const signTransactionNativeThunk = createThunk<
     BlockbookTransaction | undefined,
@@ -270,5 +277,68 @@ export const calculateCustomFeeLevelThunk = createThunk(
         if (!isFinalPrecomposedTransaction(feeLevels.custom)) {
             throw Error('Unable to compose custom fee level.');
         }
+    },
+);
+
+type SendTransactionThunkParams = {
+    selectedAccount: Account;
+    wasAppLeftDuringReview: boolean;
+    tokenContract?: TokenAddress;
+};
+
+export const sendTransactionThunk = createThunk<
+    Success<{ txid: string }>,
+    SendTransactionThunkParams,
+    { rejectValue: PushTransactionError }
+>(
+    `${SEND_MODULE_PREFIX}/sendTransactionThunk`,
+    async (
+        { selectedAccount, wasAppLeftDuringReview, tokenContract },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
+    ) => {
+        const sendResponse = await dispatch(pushSendFormTransactionThunk({ selectedAccount }));
+
+        if (sendResponse.payload === undefined) {
+            return rejectWithValue({
+                error: 'push-transaction-failed',
+                metadata: { success: false, payload: { error: 'Payload is undefined.' } },
+            });
+        }
+
+        if (!('success' in sendResponse.payload)) {
+            return rejectWithValue(sendResponse.payload);
+        }
+
+        const formValues = selectSendFormDraftByKey(getState(), selectedAccount.key, tokenContract);
+
+        if (formValues !== null) {
+            await dispatch(
+                sendFormAddLabelingThunk({
+                    txId: sendResponse.payload.payload.txid,
+                    selectedAccount,
+                }),
+            );
+
+            const tokenSymbol = selectAccountTokenSymbol(
+                getState(),
+                selectedAccount.key,
+                tokenContract,
+            );
+
+            analytics.report({
+                type: EventType.SendTransactionDispatched,
+                payload: {
+                    symbol: selectedAccount.symbol,
+                    tokenAddresses: tokenContract ? [tokenContract] : undefined,
+                    tokenSymbols: tokenSymbol ? [tokenSymbol] : undefined,
+                    outputsCount: formValues.outputs.length,
+                    selectedFee: formValues.selectedFee ?? 'normal',
+                    hasDestinationTag: G.isNotNullable(formValues.destinationTag),
+                    wasAppLeftDuringReview,
+                },
+            });
+        }
+
+        return fulfillWithValue(sendResponse.payload);
     },
 );

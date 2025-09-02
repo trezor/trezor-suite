@@ -78,11 +78,13 @@ export class LocalFirstStorageProvider {
         let storage = this.storages.get(evoluKeys.ownerId);
 
         if (storage === undefined) {
+            const relayUrl =
+                this.relayUrl === null || this.relayUrl.trim() === ''
+                    ? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL
+                    : this.relayUrl;
+
             const evolu = createEvoluInstance({
-                relayUrl:
-                    this.relayUrl === null || this.relayUrl.trim() === ''
-                        ? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL
-                        : this.relayUrl,
+                relayUrl,
                 evoluKeys,
                 evoluDeps: this.evoluDeps,
             });

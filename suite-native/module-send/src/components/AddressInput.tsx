@@ -15,6 +15,7 @@ import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { SendFormLabelEditable } from '@suite-native/labeling';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
@@ -28,7 +29,8 @@ type AddressInputProps = {
 };
 export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
-    const { setValue } = useFormContext<SendOutputsFormValues>();
+    const utxoLabelFieldName = getOutputFieldName(index, 'label');
+    const { setValue, watch } = useFormContext<SendOutputsFormValues>();
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -62,6 +64,8 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
             });
     };
 
+    const utxoLabel = watch(utxoLabelFieldName);
+
     return (
         <VStack spacing="sp12">
             <HStack flex={1} justifyContent="space-between" alignItems="center">
@@ -73,6 +77,12 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                         DEV: self address
                     </Button>
                 )}
+                <SendFormLabelEditable
+                    label={utxoLabel ?? null}
+                    onLabelChange={newUtxoLabel => {
+                        setValue(utxoLabelFieldName, newUtxoLabel, { shouldValidate: true });
+                    }}
+                />
             </HStack>
             <TextInputField
                 multiline

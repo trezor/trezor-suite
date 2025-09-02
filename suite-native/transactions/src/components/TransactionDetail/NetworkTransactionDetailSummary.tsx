@@ -3,13 +3,10 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import {
-    TransactionsRootState,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Box, VStack } from '@suite-native/atoms';
+import { WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
@@ -54,36 +51,25 @@ export const VerticalSeparator = ({ inputsCount }: VerticalSeparatorProps) => {
     return <Box style={applyStyle(separatorStyle, { inputsCount })} />;
 };
 
+type NetworkTransactionDetailSummaryProps = {
+    transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
+    onShowMore: () => void;
+};
+
 export const NetworkTransactionDetailSummary = ({
     accountKey,
-    txid,
+    transaction,
     onShowMore,
-}: {
-    accountKey: AccountKey;
-    txid: string;
-    onShowMore: () => void;
-}) => {
-    const transaction = useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    );
+}: NetworkTransactionDetailSummaryProps) => {
     const transactionInputAddresses = useSelector(
         (state: TransactionsRootState & TokenDefinitionsRootState) =>
-            selectTransactionAddresses(state, accountKey, txid, 'inputs'),
+            selectTransactionAddresses(state, accountKey, transaction.txid, 'inputs'),
     );
     const transactionOutputAddresses = useSelector(
         (state: TransactionsRootState & TokenDefinitionsRootState) =>
-            selectTransactionAddresses(state, accountKey, txid, 'outputs'),
+            selectTransactionAddresses(state, accountKey, transaction.txid, 'outputs'),
     );
-
-    if (!transaction) {
-        return (
-            <ErrorMessage
-                errorMessage={
-                    <Translation id="transactions.TransactionDetailScreen.unknownTarget" />
-                }
-            />
-        );
-    }
 
     return (
         <VStack spacing="sp24">
@@ -93,6 +79,7 @@ export const NetworkTransactionDetailSummary = ({
                     addresses={transactionInputAddresses}
                     onShowMore={onShowMore}
                     symbol={transaction.symbol}
+                    transaction={transaction}
                 />
             )}
             {A.isNotEmpty(transactionOutputAddresses) && (
@@ -100,6 +87,7 @@ export const NetworkTransactionDetailSummary = ({
                     addressesType="outputs"
                     addresses={transactionOutputAddresses}
                     onShowMore={onShowMore}
+                    transaction={transaction}
                 />
             )}
             <VerticalSeparator inputsCount={transactionInputAddresses.length} />

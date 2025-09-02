@@ -1,10 +1,13 @@
 import { Pressable } from 'react-native';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { BaseCurrencyAmount, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { HStack, Radio, Text } from '@suite-native/atoms';
+import { isDebugEnv } from '@suite-native/config';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { WalletLabel, useIsLabelingEnabled } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
@@ -14,7 +17,7 @@ type WalletItemBaseProps = {
     onPress: () => void;
     isSelectable: boolean;
     isSelected: boolean;
-    walletNumber?: number;
+    device?: TrezorDevice;
     baseCurrencyAmount?: BaseCurrencyAmount;
 };
 
@@ -53,21 +56,48 @@ const labelStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
+const LocalFirstStorageDebug = ({ device }: { device?: TrezorDevice }) => {
+    const isLabelingEnabled = useIsLabelingEnabled();
+
+    if (!isDebugEnv() || !isLabelingEnabled || !device) {
+        return null;
+    }
+    const deviceStaticSessionId = device.state?.staticSessionId;
+
+    if (deviceStaticSessionId === undefined) {
+        return null;
+    }
+
+    const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+    const evoluDebug =
+        walletDescriptor.split('@')[0].slice(-8) +
+        ' @ ' +
+        deviceId.slice(-8) +
+        ' E: ' +
+        device.localFirstStorageSecret?.evoluKeys?.ownerId.slice(-8);
+
+    return <Text>{evoluDebug}</Text>;
+};
+
 export const WalletItemBase = ({
     variant,
     onPress,
     isSelected,
     isSelectable,
-    walletNumber,
+    device,
     baseCurrencyAmount,
 }: WalletItemBaseProps) => {
     const { applyStyle } = useNativeStyles();
     const isStandard = variant === 'standard';
 
-    const walletNameLabel = isStandard ? (
+    const fallbackLabel = isStandard ? (
         <Translation id="deviceManager.wallet.standard" />
     ) : (
-        <Translation id="deviceManager.wallet.defaultPassphrase" values={{ index: walletNumber }} />
+        <Translation
+            id="deviceManager.wallet.defaultPassphrase"
+            values={{ index: device?.walletNumber }}
+        />
     );
 
     return (
@@ -76,9 +106,14 @@ export const WalletItemBase = ({
                 <HStack alignItems="center" flex={1}>
                     <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
                     <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>
-                        {walletNameLabel}
+                        <WalletLabel
+                            deviceStaticSessionId={device?.state?.staticSessionId}
+                            fallbackLabel={fallbackLabel}
+                        />
                     </Text>
+                    <LocalFirstStorageDebug device={device} />
                 </HStack>
+
                 <HStack alignItems="center" spacing="sp12">
                     {baseCurrencyAmount && (
                         <BaseCurrencyAmountFormatter

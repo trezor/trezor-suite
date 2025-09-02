@@ -33,6 +33,7 @@
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../navigation" },
         { "path": "../staking" },
         { "path": "../toasts" },

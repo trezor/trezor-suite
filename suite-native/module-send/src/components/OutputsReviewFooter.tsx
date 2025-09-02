@@ -2,23 +2,18 @@ import { useEffect, useState } from 'react';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
 import {
     AccountsRootState,
-    SendRootState,
     TransactionsRootState,
-    pushSendFormTransactionThunk,
     selectAccountByKey,
-    selectSendFormDraftByKey,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -29,10 +24,9 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
-import { cleanupSendFormThunk } from '../sendFormThunks';
+import { cleanupSendFormThunk, sendTransactionThunk } from '../sendFormThunks';
 import { SignSuccessMessage } from './SignSuccessMessage';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
 
@@ -86,13 +80,12 @@ const navigateOutOfSendFlowAction = ({
     });
 };
 
-export const OutputsReviewFooter = ({
-    accountKey,
-    tokenContract,
-}: {
+type OutputsReviewFooterParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
-}) => {
+};
+
+export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReviewFooterParams) => {
     const [txid, setTxid] = useState<string>('');
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
@@ -108,14 +101,6 @@ export const OutputsReviewFooter = ({
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
-    );
-
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
-    );
-
-    const formValues = useSelector((state: SendRootState) =>
-        selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
     useEffect(() => {
@@ -143,28 +128,14 @@ export const OutputsReviewFooter = ({
         setIsSendInProgress(true);
 
         const sendResponse = await dispatch(
-            pushSendFormTransactionThunk({
+            sendTransactionThunk({
                 selectedAccount: account,
+                wasAppLeftDuringReview,
             }),
         );
 
         if (isFulfilled(sendResponse)) {
             const { txid: sentTxid } = sendResponse.payload.payload;
-
-            if (formValues) {
-                analytics.report({
-                    type: EventType.SendTransactionDispatched,
-                    payload: {
-                        symbol: account.symbol,
-                        tokenAddresses: tokenContract ? [tokenContract] : undefined,
-                        tokenSymbols: tokenSymbol ? [tokenSymbol] : undefined,
-                        outputsCount: formValues.outputs.length,
-                        selectedFee: formValues.selectedFee ?? 'normal',
-                        hasDestinationTag: G.isNotNullable(formValues.destinationTag),
-                        wasAppLeftDuringReview,
-                    },
-                });
-            }
 
             setTxid(sentTxid);
             if (account.networkType === 'bitcoin') setSelectedUtxos([]); // clear selected UTXOs after sending the transaction

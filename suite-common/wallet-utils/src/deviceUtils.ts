@@ -1,13 +1,14 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@suite-common/wallet-types';
 import { Device, StaticSessionId } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
 export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionId) => {
-    const [walletDescriptor] = deviceStaticSessionId.split('@');
+    const [walletDescriptor, deviceId] = deviceStaticSessionId.split('@');
 
     return {
-        walletDescriptor: walletDescriptor as WalletDescriptor,
+        walletDescriptor: asWalletDescriptor(walletDescriptor),
+        deviceId,
     };
 };
 

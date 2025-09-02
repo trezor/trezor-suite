@@ -107,7 +107,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
         }),
     );
 
-    const label = localFirstAccountLabel?.label ?? selectedAccountLabels.accountLabel;
+    const label = localFirstAccountLabel ?? selectedAccountLabels.accountLabel;
 
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { symbol, key, path, index, accountType, formattedBalance, deviceState } =

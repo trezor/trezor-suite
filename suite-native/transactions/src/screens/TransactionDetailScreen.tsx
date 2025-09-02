@@ -77,6 +77,7 @@ export const TransactionDetailScreen = ({
                                     <TransactionName
                                         transaction={transaction}
                                         isPending={isPending}
+                                        variant="highlight"
                                     />
                                 ),
                             }}

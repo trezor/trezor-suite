@@ -1,5 +1,6 @@
 @babel/plugin-transform-export-namespace-from
 @config-plugins/detox
+@evolu/react-native
 @expo/config-plugins
 @gorhom/bottom-sheet
 @mobily/ts-belt
@@ -46,6 +47,7 @@ expo-local-authentication
 expo-localization
 expo-secure-store
 expo-splash-screen
+expo-sqlite
 expo-status-bar
 expo-system-ui
 expo-updates

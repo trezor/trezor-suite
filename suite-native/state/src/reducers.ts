@@ -5,6 +5,7 @@ import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
+import { prepareLabelingReducer } from '@suite-common/local-first-storage';
 import { logsSlice } from '@suite-common/logger';
 import {
     messageSystemPersistedWhitelist,
@@ -78,6 +79,7 @@ const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
+const labelingReducer = prepareLabelingReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -298,6 +300,7 @@ export const prepareRootReducers = async () => {
             geolocation: geolocationReducer,
             thp: thpPersistedReducer,
             locale: localePersistedReducer,
+            labeling: labelingReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

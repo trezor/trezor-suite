@@ -28,6 +28,7 @@ export const mapTransactionInputsOutputsToAddresses = ({
                 (address): VinVoutAddress => ({
                     address,
                     isChangeAddress,
+                    outputIndex: target.n,
                 }),
             );
         }),
@@ -40,10 +41,12 @@ export const sortTargetAddressesToBeginning = (
     addresses: readonly VinVoutAddress[],
     targetAddresses: readonly VinVoutAddress[],
 ) =>
-    A.concat(
-        A.intersection(addresses, targetAddresses),
-        A.difference(addresses, targetAddresses),
-    ) as VinVoutAddress[];
+    F.toMutable(
+        A.concat(
+            A.intersection(addresses, targetAddresses),
+            A.difference(addresses, targetAddresses),
+        ),
+    );
 
 // describes if '+' or '-' sign should be shown as part of the transaction amount.
 const transactionTypeToSignValueMap = {
