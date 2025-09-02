@@ -472,6 +472,7 @@ export type AuthorizeCoinJoin = {
 
 export type BleUnpair = {
     all?: boolean;
+    addr?: string;
 };
 
 export type FirmwareErase = {
@@ -1585,6 +1586,7 @@ export type Features = {
     haptic_feedback?: boolean;
     recovery_type?: RecoveryType;
     optiga_sec?: number;
+    soc?: number;
 };
 
 export type LockDevice = {};
