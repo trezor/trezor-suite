@@ -8,18 +8,22 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
 import { reportSecurityCheck } from '@suite-native/sentry';
+import messages from '@trezor/protobuf/messages.json';
+import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { mergeDeepObject } from '@trezor/utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
+const bridgeTransport = new BridgeTransport({ messages, port: 21325, id: 'bridge' });
+
 const transportsPerDeviceType = {
     device: Platform.select({
-        ios: ['BridgeTransport', NativeBluetoothTransport],
+        ios: [bridgeTransport, NativeBluetoothTransport],
         android: [NativeUsbTransport, NativeBluetoothTransport],
     }),
-    emulator: ['BridgeTransport'],
+    emulator: [bridgeTransport],
 } as const;
 
 const transports = transportsPerDeviceType[deviceType];

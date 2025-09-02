@@ -44,6 +44,8 @@
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },
+        { "path": "../../packages/protobuf" },
+        { "path": "../../packages/transport" },
         {
             "path": "../../packages/transport-native-bluetooth"
         },

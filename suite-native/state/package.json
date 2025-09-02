@@ -37,6 +37,8 @@
         "@suite-native/sentry": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
+        "@trezor/protobuf": "workspace:^",
+        "@trezor/transport": "workspace:^",
         "@trezor/transport-native-bluetooth": "workspace:*",
         "@trezor/transport-native-usb": "workspace:*",
         "@trezor/utils": "workspace:*",
