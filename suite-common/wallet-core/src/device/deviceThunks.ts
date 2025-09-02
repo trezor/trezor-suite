@@ -527,6 +527,7 @@ export const failEntropyCheckThunk = createThunk(
             'A transfer error has occurred',
             // This one was not in Sentry but can be triggered by manually disconnecting the device. Investigate. https://github.com/trezor/trezor-suite-private/issues/135
             'device disconnected during action',
+            'Device is used in another window',
         ];
         if (!temporarilySkippedErrorsToBeInvestigated.includes(error.error)) {
             dispatch(deviceActions.setEntropyCheckFail(device.id));
