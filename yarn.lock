@@ -11360,6 +11360,8 @@ __metadata:
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
+    "@trezor/protobuf": "workspace:^"
+    "@trezor/transport": "workspace:^"
     "@trezor/transport-native-bluetooth": "workspace:*"
     "@trezor/transport-native-usb": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13026,7 +13028,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@workspace:*, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@workspace:*, @trezor/transport@workspace:^, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
