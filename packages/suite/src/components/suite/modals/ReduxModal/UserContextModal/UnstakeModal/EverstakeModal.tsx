@@ -89,7 +89,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
 
     return (
         <Modal
-            heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
+            heading={<Translation id="TR_STAKE_STAKE_TOKEN" values={{ symbol: displaySymbol }} />}
             description={
                 <Translation
                     id="TR_STAKE_YOUR_FUNDS_MAINTAINED"

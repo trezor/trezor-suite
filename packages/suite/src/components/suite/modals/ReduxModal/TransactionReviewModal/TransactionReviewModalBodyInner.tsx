@@ -200,6 +200,7 @@ export const TransactionReviewModalBodyInner = ({
 
     const actionTranslation = (source: 'heading' | 'button') =>
         getTransactionReviewModalActionTranslation({
+            symbol,
             stakeType,
             precomposedForm,
             tradingToken,

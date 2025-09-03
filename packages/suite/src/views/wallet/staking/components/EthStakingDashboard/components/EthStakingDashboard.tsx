@@ -87,7 +87,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                         <DashboardSection
                             heading={
                                 <Translation
-                                    id="TR_STAKE_NETWORK"
+                                    id="TR_STAKE_STAKE_TOKEN"
                                     values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                                 />
                             }

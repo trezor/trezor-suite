@@ -9412,10 +9412,6 @@ export default defineMessages({
         id: 'TR_STAKING_CARD_RESTAKE_TEXT',
         defaultMessage: 'Your rewards are restaked automatically—so your balance grows faster.',
     },
-    TR_STAKE_NETWORK: {
-        id: 'TR_STAKE_NETWORK',
-        defaultMessage: 'Stake {symbol}',
-    },
     TR_STAKE_RESTAKED_BADGE: {
         id: 'TR_STAKE_RESTAKED_BADGE',
         defaultMessage: 'Restaked',
@@ -9732,6 +9728,18 @@ export default defineMessages({
     TR_STAKE_CLAIM: {
         id: 'TR_STAKE_CLAIM',
         defaultMessage: 'Claim',
+    },
+    TR_STAKE_STAKE_TOKEN: {
+        id: 'TR_STAKE_STAKE_TOKEN',
+        defaultMessage: 'Stake {symbol}',
+    },
+    TR_STAKE_UNSTAKE_TOKEN: {
+        id: 'TR_STAKE_UNSTAKE_TOKEN',
+        defaultMessage: 'Unstake {symbol}',
+    },
+    TR_STAKE_CLAIM_TOKEN: {
+        id: 'TR_STAKE_CLAIM_TOKEN',
+        defaultMessage: 'Claim {symbol}',
     },
     TR_STAKE_STAKED_AMOUNT: {
         id: 'TR_STAKE_STAKED_AMOUNT',

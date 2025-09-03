@@ -150,7 +150,7 @@ export const EmptyStakingCard = () => {
     return (
         <DashboardSection
             data-testid="@wallet/staking/empty-card"
-            heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
+            heading={<Translation id="TR_STAKE_STAKE_TOKEN" values={{ symbol: displaySymbol }} />}
         >
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
             {isDiscoveryRunning && <DiscoveryWarning />}
