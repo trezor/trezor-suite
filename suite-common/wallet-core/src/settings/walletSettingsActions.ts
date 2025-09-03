@@ -27,6 +27,11 @@ export const toggleHideSuspiciousTransactions = createAction(
     WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
 );
 
+export const setAutoForgetDeviceData = createAction(
+    WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA,
+    (enabled: boolean) => ({ payload: enabled }),
+);
+
 export type ChangeCoinVisibilityAction = {
     type: typeof WALLET_SETTINGS.CHANGE_COIN_VISIBILITY;
     payload: {
@@ -54,6 +59,7 @@ export type WalletSettingsAction =
     | ReturnType<typeof changeNetworks>
     | ReturnType<typeof setBaseCurrency>
     | ReturnType<typeof toggleHideSuspiciousTransactions>
+    | ReturnType<typeof setAutoForgetDeviceData>
     | ChangeCoinVisibilityAction
     | SetHideBalanceAction
     | SetBitcoinAmountUnitsAction

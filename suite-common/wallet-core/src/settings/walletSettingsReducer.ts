@@ -29,6 +29,7 @@ const initialState: State = {
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,
+    autoForgetDeviceData: false,
 };
 export const initialWalletSettingsState: State = initialState;
 
@@ -39,6 +40,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof State> = [
     'hideSuspiciousTransactions',
     'bitcoinAmountUnit',
     'mevProtection',
+    'autoForgetDeviceData',
 ];
 
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
@@ -82,6 +84,12 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
         builder.addCase(WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS, state => {
             state.hideSuspiciousTransactions = !state.hideSuspiciousTransactions;
         });
+        builder.addCase(
+            WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA,
+            (state, action: ReturnType<typeof walletSettingsActions.setAutoForgetDeviceData>) => {
+                state.autoForgetDeviceData = action.payload;
+            },
+        );
     },
 );
 
@@ -95,6 +103,8 @@ export const selectIsHideSuspiciousTransactions = (state: WalletSettingsRootStat
     state.wallet.settings.hideSuspiciousTransactions;
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
+export const selectIsAutoForgetDeviceDataEnabled = (state: WalletSettingsRootState) =>
+    state.wallet.settings.autoForgetDeviceData;
 
 export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {
     const bitcoinAmountUnit = selectBitcoinAmountUnit(state);
