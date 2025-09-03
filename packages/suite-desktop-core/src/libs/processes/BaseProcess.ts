@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess, IOType, spawn } from 'child_process';
 import { app } from 'electron';
 import path from 'path';
 
@@ -15,12 +15,15 @@ export type Status = {
  * [startupCooldown] Cooldown before being able to run start again (seconds).
  * [stopKillWait] How long to wait before killing the process on stop (seconds).
  * [autoRestart] Seconds to wait before auto-restarting the process (seconds). 0 = off.
+ * [env] additional env variables.
+ * [stdio] inherit process stdio. doesn't work on windows, "inherit" works on linux/macos
  */
 export type Options = {
     startupCooldown?: number;
     stopKillWait?: number;
     autoRestart?: number;
     env?: Record<string, string | undefined>;
+    stdio?: IOType;
 };
 
 const defaultOptions: Options = {
@@ -142,7 +145,7 @@ export abstract class BaseProcess {
             this.process = spawn(processPath, params, {
                 cwd: processDir,
                 env: processEnv,
-                stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: this.options.stdio || ['ignore', 'ignore', 'ignore'],
             });
             this.process.on('error', err => this.onError(err));
             this.process.on('close', code => this.onExit(code));
