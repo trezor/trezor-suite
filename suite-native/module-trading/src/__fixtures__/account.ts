@@ -133,3 +133,18 @@ export const getBaseAccount = (key = 'base-account-1') =>
             total: 1,
         },
     }) as unknown as Account;
+
+export const getCardanoAccount = (key = 'ada-account-1') =>
+    ({
+        key,
+        symbol: 'ada',
+        accountType: 'normal',
+        accountLabel: 'Cardano Account #1',
+        descriptor: 'descriptor-' + key,
+        balance: '1000000',
+        availableBalance: '1000000',
+        formattedBalance: '1',
+        networkType: 'cardano',
+        visible: true,
+        deviceState: 'test-device',
+    }) as unknown as Account;

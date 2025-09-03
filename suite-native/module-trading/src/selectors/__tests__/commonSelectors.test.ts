@@ -1,10 +1,10 @@
 import { Action, Feature, Message } from '@suite-common/suite-types';
 import { InvityServerEnvironment } from '@suite-common/trading';
 import { AccountsRootState } from '@suite-common/wallet-core';
-import { featureFlagsInitialState } from '@suite-native/feature-flags';
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { BigNumber } from '@trezor/utils';
 
-import { getBtcAccount, getEthAccount } from '../../__fixtures__/account';
+import { getBtcAccount, getCardanoAccount, getEthAccount } from '../../__fixtures__/account';
 import { btcAsset } from '../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { getWalletState } from '../../__fixtures__/walletState';
@@ -319,6 +319,7 @@ describe('commonSelectors', () => {
             const stateWithDevice = {
                 ...state,
                 device: { selectedDevice: null },
+                featureFlags: featureFlagsInitialState,
             } as any;
 
             expect(
@@ -345,6 +346,7 @@ describe('commonSelectors', () => {
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
                 fiat: { rates: {}, current: 'usd' },
+                featureFlags: featureFlagsInitialState,
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -383,6 +385,7 @@ describe('commonSelectors', () => {
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
                 fiat: { rates: {}, current: 'usd' },
+                featureFlags: featureFlagsInitialState,
             } as any;
 
             expect(
@@ -424,6 +427,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
                     accounts: [ethAccount],
@@ -483,6 +487,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
                     accounts: [ethAccount],
@@ -538,6 +543,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
                     accounts: [ethAccount],
@@ -591,6 +597,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
                     accounts: [ethAccount],
@@ -624,6 +631,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('buy');
 
             const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
                     accounts: [btcAccount],
@@ -655,6 +663,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('sell');
 
             const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
                     accounts: [btcAccount],
@@ -687,6 +696,7 @@ describe('commonSelectors', () => {
             const testDeviceState = 'test-device';
 
             const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
                 wallet: getWalletState({ tradeType: 'exchange', deviceState: testDeviceState }),
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
@@ -701,6 +711,86 @@ describe('commonSelectors', () => {
             const accountAsset = result[1].data[0];
             expect(accountAsset.symbol).toBe('base');
             expect(accountAsset.name).toBe('Base Ethereum');
+        });
+
+        it('should filter out Cardano accounts when IsCardanoSendEnabled feature flag is disabled', () => {
+            const testDeviceState = 'test-device';
+            const cardanoAccount = {
+                ...getCardanoAccount(),
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const btcAccount = {
+                ...getBtcAccount(),
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    trading: cleanState,
+                    accounts: [cardanoAccount, btcAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['ada', 'btc'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+                featureFlags: {
+                    ...featureFlagsInitialState,
+                    [FeatureFlag.IsCardanoSendEnabled]: false,
+                },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].sectionData.symbol).toBe('btc');
+        });
+
+        it('should include Cardano accounts when IsCardanoSendEnabled feature flag is enabled', () => {
+            const testDeviceState = 'test-device';
+            const cardanoAccount = {
+                ...getCardanoAccount(),
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const btcAccount = {
+                ...getBtcAccount(),
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    trading: cleanState,
+                    accounts: [cardanoAccount, btcAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['ada', 'btc'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+                featureFlags: {
+                    ...featureFlagsInitialState,
+                    [FeatureFlag.IsCardanoSendEnabled]: true,
+                },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(2);
+            const symbols = result.map(section => section.sectionData.symbol);
+            expect(symbols).toContain('btc');
+            expect(symbols).toContain('ada');
         });
     });
 });
