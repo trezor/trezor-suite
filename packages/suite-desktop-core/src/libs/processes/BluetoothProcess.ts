@@ -17,6 +17,7 @@ export class BluetoothProcess extends BaseProcess {
                 // Electron sometimes modifies the value of XDG_CURRENT_DESKTOP
                 XDG_CURRENT_DESKTOP:
                     process.env.ORIGINAL_XDG_CURRENT_DESKTOP || process.env.XDG_CURRENT_DESKTOP,
+                TREZOR_BLUETOOTH_PORT: port.toString(),
             },
         });
         this.port = port;
@@ -80,6 +81,6 @@ export class BluetoothProcess extends BaseProcess {
             return;
         }
 
-        return super.start(['-p', this.port.toString()]);
+        return super.start(['-p', this.port.toString()]); // TODO: remove params after next binary release
     }
 }
