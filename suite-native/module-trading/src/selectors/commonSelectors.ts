@@ -30,6 +30,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
@@ -171,7 +172,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             const sellCryptoIds =
                 tradingType === 'sell' ? sellSellCryptoIds : exchangeSellCryptoIds;
 
-            return accounts
+            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+
+            return sortedAccounts
                 .map<SectionListData<MyAsset, Account>[number]>((account: Account) => {
                     const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
                         tokenDefinitions,
