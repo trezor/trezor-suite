@@ -45,7 +45,7 @@ describe('BuyPaymentMethodPicker', () => {
 
     it('should display loader when loading initial quotes', async () => {
         const preloadedState: PreloadedState = {
-            wallet: { tradingNew: { buy: { isLoading: true, quotes: [] } } },
+            wallet: { trading: { buy: { isLoading: true, quotes: [] } } },
         };
 
         const { getByLabelText } = await renderPaymentMethodPicker(preloadedState);
@@ -57,7 +57,7 @@ describe('BuyPaymentMethodPicker', () => {
         let preloadedState: PreloadedState;
 
         beforeEach(() => {
-            preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
+            preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         });
 
         it('should display "Not selected" when no method is selected in form', async () => {
@@ -75,7 +75,7 @@ describe('BuyPaymentMethodPicker', () => {
         });
 
         it('should display loader while quotes are fetched', async () => {
-            preloadedState!.wallet!.tradingNew!.buy!.isLoading = true;
+            preloadedState!.wallet!.trading!.buy!.isLoading = true;
             const { getByLabelText } = await renderPaymentMethodPicker(preloadedState);
 
             expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();

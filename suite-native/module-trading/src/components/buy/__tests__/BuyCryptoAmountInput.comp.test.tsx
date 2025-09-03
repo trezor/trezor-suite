@@ -123,8 +123,8 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
-        preloadedState.wallet.tradingNew.buy.isLoading = true;
+        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
+        preloadedState.wallet.trading.buy.isLoading = true;
         const form = await renderUseTradingBuyForm();
 
         const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
@@ -133,8 +133,8 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
-        preloadedState.wallet.tradingNew.buy.isLoading = true;
+        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
+        preloadedState.wallet.trading.buy.isLoading = true;
         const form = await renderUseTradingBuyForm();
         act(() => {
             form.setValue('amountInCrypto', true);

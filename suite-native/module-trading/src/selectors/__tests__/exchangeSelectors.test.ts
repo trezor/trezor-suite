@@ -27,7 +27,7 @@ describe('exchangeSelectors', () => {
     });
 
     it('selectTradingExchange should select trading exchange state', () => {
-        expect(selectTradingExchange(state)).toEqual(state.wallet.tradingNew.exchange);
+        expect(selectTradingExchange(state)).toEqual(state.wallet.trading.exchange);
     });
 
     describe('selectExchangeSelectedSendAccount', () => {
@@ -35,11 +35,11 @@ describe('exchangeSelectors', () => {
 
         beforeEach(() => {
             account = getBtcAccount();
-            state.wallet.tradingNew.exchange.tradingAccountKey = account.key;
+            state.wallet.trading.exchange.tradingAccountKey = account.key;
         });
 
         it('should be undefined when no tradingAccountKey is defined', () => {
-            state.wallet.tradingNew.exchange.tradingAccountKey = undefined;
+            state.wallet.trading.exchange.tradingAccountKey = undefined;
 
             expect(selectExchangeSelectedSendAccount(state)).toBeUndefined();
         });
@@ -55,7 +55,7 @@ describe('exchangeSelectors', () => {
         });
 
         it('should return undefined when no account with given key exists', () => {
-            state.wallet.tradingNew.exchange.tradingAccountKey = 'unknown_account_key';
+            state.wallet.trading.exchange.tradingAccountKey = 'unknown_account_key';
 
             expect(selectExchangeSelectedSendAccount(state)).toBeUndefined();
         });
@@ -66,12 +66,12 @@ describe('exchangeSelectors', () => {
 
         beforeEach(() => {
             account = getBtcAccount();
-            state.wallet.tradingNew.exchange.receiveAccountKey = account.key;
-            state.wallet.tradingNew.exchange.receiveAddress = account.addresses?.used[0];
+            state.wallet.trading.exchange.receiveAccountKey = account.key;
+            state.wallet.trading.exchange.receiveAddress = account.addresses?.used[0];
         });
 
         it('should be undefined when no receiveAccountKey is defined', () => {
-            state.wallet.tradingNew.exchange.receiveAccountKey = undefined;
+            state.wallet.trading.exchange.receiveAccountKey = undefined;
 
             expect(selectExchangeSelectedReceiveAccount(state)).toBeUndefined();
         });
@@ -90,7 +90,7 @@ describe('exchangeSelectors', () => {
         });
 
         it('should return undefined no account with given key exists', () => {
-            state.wallet.tradingNew.exchange.receiveAccountKey = 'unknown_account_key';
+            state.wallet.trading.exchange.receiveAccountKey = 'unknown_account_key';
 
             expect(selectExchangeSelectedReceiveAccount(state)).toBeUndefined();
         });
@@ -108,7 +108,7 @@ describe('exchangeSelectors', () => {
         });
 
         it('should sort coins', () => {
-            state.wallet.tradingNew.exchange.exchangeInfo!.buyCryptoIds = [
+            state.wallet.trading.exchange.exchangeInfo!.buyCryptoIds = [
                 'bitcoin',
                 'ethereum',
                 'eos',
@@ -137,7 +137,7 @@ describe('exchangeSelectors', () => {
         });
 
         it('should be empty array when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectExchangeBuyTradeableAssetsSorted(state)).toEqual([]);
         });
@@ -145,7 +145,7 @@ describe('exchangeSelectors', () => {
 
     describe('selectExchangeQuotes', () => {
         it('should return exchange.quotes', () => {
-            state.wallet.tradingNew.exchange.quotes = exchangeQuotes;
+            state.wallet.trading.exchange.quotes = exchangeQuotes;
 
             expect(selectExchangeQuotes(state)).toEqual(exchangeQuotes);
         });
@@ -161,7 +161,7 @@ describe('exchangeSelectors', () => {
         });
 
         it('should group quotes by fixed/float/dex', () => {
-            state.wallet.tradingNew.exchange.quotes = exchangeQuotes;
+            state.wallet.trading.exchange.quotes = exchangeQuotes;
 
             const groupedQuotes = selectGroupedExchangeQuotes(state);
 
@@ -191,7 +191,7 @@ describe('exchangeSelectors', () => {
         });
 
         it('should be stable', () => {
-            state.wallet.tradingNew.exchange.quotes = exchangeQuotes;
+            state.wallet.trading.exchange.quotes = exchangeQuotes;
 
             expect(selectGroupedExchangeQuotes(state)).toBe(selectGroupedExchangeQuotes(state));
         });

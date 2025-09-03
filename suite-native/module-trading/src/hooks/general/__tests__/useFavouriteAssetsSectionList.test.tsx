@@ -23,7 +23,7 @@ describe('useFavouriteAssetsSectionList', () => {
     ) => {
         const preloadedState: Partial<PreloadedState> = {
             wallet: {
-                tradingNew: {
+                trading: {
                     favouriteAssets,
                 },
             },

@@ -28,7 +28,7 @@ jest.mock('@react-navigation/native', () => ({
 
 const getExchangeState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
     wallet: {
-        tradingNew: {
+        trading: {
             ...initialState,
             exchange: {
                 ...initialState.exchange,

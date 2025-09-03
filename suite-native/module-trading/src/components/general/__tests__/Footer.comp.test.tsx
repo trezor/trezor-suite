@@ -27,7 +27,7 @@ describe('Footer', () => {
     it('should render nothing when isAmountInputActive is true', async () => {
         const { toJSON } = await renderWithStoreProviderAsync(<Footer />, {
             preloadedState: {
-                wallet: { tradingNew: { isAmountInputActive: true } },
+                wallet: { trading: { isAmountInputActive: true } },
             },
         });
 

@@ -80,7 +80,7 @@ describe('ProviderSheetHandle', () => {
             {},
             {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         activeTradingType: 'exchange',
                     },
                 },

@@ -35,7 +35,7 @@ describe('ExchangeLegalSheet', () => {
                 isDex={false}
                 {...props}
             />,
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } } },
         );
 
     it('should render text info with given provider name for CEX', async () => {

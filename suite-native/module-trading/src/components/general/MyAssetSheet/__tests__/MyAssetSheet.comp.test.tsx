@@ -54,7 +54,7 @@ describe('MyAssetSheet', () => {
 
     const getPreloadedState = () => ({
         wallet: {
-            tradingNew: getInitializedTradingState(),
+            trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
         },
     });

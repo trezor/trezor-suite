@@ -35,12 +35,12 @@ describe('handleSellTradeThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         sell: {
                             ...initialState.sell,
@@ -117,7 +117,7 @@ describe('handleSellTradeThunk', () => {
                 )
                 .unwrap();
 
-            const tradingState = store.getState().wallet.tradingNew;
+            const tradingState = store.getState().wallet.trading;
 
             expect(invityAPI.doSellTrade).not.toHaveBeenCalled();
             expect(result).toBeUndefined();
@@ -147,7 +147,7 @@ describe('handleSellTradeThunk', () => {
         const actionToast = store
             .getActions()
             .find(action => action.type === '@common/in-app-notifications/addToast');
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
 
         expect(actionToast?.payload?.type).toEqual('error');
         expect(actionToast?.payload?.error).toEqual('No response from the server');
@@ -180,7 +180,7 @@ describe('handleSellTradeThunk', () => {
         const actionToast = store
             .getActions()
             .find(action => action.type === '@common/in-app-notifications/addToast');
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
 
         expect(actionToast?.payload?.type).toEqual('error');
         expect(actionToast?.payload?.error).toEqual('Trade error');
@@ -210,7 +210,7 @@ describe('handleSellTradeThunk', () => {
                 }),
             )
             .unwrap();
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
 
         expect(result).toEqual(quoteData);
         expect(tradingState.sell.transactionId).toBeUndefined();
@@ -242,7 +242,7 @@ describe('handleSellTradeThunk', () => {
             )
             .unwrap();
 
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
 
         expect(result).toBeUndefined();
         expect(tradingState.sell.transactionId).toBe(mockResponse.trade.orderId);
@@ -290,7 +290,7 @@ describe('handleSellTradeThunk', () => {
             )
             .unwrap();
 
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
 
         expect(result).toBeUndefined();
         expect(tradingState.sell.transactionId).toBe(mockResponse.trade.orderId);
@@ -351,7 +351,7 @@ describe('handleSellTradeThunk', () => {
             )
             .unwrap();
 
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
 
         expect(result).toBeUndefined();
         expect(tradingState.sell.transactionId).toBeUndefined();

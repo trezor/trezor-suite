@@ -43,7 +43,7 @@ describe('MyAssetListItem', () => {
     const getPreloadedState = () => ({
         wallet: {
             accounts: [getBtcAccount(), getEthAccount()],
-            tradingNew: {
+            trading: {
                 info: {
                     coins: {
                         bitcoin: { symbol: 'btc', name: 'Bitcoin', cryptoId: 'bitcoin' },
@@ -233,7 +233,7 @@ describe('MyAssetListItem', () => {
             const preloadedStateWithoutCoinInfo = {
                 wallet: {
                     accounts: [getBtcAccount(), getEthAccount()],
-                    tradingNew: {
+                    trading: {
                         info: {
                             coins: {}, // Empty coins object
                         },

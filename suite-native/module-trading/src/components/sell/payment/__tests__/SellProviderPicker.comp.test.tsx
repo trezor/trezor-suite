@@ -40,7 +40,7 @@ describe('SellProviderPicker', () => {
     });
 
     it('should render loading skeleton when no quotes are loaded and new quotes are loading', async () => {
-        preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+        preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
         const { getByLabelText } = await renderSellProviderPicker();
 
@@ -49,14 +49,14 @@ describe('SellProviderPicker', () => {
 
     describe('with quotes loaded', () => {
         beforeEach(() => {
-            preloadedState!.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+            preloadedState!.wallet!.trading!.sell!.quotes = sellQuotes;
             act(() => {
                 form.setValue('quote', sellQuotes[0]);
             });
         });
 
         it('should render loading skeleton when quotes are loaded and new quotes are loading', async () => {
-            preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+            preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
             const { getByLabelText } = await renderSellProviderPicker();
 
@@ -76,7 +76,7 @@ describe('SellProviderPicker', () => {
         });
 
         it('should not display kyc warning when loading', async () => {
-            preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+            preloadedState!.wallet!.trading!.sell!.isLoading = true;
             const { queryByText } = await renderSellProviderPicker();
 
             expect(
@@ -142,7 +142,7 @@ describe('SellProviderPicker', () => {
             });
 
             it('should not call analytics when user tries to open sheet while quotes are loading', async () => {
-                preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+                preloadedState!.wallet!.trading!.sell!.isLoading = true;
                 const { getByText } = await renderSellProviderPicker();
 
                 fireEvent.press(getByText('Provider'));

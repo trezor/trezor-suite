@@ -12,14 +12,14 @@ describe('tradingExchangeReducer', () => {
                 extra: {},
                 reducer: combineReducers({
                     wallet: combineReducers({
-                        tradingNew: combineReducers({
+                        trading: combineReducers({
                             exchange: tradingExchangeReducer,
                         }),
                     }),
                 }),
                 preloadedState: {
                     wallet: {
-                        tradingNew: {
+                        trading: {
                             exchange: fixture.initialState,
                         },
                     },
@@ -28,7 +28,7 @@ describe('tradingExchangeReducer', () => {
             fixture.actions.forEach(action => {
                 store.dispatch(action);
             });
-            expect(store.getState().wallet.tradingNew.exchange).toEqual(fixture.result);
+            expect(store.getState().wallet.trading.exchange).toEqual(fixture.result);
         });
     });
 });

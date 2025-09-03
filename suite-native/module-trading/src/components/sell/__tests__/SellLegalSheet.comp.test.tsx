@@ -14,7 +14,7 @@ describe('SellLegalSheet', () => {
                 sendSymbol="usdc"
                 {...props}
             />,
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } } },
         );
 
     it('should render text info with given tradeProviderName', async () => {

@@ -59,7 +59,7 @@ describe('ExchangeSendAssetPicker', () => {
 
     const getPreloadedState = () => ({
         wallet: {
-            tradingNew: getInitializedTradingState(),
+            trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
         },
     });
@@ -103,7 +103,7 @@ describe('ExchangeSendAssetPicker', () => {
         await userEvent.press(getByText('BTC'));
 
         const accountForm = form.getValues('sendAccount');
-        const accountKeyStore = store.getState().wallet.tradingNew.exchange.tradingAccountKey;
+        const accountKeyStore = store.getState().wallet.trading.exchange.tradingAccountKey;
 
         expect(accountForm).toEqual(btcAccount);
         expect(accountKeyStore).toBe(btcAccount.key);

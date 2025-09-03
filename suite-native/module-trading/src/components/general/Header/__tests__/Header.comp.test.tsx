@@ -153,7 +153,7 @@ describe('Header', () => {
             buyEnabled: true,
             tradingPreloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         isAmountInputActive: true,
                     } as any,
                 },
@@ -174,7 +174,7 @@ describe('Header', () => {
 
         fireEvent.press(getByText('Swap'));
 
-        expect(store.getState().wallet.tradingNew.activeTradingType).toBe('exchange');
+        expect(store.getState().wallet.trading.activeTradingType).toBe('exchange');
     });
 
     it('should display trade settings button', async () => {

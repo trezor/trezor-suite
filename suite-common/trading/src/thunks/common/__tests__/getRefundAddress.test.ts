@@ -52,12 +52,12 @@ describe('getRefundAddress thunk', () => {
             },
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         ...preloadedState,
                     },
@@ -119,12 +119,12 @@ describe('getRefundAddress thunk', () => {
                 },
                 reducer: combineReducers({
                     wallet: combineReducers({
-                        tradingNew: tradingReducer,
+                        trading: tradingReducer,
                     }),
                 }),
                 preloadedState: {
                     wallet: {
-                        tradingNew: initialState,
+                        trading: initialState,
                     },
                 },
             });

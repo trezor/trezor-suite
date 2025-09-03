@@ -99,12 +99,12 @@ describe('selectBuyQuoteThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         buy: {
                             ...initialState.buy,
@@ -159,7 +159,7 @@ describe('selectBuyQuoteThunk', () => {
         expect(mockUserConsent).toHaveBeenCalledTimes(1);
         expect(mockNextStep).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
-        expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(quote);
+        expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(quote);
     });
 
     it('should call onCancel on cancelling the user consent', async () => {
@@ -192,7 +192,7 @@ describe('selectBuyQuoteThunk', () => {
         expect(mockNextStep).toHaveBeenCalledTimes(0);
         expect(mockOnCancel).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(0);
-        expect(store.getState().wallet.tradingNew.buy.selectedQuote).not.toEqual(quote);
+        expect(store.getState().wallet.trading.buy.selectedQuote).not.toEqual(quote);
     });
 
     describe('should not be possible to save selected quote', () => {
@@ -221,7 +221,7 @@ describe('selectBuyQuoteThunk', () => {
             expect(mockUserConsent).toHaveBeenCalledTimes(0);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when quotesRequest is undefined', async () => {
@@ -249,7 +249,7 @@ describe('selectBuyQuoteThunk', () => {
             expect(mockUserConsent).toHaveBeenCalledTimes(0);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when exchange is not found in providerInfos', async () => {
@@ -278,7 +278,7 @@ describe('selectBuyQuoteThunk', () => {
             expect(mockUserConsent).toHaveBeenCalledTimes(0);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when quote receiveCurrency is undefined', async () => {
@@ -307,7 +307,7 @@ describe('selectBuyQuoteThunk', () => {
             expect(mockUserConsent).toHaveBeenCalledTimes(0);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when user cancels consent', async () => {
@@ -333,7 +333,7 @@ describe('selectBuyQuoteThunk', () => {
             expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
     });
 
@@ -379,7 +379,7 @@ describe('selectBuyQuoteThunk', () => {
             expect(mockLoginRequest).toHaveBeenCalledTimes(1);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when login response has not tradeForm', async () => {
@@ -414,7 +414,7 @@ describe('selectBuyQuoteThunk', () => {
 
             expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockLoginRequest).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when login response has incorrect status', async () => {
@@ -450,7 +450,7 @@ describe('selectBuyQuoteThunk', () => {
 
             expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockLoginRequest).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when login response is undefined', async () => {
@@ -482,7 +482,7 @@ describe('selectBuyQuoteThunk', () => {
 
             expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockLoginRequest).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.tradingNew.buy.selectedQuote).toEqual(undefined);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
             expect(actionToast?.payload?.type).toEqual('error');
             expect(actionToast?.payload?.error).toEqual('No response from the server');
         });

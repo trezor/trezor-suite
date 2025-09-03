@@ -59,8 +59,8 @@ describe('ExchangeReceiveAmountInput', () => {
     });
 
     it('should display loading skeleton when quotes are being fetched', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
-        preloadedState.wallet.tradingNew.exchange.isLoading = true;
+        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
+        preloadedState.wallet.trading.exchange.isLoading = true;
 
         const { getByLabelText } = await renderExchangeReceiveAmountInput({}, preloadedState);
 

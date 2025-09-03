@@ -47,7 +47,7 @@ describe('useSellQuotes', () => {
                 tradeType: 'sell',
             }),
         };
-        preloadedState.wallet!.tradingNew!.sell!.tradingAccountKey = 'btc-account-1';
+        preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'btc-account-1';
 
         return await initStore(preloadedState);
     };
@@ -245,7 +245,7 @@ describe('useSellQuotes', () => {
             payload: undefined,
             type: 'tradingSell/clearQuotesAndQuotesRequest',
         });
-        expect(store.getState().wallet.tradingNew.sell.quotes).toEqual([]);
+        expect(store.getState().wallet.trading.sell.quotes).toEqual([]);
     });
 
     it('should not query quotes when form contains error', async () => {

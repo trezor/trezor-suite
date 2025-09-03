@@ -18,7 +18,7 @@ describe('SellConfirmation', () => {
 
     const renderConfirmation = () =>
         renderWithStoreProviderAsync(<SellConfirmation />, {
-            preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } },
+            preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 
     it('should render continue button when canProceed is true', async () => {

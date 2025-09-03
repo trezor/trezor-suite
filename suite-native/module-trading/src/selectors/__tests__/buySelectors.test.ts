@@ -37,7 +37,7 @@ describe('buySelectors', () => {
     });
 
     it('selectTradingBuy should select trading buy state', () => {
-        expect(selectTradingBuy(state)).toEqual(state.wallet.tradingNew.buy);
+        expect(selectTradingBuy(state)).toEqual(state.wallet.trading.buy);
     });
 
     describe('selectBuySelectedReceiveAccount', () => {
@@ -45,12 +45,12 @@ describe('buySelectors', () => {
 
         beforeEach(() => {
             account = getBtcAccount();
-            state.wallet.tradingNew.buy.tradingAccountKey = account.key;
-            state.wallet.tradingNew.buy.receiveAddress = account.addresses?.used[0];
+            state.wallet.trading.buy.tradingAccountKey = account.key;
+            state.wallet.trading.buy.receiveAddress = account.addresses?.used[0];
         });
 
         it('should be undefined when no tradingAccountKey is defined', () => {
-            state.wallet.tradingNew.buy.tradingAccountKey = undefined;
+            state.wallet.trading.buy.tradingAccountKey = undefined;
 
             expect(selectBuySelectedReceiveAccount(state)).toBeUndefined();
         });
@@ -69,7 +69,7 @@ describe('buySelectors', () => {
         });
 
         it('should throw when no account with given key exists', () => {
-            state.wallet.tradingNew.buy.tradingAccountKey = 'unknown_account_key';
+            state.wallet.trading.buy.tradingAccountKey = 'unknown_account_key';
 
             expect(() => selectBuySelectedReceiveAccount(state)).toThrow(
                 'Unknown tradingAccountKey: [unknown_account_key]',
@@ -92,7 +92,7 @@ describe('buySelectors', () => {
         });
 
         it('should sort coins', () => {
-            state.wallet.tradingNew.buy.buyInfo!.supportedCryptoCurrencies = [
+            state.wallet.trading.buy.buyInfo!.supportedCryptoCurrencies = [
                 'bitcoin',
                 'ethereum',
                 'eos',
@@ -121,7 +121,7 @@ describe('buySelectors', () => {
         });
 
         it('should be empty array when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectBuyTradeableAssetsSorted(state)).toEqual([]);
         });
@@ -129,7 +129,7 @@ describe('buySelectors', () => {
 
     describe('selectBuyFormDefaultValues', () => {
         it('should return object with empty values when buy info is not initialized ', () => {
-            state.wallet.tradingNew.buy.buyInfo = undefined;
+            state.wallet.trading.buy.buyInfo = undefined;
 
             expect(selectBuyFormDefaultValues(state)).toEqual({});
         });
@@ -146,7 +146,7 @@ describe('buySelectors', () => {
         });
 
         it('should use default value for fiat currency if no fiat is suggested', () => {
-            state.wallet.tradingNew.buy.buyInfo!.buyInfo.suggestedFiatCurrency = undefined;
+            state.wallet.trading.buy.buyInfo!.buyInfo.suggestedFiatCurrency = undefined;
 
             expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
@@ -156,7 +156,7 @@ describe('buySelectors', () => {
         });
 
         it('should not specify country if country is not in the list', () => {
-            state.wallet.tradingNew.buy.buyInfo!.buyInfo.country = 'XX';
+            state.wallet.trading.buy.buyInfo!.buyInfo.country = 'XX';
 
             expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
@@ -172,7 +172,7 @@ describe('buySelectors', () => {
         });
 
         it('should return stable empty array when supportedFiatCurrencies are not set', () => {
-            state.wallet.tradingNew.buy.buyInfo = undefined;
+            state.wallet.trading.buy.buyInfo = undefined;
 
             const result = selectBuySupportedFiatCurrencies(state);
             expect(result).toEqual([]);
@@ -208,7 +208,7 @@ describe('buySelectors', () => {
         });
 
         it('should deduplicate values', () => {
-            state.wallet.tradingNew.buy.buyInfo!.supportedFiatCurrencies = [
+            state.wallet.trading.buy.buyInfo!.supportedFiatCurrencies = [
                 'usd',
                 'usd',
                 'eur',
@@ -236,7 +236,7 @@ describe('buySelectors', () => {
 
     describe('selectValidMobileTradingBuyQuotes', () => {
         beforeEach(() => {
-            state.wallet.tradingNew.buy.quotes = [
+            state.wallet.trading.buy.quotes = [
                 ...quotes,
                 { ...quotes[0], exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
@@ -284,7 +284,7 @@ describe('buySelectors', () => {
 
     describe('selectBuyBestQuotesForAvailablePaymentMethods', () => {
         beforeEach(() => {
-            state.wallet.tradingNew.buy.quotes = quotes as BuyTrade[];
+            state.wallet.trading.buy.quotes = quotes as BuyTrade[];
         });
 
         it('should return only best quote for each payment method', () => {
@@ -316,7 +316,7 @@ describe('buySelectors', () => {
                 paymentMethod: undefined,
             } as unknown as BuyTrade;
 
-            state.wallet.tradingNew.buy.quotes = [quote];
+            state.wallet.trading.buy.quotes = [quote];
 
             expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
@@ -327,7 +327,7 @@ describe('buySelectors', () => {
                 paymentMethodName: undefined,
             } as unknown as BuyTrade;
 
-            state.wallet.tradingNew.buy.quotes = [quote];
+            state.wallet.trading.buy.quotes = [quote];
 
             expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
@@ -335,7 +335,7 @@ describe('buySelectors', () => {
 
     describe('selectMobileBuyQuotesByPaymentMethod', () => {
         beforeEach(() => {
-            state.wallet.tradingNew.buy.quotes = [
+            state.wallet.trading.buy.quotes = [
                 ...quotes,
                 { ...quotes[0], exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];

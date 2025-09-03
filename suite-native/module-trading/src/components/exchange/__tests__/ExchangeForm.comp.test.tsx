@@ -25,7 +25,7 @@ describe('ExchangeForm', () => {
         renderWithStoreProviderAsync(<ExchangeForm />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState: {
-                wallet: { tradingNew: getInitializedTradingState() },
+                wallet: { trading: getInitializedTradingState() },
             },
         });
 

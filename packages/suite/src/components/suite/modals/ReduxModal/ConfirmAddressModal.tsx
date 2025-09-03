@@ -32,7 +32,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const isTradingFlow = useSelector(selectTradingModalAccountKey);
-    const { modalCryptoId } = useSelector(state => state.wallet.tradingNew);
+    const { modalCryptoId } = useSelector(state => state.wallet.trading);
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const isConnectPopup = useSelector(
         state => selectConnectPopupCall(state)?.state === 'address-confirmation',

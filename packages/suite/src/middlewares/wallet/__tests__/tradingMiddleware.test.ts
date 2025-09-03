@@ -36,21 +36,21 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const tradingNewReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 const accountsReducer = prepareAccountsReducer(extraDependenciesMock);
 
 interface Args {
-    tradingNew?: TradingState;
+    trading?: TradingState;
     selectedAccount?: SelectedAccountStatus;
     settings?: SuiteState;
     router?: RouterState;
     modal?: ModalState;
 }
 
-const getInitialState = ({ tradingNew, selectedAccount, router }: Args = {}) => ({
+const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
     wallet: {
-        tradingNew:
-            tradingNew ??
+        trading:
+            trading ??
             ({
                 isLoading: false,
                 lastLoadedTimestamp: 0,
@@ -78,13 +78,13 @@ type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
     const { settings } = state.suite;
-    const { tradingNew, selectedAccount } = state.wallet;
+    const { trading, selectedAccount } = state.wallet;
 
     const store = configureMockStore({
         extra: {},
         reducer: combineReducers({
             wallet: combineReducers({
-                tradingNew: tradingNewReducer,
+                trading: tradingReducer,
                 selectedAccount: selectedAccountReducer,
                 accounts: accountsReducer,
             }),
@@ -94,9 +94,9 @@ const initStore = (state: State) => {
         }),
         preloadedState: {
             wallet: {
-                tradingNew: {
+                trading: {
                     ...initialState,
-                    ...tradingNew,
+                    ...trading,
                 },
                 selectedAccount,
                 accounts,
@@ -138,7 +138,7 @@ describe('tradingMiddleware', () => {
     ])('%s', (_, result, routeChange) => {
         const store = initStore(
             getInitialState({
-                tradingNew: {
+                trading: {
                     ...initialState,
                     modalAccountKey: 'mocked-key',
                     modalCryptoId: 'mocked-key' as CryptoId,
@@ -155,8 +155,8 @@ describe('tradingMiddleware', () => {
             },
         });
 
-        expect(store.getState().wallet.tradingNew.modalCryptoId).toEqual(result);
-        expect(store.getState().wallet.tradingNew.modalAccountKey).toEqual(result);
+        expect(store.getState().wallet.trading.modalCryptoId).toEqual(result);
+        expect(store.getState().wallet.trading.modalAccountKey).toEqual(result);
     });
 
     it.each([
@@ -199,7 +199,7 @@ describe('tradingMiddleware', () => {
     ])('%s', (_, result, routeDefault, routeChange) => {
         const store = initStore(
             getInitialState({
-                tradingNew: {
+                trading: {
                     ...initialState,
                     prefilledFromAccount: {
                         cryptoId: 'bitcoin' as CryptoId,
@@ -217,7 +217,7 @@ describe('tradingMiddleware', () => {
             },
         });
 
-        expect(store.getState().wallet.tradingNew.prefilledFromAccount).toEqual(result);
+        expect(store.getState().wallet.trading.prefilledFromAccount).toEqual(result);
     });
 
     it.each([
@@ -229,7 +229,7 @@ describe('tradingMiddleware', () => {
         (section, route) => {
             const store = initStore(
                 getInitialState({
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                     },
                     router: {
@@ -246,8 +246,8 @@ describe('tradingMiddleware', () => {
                 },
             });
 
-            expect(store.getState().wallet.tradingNew.activeSection).toEqual(section);
-            expect(store.getState().wallet.tradingNew[section].transactionId).toBeUndefined();
+            expect(store.getState().wallet.trading.activeSection).toEqual(section);
+            expect(store.getState().wallet.trading[section].transactionId).toBeUndefined();
         },
     );
 
@@ -257,7 +257,7 @@ describe('tradingMiddleware', () => {
     ])('should create new invity API key when action %s is called', (action, section) => {
         const store = initStore(
             getInitialState({
-                tradingNew: {
+                trading: {
                     ...initialState,
                 },
                 router: {
@@ -273,7 +273,7 @@ describe('tradingMiddleware', () => {
         });
 
         expect(invityAPI.createInvityAPIKey).toHaveBeenCalledTimes(1);
-        expect(store.getState().wallet.tradingNew[section].tradingAccountKey).toEqual(
+        expect(store.getState().wallet.trading[section].tradingAccountKey).toEqual(
             'btc-descriptor',
         );
     });

@@ -24,7 +24,7 @@ describe('TradingTabContent', () => {
         renderWithStoreProviderAsync(<TradingTabContent />, {
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         activeTradingType: 'buy',
                     },

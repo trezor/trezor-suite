@@ -26,13 +26,13 @@ describe('sellSelectors', () => {
     });
 
     it('selectTradingSell should select trading sell state', () => {
-        expect(selectTradingSell(state)).toEqual(state.wallet.tradingNew.sell);
+        expect(selectTradingSell(state)).toEqual(state.wallet.trading.sell);
     });
 
     describe('selectSellSupportedFiatCurrencies', () => {
         it('should select supportedFiatCurrencies', () => {
             // Mock the sell info with supported currencies
-            state.wallet.tradingNew.sell.sellInfo = {
+            state.wallet.trading.sell.sellInfo = {
                 supportedFiatCurrencies: ['usd', 'eur', 'czk'],
                 supportedCryptoCurrencies: [],
                 providerInfos: {},
@@ -43,7 +43,7 @@ describe('sellSelectors', () => {
         });
 
         it('should return stable empty array when supportedFiatCurrencies are not set', () => {
-            state.wallet.tradingNew.sell.sellInfo = undefined;
+            state.wallet.trading.sell.sellInfo = undefined;
 
             const result = selectSellSupportedFiatCurrencies(state);
             expect(result).toEqual([]);
@@ -51,7 +51,7 @@ describe('sellSelectors', () => {
         });
 
         it('should return stable empty array when sellInfo is not set', () => {
-            state.wallet.tradingNew.sell.sellInfo = undefined;
+            state.wallet.trading.sell.sellInfo = undefined;
 
             const result = selectSellSupportedFiatCurrencies(state);
             expect(result).toEqual([]);
@@ -61,7 +61,7 @@ describe('sellSelectors', () => {
 
     describe('selectSellSupportedFiatCurrenciesList', () => {
         beforeEach(() => {
-            state.wallet.tradingNew.sell.sellInfo = {
+            state.wallet.trading.sell.sellInfo = {
                 supportedFiatCurrencies: ['usd', 'eur', 'czk'],
                 supportedCryptoCurrencies: [],
                 providerInfos: {},
@@ -96,7 +96,7 @@ describe('sellSelectors', () => {
         });
 
         it('should handle unknown currency codes', () => {
-            state.wallet.tradingNew.sell.sellInfo!.supportedFiatCurrencies = ['unknown', 'usd'];
+            state.wallet.trading.sell.sellInfo!.supportedFiatCurrencies = ['unknown', 'usd'];
 
             expect(selectSellSupportedFiatCurrenciesList(state)).toEqual([
                 {
@@ -115,7 +115,7 @@ describe('sellSelectors', () => {
 
     describe('selectSellAmountLimits', () => {
         it('should return amount limits', () => {
-            state.wallet.tradingNew.sell.amountLimits = {
+            state.wallet.trading.sell.amountLimits = {
                 currency: 'BTC',
                 maxCrypto: '50',
                 minCrypto: '0.0001',
@@ -129,7 +129,7 @@ describe('sellSelectors', () => {
         });
 
         it('should return undefined when amount limits are not set', () => {
-            state.wallet.tradingNew.sell.amountLimits = undefined;
+            state.wallet.trading.sell.amountLimits = undefined;
 
             expect(selectSellAmountLimits(state)).toBeUndefined();
         });
@@ -138,7 +138,7 @@ describe('sellSelectors', () => {
     describe('selectSellFormDefaultValues', () => {
         beforeEach(() => {
             // Mock the trading sell info
-            state.wallet.tradingNew.sell.sellInfo = {
+            state.wallet.trading.sell.sellInfo = {
                 supportedFiatCurrencies: ['usd', 'eur'],
                 supportedCryptoCurrencies: [],
                 providerInfos: {},
@@ -146,7 +146,7 @@ describe('sellSelectors', () => {
             };
 
             // Mock the coins info
-            state.wallet.tradingNew.info.coins = {
+            state.wallet.trading.info.coins = {
                 bitcoin: {
                     symbol: 'btc',
                     name: 'Bitcoin',
@@ -172,19 +172,19 @@ describe('sellSelectors', () => {
         });
 
         it('should return empty object when sell info is not initialized', () => {
-            state.wallet.tradingNew.sell.sellInfo = undefined;
+            state.wallet.trading.sell.sellInfo = undefined;
 
             expect(selectSellFormDefaultValues(state)).toEqual({});
         });
 
         it('should return empty object when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectSellFormDefaultValues(state)).toEqual({});
         });
 
         it('should not specify country if country is not in the list', () => {
-            state.wallet.tradingNew.sell.sellInfo!.country = 'XX';
+            state.wallet.trading.sell.sellInfo!.country = 'XX';
 
             expect(selectSellFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
@@ -219,11 +219,11 @@ describe('sellSelectors', () => {
 
         beforeEach(() => {
             account = getBtcAccount();
-            state.wallet.tradingNew.sell.tradingAccountKey = account.key;
+            state.wallet.trading.sell.tradingAccountKey = account.key;
         });
 
         it('should be undefined when no tradingAccountKey is defined', () => {
-            state.wallet.tradingNew.sell.tradingAccountKey = undefined;
+            state.wallet.trading.sell.tradingAccountKey = undefined;
 
             expect(selectSellSelectedSendAccount(state)).toBeUndefined();
         });
@@ -237,7 +237,7 @@ describe('sellSelectors', () => {
         });
 
         it('should return undefined when no account with given key exists', () => {
-            state.wallet.tradingNew.sell.tradingAccountKey = 'unknown_account_key';
+            state.wallet.trading.sell.tradingAccountKey = 'unknown_account_key';
 
             expect(selectSellSelectedSendAccount(state)).toBeUndefined();
         });
@@ -245,7 +245,7 @@ describe('sellSelectors', () => {
 
     describe('selectSellBestQuotesForAvailablePaymentMethods', () => {
         beforeEach(() => {
-            state.wallet.tradingNew.sell.quotes = sellQuotes;
+            state.wallet.trading.sell.quotes = sellQuotes;
         });
 
         it('should return only best quote for each payment method', () => {
@@ -273,7 +273,7 @@ describe('sellSelectors', () => {
                 paymentMethod: undefined,
             } as unknown as SellFiatTrade;
 
-            state.wallet.tradingNew.sell.quotes = [quote];
+            state.wallet.trading.sell.quotes = [quote];
 
             expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
@@ -284,7 +284,7 @@ describe('sellSelectors', () => {
                 paymentMethodName: undefined,
             } as unknown as SellFiatTrade;
 
-            state.wallet.tradingNew.sell.quotes = [quote];
+            state.wallet.trading.sell.quotes = [quote];
 
             expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
@@ -292,7 +292,7 @@ describe('sellSelectors', () => {
 
     describe('selectSellQuotesByPaymentMethod', () => {
         beforeEach(() => {
-            state.wallet.tradingNew.sell.quotes = sellQuotes;
+            state.wallet.trading.sell.quotes = sellQuotes;
         });
 
         it('should select valid quotes', () => {

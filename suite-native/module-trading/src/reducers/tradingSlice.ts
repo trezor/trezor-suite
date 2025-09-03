@@ -40,7 +40,7 @@ export interface TradingState extends CommonTradingState {
 
 export type TradingRootState = {
     wallet: {
-        tradingNew: TradingState;
+        trading: TradingState;
     };
 };
 

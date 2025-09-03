@@ -60,7 +60,7 @@ const initStore = (localInitialState?: Partial<TradingState>) =>
         },
         reducer: combineReducers({
             wallet: combineReducers({
-                tradingNew: tradingReducer,
+                trading: tradingReducer,
                 selectedAccount: mockedSelectedAccountReducer,
                 accounts: mockedAccountReducer,
             }),
@@ -68,7 +68,7 @@ const initStore = (localInitialState?: Partial<TradingState>) =>
         }),
         preloadedState: {
             wallet: {
-                tradingNew: {
+                trading: {
                     ...initialState,
                     ...localInitialState,
                 },
@@ -269,6 +269,6 @@ describe('loadInitialDataThunk', () => {
 
         await store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' })).unwrap();
 
-        expect(store.getState().wallet.tradingNew.activeSection).toBe('exchange');
+        expect(store.getState().wallet.trading.activeSection).toBe('exchange');
     });
 });

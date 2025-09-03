@@ -15,7 +15,7 @@ describe('quotesUtils', () => {
 
     const renderUseTradingBuyForm = () =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), {
-            preloadedState: { wallet: { tradingNew: getInitializedTradingState() } },
+            preloadedState: { wallet: { trading: getInitializedTradingState() } },
         });
 
     beforeEach(async () => {

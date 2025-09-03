@@ -25,7 +25,7 @@ jest.mock('@suite-common/message-system', () => {
 describe('TradingTypeAwareContextMessage', () => {
     const getPreloadedState = (activeTradingType: TradingType | undefined): PreloadedState => ({
         wallet: {
-            tradingNew: {
+            trading: {
                 activeTradingType,
             },
         },

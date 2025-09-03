@@ -22,8 +22,8 @@ describe('ProviderListItem', () => {
         );
 
     it('should render provider information correctly', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.tradingNew.buy.quotes[0];
+        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.trading.buy.quotes[0];
 
         const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
 
@@ -31,8 +31,8 @@ describe('ProviderListItem', () => {
     });
 
     it('should render trading information with formatted strings', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.tradingNew.buy.quotes[0];
+        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.trading.buy.quotes[0];
 
         const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
 
@@ -41,8 +41,8 @@ describe('ProviderListItem', () => {
     });
 
     it('should render KYC information when provider has KYC policy', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.tradingNew.exchange.quotes[2];
+        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.trading.exchange.quotes[2];
 
         const { queryByText } = await renderProviderListItem(quote, preloadedState, {
             tradingType: 'exchange',
@@ -52,8 +52,8 @@ describe('ProviderListItem', () => {
     });
 
     it('should render anonymous information for DEX providers', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.tradingNew.exchange.quotes[3];
+        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.trading.exchange.quotes[3];
 
         const { queryByText } = await renderProviderListItem(quote, preloadedState, {
             tradingType: 'exchange',
@@ -64,8 +64,8 @@ describe('ProviderListItem', () => {
     });
 
     it('should not render when quote has no orderId', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const baseQuote = preloadedState.wallet.tradingNew.buy.quotes[0];
+        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
+        const baseQuote = preloadedState.wallet.trading.buy.quotes[0];
         const { orderId, ...quoteWithoutOrderId } = baseQuote;
         const quote = quoteWithoutOrderId as TradingTradeType;
 
@@ -75,8 +75,8 @@ describe('ProviderListItem', () => {
     });
 
     it('should render KYC warning for buy quote', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.tradingNew.buy.quotes[0];
+        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.trading.buy.quotes[0];
 
         const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
 
@@ -84,8 +84,8 @@ describe('ProviderListItem', () => {
     });
 
     it('should render KYC warning for sell quote', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.tradingNew.sell.quotes[0];
+        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.trading.sell.quotes[0];
 
         const { queryByText } = await renderProviderListItem(quote, preloadedState, {
             tradingType: 'sell',

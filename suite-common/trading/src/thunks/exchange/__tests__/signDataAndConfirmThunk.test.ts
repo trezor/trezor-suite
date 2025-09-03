@@ -44,12 +44,12 @@ describe('signDataAndConfirmThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         exchange: {
                             ...initialState.exchange,
@@ -228,13 +228,13 @@ describe('signDataAndConfirmThunk', () => {
             }),
         );
 
-        const { tradingNew } = store.getState().wallet;
+        const { trading } = store.getState().wallet;
         const actionToast = store
             .getActions()
             .find(action => action.type === '@common/in-app-notifications/addToast');
 
         expect(store.getActions().length).toEqual(4);
-        expect(tradingNew.modalAccountKey).toEqual(account.key);
+        expect(trading.modalAccountKey).toEqual(account.key);
         expect(actionToast?.payload?.type).toEqual('sign-message-error');
         expect(actionToast?.payload?.error).toEqual('Data is not correct');
     });
@@ -280,11 +280,11 @@ describe('signDataAndConfirmThunk', () => {
             }),
         );
 
-        const { tradingNew } = store.getState().wallet;
+        const { trading } = store.getState().wallet;
 
         expect(store.getActions().length).toEqual(3);
-        expect(tradingNew.modalAccountKey).toEqual(account.key);
-        expect(tradingNew.trades).toEqual([]);
+        expect(trading.modalAccountKey).toEqual(account.key);
+        expect(trading.trades).toEqual([]);
         expect(exchangeThunks.confirmTradeThunk).not.toHaveBeenCalled();
     });
 
@@ -327,8 +327,8 @@ describe('signDataAndConfirmThunk', () => {
             }),
         );
 
-        const { tradingNew } = store.getState().wallet;
-        const { selectedQuote } = tradingNew.exchange;
+        const { trading } = store.getState().wallet;
+        const { selectedQuote } = trading.exchange;
         const trade = {
             ...selectedQuote,
             signature: 'signature',
@@ -340,8 +340,8 @@ describe('signDataAndConfirmThunk', () => {
             .mockImplementation(createThunk('@trading-exchange/thunk/confirmTrade', () => true));
 
         expect(store.getActions().length).toEqual(6);
-        expect(tradingNew.modalAccountKey).toEqual(account.key);
-        expect(tradingNew.trades[0]).toEqual({
+        expect(trading.modalAccountKey).toEqual(account.key);
+        expect(trading.trades[0]).toEqual({
             tradeType: 'exchange',
             date: dateString,
             data: trade,

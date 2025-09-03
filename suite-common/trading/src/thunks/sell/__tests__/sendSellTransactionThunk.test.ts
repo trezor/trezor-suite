@@ -56,12 +56,12 @@ describe('sendSellTransactionThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         sell: {
                             ...sellInitialState,
@@ -117,7 +117,7 @@ describe('sendSellTransactionThunk', () => {
                 }),
             );
 
-            const tradingState = store.getState().wallet.tradingNew;
+            const tradingState = store.getState().wallet.trading;
 
             expect(tradingState.modalAccountKey).toBe(account.key);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(0);
@@ -164,7 +164,7 @@ describe('sendSellTransactionThunk', () => {
                     signAndPushSendFormTransaction: jest.fn(),
                 }),
             );
-            const tradingState = store.getState().wallet.tradingNew;
+            const tradingState = store.getState().wallet.trading;
 
             expect(tradingState.modalAccountKey).toBe(account.key);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
@@ -220,7 +220,7 @@ describe('sendSellTransactionThunk', () => {
                     signAndPushSendFormTransaction: jest.fn(),
                 }),
             );
-            const tradingState = store.getState().wallet.tradingNew;
+            const tradingState = store.getState().wallet.trading;
 
             expect(tradingState.modalAccountKey).toBe(account.key);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
@@ -259,7 +259,7 @@ describe('sendSellTransactionThunk', () => {
                 signAndPushSendFormTransaction: jest.fn(),
             }),
         );
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
 
         expect(tradingState.modalAccountKey).toBe(account.key);
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
@@ -301,7 +301,7 @@ describe('sendSellTransactionThunk', () => {
                 signAndPushSendFormTransaction: jest.fn(),
             }),
         );
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
         const mockedRecomposeAndSignTxThunk =
             tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock;
 
@@ -360,7 +360,7 @@ describe('sendSellTransactionThunk', () => {
                 signAndPushSendFormTransaction: jest.fn(),
             }),
         );
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
         const mockedRecomposeAndSignTxThunk =
             tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock;
 
@@ -415,7 +415,7 @@ describe('sendSellTransactionThunk', () => {
                 signAndPushSendFormTransaction: jest.fn(),
             }),
         );
-        const tradingState = store.getState().wallet.tradingNew;
+        const tradingState = store.getState().wallet.trading;
         const mockedRecomposeAndSignTxThunk =
             tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock;
 

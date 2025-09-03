@@ -18,14 +18,14 @@ describe('loadExchangeInfoThunk', () => {
         extra: {},
         reducer: combineReducers({
             wallet: combineReducers({
-                tradingNew: combineReducers({
+                trading: combineReducers({
                     exchange: tradingExchangeReducer,
                 }),
             }),
         }),
         preloadedState: {
             wallet: {
-                tradingNew: {
+                trading: {
                     exchange: exchangeInitialState,
                 },
             },

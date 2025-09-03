@@ -62,7 +62,7 @@ const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
 >();
 
 export const selectTradingEnvironment = (state: TradingRootState) =>
-    state.wallet.tradingNew.tradingEnvironment;
+    state.wallet.trading.tradingEnvironment;
 
 export const selectIsTradingBuyEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingBuyEnabled) ||
@@ -107,17 +107,17 @@ export const selectIsTradingBlacklisted = (state: MessageSystemRootState) =>
 
 // trade for opening in detail
 export const selectTradeToBeOpened = (state: TradingRootState) => {
-    const orderId = state.wallet.tradingNew.tradeOrderIdToBeOpened;
+    const orderId = state.wallet.trading.tradeOrderIdToBeOpened;
     if (!orderId) return undefined;
 
-    return state.wallet.tradingNew.trades.find(trade => trade.data.orderId === orderId);
+    return state.wallet.trading.trades.find(trade => trade.data.orderId === orderId);
 };
 
 export const selectIsAmountInputActive = (state: TradingRootState) =>
-    state.wallet.tradingNew.isAmountInputActive;
+    state.wallet.trading.isAmountInputActive;
 
 export const selectActiveTradingType = (state: TradingRootState) =>
-    state.wallet.tradingNew.activeTradingType;
+    state.wallet.trading.activeTradingType;
 
 export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
     [

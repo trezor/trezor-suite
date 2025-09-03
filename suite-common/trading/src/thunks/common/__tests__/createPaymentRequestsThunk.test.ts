@@ -188,12 +188,12 @@ describe('createPaymentRequestsThunk', () => {
             extra: extraDependenciesMock,
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         info: {
                             coins: {

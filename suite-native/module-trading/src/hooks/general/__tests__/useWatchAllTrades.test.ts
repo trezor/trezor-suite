@@ -46,7 +46,7 @@ describe('useWatchAllTrades', () => {
     const getInitializedStore = async ({ trades = [] }: { trades?: any[] } = {}) => {
         const preloadedState: PreloadedState = {
             wallet: {
-                tradingNew: {
+                trading: {
                     ...getInitializedTradingState(),
                     trades,
                 },

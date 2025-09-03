@@ -32,7 +32,7 @@ export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 export const stakeReducer = prepareStakeReducer(extraDependencies);
 export const sendFormReducer = prepareSendFormReducer(extraDependencies);
-export const tradingNewReducer = prepareTradingReducer(extraDependencies);
+export const tradingReducer = prepareTradingReducer(extraDependencies);
 export const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
@@ -46,7 +46,7 @@ const WalletReducers = combineReducers({
     fees: feesReducer,
     blockchain: blockchainReducer,
     explorer: explorerReducer,
-    tradingNew: tradingNewReducer, // TODO: trading - tradingNew is temporary
+    trading: tradingReducer,
     send: sendFormReducer,
     accountSearch: accountSearchReducer,
     formDrafts: formDraftReducer,

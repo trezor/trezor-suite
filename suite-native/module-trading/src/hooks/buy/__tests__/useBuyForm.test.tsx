@@ -40,7 +40,7 @@ describe('useBuyForm', () => {
     const getInitializedStore = async (amountInSats = false) => {
         const preloadedState: PreloadedState = {
             wallet: {
-                tradingNew: getInitializedTradingState(),
+                trading: getInitializedTradingState(),
                 settings: {
                     bitcoinAmountUnit: amountInSats
                         ? PROTO.AmountUnit.SATOSHI
@@ -53,7 +53,7 @@ describe('useBuyForm', () => {
                 ],
             },
         };
-        preloadedState.wallet!.tradingNew!.buy!.tradingAccountKey = 'btc-account-1';
+        preloadedState.wallet!.trading!.buy!.tradingAccountKey = 'btc-account-1';
 
         return await initStore(preloadedState);
     };

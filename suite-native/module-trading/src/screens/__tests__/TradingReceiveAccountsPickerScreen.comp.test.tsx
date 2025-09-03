@@ -38,7 +38,7 @@ const getPreloadedState = (preloadedAccounts: Account[]): PreloadedState => ({
     },
     wallet: {
         accounts: preloadedAccounts,
-        tradingNew: {
+        trading: {
             ...getInitializedTradingState(),
         },
     },

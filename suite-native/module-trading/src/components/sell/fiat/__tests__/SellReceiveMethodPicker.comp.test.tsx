@@ -40,7 +40,7 @@ describe('SellReceiveMethodPicker', () => {
     });
 
     it('should render loading skeleton when no quotes are loaded and new quotes are loading', async () => {
-        preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+        preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
         const { getByLabelText } = await renderSellReceiveMethodPicker();
 
@@ -48,7 +48,7 @@ describe('SellReceiveMethodPicker', () => {
     });
 
     it('should render "Not selected" when no quote is selected', async () => {
-        preloadedState!.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+        preloadedState!.wallet!.trading!.sell!.quotes = sellQuotes;
 
         const { getByLabelText } = await renderSellReceiveMethodPicker();
 
@@ -57,7 +57,7 @@ describe('SellReceiveMethodPicker', () => {
 
     describe('with quotes loaded', () => {
         beforeEach(() => {
-            preloadedState!.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+            preloadedState!.wallet!.trading!.sell!.quotes = sellQuotes;
             act(() => {
                 form.setValue('quote', sellQuotes[1]);
             });
@@ -70,7 +70,7 @@ describe('SellReceiveMethodPicker', () => {
         });
 
         it('should render loading skeleton when quotes are loaded and new quotes are loading', async () => {
-            preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+            preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
             const { getByLabelText } = await renderSellReceiveMethodPicker();
 
