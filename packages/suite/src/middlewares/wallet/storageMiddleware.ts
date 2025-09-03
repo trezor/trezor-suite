@@ -241,6 +241,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case setBaseCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_MEV_PROTECTION:
+                case WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA:
                     api.dispatch(storageActions.saveWalletSettings());
                     break;
                 case SUITE.SET_LANGUAGE:

@@ -7,6 +7,7 @@ const TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS = '@wallet-settings/toggle-hide-suspic
 const SET_DISCREET_MODE = '@wallet-settings/set-discreet-mode';
 const CHANGE_COIN_VISIBILITY = '@wallet-settings/change-coin-visibility';
 const SET_MEV_PROTECTION = '@wallet-settings/set-mev-protection';
+const AUTO_FORGET_DEVICE_DATA = '@wallet-settings/set-auto-forget-device-data';
 
 export const WALLET_SETTINGS = {
     SET_BASE_CURRENCY,
@@ -18,4 +19,5 @@ export const WALLET_SETTINGS = {
     SET_DISCREET_MODE,
     CHANGE_COIN_VISIBILITY,
     SET_MEV_PROTECTION,
+    AUTO_FORGET_DEVICE_DATA,
 } as const;
