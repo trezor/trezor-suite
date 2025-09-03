@@ -7,10 +7,11 @@ import {
     TRADING_FORM_OUTPUT_CURRENCY,
     TradingFiatCurrencyOption,
 } from '@suite-common/trading';
-import { buildCurrencyOptions } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
 
+import { useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAllFormProps, TradingFormInputCurrencyProps } from 'src/types/trading/tradingForm';
 import {
     getFiatCurrenciesProps,
@@ -20,8 +21,7 @@ import {
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
-
-import { useBitcoinAmountUnit } from '../../../../../../hooks/wallet/useBitcoinAmountUnit';
+import { buildCurrencyOptions } from 'src/views/wallet/send/Outputs/Amount/BaseCurrencyOptions';
 
 export const TradingFormInputCurrency = ({
     isClean = true,
@@ -36,6 +36,7 @@ export const TradingFormInputCurrency = ({
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
     const { areSatsDisplayed } = useBitcoinAmountUnit(context.network.symbol);
+    const { translationString } = useTranslation();
 
     const options = useMemo(
         () =>
@@ -43,8 +44,8 @@ export const TradingFormInputCurrency = ({
                 ? [...currencies]
                       .map(currency => buildTradingFiatOption(currency))
                       .filter(currency => currency.value !== currentCurrency.value)
-                : buildCurrencyOptions({ selected: currentCurrency, areSatsDisplayed }),
-        [currencies, currentCurrency, areSatsDisplayed],
+                : buildCurrencyOptions({ translationString, areSatsDisplayed }),
+        [areSatsDisplayed, currencies, currentCurrency, translationString],
     );
 
     const onChangeAdditional = (option: TradingFiatCurrencyOption) => {

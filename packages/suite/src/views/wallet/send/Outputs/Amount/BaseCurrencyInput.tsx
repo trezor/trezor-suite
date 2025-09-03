@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,8 +12,6 @@ import {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import {
-    buildCurrencyOption,
-    buildCurrencyOptions,
     findToken,
     getDecimalsForBaseCurrency,
     getInputState,
@@ -29,6 +28,8 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
+
+import { buildCurrencyOptions, buildShortCurrencyOption } from './BaseCurrencyOptions';
 
 type FiatInputProps = {
     output: Partial<Output>;
@@ -134,15 +135,17 @@ export const BaseCurrencyInput = ({
         };
     }
 
+    const options = useMemo(
+        () => buildCurrencyOptions({ translationString, areSatsDisplayed }),
+        [translationString, areSatsDisplayed],
+    );
+
     const renderCurrencySelect = ({
         field: { onChange, value: selectedOption },
     }: CallbackParams) => (
         <Select
-            options={buildCurrencyOptions({ selected: selectedOption, areSatsDisplayed })}
-            value={buildCurrencyOption({
-                currency: selectedOption.value,
-                areSatsDisplayed,
-            })}
+            options={options}
+            value={buildShortCurrencyOption({ currency: selectedOption.value, areSatsDisplayed })}
             isClearable={false}
             isSearchable
             minValueWidth="58px"

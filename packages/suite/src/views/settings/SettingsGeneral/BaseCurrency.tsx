@@ -1,30 +1,24 @@
 import { useMemo } from 'react';
 
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
-import {
-    BaseCurrencyCode,
-    fiatBaseCurrencies,
-    valuablesBaseCurrencies,
-} from '@trezor/blockchain-link-types';
+import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { typedObjectKeys } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-
-const buildCurrencyOption = (currency: BaseCurrencyCode) => ({
-    value: currency,
-    label: currency.toUpperCase(),
-});
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import {
+    buildCurrencyOptions,
+    buildShortCurrencyOption,
+} from 'src/views/wallet/send/Outputs/Amount/BaseCurrencyOptions';
 
 export const BaseCurrency = () => {
-    const { translationString } = useTranslation();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const { areSatsDisplayed } = useBitcoinAmountUnit();
+    const { translationString } = useTranslation();
     const dispatch = useDispatch();
-
-    const value = buildCurrencyOption(baseCurrencyCode);
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
         dispatch(setBaseCurrency(option.value));
@@ -37,17 +31,8 @@ export const BaseCurrency = () => {
     };
 
     const options = useMemo(
-        () => [
-            {
-                label: translationString('TR_BASE_CURRENCY_FIAT'),
-                options: typedObjectKeys(fiatBaseCurrencies).map(buildCurrencyOption),
-            },
-            {
-                label: translationString('TR_BASE_CURRENCY_VALUABLES'),
-                options: typedObjectKeys(valuablesBaseCurrencies).map(buildCurrencyOption),
-            },
-        ],
-        [translationString],
+        () => buildCurrencyOptions({ translationString, areSatsDisplayed }),
+        [translationString, areSatsDisplayed],
     );
 
     return (
@@ -57,7 +42,10 @@ export const BaseCurrency = () => {
                 <ActionSelect
                     useKeyPressScroll
                     onChange={handleChange}
-                    value={value}
+                    value={buildShortCurrencyOption({
+                        currency: baseCurrencyCode,
+                        areSatsDisplayed,
+                    })}
                     options={options}
                     data-testid="@settings/fiat-select"
                 />
