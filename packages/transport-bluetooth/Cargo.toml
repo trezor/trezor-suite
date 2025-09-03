@@ -17,19 +17,19 @@ serde = {version = "1.0.219", features = ["derive"] }
 serde_json = "^1.0.140"
 structopt = "0.3.26"
 tokio = { version = "^1.44.0", features = ["sync", "rt", "macros", "rt-multi-thread", "io-util"] }
-thiserror = "^2.0.12"
+thiserror = "^2.0.16"
 
 btleplug = "0.11.8"
-dashmap = "5.5.3"
+dashmap = "6.1.0"
 uuid = "1.6.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 dbus = {version = "0.9.7", features = ["vendored"]}
 dbus-tokio = "0.7.6"
-bluez-async = "0.7.2"
+bluez-async = "0.8.0"
 
 [target.'cfg(target_os = "windows")'.dependencies]
-windows = { version = "0.57.0", features = ["Devices_Bluetooth", "Devices_Enumeration"] }
+windows = { version = "0.61", features = ["Devices_Bluetooth", "Devices_Enumeration"] }
 
 [features]
 default = []
