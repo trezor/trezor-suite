@@ -27,11 +27,13 @@ export const CustomBackend = () => {
             >
                 <ComponentWithSubIcon
                     variant="primary"
-                    subIconProps={{
-                        name: 'check',
-                        color: theme['iconDefaultInverted'],
-                        size: iconSizes.extraSmall,
-                    }}
+                    icon={
+                        <Icon
+                            name="check"
+                            color={theme.iconDefaultInverted}
+                            size={iconSizes.extraSmall}
+                        />
+                    }
                 >
                     <Icon name="database" size={iconSizes.medium} variant="tertiary" />
                 </ComponentWithSubIcon>
