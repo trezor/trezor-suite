@@ -1,10 +1,8 @@
-import { G } from '@mobily/ts-belt';
-import { decode, verify } from 'jws';
-
+import { decodeJws, verifyJws } from '@suite-common/suite-utils';
 import { NetworkSymbol, getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/connect';
-import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 import {
     JWS_SIGN_ALGORITHM,
@@ -132,7 +130,7 @@ export const fetchTokenDefinitions = async (
 
     const jws = await response.text();
 
-    const decodedJws = decode(jws);
+    const decodedJws = decodeJws(jws);
 
     if (!decodedJws) {
         throw Error('Decoding of config failed');
@@ -143,13 +141,7 @@ export const fetchTokenDefinitions = async (
         throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
     }
 
-    const authenticityPublicKey = getJWSPublicKey();
-
-    if (G.isNullable(authenticityPublicKey)) {
-        throw Error('Public key check token definitions authenticity was not found.');
-    }
-
-    const isAuthenticityValid = verify(jws, JWS_SIGN_ALGORITHM, authenticityPublicKey);
+    const isAuthenticityValid = await verifyJws(jws, JWS_SIGN_ALGORITHM);
 
     if (!isAuthenticityValid) {
         throw Error('Config authenticity is invalid');

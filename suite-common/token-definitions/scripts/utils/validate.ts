@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Ajv from 'ajv';
 import * as fs from 'fs';
 import { join } from 'path';
