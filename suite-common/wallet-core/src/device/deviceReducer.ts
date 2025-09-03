@@ -50,7 +50,7 @@ export type DeviceReducerState = {
         firmwareAuthenticity?: string[];
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
-    isDeviceAutoEjectEnabled: boolean;
+    isDeviceAutoEjectEnabled: boolean; // this is currently used only on mobile
 };
 
 export const deviceInitialState: DeviceReducerState = {
