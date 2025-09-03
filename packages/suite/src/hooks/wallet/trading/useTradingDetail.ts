@@ -50,14 +50,14 @@ const getTypedTrade = <T extends TradingType>({
 };
 
 const getTradingDetailData = <T extends TradingType>({
-    tradingNew,
+    trading,
     tradeType,
     infos,
 }: TradingGetDetailDataProps): TradingGetDetailDataOutputProps<T> => {
     const info = infos[tradeType] as TradingTradeInfoMapProps[T];
 
-    const { trades } = tradingNew;
-    const { transactionId } = tradingNew[tradeType];
+    const { trades } = trading;
+    const { transactionId } = trading[tradeType];
 
     const trade = getTypedTrade<T>({
         trades,
@@ -76,13 +76,13 @@ export const useTradingDetail = <T extends TradingType>({
     selectedAccount,
     tradeType,
 }: TradingUseDetailProps): TradingUseDetailOutputProps<T> => {
-    const tradingNew = useSelector(selectTrading);
+    const trading = useSelector(selectTrading);
     const { account } = selectedAccount;
     const buyInfo = useSelector(selectTradingBuyInfo);
     const sellInfo = useSelector(selectTradingSellInfo);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { info, transactionId, trade } = getTradingDetailData<T>({
-        tradingNew,
+        trading,
         tradeType,
         infos: {
             buy: buyInfo,

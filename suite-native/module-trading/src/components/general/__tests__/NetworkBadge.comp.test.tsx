@@ -9,7 +9,7 @@ describe('NetworkBadge', () => {
     const renderPlatformBadge = (symbol: NetworkSymbol) =>
         renderWithStoreProviderAsync(<NetworkBadge symbol={symbol} />, {
             preloadedState: {
-                wallet: { tradingNew: { info: { coins, platforms } } },
+                wallet: { trading: { info: { coins, platforms } } },
             },
         });
 

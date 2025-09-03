@@ -13,7 +13,7 @@ jest.mock('@suite-native/helpers', () => ({
 
 const getPreloadedState = (trades: TradingTransaction[]) => ({
     wallet: {
-        tradingNew: {
+        trading: {
             ...getInitializedTradingState(),
             trades,
         },

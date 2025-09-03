@@ -29,12 +29,12 @@ describe('confirmSellTradeThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         sell: {
                             ...initialState.sell,
@@ -99,7 +99,7 @@ describe('confirmSellTradeThunk', () => {
             )
             .unwrap();
 
-        const sellState = store.getState().wallet.tradingNew.sell;
+        const sellState = store.getState().wallet.trading.sell;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(sellThunks.handleTradeThunk).toHaveBeenCalledTimes(1);
@@ -142,7 +142,7 @@ describe('confirmSellTradeThunk', () => {
             )
             .unwrap();
 
-        const sellState = store.getState().wallet.tradingNew.sell;
+        const sellState = store.getState().wallet.trading.sell;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(0);
         expect(sellThunks.handleTradeThunk).toHaveBeenCalledTimes(0);
@@ -178,7 +178,7 @@ describe('confirmSellTradeThunk', () => {
             )
             .unwrap();
 
-        const sellState = store.getState().wallet.tradingNew.sell;
+        const sellState = store.getState().wallet.trading.sell;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(sellThunks.handleTradeThunk).toHaveBeenCalledTimes(1);

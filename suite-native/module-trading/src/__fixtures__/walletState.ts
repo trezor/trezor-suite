@@ -17,7 +17,7 @@ export const getWalletState = ({
     tradeType = 'buy',
     deviceState,
 }: GetWalletStateParams = {}) => ({
-    tradingNew: getInitializedTradingState(tradeType),
+    trading: getInitializedTradingState(tradeType),
     settings: {
         localCurrency: 'usd',
         bitcoinAmountUnit,

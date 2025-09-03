@@ -124,7 +124,7 @@ describe('commonSelectors', () => {
                 tradingEnvironment: 'staging' as InvityServerEnvironment,
             };
 
-            expect(selectTradingEnvironment({ wallet: { tradingNew: state } })).toBe('staging');
+            expect(selectTradingEnvironment({ wallet: { trading: state } })).toBe('staging');
         });
     });
 
@@ -182,7 +182,7 @@ describe('commonSelectors', () => {
         const getMockStateForTradeToBeOpened = (orderId: string | undefined) =>
             ({
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         tradeOrderIdToBeOpened: orderId,
                         trades: [{ data: { orderId: 'order1' } }, { data: { orderId: 'order2' } }],
                     },
@@ -212,7 +212,7 @@ describe('commonSelectors', () => {
         it('should correctly select trading.isAmountInputActive state', () => {
             expect(
                 selectIsAmountInputActive({
-                    wallet: { tradingNew: { isAmountInputActive: true } as any },
+                    wallet: { trading: { isAmountInputActive: true } as any },
                 }),
             ).toBe(true);
         });
@@ -222,7 +222,7 @@ describe('commonSelectors', () => {
         it('should correctly select trading.activeTradingType state', () => {
             expect(
                 selectActiveTradingType({
-                    wallet: { tradingNew: { activeTradingType: 'exchange' } as any },
+                    wallet: { trading: { activeTradingType: 'exchange' } as any },
                 }),
             ).toBe('exchange');
         });
@@ -337,7 +337,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [btcAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                     transactions: { transactions: {} },
@@ -376,7 +376,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [zeroBalanceAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                 },
@@ -425,7 +425,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [ethAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
@@ -484,7 +484,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [ethAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
@@ -539,7 +539,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [ethAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
@@ -592,7 +592,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [ethAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
                     transactions: { transactions: {} },
@@ -625,7 +625,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [btcAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                     transactions: { transactions: {} },
@@ -656,7 +656,7 @@ describe('commonSelectors', () => {
 
             const stateWithDevice = {
                 wallet: {
-                    tradingNew: cleanState,
+                    trading: cleanState,
                     accounts: [btcAccount],
                     settings: { localCurrency: 'usd', enabledNetworks: ['btc'] },
                     transactions: { transactions: {} },

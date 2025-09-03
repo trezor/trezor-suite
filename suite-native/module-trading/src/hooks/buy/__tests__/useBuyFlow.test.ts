@@ -34,10 +34,10 @@ jest.mock('@suite-common/trading', () => ({
 describe('useBuyFlow', () => {
     const getInitializedStore = async ({ isLoading }: { isLoading?: boolean }) => {
         const preloadedState: PreloadedState = {
-            wallet: { tradingNew: getInitializedTradingStateWithQuotes() },
+            wallet: { trading: getInitializedTradingStateWithQuotes() },
         };
         if (isLoading !== undefined) {
-            preloadedState.wallet!.tradingNew!.buy!.isLoading = isLoading;
+            preloadedState.wallet!.trading!.buy!.isLoading = isLoading;
         }
 
         return await initStore(preloadedState);

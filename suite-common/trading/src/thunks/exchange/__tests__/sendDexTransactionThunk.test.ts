@@ -44,12 +44,12 @@ describe('sendDexTransactionThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         exchange: {
                             ...initialState.exchange,
@@ -179,7 +179,7 @@ describe('sendDexTransactionThunk', () => {
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
-        expect(store.getState().wallet.tradingNew.trades).toEqual([]);
+        expect(store.getState().wallet.trading.trades).toEqual([]);
         expect(exchangeThunks.confirmTradeThunk).toHaveBeenCalledTimes(1);
         expect(confirmTradeThunkArgs.trade.approvalSendTxHash).toEqual('txid');
         expect(confirmTradeThunkArgs.trade.status).toEqual('APPROVAL_PENDING');
@@ -228,7 +228,7 @@ describe('sendDexTransactionThunk', () => {
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
-        expect(store.getState().wallet.tradingNew.trades).toEqual([
+        expect(store.getState().wallet.trading.trades).toEqual([
             {
                 tradeType: 'exchange',
                 date: dateString,

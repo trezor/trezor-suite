@@ -47,7 +47,7 @@ describe('HistoryButton', () => {
         it('should render nothing when isAmountInputActive is true', async () => {
             const { toJSON } = await renderHistoryButton({
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         isAmountInputActive: true,
                     },
                 },

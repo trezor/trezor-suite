@@ -32,12 +32,12 @@ describe('handleSellRequestThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         info: {
                             ...initialState.info,
@@ -133,7 +133,7 @@ describe('handleSellRequestThunk', () => {
 
         const quotesResponse = await store.dispatch(sellThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(state.sell.amountLimits).toBeUndefined();
@@ -178,7 +178,7 @@ describe('handleSellRequestThunk', () => {
             )
             .unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(state.sell.amountLimits).toBeUndefined();
@@ -232,7 +232,7 @@ describe('handleSellRequestThunk', () => {
             )
             .unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(state.sell.amountLimits).toBeUndefined();
@@ -263,7 +263,7 @@ describe('handleSellRequestThunk', () => {
 
         await promise;
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
@@ -291,7 +291,7 @@ describe('handleSellRequestThunk', () => {
         const promise = store.dispatch(sellThunks.handleRequestThunk(incorrectData));
         await promise;
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
@@ -322,7 +322,7 @@ describe('handleSellRequestThunk', () => {
         const promise = store.dispatch(sellThunks.handleRequestThunk(modifiedInput));
         await promise;
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
         expect(state.sell.quotes.length).toEqual(0);
@@ -338,7 +338,7 @@ describe('handleSellRequestThunk', () => {
 
         const quotesResponse = await store.dispatch(sellThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
@@ -369,7 +369,7 @@ describe('handleSellRequestThunk', () => {
             .dispatch(sellThunks.handleRequestThunk(modifiedInput))
             .unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(state.sell.quotes.length).toEqual(1);

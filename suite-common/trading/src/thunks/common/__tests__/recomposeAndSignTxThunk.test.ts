@@ -115,14 +115,14 @@ describe('recomposeAndSignTxThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                     fees: mockedSuiteReducer,
                 }),
                 device: deviceReducer,
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         composedTransactionInfo: {
                             ...mockComposedTransactionInfo,

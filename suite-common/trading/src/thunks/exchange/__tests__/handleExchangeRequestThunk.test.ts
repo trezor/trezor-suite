@@ -27,12 +27,12 @@ describe('handleExchangeRequestThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         info: {
                             ...initialState.info,
@@ -141,7 +141,7 @@ describe('handleExchangeRequestThunk', () => {
             .dispatch(exchangeThunks.handleRequestThunk(input))
             .unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(state.exchange.amountLimits).toBeUndefined();
@@ -182,7 +182,7 @@ describe('handleExchangeRequestThunk', () => {
             )
             .unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(state.exchange.amountLimits).toBeUndefined();
@@ -236,7 +236,7 @@ describe('handleExchangeRequestThunk', () => {
 
             await promise;
 
-            const state = store.getState().wallet.tradingNew;
+            const state = store.getState().wallet.trading;
 
             expect(mockTimerLoading).toHaveBeenCalledTimes(1);
             expect(mockTimerStop).toHaveBeenCalledTimes(1);
@@ -258,7 +258,7 @@ describe('handleExchangeRequestThunk', () => {
 
         await promise;
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
@@ -276,7 +276,7 @@ describe('handleExchangeRequestThunk', () => {
             .dispatch(exchangeThunks.handleRequestThunk(input))
             .unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);

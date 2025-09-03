@@ -41,12 +41,12 @@ describe('getNonce thunk', () => {
             extra: extraDependenciesMock,
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         ...preloadedState,
                     },

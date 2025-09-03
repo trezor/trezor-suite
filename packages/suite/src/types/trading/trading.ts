@@ -84,7 +84,7 @@ export interface TradingGetTypedTradeProps {
 }
 
 export interface TradingGetDetailDataProps {
-    tradingNew: TradingStateSelector;
+    trading: TradingStateSelector;
     tradeType: TradingType;
     infos: {
         buy: TradingBuyInfoSelector | undefined;

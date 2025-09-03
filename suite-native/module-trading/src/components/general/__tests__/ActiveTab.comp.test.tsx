@@ -21,7 +21,7 @@ describe('ActiveTab', () => {
         ['sell', 'Sell disabled'],
     ])('should display correct trading type tab for %s', async (tradingType, expectedTitle) => {
         const { getByText } = await renderActiveTab({
-            wallet: { tradingNew: { activeTradingType: tradingType } },
+            wallet: { trading: { activeTradingType: tradingType } },
         });
 
         expect(getByText(expectedTitle)).toBeOnTheScreen();
@@ -29,7 +29,7 @@ describe('ActiveTab', () => {
 
     it('should render nothing when no active tab is specified', async () => {
         const { toJSON } = await renderActiveTab({
-            wallet: { tradingNew: { activeTradingType: undefined } },
+            wallet: { trading: { activeTradingType: undefined } },
         });
 
         expect(toJSON()).toBeNull();

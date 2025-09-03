@@ -334,7 +334,7 @@ export type TradingVerifiedAddress =
 
 export type TradingRootState = {
     wallet: {
-        tradingNew: TradingState; // TODO: trading - tradingNew is temporary
+        trading: TradingState;
     };
 };
 

@@ -230,7 +230,7 @@ describe('tradingSelectors', () => {
     const getState = () =>
         ({
             wallet: {
-                tradingNew: {
+                trading: {
                     ...initialState,
                     buy: getBuyState(),
                     info: {
@@ -378,7 +378,7 @@ describe('tradingSelectors', () => {
         it('should return correct data', () => {
             const stateBuy = {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         buy: {
                             buyInfo: {
                                 buyInfo: {},
@@ -403,7 +403,7 @@ describe('tradingSelectors', () => {
 
         const stateBuyWithUndefinedInfo = {
             wallet: {
-                tradingNew: {
+                trading: {
                     buy: {},
                 },
             },
@@ -436,7 +436,7 @@ describe('tradingSelectors', () => {
 
         const stateExchangeWithUndefinedInfo = {
             wallet: {
-                tradingNew: {
+                trading: {
                     exchange: {},
                 },
             },
@@ -457,7 +457,7 @@ describe('tradingSelectors', () => {
         it('should return correct data', () => {
             const stateExchange = {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         sell: {
                             sellInfo: {
                                 providerInfos: {},
@@ -478,7 +478,7 @@ describe('tradingSelectors', () => {
 
         const stateSellWithUndefinedInfo = {
             wallet: {
-                tradingNew: {
+                trading: {
                     sell: {},
                 },
             },
@@ -498,10 +498,10 @@ describe('tradingSelectors', () => {
     describe('selectTrading', () => {
         it('should return correct data', () => {
             const {
-                wallet: { tradingNew },
+                wallet: { trading },
             } = getState() as Record<string, any>;
 
-            tradingNew.buy.buyInfo.supportedCryptoCurrencies = new Set([
+            trading.buy.buyInfo.supportedCryptoCurrencies = new Set([
                 'eos',
                 'bitcoin',
                 'ethereum',
@@ -509,13 +509,13 @@ describe('tradingSelectors', () => {
                 'base--0x0000000000000000000000000000000000000000',
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ]);
-            tradingNew.buy.buyInfo.supportedFiatCurrencies = new Set(['usd', 'eur', 'czk']);
-            tradingNew.buy.buyInfo.buyInfo.defaultAmountsOfFiatCurrencies = new Map([
+            trading.buy.buyInfo.supportedFiatCurrencies = new Set(['usd', 'eur', 'czk']);
+            trading.buy.buyInfo.buyInfo.defaultAmountsOfFiatCurrencies = new Map([
                 ['usd', '150'],
                 ['eur', '100'],
             ]);
-            tradingNew.exchange.exchangeInfo.buyCryptoIds = new Set(['bitcoin']);
-            tradingNew.exchange.exchangeInfo.sellCryptoIds = new Set([
+            trading.exchange.exchangeInfo.buyCryptoIds = new Set(['bitcoin']);
+            trading.exchange.exchangeInfo.sellCryptoIds = new Set([
                 'eos',
                 'bitcoin',
                 'ethereum',
@@ -523,9 +523,9 @@ describe('tradingSelectors', () => {
                 'base--0x0000000000000000000000000000000000000000',
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ]);
-            tradingNew.exchange.tradingAccountKey = 'eth-descriptor-eth';
+            trading.exchange.tradingAccountKey = 'eth-descriptor-eth';
 
-            expect(selectTrading(state)).toEqual(tradingNew);
+            expect(selectTrading(state)).toEqual(trading);
         });
 
         it('should be stable', () => {
@@ -536,7 +536,7 @@ describe('tradingSelectors', () => {
     describe('selectTradingBuyProviders', () => {
         it('should return correct data', () => {
             expect(selectTradingBuyProviders(state)).toEqual(
-                state.wallet.tradingNew.buy.buyInfo?.providerInfos,
+                state.wallet.trading.buy.buyInfo?.providerInfos,
             );
         });
 
@@ -548,7 +548,7 @@ describe('tradingSelectors', () => {
     describe('selectTradingExchangeProviders', () => {
         it('should return correct data', () => {
             expect(selectTradingExchangeProviders(state)).toEqual(
-                state.wallet.tradingNew.exchange.exchangeInfo?.providerInfos,
+                state.wallet.trading.exchange.exchangeInfo?.providerInfos,
             );
         });
 
@@ -562,7 +562,7 @@ describe('tradingSelectors', () => {
     describe('selectTradingSellProviders', () => {
         it('should return correct data', () => {
             expect(selectTradingSellProviders(state)).toEqual(
-                state.wallet.tradingNew.sell.sellInfo?.providerInfos,
+                state.wallet.trading.sell.sellInfo?.providerInfos,
             );
         });
 
@@ -572,49 +572,39 @@ describe('tradingSelectors', () => {
     });
 
     it('selectTradingBuyQuotesRequest should return correct data', () => {
-        expect(selectTradingBuyQuotesRequest(state)).toBe(
-            state.wallet.tradingNew.buy.quotesRequest,
-        );
+        expect(selectTradingBuyQuotesRequest(state)).toBe(state.wallet.trading.buy.quotesRequest);
     });
 
     it('selectTradingExchangeQuotesRequest should return correct data', () => {
         expect(selectTradingExchangeQuotesRequest(state)).toBe(
-            state.wallet.tradingNew.exchange.quotesRequest,
+            state.wallet.trading.exchange.quotesRequest,
         );
     });
 
     it('selectTradingSellQuotesRequest should return correct data', () => {
-        expect(selectTradingSellQuotesRequest(state)).toBe(
-            state.wallet.tradingNew.sell.quotesRequest,
-        );
+        expect(selectTradingSellQuotesRequest(state)).toBe(state.wallet.trading.sell.quotesRequest);
     });
 
     it('selectTradingBuySelectedQuote should return correct data', () => {
-        expect(selectTradingBuySelectedQuote(state)).toBe(
-            state.wallet.tradingNew.buy.selectedQuote,
-        );
+        expect(selectTradingBuySelectedQuote(state)).toBe(state.wallet.trading.buy.selectedQuote);
     });
 
     it('selectTradingExchangeSelectedQuote should return correct data', () => {
         expect(selectTradingExchangeSelectedQuote(state)).toBe(
-            state.wallet.tradingNew.exchange.selectedQuote,
+            state.wallet.trading.exchange.selectedQuote,
         );
     });
 
     it('selectTradingSellSelectedQuote should return correct data', () => {
-        expect(selectTradingSellSelectedQuote(state)).toBe(
-            state.wallet.tradingNew.sell.selectedQuote,
-        );
+        expect(selectTradingSellSelectedQuote(state)).toBe(state.wallet.trading.sell.selectedQuote);
     });
 
     it('selectTradingPaymentMethods should return correct data', () => {
-        expect(selectTradingPaymentMethods(state)).toBe(
-            state.wallet.tradingNew.info.paymentMethods,
-        );
+        expect(selectTradingPaymentMethods(state)).toBe(state.wallet.trading.info.paymentMethods);
     });
 
     it('selectTradingTrades should return correct data', () => {
-        expect(selectTradingTrades(state)).toBe(state.wallet.tradingNew.trades);
+        expect(selectTradingTrades(state)).toBe(state.wallet.trading.trades);
     });
 
     describe('selectDeviceTradingTradesOrderedByDate', () => {
@@ -741,19 +731,19 @@ describe('tradingSelectors', () => {
         });
 
         it('should be empty array when platforms are not set', () => {
-            state.wallet.tradingNew.info.platforms = undefined;
+            state.wallet.trading.info.platforms = undefined;
 
             expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
-            state.wallet.tradingNew.buy.buyInfo = undefined;
+            state.wallet.trading.buy.buyInfo = undefined;
 
             expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
@@ -777,19 +767,19 @@ describe('tradingSelectors', () => {
         });
 
         it('should be empty array when platforms are not set', () => {
-            state.wallet.tradingNew.info.platforms = undefined;
+            state.wallet.trading.info.platforms = undefined;
 
             expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
-            state.wallet.tradingNew.sell.sellInfo = undefined;
+            state.wallet.trading.sell.sellInfo = undefined;
 
             expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
@@ -813,19 +803,19 @@ describe('tradingSelectors', () => {
         });
 
         it('should be empty array when platforms are not set', () => {
-            state.wallet.tradingNew.info.platforms = undefined;
+            state.wallet.trading.info.platforms = undefined;
 
             expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
-            state.wallet.tradingNew.sell.sellInfo = undefined;
+            state.wallet.trading.sell.sellInfo = undefined;
 
             expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
@@ -849,19 +839,19 @@ describe('tradingSelectors', () => {
         });
 
         it('should be empty array when platforms are not set', () => {
-            state.wallet.tradingNew.info.platforms = undefined;
+            state.wallet.trading.info.platforms = undefined;
 
             expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when sellCryptoIds are not set', () => {
-            state.wallet.tradingNew.exchange.exchangeInfo = undefined;
+            state.wallet.trading.exchange.exchangeInfo = undefined;
 
             expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
@@ -880,19 +870,19 @@ describe('tradingSelectors', () => {
         });
 
         it('should be empty array when platforms are not set', () => {
-            state.wallet.tradingNew.info.platforms = undefined;
+            state.wallet.trading.info.platforms = undefined;
 
             expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
-            state.wallet.tradingNew.info.coins = undefined;
+            state.wallet.trading.info.coins = undefined;
 
             expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when buyCryptoIds are not set', () => {
-            state.wallet.tradingNew.exchange.exchangeInfo = undefined;
+            state.wallet.trading.exchange.exchangeInfo = undefined;
 
             expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
@@ -904,7 +894,7 @@ describe('tradingSelectors', () => {
         });
 
         it('should be true when trading is loading', () => {
-            state.wallet.tradingNew.buy.isLoading = true;
+            state.wallet.trading.buy.isLoading = true;
 
             expect(selectTradingBuyIsLoading(state)).toBe(true);
         });
@@ -912,7 +902,7 @@ describe('tradingSelectors', () => {
 
     describe('selectTradingBuyQuotes', () => {
         it('should return quotes', () => {
-            expect(selectTradingBuyQuotes(state)).toBe(state.wallet.tradingNew.buy.quotes);
+            expect(selectTradingBuyQuotes(state)).toBe(state.wallet.trading.buy.quotes);
         });
     });
 
@@ -931,7 +921,7 @@ describe('tradingSelectors', () => {
         });
 
         it('should be undefined when no quotes are loaded', () => {
-            state.wallet.tradingNew.buy.quotes = [];
+            state.wallet.trading.buy.quotes = [];
 
             expect(selectBestBuyQuoteByPaymentMethod(state, 'eps')).toBeUndefined();
         });
@@ -983,7 +973,7 @@ describe('tradingSelectors', () => {
         });
 
         it('should be true when trading is loading', () => {
-            state.wallet.tradingNew.exchange.isLoading = true;
+            state.wallet.trading.exchange.isLoading = true;
 
             expect(selectTradingExchangeIsLoading(state)).toBe(true);
         });
@@ -1033,7 +1023,7 @@ describe('tradingSelectors', () => {
                 ),
             ).toEqual(
                 state.wallet.accounts.find(
-                    account => account.key === state.wallet.tradingNew.buy.tradingAccountKey,
+                    account => account.key === state.wallet.trading.buy.tradingAccountKey,
                 ),
             );
         });
@@ -1047,7 +1037,7 @@ describe('tradingSelectors', () => {
                 ),
             ).toEqual(
                 state.wallet.accounts.find(
-                    account => account.key === state.wallet.tradingNew.exchange.tradingAccountKey,
+                    account => account.key === state.wallet.trading.exchange.tradingAccountKey,
                 ),
             );
         });
@@ -1061,7 +1051,7 @@ describe('tradingSelectors', () => {
                 ),
             ).toEqual(
                 state.wallet.accounts.find(
-                    account => account.key === state.wallet.tradingNew.sell.tradingAccountKey,
+                    account => account.key === state.wallet.trading.sell.tradingAccountKey,
                 ),
             );
         });
@@ -1069,7 +1059,7 @@ describe('tradingSelectors', () => {
 
     describe('selectValidTradingBuyQuotes', () => {
         beforeEach(() => {
-            state.wallet.tradingNew.buy.quotes = [
+            state.wallet.trading.buy.quotes = [
                 {
                     fiatStringAmount: '10',
                     fiatCurrency: 'EUR',
@@ -1102,7 +1092,7 @@ describe('tradingSelectors', () => {
         it('should return only quotes with non-zero rate', () => {
             const validQuotes = selectValidTradingBuyQuotes(state);
 
-            expect(validQuotes).toEqual([state.wallet.tradingNew.buy.quotes[0]]);
+            expect(validQuotes).toEqual([state.wallet.trading.buy.quotes[0]]);
         });
 
         it('should be stable', () => {
@@ -1112,9 +1102,9 @@ describe('tradingSelectors', () => {
 
     describe('selectValidTradingSellQuotes', () => {
         beforeEach(() => {
-            const quoteDraft = state.wallet.tradingNew.sell.quotes[0];
+            const quoteDraft = state.wallet.trading.sell.quotes[0];
 
-            state.wallet.tradingNew.sell.quotes = [
+            state.wallet.trading.sell.quotes = [
                 {
                     ...quoteDraft,
                     rate: 20000,
@@ -1136,7 +1126,7 @@ describe('tradingSelectors', () => {
         it('should return only quotes with non-zero rate', () => {
             const validQuotes = selectValidTradingSellQuotes(state);
 
-            expect(validQuotes).toEqual([state.wallet.tradingNew.sell.quotes[0]]);
+            expect(validQuotes).toEqual([state.wallet.trading.sell.quotes[0]]);
         });
 
         it('should be stable', () => {
@@ -1148,24 +1138,21 @@ describe('tradingSelectors', () => {
         it.each<[boolean, number]>([
             [true, 0],
             [false, 123456789],
-        ])(
-            'should return values from tradingNew state, case %#',
-            (isLoading, lastLoadedTimestamp) => {
-                state.wallet.tradingNew.isLoading = isLoading;
-                state.wallet.tradingNew.lastLoadedTimestamp = lastLoadedTimestamp;
+        ])('should return values from trading state, case %#', (isLoading, lastLoadedTimestamp) => {
+            state.wallet.trading.isLoading = isLoading;
+            state.wallet.trading.lastLoadedTimestamp = lastLoadedTimestamp;
 
-                expect(selectTradingBuyLoadingTimestampAndStatus(state)).toEqual(
-                    expect.objectContaining({
-                        isLoading,
-                        lastLoadedTimestamp,
-                    }),
-                );
-            },
-        );
+            expect(selectTradingBuyLoadingTimestampAndStatus(state)).toEqual(
+                expect.objectContaining({
+                    isLoading,
+                    lastLoadedTimestamp,
+                }),
+            );
+        });
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.tradingNew.info = {
+                state.wallet.trading.info = {
                     paymentMethods: [],
                 };
 
@@ -1173,14 +1160,14 @@ describe('tradingSelectors', () => {
             });
 
             it('should be false when trading buyInfo is empty', () => {
-                state.wallet.tradingNew.buy.buyInfo = undefined;
+                state.wallet.trading.buy.buyInfo = undefined;
 
                 expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
 
             it('should be false when providers info is empty', () => {
-                state.wallet.tradingNew.buy.buyInfo!.providerInfos = {};
-                state.wallet.tradingNew.buy.buyInfo!.buyInfo.providers = [];
+                state.wallet.trading.buy.buyInfo!.providerInfos = {};
+                state.wallet.trading.buy.buyInfo!.buyInfo.providers = [];
 
                 expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
@@ -1195,24 +1182,21 @@ describe('tradingSelectors', () => {
         it.each<[boolean, number]>([
             [true, 0],
             [false, 123456789],
-        ])(
-            'should return values from tradingNew state, case %#',
-            (isLoading, lastLoadedTimestamp) => {
-                state.wallet.tradingNew.isLoading = isLoading;
-                state.wallet.tradingNew.lastLoadedTimestamp = lastLoadedTimestamp;
+        ])('should return values from trading state, case %#', (isLoading, lastLoadedTimestamp) => {
+            state.wallet.trading.isLoading = isLoading;
+            state.wallet.trading.lastLoadedTimestamp = lastLoadedTimestamp;
 
-                expect(selectTradingExchangeLoadingTimestampAndStatus(state)).toEqual(
-                    expect.objectContaining({
-                        isLoading,
-                        lastLoadedTimestamp,
-                    }),
-                );
-            },
-        );
+            expect(selectTradingExchangeLoadingTimestampAndStatus(state)).toEqual(
+                expect.objectContaining({
+                    isLoading,
+                    lastLoadedTimestamp,
+                }),
+            );
+        });
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.tradingNew.exchange = {
+                state.wallet.trading.exchange = {
                     ...initialState.exchange,
                     exchangeInfo: {
                         providerInfos: {},
@@ -1227,7 +1211,7 @@ describe('tradingSelectors', () => {
             });
 
             it('should be false when trading exchangeInfo is empty', () => {
-                state.wallet.tradingNew.exchange.exchangeInfo = undefined;
+                state.wallet.trading.exchange.exchangeInfo = undefined;
 
                 expect(selectTradingExchangeLoadingTimestampAndStatus(state).isFullyLoaded).toBe(
                     false,
@@ -1235,7 +1219,7 @@ describe('tradingSelectors', () => {
             });
 
             it('should be false when providers info is empty', () => {
-                state.wallet.tradingNew.exchange.exchangeInfo!.providerInfos = {};
+                state.wallet.trading.exchange.exchangeInfo!.providerInfos = {};
 
                 expect(selectTradingExchangeLoadingTimestampAndStatus(state).isFullyLoaded).toBe(
                     false,
@@ -1254,24 +1238,21 @@ describe('tradingSelectors', () => {
         it.each<[boolean, number]>([
             [true, 0],
             [false, 123456789],
-        ])(
-            'should return values from tradingNew state, case %#',
-            (isLoading, lastLoadedTimestamp) => {
-                state.wallet.tradingNew.isLoading = isLoading;
-                state.wallet.tradingNew.lastLoadedTimestamp = lastLoadedTimestamp;
+        ])('should return values from trading state, case %#', (isLoading, lastLoadedTimestamp) => {
+            state.wallet.trading.isLoading = isLoading;
+            state.wallet.trading.lastLoadedTimestamp = lastLoadedTimestamp;
 
-                expect(selectTradingSellLoadingTimestampAndStatus(state)).toEqual(
-                    expect.objectContaining({
-                        isLoading,
-                        lastLoadedTimestamp,
-                    }),
-                );
-            },
-        );
+            expect(selectTradingSellLoadingTimestampAndStatus(state)).toEqual(
+                expect.objectContaining({
+                    isLoading,
+                    lastLoadedTimestamp,
+                }),
+            );
+        });
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.tradingNew.info = {
+                state.wallet.trading.info = {
                     paymentMethods: [],
                 };
 
@@ -1279,13 +1260,13 @@ describe('tradingSelectors', () => {
             });
 
             it('should be false when trading sellInfo is empty', () => {
-                state.wallet.tradingNew.sell.sellInfo = undefined;
+                state.wallet.trading.sell.sellInfo = undefined;
 
                 expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
 
             it('should be false when providers info is empty', () => {
-                state.wallet.tradingNew.sell.sellInfo!.providerInfos = {};
+                state.wallet.trading.sell.sellInfo!.providerInfos = {};
 
                 expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
@@ -1298,15 +1279,15 @@ describe('tradingSelectors', () => {
 
     describe('selectTradingSellQuotes', () => {
         it('should return quotes from trading sell state', () => {
-            expect(selectTradingSellQuotes(state)).toBe(state.wallet.tradingNew.sell.quotes);
+            expect(selectTradingSellQuotes(state)).toBe(state.wallet.trading.sell.quotes);
         });
     });
 
     describe('selectTradingProviderByNameAndTradeType', () => {
         it('should return the correct provider for buy trade type', () => {
             const providerName = 'provider1';
-            state.wallet.tradingNew.buy.buyInfo = {
-                ...state.wallet.tradingNew.buy.buyInfo,
+            state.wallet.trading.buy.buyInfo = {
+                ...state.wallet.trading.buy.buyInfo,
                 providerInfos: {
                     [providerName]: { name: providerName },
                 },
@@ -1318,8 +1299,8 @@ describe('tradingSelectors', () => {
 
         it('should return the correct provider for exchange trade type', () => {
             const providerName = 'provider2';
-            state.wallet.tradingNew.exchange.exchangeInfo = {
-                ...state.wallet.tradingNew.exchange.exchangeInfo,
+            state.wallet.trading.exchange.exchangeInfo = {
+                ...state.wallet.trading.exchange.exchangeInfo,
                 providerInfos: {
                     [providerName]: { name: providerName },
                 },
@@ -1331,8 +1312,8 @@ describe('tradingSelectors', () => {
 
         it('should return the correct provider for sell trade type', () => {
             const providerName = 'provider3';
-            state.wallet.tradingNew.sell.sellInfo = {
-                ...state.wallet.tradingNew.sell.sellInfo,
+            state.wallet.trading.sell.sellInfo = {
+                ...state.wallet.trading.sell.sellInfo,
                 providerInfos: {
                     [providerName]: { name: providerName },
                 },
@@ -1370,7 +1351,7 @@ describe('tradingSelectors', () => {
                         { key: 'key1', deviceState: 'device1' },
                         { key: 'key2', deviceState: 'device2' },
                     ],
-                    tradingNew: {
+                    trading: {
                         trades: [
                             { selectedAccountKey: 'key1', tradeType: 'buy' },
                             { sendAccountKey: 'key2', tradeType: 'sell' },
@@ -1394,7 +1375,7 @@ describe('tradingSelectors', () => {
                         { key: 'key1', deviceState: 'device1' },
                         { key: 'key2', deviceState: 'device2' },
                     ],
-                    tradingNew: {
+                    trading: {
                         trades: [{ tradeType: 'buy' }, { tradeType: 'sell' }],
                     },
                 },
@@ -1415,7 +1396,7 @@ describe('tradingSelectors', () => {
                         { key: 'key1', deviceState: 'device1' },
                         { key: 'key2', deviceState: 'device2' },
                     ],
-                    tradingNew: {
+                    trading: {
                         trades: [],
                     },
                 },

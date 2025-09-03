@@ -38,7 +38,7 @@ describe('ExchangeRateAndProviderPicker', () => {
     });
 
     it('should render provider and rate pickers when no quote is selected and quotes are loading', async () => {
-        preloadedState!.wallet!.tradingNew!.exchange!.isLoading = true;
+        preloadedState!.wallet!.trading!.exchange!.isLoading = true;
 
         const { getByText } = await renderExchangeRateAndProviderPicker();
 

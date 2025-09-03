@@ -59,7 +59,7 @@ describe('SellSendAssetPicker', () => {
 
     const getPreloadedState = () => ({
         wallet: {
-            tradingNew: getInitializedTradingState(),
+            trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
         },
     });
@@ -101,7 +101,7 @@ describe('SellSendAssetPicker', () => {
 
         await userEvent.press(getByText('BTC'));
 
-        const accountKeyStore = store.getState().wallet.tradingNew.sell.tradingAccountKey;
+        const accountKeyStore = store.getState().wallet.trading.sell.tradingAccountKey;
         expect(accountKeyStore).toBe(btcAccount.key);
     });
 });

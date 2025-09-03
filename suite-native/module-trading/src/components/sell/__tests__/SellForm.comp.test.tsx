@@ -42,8 +42,8 @@ describe('SellForm', () => {
         let preloadedState: PreloadedState;
 
         beforeEach(async () => {
-            preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
-            preloadedState.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+            preloadedState = { wallet: { trading: getInitializedTradingState() } };
+            preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
 
             const { result } = await renderFormHook(preloadedState);
             form = result.current;

@@ -144,9 +144,9 @@ describe('BuyFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoValue', '0.0006');
             });
             const preloadedState = {
-                wallet: { tradingNew: getInitializedTradingStateWithQuotes() },
+                wallet: { trading: getInitializedTradingStateWithQuotes() },
             };
-            preloadedState!.wallet!.tradingNew!.buy!.isLoading = true;
+            preloadedState!.wallet!.trading!.buy!.isLoading = true;
 
             const { toJSON } = await renderBuyFormFieldErrorBadge(
                 { fieldName: 'cryptoValue' },

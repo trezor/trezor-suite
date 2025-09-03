@@ -25,7 +25,7 @@ describe('favouritesSelectors', () => {
 
     it('selectTradingFavouriteAssets should return favourites assets map', () => {
         const favouritesArray = selectTradingFavouriteAssets({
-            wallet: { tradingNew: state },
+            wallet: { trading: state },
         });
 
         expect(favouritesArray).toEqual({ bitcoin: true });
@@ -33,11 +33,11 @@ describe('favouritesSelectors', () => {
 
     it('selectTradingFavouriteAssetsArray should return memoized array', () => {
         const favouritesArray = selectTradingFavouriteAssetsArray({
-            wallet: { tradingNew: state },
+            wallet: { trading: state },
         });
 
         expect(favouritesArray).toEqual(['bitcoin']);
-        expect(selectTradingFavouriteAssetsArray({ wallet: { tradingNew: state } })).toBe(
+        expect(selectTradingFavouriteAssetsArray({ wallet: { trading: state } })).toBe(
             favouritesArray,
         );
     });
@@ -51,7 +51,7 @@ describe('favouritesSelectors', () => {
         (expectedValue, cryptoId) => {
             const asset = { cryptoId } as unknown as TradeableAsset;
 
-            expect(selectIsTradingFavouriteAsset({ wallet: { tradingNew: state } }, asset)).toBe(
+            expect(selectIsTradingFavouriteAsset({ wallet: { trading: state } }, asset)).toBe(
                 expectedValue,
             );
         },

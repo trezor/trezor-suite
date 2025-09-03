@@ -9,7 +9,7 @@ describe('useChangeStringsExtractor', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const { result } = await renderHookWithStoreProviderAsync(
             () => useChangeStringsExtractor(buyTrade.data),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toEqual({
@@ -29,7 +29,7 @@ describe('useChangeStringsExtractor', () => {
         const sellTrade = getSellTrade({ status: 'SUBMITTED' });
         const { result } = await renderHookWithStoreProviderAsync(
             () => useChangeStringsExtractor(sellTrade.data),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toEqual({
@@ -49,7 +49,7 @@ describe('useChangeStringsExtractor', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONFIRM' });
         const { result } = await renderHookWithStoreProviderAsync(
             () => useChangeStringsExtractor(exchangeTrade.data),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toEqual({
@@ -68,7 +68,7 @@ describe('useChangeStringsExtractor', () => {
     it('should handle undefined trade', async () => {
         const { result } = await renderHookWithStoreProviderAsync(
             () => useChangeStringsExtractor(undefined),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toEqual({
@@ -94,7 +94,7 @@ describe('useChangeStringsExtractor', () => {
 
         const { result } = await renderHookWithStoreProviderAsync(
             () => useChangeStringsExtractor(tradeWithMissingValues),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toEqual({

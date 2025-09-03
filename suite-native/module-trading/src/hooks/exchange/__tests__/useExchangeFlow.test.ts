@@ -70,7 +70,7 @@ describe('useExchangeFlow', () => {
 
         const preloadedState: PreloadedState = {
             wallet: {
-                tradingNew: tradingState,
+                trading: tradingState,
                 accounts: getMockAccounts(),
             },
         };
@@ -294,7 +294,7 @@ describe('useExchangeFlow', () => {
         it('should return undefined when no trade is provided and no selectedQuote', async () => {
             // Mock the selector to return undefined for selectedQuote
             const modifiedStore = await getInitializedStore();
-            modifiedStore.getState().wallet.tradingNew.exchange.selectedQuote = undefined;
+            modifiedStore.getState().wallet.trading.exchange.selectedQuote = undefined;
 
             const { result: modifiedResult } = await renderUseExchangeFlow({
                 store: modifiedStore,

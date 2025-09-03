@@ -7,7 +7,7 @@ import { TradeDetailWaitingAlert } from '../TradeDetailWaitingAlert';
 
 const getPreloadedState = (trades: TradingTransaction[]) => ({
     wallet: {
-        tradingNew: {
+        trading: {
             ...getInitializedTradingState(),
             trades,
         },

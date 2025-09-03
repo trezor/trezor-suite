@@ -17,15 +17,15 @@ describe('Testing trading reducer', () => {
                 extra: {},
                 reducer: combineReducers({
                     wallet: combineReducers({
-                        tradingNew: tradingReducer,
+                        trading: tradingReducer,
                     }),
                 }),
-                preloadedState: { wallet: { tradingNew: f.initialState } },
+                preloadedState: { wallet: { trading: f.initialState } },
             });
             f.actions.forEach(action => {
                 store.dispatch(action);
             });
-            expect(store.getState().wallet.tradingNew).toEqual(f.result);
+            expect(store.getState().wallet.trading).toEqual(f.result);
         });
     });
 
@@ -34,12 +34,12 @@ describe('Testing trading reducer', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         isLoading: true,
                         info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
@@ -55,7 +55,7 @@ describe('Testing trading reducer', () => {
 
         store.dispatch({ type: buyThunks.handleRequestThunk.rejected.type });
 
-        expect(store.getState().wallet.tradingNew.buy).toEqual(
+        expect(store.getState().wallet.trading.buy).toEqual(
             expect.objectContaining({
                 isLoading: false,
                 quotesRequest: undefined,
@@ -63,7 +63,7 @@ describe('Testing trading reducer', () => {
                 amountLimits: undefined,
             }),
         );
-        expect(store.getState().wallet.tradingNew.info).toEqual(
+        expect(store.getState().wallet.trading.info).toEqual(
             expect.objectContaining({ paymentMethods: [] }),
         );
     });
@@ -73,12 +73,12 @@ describe('Testing trading reducer', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         isLoading: true,
                         info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
@@ -94,7 +94,7 @@ describe('Testing trading reducer', () => {
 
         store.dispatch({ type: sellThunks.handleRequestThunk.rejected.type });
 
-        expect(store.getState().wallet.tradingNew.sell).toEqual(
+        expect(store.getState().wallet.trading.sell).toEqual(
             expect.objectContaining({
                 isLoading: false,
                 quotesRequest: undefined,
@@ -102,7 +102,7 @@ describe('Testing trading reducer', () => {
                 amountLimits: undefined,
             }),
         );
-        expect(store.getState().wallet.tradingNew.info).toEqual(
+        expect(store.getState().wallet.trading.info).toEqual(
             expect.objectContaining({ paymentMethods: [] }),
         );
     });
@@ -113,12 +113,12 @@ describe('Testing trading reducer', () => {
                 extra: {},
                 reducer: combineReducers({
                     wallet: combineReducers({
-                        tradingNew: tradingReducer,
+                        trading: tradingReducer,
                     }),
                 }),
             });
 
-            expect(store.getState().wallet.tradingNew.settings).toEqual(settingsInitialState);
+            expect(store.getState().wallet.trading.settings).toEqual(settingsInitialState);
         });
 
         it('should delegate settings actions to settings slice', () => {
@@ -126,7 +126,7 @@ describe('Testing trading reducer', () => {
                 extra: {},
                 reducer: combineReducers({
                     wallet: combineReducers({
-                        tradingNew: tradingReducer,
+                        trading: tradingReducer,
                     }),
                 }),
             });

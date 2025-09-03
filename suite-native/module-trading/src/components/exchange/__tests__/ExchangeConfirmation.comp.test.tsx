@@ -27,7 +27,7 @@ describe('ExchangeConfirmation', () => {
 
     const renderConfirmation = () =>
         renderWithStoreProviderAsync(<ExchangeConfirmation />, {
-            preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } },
+            preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 
     beforeEach(() => {

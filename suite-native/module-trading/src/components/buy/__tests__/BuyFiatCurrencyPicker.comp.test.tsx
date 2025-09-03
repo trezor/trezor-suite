@@ -27,7 +27,7 @@ describe('BuyFiatCurrencyPicker', () => {
     });
 
     const renderFiatCurrencyPicker = async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
+        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });

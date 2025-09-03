@@ -18,7 +18,7 @@ jest.mock('@suite-native/link', () => ({
 describe('TradeDetailErrorAlert', () => {
     const getPreloadedState = (supportUrl: string | undefined): PreloadedState => ({
         wallet: {
-            tradingNew: {
+            trading: {
                 ...getInitializedTradingStateWithQuotes(),
                 trades: [getBuyTrade({ status: 'ERROR' })],
                 buy: {

@@ -9,7 +9,7 @@ describe('useSymbolExtractor', () => {
     it('should return symbol for known cryptoId', async () => {
         const { result } = await renderHookWithStoreProviderAsync(
             () => useSymbolExtractor('bitcoin' as CryptoId),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toBe('BTC');
@@ -18,7 +18,7 @@ describe('useSymbolExtractor', () => {
     it('should return original cryptoId for unknown cryptoId', async () => {
         const { result } = await renderHookWithStoreProviderAsync(
             () => useSymbolExtractor('unknown-crypto' as CryptoId),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toBe('unknown-crypto');
@@ -27,7 +27,7 @@ describe('useSymbolExtractor', () => {
     it('should handle undefined cryptoId', async () => {
         const { result } = await renderHookWithStoreProviderAsync(
             () => useSymbolExtractor(undefined),
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
         expect(result.current).toBeUndefined();

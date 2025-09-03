@@ -2,7 +2,7 @@ import { TradingRootState, createMemoizedSelector } from '../reducers';
 import { TradeableAsset } from '../types/general';
 
 export const selectTradingFavouriteAssets = (state: TradingRootState) =>
-    state.wallet.tradingNew.favouriteAssets;
+    state.wallet.trading.favouriteAssets;
 
 export const selectTradingFavouriteAssetsArray = createMemoizedSelector(
     [selectTradingFavouriteAssets],

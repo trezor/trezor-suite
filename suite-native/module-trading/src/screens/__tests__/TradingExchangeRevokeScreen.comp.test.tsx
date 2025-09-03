@@ -22,7 +22,7 @@ const testQuote = exchangeQuotes[0];
 
 const preloadedState = {
     wallet: {
-        tradingNew: {
+        trading: {
             ...getInitializedTradingState('exchange'),
             exchange: {
                 ...getInitializedTradingState('exchange').exchange,

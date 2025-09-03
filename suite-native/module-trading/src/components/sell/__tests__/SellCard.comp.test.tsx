@@ -19,7 +19,7 @@ describe('SellCard', () => {
 
     const renderSellCard = (isAmountInputActive: boolean) => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.tradingNew!.sell!.quotes = sellQuotes;
+        preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
 
         return renderWithStoreProviderAsync(
             <SellCard isAmountInputActive={isAmountInputActive} />,

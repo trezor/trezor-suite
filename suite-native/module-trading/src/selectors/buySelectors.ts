@@ -31,7 +31,7 @@ import {
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 
-export const selectTradingBuy = (state: TradingRootState) => state.wallet.tradingNew.buy;
+export const selectTradingBuy = (state: TradingRootState) => state.wallet.trading.buy;
 
 export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingBuy],
@@ -55,7 +55,7 @@ export const selectBuyTradeableAssetsSorted = createMemoizedSelector(
         selectTradingBuySupportedCryptoIds as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingBuySupportedCryptoIds>,
-        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.trading.info.coins,
     ],
     (cryptoIds, coins) => {
         if (!coins || !cryptoIds) {
@@ -73,7 +73,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         selectTradingBuyInfo as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingBuyInfo>,
-        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.trading.info.coins,
     ],
     (buyInfo, coins) => {
         if (!buyInfo || !coins) {

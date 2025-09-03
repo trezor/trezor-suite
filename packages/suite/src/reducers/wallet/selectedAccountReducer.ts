@@ -1,5 +1,5 @@
 import { ConnectPopupState } from '@suite-common/connect-popup';
-import { TradingState as TradingNewState } from '@suite-common/trading';
+import { TradingState } from '@suite-common/trading';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
@@ -15,7 +15,7 @@ export type SelectedAccountRootState = {
 
 export type SelectedAccountRootStateWithTrading = SelectedAccountRootState & {
     wallet: {
-        tradingNew: TradingNewState;
+        trading: TradingState;
     };
     connectPopup: ConnectPopupState;
 };
@@ -53,7 +53,7 @@ export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =
 export const selectAccountIncludingChosenInTrading = (
     state: SelectedAccountRootStateWithTrading,
 ) => {
-    const { modalAccountKey } = state.wallet.tradingNew;
+    const { modalAccountKey } = state.wallet.trading;
 
     if (modalAccountKey) {
         return selectAccountByKey(state, modalAccountKey) ?? undefined;

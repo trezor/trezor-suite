@@ -36,7 +36,7 @@ const getStateMockupBuy = (selectedAccount: ReceiveAccount) => ({
     ...defaultPreloadedState,
     wallet: {
         accounts: defaultPreloadedState.wallet.accounts,
-        tradingNew: {
+        trading: {
             ...initialState,
             buy: {
                 ...initialState.buy,
@@ -51,7 +51,7 @@ const getStateMockupExchange = (selectedAccount: ReceiveAccount) => ({
     ...defaultPreloadedState,
     wallet: {
         accounts: defaultPreloadedState.wallet.accounts,
-        tradingNew: {
+        trading: {
             ...initialState,
             exchange: {
                 ...initialState.exchange,

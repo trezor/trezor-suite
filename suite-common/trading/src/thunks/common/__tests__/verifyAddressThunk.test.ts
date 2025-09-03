@@ -35,13 +35,13 @@ describe('verifyAddressThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
                 suite: mockedSuiteReducer(extraDependenciesMock),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: initialState,
+                    trading: initialState,
                 },
             },
         });
@@ -76,7 +76,7 @@ describe('verifyAddressThunk', () => {
         );
 
         expect(store.getActions().length).toEqual(7);
-        expect(store.getState().wallet.tradingNew.verifiedAddress).toEqual(verifiedAddress);
+        expect(store.getState().wallet.trading.verifiedAddress).toEqual(verifiedAddress);
     });
 
     it('should not update verified address device not found', async () => {
@@ -84,13 +84,13 @@ describe('verifyAddressThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
                 suite: mockedSuiteReducer(extraDependenciesMock),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: initialState,
+                    trading: initialState,
                 },
             },
         });
@@ -109,7 +109,7 @@ describe('verifyAddressThunk', () => {
         );
 
         expect(store.getActions().length).toEqual(2);
-        expect(store.getState().wallet.tradingNew.verifiedAddress).toEqual(undefined);
+        expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);
     });
 
     it('should not update verified address when path or address are not defined', async () => {
@@ -117,13 +117,13 @@ describe('verifyAddressThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
                 suite: mockedSuiteReducer(extraDependenciesMock),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: initialState,
+                    trading: initialState,
                 },
             },
         });
@@ -151,7 +151,7 @@ describe('verifyAddressThunk', () => {
         );
 
         expect(store.getActions().length).toEqual(2);
-        expect(store.getState().wallet.tradingNew.verifiedAddress).toEqual(undefined);
+        expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);
     });
 
     it('should not update verified address, but trigger toast when device is not available', async () => {
@@ -159,13 +159,13 @@ describe('verifyAddressThunk', () => {
             extra: extraDependenciesMock,
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
                 suite: mockedSuiteReducer(extraDependenciesMock),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: initialState,
+                    trading: initialState,
                 },
             },
         });
@@ -198,7 +198,7 @@ describe('verifyAddressThunk', () => {
                 value: addressData?.address,
             },
         });
-        expect(store.getState().wallet.tradingNew.verifiedAddress).toEqual(undefined);
+        expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);
     });
 
     it('should not update verified address, but trigger toast when device is not connected', async () => {
@@ -206,13 +206,13 @@ describe('verifyAddressThunk', () => {
             extra: extraDependenciesMock,
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
                 suite: mockedSuiteReducer(extraDependenciesMock),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: initialState,
+                    trading: initialState,
                 },
             },
         });
@@ -245,7 +245,7 @@ describe('verifyAddressThunk', () => {
                 value: addressData?.address,
             },
         });
-        expect(store.getState().wallet.tradingNew.verifiedAddress).toEqual(undefined);
+        expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);
     });
 
     it('should not update verified address when a confirmation of address on device is not successful (no permission)', async () => {
@@ -253,13 +253,13 @@ describe('verifyAddressThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
                 suite: mockedSuiteReducer(extraDependenciesMock),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: initialState,
+                    trading: initialState,
                 },
             },
         });
@@ -290,7 +290,7 @@ describe('verifyAddressThunk', () => {
             }),
         );
 
-        expect(store.getState().wallet.tradingNew.verifiedAddress).toEqual(undefined);
+        expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);
     });
 
     it('should not update verified address when a confirmation of address on device is not successful', async () => {
@@ -298,13 +298,13 @@ describe('verifyAddressThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
                 suite: mockedSuiteReducer(extraDependenciesMock),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: initialState,
+                    trading: initialState,
                 },
             },
         });
@@ -345,6 +345,6 @@ describe('verifyAddressThunk', () => {
         expect(actionToast?.payload?.type).toEqual('verify-address-error');
         expect(actionToast?.payload?.error).toEqual(error);
 
-        expect(store.getState().wallet.tradingNew.verifiedAddress).toEqual(undefined);
+        expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);
     });
 });

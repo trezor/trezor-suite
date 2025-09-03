@@ -96,7 +96,7 @@ describe('ExchangeSendAmountBadge', () => {
                 form.setValue('sendCryptoAmount', '1000');
             });
             const preloadedState = getPreloadedState();
-            preloadedState!.wallet!.tradingNew!.exchange!.isLoading = true;
+            preloadedState!.wallet!.trading!.exchange!.isLoading = true;
 
             const { getByText, queryByText } = await renderExchangeSendAmountBadge(preloadedState);
 

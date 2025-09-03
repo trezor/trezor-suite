@@ -159,7 +159,7 @@ describe('SellSendAmountInput', () => {
 
     it('should display loading skeleton while amountInCrypto is false and quotes are loading', async () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.tradingNew!.sell!.isLoading = true;
+        preloadedState.wallet!.trading!.sell!.isLoading = true;
         const form = await renderUseTradingSellForm(preloadedState);
 
         act(() => {
@@ -173,7 +173,7 @@ describe('SellSendAmountInput', () => {
 
     it('should not display loading skeleton when amountInCrypto is true', async () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.tradingNew!.sell!.isLoading = true;
+        preloadedState.wallet!.trading!.sell!.isLoading = true;
         const form = await renderUseTradingSellForm(preloadedState);
 
         act(() => {

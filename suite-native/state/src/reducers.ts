@@ -145,7 +145,7 @@ export const prepareRootReducers = async () => {
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
-        tradingNew: tradingPersistedReducer,
+        trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
     });
 

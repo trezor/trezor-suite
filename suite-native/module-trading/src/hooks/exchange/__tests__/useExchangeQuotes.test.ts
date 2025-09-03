@@ -48,7 +48,7 @@ describe('useExchangeQuotes', () => {
     const getInitializedStore = async (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
         const preloadedState: PreloadedState = {
             wallet: {
-                tradingNew: getInitializedTradingState(),
+                trading: getInitializedTradingState(),
                 accounts: [getBtcAccount(), getEthAccount()],
                 settings: {
                     bitcoinAmountUnit,
@@ -307,6 +307,6 @@ describe('useExchangeQuotes', () => {
             payload: undefined,
             type: 'tradingExchange/clearQuotesAndQuotesRequest',
         });
-        expect(store.getState().wallet.tradingNew.exchange.quotes).toEqual([]);
+        expect(store.getState().wallet.trading.exchange.quotes).toEqual([]);
     });
 });

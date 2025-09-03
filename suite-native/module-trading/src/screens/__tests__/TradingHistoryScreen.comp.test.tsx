@@ -40,7 +40,7 @@ jest.mock('@suite-common/trading', () => {
 
 const getPreloadedState = (): PreloadedState => ({
     wallet: {
-        tradingNew: {
+        trading: {
             ...getInitializedTradingState(),
             trades: [getBuyTrade({ status: 'SUBMITTED' })],
         },

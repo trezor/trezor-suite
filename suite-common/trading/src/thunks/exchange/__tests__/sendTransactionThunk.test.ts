@@ -61,12 +61,12 @@ describe('sendTransactionThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         exchange: {
                             ...initialState.exchange,
@@ -132,7 +132,7 @@ describe('sendTransactionThunk', () => {
             )
             .unwrap();
 
-        expect(store.getState().wallet.tradingNew.modalAccountKey).toBe(account.key);
+        expect(store.getState().wallet.trading.modalAccountKey).toBe(account.key);
         expect(exchangeThunks.sendDexTransactionThunk).toHaveBeenCalledTimes(1);
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(0);
         expect(result).toBeUndefined();
@@ -174,7 +174,7 @@ describe('sendTransactionThunk', () => {
             }),
         );
 
-        expect(store.getState().wallet.tradingNew.modalAccountKey).toBe(account.key);
+        expect(store.getState().wallet.trading.modalAccountKey).toBe(account.key);
         expect(exchangeThunks.sendDexTransactionThunk).toHaveBeenCalledTimes(1);
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(0);
         expect(result.meta.requestStatus).toBe('rejected');
@@ -209,7 +209,7 @@ describe('sendTransactionThunk', () => {
                 }),
             );
 
-            expect(store.getState().wallet.tradingNew.modalAccountKey).toBe(account.key);
+            expect(store.getState().wallet.trading.modalAccountKey).toBe(account.key);
             expect(exchangeThunks.sendDexTransactionThunk).toHaveBeenCalledTimes(0);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(0);
             expect(result.meta.requestStatus).toEqual('rejected');
@@ -252,7 +252,7 @@ describe('sendTransactionThunk', () => {
                 }),
             );
 
-            expect(store.getState().wallet.tradingNew.modalAccountKey).toBe(account.key);
+            expect(store.getState().wallet.trading.modalAccountKey).toBe(account.key);
             expect(exchangeThunks.sendDexTransactionThunk).toHaveBeenCalledTimes(0);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
             expect(result.meta.requestStatus).toEqual('rejected');
@@ -298,10 +298,10 @@ describe('sendTransactionThunk', () => {
             }),
         );
 
-        expect(store.getState().wallet.tradingNew.modalAccountKey).toBe(account.key);
+        expect(store.getState().wallet.trading.modalAccountKey).toBe(account.key);
         expect(exchangeThunks.sendDexTransactionThunk).toHaveBeenCalledTimes(0);
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
-        expect(store.getState().wallet.tradingNew.trades).toEqual([
+        expect(store.getState().wallet.trading.trades).toEqual([
             {
                 tradeType: 'exchange',
                 date: dateString,
@@ -313,7 +313,7 @@ describe('sendTransactionThunk', () => {
                 key: trade.data.orderId,
             },
         ]);
-        expect(store.getState().wallet.tradingNew.exchange.transactionId).toBe(trade.data.orderId);
+        expect(store.getState().wallet.trading.exchange.transactionId).toBe(trade.data.orderId);
         expect(mockNextStep).toHaveBeenCalledTimes(1);
         expect(result.meta.requestStatus).toEqual('fulfilled');
     });

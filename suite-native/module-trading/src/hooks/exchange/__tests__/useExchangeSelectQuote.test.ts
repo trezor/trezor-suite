@@ -52,16 +52,16 @@ describe('useExchangeSelectQuote', () => {
 
         const preloadedState: PreloadedState = {
             wallet: {
-                tradingNew: getInitializedTradingStateWithQuotes(),
+                trading: getInitializedTradingStateWithQuotes(),
                 accounts: [btcAccount, ethAccount],
             },
         };
         if (isLoading !== undefined) {
-            preloadedState.wallet!.tradingNew!.exchange!.isLoading = isLoading;
+            preloadedState.wallet!.trading!.exchange!.isLoading = isLoading;
         }
         // Ensure required keys are present so the hook can proceed
-        preloadedState.wallet!.tradingNew!.exchange!.tradingAccountKey = 'btc-account-key';
-        preloadedState.wallet!.tradingNew!.exchange!.receiveAccountKey = 'eth-account-key';
+        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-key';
+        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-key';
 
         return await initStore(preloadedState);
     };

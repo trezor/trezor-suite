@@ -43,7 +43,7 @@ describe('BuyForm', () => {
 
     describe('with preloaded buy data', () => {
         let form: BuyFormType;
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
+        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
 
         beforeEach(async () => {
             const { result } = await renderFormHook(preloadedState);

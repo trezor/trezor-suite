@@ -35,12 +35,12 @@ describe('confirmExchangeTradeThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         exchange: {
                             ...initialState.exchange,
@@ -106,7 +106,7 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { exchange } = store.getState().wallet.tradingNew;
+        const { exchange } = store.getState().wallet.trading;
 
         expect(exchange.quotesRequest).toBeUndefined();
         expect(store.getActions().length).toEqual(2); // loadings
@@ -142,7 +142,7 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { exchange } = store.getState().wallet.tradingNew;
+        const { exchange } = store.getState().wallet.trading;
 
         expect(store.getActions().length).toEqual(2); // loadings
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
@@ -174,7 +174,7 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { exchange } = store.getState().wallet.tradingNew;
+        const { exchange } = store.getState().wallet.trading;
 
         expect(store.getActions().length).toEqual(2); // loadings
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
@@ -207,7 +207,7 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { exchange } = store.getState().wallet.tradingNew;
+        const { exchange } = store.getState().wallet.trading;
 
         expect(store.getActions().length).toEqual(2); // loadings
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
@@ -243,7 +243,7 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { exchange } = store.getState().wallet.tradingNew;
+        const { exchange } = store.getState().wallet.trading;
         const actionToast = store
             .getActions()
             .find(action => action.type === '@common/in-app-notifications/addToast');
@@ -313,7 +313,7 @@ describe('confirmExchangeTradeThunk', () => {
                 )
                 .unwrap();
 
-            const { exchange } = store.getState().wallet.tradingNew;
+            const { exchange } = store.getState().wallet.trading;
             const actionToast = store
                 .getActions()
                 .find(action => action.type === '@common/in-app-notifications/addToast');
@@ -373,7 +373,7 @@ describe('confirmExchangeTradeThunk', () => {
                 )
                 .unwrap();
 
-            const { exchange } = store.getState().wallet.tradingNew;
+            const { exchange } = store.getState().wallet.trading;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
             expect(store.getActions().length).toEqual(5);
@@ -421,7 +421,7 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { exchange } = store.getState().wallet.tradingNew;
+        const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(5);
@@ -469,7 +469,7 @@ describe('confirmExchangeTradeThunk', () => {
                 )
                 .unwrap();
 
-            const { exchange } = store.getState().wallet.tradingNew;
+            const { exchange } = store.getState().wallet.trading;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
             expect(store.getActions().length).toEqual(5);
@@ -517,7 +517,7 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { exchange } = store.getState().wallet.tradingNew;
+        const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(5);
@@ -566,8 +566,8 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { tradingNew } = store.getState().wallet;
-        const { exchange } = tradingNew;
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(5);
@@ -575,7 +575,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(exchange.selectedQuote);
         expect(mockNextStep).toHaveBeenCalledTimes(1);
-        expect(tradingNew.trades[0]).toEqual({
+        expect(trading.trades[0]).toEqual({
             tradeType: 'exchange',
             date: dateString,
             data: tradeResponse,
@@ -629,8 +629,8 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { tradingNew } = store.getState().wallet;
-        const { exchange } = tradingNew;
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(5);
@@ -638,7 +638,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(exchange.selectedQuote);
         expect(mockNextStep).toHaveBeenCalledTimes(1);
-        expect(tradingNew.trades[0]).toEqual({
+        expect(trading.trades[0]).toEqual({
             tradeType: 'exchange',
             date: dateString,
             data: tradeResponse,
@@ -696,15 +696,15 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { tradingNew } = store.getState().wallet;
-        const { exchange } = tradingNew;
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(5);
         expect(exchange.transactionId).toBe(mockResponse.orderId);
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(exchange.selectedQuote);
-        expect(tradingNew.trades[0]).toEqual({
+        expect(trading.trades[0]).toEqual({
             tradeType: 'exchange',
             date: dateString,
             data: tradeResponse,
@@ -753,15 +753,15 @@ describe('confirmExchangeTradeThunk', () => {
             )
             .unwrap();
 
-        const { tradingNew } = store.getState().wallet;
-        const { exchange } = tradingNew;
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(6);
         expect(exchange.transactionId).toBe(mockResponse.orderId);
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(exchange.selectedQuote);
-        expect(tradingNew.trades[0]).toEqual({
+        expect(trading.trades[0]).toEqual({
             tradeType: 'exchange',
             date: dateString,
             data: tradeResponse,

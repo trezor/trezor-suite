@@ -152,7 +152,7 @@ describe('SellFormFieldErrorBadge', () => {
                 const preloadedState = {
                     wallet: getWalletState({ tradeType: 'sell' }),
                 };
-                preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+                preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
                 const { getByText, queryByText } = await renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
@@ -244,7 +244,7 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '0.0006');
             });
             const preloadedState = getPreloadedState();
-            preloadedState!.wallet!.tradingNew!.sell!.isLoading = true;
+            preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
             const { getByText } = await renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },

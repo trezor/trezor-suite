@@ -9,7 +9,7 @@ describe('TradeHistoryListItem', () => {
     const renderTradeHistoryListItem = (transaction: TradingTransaction) =>
         renderWithStoreProviderAsync(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
-            { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
+            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
     it('should render trade correctly', async () => {

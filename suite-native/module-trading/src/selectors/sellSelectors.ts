@@ -22,7 +22,7 @@ import { FiatCurrencyItem } from '../types/general';
 import { SellFormValues } from '../types/sell';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
-export const selectTradingSell = (state: TradingRootState) => state.wallet.tradingNew.sell;
+export const selectTradingSell = (state: TradingRootState) => state.wallet.trading.sell;
 
 export const selectSellSupportedFiatCurrencies = (state: TradingRootState) =>
     returnStableArrayIfEmpty(
@@ -47,7 +47,7 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
         selectTradingSellInfo as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingSellInfo>,
-        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.trading.info.coins,
     ],
     (sellInfo, coins) => {
         if (!sellInfo || !coins) {

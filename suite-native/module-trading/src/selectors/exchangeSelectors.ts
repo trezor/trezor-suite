@@ -17,7 +17,7 @@ import {
     tradeableAssetSortingComparator,
 } from '../utils/general/tradeableAssetUtils';
 
-export const selectTradingExchange = (state: TradingRootState) => state.wallet.tradingNew.exchange;
+export const selectTradingExchange = (state: TradingRootState) => state.wallet.trading.exchange;
 
 export const selectExchangeSelectedSendAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingExchange],
@@ -38,7 +38,7 @@ export const selectExchangeBuyTradeableAssetsSorted = createMemoizedSelector(
         selectTradingExchangeBuyCryptoIds as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingExchangeBuyCryptoIds>,
-        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.trading.info.coins,
     ],
     (cryptoIds, coins) => {
         if (!coins || !cryptoIds) {
@@ -52,7 +52,7 @@ export const selectExchangeBuyTradeableAssetsSorted = createMemoizedSelector(
 );
 
 export const selectExchangeQuotes = (state: TradingRootState) =>
-    state.wallet.tradingNew.exchange.quotes;
+    state.wallet.trading.exchange.quotes;
 
 const ratingSortingComparator = (
     a: { rate?: number | undefined },

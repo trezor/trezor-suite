@@ -20,7 +20,7 @@ describe('useExchangeData', () => {
     const getInitializedStore = async (tradingAccountKey: string | undefined) => {
         const preloadedState: PreloadedState = {
             wallet: {
-                tradingNew: getInitializedTradingState('exchange'),
+                trading: getInitializedTradingState('exchange'),
                 accounts: [
                     getBtcAccount('btc-account-1'),
                     getBtcAccount('btc-account-2'),
@@ -28,7 +28,7 @@ describe('useExchangeData', () => {
                 ],
             },
         };
-        preloadedState.wallet!.tradingNew!.exchange!.tradingAccountKey = tradingAccountKey;
+        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
 
         return await initStore(preloadedState);
     };

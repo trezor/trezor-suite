@@ -32,12 +32,12 @@ describe('handleBuyRequestThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    tradingNew: tradingReducer,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    tradingNew: {
+                    trading: {
                         ...initialState,
                         info: {
                             ...initialState.info,
@@ -116,7 +116,7 @@ describe('handleBuyRequestThunk', () => {
 
         const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(state.buy.amountLimits).toBeUndefined();
@@ -162,7 +162,7 @@ describe('handleBuyRequestThunk', () => {
         const promise = store.dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData));
         await promise;
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
@@ -179,7 +179,7 @@ describe('handleBuyRequestThunk', () => {
 
         const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
@@ -206,7 +206,7 @@ describe('handleBuyRequestThunk', () => {
         promise.abort();
         await promise;
 
-        const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.trading;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
