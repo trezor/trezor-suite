@@ -25,7 +25,6 @@ export const ThpAutoconnectInfoModal = () => {
     return (
         <Modal
             heading={<Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER" />}
-            description={<Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION" />}
             data-testid="@modal/thp-autoconnect-info"
             bottomContent={
                 <>
@@ -41,22 +40,13 @@ export const ThpAutoconnectInfoModal = () => {
         >
             <Card>
                 <Column gap={spacings.xs}>
-                    <Text typographyStyle="highlight">
-                        <Translation id="TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS" />
-                    </Text>
                     <List
                         bulletComponent={<Icon name="dotOutlineFilled" />}
                         bulletGap={spacings.xs}
                     >
-                        <List.Item>
-                            <Translation id="TR_THP_TURN_ON_AUTO_CONNECT_LIST_1" />
-                        </List.Item>
-                        <List.Item>
-                            <Translation id="TR_THP_TURN_ON_AUTO_CONNECT_LIST_2" />
-                        </List.Item>
-                        <List.Item>
-                            <Translation id="TR_THP_TURN_ON_AUTO_CONNECT_LIST_3" />
-                        </List.Item>
+                        <Text>
+                            <Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION" />
+                        </Text>
                     </List>
                 </Column>
             </Card>

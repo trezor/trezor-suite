@@ -3468,12 +3468,12 @@ export default defineMessages({
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
-        defaultMessage: 'Save time with auto-connect',
+        defaultMessage: 'Connect to your Trezor faster with Auto-connect',
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION',
         defaultMessage:
-            'Use this computer regularly with your Trezor? Let Trezor Suite connect automatically—no need to approve it each time.',
+            'Allow Trezor Suite to connect automatically to this Trezor so you don’t have to confirm the connection each time.',
     },
     TR_THP_TURN_ON_AUTO_CONNECT: {
         id: 'TR_THP_TURN_ON_AUTO_CONNECT',
@@ -3486,18 +3486,6 @@ export default defineMessages({
     TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS: {
         id: 'TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS',
         defaultMessage: 'Skip confirmation on trusted computers',
-    },
-    TR_THP_TURN_ON_AUTO_CONNECT_LIST_1: {
-        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_1',
-        defaultMessage: 'Let Trezor Suite connect to your Trezor automatically when it’s connected',
-    },
-    TR_THP_TURN_ON_AUTO_CONNECT_LIST_2: {
-        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_2',
-        defaultMessage: 'Skip repeated confirmations',
-    },
-    TR_THP_TURN_ON_AUTO_CONNECT_LIST_3: {
-        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_3',
-        defaultMessage: 'Stay fully secure',
     },
     TR_SOUTH: {
         defaultMessage: 'South',
