@@ -8,7 +8,7 @@ import TrezorConnect, { ERRORS } from '@trezor/connect';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as DEVICE from 'src/constants/suite/device';
 import { selectIsEntropyCheckEnabled } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import { AcquiredDevice, Dispatch, GetState } from 'src/types/suite';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -89,50 +89,21 @@ export const changeWipeCode =
         }
     };
 
+export type ResetDeviceParams = Parameters<typeof TrezorConnect.resetDevice>[0];
+
+type ResetDeviceProps = {
+    params: ResetDeviceParams;
+    device: AcquiredDevice;
+};
+
 export const resetDevice =
-    (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
+    ({ params, device }: ResetDeviceProps) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectSelectedDevice(getState());
         const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(getState());
         const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
             getState(),
             Feature.entropyCheck,
         );
-
-        // todo: this should be handled most likely in a component somewhere above
-        if (device?.status === 'used' || device?.status === 'occupied') {
-            const features = await TrezorConnect.getFeatures({ device: { path: device.path } });
-            if (!features.success) {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'error',
-                        error: 'Device is unreadable',
-                    }),
-                );
-
-                return;
-            }
-            if (features.payload.initialized) {
-                // todo: decide what should happen next UX wise. At the moment, user only gets an error toast
-                // and stays stuck on the 'create new wallet' screen;
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'error',
-                        error: 'This device has already been initialized',
-                    }),
-                );
-
-                return;
-            }
-        }
-
-        if (!device || !device.features) return;
-
-        if (device.mode !== 'initialize') {
-            console.error('resetDevice: device in invalid mode', device.mode);
-
-            return;
-        }
 
         const defaults = {
             strength: DEVICE.DEFAULT_STRENGTH[device.features.internal_model],
@@ -155,6 +126,57 @@ export const resetDevice =
         }
 
         return result;
+    };
+
+type ResetDeviceOrSkipProps = {
+    params: ResetDeviceParams;
+};
+
+export const resetDeviceOrSkip =
+    ({ params }: ResetDeviceOrSkipProps) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const device = selectSelectedDevice(getState());
+
+        if (device?.status === 'used' || device?.status === 'occupied') {
+            const response = await TrezorConnect.getFeatures({ device: { path: device.path } });
+            if (!response.success) {
+                dispatch(
+                    notificationsActions.addToast({ type: 'error', error: 'Device is unreadable' }),
+                );
+
+                return;
+            }
+            if (response.payload.initialized) {
+                // Note that user gets stuck on this page. It's a rare edge case; a solution would have its own drawbacks.
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: 'This device has already been initialized',
+                    }),
+                );
+
+                return;
+            }
+        }
+
+        // This should never occurr because it is handled by prerequisites:
+        // Onboarding renders the proper UI instead of rendering ResetDevice UI
+        if (!device || !device.features) return;
+
+        if (device.mode !== 'initialize') {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Device is not in initialization mode.',
+                }),
+            );
+            // Unlike previous cases, this cannot happen by a user action, so let's log it.
+            console.error('resetDevice: device in invalid mode', device.mode);
+
+            return;
+        }
+
+        return dispatch(resetDevice({ params, device }));
     };
 
 export const changeLanguage = createThunk(

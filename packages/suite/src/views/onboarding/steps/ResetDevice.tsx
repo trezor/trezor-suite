@@ -7,7 +7,7 @@ import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-comm
 import { Button, Divider, Text, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
+import { ResetDeviceParams, resetDeviceOrSkip } from 'src/actions/settings/deviceSettingsActions';
 import { OnboardingButtonBack, OnboardingStepBox, OptionsWrapper } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import * as STEP from 'src/constants/onboarding/steps';
@@ -53,10 +53,10 @@ export const ResetDeviceStep = () => {
     const isDeviceLocked = isLocked();
 
     const onResetDevice = useCallback(
-        async (params?: Parameters<typeof resetDevice>[0]) => {
+        async (params: ResetDeviceParams) => {
             setSubmitted(false);
 
-            const result = await dispatch(resetDevice(params));
+            const result = await dispatch(resetDeviceOrSkip({ params }));
 
             setSubmitted(true);
 
