@@ -96,12 +96,16 @@ export const BaseCurrencyValue = ({
         selectIsSpecificCoinDefinitionKnown(state, symbol, tokenAddress || ('' as TokenAddress)),
     );
 
-    if (
-        (!rate || !value || !currentRate?.lastTickerTimestamp || isLoading) &&
+    const isZeroAmount = new BigNumber(amount ?? 0).isZero();
+
+    const isLoadingSkeletonVisible =
         showLoadingSkeleton &&
+        isTokenKnown &&
+        !isZeroAmount &&
         !currentRate?.error &&
-        isTokenKnown
-    ) {
+        (currentRate?.isLoading || isLoading);
+
+    if (isLoadingSkeletonVisible) {
         return <SkeletonRectangle animate={shouldAnimate} />;
     }
 
