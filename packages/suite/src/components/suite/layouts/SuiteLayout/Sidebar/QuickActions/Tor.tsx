@@ -89,11 +89,13 @@ export const Tor = () => {
             >
                 <ComponentWithSubIcon
                     variant={variant}
-                    subIconProps={{
-                        name: iconName,
-                        color: theme['iconDefaultInverted'],
-                        size: iconSizes.extraSmall,
-                    }}
+                    icon={
+                        <Icon
+                            name={iconName}
+                            color={theme.iconDefaultInverted}
+                            size={iconSizes.extraSmall}
+                        />
+                    }
                 >
                     <Icon name="torBrowser" size={iconSizes.medium} variant="tertiary" />
                 </ComponentWithSubIcon>
