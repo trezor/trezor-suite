@@ -173,6 +173,18 @@ export const forgetDisconnectedDevices = createThunk(
     },
 );
 
+export const forgetAllDisconnectedDevices = createThunk(
+    `${DEVICE_MODULE_PREFIX}/forgetAllDisconnectedDevices`,
+    (_, { dispatch, getState }) => {
+        const physicalDevices = selectPhysicalDevices(getState());
+        physicalDevices.forEach(device => {
+            if (!device.connected) {
+                dispatch(forgetDisconnectedDevices({ device, forceForget: true }));
+            }
+        });
+    },
+);
+
 /**
  * Called from `suiteMiddleware`
  * Keep `suite` reducer synchronized with `devices` reducer
@@ -474,6 +486,7 @@ export const wipeDeviceThunk = createThunk(
     },
 );
 
+// Note: currently used only by mobile, see `forgetAllDisconnectedDevices` for a simpler thunk
 export const toggleAutoEjectThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
     (_, { dispatch, getState }) => {
@@ -484,6 +497,7 @@ export const toggleAutoEjectThunk = createThunk(
             if (!wallet.connected && wallet.remember) {
                 dispatch(deviceActions.forgetDevice({ device: wallet }));
             } else {
+                // TODO investigate why do we need to consider wallet.remember at all, when we are ejecting all wallets.
                 dispatch(
                     deviceActions.rememberDevice({
                         device: wallet,

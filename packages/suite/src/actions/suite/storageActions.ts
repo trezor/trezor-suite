@@ -1,6 +1,7 @@
 import { FieldValues } from 'react-hook-form';
 
 import { MetadataState } from '@suite-common/metadata-types';
+import { createThunk } from '@suite-common/redux-utils/';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
@@ -255,6 +256,16 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
         ...accounts.map(removeAccountWithDependencies(getState)),
     ]);
 };
+
+export const forgetAllDevicesThunk = createThunk(
+    `${STORAGE.MODULE_PREFIX}/forgetAllDevices`,
+    (_, { dispatch, getState }) => {
+        const allDevices = selectDevices(getState());
+        allDevices.forEach(device => {
+            dispatch(forgetDevice(device));
+        });
+    },
+);
 
 export const saveAccounts = async (accounts: SuccessfulAccount[]) => {
     if (!(await db.isAccessible())) return;

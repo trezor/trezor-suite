@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { forgetDisconnectedDevices, selectDevices } from '@suite-common/wallet-core';
+import { forgetAllDisconnectedDevices, selectDevices } from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 
@@ -12,27 +12,19 @@ type SetAutoEjectEnabledThunkProps = { enabled: boolean };
 
 export const setAutoEjectEnabledThunk = createThunk<void, SetAutoEjectEnabledThunkProps, void>(
     `${AUTO_EJECT_PREFIX}/enableAutoEjectThunk`,
-    ({ enabled }, { dispatch, getState }) => {
+    async ({ enabled }, { dispatch, getState }) => {
         if (!enabled) {
             dispatch(setAutoEject(false));
 
             return;
         }
 
-        const devices = selectDevices(getState());
+        // Disconnected devices are purged from local redux (awaited because the subsequent code may rely on updated deviceReducer state)
+        await dispatch(forgetAllDisconnectedDevices());
 
-        const disconnectedDevices = devices.filter(device => !device.connected && device.state);
-
-        disconnectedDevices.forEach(device => {
-            dispatch(forgetDisconnectedDevices({ device, forceForget: true }));
-        });
-
-        const allDevices = selectDevices(getState());
-        allDevices.forEach(device => {
-            if (device.features) {
-                dispatch(storageActions.forgetDevice(device));
-            }
-        });
+        // All devices, even connected ones, removed from persistent storage,
+        // which means connected device are preserved in local redux.
+        dispatch(storageActions.forgetAllDevicesThunk());
 
         dispatch(setAutoEject(true));
 

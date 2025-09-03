@@ -333,7 +333,7 @@ export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
     device => getFirmwareVersionArray(device),
 );
 
-// todo: these are not necessarily physical, might be passphrases as well - sounds like a bug to me.
+// Selects all wallets of all physical devices. Use `selectPhysicalDevicesGrouppedById` instead to select unique devices.
 export const selectPhysicalDevices = createMemoizedSelector([selectDevices], devices =>
     pipe(
         devices,
