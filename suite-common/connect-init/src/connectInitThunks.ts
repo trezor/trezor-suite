@@ -29,7 +29,6 @@ import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
-import { cardanoConnectPatch } from './cardanoConnectPatch';
 import { ConnectKey, ConnectWebKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
@@ -148,7 +147,16 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 if (!original) return;
                 (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
                     dispatch(lockDevice(true));
-                    const result = await synchronize(() => original(params));
+
+                    // cardano patch
+                    const enabledNetworks = getEnabledNetworks();
+                    const isCardanoMethod = key.startsWith('cardano');
+                    const cardanoEnabled =
+                        !!enabledNetworks.find(a => a === 'ada' || a === 'tada') || isCardanoMethod;
+
+                    const result = await synchronize(() =>
+                        original({ ...params, useCardanoDerivation: cardanoEnabled }),
+                    );
 
                     dispatch(lockDevice(false));
                     dispatch(
@@ -162,8 +170,6 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                     return result;
                 };
             });
-
-        cardanoConnectPatch(getEnabledNetworks);
 
         const binFilesBaseUrl = isDesktop()
             ? extra.selectors.selectDesktopBinDir(getState())
