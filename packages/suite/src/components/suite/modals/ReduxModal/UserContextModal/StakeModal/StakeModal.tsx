@@ -42,7 +42,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
                 size="huge"
                 heading={
                     <Translation
-                        id="TR_STAKE_NETWORK"
+                        id="TR_STAKE_STAKE_TOKEN"
                         values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                     />
                 }

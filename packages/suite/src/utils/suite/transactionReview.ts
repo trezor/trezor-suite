@@ -1,9 +1,11 @@
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { FormState, StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 
 interface GetTransactionReviewModalActionTranslationParams {
+    symbol: NetworkSymbol;
     stakeType: StakeFormState['stakeType'] | null;
     precomposedForm: FormState | StakeFormState;
     tradingToken: TokenInfo | undefined;
@@ -14,6 +16,7 @@ interface GetTransactionReviewModalActionTranslationParams {
 }
 
 export const getTransactionReviewModalActionTranslation = ({
+    symbol,
     stakeType,
     precomposedForm,
     tradingToken,
@@ -24,11 +27,20 @@ export const getTransactionReviewModalActionTranslation = ({
 }: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
     switch (stakeType) {
         case 'stake':
-            return { id: 'TR_STAKE_STAKE' };
+            return {
+                id: source === 'heading' ? 'TR_STAKE_STAKE_TOKEN' : 'TR_STAKE_STAKE',
+                values: { symbol: getNetworkDisplaySymbol(symbol) },
+            };
         case 'unstake':
-            return { id: 'TR_STAKE_UNSTAKE' };
+            return {
+                id: source === 'heading' ? 'TR_STAKE_UNSTAKE_TOKEN' : 'TR_STAKE_UNSTAKE',
+                values: { symbol: getNetworkDisplaySymbol(symbol) },
+            };
         case 'claim':
-            return { id: 'TR_STAKE_CLAIM' };
+            return {
+                id: source === 'heading' ? 'TR_STAKE_CLAIM_TOKEN' : 'TR_STAKE_CLAIM',
+                values: { symbol: getNetworkDisplaySymbol(symbol) },
+            };
         // no default
     }
 

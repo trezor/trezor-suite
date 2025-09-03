@@ -1,3 +1,4 @@
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -39,7 +40,12 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
         <UnstakeFormContext.Provider value={unstakeContextValues}>
             <Modal
                 size="huge"
-                heading={<Translation id="TR_STAKE_UNSTAKE" />}
+                heading={
+                    <Translation
+                        id="TR_STAKE_UNSTAKE_TOKEN"
+                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
+                    />
+                }
                 description={<Translation id="TR_STAKE_CLAIM_AFTER_UNSTAKING" />}
                 onCancel={onCancelClick}
                 bottomContent={<UnstakeButton />}
