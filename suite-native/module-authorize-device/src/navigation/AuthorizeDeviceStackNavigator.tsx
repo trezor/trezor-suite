@@ -2,10 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    selectIsConnectedDeviceUninitialized,
-    selectIsDeviceThpRequired,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
@@ -31,7 +28,6 @@ export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceSt
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
-    const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
 
     return (
         <AuthorizeDeviceStack.Navigator
@@ -48,25 +44,23 @@ export const AuthorizeDeviceStackNavigator = () => {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate
                 // directly to the next screen without jumping back and forth.
-                !hasDeviceRequestedPin &&
-                    !isDeviceThpRequired &&
-                    !isConnectedDeviceUninitialized && (
-                        <AuthorizeDeviceStack.Group>
-                            <AuthorizeDeviceStack.Screen
-                                name={AuthorizeDeviceStackRoutes.ConnectingDevice}
-                                component={ConnectingDeviceScreen}
-                            />
-                            <AuthorizeDeviceStack.Screen
-                                name={AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice}
-                                component={TurnOnAndUnlockDeviceScreen}
-                            />
-                            <AuthorizeDeviceStack.Screen
-                                name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
-                                component={ConnectAndUnlockDeviceScreen}
-                                options={{ animationTypeForReplace: 'pop' }}
-                            />
-                        </AuthorizeDeviceStack.Group>
-                    )
+                !hasDeviceRequestedPin && (
+                    <AuthorizeDeviceStack.Group>
+                        <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.ConnectingDevice}
+                            component={ConnectingDeviceScreen}
+                        />
+                        <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
+                            component={ConnectAndUnlockDeviceScreen}
+                            options={{ animationTypeForReplace: 'pop' }}
+                        />
+                        <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice}
+                            component={TurnOnAndUnlockDeviceScreen}
+                        />
+                    </AuthorizeDeviceStack.Group>
+                )
             }
             {!isDeviceThpRequired && hasDeviceRequestedPin && (
                 <AuthorizeDeviceStack.Screen
