@@ -26,6 +26,7 @@ const Wrapper = styled.div`
     width: 100%;
     height: 100%;
     flex-direction: column;
+    align-items: center;
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
 `;
 
@@ -170,7 +171,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     return (
         <TrafficLightOffset>
             <Wrapper>
-                <SuiteBanners isOnboarding fill />
+                <SuiteBanners isOnboarding />
 
                 <Body data-testid="@onboarding-layout/body">
                     <ScrollingWrapper>

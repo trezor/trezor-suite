@@ -10,7 +10,13 @@ export const DeviceConnect = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     if (isWebUsbTransport) {
-        return <WebUsbButton data-testid="@webusb-button" translationId="TR_CHECK_FOR_DEVICES" />;
+        return (
+            <WebUsbButton
+                size="medium"
+                data-testid="@webusb-button"
+                translationId="TR_CHECK_FOR_DEVICES"
+            />
+        );
     }
 
     return (

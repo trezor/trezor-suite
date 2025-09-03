@@ -18,7 +18,7 @@ import {
 } from './CollapsibleOnboardingCard';
 
 const WrapperWrapper = styled.div`
-    z-index: ${zIndices.onboardingForeground};
+    z-index: ${zIndices.modal};
 `;
 
 const ConfirmWrapper = styled.div`
@@ -38,11 +38,11 @@ const OuterActions = styled.div<{ $smallMargin?: boolean }>`
     margin-top: ${({ $smallMargin }) => ($smallMargin ? '0px' : spacingsPx.lg)};
     width: 100%;
     justify-content: center;
-    z-index: ${zIndices.onboardingForeground};
+    z-index: ${zIndices.modal};
 `;
 
 const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVisible: boolean }>`
-    z-index: ${({ $isBackDropVisible }) => ($isBackDropVisible ? 3 : 0)};
+    z-index: ${({ $isBackDropVisible }) => ($isBackDropVisible ? zIndices.modal : 0)};
 `;
 
 export interface OnboardingStepBoxProps extends CollapsibleOnboardingCardProps {
@@ -78,7 +78,7 @@ export const OnboardingStepBox = ({
 
     return (
         <>
-            {isBackDropVisible && <Modal.Backdrop zIndex={zIndices.base} />}
+            {isBackDropVisible && <Modal.Backdrop zIndex={zIndices.modal} />}
             {!disableConfirmWrapper && (
                 <WrapperWrapper data-testid="@prompts/confirm-on-device'">
                     {deviceModelInternal && (
