@@ -11,6 +11,7 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        { "path": "../../packages/eslint" }
     ]
 }

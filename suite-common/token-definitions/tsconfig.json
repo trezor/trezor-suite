@@ -18,6 +18,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/eslint" }
     ]
 }

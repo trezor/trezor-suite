@@ -9604,6 +9604,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/semver": "npm:^7.7.0"
@@ -9723,9 +9724,11 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:^"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
+    jws: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -9789,6 +9792,7 @@ __metadata:
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.17.1"
