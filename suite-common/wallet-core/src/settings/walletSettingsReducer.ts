@@ -1,8 +1,8 @@
-import { selectIsFeatureEnabled } from '@suite-common/message-system/src/messageSystemSelectors';
 import {
     Feature,
     MessageSystemRootState,
-} from '@suite-common/message-system/src/messageSystemTypes';
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
 import { createReducerWithExtraDeps, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbol, getNetwork, networkSymbolCollection } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
