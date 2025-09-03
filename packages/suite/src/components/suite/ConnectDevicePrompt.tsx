@@ -232,7 +232,7 @@ export const ConnectDevicePrompt = ({
             transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
             data-testid="@connect-device-prompt"
         >
-            <Column gap={spacings.sm}>
+            <Column alignItems="center" gap={spacings.sm}>
                 <Column alignItems="center" gap={spacings.xxl}>
                     <ElevationUp>
                         <ConnectImage
