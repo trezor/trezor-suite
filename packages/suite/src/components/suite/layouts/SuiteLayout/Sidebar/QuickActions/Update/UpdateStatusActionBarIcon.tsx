@@ -222,11 +222,13 @@ export const UpdateStatusActionBarIcon = ({
             <QuickActionButton onClick={handleClick}>
                 <ComponentWithSubIcon
                     variant={variant}
-                    subIconProps={{
-                        name: updateSubIcon,
-                        color: theme.iconDefaultInverted,
-                        size: iconSizes.extraSmall,
-                    }}
+                    icon={
+                        <Icon
+                            name={updateSubIcon}
+                            color={theme.iconDefaultInverted}
+                            size={iconSizes.extraSmall}
+                        />
+                    }
                 >
                     <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip}>
                         <UpdateIconGroup $variant={variant}>

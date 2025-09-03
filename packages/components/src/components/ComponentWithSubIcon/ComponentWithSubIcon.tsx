@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { borders, spacingsPx } from '@trezor/theme';
+import { SpacingValues, borders } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -11,13 +11,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import {
-    ExclusiveColorOrVariant,
-    Icon,
-    IconProps,
-    getColorForIconVariant,
-    getIconSize,
-} from '../Icon/Icon';
+import { ExclusiveColorOrVariant, getColorForIconVariant } from '../Icon/Icon';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;
@@ -30,20 +24,20 @@ const Container = styled.div<TransientProps<AllowedFrameProps>>`
 
 type SubIconWrapperProps = TransientProps<ExclusiveColorOrVariant> & {
     $subIconColor: string;
-    $subIconSize: number;
+    $iconOffset: SpacingValues;
+    $iconPadding: SpacingValues;
 };
 
 const SubIconWrapper = styled.div<SubIconWrapperProps>`
-    width: ${spacingsPx.sm};
-    height: ${spacingsPx.sm};
+    padding: ${({ $iconPadding }) => `${$iconPadding}px`};
 
     display: flex;
     justify-content: center;
     align-items: center;
 
     position: absolute;
-    right: -${({ $subIconSize }) => $subIconSize / 2 + 3}px;
-    top: -${({ $subIconSize }) => $subIconSize / 2 + 3}px;
+    right: -${({ $iconOffset }) => $iconOffset}px;
+    top: -${({ $iconOffset }) => $iconOffset}px;
 
     background-color: ${({ theme, $variant, $color }) =>
         getColorForIconVariant({ theme, variant: $variant, color: $color })};
@@ -53,21 +47,25 @@ const SubIconWrapper = styled.div<SubIconWrapperProps>`
 
 export type ComponentWithSubIconProps = AllowedFrameProps &
     ExclusiveColorOrVariant & {
-        subIconProps?: IconProps;
+        icon?: React.ReactNode;
         children: ReactNode;
+        iconPadding?: SpacingValues;
+        iconOffset?: SpacingValues;
     };
 
 export const ComponentWithSubIcon = ({
     variant,
     color,
     children,
-    subIconProps,
+    iconPadding = 2,
+    iconOffset = 4,
+    icon,
     ...rest
 }: ComponentWithSubIconProps) => {
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedComponentWithSubIconFrameProps);
 
-    if (subIconProps === undefined) {
+    if (icon === undefined) {
         return <Container {...frameProps}>{children}</Container>;
     }
 
@@ -79,11 +77,9 @@ export const ComponentWithSubIcon = ({
 
     const iconColor = getColorForIconVariant({
         theme,
-        color: subIconProps.color,
-        variant: subIconProps.variant,
+        color,
+        variant,
     });
-
-    const subIconSize = getIconSize(subIconProps.size ?? 12);
 
     return (
         <Container {...frameProps}>
@@ -91,9 +87,10 @@ export const ComponentWithSubIcon = ({
             <SubIconWrapper
                 $color={backgroundIconColor}
                 $subIconColor={iconColor}
-                $subIconSize={subIconSize}
+                $iconOffset={iconOffset}
+                $iconPadding={iconPadding}
             >
-                <Icon {...subIconProps} size={subIconSize} />
+                {icon}
             </SubIconWrapper>
         </Container>
     );

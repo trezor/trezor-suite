@@ -5,10 +5,13 @@ import { ConnectedDeviceStatus } from '@suite-common/suite-utils';
 import {
     Box,
     Column,
+    ComponentWithSubIcon,
     ElevationUp,
     Icon,
+    IconVariant,
     Image,
     Text,
+    iconSizes,
     motionEasing,
     useElevation,
     variables,
@@ -33,13 +36,6 @@ const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
         border-radius: 61px;
     }
-`;
-
-const Checkmark = styled.div`
-    display: flex;
-    position: absolute;
-    top: 0;
-    right: 0;
 `;
 
 const HeadingText = styled.div`
@@ -165,23 +161,44 @@ const ConnectImage = ({
 }: Pick<ConnectDevicePromptProps, 'connected' | 'showWarningIcon'>) => {
     const theme = useTheme();
 
+    const getIconData = (): { variant: IconVariant; icon: React.ReactNode } | undefined => {
+        const commonProps = {
+            color: theme.iconDefaultInverted,
+            size: iconSizes.mediumLarge,
+        };
+
+        if (connected && !showWarningIcon) {
+            return {
+                variant: 'primary',
+                icon: <Icon name="check" {...commonProps} />,
+            };
+        }
+        if (showWarningIcon) {
+            return {
+                variant: 'warning',
+                icon: <Icon name="warningFilled" {...commonProps} />,
+            };
+        }
+
+        return undefined;
+    };
+
+    const iconData = getIconData();
+
     return (
         <Box position={{ type: 'relative' }}>
-            <Image
-                maxHeight={300}
-                isFilterActive={false}
-                image={`TREZOR_${DeviceModelInternal.T3T1}_LARGE`}
-            />
-
-            <Checkmark>
-                {connected && !showWarningIcon && (
-                    <Icon name="checkCircleFilled" size={30} color={theme.legacy.TYPE_GREEN} />
-                )}
-
-                {showWarningIcon && (
-                    <Icon name="warningFilled" size={30} color={theme.legacy.TYPE_ORANGE} />
-                )}
-            </Checkmark>
+            <ComponentWithSubIcon
+                variant={iconData?.variant ?? 'tertiary'}
+                icon={iconData?.icon}
+                iconPadding={spacings.xxs}
+                iconOffset={spacings.xs}
+            >
+                <Image
+                    maxHeight={300}
+                    isFilterActive={false}
+                    image={`TREZOR_${DeviceModelInternal.T3T1}_LARGE`}
+                />
+            </ComponentWithSubIcon>
         </Box>
     );
 };
