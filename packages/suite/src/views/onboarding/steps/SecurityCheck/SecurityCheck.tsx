@@ -6,6 +6,7 @@ import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Button,
+    Card,
     Column,
     Divider,
     H3,
@@ -308,10 +309,12 @@ export const SecurityCheck = () => {
     const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
 
     return (
-        <SecurityCheckContent
-            goToDeviceAuthentication={goToDeviceAuthentication}
-            goToSuiteOrNextDevice={goToSuiteOrNextDevice}
-            shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}
-        />
+        <Card paddingType="large">
+            <SecurityCheckContent
+                goToDeviceAuthentication={goToDeviceAuthentication}
+                goToSuiteOrNextDevice={goToSuiteOrNextDevice}
+                shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}
+            />
+        </Card>
     );
 };

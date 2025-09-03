@@ -3,9 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
-    Card,
     Column,
-    Divider,
     ElevationDown,
     ElevationUp,
     Modal,
@@ -23,6 +21,7 @@ import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
 import { ContentContainer } from '../ContentContainer';
 import { LoggedOutSidebar } from '../LoggedOutSidebar';
+import { PageHeader } from '../SuiteLayout';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
 import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
 
@@ -30,7 +29,6 @@ const Content = styled.div<{ $elevation: Elevation; $verticalCenter?: boolean }>
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: ${spacingsPx.lg};
     align-items: center;
     overflow-y: auto;
     height: 100%;
@@ -69,16 +67,15 @@ export type WelcomeLayoutWithoutModalSwitcherProps = {
 type RightContentProps = {
     children: ReactNode;
     showPureChildren: boolean;
-    bannerSlot?: ReactNode;
 };
 
-const RightSideContent = ({ bannerSlot, showPureChildren, children }: RightContentProps) => {
+const RightSideContent = ({ showPureChildren, children }: RightContentProps) => {
     const { elevation } = useElevation();
 
     if (showPureChildren) {
         return (
             <Content $elevation={elevation} $verticalCenter={true}>
-                {bannerSlot ?? null}
+                <SuiteBanners />
                 <PureChildrenWrapper>
                     <ElevationUp>{children}</ElevationUp>
                 </PureChildrenWrapper>
@@ -89,15 +86,14 @@ const RightSideContent = ({ bannerSlot, showPureChildren, children }: RightConte
     return (
         <ResponsiveContextProvider>
             <Content $elevation={elevation}>
-                {bannerSlot ?? null}
+                <SuiteBanners />
                 <WelcomePageHeaderWrapper>
-                    <BasicName nameId="TR_DASHBOARD" />
-                    <Divider />
+                    <PageHeader>
+                        <BasicName nameId="TR_DASHBOARD" />
+                    </PageHeader>
                 </WelcomePageHeaderWrapper>
                 <ContentContainer>
-                    <ElevationUp>
-                        <Card>{children}</Card>
-                    </ElevationUp>
+                    <ElevationUp>{children}</ElevationUp>
                 </ContentContainer>
             </Content>
         </ResponsiveContextProvider>
@@ -128,10 +124,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                                 <LoggedOutSidebar />
                             </ElevationDown>
                         ) : null}
-                        <RightSideContent
-                            showPureChildren={showPureChildren}
-                            bannerSlot={<SuiteBanners fill />}
-                        >
+                        <RightSideContent showPureChildren={showPureChildren}>
                             {children}
                         </RightSideContent>
                         <GuideButton />

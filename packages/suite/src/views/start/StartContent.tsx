@@ -1,3 +1,5 @@
+import { Card } from '@trezor/components';
+
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
@@ -13,10 +15,10 @@ export const StartContent = () => {
         !['device-initialize', 'firmware-missing', 'device-recovery-mode'].includes(prerequisite)
     ) {
         return (
-            <>
+            <Card>
                 <ModalSwitcher />
                 <PrerequisitesGuide />
-            </>
+            </Card>
         );
     }
 

@@ -2,6 +2,7 @@ import { FC, PropsWithChildren, useEffect } from 'react';
 
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
+import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
@@ -112,7 +113,9 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     if (prerequisite) {
         return (
             <WelcomeLayout>
-                <PrerequisitesGuide allowSwitchDevice />
+                <Card paddingType="large">
+                    <PrerequisitesGuide allowSwitchDevice />
+                </Card>
             </WelcomeLayout>
         );
     }
