@@ -654,13 +654,15 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         assertStaticSessionId(deviceStateResponse.payload._state);
 
-        dispatch(
-            deviceActions.setDeviceState({
-                device,
-                state: deviceStateResponse.payload._state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            }),
-        );
+        if (device.useEmptyPassphrase) {
+            dispatch(
+                deviceActions.setDeviceState({
+                    device,
+                    state: deviceStateResponse.payload._state,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
+                }),
+            );
+        }
 
         // NOTE: keep here the previous device as default to prevent TS from screaming
         const updatedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId) ?? device;
