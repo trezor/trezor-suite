@@ -12765,7 +12765,7 @@ __metadata:
     react-dom: "npm:19.0.0"
     react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:9.2.0"
-    react-router: "npm:^7.8.0"
+    react-router: "npm:^7.8.2"
     styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^38.0.0"
@@ -12822,7 +12822,7 @@ __metadata:
     react-dom: "npm:19.0.0"
     react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:9.2.0"
-    react-router: "npm:^7.8.0"
+    react-router: "npm:^7.8.2"
     rimraf: "npm:^6.0.1"
     stylelint: "npm:^16.17.0"
     tsx: "npm:^4.20.3"
@@ -12943,7 +12943,7 @@ __metadata:
     react-hook-form: "npm:^7.62.0"
     react-intl: "npm:^7.1.11"
     react-redux: "npm:9.2.0"
-    react-router: "npm:^7.8.0"
+    react-router: "npm:^7.8.2"
     react-select: "npm:^5.10.2"
     react-svg: "npm:16.3.0"
     react-toastify: "npm:^10.0.4"
@@ -35824,9 +35824,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:^7.8.0":
-  version: 7.8.0
-  resolution: "react-router@npm:7.8.0"
+"react-router@npm:^7.8.2":
+  version: 7.8.2
+  resolution: "react-router@npm:7.8.2"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -35836,7 +35836,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10/bb46458bd15f73749a82d8ba0818d9ea98088378d569fd500aa4477cd08c1e359241b97de579f29e8bc78f8b81c76f660255b27a6249c305e4c66399f073e4df
+  checksum: 10/d1af3980cdfe8b915f6a8b219d57f18f9e3c4c062fa33bbb0946d4ff18c4c09fbf2f5c3616f5953f576c1d3be31616e4578773794cbb6eacf7812050997e04a2
   languageName: node
   linkType: hard
 
