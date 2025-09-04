@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 
 import * as ERRORS from '@trezor/connect/src/constants/errors';
 import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
-import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
+import { DEEPLINK_VERSION, DEFAULT_DOMAIN_MAJOR_VER } from '@trezor/connect/src/data/version';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type {
@@ -13,7 +13,7 @@ import type {
 } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
-import { Deferred, createDeferred } from '@trezor/utils';
+import { Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
     public eventEmitter = new EventEmitter();
@@ -46,6 +46,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     }
 
     private validateConnectSrc(connectSrc?: string) {
+        if (!connectSrc) return DEFAULT_DOMAIN_MAJOR_VER;
         if (connectSrc === 'trezorsuitelite://connect') return connectSrc;
 
         return corsValidator(connectSrc);
@@ -59,8 +60,8 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
 
         this._settings = {
             ...parseConnectSettings({ ...this._settings, ...settings }),
-            connectSrc: this.validateConnectSrc(settings.connectSrc),
-            deeplinkUrl: `${connectSrc}deeplink/${DEEPLINK_VERSION}/`,
+            connectSrc,
+            deeplinkUrl: `${removeTrailingSlashes(connectSrc)}/deeplink/${DEEPLINK_VERSION}/`,
             deeplinkOpen: settings.deeplinkOpen,
             deeplinkCallbackUrl: settings.deeplinkCallbackUrl,
         };
