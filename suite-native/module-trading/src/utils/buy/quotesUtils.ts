@@ -8,8 +8,8 @@ import {
     toCryptoOption,
 } from '@suite-common/trading';
 
-import { supportedFiatCurrenciesMap } from '../../consts/general/supportedFiatCurrencies';
 import { BuyFormType } from '../../types/buy';
+import { getCurrencyLabel } from '../general/currencyUtils';
 
 export const getPaymentMethodFromBuyForm = (
     form: BuyFormType,
@@ -38,7 +38,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
         'amountInCrypto',
         'country',
     ]);
-    const currencyName = supportedFiatCurrenciesMap[fiatCurrency]?.label;
+    const currencyName = getCurrencyLabel(fiatCurrency);
 
     invariant(currencyName, 'Currency is required');
     invariant(asset, 'Asset is required');
