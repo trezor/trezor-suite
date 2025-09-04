@@ -1,9 +1,7 @@
 import { CryptoId } from 'invity-api';
 
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils';
 
 import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
@@ -14,8 +12,6 @@ import { TradingInfoPaymentMethod } from 'src/views/wallet/trading/common/Tradin
 import { TradingInfoProvider } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoProvider';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
 import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
-
-import { TradingInfoFee } from './TradingInfo/TradingInfoFee';
 
 export const TradingSelectedOfferInfo = ({
     account,
@@ -57,19 +53,10 @@ export const TradingSelectedOfferInfo = ({
         />,
     ];
 
-    const fee =
-        quoteAmounts?.networkFee && account?.symbol
-            ? subunitsToUnits({
-                  value: asAmountSubunit(new BigNumber(quoteAmounts.networkFee)),
-                  symbol: account.symbol,
-              })
-            : undefined;
-
     return (
         <Column gap={spacings.xl} data-testid="@trading/form/info">
             <Column gap={spacings.sm}>
                 {type === 'sell' ? [...tradedAssets.reverse()] : tradedAssets}
-                {fee && <TradingInfoFee symbol={account?.symbol} amount={fee} />}
                 <TradingInfoProvider providers={providers} exchange={exchange} />
                 {type === 'exchange' && (
                     <TradingInfoExchangeType
