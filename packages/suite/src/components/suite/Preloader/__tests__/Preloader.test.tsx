@@ -74,7 +74,6 @@ const getInitialState = ({
     router: { ...initialAppState.router, ...router } as unknown as RouterState,
     device: { ...initialAppState.device, ...device } as DesktopDeviceState,
     analytics: { ...initialAppState.analytics, ...analytics },
-
     suite: {
         ...initialAppState.suite,
         lifecycle: {
@@ -82,6 +81,10 @@ const getInitialState = ({
         },
         transport: { transports: [] },
         ...suite,
+    },
+    wallet: {
+        ...initialAppState.wallet,
+        selectedAccount: initialAppState.wallet?.selectedAccount ?? { account: null },
     },
 });
 

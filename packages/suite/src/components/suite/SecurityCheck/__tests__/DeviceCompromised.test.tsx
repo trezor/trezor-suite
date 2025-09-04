@@ -24,6 +24,10 @@ const getInitialState = (device: DeepPartial<DeviceReducerState>): AppState =>
     ({
         ...initialAppState,
         device,
+        wallet: {
+            ...initialAppState.wallet,
+            selectedAccount: initialAppState.wallet?.selectedAccount ?? { account: null },
+        },
     }) as AppState;
 
 const deviceCompromisedFixtures: Array<{
