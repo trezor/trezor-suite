@@ -38,6 +38,19 @@ RUN cargo build --target x86_64-unknown-linux-gnu --release --bins && \
   cp ./target/x86_64-unknown-linux-gnu/release/trezor-bluetooth /output/linux-x64/trezor-bluetooth && \
   strip /output/linux-x64/trezor-bluetooth
 
+# Build for macOS ARM64
+RUN rustup target add aarch64-apple-darwin && \
+  cargo build --target aarch64-apple-darwin --release --bins && \
+  mkdir -p /output/mac-arm64 && \
+  cp ./target/aarch64-apple-darwin/release/trezor-bluetooth /output/mac-arm64/trezor-bluetooth && \
+  llvm-strip /output/mac-arm64/trezor-bluetooth
+
+# Build for macOS x64
+RUN cargo build --target x86_64-apple-darwin --release --bins && \
+  mkdir -p /output/mac-x64 && \
+  cp ./target/x86_64-apple-darwin/release/trezor-bluetooth /output/mac-x64/trezor-bluetooth && \
+  llvm-strip /output/mac-x64/trezor-bluetooth
+
 # Build NAPI for macOS (ARM64 and x64)
 COPY ./package.json ./package.json
 RUN yarn global add @napi-rs/cli && \
