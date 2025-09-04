@@ -12,7 +12,6 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
-import { supportedFiatCurrenciesMap } from '../consts/general/supportedFiatCurrencies';
 import {
     TradingRootState,
     createMemoizedSelector,
@@ -20,6 +19,7 @@ import {
 } from '../reducers';
 import { FiatCurrencyItem } from '../types/general';
 import { SellFormValues } from '../types/sell';
+import { getCurrencyLabel } from '../utils/general/currencyUtils';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 export const selectTradingSell = (state: TradingRootState) => state.wallet.trading.sell;
@@ -35,7 +35,7 @@ export const selectSellSupportedFiatCurrenciesList = createMemoizedSelector(
         [...new Set(currencies)].map(code => ({
             value: code,
             displayValue: code.toUpperCase(),
-            label: supportedFiatCurrenciesMap[code]?.label ?? code.toUpperCase(),
+            label: getCurrencyLabel(code),
         })),
 );
 

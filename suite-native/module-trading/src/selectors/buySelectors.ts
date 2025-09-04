@@ -16,7 +16,6 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
-import { supportedFiatCurrenciesMap } from '../consts/general/supportedFiatCurrencies';
 import {
     TradingRootState,
     createMemoizedSelector,
@@ -24,6 +23,7 @@ import {
 } from '../reducers';
 import { BuyFormValues } from '../types/buy';
 import { FiatCurrencyItem, ReceiveAccount } from '../types/general';
+import { getCurrencyLabel } from '../utils/general/currencyUtils';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -105,7 +105,7 @@ export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
         [...new Set(currencies)].map(code => ({
             value: code,
             displayValue: code.toUpperCase(),
-            label: supportedFiatCurrenciesMap[code]?.label ?? code.toUpperCase(),
+            label: getCurrencyLabel(code),
         })),
 );
 
