@@ -107,13 +107,13 @@ export const useHandleDeviceConnection = () => {
             !isDeviceCompromised
         ) {
             if (!wasDeviceOnboardingCancelled) {
-                navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
+                navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
                     screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
                 });
             } else if (isAuthorizeDeviceStackFocused) {
                 // This ensures that THP-related screens are dismissed after a THP connection.
                 // Dismissing them any other way caused navigation glitches.
-                navigation.navigate(RootStackRoutes.AppTabs, {
+                navigation.popTo(RootStackRoutes.AppTabs, {
                     screen: AppTabsRoutes.HomeStack,
                     params: {
                         screen: HomeStackRoutes.Home,
