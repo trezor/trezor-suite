@@ -1,4 +1,5 @@
 import { disposeAllLocalFirstStorageThunk } from '@suite-common/local-first-storage';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
@@ -11,6 +12,8 @@ import { selectSuiteFlags } from '../../selectors/suite/suiteSelectors';
 
 export const useLabelingCombined = () => {
     const dispatch = useDispatch();
+    const device = useSelector(selectSelectedDevice);
+
     const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled } =
         useSelector(selectSuiteFlags);
     const legacyMetadataState = useSelector(state => state.metadata);
@@ -32,9 +35,12 @@ export const useLabelingCombined = () => {
         dispatch(metadataLabelingActions.init(true));
     };
 
+    const isEvoluSupportedByDevice = device?.unavailableCapabilities?.evolu === undefined;
+
     return {
         /** New Labeling: LocalFirstStorage (Evolu) */
         isLocalFirstStorageEnabled,
+        isEvoluSupportedByDevice,
         isLocalFirstStorageDebugEnabled,
         localFirstEnable,
         localFirstDisable,
