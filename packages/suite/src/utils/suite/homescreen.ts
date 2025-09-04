@@ -12,19 +12,45 @@ const safe3Information = {
     width: 128,
     height: 64,
     supports: ['png', 'jpeg'] satisfies ('png' | 'jpeg')[],
+    maxImageSize: 16384,
 };
 
 export const deviceModelInformation: Record<
     DeviceModelInternal,
-    { width: number; height: number; supports: Array<'png' | 'jpeg'> }
+    { width: number; height: number; supports: Array<'png' | 'jpeg'>; maxImageSize: number }
 > = {
-    [DeviceModelInternal.UNKNOWN]: { width: 280, height: 520, supports: ['jpeg'] }, // just to have something
-    [DeviceModelInternal.T1B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
-    [DeviceModelInternal.T2T1]: { width: 240, height: 240, supports: ['jpeg'] },
+    [DeviceModelInternal.UNKNOWN]: {
+        width: 280,
+        height: 520,
+        supports: ['jpeg'],
+        maxImageSize: 16384,
+    },
+    [DeviceModelInternal.T1B1]: {
+        width: 128,
+        height: 64,
+        supports: ['png', 'jpeg'],
+        maxImageSize: 16384,
+    },
+    [DeviceModelInternal.T2T1]: {
+        width: 240,
+        height: 240,
+        supports: ['jpeg'],
+        maxImageSize: 16384,
+    },
     [DeviceModelInternal.T2B1]: safe3Information,
     [DeviceModelInternal.T3B1]: safe3Information,
-    [DeviceModelInternal.T3T1]: { width: 240, height: 240, supports: ['jpeg'] },
-    [DeviceModelInternal.T3W1]: { width: 280, height: 520, supports: ['jpeg'] }, // TODO T3W1 - double check values
+    [DeviceModelInternal.T3T1]: {
+        width: 240,
+        height: 240,
+        supports: ['jpeg'],
+        maxImageSize: 16384,
+    },
+    [DeviceModelInternal.T3W1]: {
+        width: 380,
+        height: 520,
+        supports: ['jpeg'],
+        maxImageSize: 65536,
+    },
 };
 
 export const enum ImageValidationError {
@@ -246,7 +272,7 @@ export const isValidImageSize = (file: File, deviceModelInternal: DeviceModelInt
         return true;
     }
 
-    return file.size <= 16384;
+    return file.size <= deviceModelInformation[deviceModelInternal].maxImageSize;
 };
 
 export const validateImageColors = (
