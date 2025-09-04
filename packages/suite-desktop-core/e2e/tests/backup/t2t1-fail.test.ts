@@ -1,4 +1,6 @@
+import messages from '@trezor/suite/src/support/messages';
 import { EventType } from '@trezor/suite-analytics';
+import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
@@ -33,18 +35,35 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
 
         await test.step('Simulate disconnect', async () => {
             await trezorUserEnvLink.stopEmu();
-            await expect(onboardingPage.backup.noDeviceModal).toBeVisible({ timeout: 30_000 });
+            await expect(
+                page.getByTestId('@menu/switch-device').getByTestId('@deviceStatus-disconnected'),
+            ).toBeVisible({ timeout: 30_000 });
         });
 
         await test.step('Simulate reconnect and check errors', async () => {
             await trezorUserEnvLink.startEmu();
             await expect(page.getByTestId('@toast/backup-failed')).toBeVisible({ timeout: 30_000 });
-            await expect(onboardingPage.backup.errorModal).toBeVisible({ timeout: 30_000 });
+            await dashboardPage.deviceSwitchingCloseButton.click();
         });
 
         await test.step('Check dashboard notification error banner', async () => {
-            await onboardingPage.backup.closeButton.click();
-            await expect(dashboardPage.notificationFailedBackup).toBeVisible();
+            await expect(onboardingPage.backup.errorBanner).toBeVisible({ timeout: 30_000 });
+            await expect(onboardingPage.backup.errorBanner).toContainText(
+                messages['TR_FAILED_BACKUP'].defaultMessage,
+            );
+        });
+
+        await test.step('Check backup failed setting in device settings', async () => {
+            await onboardingPage.backup.errorBannerContinueButton.click();
+            await expect(onboardingPage.backup.failedBackupSetting).toBeVisible();
+            await expect(onboardingPage.backup.failedBackupSetting).toContainText(
+                messages['TR_BACKUP_RECOVERY_SEED_FAILED_DESC'].defaultMessage,
+            );
+            await expect(onboardingPage.backup.backupFailedSettingLink).toHaveAttribute(
+                'href',
+                HELP_CENTER_RECOVERY_ISSUES_URL,
+            );
+            await expect(onboardingPage.backup.backupFailedSettingButton).toBeDisabled();
         });
 
         const createBackupEvent = analytics.findAnalyticsEventByType<

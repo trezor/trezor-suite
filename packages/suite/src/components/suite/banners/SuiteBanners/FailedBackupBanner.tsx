@@ -12,12 +12,13 @@ export const FailedBackup = () => {
         <Banner
             icon
             variant="destructive"
+            data-testid="@notification/failed-backup"
             rightContent={
                 <Banner.Button
                     onClick={() =>
                         dispatch(goto('settings-device', { anchor: SettingsAnchor.BackupFailed }))
                     }
-                    data-testid="@notification/failed-backup/cta"
+                    data-testid="@notification/failed-backup/continue-button"
                 >
                     <Translation id="TR_CONTINUE" />
                 </Banner.Button>
