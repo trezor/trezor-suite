@@ -6,3 +6,4 @@ export * from './thpUtils';
 export { connectThpDeviceThunk } from './connectThpDeviceThunk';
 export { startThpAutoconnectThunk } from './startThpAutoconnectThunk';
 export { autoInitThpAfterDeviceConnectionThunk } from './autoInitThpAfterDeviceConnectionThunk';
+export { removeThpAutoconnectThunk } from './removeThpAutoconnectThunk';

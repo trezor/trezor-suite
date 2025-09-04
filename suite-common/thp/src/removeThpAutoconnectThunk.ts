@@ -1,7 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils/';
 import { isThpDevice } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -42,10 +41,6 @@ export const removeThpAutoconnectThunk = createThunk<
 
         if (response.success) {
             dispatch(thpActions.removeCredentials({ credentials: credentialsToRemove }));
-        } else {
-            dispatch(
-                notificationsActions.addToast({ type: 'error', error: response.payload.error }),
-            );
         }
         dispatch(thpActions.finishThpFlow());
 
