@@ -1,17 +1,16 @@
 ### 🚀 New features
 
-- Bitcoin can now be set as the primary currency unit, offering greater control over how values are displayed.
-- “View-only” wallets are now enabled by default, making it easier to monitor balances without connecting your device.
-- Biometric authentication with auto-lock has been added to experimental features, enhancing both security and convenience.
-- WalletConnect is now officially supported—securely connect your Trezor to dApps, with transaction simulations included for added transparency.
-- Trezor Connect has graduated from experimental—seamlessly link your Trezor to supported apps via a secure Trezor Suite interface (availability depends on third-party wallet support).
+- Biometric authentication is now supported—unlock Trezor Suite with Touch ID, Face ID, or Windows Hello for quick access and stronger protection.
+- MEV protection is active by default on Ethereum, Base, and BNB Smart Chain, and can be changed in Settings.
+- A new dashboard overview displays all staked assets in one place for clearer portfolio management.
+- Users can now claim the Cardano Midnight airdrop directly through Trezor Suite.
 
 ### 🎨 Improvements
 
-- The minimum Bitcoin fee rate has been reduced to 0.1 sat/vB, allowing for more cost-effective transaction options.
-- The "Speed up" transaction feature has been improved for better performance and reliability.
-- Locktime functionality has been enhanced for increased precision in transaction timing.
-- Send options have been streamlined—Locktime and Broadcast settings are now neatly organized under Advanced Send.
+- The approve/revoke flow for EVM token allowances has been redesigned for improved clarity and stronger security.
+- The welcome screen has been refreshed with a more consistent and polished design.
+- Send options have been streamlined—Locktime and Broadcast settings are now grouped under Advanced Send for better organization.
+- Graph messaging has been refined to provide clearer context and usability.
 
 ### 🔧 Bug fixes
 
