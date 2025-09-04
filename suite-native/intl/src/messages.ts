@@ -1095,6 +1095,11 @@ export const messages = {
                     turnOffTitle: 'Turn off device authenticity check',
                 },
             },
+            mevProtection: {
+                title: 'MEV Protection',
+                subtitle:
+                    'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
+            },
         },
     },
     moduleOnboarding: {

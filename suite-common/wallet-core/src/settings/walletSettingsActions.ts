@@ -23,6 +23,13 @@ export const changeNetworks = createAction(
     }),
 );
 
+export const setMevProtection = createAction(
+    WALLET_SETTINGS.SET_MEV_PROTECTION,
+    (enabled: boolean) => ({
+        payload: enabled,
+    }),
+);
+
 export const toggleHideSuspiciousTransactions = createAction(
     WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
 );
