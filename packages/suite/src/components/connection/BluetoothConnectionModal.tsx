@@ -18,7 +18,10 @@ type BluetoothConnectionModalProps = {
     onRescanClick: () => void;
     onConnect: (deviceId: string) => Promise<void>;
     onCancel: () => void;
+    onClose: () => void;
 };
+
+const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
 export const BluetoothConnectionModal = ({
     devices,
@@ -29,6 +32,7 @@ export const BluetoothConnectionModal = ({
     onRescanClick,
     onConnect,
     onCancel,
+    onClose,
 }: BluetoothConnectionModalProps) => {
     if (
         selectedDevice !== undefined &&
@@ -50,10 +54,13 @@ export const BluetoothConnectionModal = ({
         );
     }
 
-    if (selectedDevice !== undefined) {
+    if (
+        selectedDevice !== undefined &&
+        selectedDeviceConnectionTypes.includes(selectedDevice.connectionStatus.type)
+    ) {
         return (
             <Modal
-                onCancel={onCancel}
+                onCancel={onClose}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
                 size="small"
@@ -67,7 +74,7 @@ export const BluetoothConnectionModal = ({
     if (devices.length > 0 && !selectedDevice && nearbyDevices && nearbyDevices.length > 0) {
         return (
             <Modal
-                onCancel={onCancel}
+                onCancel={onClose}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
                 size="small"
