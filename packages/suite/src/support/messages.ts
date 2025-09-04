@@ -2365,9 +2365,9 @@ export default defineMessages({
         defaultMessage: 'Homescreen editor',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR',
     },
-    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_240x240: {
-        defaultMessage: 'Use a JPG file (240×240 px, up to 16 KB).',
-        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_240x240',
+    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR: {
+        defaultMessage: 'Use a JPG file ({width}×{height} px, up to {maxSizeKb} KB).',
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY: {
         defaultMessage: 'Gallery',

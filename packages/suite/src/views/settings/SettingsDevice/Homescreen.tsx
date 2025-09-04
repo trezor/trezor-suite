@@ -111,12 +111,22 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 {[
                     DeviceModelInternal.T2T1,
                     DeviceModelInternal.T3T1,
-                    DeviceModelInternal.T3W1, // TODO T3W1
+                    DeviceModelInternal.T3W1,
                 ].includes(deviceModelInternal) && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_240x240" />
+                            <Translation
+                                id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR"
+                                values={{
+                                    width: deviceModelInformation[deviceModelInternal].width,
+                                    height: deviceModelInformation[deviceModelInternal].height,
+                                    maxSizeKb: Math.round(
+                                        deviceModelInformation[deviceModelInternal].maxImageSize /
+                                            1024,
+                                    ),
+                                }}
+                            />
                         }
                     />
                 )}
