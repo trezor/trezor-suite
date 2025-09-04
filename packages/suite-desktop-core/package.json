@@ -72,7 +72,7 @@
         "@types/ws": "^8.5.13",
         "app-builder-lib": "^26.0.12",
         "dotenv": "^16.4.7",
-        "electron": "37.2.6",
+        "electron": "38.0.0",
         "fs-extra": "^11.3.1",
         "glob": "^11.0.3",
         "jest-diff": "^29.7.0",

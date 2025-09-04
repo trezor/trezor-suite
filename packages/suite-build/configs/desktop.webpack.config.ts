@@ -22,9 +22,9 @@ const baseDir = getPathForProject('desktop');
 const BLUETOOTH_BIN_FILTER = !isDev && !process.env.BLUETOOTH ? [/bin\/bluetooth\//] : [];
 
 const config: webpack.Configuration = {
-    // Electron 37 runs on Chromium 138 https://www.electronjs.org/blog/electron-37-0#stack-changes
-    // but we are limited to 137 (supported by latest browserslist, as included by latest webpack)
-    target: 'browserslist:Chrome >= 137',
+    // Electron 38 runs on Chromium 140 https://github.com/electron/electron/releases/tag/v38.0.0
+    // but we are limited to 138 (supported by latest browserslist, as included by latest webpack)
+    target: 'browserslist:Chrome >= 138',
     entry: [path.join(baseDirUI, 'src', 'index.tsx')],
     output: {
         path: path.join(baseDir, 'build'),
