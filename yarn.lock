@@ -2198,13 +2198,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/notarize@npm:3.0.2":
-  version: 3.0.2
-  resolution: "@electron/notarize@npm:3.0.2"
+"@electron/notarize@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@electron/notarize@npm:3.1.0"
   dependencies:
     debug: "npm:^4.4.0"
     promise-retry: "npm:^2.0.1"
-  checksum: 10/224ccbd79eaff416070ec4d86fc87d4731911e19c2221bf322d04210faa4b122bd91c3eb1dc151d76a25bb8cad42a16e8c8d6274c853662b63168b6dc1799442
+  checksum: 10/9534fc7fd298c82abd79d0d3af34c432e84790703ace2fcbf296e0e64802ce352a309ecb920c54ac7baacd33bea4150c81512d0c8827e4cbab1519784cbc6527
   languageName: node
   linkType: hard
 
@@ -12672,7 +12672,7 @@ __metadata:
   dependencies:
     "@currents/playwright": "npm:^1.13.4"
     "@electron/fuses": "npm:^2.0.0"
-    "@electron/notarize": "npm:3.0.2"
+    "@electron/notarize": "npm:3.1.0"
     "@octokit/rest": "npm:^21.1.1"
     "@playwright/browser-chromium": "npm:^1.52.0"
     "@playwright/browser-firefox": "npm:^1.52.0"
