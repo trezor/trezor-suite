@@ -192,6 +192,7 @@ export const AddAccountModal = ({
                 selectedAccount,
                 accountTypes,
                 deviceState: device.state?.staticSessionId,
+                useEmptyPassphrase: device.useEmptyPassphrase,
             });
 
             if (newAccount instanceof Error) {
@@ -239,6 +240,7 @@ export const AddAccountModal = ({
                     selectedAccount,
                     accountTypes,
                     deviceState: device.state?.staticSessionId,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
                 });
 
                 if (newAccount instanceof Error) {
