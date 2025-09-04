@@ -776,6 +776,22 @@ export const messages = {
             },
             successMessage: 'Trezor has been unpaired.',
         },
+        autoconnect: {
+            enable: {
+                title: 'Turn on Auto-connect',
+                subtitle: 'Confirm every connection on Trezor',
+                description:
+                    'Trezor will connect automatically to Trezor Suite. No need to confirm each time.',
+                turnOnButton: 'Turn on Auto-connect',
+            },
+            disable: {
+                title: 'Turn off Auto-connect',
+                subtitle: 'Allow Trezor to connect automatically',
+                description:
+                    'Trezor will no longer connect automatically to Trezor Suite. You’ll confirm each connection on your device.',
+                turnOnButton: 'Turn off Auto-connect',
+            },
+        },
     },
     moduleReceive: {
         receiveTitle: 'Receive',

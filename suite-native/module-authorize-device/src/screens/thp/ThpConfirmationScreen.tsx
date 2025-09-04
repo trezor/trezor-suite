@@ -12,7 +12,7 @@ import {
     Screen,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useThpAlerts } from '@suite-native/thp';
+import { useThpAutoconnectAlerts } from '@suite-native/thp';
 
 import { ThpScreenHeader } from '../../components/thp/ThpScreenHeader';
 
@@ -22,7 +22,7 @@ export const ThpConfirmationScreen = ({
     navigation: NativeStackNavigationProp<AuthorizeDeviceStackParamList>;
 }) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { showThpAutoconnectAlert } = useThpAlerts();
+    const { showThpAutoconnectEnableAlert } = useThpAutoconnectAlerts();
 
     const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
     const thpStep = useSelector(selectThpStep);
@@ -33,14 +33,14 @@ export const ThpConfirmationScreen = ({
         } else if (thpStep === 'CodeEntry') {
             navigation.navigate(AuthorizeDeviceStackRoutes.ThpCodeEntry);
         } else if (thpStep === 'AutoconnectInfo') {
-            showThpAutoconnectAlert();
+            showThpAutoconnectEnableAlert();
         }
     }, [
         isDeviceThpRequired,
         thpStep,
         navigateToInitialScreen,
         navigation,
-        showThpAutoconnectAlert,
+        showThpAutoconnectEnableAlert,
     ]);
 
     return (
