@@ -204,6 +204,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                 onRescanClick={onReScanClick}
                 onConnect={onConnect}
                 onCancel={handleBluetoothConnectionCancel}
+                onClose={onCancel}
             />
         );
     }
