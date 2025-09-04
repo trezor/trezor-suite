@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { exchangeThunks, selectTradingExchangeIsLoading } from '@suite-common/trading';
+import {
+    exchangeThunks,
+    selectTradingExchangeIsLoading,
+    selectTradingMaxSlippagePercentage,
+} from '@suite-common/trading';
 import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
@@ -33,9 +37,9 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const timer = useTimer();
 
     const isLoading = useSelector(selectTradingExchangeIsLoading);
-
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
+    const swapSlippage = useSelector(selectTradingMaxSlippagePercentage);
 
     const navigation = useNavigation<NavigationProps>();
 
@@ -78,7 +82,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
         await dispatch(
             exchangeThunks.selectQuoteThunk({
-                quote: candidateQuote,
+                quote: { ...candidateQuote, swapSlippage },
                 timer,
                 userConsent: handleConsent.request,
                 nextStep: () => {

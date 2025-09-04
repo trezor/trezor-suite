@@ -1,3 +1,4 @@
+import { tradingSettingsActions } from '@suite-common/trading';
 import {
     PreloadedState,
     TestStore,
@@ -149,7 +150,29 @@ describe('useExchangeSelectQuote', () => {
                 expect.objectContaining({
                     type: 'selectQuoteThunkMock',
                     payload: expect.objectContaining({
-                        quote: exchangeQuotes[1],
+                        quote: expect.objectContaining({ quoteId: exchangeQuotes[1]?.quoteId }),
+                        timer: mockTimerReturn,
+                    }),
+                }),
+            );
+        });
+
+        it('should call selectQuoteThunk  with correct maxSlippage value', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            act(() => {
+                store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('1.5'));
+            });
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'selectQuoteThunkMock',
+                    payload: expect.objectContaining({
+                        quote: expect.objectContaining({ swapSlippage: '1.5' }),
                         timer: mockTimerReturn,
                     }),
                 }),
