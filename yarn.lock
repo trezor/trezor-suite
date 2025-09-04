@@ -5616,13 +5616,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@noble/ciphers@npm:2.0.0"
-  checksum: 10/3346baa09ac25e8e0587c87613f97590634cdc0fdb95dd68e2406791d108b3173552413092361c771ff23533129a1d37811b3f1a5c9bfcf42f9bf9239a76ca16
-  languageName: node
-  linkType: hard
-
 "@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
   version: 1.4.2
   resolution: "@noble/curves@npm:1.4.2"
@@ -9870,7 +9863,6 @@ __metadata:
   dependencies:
     "@evolu/common": "npm:^6.0.1-preview.19"
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@noble/ciphers": "npm:^2.0.0"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"

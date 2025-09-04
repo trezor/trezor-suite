@@ -2,10 +2,6 @@
 //       For running the e2e tests in Playwright
 const loadEvoluCommon = async () => await import('@evolu/common');
 
-// Todo: This is here so "solve" the "Error: No "exports" main defined in /home/user/workspace/trezor/trezor-suite/node_modules/@evolu/common/package.json"
-//       For running the e2e tests in Playwright
-const loadNobleCyphersUtils = async () => await import('@noble/ciphers/utils');
-
 import { createThunk } from '@suite-common/redux-utils';
 import { EvoluKeys, TrezorDevice, asDeviceEvoluOwnerId } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
@@ -42,8 +38,7 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
         });
 
         if (result.success) {
-            const { deriveSlip21Node } = await loadEvoluCommon();
-            const { bytesToHex, hexToBytes } = await loadNobleCyphersUtils();
+            const { deriveSlip21Node, bytesToHex, hexToBytes } = await loadEvoluCommon();
 
             // Slip21 path from Trezor Device: ["TREZOR", "Evolu"]
             const evoluNode = hexToBytes(result.payload.data);
