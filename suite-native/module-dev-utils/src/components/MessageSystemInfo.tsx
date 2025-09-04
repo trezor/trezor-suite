@@ -11,6 +11,8 @@ import { Button, Card, Divider, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { isCodesignBuild } from '@trezor/env-utils';
 
+import { MessageSystemConfigSourceSelect } from './MessageSystemConfigSourceSelect';
+
 export const MessageSystemInfo = () => {
     const config = useSelector(selectMessageSystemConfig);
     const allValidMessages = useSelector(selectAllValidMessages);
@@ -26,6 +28,7 @@ export const MessageSystemInfo = () => {
         <Card>
             <VStack paddingTop="sp16">
                 <Text variant="highlight">Message system</Text>
+                <MessageSystemConfigSourceSelect />
                 <VStack spacing="sp8" paddingBottom="sp16">
                     <Text variant="label">Codesign Build: {isCodesigned.toString()}</Text>
                     <Text variant="label">ConfigUrl: {remoteConfigUrl}</Text>
