@@ -17,6 +17,7 @@ type BluetoothDeviceProps = {
 
 export const BluetoothDeviceComponent = ({ device, flex, margin }: BluetoothDeviceProps) => {
     const model = device.manufacturerData.deviceModel;
+    const modelName = models[model].name;
     const color = device.manufacturerData.deviceColor;
     const colorName = models[model]?.colors[color.toString()];
 
@@ -32,7 +33,7 @@ export const BluetoothDeviceComponent = ({ device, flex, margin }: BluetoothDevi
             />
 
             <Column justifyContent="start" alignItems="start" flex="1">
-                <Text typographyStyle="body">Trezor Safe 7</Text>
+                <Text typographyStyle="body">{modelName}</Text>
                 {showBluetoothDebugInfo && <BluetoothDebugInfo device={device} />}
 
                 <InfoSegments>
