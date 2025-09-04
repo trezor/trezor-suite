@@ -1,5 +1,6 @@
 import tseslint from 'typescript-eslint';
 
+/** @type {import('typescript-eslint').ConfigArray} */
 export const typescriptConfig = [
     ...tseslint.configs.recommended,
     {
