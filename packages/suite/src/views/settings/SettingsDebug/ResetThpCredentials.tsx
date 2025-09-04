@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
+import { removeThpAutoconnectThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 
-import { removeThpAutoconnectThunk } from '../../../actions/thp/removeThpAutoconnectThunk';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
 export const ResetThpCredentials = () => {
@@ -29,6 +29,8 @@ export const ResetThpCredentials = () => {
             dispatch(deviceActions.deviceDisconnect(device));
 
             dispatch(notificationsActions.addToast({ type: 'thp-credentials-reset' }));
+        } else if (result && !result?.success) {
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }
 
         setTimeout(() => setIsLoading(false), 300);
