@@ -145,8 +145,17 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 // typescript complains about params and return type, need to be "any"
                 const original: any = TrezorConnect[key as ConnectKey];
                 if (!original) return;
-                (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
-                    dispatch(lockDevice(true));
+                (TrezorConnect[key as ConnectKey] as any) = async (
+                    params: any,
+                    // this is a temporary solution to prevent unwanted state changes in suite-native that are caused by calling connect
+                    // in a loop from useRetryFwAuthenticityChecks. This mechanism here is not designed to support concurrency in trezor-connect
+                    // calls but suite-native does use it like this which leads to clearing device.buttonRequests whenever the 'getFeatures' call
+                    // from useRetryFwAuthenticityChecks is made.
+                    enhancedCall = true,
+                ) => {
+                    if (enhancedCall) {
+                        dispatch(lockDevice(true));
+                    }
 
                     // cardano patch
                     const enabledNetworks = getEnabledNetworks();
@@ -158,14 +167,16 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                         original({ ...params, useCardanoDerivation: cardanoEnabled }),
                     );
 
-                    dispatch(lockDevice(false));
-                    dispatch(
-                        deviceActions.removeButtonRequests({
-                            // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                            // be the same re-selected device from this line. We should reuse device from params.
-                            device: selectSelectedDevice(getState()),
-                        }),
-                    );
+                    if (enhancedCall) {
+                        dispatch(lockDevice(false));
+                        dispatch(
+                            deviceActions.removeButtonRequests({
+                                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                                // be the same re-selected device from this line. We should reuse device from params.
+                                device: selectSelectedDevice(getState()),
+                            }),
+                        );
+                    }
 
                     return result;
                 };

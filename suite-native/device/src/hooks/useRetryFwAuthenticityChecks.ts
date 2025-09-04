@@ -28,7 +28,11 @@ export const useRetryFwAuthenticityChecks = () => {
                     // it'd be useless to await the result; what interests us is the Device state that updates, and gets propagated into redux
                     requestDeviceAccess({
                         deviceCallback: () =>
-                            TrezorConnect.getFeatures({ useEmptyPassphrase: true }),
+                            TrezorConnect.getFeatures(
+                                { useEmptyPassphrase: true },
+                                // @ts-expect-error see comment in connectInitThunk
+                                false,
+                            ),
                     });
                 }
                 timeoutHandle = setTimeout(recheckFwRevision, REFRESH_INTERVAL);
