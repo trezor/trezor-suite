@@ -16,17 +16,18 @@ type BluetoothDeviceProps = {
 };
 
 export const BluetoothDeviceComponent = ({ device, flex, margin }: BluetoothDeviceProps) => {
-    const model = device.manufacturerData.deviceModel;
-    const modelName = models[model].name;
+    const internalModel = device.manufacturerData.deviceModel;
+    const modelConfig = models[internalModel];
+    const modelName = modelConfig.name;
     const color = device.manufacturerData.deviceColor;
-    const colorName = models[model]?.colors[color.toString()];
+    const colorName = modelConfig.colors[color.toString()];
 
     const { showBluetoothDebugInfo } = useSelector(selectSuiteFlags);
 
     return (
         <Row gap={spacings.md} alignItems="stretch" flex={flex} margin={margin}>
             <RotateDeviceImage
-                deviceModel={model}
+                deviceModel={internalModel}
                 deviceColor={color}
                 animationHeight="44px"
                 animationWidth="44px"
