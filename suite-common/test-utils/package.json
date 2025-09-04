@@ -18,8 +18,8 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "core-js": "^3.45.0",
-        "fake-indexeddb": "^6.1.0",
+        "core-js": "^3.45.1",
+        "fake-indexeddb": "^6.2.2",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0"
     }
