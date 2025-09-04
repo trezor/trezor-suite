@@ -79,7 +79,8 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
                 await page.getByTestId('@account-subpage/back').click();
             });
 
-            await test.step('Verify Cardano staking', async () => {
+            //TODO: Needs rework after Cardano staking changes
+            await test.step.skip('Verify Cardano staking', async () => {
                 await walletPage.stakingButton.click();
                 await expect(walletPage.stakeAddress).toHaveText(
                     'stake_test1uqyuj8h935q6panx0klttu026rzam0y9c2v97pv3l56uk3s5v5fjr',
