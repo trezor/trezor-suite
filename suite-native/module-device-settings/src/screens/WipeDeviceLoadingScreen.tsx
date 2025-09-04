@@ -26,7 +26,7 @@ export const WipeDeviceLoadingScreen = () => {
     const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
 
     const handleFinish = () => {
-        navigation.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {
                 screen: HomeStackRoutes.Home,

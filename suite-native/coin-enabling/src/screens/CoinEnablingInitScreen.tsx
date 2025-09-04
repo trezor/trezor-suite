@@ -55,7 +55,7 @@ export const CoinEnablingInitScreen = () => {
             payload: { enabledNetworks: values.enabledCoins },
         });
 
-        navigation.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {
                 screen: HomeStackRoutes.Home,

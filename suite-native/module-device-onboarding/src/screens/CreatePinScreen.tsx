@@ -42,6 +42,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackRoutes.CreatePin,
     RootStackParamList
 >;
+
 export const CreatePinScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const deviceModel = useSelector(selectDeviceModel);
@@ -53,16 +54,15 @@ export const CreatePinScreen = () => {
 
     const handlePinCreated = useCallback(() => {
         if (hasBitcoinOnlyFirmware || isCoinEnablingInitFinished) {
-            navigation.navigate(RootStackRoutes.AppTabs, {
+            navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
                     screen: HomeStackRoutes.Home,
                 },
             });
         } else {
-            navigation.navigate(RootStackRoutes.CoinEnablingInit);
+            navigation.popTo(RootStackRoutes.CoinEnablingInit);
         }
-
         reportOnboardingSuccessAnalytics();
     }, [
         hasBitcoinOnlyFirmware,
