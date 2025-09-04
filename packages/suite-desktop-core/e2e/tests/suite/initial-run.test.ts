@@ -19,8 +19,9 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         analyticsSection,
         onboardingPage,
     }) => {
-        await onboardingPage.verifySuiteIsLoaded();
-        optionallyDismissFwHashCheckError(page);
+        // I was not able to debug why the initial start can be handled by onboardingPage.optionallyDismissFwHashCheckError
+        // but follow up reloads need a different approach that is defined here above.
+        await onboardingPage.optionallyDismissFwHashCheckError();
         await expect(analyticsSection.toggleSwitch).toBeVisible();
 
         await page.reload();
