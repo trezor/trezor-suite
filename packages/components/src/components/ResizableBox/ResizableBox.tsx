@@ -25,11 +25,13 @@ type Directions = Array<Direction>;
 type DisabledInterval = [number, number];
 
 export type ResizableBoxProps = AllowedResizableBoxFrameProps & {
+    collapse?: boolean;
     children: React.ReactNode;
     directions: Directions;
     isLocked?: boolean;
     width?: number;
     minWidth?: number;
+    forcedWidth?: number;
     maxWidth?: number;
     height?: number;
     minHeight?: number;
@@ -260,8 +262,10 @@ const resizeReducer = (state: ResizeState, action: ResizeAction): ResizeState =>
 };
 
 export const ResizableBox = ({
+    collapse,
     children,
     directions,
+    forcedWidth,
     isLocked = false,
     width,
     minWidth = 0,
@@ -293,7 +297,17 @@ export const ResizableBox = ({
     };
 
     const [state, dispatch] = useReducer(resizeReducer, initialState);
-    const { x, y, width: newWidth, height: newHeight, isResizing, isHovering, direction } = state;
+    const {
+        x,
+        y,
+        width: newWidthState,
+        height: newHeight,
+        isResizing,
+        isHovering,
+        direction,
+    } = state;
+
+    const newWidth = typeof forcedWidth === 'number' ? forcedWidth : newWidthState;
 
     const resizeCooldown = createCooldown(150);
 
@@ -444,7 +458,7 @@ export const ResizableBox = ({
 
     return (
         <Resizers
-            $width={newWidth}
+            $width={collapse ? minWidth : newWidth}
             $minWidth={minWidth}
             $maxWidth={maxWidth}
             $height={

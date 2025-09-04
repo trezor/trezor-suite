@@ -31,10 +31,11 @@ export const SETTINGS_ROUTES: Route['name'][] = [
 ] as const;
 
 type NavigationProps = {
+    children?: React.ReactNode;
     margin?: SpacingPxValues;
 };
 
-export const Navigation = ({ margin = spacingsPx.xs }: NavigationProps) => {
+export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
 
     const isInitialRun = useSelector(selectIsInitialRun);
@@ -67,6 +68,7 @@ export const Navigation = ({ margin = spacingsPx.xs }: NavigationProps) => {
 
     return (
         <Nav $isSidebarCollapsed={isSidebarCollapsed} $margin={margin}>
+            {children ?? null}
             {navItems.map(item => {
                 const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
 
