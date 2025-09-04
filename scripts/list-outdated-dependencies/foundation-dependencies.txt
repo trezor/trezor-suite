@@ -4,7 +4,6 @@
 @eslint/js
 @evolu/common
 @hookform/resolvers
-@noble/ciphers
 @noble/hashes
 @types/bn.js
 @types/create-hmac
