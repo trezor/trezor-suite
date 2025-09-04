@@ -286,7 +286,6 @@ export const MetadataLabeling = ({
     updateFlag,
     deviceStaticSessionId,
 }: Props) => {
-    const metadata = useSelector(state => state.metadata);
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
     const [showSuccess, setShowSuccess] = useState(false);
@@ -297,7 +296,8 @@ export const MetadataLabeling = ({
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
 
-    const { isLocalFirstStorageEnabled } = useLabelingCombined();
+    const { isLocalFirstStorageEnabled, isEvoluSupportedByDevice, legacyMetadataState } =
+        useLabelingCombined();
 
     let timeout: TimerId | undefined;
     useEffect(() => {
@@ -310,24 +310,24 @@ export const MetadataLabeling = ({
         };
     }, [payload.defaultValue, timeout]);
 
-    const isLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
+    const isLegacyLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
     const deviceState =
         payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
-    const isLabelingAvailable = useSelector(state =>
+    const isLegacyLabelingEnabled = useSelector(state =>
         selectIsLabelingAvailableForEntity(state, payload.entityKey, deviceState),
     );
 
     // is this concrete instance being edited?
-    const editActive = metadata.editing === payload.defaultValue;
+    const editActive = legacyMetadataState.editing === payload.defaultValue;
 
     const activateEdit = () => {
         // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
             !isLocalFirstStorageEnabled &&
             // Isn't initiation in progress?
-            !metadata.initiating &&
+            !legacyMetadataState.initiating &&
             // Is there something that needs to be initiated?
-            !isLabelingAvailable
+            !isLegacyLabelingEnabled
         ) {
             dispatch(
                 init(
@@ -354,7 +354,7 @@ export const MetadataLabeling = ({
     }
 
     const handleBlur = () => {
-        if (!metadata.initiating) {
+        if (!legacyMetadataState.initiating) {
             dispatch(setEditing(undefined));
         }
     };
@@ -398,16 +398,26 @@ export const MetadataLabeling = ({
 
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
+    const isEvoluLabeling = isLocalFirstStorageEnabled && isEvoluSupportedByDevice;
+
     // Should "add label"/"edit label" button be visible?
     const showActionButton =
         !isDisabled &&
-        (isLabelingAvailable || isLabelingInitPossible || isLocalFirstStorageEnabled) &&
+        (isLegacyLabelingEnabled || isLegacyLabelingInitPossible || isEvoluLabeling) &&
         !showSuccess &&
         !editActive;
+
+    console.log('____???', {
+        showActionButton,
+        isLegacyLabelingEnabled,
+        isLegacyLabelingInitPossible,
+        isEvoluLabeling,
+    });
+
     const isVisible = pending || visible;
 
     // Metadata is still initiating, on hover, show only disabled button with spinner.
-    if (metadata.initiating)
+    if (legacyMetadataState.initiating)
         return (
             <LabelContainer data-testid={labelContainerDataTest}>
                 {defaultVisibleValue}

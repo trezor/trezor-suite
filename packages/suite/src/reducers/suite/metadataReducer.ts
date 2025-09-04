@@ -33,6 +33,7 @@ import {
 import { Account } from 'src/types/wallet';
 
 import { SuiteRootState } from './suiteReducer';
+import { selectSuiteFlags } from '../../selectors/suite/suiteSelectors';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -284,10 +285,17 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
 };
 
 /**
- it is possible to initiate metadata
+ * @deprecated this is Legacy Labeling
+ *
+ * It is possible to initiate metadata (labeling)
  */
 export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
     const device = selectSelectedDevice(state);
+    const { isLocalFirstStorageEnabled } = selectSuiteFlags(state);
+
+    if (isLocalFirstStorageEnabled) {
+        return false;
+    }
 
     return (
         // device already has keys or it is at least connected and authorized
