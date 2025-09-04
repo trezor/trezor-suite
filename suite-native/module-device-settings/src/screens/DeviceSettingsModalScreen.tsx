@@ -14,6 +14,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
+import { DeviceAutoConnectCard } from '../components/DeviceAutoConnectCard';
 import { DeviceBluetoothCard } from '../components/DeviceBluetoothCard';
 import { DeviceCheckBackupCard } from '../components/DeviceCheckBackupCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
@@ -50,6 +51,7 @@ export const DeviceSettingsModalScreen = () => {
                     {isDeviceInitialized && <DevicePinProtectionCard />}
                     <DeviceFirmwareCard />
                     {isBluetoothDevice && <DeviceBluetoothCard />}
+                    {isBluetoothDevice && <DeviceAutoConnectCard />}
                 </TitledSection>
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}

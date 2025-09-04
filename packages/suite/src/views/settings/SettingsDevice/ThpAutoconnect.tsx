@@ -1,3 +1,5 @@
+import { isRejected } from '@reduxjs/toolkit';
+
 import { removeThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Switch } from '@trezor/components';
@@ -32,9 +34,9 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
                 removeThpAutoconnectThunk({ credentials: autoconnectCredentials }),
             ).unwrap();
 
-            if (result && !result?.success) {
+            if (isRejected(result) && result.error.message) {
                 dispatch(
-                    notificationsActions.addToast({ type: 'error', error: result.payload.error }),
+                    notificationsActions.addToast({ type: 'error', error: result.error.message }),
                 );
             }
         } else {

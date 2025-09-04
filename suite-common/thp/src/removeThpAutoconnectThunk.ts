@@ -24,7 +24,7 @@ export const removeThpAutoconnectThunk = createThunk<
     `${THP_PREFIX}/removeThpAutoconnectThunk`,
     async (
         params,
-        { getState, dispatch, fulfillWithValue },
+        { getState, dispatch, fulfillWithValue, rejectWithValue },
     ): Promise<RemoveThpAutoconnectThunkResult> => {
         const device = selectSelectedDevice(getState());
 
@@ -43,6 +43,10 @@ export const removeThpAutoconnectThunk = createThunk<
             dispatch(thpActions.removeCredentials({ credentials: credentialsToRemove }));
         }
         dispatch(thpActions.finishThpFlow());
+
+        if (!response.success) {
+            rejectWithValue(response);
+        }
 
         return fulfillWithValue(response);
     },
