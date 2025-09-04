@@ -4,7 +4,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs, isWindows } from '@trezor/env-utils';
 
 import { BaseProcess, Status } from './BaseProcess';
-import { getSwitchValue } from '../process-switches';
+import { getSwitchValue, hasSwitch } from '../process-switches';
 
 export class BluetoothProcess extends BaseProcess {
     private readonly port;
@@ -77,7 +77,7 @@ export class BluetoothProcess extends BaseProcess {
             process.env.RUST_BACKTRACE = '1';
         }
 
-        if (isMacOs()) {
+        if (isMacOs() && hasSwitch('bluetooth-napi')) {
             const processPath = path.join(super.getProcessDir(), `index.js`);
             this.logger.info(this.logTopic, `Loading bluetooth native module from ${processPath}`);
 
@@ -87,6 +87,6 @@ export class BluetoothProcess extends BaseProcess {
             return;
         }
 
-        return super.start(['-p', this.port.toString()]); // TODO: remove params after next binary release
+        return super.start();
     }
 }

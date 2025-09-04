@@ -10,6 +10,7 @@ export type SuiteSwitch =
     | 'bridge-dev'
     | 'bridge-daemon'
     | 'bridge-daemon-show-ui'
+    | 'bluetooth-napi'
     | 'log-level'
     | 'log-write'
     | 'log-ui'
