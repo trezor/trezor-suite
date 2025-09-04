@@ -1,6 +1,6 @@
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Button, Tooltip } from '@trezor/components';
+import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
@@ -56,15 +56,14 @@ export const UnstakeButton = () => {
 
     return (
         <Tooltip content={unstakingMessageContent}>
-            <Button
-                type="submit"
+            <Modal.Button
                 isDisabled={isDisabled || isUnstakingDisabled}
                 isLoading={isLoading}
                 onClick={onUnstakeClick}
                 icon={isUnstakingDisabled ? 'info' : undefined}
             >
-                <Translation id="TR_STAKE_UNSTAKE" />
-            </Button>
+                <Translation id="TR_CONTINUE" />
+            </Modal.Button>
         </Tooltip>
     );
 };
