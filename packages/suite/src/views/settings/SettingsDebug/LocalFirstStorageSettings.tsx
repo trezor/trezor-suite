@@ -4,7 +4,7 @@ import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     disposeAllLocalFirstStorageThunk,
 } from '@suite-common/local-first-storage';
-import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { Banner, Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
@@ -14,16 +14,20 @@ import { setLocalFirstStorageRelayAction } from '../../../actions/settings/setti
 import { setFlag } from '../../../actions/suite/suiteActions';
 import { SettingsSection } from '../../../components/settings';
 import { useDispatch, useSelector } from '../../../hooks/suite';
-import {
-    selectLocalFirstStorageRelayUrl,
-    selectSuiteFlags,
-} from '../../../selectors/suite/suiteSelectors';
+import { useLabelingCombined } from '../../../hooks/suite/useLabelingCombined';
+import { selectLocalFirstStorageRelayUrl } from '../../../selectors/suite/suiteSelectors';
 
-export const LocalFirstStorageDebug = () => {
+export const LocalFirstStorageSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled } =
-        useSelector(selectSuiteFlags);
+    const {
+        legacyMetadataState,
+        isLocalFirstStorageEnabled,
+        isLocalFirstStorageDebugEnabled,
+        localFirstDisable,
+        localFirstEnable,
+    } = useLabelingCombined();
+
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
 
     const [relayUrl, setRelayUrl] = useState(localFirstStorageRelayUrl ?? '');
@@ -31,11 +35,10 @@ export const LocalFirstStorageDebug = () => {
     const dispatch = useDispatch();
 
     const handleToggleLocalFirstStorage = () => {
-        dispatch(setFlag('isLocalFirstStorageEnabled', !isLocalFirstStorageEnabled));
         if (!isLocalFirstStorageEnabled) {
-            dispatch(initSuiteLocalFirstStorageThunk());
+            localFirstEnable();
         } else {
-            dispatch(disposeAllLocalFirstStorageThunk());
+            localFirstDisable();
         }
     };
 
@@ -61,7 +64,17 @@ export const LocalFirstStorageDebug = () => {
     return (
         <SettingsSection title="Local First Storage">
             <SectionItem>
-                <TextColumn title="Local First Storage (Evolu)" />
+                <TextColumn
+                    title="Local First Storage (Evolu)"
+                    description={
+                        legacyMetadataState.enabled && (
+                            <Banner>
+                                Legacy Labeling will be turned off by enabling Local First Storage
+                                (Evolu)
+                            </Banner>
+                        )
+                    }
+                />
                 <ActionColumn>
                     <Checkbox
                         isChecked={isLocalFirstStorageEnabled}

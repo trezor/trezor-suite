@@ -1,33 +1,36 @@
 import { isDevicePerceivedAsNew } from '@suite-common/suite-utils';
-import { LoadingContent, Switch, Tooltip } from '@trezor/components';
+import { Banner, LoadingContent, Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
-import * as metadataActions from 'src/actions/suite/metadataActions';
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDiscovery } from 'src/hooks/suite';
 
+import { useLabelingCombined } from '../../../hooks/suite/useLabelingCombined';
+
+/**
+ * @deprecated This will be replaced by LocalFistStorage (Evolu)
+ */
 export const Labeling = () => {
-    const metadata = useSelector(state => state.metadata);
+    const { legacyMetadataState, legacyEnable, legacyDisable, isLocalFirstStorageEnabled } =
+        useLabelingCombined();
 
     const { device, isLocked } = useDevice();
-    const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
 
     const handleSwitchClick = () => {
-        if (metadata.enabled) {
-            dispatch(metadataActions.disableMetadata());
+        if (legacyMetadataState.enabled) {
+            legacyDisable();
         } else {
-            dispatch(metadataLabelingActions.init(true));
+            legacyEnable();
         }
 
         analytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
-                value: !metadata.enabled,
+                value: !legacyMetadataState.enabled,
             },
         });
     };
@@ -65,11 +68,24 @@ export const Labeling = () => {
         <SettingsSectionItem anchorId={SettingsAnchor.Labeling}>
             <TextColumn
                 title={
-                    <LoadingContent isLoading={metadata.initiating} isSuccessful={metadata.enabled}>
+                    <LoadingContent
+                        isLoading={legacyMetadataState.initiating}
+                        isSuccessful={legacyMetadataState.enabled}
+                    >
                         <Translation id="TR_LABELING_ENABLED" />
                     </LoadingContent>
                 }
-                description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
+                description={
+                    <>
+                        <Translation id="TR_LABELING_FEATURE_ALLOWS" />
+                        {isLocalFirstStorageEnabled && (
+                            <Banner>
+                                Local First Storage (Evolu) will be turned off by enabling this
+                                Legacy Labeling
+                            </Banner>
+                        )}
+                    </>
+                }
                 buttonLink={HELP_CENTER_LABELING}
             />
             <ActionColumn>
@@ -81,9 +97,9 @@ export const Labeling = () => {
                     content={getTooltipContent()}
                 >
                     <Switch
-                        isDisabled={isDisabled || metadata.initiating}
+                        isDisabled={isDisabled || legacyMetadataState.initiating}
                         data-testid="@settings/metadata-switch"
-                        isChecked={metadata.enabled}
+                        isChecked={legacyMetadataState.enabled}
                         onChange={handleSwitchClick}
                     />
                 </Tooltip>

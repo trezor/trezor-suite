@@ -15,12 +15,12 @@ import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from 'src/reducers/suite/metadataReducer';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 import { ExtendedProps, Props } from './definitions';
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
+import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 
 const LabelValue = styled.div`
@@ -297,7 +297,7 @@ export const MetadataLabeling = ({
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
 
-    const { isLocalFirstStorageEnabled } = useSelector(selectSuiteFlags);
+    const { isLocalFirstStorageEnabled } = useLabelingCombined();
 
     let timeout: TimerId | undefined;
     useEffect(() => {
