@@ -6,12 +6,12 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { useToast } from '@suite-native/toasts';
 
-interface AuthenticityCheckCardProps {
+interface TurnOffCheckCardProps {
     isEnabled: boolean;
     title: ReactNode;
     subtitle: ReactNode;
     icon: IconName;
-    learnMoreUrl: string;
+    learnMoreUrl?: string;
     onTurnOn: () => void;
     onTurnOff: () => void;
 }
@@ -42,7 +42,10 @@ const TurnOffButton = ({ onTurnOff }: { onTurnOff: () => void }) => (
 
 const LearnMoreButton = ({ learnMoreUrl }: { learnMoreUrl: string }) => {
     const openLink = useOpenLink();
-    const handleButtonPress = () => openLink(learnMoreUrl);
+
+    const handleButtonPress = () => {
+        openLink(learnMoreUrl);
+    };
 
     return (
         <Button
@@ -65,14 +68,14 @@ export const TurnOffCheckCard = ({
     learnMoreUrl,
     onTurnOn,
     onTurnOff,
-}: AuthenticityCheckCardProps) => (
+}: TurnOffCheckCardProps) => (
     <CardWithIconLayout icon={icon} title={title}>
         <VStack spacing="sp16">
             <Text variant="hint" color="textSubdued">
                 {subtitle}
             </Text>
             <HStack spacing="sp8">
-                <LearnMoreButton learnMoreUrl={learnMoreUrl} />
+                {learnMoreUrl && <LearnMoreButton learnMoreUrl={learnMoreUrl} />}
                 {isEnabled ? (
                     <TurnOffButton onTurnOff={onTurnOff} />
                 ) : (
