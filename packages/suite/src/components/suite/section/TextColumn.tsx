@@ -42,12 +42,23 @@ interface TextColumnProps {
     description?: ReactNode;
     buttonLink?: Url;
     buttonTitle?: ReactNode;
+    'data-testid'?: string;
 }
 
-export const TextColumn = ({ title, description, buttonLink, buttonTitle }: TextColumnProps) => (
-    <Wrapper>
+export const TextColumn = ({
+    title,
+    description,
+    buttonLink,
+    buttonTitle,
+    'data-testid': dataTestId,
+}: TextColumnProps) => (
+    <Wrapper data-test={dataTestId}>
         {title && <Title>{title}</Title>}
         {description && <Description>{description}</Description>}
-        {buttonLink && <LearnMoreButton url={buttonLink}>{buttonTitle}</LearnMoreButton>}
+        {buttonLink && (
+            <LearnMoreButton data-testid={`${dataTestId}/learn-more-button`} url={buttonLink}>
+                {buttonTitle}
+            </LearnMoreButton>
+        )}
     </Wrapper>
 );

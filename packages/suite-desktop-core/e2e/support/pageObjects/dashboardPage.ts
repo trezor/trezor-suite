@@ -35,7 +35,6 @@ export class DashboardPage {
     readonly passphraseShowButton: Locator;
     readonly loading: Locator;
     readonly notificationNoBackupButton: Locator;
-    readonly notificationFailedBackup: Locator;
     readonly openUnusedWalletButton1: Locator;
     readonly openUnusedWalletButton2: Locator;
 
@@ -69,7 +68,6 @@ export class DashboardPage {
         this.passphraseShowButton = this.page.getByTestId('@passphrase/show-toggle');
         this.loading = this.page.getByTestId('@dashboard/loading');
         this.notificationNoBackupButton = this.page.getByTestId('@notification/no-backup/button');
-        this.notificationFailedBackup = this.page.getByTestId('@notification/failed-backup/cta');
         this.openUnusedWalletButton1 = this.page.getByTestId(
             '@passphrase-confirmation/step1-open-unused-wallet-button',
         );
