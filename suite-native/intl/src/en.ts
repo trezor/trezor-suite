@@ -350,18 +350,11 @@ export const en = {
             },
         },
         autoconnect: {
-            title: 'Save time with auto-connect',
+            title: 'Connect to your Trezor faster with Auto-connect',
             description:
-                'Use this phone often with your Trezor? Allow Trezor Suite to connect automatically to it—no need to confirm every time.',
-            appendix: {
-                highlight: 'Fast, secure access with auto-connect',
-                bullet1:
-                    'Let Trezor Suite connect to your Trezor automatically when it’s connected',
-                bullet2: 'Skip repeated confirmations',
-                bullet3: 'Stay fully secure',
-            },
-            turnOnButton: 'Turn on auto-connect',
-            noThanksButton: 'No thanks',
+                'Allow Trezor Suite to connect automatically to this Trezor so you don’t have to confirm the connection each time.',
+            turnOnButton: 'Turn on Auto-connect',
+            noThanksButton: 'Not now',
         },
         pairingSuccess: {
             title: 'Secure connection created',
