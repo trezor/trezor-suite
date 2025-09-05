@@ -10,8 +10,8 @@ module.exports = function (api) {
         presets: ['babel-preset-expo'],
         plugins: [
             ['@babel/plugin-transform-class-static-block'],
-            // react-native-reanimated plugin has to be listed last
-            ['react-native-reanimated/plugin', { globals: ['__scanCodes'] }],
+            // react-native-worklets/plugin has to be listed last
+            ['react-native-worklets/plugin', { globals: ['__scanCodes'] }],
         ],
     };
 };
