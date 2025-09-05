@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -130,10 +130,12 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
         }
     }, [device, navigation, onSuccess, handleError, showSuccess, type]);
 
-    useEffect(() => {
-        if (isDeviceConnected) handlePinAction();
+    useFocusEffect(
+        useCallback(() => {
+            if (isDeviceConnected) handlePinAction();
 
-        // handlePinAction is excluded as it depends on device object that could unintentionally trigger the useEffect
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isDeviceConnected]);
+            // handlePinAction is excluded as it depends on device object that could unintentionally trigger the useEffect
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [isDeviceConnected]),
+    );
 };
