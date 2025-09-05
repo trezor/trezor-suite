@@ -554,10 +554,6 @@ type FailEntropyCheckParams = {
 export const failEntropyCheckThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
     ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
-        if (error.code === 'Method_Cancel') {
-            // resetDevice call was cancelled by user
-            return;
-        }
         const contextData = {
             model: device?.features?.internal_model,
             revision: device?.features?.revision,
