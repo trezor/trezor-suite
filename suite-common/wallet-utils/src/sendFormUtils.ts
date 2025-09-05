@@ -535,16 +535,38 @@ type BuildCurrencyOptionParams = {
     areSatsDisplayed: boolean;
 };
 
-export const buildCurrencyOption = ({
+export const buildCurrencyShortOption = ({
     currency,
     areSatsDisplayed,
-}: BuildCurrencyOptionParams): BaseCurrencyOption => ({
-    value: currency,
-    label:
-        currency !== '' && isBaseCurrencyWithSats(currency) && areSatsDisplayed
-            ? 'Sats'
-            : currency.toUpperCase(),
-});
+}: BuildCurrencyOptionParams): BaseCurrencyOption => {
+    if (currency === '') return { value: '', label: '' };
+
+    return {
+        value: currency,
+        label:
+            isBaseCurrencyWithSats(currency) && areSatsDisplayed ? 'sat' : currency.toUpperCase(),
+    };
+};
+
+export const buildCurrencyLongOption = ({
+    currency,
+    areSatsDisplayed,
+}: BuildCurrencyOptionParams): BaseCurrencyOption => {
+    const shortOption = buildCurrencyShortOption({ currency, areSatsDisplayed });
+
+    if (currency === '') return shortOption;
+    else {
+        return {
+            value: shortOption.value,
+            label:
+                shortOption.label +
+                ' · ' +
+                (isBaseCurrencyWithSats(currency) && areSatsDisplayed
+                    ? 'Satoshis'
+                    : baseCurrencies[currency].label),
+        };
+    }
+};
 
 type BuildCurrencyOptionsParams = {
     selected: BaseCurrencyOption;
@@ -562,7 +584,7 @@ export const buildCurrencyOptions = ({
             return;
         }
 
-        result.push(buildCurrencyOption({ currency, areSatsDisplayed }));
+        result.push(buildCurrencyLongOption({ currency, areSatsDisplayed }));
     });
 
     return result;
