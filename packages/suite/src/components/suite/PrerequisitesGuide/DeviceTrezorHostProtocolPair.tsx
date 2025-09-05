@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect } from 'react';
+import { MouseEventHandler } from 'react';
 
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
@@ -31,13 +31,6 @@ export const DeviceTrezorHostProtocolPair = () => {
     );
 
     const tips = [TROUBLESHOOTING_TIP_CLOSE_ALL_TABS, TROUBLESHOOTING_TIP_RECONNECT];
-
-    // if possible, prompt for THP pairing right away
-    useEffect(() => {
-        if (!isDeviceLocked) {
-            dispatch(acquireDevice({ requestedDevice: device }));
-        }
-    });
 
     return (
         <TroubleshootingTips
