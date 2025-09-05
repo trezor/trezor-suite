@@ -8,7 +8,7 @@ import { selectThpCredentials } from './thpSelectors';
 const NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT = 3;
 
 type ConnectThpDeviceThinkParams = {
-    device: Pick<Device, 'thp'>;
+    device: Pick<Device, 'thp' | 'features'>;
 };
 
 export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkParams, void>(
@@ -27,7 +27,8 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
         if (credential !== undefined) {
             // We do not want to offer Autoconnect after reconnection dues to Firmware installation.
             // Autoconnect will be offered on the next reconnection.
-            if (!isFwInstall) {
+            // Also, do not offer Autoconnect if reconnecting a device with Firmware, but not yet a wallet.
+            if (!isFwInstall && device.features?.initialized === true) {
                 dispatch(thpActions.incrementCredentialConnectionCounter({ credential }));
             }
 
