@@ -41,7 +41,7 @@
         "react": "19.0.0",
         "react-hook-form": "^7.62.0",
         "react-native": "0.79.3",
-        "react-native-reanimated": "^3.18.0",
+        "react-native-reanimated": "^4.1.0",
         "react-redux": "9.2.0"
     },
     "devDependencies": {
