@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,17 +12,22 @@ import {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import {
-    buildCurrencyOption,
-    buildCurrencyOptions,
+    buildCurrencyLongOption,
+    buildCurrencyShortOption,
     findToken,
     getDecimalsForBaseCurrency,
     getInputState,
     isLowAnonymityWarning,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import {
+    type BaseCurrencyCode,
+    fiatBaseCurrencies,
+    valuablesBaseCurrencies,
+} from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { useTranslation } from 'src/hooks/suite';
@@ -134,12 +140,30 @@ export const BaseCurrencyInput = ({
         };
     }
 
+    const options = useMemo(
+        () => [
+            {
+                label: translationString('TR_BASE_CURRENCY_FIAT'),
+                options: typedObjectKeys(fiatBaseCurrencies).map(currency =>
+                    buildCurrencyLongOption({ currency, areSatsDisplayed }),
+                ),
+            },
+            {
+                label: translationString('TR_BASE_CURRENCY_VALUABLES'),
+                options: typedObjectKeys(valuablesBaseCurrencies).map(currency =>
+                    buildCurrencyLongOption({ currency, areSatsDisplayed }),
+                ),
+            },
+        ],
+        [translationString, areSatsDisplayed],
+    );
+
     const renderCurrencySelect = ({
         field: { onChange, value: selectedOption },
     }: CallbackParams) => (
         <Select
-            options={buildCurrencyOptions({ selected: selectedOption, areSatsDisplayed })}
-            value={buildCurrencyOption({
+            options={options}
+            value={buildCurrencyShortOption({
                 currency: selectedOption.value,
                 areSatsDisplayed,
             })}

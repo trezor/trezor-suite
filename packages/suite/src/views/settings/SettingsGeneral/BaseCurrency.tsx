@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
+import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import {
     BaseCurrencyCode,
     fiatBaseCurrencies,
@@ -14,17 +15,12 @@ import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/compone
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
-const buildCurrencyOption = (currency: BaseCurrencyCode) => ({
-    value: currency,
-    label: currency.toUpperCase(),
-});
-
 export const BaseCurrency = () => {
     const { translationString } = useTranslation();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
 
-    const value = buildCurrencyOption(baseCurrencyCode);
+    const value = buildCurrencyShortOption({ currency: baseCurrencyCode, areSatsDisplayed: false });
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
         dispatch(setBaseCurrency(option.value));
@@ -40,11 +36,15 @@ export const BaseCurrency = () => {
         () => [
             {
                 label: translationString('TR_BASE_CURRENCY_FIAT'),
-                options: typedObjectKeys(fiatBaseCurrencies).map(buildCurrencyOption),
+                options: typedObjectKeys(fiatBaseCurrencies).map(currency =>
+                    buildCurrencyLongOption({ currency, areSatsDisplayed: false }),
+                ),
             },
             {
                 label: translationString('TR_BASE_CURRENCY_VALUABLES'),
-                options: typedObjectKeys(valuablesBaseCurrencies).map(buildCurrencyOption),
+                options: typedObjectKeys(valuablesBaseCurrencies).map(currency =>
+                    buildCurrencyLongOption({ currency, areSatsDisplayed: false }),
+                ),
             },
         ],
         [translationString],
@@ -55,7 +55,7 @@ export const BaseCurrency = () => {
             <TextColumn title={<Translation id="TR_BASE_CURRENCY" />} />
             <ActionColumn>
                 <ActionSelect
-                    useKeyPressScroll
+                    isSearchable
                     onChange={handleChange}
                     value={value}
                     options={options}
