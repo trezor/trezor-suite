@@ -207,5 +207,3 @@ The reporter is integrated into release branch CI workflows:
 
 Each workflow passes the `RELEASE_BUILD` and `GITHUB_TOKEN` environment variables to enable test reporting.
 On the Web, Desktop, Android and iOS workflows, reporter is enabled only when workflow is run manually with param `publishResultsToGitHub` se to `true`. Otherwise only test are run. That way we have full control on the generation of issues in GitHub. We had a problem of duplicate and unwanted triggers when it was based on push to release branch.
-Implemented by this condition in Suite workflows: `run-reporter: ${{ inputs.publishResultsToGitHub == 'true' || github.event_name == 'workflow_call' }}`
-Implemented by env var in Suite native workflow, condition is in jest.config.js

@@ -17,7 +17,14 @@ on:
         description: "(optional) Publish test report to GitHub Project"
         required: false
         default: false
+        type: boolean
   workflow_call:
+    inputs:
+      publishResultsToGitHub:
+        description: "(optional) Publish test report to GitHub Project"
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: web-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -82,4 +89,4 @@ jobs:
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
           github-token: ${{ steps.trezor-bot-token.outputs.token }}
           release-build: ${{ env.release_build }}
-          run-reporter: ${{ inputs.publishResultsToGitHub == 'true' || github.event_name == 'workflow_call' }}
+          run-reporter: ${{ inputs.publishResultsToGitHub }}
