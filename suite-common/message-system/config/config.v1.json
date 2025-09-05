@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2025-09-05T14:00:00+00:00",
-    "sequence": 109,
+    "sequence": 110,
     "actions": [
         {
             "conditions": [
@@ -1837,9 +1837,9 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=25.8.0",
+                        "desktop": ">=25.8.0 <25.9.0",
                         "mobile": "!",
-                        "web": ">=25.8.0"
+                        "web": ">=25.8.0 <25.9.0"
                     }
                 }
             ],
@@ -1866,44 +1866,6 @@
                 "feature": [
                     {
                         "domain": "security.entropyCheck",
-                        "flag": false
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "!",
-                        "mobile": ">=25.8.0",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "1a93ebf0-489a-4317-9839-3018fc38a4c0",
-                "priority": 1,
-                "dismissible": false,
-                "variant": "info",
-                "category": "feature",
-                "content": {
-                    "en": "Placeholder",
-                    "es": "Placeholder",
-                    "cs": "Placeholder",
-                    "de": "Placeholder",
-                    "fr": "Placeholder",
-                    "it": "Placeholder",
-                    "pt": "Placeholder",
-                    "tr": "Placeholder",
-                    "ru": "Placeholder",
-                    "ja": "Placeholder",
-                    "uk": "Placeholder",
-                    "hu": "Placeholder"
-                },
-                "feature": [
-                    {
-                        "domain": "security.entropyCheck.mobile",
                         "flag": false
                     }
                 ]
