@@ -1910,41 +1910,6 @@
                     }
                 ]
             }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "pol": true
-                        }
-                    ],
-                    "duration": {
-                        "from": "2025-08-27T00:00:00.000Z",
-                        "to": "2025-08-28T08:00:00.000Z"
-                    },
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "0505240d-c792-4a0a-ac5a-8e7c625ab8cf",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en": "Polygon PoS services in Trezor Suite will be unavailable on August 28 from 8:00–9:30 AM CEST (2:00–3:30 AM ET) due to scheduled maintenance. Your assets remain safe.",
-                    "es": "Los servicios de Polygon PoS en Trezor Suite no estarán disponibles el 28 de agosto de 8:00 a 9:30 CEST (2:00 a 3:30 ET) debido a un mantenimiento programado. Tus activos siguen seguros.",
-                    "cs": "Síť Polygon PoS v Trezor Suite nebude dostupná 28. srpna od 8:00 do 9:30 CEST (2:00–3:30 ET) z důvodu plánované údržby. Vaše prostředky zůstávají v bezpečí.",
-                    "de": "Die Polygon-PoS-Dienste in Trezor Suite sind am 28. August von 8:00 bis 9:30 Uhr CEST (2:00–3:30 Uhr ET) aufgrund geplanter Wartungsarbeiten nicht verfügbar. Ihre Vermögenswerte bleiben sicher.",
-                    "fr": "Les services Polygon PoS dans Trezor Suite seront indisponibles le 28 août de 8h00 à 9h30 CEST (2h00–3h30 ET) en raison d’une maintenance planifiée. Vos actifs restent en sécurité.",
-                    "pt": "Os serviços da Polygon PoS no Trezor Suite ficarão indisponíveis em 28 de agosto das 8h00 às 9h30 CEST (2h00–3h30 ET) devido a manutenção programada. Os seus ativos permanecem seguros."
-                }
-            }
         }
     ],
     "experiments": [
