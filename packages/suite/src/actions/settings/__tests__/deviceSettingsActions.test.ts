@@ -22,11 +22,12 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     },
     device: {
         devices: state.device?.devices ?? [DEVICE],
-        selectedDevice: DEVICE,
+        selectedDevice: state.device?.selectedDevice ?? DEVICE,
         isDeviceAutoEjectEnabled: false,
         isConnectionModalOpen: false,
     },
     router: {},
+    messageSystem: { validMessages: { feature: [] } },
 });
 
 const mockStore = configureStore<DeviceSettingsFixtureState, any>();
@@ -64,6 +65,7 @@ describe('DeviceSettings Actions', () => {
             jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(mock);
             jest.spyOn(TrezorConnect, 'wipeDevice').mockImplementation(mock);
             jest.spyOn(TrezorConnect, 'changePin').mockImplementation(mock);
+            jest.spyOn(TrezorConnect, 'resetDevice').mockImplementation(mock);
 
             await store.dispatch(f.action());
 

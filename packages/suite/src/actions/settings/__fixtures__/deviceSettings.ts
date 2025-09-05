@@ -3,7 +3,12 @@ import assert from 'assert';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, prepareDeviceReducer, wipeDeviceThunk } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    deviceInitialState,
+    prepareDeviceReducer,
+    wipeDeviceThunk,
+} from '@suite-common/wallet-core';
 import { Response } from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -90,6 +95,7 @@ const fixture: Feature[] = [
         description: 'Wipe device with multiple device instances',
         initialState: {
             device: {
+                ...deviceInitialState,
                 devices: [
                     getSuiteDevice({
                         path: '1',
@@ -108,7 +114,6 @@ const fixture: Feature[] = [
                         state: '1stTestnetAddress@device_2_id:0',
                     }),
                 ],
-                isDeviceAutoEjectEnabled: false,
             },
         },
         action: () => wipeDeviceThunk(),
@@ -306,6 +311,65 @@ const fixture: Feature[] = [
             ],
         },
         initialState: {},
+    },
+    {
+        description: 'Reset device - Cancel - Entropy check not triggered',
+        action: () => deviceSettingsActions.resetDevice(),
+        mocks: { success: false, payload: { error: 'Canceled', code: 'Method_Cancel' } },
+        result: {
+            actions: [
+                {
+                    type: notificationsActions.addToast.type,
+                    payload: {
+                        type: 'error',
+                        error: 'Canceled',
+                        context: 'toast',
+                        id: expect.any(Number),
+                    },
+                } satisfies ReturnType<typeof notificationsActions.addToast>,
+            ],
+        },
+        initialState: {
+            device: {
+                ...deviceInitialState,
+                selectedDevice: getSuiteDevice({
+                    mode: 'initialize',
+                }),
+            },
+        },
+    },
+    {
+        description: 'Reset device - Entropy check fail - show Device compromised',
+        action: () => deviceSettingsActions.resetDevice(),
+        mocks: {
+            success: false,
+            payload: { error: 'Entropy check failed', code: 'Failure_EntropyCheck' },
+        },
+        result: {
+            actions: [
+                {
+                    type: notificationsActions.addToast.type,
+                    payload: {
+                        type: 'error',
+                        error: 'Entropy check failed',
+                        context: 'toast',
+                        id: expect.any(Number),
+                    },
+                } satisfies ReturnType<typeof notificationsActions.addToast>,
+                {
+                    type: deviceActions.setEntropyCheckFail.type,
+                    payload: 'device-id',
+                } satisfies ReturnType<typeof deviceActions.setEntropyCheckFail>,
+            ],
+        },
+        initialState: {
+            device: {
+                ...deviceInitialState,
+                selectedDevice: getSuiteDevice({
+                    mode: 'initialize',
+                }),
+            },
+        },
     },
 ];
 
