@@ -1,8 +1,62 @@
 {
     "version": 1,
-    "timestamp": "2025-08-27T14:00:00+00:00",
-    "sequence": 108,
+    "timestamp": "2025-09-05T14:00:00+00:00",
+    "sequence": 109,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": ">=25.8.1",
+                        "web": "!"
+                    },
+                    "os": {
+                        "macos": "!",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "*",
+                        "chromeos": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "dcbadcba-e5f6-7890-abcd-ef1234567890",
+                "priority": 91,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en": "Trading is not available.",
+                    "es": "Trading is not available.",
+                    "cs": "Trading is not available.",
+                    "de": "Trading is not available.",
+                    "fr": "Trading is not available.",
+                    "it": "Trading is not available.",
+                    "pt": "Trading is not available.",
+                    "tr": "Trading is not available.",
+                    "ru": "Trading is not available.",
+                    "ja": "Trading is not available.",
+                    "uk": "Trading is not available.",
+                    "hu": "Trading is not available."
+                },
+                "feature": [
+                    {
+                        "domain": "trading.buy",
+                        "flag": false
+                    },
+                    {
+                        "domain": "trading.sell",
+                        "flag": false
+                    },
+                    {
+                        "domain": "trading.exchange",
+                        "flag": false
+                    }
+                ]
+            }
+        },
         {
             "conditions": [
                 {
