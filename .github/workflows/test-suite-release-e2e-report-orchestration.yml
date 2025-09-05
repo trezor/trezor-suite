@@ -17,7 +17,11 @@ jobs:
   call-test-suite-desktop-e2e-release:
     uses: ./.github/workflows/test-suite-desktop-e2e-release.yml
     secrets: inherit
+    with:
+      publishResultsToGitHub: true
 
   call-test-suite-web-e2e-release:
     uses: ./.github/workflows/test-suite-web-e2e-release.yml
     secrets: inherit
+    with:
+      publishResultsToGitHub: true

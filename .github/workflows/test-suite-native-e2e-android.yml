@@ -24,6 +24,7 @@ on:
         description: "(optional) Publish test report to GitHub Project"
         required: false
         default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -40,6 +41,7 @@ jobs:
     with:
       emulator_model: "T3T1"
     secrets:
+      PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publishResultsToGitHub }}
       TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
       TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
