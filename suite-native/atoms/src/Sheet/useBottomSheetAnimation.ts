@@ -1,11 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { NativeScrollEvent } from 'react-native';
-import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import {
     Easing,
     interpolateColor,
     runOnJS,
-    useAnimatedGestureHandler,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
@@ -13,10 +11,6 @@ import {
 
 import { getScreenHeight } from '@trezor/env-utils';
 import { useNativeStyles } from '@trezor/styles';
-
-type GestureHandlerContext = {
-    translatePanY: number;
-};
 
 const ANIMATION_DURATION = 300;
 const SCREEN_HEIGHT = getScreenHeight();
@@ -108,34 +102,11 @@ export const useBottomSheetAnimation = ({
         }
     };
 
-    const panGestureEvent = useAnimatedGestureHandler<
-        PanGestureHandlerGestureEvent,
-        GestureHandlerContext
-    >({
-        onStart: (_, context) => {
-            context.translatePanY = translatePanY.value;
-        },
-        onActive: (event, context) => {
-            const { translationY } = event;
-            if (translationY < 0) return;
-            translatePanY.value = translationY + context.translatePanY;
-        },
-        onEnd: event => {
-            const { translationY, velocityY } = event;
-            if (translationY > 50 && velocityY > 2) {
-                runOnJS(closeSheetAnimated)();
-            } else {
-                openSheetAnimated();
-            }
-        },
-    });
-
     return {
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         openSheetAnimated,
-        panGestureEvent,
         scrollEvent,
     };
 };
