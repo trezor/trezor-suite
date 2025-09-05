@@ -11,3 +11,5 @@ export { FirmwareCloseButton } from './Buttons/FirmwareCloseButton';
 export { FirmwareContinueButton } from './Buttons/FirmwareContinueButton';
 export { FirmwareInstallButton } from './Buttons/FirmwareInstallButton';
 export { FirmwareInstallationProgressCheck } from './ProgressCheck/FirmwareInstallationProgressCheck';
+export { RotatingPhrases } from './RotatingPhrases';
+export { FirmwareWarningsList } from './FirmwareWarningsList';

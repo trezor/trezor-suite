@@ -4,9 +4,8 @@ import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column, Text } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { spacings } from '@trezor/theme';
 
-import { FirmwareOffer } from 'src/components/firmware';
+import { FirmwareOffer, FirmwareWarningsList } from 'src/components/firmware';
 import { useDevice } from 'src/hooks/suite';
 
 import { Translation } from '../suite';
@@ -75,7 +74,7 @@ export const FirmwareInitialStandalone = ({
     };
 
     return (
-        <Column gap={spacings.sm}>
+        <Column gap={16}>
             <Banner variant="info" icon="info">
                 <Translation
                     id={getDescription({
@@ -118,6 +117,7 @@ export const FirmwareInitialStandalone = ({
             <Card>
                 <FirmwareOffer targetFirmwareType={targetFirmwareType} />
             </Card>
+            <FirmwareWarningsList />
         </Column>
     );
 };

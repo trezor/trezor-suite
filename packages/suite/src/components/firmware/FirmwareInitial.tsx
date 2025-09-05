@@ -6,12 +6,16 @@ import { useFirmwareInstallation } from '@suite-common/firmware';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
-import { Note, variables } from '@trezor/components';
+import { Column, Note, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
-import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
+import {
+    FirmwareInstallButton,
+    FirmwareOffer,
+    FirmwareWarningsList,
+} from 'src/components/firmware';
 import {
     OnboardingButtonSkip,
     OnboardingStepBox,
@@ -178,7 +182,12 @@ export const FirmwareInitial = ({
                     </Note>
                 </Description>
             ),
-            body: <FirmwareOffer targetFirmwareType={FirmwareType.BitcoinOnly} />,
+            body: (
+                <Column gap={32}>
+                    <FirmwareOffer targetFirmwareType={FirmwareType.BitcoinOnly} />
+                    <FirmwareWarningsList />
+                </Column>
+            ),
             innerActions: (
                 <FirmwareButtonsRow>
                     <FirmwareInstallButton
@@ -229,7 +238,12 @@ export const FirmwareInitial = ({
                     }}
                 />
             ),
-            body: <FirmwareOffer targetFirmwareType={targetType} />,
+            body: (
+                <Column gap={32}>
+                    <FirmwareOffer targetFirmwareType={targetType} />
+                    <FirmwareWarningsList />
+                </Column>
+            ),
             innerActions: (
                 <FirmwareInstallButton
                     onClick={() => installFirmware(targetType)}
@@ -293,7 +307,7 @@ export const FirmwareInitial = ({
                 />
             ),
             body: (
-                <>
+                <Column gap={32}>
                     {deviceWillBeWiped && (
                         <WarningListWrapper>
                             <Important>
@@ -314,7 +328,8 @@ export const FirmwareInitial = ({
                         </WarningListWrapper>
                     )}
                     <FirmwareOffer targetFirmwareType={targetType} />
-                </>
+                    <FirmwareWarningsList />
+                </Column>
             ),
             innerActions: (
                 <FirmwareButtonsRow withCancelButton={deviceWillBeWiped} onClose={onClose}>

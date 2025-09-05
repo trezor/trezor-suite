@@ -30,7 +30,7 @@ export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const { status, error, resetReducer, firmwareUpdate, targetType } = useFirmwareInstallation();
+    const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareInstallation();
     const thpStep = useSelector(selectThpStep);
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();

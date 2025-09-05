@@ -1,10 +1,15 @@
 import styled from 'styled-components';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
-import { Button } from '@trezor/components';
+import { Button, Column } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
+import {
+    FirmwareOffer,
+    FirmwareProgressBar,
+    ReconnectDevicePrompt,
+    RotatingPhrases,
+} from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -74,8 +79,11 @@ export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallatio
                 isActionAbortable={isActionAbortable}
                 innerActions={getInnerActionComponent()}
             >
-                <FirmwareOffer isCustomFirmware={false} targetFirmwareType={targetType} />
-                <FirmwareProgressBar />
+                <Column gap={24} width="100%">
+                    <FirmwareOffer isCustomFirmware={false} targetFirmwareType={targetType} />
+                    <FirmwareProgressBar />
+                    <RotatingPhrases />
+                </Column>
             </OnboardingStepBox>
         </>
     );
