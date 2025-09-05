@@ -4,7 +4,12 @@ import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 import { spacings } from '@trezor/theme';
 
-import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
+import {
+    FirmwareOffer,
+    FirmwareProgressBar,
+    ReconnectDevicePrompt,
+    RotatingPhrases,
+} from 'src/components/firmware';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
@@ -70,6 +75,7 @@ export const FirmwareInstallationStandalone = ({
                         <FirmwareProgressBar />
                     </Column>
                 </Card>
+                <RotatingPhrases />
             </Column>
         </>
     );

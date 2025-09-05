@@ -10931,6 +10931,73 @@ export default defineMessages({
         defaultMessage:
             'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
     },
+    TR_DYK_TITLE: {
+        id: 'TR_DYK_TITLE',
+        defaultMessage: 'Did you know?',
+    },
+    TR_DYK_ITEM_1: {
+        id: 'TR_DYK_ITEM_1',
+        defaultMessage:
+            'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
+    },
+    TR_DYK_ITEM_2: {
+        id: 'TR_DYK_ITEM_2',
+        defaultMessage: 'Trezor launched the world’s first hardware wallet in 2014.',
+    },
+    TR_DYK_ITEM_3: {
+        id: 'TR_DYK_ITEM_3',
+        defaultMessage: 'Founders Stick & Slush started Trezor as a side project in 2011.',
+    },
+    TR_DYK_ITEM_4: {
+        id: 'TR_DYK_ITEM_4',
+        defaultMessage: 'Trezor means “vault” in Czech, reflecting its focus on security.',
+    },
+    TR_DYK_ITEM_5: {
+        id: 'TR_DYK_ITEM_5',
+        defaultMessage:
+            'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
+    },
+    TR_DYK_ITEM_6: {
+        id: 'TR_DYK_ITEM_6',
+        defaultMessage: 'Trezor’s first prototypes were built using Raspberry Pi boards.',
+    },
+    TR_DYK_ITEM_7: {
+        id: 'TR_DYK_ITEM_7',
+        defaultMessage: 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
+    },
+    TR_DYK_ITEM_8: {
+        id: 'TR_DYK_ITEM_8',
+        defaultMessage:
+            'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
+    },
+    TR_DYK_ITEM_9: {
+        id: 'TR_DYK_ITEM_9',
+        defaultMessage:
+            'Trezor began controlling its own chip supply chain in 2023 for better security.',
+    },
+    TR_DYK_ITEM_10: {
+        id: 'TR_DYK_ITEM_10',
+        defaultMessage: 'Trezor has sold wallets in over 150 countries.',
+    },
+    TR_DYK_ITEM_11: {
+        id: 'TR_DYK_ITEM_11',
+        defaultMessage:
+            'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
+    },
+    TR_DYK_ITEM_12: {
+        id: 'TR_DYK_ITEM_12',
+        defaultMessage:
+            'Trezor wallets can store and manage over 9,000+ cryptocurrencies securely in one place.',
+    },
+    TR_FIRMWARE_UPDATE_TIME_WARNING: {
+        id: 'TR_FIRMWARE_UPDATE_TIME_WARNING',
+        defaultMessage: 'This update will take some time to complete.',
+    },
+    TR_FIRMWARE_DONT_CLOSE_APP: {
+        id: 'TR_FIRMWARE_DONT_CLOSE_APP',
+        defaultMessage:
+            "<highlight>Don't close the app</highlight> during installation. Doing so will corrupt the firmware.",
+    },
     TR_PUBLIC_KEY: {
         id: 'TR_PUBLIC_KEY',
         defaultMessage: 'Public key',
