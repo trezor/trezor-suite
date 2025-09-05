@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/core';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
@@ -17,18 +19,21 @@ export const DeviceTutorialScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.DeviceTutorial>) => {
     const device = useSelector(selectSelectedDevice);
-    useEffect(() => {
-        const showTutorial = async () => {
-            await requestPrioritizedDeviceAccess({
-                deviceCallback: () => TrezorConnect.showDeviceTutorial({ device }),
-            });
-            navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
-        };
-        showTutorial();
 
-        // This use effect should be triggered only during the first render
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            const showTutorial = async () => {
+                await requestPrioritizedDeviceAccess({
+                    deviceCallback: () => TrezorConnect.showDeviceTutorial({ device }),
+                });
+                navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
+            };
+            showTutorial();
+
+            // This use effect should be triggered only during the first render
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []),
+    );
 
     const handleSkipTutorial = () => {
         TrezorConnect.cancel();
