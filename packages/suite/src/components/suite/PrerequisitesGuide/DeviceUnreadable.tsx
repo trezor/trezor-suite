@@ -12,11 +12,6 @@ import {
     TROUBLESHOOTING_TIP_UNREADABLE_HID,
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
-import type { TrezorDevice } from 'src/types/suite';
-
-interface DeviceUnreadableProps {
-    device?: TrezorDevice; // this should be actually UnreadableDevice, but it is not worth type casting
-}
 
 /**
  * Device was detected but @trezor/connect was not able to communicate with it. Reasons could be:
@@ -24,14 +19,14 @@ interface DeviceUnreadableProps {
  * - device can't be communicated with using currently used transport (eg. hid / node bridge + webusb)
  * - missing udev rule on linux
  */
-export const DeviceUnreadable = ({ device }: DeviceUnreadableProps) => {
+export const DeviceUnreadable = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
 
     // generic troubleshooting tips
     const items = [];
 
     // this error is dispatched by trezord when udev rules are missing
-    if (isLinux() && device?.error === 'LIBUSB_ERROR_ACCESS') {
+    if (isLinux() && selectedDevice?.error === 'LIBUSB_ERROR_ACCESS') {
         items.push(TROUBLESHOOTING_TIP_UDEV);
     }
 
@@ -67,7 +62,7 @@ export const DeviceUnreadable = ({ device }: DeviceUnreadableProps) => {
             label={
                 <Translation
                     id="TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN"
-                    values={{ error: device?.error }}
+                    values={{ error: selectedDevice?.error }}
                 />
             }
             items={items}

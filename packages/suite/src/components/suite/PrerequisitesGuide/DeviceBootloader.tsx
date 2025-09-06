@@ -1,17 +1,14 @@
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { useDevice } from 'src/hooks/suite/useDevice';
 
 import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
 import { UpdateGoToSettingsDescription } from '../troubleshooting/tips/UpdateGoToSettingsDescription';
 
-interface DeviceBootloaderProps {
-    device?: TrezorDevice;
-}
-
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
-export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
+export const DeviceBootloader = () => {
+    const { device } = useDevice();
     const deviceModelInternal = device?.features?.internal_model;
 
     const tips: TroubleshootingTipsItem[] = [
