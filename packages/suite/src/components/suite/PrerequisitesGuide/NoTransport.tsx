@@ -46,5 +46,5 @@ const TransportDesktop = ({ items }: { items: TroubleshootingTipsItem[] }) => {
     return <Tips items={itemsForDesktop} />;
 };
 
-export const Transport = () =>
+export const NoTransport = () =>
     isDesktop() ? <TransportDesktop items={tipItems} /> : <Tips items={tipItems} />;
