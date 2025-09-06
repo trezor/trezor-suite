@@ -2,7 +2,7 @@ import { Options, captureConsoleIntegration } from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
 import { allowReportTag } from '@suite-common/sentry';
-import { getEnv, isDebugEnv, isDetoxTestBuild } from '@suite-native/config';
+import { getEnv, isDebugEnv, isDetoxTestBuild, isDevelopEnv } from '@suite-native/config';
 
 export const setSentryContext = Sentry.setContext;
 
@@ -51,6 +51,9 @@ export const initSentry = () => {
             }),
         ],
         beforeSend,
+        // Enable profiling only for develop environment
+        profilesSampleRate: isDevelopEnv() ? 1.0 : 0,
+        tracesSampleRate: isDevelopEnv() ? 1.0 : 0,
 
         // You can put EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true to `.env.development.local` to debug Sentry locally.
         enabled:
