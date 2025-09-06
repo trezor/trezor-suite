@@ -38,7 +38,7 @@ import { DeviceUnreadable } from './DeviceUnreadable';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
-import { Transport } from './Transport';
+import { NoTransport } from './NoTransport';
 import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 
 const Wrapper = styled.div`
@@ -76,7 +76,7 @@ const NonBluetooth = ({ allowSwitchDevice }: NonBluetoothProps) => {
         () => (): JSX.Element => {
             switch (prerequisite) {
                 case 'no-transport':
-                    return <Transport />;
+                    return <NoTransport />;
                 case 'device-disconnect-required':
                     return <DeviceDisconnectRequired />;
                 case 'device-disconnected':
