@@ -88,7 +88,7 @@ const NonBluetooth = ({ allowSwitchDevice }: NonBluetoothProps) => {
                 case 'device-used-elsewhere':
                     return <DeviceUsedElsewhere />;
                 case 'device-unreadable':
-                    return <DeviceUnreadable device={device} />;
+                    return <DeviceUnreadable />;
                 case 'device-unknown':
                     return <DeviceUnknown />;
                 case 'device-seedless':
@@ -98,19 +98,18 @@ const NonBluetooth = ({ allowSwitchDevice }: NonBluetoothProps) => {
                 case 'device-initialize':
                     return <DeviceInitialize />;
                 case 'device-bootloader':
-                    return <DeviceBootloader device={device} />;
+                    return <DeviceBootloader />;
                 case 'firmware-missing':
                     return <DeviceNoFirmware />;
                 case 'firmware-required':
                     return <DeviceUpdateRequired />;
                 case 'multi-share-backup-in-progress':
                     return <MultiShareBackupInProgress />;
-
                 default:
                     return <></>;
             }
         },
-        [prerequisite, device],
+        [prerequisite],
     );
 
     const handleSwitchDeviceClick = () =>
