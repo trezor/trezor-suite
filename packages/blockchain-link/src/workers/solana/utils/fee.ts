@@ -16,8 +16,13 @@ import {
     isWritableRole,
     pipe,
 } from '@solana/kit';
+import {
+    MAX_COMPUTE_UNIT_LIMIT,
+    SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR,
+} from '@solana-program/compute-budget';
 
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
+import { safeBigIntStringify } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = BigInt(300_000); // micro-lamports, value taken from other wallets
@@ -31,6 +36,28 @@ const stripComputeBudgetInstructions = (message: CompiledTransactionMessage) => 
         instruction =>
             message.staticAccounts[instruction.programAddressIndex] !== COMPUTE_BUDGET_PROGRAM_ID,
     ),
+});
+
+// increase compute unit limit to maximum for priority fee simulation
+// avoid simulation fail in case instructions are wrong (e.g. from backend)
+const bumpUnitLimitComputeBudgetInstructions = (
+    message: CompiledTransactionMessage,
+): CompiledTransactionMessage => ({
+    ...message,
+    instructions: message.instructions.map(ix => {
+        if (
+            message.staticAccounts[ix.programAddressIndex] === COMPUTE_BUDGET_PROGRAM_ID &&
+            ix.data?.[0] === SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR
+        ) {
+            const data = new Uint8Array(5);
+            data[0] = SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR; // SetComputeUnitLimit
+            new DataView(data.buffer).setUint32(1, MAX_COMPUTE_UNIT_LIMIT, true);
+
+            return { ...ix, data };
+        }
+
+        return ix;
+    }),
 });
 
 export const getBaseFee = async (
@@ -69,9 +96,10 @@ export const getPriorityFee = async (
 
     // Reconstruct TX for simulation
     const messageBytes = pipe(
-        compiledMessage,
+        bumpUnitLimitComputeBudgetInstructions(compiledMessage),
         getCompiledTransactionMessageEncoder().encode,
     ) as TransactionMessageBytes;
+
     const rawTx = pipe(
         {
             messageBytes,
@@ -82,12 +110,21 @@ export const getPriorityFee = async (
     ) as Base64EncodedWireTransaction;
 
     const simulated = await api
-        .simulateTransaction(rawTx, { commitment: 'confirmed', encoding: 'base64' })
+        .simulateTransaction(rawTx, {
+            commitment: 'confirmed',
+            encoding: 'base64',
+            sigVerify: false,
+            replaceRecentBlockhash: true,
+        })
         .send();
-    if (simulated.value.err != null || !simulated.value.unitsConsumed) {
-        console.error('Could not simulate transaction:', JSON.stringify(simulated.value.err));
-        throw new Error(`Could not simulate transaction: ${JSON.stringify(simulated.value.err)}`);
+
+    if (simulated.value.err != null || simulated.value.unitsConsumed == null) {
+        const stringifiedError = safeBigIntStringify(simulated.value.err);
+
+        console.error('Could not simulate transaction:', stringifiedError);
+        throw new Error(`Could not simulate transaction: ${stringifiedError}`);
     }
+
     // Add 20% margin to the computed limit
     const computeUnitLimit = new BigNumber(simulated.value.unitsConsumed.toString())
         .times(1.2)
