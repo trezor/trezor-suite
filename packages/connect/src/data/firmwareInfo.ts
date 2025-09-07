@@ -351,37 +351,32 @@ const getCurrentVersion = (features: Features): CurrentVersion => {
 };
 
 const getIntermediaryMessageRelease = (features: Features) => {
-    const { internal_model } = features;
-    const firmwareIntermediaryReleasesConfig = DataManager.getFirmwareIntermediaryReleaseConfig();
-
-    if (!firmwareIntermediaryReleasesConfig) {
+    const config = DataManager.getFirmwareIntermediaryReleaseConfig();
+    if (!config) {
         throw new Error('Firmware release config not loaded.');
     }
 
-    const deviceIntermediaryReleases = firmwareIntermediaryReleasesConfig[internal_model];
-    if (!deviceIntermediaryReleases) {
-        // There are not intermediary releases for this model.
+    const deviceIntermediaryReleases = config[features.internal_model];
+    if (!deviceIntermediaryReleases || deviceIntermediaryReleases.length === 0) {
+        // No intermediary releases are defined for this model.
+        return;
+    }
+
+    const { bootloaderVersion, firmwareVersion } = getCurrentVersion(features);
+
+    const currentVersion = features.bootloader_mode ? bootloaderVersion : firmwareVersion;
+    const minVersionKey = features.bootloader_mode
+        ? 'min_bootloader_version'
+        : 'min_firmware_version';
+
+    if (!currentVersion) {
         return undefined;
     }
-    let intermediary;
 
-    if (features.bootloader_mode) {
-        const { bootloaderVersion } = getCurrentVersion(features);
-        intermediary = deviceIntermediaryReleases.find(
-            inter =>
-                bootloaderVersion &&
-                versionUtils.isNewer(inter.min_bootloader_version, bootloaderVersion),
-        );
-    } else {
-        const { firmwareVersion } = getCurrentVersion(features);
-        intermediary = firmwareVersion
-            ? deviceIntermediaryReleases.find(inter =>
-                  versionUtils.isNewer(inter.min_firmware_version, firmwareVersion),
-              )
-            : undefined;
-    }
-
-    return intermediary || undefined;
+    // Find the first intermediary release that requires a newer version than the current one.
+    return deviceIntermediaryReleases.find(release =>
+        versionUtils.isNewer(release[minVersionKey], currentVersion),
+    );
 };
 
 const getIsBitcoinOnlyAvailable = (features: Features) => {
@@ -480,6 +475,10 @@ export const getReleaseInfo = ({
     const { rollout_probability } = conditions;
     const shouldBeOffered = calculateShouldOfferRelease(rollout_probability, features.device_id);
 
+    if (requiresIntermediary && intermediary) {
+        isNewer = true;
+    }
+
     return {
         firmwareType,
         isBitcoinOnlyAvailable,
@@ -497,40 +496,49 @@ export const getReleaseInfo = ({
 
 export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: FirmwareType) => {
     const deviceMessageRelease = getReleaseConfig(features, firmwareType);
-    if (!deviceMessageRelease) {
+    if (!deviceMessageRelease?.release) {
         return;
     }
-
     const { release, conditions, firmware_type } = deviceMessageRelease;
-    if (!release) {
-        return;
-    }
 
     const currentVersion = getCurrentVersion(features);
     const inBootloaderMode = features.bootloader_mode && !!currentVersion.bootloaderVersion;
-    const versionToCheck = inBootloaderMode
-        ? currentVersion.bootloaderVersion!
-        : currentVersion.firmwareVersion;
-    const minVersionKey = inBootloaderMode ? 'min_bootloader_version' : 'min_firmware_version';
+
+    const versionContext = inBootloaderMode
+        ? {
+              version: currentVersion.bootloaderVersion!,
+              minVersionKey: 'min_bootloader_version' as const,
+          }
+        : {
+              version: currentVersion.firmwareVersion,
+              minVersionKey: 'min_firmware_version' as const,
+          };
 
     const isCompatible =
-        versionToCheck && versionUtils.isNewerOrEqual(versionToCheck, release[minVersionKey]);
+        versionContext.version &&
+        versionUtils.isNewerOrEqual(versionContext.version, release[versionContext.minVersionKey]);
 
-    const compatibleRelease = isCompatible
-        ? release
-        : findBestCompatibleRelease(
-              getReleasesAssetByDeviceModelAndFirmwareType(features.internal_model, firmwareType),
-              currentVersion,
-              minVersionKey,
-          );
+    let suitableRelease = release;
+    if (!isCompatible) {
+        // If the target isn't compatible, search for the best alternative.
+        const alternativeRelease = findBestCompatibleRelease(
+            getReleasesAssetByDeviceModelAndFirmwareType(features.internal_model, firmwareType),
+            currentVersion,
+            versionContext.minVersionKey,
+        );
+        // If an alternative is found, use it. Otherwise, we proceed with the original.
+        if (alternativeRelease) {
+            suitableRelease = alternativeRelease;
+        }
+    }
 
     const intermediary = getIntermediaryMessageRelease(features);
-    const isBitcoinOnlyAvailable = getIsBitcoinOnlyAvailable(features);
+    const finalTargetRelease = intermediary ? release : suitableRelease;
 
     return getReleaseInfo({
-        isBitcoinOnlyAvailable,
+        isBitcoinOnlyAvailable: getIsBitcoinOnlyAvailable(features),
         features,
-        release: compatibleRelease || release,
+        release: finalTargetRelease,
         conditions,
         intermediary,
         firmwareType: firmware_type,
@@ -579,9 +587,7 @@ export const getFirmwareLocation = ({
         ? buildIntermediaryFirmwareFileName(deviceModel, intermediaryVersion)
         : buildLocalFirmwareFileName(firmwareType, deviceModel, firmwareVersion);
 
-    const versionString = intermediaryVersion
-        ? String(intermediaryVersion)
-        : firmwareVersion.join('.');
+    const versionString = firmwareVersion.join('.');
 
     const bundledBaseUrl = removeTrailingSlashes(DataManager.getSettings('binFilesBaseUrl'));
     // Here we care just to know if the binaries are bundled, in order to use them locally instead of fetching them
@@ -589,7 +595,11 @@ export const getFirmwareLocation = ({
     const isRealBundled = !bundledBaseUrl.includes('data.trezor.io');
     const bundledVersion = getBundledFirmwareVersion(deviceModel, firmwareType);
 
-    if (bundledBaseUrl && isRealBundled && bundledVersion === versionString) {
+    const isIntermediary = bundledBaseUrl && intermediaryVersion;
+    const isMatchingBundledVersion =
+        bundledBaseUrl && isRealBundled && bundledVersion === versionString;
+
+    if (isIntermediary || isMatchingBundledVersion) {
         return {
             baseUrl: bundledBaseUrl,
             path: `firmware/${deviceModel.toLowerCase()}/${firmwareName}`,
