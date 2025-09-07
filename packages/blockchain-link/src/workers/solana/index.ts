@@ -73,12 +73,6 @@ const THROTTLE_OPTIONS: ThrottledTransportOptions = {
     interval: 100,
 };
 
-const DEFAULT_PRIORITY_FEE = {
-    computeUnitPrice: '0',
-    computeUnitLimit: '0',
-    fee: '0',
-};
-
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;
     rpc: RpcMainnet<SolanaRpcApiMainnet>;
@@ -556,11 +550,7 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
         decompiledTransactionMessage,
         message,
         transaction.signatures,
-    ).catch(err => {
-        console.warn('getPriorityFee failed:', err);
-
-        return DEFAULT_PRIORITY_FEE;
-    });
+    );
 
     const baseFee = await getBaseFee(api.rpc, message);
 
