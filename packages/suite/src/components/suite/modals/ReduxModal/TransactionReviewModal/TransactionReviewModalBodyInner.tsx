@@ -249,25 +249,25 @@ export const TransactionReviewModalBodyInner = ({
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
                 description={
                     !areDetailsVisible && (
-                        <Row justifyContent="space-between">
-                            <TransactionReviewSummary
-                                tx={precomposedTx}
-                                account={account}
-                                broadcast={isBroadcastEnabled}
-                                onDetailsClick={handleDetailsClick}
-                                stakeType={stakeType}
-                            />
-                            {showTxValidityTimer && (
-                                <Row gap={spacings.xs}>
-                                    <TransactionReviewOutputTimer
-                                        deadline={deadline}
-                                        onTryAgain={handleTryAgain}
-                                        isMinimal
-                                        isSending={isSending}
-                                    />
-                                </Row>
-                            )}
-                        </Row>
+                        <TransactionReviewSummary
+                            tx={precomposedTx}
+                            account={account}
+                            broadcast={isBroadcastEnabled}
+                            onDetailsClick={handleDetailsClick}
+                            stakeType={stakeType}
+                            timer={
+                                showTxValidityTimer ? (
+                                    <Row gap={spacings.xs}>
+                                        <TransactionReviewOutputTimer
+                                            deadline={deadline}
+                                            onTryAgain={handleTryAgain}
+                                            isMinimal
+                                            isSending={isSending}
+                                        />
+                                    </Row>
+                                ) : undefined
+                            }
+                        />
                     )
                 }
                 bottomContent={
