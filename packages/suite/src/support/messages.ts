@@ -1827,6 +1827,10 @@ export default defineMessages({
         defaultMessage: 'Standard recovery',
         id: 'TR_BASIC_RECOVERY',
     },
+    TR_BATTERY_LEVEL: {
+        defaultMessage: 'Battery level: {level}%',
+        id: 'TR_BATTERY_LEVEL',
+    },
     TR_BASIC_RECOVERY_OPTION: {
         defaultMessage: 'Enter your wallet backup word by word on your computer.',
         description: 'Enter words on your computer, recovery takes about 2 minutes.',
@@ -4838,6 +4842,10 @@ export default defineMessages({
     TR_CHANGE_WIPE_CODE: {
         id: 'TR_CHANGE_WIPE_CODE',
         defaultMessage: 'Change',
+    },
+    TR_CHARGE_TREZOR_BEFORE_CONTINUING: {
+        id: 'TR_CHARGE_TREZOR_BEFORE_CONTINUING',
+        defaultMessage: 'Charge your Trezor before continuing',
     },
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
