@@ -1,5 +1,7 @@
+import { firmwareAssets } from '@trezor/connect-common/files/firmware';
 import { FirmwareType } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/protobuf/src/messages-schema';
+import { versionUtils } from '@trezor/utils';
 
 import { getDeviceFeatures } from '../../../setupJest';
 import { DataManager } from '../DataManager';
@@ -43,6 +45,25 @@ describe('data/firmwareInfo', () => {
                 FirmwareType.Universal,
             );
             expect(firmwareReleaseConfigInfo?.release.version).toEqual([2, 1, 1]);
+        });
+
+        it('should offer lastest release and intermediary v2 for T1B1 <  1.12.0', () => {
+            const [latestRelase] = Object.values(firmwareAssets.t1b1.universal).sort((a, b) =>
+                versionUtils.isNewer(b.version, a.version) ? 1 : -1,
+            );
+            const features = getDeviceFeatures({
+                bootloader_mode: null,
+                major_version: 1,
+                minor_version: 11,
+                patch_version: 2,
+                internal_model: DeviceModelInternal.T1B1,
+            });
+            const firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(
+                features,
+                FirmwareType.Universal,
+            );
+            expect(firmwareReleaseConfigInfo?.intermediary).toBeTruthy();
+            expect(firmwareReleaseConfigInfo?.release.version).toEqual(latestRelase.version);
         });
     });
 });

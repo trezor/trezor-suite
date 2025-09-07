@@ -1,4 +1,5 @@
 import { firmwareAssets } from '@trezor/connect-common/files/firmware';
+import { versionUtils } from '@trezor/utils';
 
 import { findBestCompatibleRelease, isStrictFeatures } from '../firmwareUtils';
 
@@ -72,6 +73,36 @@ describe('firmwareUtils', () => {
                         'min_bootloader_version',
                     ),
                 ).toBeUndefined();
+            });
+
+            it('first release with bootloader equal to min_bootloader in lastest release should return latest release as compatible', () => {
+                const [latestRelase] = Object.values(firmwareAssets.t3t1.universal).sort((a, b) =>
+                    versionUtils.isNewer(b.version, a.version) ? 1 : -1,
+                );
+
+                const releasesAscendentOrder = Object.values(firmwareAssets.t3t1.universal).sort(
+                    (a, b) => (versionUtils.isNewer(a.version, b.version) ? 1 : -1),
+                );
+
+                const latestReleaseMinBootloaderVersion = latestRelase.min_bootloader_version;
+
+                const firstReleaseWithBootloaderCompatibleWithLatest = releasesAscendentOrder.find(
+                    fw =>
+                        versionUtils.isEqual(
+                            fw.bootloader_version,
+                            latestReleaseMinBootloaderVersion,
+                        ),
+                );
+                const comptabibleRelease = findBestCompatibleRelease(
+                    firmwareAssets.t3t1.universal,
+                    {
+                        bootloaderVersion:
+                            firstReleaseWithBootloaderCompatibleWithLatest.bootloader_version,
+                        firmwareVersion: null,
+                    },
+                    'min_bootloader_version',
+                );
+                expect(comptabibleRelease?.version).toEqual(latestRelase.version);
             });
         });
     });
