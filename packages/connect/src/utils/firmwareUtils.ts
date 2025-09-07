@@ -55,7 +55,7 @@ export const findBestCompatibleRelease = (
     );
 
     const compatibleFirmware = sortedFirmwares.find(fw =>
-        versionUtils.isNewer(versionToCompare, fw[checkProperty]),
+        versionUtils.isNewerOrEqual(versionToCompare, fw[checkProperty]),
     );
 
     return compatibleFirmware;
@@ -74,7 +74,7 @@ export const buildLocalFirmwareFileName = (
 export const buildIntermediaryFirmwareFileName = (
     internalModel: DeviceModelInternal,
     version: number,
-) => `trezor-${internalModel}-inter-v${version}.bin`;
+) => `trezor-${internalModel.toLowerCase()}-inter-v${version}.bin`;
 
 export const getFirmwareMode = (features: Features) => {
     if (features.bootloader_mode) return 'bootloader';
