@@ -33,6 +33,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
+          cache: yarn
 
       - name: Set current timestamp as env variable
         run: echo "NOW=$(date +'%s')" >> $GITHUB_ENV
@@ -41,7 +42,8 @@ jobs:
         run: yarn install
 
       - name: Set source branch
-        run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        #TODO: fix branch to ${GITHUB_REF#refs/heads/}
+        run: echo "SOURCE_BRANCH=develop" >> $GITHUB_ENV
 
       - name: Set platform specific ENV variables
         run: |
@@ -77,7 +79,8 @@ jobs:
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
           git checkout -B ${{ env.BRANCH_NAME }}
-          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          #TODO: fix token
+          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:download --token="d74eb2d8a90c7ef7a48ebd58a4d2996db4ff86ed1e9f5ec77723fb5685777dc6ec03697fd7e21c27"
           yarn workspace ${{ env.SUITE_WORKSPACE }} translations:backport-en
           #if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
           #  yarn workspace ${{ env.SUITE_WORKSPACE }} translations:list-unused --cleanup
@@ -85,7 +88,8 @@ jobs:
           yarn workspace ${{ env.SUITE_WORKSPACE }} translations:format
           yarn workspace ${{ env.SUITE_WORKSPACE }} translations:extract
           cat ${{ env.MASTER_SOURCE_FILE }}
-          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          #TODO: fix token
+          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:upload --token="d74eb2d8a90c7ef7a48ebd58a4d2996db4ff86ed1e9f5ec77723fb5685777dc6ec03697fd7e21c27"
 
           if [[ "${{ env.SOURCE_BRANCH }}" == release/* ]]; then
             SUFFIX=" [RELEASE ONLY]"
