@@ -430,7 +430,7 @@ export const MetadataLabeling = ({
     return (
         <Tooltip
             content={
-                !showActionButton &&
+                isLocalFirstStorageEnabled &&
                 !isEvoluSupportedByDevice && (
                     <Text variant="warning">
                         <Translation id="FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU" />
