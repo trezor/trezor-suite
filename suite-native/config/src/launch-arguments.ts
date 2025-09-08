@@ -1,23 +1,17 @@
 import { LaunchArguments } from 'react-native-launch-arguments';
 
+import { FeatureFlag } from '@suite-native/feature-flags';
+
+type FeatureFlagLaunchArguments = {
+    [key in FeatureFlag]?: boolean;
+};
+
 export type LaunchArguments = {
     detoxURLBlacklistRegex?: string;
     DTXDisableMainRunLoopSync?: boolean;
-    isBluetoothEnabled?: boolean;
-    isCardanoSendEnabled?: boolean;
-    isConnectPopupEnabled_v2?: boolean;
-    isDebugKeysAllowed?: boolean;
-    isWalletConnectEnabled_v2?: boolean;
-    isTradingBuyEnabled?: boolean;
-    isTradingExchangeEnabled?: boolean;
-    isTradingSellEnabled?: boolean;
-    isDeviceConnectEnabled?: boolean;
-    areDebugOnlyNetworksEnabled?: boolean;
-    preloadedState?: Record<string, unknown>;
     isFirmwareUpdateEnabled?: boolean;
-    isLocalizationEnabled?: boolean;
-    isLocalFirstStorageEnabled?: boolean;
-    areTradingExchangeDexesEnabled?: boolean;
+    preloadedState?: Record<string, unknown>;
+    featureFlags?: FeatureFlagLaunchArguments;
 };
 
 export const launchArguments = LaunchArguments.value<LaunchArguments>();

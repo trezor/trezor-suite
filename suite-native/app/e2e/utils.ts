@@ -20,10 +20,13 @@ const INITIAL_LAUNCH_ARGS: LaunchArgumentsWithPreloadedState = {
     // Main loop synchronization is infinitely blocking iOS tests while is the graph displayed, so we need to disable it.
     // Not sure about the cause of it yet.
     DTXDisableMainRunLoopSync: platform === 'ios',
-    isConnectPopupEnabled_v2: true,
-    isDebugKeysAllowed: true,
-    isTradingBuyEnabled: true,
-    areDebugOnlyNetworksEnabled: true,
+
+    featureFlags: {
+        isConnectPopupEnabled_v2: true,
+        isDebugKeysAllowed: true,
+        isTradingBuyEnabled: true,
+        areDebugOnlyNetworksEnabled: true,
+    },
 };
 
 const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
@@ -84,10 +87,7 @@ export const openApp = async ({
     newInstance: boolean;
     args?: LaunchArgumentsWithPreloadedState;
 }) => {
-    const launchArgs = {
-        ...INITIAL_LAUNCH_ARGS,
-        ...args,
-    };
+    const launchArgs = mergeDeepObject(INITIAL_LAUNCH_ARGS, args);
 
     if (await isDebugTestBuild()) {
         await openExpoDevClientApp({ newInstance, launchArgs });
