@@ -62,10 +62,7 @@ export const Passphrase = (props: PassphraseProps) => {
         });
     };
 
-    const offerPassphraseOnDevice =
-        features &&
-        features.capabilities &&
-        features.capabilities.includes('Capability_PassphraseEntry');
+    const offerPassphraseOnDevice = features?.capabilities.includes('Capability_PassphraseEntry');
 
     const appendTo = document.getElementById('react')!.shadowRoot!.getElementById('reactRenderIn')!;
 

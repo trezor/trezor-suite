@@ -84,11 +84,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     if (!device || !discovery || !discovery.isAddingHiddenWallet) return null;
 
-    const deviceOffer = !!(
-        device.features &&
-        device.features.capabilities &&
-        device.features.capabilities.includes('Capability_PassphraseEntry')
-    );
+    const deviceOffer = !!device?.features?.capabilities.includes('Capability_PassphraseEntry');
 
     switch (discovery.status) {
         case 'progress':
