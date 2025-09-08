@@ -17,7 +17,8 @@
         "test:orchestrated:e2e:desktop": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop",
         "test:orchestrated:e2e:web": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web",
         "github:report:manual": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=manual --reporter=./e2e/support/reporters/gitHubReporter.ts",
-        "github:create:project": "tsx ./e2e/support/reporters/scriptCreateProject.ts"
+        "github:create:project": "tsx ./e2e/support/reporters/scriptCreateProject.ts",
+        "git:bisect": "./e2e/bisect-commits.sh"
     },
     "dependencies": {
         "@sentry/electron": "^5.12.0",
