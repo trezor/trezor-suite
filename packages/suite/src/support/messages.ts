@@ -4853,7 +4853,8 @@ export default defineMessages({
     },
     TR_CHARGE_TO_50_ATLEAST: {
         id: 'TR_CHARGE_TO_50_ATLEAST',
-        defaultMessage: 'Charge your Trezor to at least 50% or power it with a cable to prevent interruptions.',
+        defaultMessage:
+            'Charge your Trezor to at least 50% or power it with a cable to prevent interruptions.',
     },
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
