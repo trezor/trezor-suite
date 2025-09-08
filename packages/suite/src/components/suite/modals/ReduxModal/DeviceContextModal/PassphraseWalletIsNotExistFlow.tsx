@@ -18,7 +18,6 @@ type PassphraseWalletIsNotExistFlowProps = {
     deviceOffer: boolean;
     onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
-    submittingPassphrase?: boolean;
     isAddingHiddenWalletWithRespectToSettings?: boolean;
     onBackToInitial: () => void;
 };
@@ -30,7 +29,6 @@ export const PassphraseWalletIsNotExistFlow = ({
     onBackToInitial,
     onSubmit,
     onCancel,
-    submittingPassphrase,
     isAddingHiddenWalletWithRespectToSettings,
 }: PassphraseWalletIsNotExistFlowProps) => {
     const dispatch = useDispatch();
@@ -61,7 +59,7 @@ export const PassphraseWalletIsNotExistFlow = ({
         return (
             <EnterPassphrase
                 device={device}
-                submitting={submittingPassphrase}
+                submitting={discovery.passphraseSubmitted}
                 onDeviceOffer={deviceOffer}
                 onBack={() => {
                     dispatch(cancelDiscoveryThunk(device));

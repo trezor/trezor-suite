@@ -110,7 +110,6 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 device={device}
                 deviceOffer={deviceOffer}
                 authConfirmation={authConfirmation}
-                submittingPassphrase={!!discovery.passphraseSubmitted}
                 onBackToInitial={onBackToInitial}
                 onCancel={onCancel}
                 onSubmit={onSubmit}
@@ -127,7 +126,6 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             }
             onBackToInitial={onBackToInitial}
             deviceOffer={deviceOffer}
-            submittingPassphrase={!!discovery.passphraseSubmitted}
             onCancel={onCancel}
             onSubmit={onSubmit}
         />

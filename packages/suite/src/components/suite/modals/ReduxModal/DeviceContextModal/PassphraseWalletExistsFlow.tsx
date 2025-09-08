@@ -16,7 +16,6 @@ type PassphraseWalletExistsFlowProps = {
     device: TrezorDevice;
     deviceOffer: boolean;
     authConfirmation?: boolean;
-    submittingPassphrase: boolean;
     onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     onBackToInitial: () => void;
@@ -26,7 +25,6 @@ export const PassphraseWalletExistsFlow = ({
     discovery,
     device,
     deviceOffer,
-    submittingPassphrase,
     onCancel,
     onSubmit,
     onBackToInitial,
@@ -93,7 +91,7 @@ export const PassphraseWalletExistsFlow = ({
         <EnterPassphrase
             isExistingWallet={true}
             device={device}
-            submitting={submittingPassphrase}
+            submitting={discovery.passphraseSubmitted}
             onDeviceOffer={deviceOffer}
             onBack={onBackToInitial}
             onCancel={onCancel}
