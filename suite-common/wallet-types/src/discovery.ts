@@ -39,7 +39,6 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
           }
         | {
               status: 'confirm-empty-passphrase';
-              //   accountsToBeCreated: Account[];
           }
         | {
               status: 'complete';
