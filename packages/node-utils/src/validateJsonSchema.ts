@@ -36,7 +36,7 @@ export const validateJsonSchema = (config: string, schema: string) => {
 
                 return { id: experiment?.experiment?.id as string | undefined, sum };
             })
-            .filter((x: { sum: number }) => x.sum !== 100) ?? [];
+            .filter((experiment: { sum: number }) => experiment.sum !== 100) ?? [];
 
     if (invalidExperiments.length > 0) {
         const details = invalidExperiments.map(exp => `id=${exp.id}, sum=${exp.sum}`).join('; ');

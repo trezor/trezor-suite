@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { Device } from '@suite-common/suite-types';
 import { Collapsible, InfoItem, TextButton } from '@trezor/components';
 
-type MessageSystemManagerDevicesProps = {
+type MessageSystemDevicesProps = {
     devices?: Device[];
 };
 
-export const MessageSystemManagerDevices = ({ devices }: MessageSystemManagerDevicesProps) => {
+export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => {
     const [expanded, setExpanded] = useState(false);
 
     if (!devices || devices.length === 0) {

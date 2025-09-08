@@ -20,6 +20,7 @@ import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
 import { LocalFirstStorageSettings } from './LocalFirstStorageSettings';
 import { MessageSystemConfigSourceSelect } from './MessageSystem/MessageSystemConfigSourceSelect';
+import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
@@ -88,6 +89,7 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="Message system info">
                 <MessageSystemConfigSourceSelect />
+                <MessageSystemDebug />
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
