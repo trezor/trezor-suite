@@ -15,14 +15,12 @@ import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
-    AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
-    useNavigateToInitialScreen,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
@@ -41,8 +39,6 @@ const pinMatrixBlacklistedScreens = [
 ];
 
 export const useHandleDeviceConnection = () => {
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
@@ -71,7 +67,6 @@ export const useHandleDeviceConnection = () => {
 
     const lastRoute = useNavigationState(state => state.routes.at(-1)?.name);
     const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
-    const isAuthorizeDeviceStackFocused = lastRoute === RootStackRoutes.AuthorizeDeviceStack;
     const isOnPinMatrixBlacklistedRoute = pinMatrixBlacklistedScreens.includes(
         lastRoute as RootStackRoutes,
     );
@@ -106,20 +101,25 @@ export const useHandleDeviceConnection = () => {
             !wasDeviceOnboardingCancelled &&
             !isDeviceCompromised
         ) {
-            if (!wasDeviceOnboardingCancelled) {
-                navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
-                    screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
-                });
-            } else if (isAuthorizeDeviceStackFocused) {
-                // This ensures that THP-related screens are dismissed after a THP connection.
-                // Dismissing them any other way caused navigation glitches.
-                navigation.popTo(RootStackRoutes.AppTabs, {
-                    screen: AppTabsRoutes.HomeStack,
-                    params: {
-                        screen: HomeStackRoutes.Home,
+            // If THP confirmation screen was shown, we want to prevent swiping/navigating back to
+            // that THP confirmation screen. Swiping/navigating back shall lead to the Home screen.
+            navigation.reset({
+                index: 1,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
                     },
-                });
-            }
+                    {
+                        name: RootStackRoutes.DeviceOnboardingStack,
+                        params: {
+                            screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                        },
+                    },
+                ],
+            });
         }
     }, [
         dispatch,
@@ -138,8 +138,6 @@ export const useHandleDeviceConnection = () => {
         isDeviceOnboardingConnectAndUnlockScreenFocused,
         wasDeviceOnboardingCancelled,
         isDeviceCompromised,
-        isAuthorizeDeviceStackFocused,
-        navigateToInitialScreen,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
