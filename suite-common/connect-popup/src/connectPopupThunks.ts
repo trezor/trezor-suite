@@ -9,6 +9,7 @@ import TrezorConnect, { CallMethodParams } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
 import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
+import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
@@ -82,12 +83,16 @@ export const connectPopupCallThunkInner = createThunk<
                 await getPermissionDeferred(true).promise;
             }
 
-            const device = selectSelectedDevice(getState());
-            if (!device) {
-                throw TypedError('Device_NotFound');
-            }
-            if (!device.connected) {
-                throw TypedError('Device_Disconnected');
+            let device = selectSelectedDevice(getState());
+            let attempt = 0;
+            // retry loop to wait for device to reconnect
+            while (!device || !device.connected) {
+                await resolveAfter(1000);
+                device = selectSelectedDevice(getState());
+                attempt++;
+                if (attempt > 10) {
+                    throw TypedError('Device_Disconnected');
+                }
             }
 
             const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
