@@ -16,14 +16,12 @@ import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModa
 
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
-    isExistingWallet: boolean;
     discovery: Extract<DiscoveryStatus, { status: 'passphrase-duplicate' }>;
 };
 
 export const PassphraseDuplicateModal = ({
     discovery,
     device, // <- currently selected device
-    isExistingWallet,
 }: PassphraseDuplicateModalProps) => {
     const { isLocked } = useDevice();
     const dispatch = useDispatch();
@@ -40,7 +38,7 @@ export const PassphraseDuplicateModal = ({
             startDiscoveryThunk({
                 device,
                 isAddingHiddenWallet: true,
-                isAddingExistingWallet: isExistingWallet,
+                isAddingExistingWallet: !!discovery.isAddingExistingWallet,
             }),
         );
     };
