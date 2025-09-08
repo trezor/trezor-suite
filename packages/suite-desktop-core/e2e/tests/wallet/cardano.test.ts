@@ -1,4 +1,5 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 
 import { cardanoAccountDetails } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
 import { formatAddress } from '../../support/common';
@@ -36,6 +37,15 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
             trezorUserEnvLink,
         }) => {
             await settingsPage.coins.enableNetwork('tada');
+
+            // eslint-disable-next-line @typescript-eslint/no-shadow
+            await page.evaluate(SuiteActions => {
+                window.store.dispatch({
+                    type: SuiteActions.SET_DEBUG_MODE,
+                    payload: { showDebugMenu: false },
+                });
+            }, SuiteActions);
+
             // await settingsPage.coins.openNetworkAdvanceSettings('tada');
             // await expect(settingsPage.modal).toHaveScreenshot('cardano-advanced-settings.png', {
             //     mask: [settingsPage.coins.coinAddressInput],
