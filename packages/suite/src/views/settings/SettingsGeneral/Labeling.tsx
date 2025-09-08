@@ -14,10 +14,10 @@ import { useLabelingCombined } from '../../../hooks/suite/useLabelingCombined';
  * @deprecated This will be replaced by LocalFistStorage (Evolu)
  */
 export const Labeling = () => {
-    const { legacyMetadataState, legacyEnable, legacyDisable, isLocalFirstStorageEnabled } =
-        useLabelingCombined();
-
     const { device, isLocked } = useDevice();
+    const { legacyMetadataState, legacyEnable, legacyDisable, isLocalFirstStorageEnabled } =
+        useLabelingCombined({ deviceStaticSessionId: device?.state?.staticSessionId });
+
     const { isDiscoveryRunning } = useDiscovery();
 
     const handleSwitchClick = () => {

@@ -26,7 +26,10 @@ export const LocalFirstStorageSettings = () => {
         isLocalFirstStorageDebugEnabled,
         localFirstDisable,
         localFirstEnable,
-    } = useLabelingCombined();
+    } = useLabelingCombined({
+        // In debug, there may not be any device selected and it is in fact irrelevant
+        deviceStaticSessionId: undefined,
+    });
 
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
 

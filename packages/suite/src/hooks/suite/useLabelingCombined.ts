@@ -1,5 +1,6 @@
 import { disposeAllLocalFirstStorageThunk } from '@suite-common/local-first-storage';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
+import type { StaticSessionId } from '@trezor/connect';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
@@ -10,11 +11,20 @@ import { useSelector } from './useSelector';
 import { setFlag } from '../../actions/suite/suiteActions';
 import { selectSuiteFlags } from '../../selectors/suite/suiteSelectors';
 
-export const useLabelingCombined = () => {
+type UseLabelingCombinedParams = {
+    // This needs to be passed, as labeling can be attached to remembered wallets
+    // and different devices can have different states (FW versions)
+    deviceStaticSessionId: StaticSessionId | undefined;
+};
+
+export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombinedParams) => {
     const dispatch = useDispatch();
 
-    // Todo: device needs to be passed as arg
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(state =>
+        deviceStaticSessionId !== undefined
+            ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
+            : undefined,
+    );
 
     const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled } =
         useSelector(selectSuiteFlags);

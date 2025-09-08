@@ -297,7 +297,7 @@ export const MetadataLabeling = ({
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
 
     const { isLocalFirstStorageEnabled, isEvoluSupportedByDevice, legacyMetadataState } =
-        useLabelingCombined();
+        useLabelingCombined({ deviceStaticSessionId });
 
     let timeout: TimerId | undefined;
     useEffect(() => {
