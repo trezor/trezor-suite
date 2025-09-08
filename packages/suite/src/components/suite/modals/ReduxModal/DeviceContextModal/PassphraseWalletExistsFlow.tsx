@@ -15,7 +15,6 @@ type PassphraseWalletExistsFlowProps = {
     discovery: DiscoveryStatus;
     device: TrezorDevice;
     offerPassphraseOnDevice: boolean;
-    authConfirmation?: boolean;
     onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     onBackToInitial: () => void;
