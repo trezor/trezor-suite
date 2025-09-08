@@ -9,7 +9,7 @@ import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import { PassphraseEnterOnTrezorScreen } from './PassphraseEnterOnTrezorScreen';
 
-export const PassphraseConfirmFeatureUnlockEnterOnTrezoreScreen = () => {
+export const PassphraseConfirmFeatureUnlockEnterOnTrezorScreen = () => {
     const isCreatingNewPassphraseWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
