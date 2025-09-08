@@ -8,7 +8,7 @@ import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { RouterRootState, selectRouter } from 'src/reducers/suite/routerReducer';
 import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { AppState, PrerequisiteType, TorStatus, TrezorDevice } from 'src/types/suite';
-import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
+import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 export const selectTorState = (state: SuiteRootState) => {
@@ -65,10 +65,10 @@ export const selectPrerequisite = (
     const device = selectSelectedDevice(state);
     const router = selectRouter(state);
 
-    const excluded = getExcludedPrerequisites(router);
     const prerequisite = getPrerequisiteName({ router, device, transport });
+    const isExcluded = isPrerequisiteGloballyExcluded({ router, prerequisite });
 
-    if (prerequisite === null || excluded.includes(prerequisite)) {
+    if (prerequisite === null || isExcluded) {
         return null;
     }
 
