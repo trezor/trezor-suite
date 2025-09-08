@@ -1,6 +1,6 @@
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
-import { Experiment, ExperimentId, ExperimentKey, ExperimentsItemType } from './messageSystemTypes';
+import { ExperimentId, ExperimentsItemType } from './messageSystemTypes';
 
 type ExperimentCategoriesProps = {
     experiment: ExperimentsItemType | undefined;
@@ -24,25 +24,28 @@ export const getInclusionFromInstanceId = (instanceId: string, experimentId: Exp
     return getIntegerInRangeFromString(combinedId, 100);
 };
 
+export function buildExperimentGroupRanges(groups: ExperimentsGroupsType) {
+    let cursor = 0;
+
+    return groups.map(group => {
+        const start = cursor;
+        const end = cursor + group.percentage;
+        cursor = end;
+
+        return { group, range: { start, end } };
+    });
+}
+
 export const getExperimentGroupByInclusion = ({
     groups,
     inclusion,
 }: ExperimentGetGroupByInclusion): ExperimentsGroupType | undefined => {
-    let currentPercentage = 0;
+    if (inclusion < 0 || inclusion > 99) throw new Error('inclusion must be in [0, 99]');
 
-    const extendedExperiment = groups.map(group => {
-        const result = {
-            group,
-            range: [currentPercentage, currentPercentage + group.percentage - 1],
-        };
-
-        currentPercentage += group.percentage;
-
-        return result;
-    });
+    const extendedExperiment = buildExperimentGroupRanges(groups);
 
     return extendedExperiment.find(
-        group => group.range[0] <= inclusion && group.range[1] >= inclusion,
+        group => group.range.start <= inclusion && inclusion < group.range.end,
     )?.group;
 };
 
@@ -61,10 +64,4 @@ export const getActiveExperimentGroup = ({
     });
 
     return experimentRange;
-};
-
-export const getExperimentNameById = (id: ExperimentId) => {
-    if (!id) return null;
-
-    return (Object.keys(Experiment) as ExperimentKey[]).find(key => Experiment[key] === id);
 };

@@ -125,12 +125,9 @@ type FunctionContextReturnValues = {
 
 export type ContextDomain = FunctionContextReturnValues;
 
-export const Experiment = {
-    tradingFeedbackForm: '092db279-98dc-418e-bbfa-ef70716fb211',
-    tradingFiatValues: 'b73df44d-37ed-4b66-aba1-5c4164493bae',
-} as const;
-
-export type ExperimentKey = keyof typeof Experiment;
-export type ExperimentId = (typeof Experiment)[ExperimentKey];
+export enum ExperimentId {
+    tradingFeedbackForm = '092db279-98dc-418e-bbfa-ef70716fb211',
+    tradingFiatValues = 'b73df44d-37ed-4b66-aba1-5c4164493bae',
+}
 
 export type ExperimentsItemType = Omit<ExperimentsItem, 'id'> & { id: ExperimentId };

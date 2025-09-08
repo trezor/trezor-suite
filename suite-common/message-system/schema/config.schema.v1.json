@@ -207,7 +207,8 @@
                                         }
                                     },
                                     "additionalProperties": true
-                                }
+                                },
+                                "uniqueItems": true
                             }
                         },
                         "additionalProperties": false

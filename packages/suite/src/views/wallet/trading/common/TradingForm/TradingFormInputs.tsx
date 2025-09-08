@@ -1,3 +1,4 @@
+import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
@@ -212,7 +213,7 @@ export const TradingFormInputs = () => {
                                 ))}
                             </Row>
                             <ExperimentWrapper
-                                id="tradingFiatValues"
+                                id={ExperimentId.tradingFiatValues}
                                 components={[
                                     {
                                         variant: 'A',
@@ -291,7 +292,7 @@ export const TradingFormInputs = () => {
 
                 {amountInCrypto && (
                     <ExperimentWrapper
-                        id="tradingFiatValues"
+                        id={ExperimentId.tradingFiatValues}
                         components={[
                             {
                                 variant: 'A',

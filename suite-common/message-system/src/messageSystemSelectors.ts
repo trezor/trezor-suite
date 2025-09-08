@@ -4,12 +4,11 @@ import { selectAnalyticsInstanceId } from '@suite-common/analytics';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { Category, Message } from '@suite-common/suite-types';
 
-import { getActiveExperimentGroup, getExperimentNameById } from './experimentUtils';
+import { getActiveExperimentGroup } from './experimentUtils';
+import { EXPERIMENT_MAP } from './messageSystemConstants';
 import {
     ContextDomain,
-    Experiment,
     ExperimentId,
-    ExperimentKey,
     ExperimentsItemType,
     FeatureDomain,
     MessageSystemRootState,
@@ -191,20 +190,13 @@ export const selectExperimentById = (id: ExperimentId) =>
         ),
     );
 
-export const selectExperimentByKey = (key: ExperimentKey) =>
-    createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
-        allValidExperiments.find(
-            (experiment): experiment is ExperimentsItemType => experiment.id === Experiment[key],
-        ),
-    );
-
 export const selectActiveExperimentsWithVariants = createSelector(
     [selectAnalyticsInstanceId, selectAllValidExperiments],
     (instanceId, experiments) =>
         returnStableArrayIfEmpty(
             experiments.flatMap(experiment => {
                 const id = experiment.id as ExperimentId;
-                const name = getExperimentNameById(id);
+                const name = EXPERIMENT_MAP[id];
                 const activeGroup = getActiveExperimentGroup({
                     instanceId,
                     experiment: {

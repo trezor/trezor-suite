@@ -1,9 +1,9 @@
 import { ReactElement } from 'react';
 
-import { ExperimentKey, useExperiment } from '@suite-common/message-system';
+import { ExperimentId, useExperiment } from '@suite-common/message-system';
 
 interface ExperimentWrapperProps {
-    id: ExperimentKey;
+    id: ExperimentId;
     components: Array<{
         variant: string;
         element: ReactElement;
