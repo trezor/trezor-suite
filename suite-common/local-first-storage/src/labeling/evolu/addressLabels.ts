@@ -8,6 +8,7 @@ import {
 } from '@evolu/common';
 
 import { UnwrapQuery } from '../../evoluUtils';
+import { normalizeLabel } from '../normalizeLabel';
 
 export const AddressLabelId = id('AddressLabelId');
 export type AddressLabelId = typeof AddressLabelId.Type;
@@ -43,7 +44,7 @@ export class AddressLabels {
         const result = this.evolu.upsert('addressLabel', {
             id: idResult.value,
             address,
-            label,
+            label: normalizeLabel(label),
         });
 
         if (!result.ok) {

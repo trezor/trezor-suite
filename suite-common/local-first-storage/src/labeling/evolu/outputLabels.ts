@@ -9,6 +9,7 @@ import {
 } from '@evolu/common';
 
 import { UnwrapQuery } from '../../evoluUtils';
+import { normalizeLabel } from '../normalizeLabel';
 
 export const OutputLabelId = id('OutputLabelId');
 export type OutputLabelId = typeof OutputLabelId.Type;
@@ -47,7 +48,7 @@ export class OutputLabels {
             id: idResult.value,
             txId,
             outputIndex,
-            label,
+            label: normalizeLabel(label),
         });
 
         if (!result.ok) {

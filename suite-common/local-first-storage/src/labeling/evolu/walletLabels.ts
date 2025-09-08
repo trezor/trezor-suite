@@ -10,6 +10,7 @@ import {
 import type { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../../evoluUtils';
+import { normalizeLabel } from '../normalizeLabel';
 
 export const WalletLabelId = id('WalletLabelId');
 export type WalletLabelId = typeof WalletLabelId.Type;
@@ -49,7 +50,7 @@ export class WalletLabels {
         const result = this.evolu.upsert('walletLabel', {
             id: idResult.value,
             walletDescriptor,
-            label,
+            label: normalizeLabel(label),
         });
 
         if (!result.ok) {

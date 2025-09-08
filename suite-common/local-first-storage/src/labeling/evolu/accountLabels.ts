@@ -12,6 +12,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../../evoluUtils';
+import { normalizeLabel } from '../normalizeLabel';
 
 export const AccountLabelId = id('AccountLabelId');
 export type AccountLabelId = typeof AccountLabelId.Type;
@@ -52,7 +53,7 @@ export class AccountLabels {
             id: idResult.value,
             accountDescriptor,
             networkSymbol,
-            label,
+            label: normalizeLabel(label),
         });
 
         if (!result.ok) {

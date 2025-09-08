@@ -22,7 +22,6 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { MetadataLabeling, Translation, WalletLabeling } from 'src/components/suite';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
@@ -120,6 +119,9 @@ export const WalletInstance = ({
         }
     };
 
+    const valueLabel =
+        walletLabel === undefined || walletLabel.trim() === '' ? defaultWalletLabel : walletLabel;
+
     return (
         <Box position={{ type: 'relative' }} width="100%">
             <Card
@@ -158,23 +160,14 @@ export const WalletInstance = ({
                                                 deviceStaticSessionId={
                                                     instance.state.staticSessionId
                                                 }
-                                                defaultVisibleValue={
-                                                    walletLabel === undefined ||
-                                                    walletLabel.trim() === ''
-                                                        ? defaultWalletLabel
-                                                        : walletLabel
-                                                }
+                                                defaultVisibleValue={valueLabel}
                                                 payload={{
                                                     type: 'walletLabel',
                                                     entityKey: instance.state.staticSessionId,
                                                     defaultValue: instance.state.staticSessionId,
-                                                    value: instance?.metadata[
-                                                        METADATA_LABELING.ENCRYPTION_VERSION
-                                                    ]
-                                                        ? walletLabel
-                                                        : '',
+                                                    value: valueLabel,
                                                 }}
-                                                defaultEditableValue={defaultWalletLabel}
+                                                defaultEditableValue={valueLabel}
                                             />
                                             <LocalFirstStorageDebug device={instance} />
                                         </Column>
