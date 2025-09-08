@@ -26,7 +26,9 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
     const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
     const displaySymbol = getDisplaySymbol(account.symbol);
 
-    const { MIN_AMOUNT_FOR_STAKING } = getStakingLimitsByNetworkSymbol(account.symbol);
+    const minStakingAmount = getStakingLimitsByNetworkSymbol(
+        account.symbol,
+    )?.MIN_AMOUNT_FOR_STAKING;
 
     const accountBalance = account.formattedBalance;
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
@@ -94,9 +96,8 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             return 'staking-max';
         }
 
-        const hasEnoughBalanceForStaking = new BigNumber(accountBalance).gte(
-            MIN_AMOUNT_FOR_STAKING,
-        );
+        const hasEnoughBalanceForStaking =
+            minStakingAmount && new BigNumber(accountBalance).gte(minStakingAmount);
 
         if (stakingBalance !== '0') {
             if (!hasEnoughBalanceForStaking) {
@@ -111,7 +112,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         }
 
         return 'staking-inactive';
-    }, [accountBalance, stakingBalance, MIN_AMOUNT_FOR_STAKING]);
+    }, [accountBalance, stakingBalance, minStakingAmount]);
 
     const CurrentRewardsCell = () => {
         const isStakingActive = stakingBalance !== '0';
@@ -180,7 +181,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                             <Translation
                                 id="TR_STAKING_DASHBOARD_MINIMUM_STAKE"
                                 values={{
-                                    amount: MIN_AMOUNT_FOR_STAKING.toString(),
+                                    amount: minStakingAmount?.toString(),
                                     displaySymbol,
                                 }}
                             />

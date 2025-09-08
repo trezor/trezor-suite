@@ -76,9 +76,14 @@ export const StakingDashboard = () => {
     const [accountsSufficientFunds, accountsInsufficientFunds] = arrayPartition(
         accountsStakingNotActive,
         (account: Account) => {
-            const { MIN_AMOUNT_FOR_STAKING } = getStakingLimitsByNetworkSymbol(account.symbol);
+            const minStakingAmount = getStakingLimitsByNetworkSymbol(
+                account.symbol,
+            )?.MIN_AMOUNT_FOR_STAKING;
 
-            return new BigNumber(account.formattedBalance).gte(MIN_AMOUNT_FOR_STAKING);
+            return (
+                minStakingAmount !== undefined &&
+                new BigNumber(account.formattedBalance).gte(minStakingAmount)
+            );
         },
     );
 
