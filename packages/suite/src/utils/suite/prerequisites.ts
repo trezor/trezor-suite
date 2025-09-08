@@ -79,6 +79,7 @@ export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[
             'device-disconnected',
             'device-unacquired',
             'device-unacquired-requires-thp',
+            'device-used-elsewhere',
             'device-unreadable',
             'device-unknown',
             'device-seedless',
