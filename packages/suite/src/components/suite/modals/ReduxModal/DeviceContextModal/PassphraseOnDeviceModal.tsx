@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import {
-    selectIsDiscoveryAuthConfirmationRequired,
+    selectIsDiscoveryStatusConfirmEmptyPassphrase,
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/wallet-core';
 import { H2, Modal, Paragraph } from '@trezor/components';
@@ -32,7 +32,7 @@ interface PassphraseOnDeviceModalProps {
  */
 export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps) => {
     const intl = useIntl();
-    const authConfirmation = useSelector(selectIsDiscoveryAuthConfirmationRequired);
+    const confirmEmptyPassphrase = useSelector(selectIsDiscoveryStatusConfirmEmptyPassphrase);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
@@ -53,7 +53,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
                 <H2 align="center">
                     <Translation
                         id={
-                            authConfirmation
+                            confirmEmptyPassphrase
                                 ? 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON'
                                 : 'TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL'
                         }
@@ -69,7 +69,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
                 >
                     <Translation
                         id={
-                            authConfirmation
+                            confirmEmptyPassphrase
                                 ? 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE'
                                 : 'TR_PASSPHRASE_CASE_SENSITIVE'
                         }
