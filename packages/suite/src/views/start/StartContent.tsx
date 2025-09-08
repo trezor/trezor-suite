@@ -3,17 +3,21 @@ import { Card } from '@trezor/components';
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
+import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 import { ModalSwitcher } from '../../components/suite/modals/ModalSwitcher/ModalSwitcher';
 import { SecurityCheck } from '../onboarding/steps/SecurityCheck/SecurityCheck';
 
+const startAppExcludedPrerequisites: PrerequisiteType[] = [
+    'device-initialize',
+    'firmware-missing',
+    'device-recovery-mode',
+];
+
 export const StartContent = () => {
     const prerequisite = useSelector(selectPrerequisite);
 
-    if (
-        prerequisite !== null &&
-        !['device-initialize', 'firmware-missing', 'device-recovery-mode'].includes(prerequisite)
-    ) {
+    if (prerequisite !== null && !startAppExcludedPrerequisites.includes(prerequisite)) {
         return (
             <Card>
                 <ModalSwitcher />
