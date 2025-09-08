@@ -70,7 +70,9 @@ export const AddressConfirmation = () => {
                             justifyContent="space-between"
                             padding="sp8"
                         >
-                            <Text variant="hint">{item.address}</Text>
+                            <Text variant="hint" style={{ flex: 1 }}>
+                                {item.address}
+                            </Text>
                             <IconButton
                                 size="small"
                                 colorScheme={
