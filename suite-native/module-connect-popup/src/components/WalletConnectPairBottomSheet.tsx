@@ -27,12 +27,6 @@ export const WalletConnectPairBottomSheet = ({
         setIsPairing(true);
         dispatch(walletConnectPairThunk({ uri: currentUri }))
             .unwrap()
-            .then(() => {
-                showToast({
-                    variant: 'success',
-                    message: <Translation id="moduleConnectPopup.walletConnect.pairingSuccess" />,
-                });
-            })
             .catch(error => {
                 showToast({
                     variant: 'warning',

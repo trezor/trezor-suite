@@ -92,7 +92,10 @@ export const WalletConnectSessionPopupScreen = () => {
     );
     const [ignoreWarning, setIgnoreWarning] = useState(false);
     const isDisabled =
-        !pendingProposal || pendingProposal.expired || (pendingProposal.isScam && !ignoreWarning);
+        !pendingProposal ||
+        pendingProposal.expired ||
+        (pendingProposal.isScam && !ignoreWarning) ||
+        noNetworksActivated;
 
     return (
         <Screen header={<ScreenHeader closeActionType="close" />}>
@@ -190,37 +193,39 @@ export const WalletConnectSessionPopupScreen = () => {
                     </Card>
                 </VStack>
 
-                <VStack>
-                    <Text variant="highlight">
-                        <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
-                    </Text>
-                    <Card noPadding>
-                        <AccountsListItem
-                            account={selectedDefaultAccount || accounts[0]}
-                            onPress={openModal}
-                        />
+                {!noNetworksActivated && (
+                    <VStack>
+                        <Text variant="highlight">
+                            <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
+                        </Text>
+                        <Card noPadding>
+                            <AccountsListItem
+                                account={selectedDefaultAccount || accounts[0]}
+                                onPress={openModal}
+                            />
 
-                        <BottomSheetModal
-                            ref={bottomSheetRef}
-                            isCloseDisplayed
-                            title={
-                                <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
-                            }
-                        >
-                            {selectableAccounts.map(account => (
-                                <AccountsListItem
-                                    key={account.key}
-                                    account={account}
-                                    onPress={() => {
-                                        setSelectedDefaultAccount(account);
-                                        closeModal();
-                                    }}
-                                    hasBackground={selectedDefaultAccount?.key === account.key}
-                                />
-                            ))}
-                        </BottomSheetModal>
-                    </Card>
-                </VStack>
+                            <BottomSheetModal
+                                ref={bottomSheetRef}
+                                isCloseDisplayed
+                                title={
+                                    <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
+                                }
+                            >
+                                {selectableAccounts.map(account => (
+                                    <AccountsListItem
+                                        key={account.key}
+                                        account={account}
+                                        onPress={() => {
+                                            setSelectedDefaultAccount(account);
+                                            closeModal();
+                                        }}
+                                        hasBackground={selectedDefaultAccount?.key === account.key}
+                                    />
+                                ))}
+                            </BottomSheetModal>
+                        </Card>
+                    </VStack>
+                )}
 
                 {(requiredNetworksNotActivated || noNetworksActivated) && (
                     <InlineAlertBox
