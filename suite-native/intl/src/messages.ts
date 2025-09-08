@@ -5,6 +5,8 @@
 
 export const messages = {
     generic: {
+        testOfCrowdinIntegrationDoNotMerge:
+            'THIS IS A TEST MESSAGE OF CROWDIN INTEGRATION. DO NOT MERGE THIS! NOT FOR PRODUCTION USE!',
         trezorSuite: 'Trezor Suite',
         trezorSuiteLite: 'Trezor Suite Lite',
         buttons: {
@@ -147,7 +149,10 @@ export const messages = {
     },
     assets: {
         dashboard: {
-            discoveryProgress: { loading: 'Loading...', stillWorking: 'Retrieving balances' },
+            discoveryProgress: {
+                loading: 'Loading...',
+                stillWorking: 'Retrieving balances',
+            },
         },
     },
     biometricsButton: 'Unlock with biometrics',
@@ -187,14 +192,20 @@ export const messages = {
             },
         },
         deviceCard: {
-            connect: { actionButton: 'Connect' },
-            remove: { actionButton: 'Pair again' },
+            connect: {
+                actionButton: 'Connect',
+            },
+            remove: {
+                actionButton: 'Pair again',
+            },
             unknownColor: 'Unknown',
         },
     },
     moduleAccountImport: {
         title: 'Sync my coins',
-        error: { unsupportedNetworkType: 'Unsupported account network type.' },
+        error: {
+            unsupportedNetworkType: 'Unsupported account network type.',
+        },
         summaryScreen: {
             title: {
                 confirmToAdd: 'Confirm to add coin',
@@ -444,7 +455,10 @@ export const messages = {
                 title: 'Incorrect PIN',
                 description:
                     'You have 16 PIN entry attempts.\nFailing all of them will result in your device being erased.',
-                button: { tryAgain: 'Try again', help: 'Enter PIN help' },
+                button: {
+                    tryAgain: 'Try again',
+                    help: 'Enter PIN help',
+                },
             },
         },
         connectingDeviceScreen: {
@@ -497,7 +511,6 @@ export const messages = {
         },
         permissions: {
             title: 'Permissions',
-            // Matches MethodPermission enum
             read: 'Access public keys from your Trezor device',
             write: 'Permit transaction and data signing on Trezor',
             management: 'Modify device settings',
@@ -587,9 +600,9 @@ export const messages = {
         incompatibleFirmwareModalAppendix: {
             title: 'Follow these steps',
             lines: {
-                1: '1. Connect Trezor to Desktop Suite',
-                2: '2. Navigate to Settings menu',
-                3: '3. Install update',
+                '1': '1. Connect Trezor to Desktop Suite',
+                '2': '2. Navigate to Settings menu',
+                '3': '3. Install update',
             },
         },
         noSeedModal: {
@@ -600,9 +613,9 @@ export const messages = {
             appendix: {
                 title: 'What to do now?',
                 lines: {
-                    1: 'Go to Trezor Suite for Web using the button below.',
-                    2: 'Complete the device setup in your browser.',
-                    3: 'Start using your Trezor with Trezor Suite Lite.',
+                    '1': 'Go to Trezor Suite for Web using the button below.',
+                    '2': 'Complete the device setup in your browser.',
+                    '3': 'Start using your Trezor with Trezor Suite Lite.',
                 },
             },
         },
@@ -626,8 +639,8 @@ export const messages = {
             description: "Trezor can't be used by multiple applications.",
             button: 'Use Trezor here',
             appendix: {
-                bullet1: `Close the other running applications that might be using your Trezor.`,
-                bullet2: `Reconnect your Trezor`,
+                bullet1: 'Close the other running applications that might be using your Trezor.',
+                bullet2: 'Reconnect your Trezor',
             },
         },
         unsupportedFirmwareModal: {
@@ -666,7 +679,7 @@ export const messages = {
             dangerZone: 'Danger Zone',
         },
         changeDeviceName: {
-            title: `Rename your Trezor`,
+            title: 'Rename your Trezor',
             validations: {
                 noSpecialCharacters: 'Your Trezor’s name can’t contain special characters',
                 maxLengthInfo: 'The name can be 16 characters long at most',
@@ -879,7 +892,6 @@ export const messages = {
                     subtitle: 'Expert features for power users ',
                 },
             },
-
             connections: {
                 title: 'Connections',
                 trezorConnect: {
@@ -899,72 +911,72 @@ export const messages = {
                 contact: 'Contact support',
             },
             usbEnabled: {
-                0: {
+                '0': {
                     question: 'Can I connect my Trezor to Trezor Suite Lite?',
                     answer: 'Yes, you can connect your Trezor Hardware Wallet and use limited functionality. It is designed to work as a companion to the desktop/web version of Trezor Suite, but we will gradually add more features to make it a standalone application to manage your {coinLabel} funds with Trezor Hardware Wallet.',
                 },
-                1: {
+                '1': {
                     question:
                         'What is the difference between Portfolio Tracker and Connected Trezor functionality?',
                     answer: 'Portfolio Tracker helps you stay in touch with your portfolio balances without having to connect your Trezor device. Simply sync your coin addresses and you can keep track of your balances on the go. You can also combine coin addresses from multiple wallets or Trezor devices to track your whole portfolio in one place. Connected Trezor allows you to manage your funds associated with your Trezor device. You can verify receive addresses and check your balances and transactions. However, if you disconnect the Trezor, you will no longer see the data from the Trezor device.',
                 },
-                2: {
+                '2': {
                     question: 'What is public key? (XPUB) or a receive address?',
                     answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. For Ethereum, share only your address, while keeping your private key secure.',
                 },
-                3: {
+                '3': {
                     question: 'My Trezor device can’t connect',
                     answer: {
-                        0: 'Reconnect your Trezor',
-                        1: 'Use a different USB data cable',
-                        2: 'Use a different mobile device',
-                        3: 'Enable connection for Trezor Suite Lite via phone system message',
+                        '0': 'Reconnect your Trezor',
+                        '1': 'Use a different USB data cable',
+                        '2': 'Use a different mobile device',
+                        '3': 'Enable connection for Trezor Suite Lite via phone system message',
                     },
                 },
-                4: {
+                '4': {
                     question: 'What version of Trezor device Firmware Trezor Suite Lite supports?',
                     answer: {
-                        0: 'Trezor One: from version 1.12.1',
-                        1: 'Trezor T: from version 2.6.3',
-                        2: 'Trezor Safe 3: from version 2.6.3',
-                        3: 'Trezor Safe 5: from version 2.7.2',
+                        '0': 'Trezor One: from version 1.12.1',
+                        '1': 'Trezor T: from version 2.6.3',
+                        '2': 'Trezor Safe 3: from version 2.6.3',
+                        '3': 'Trezor Safe 5: from version 2.7.2',
                     },
                 },
-                5: {
+                '5': {
                     question: 'Why don’t I see my coin listed?',
                     answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
                 },
-                6: {
+                '6': {
                     question: 'What does the graph display?',
                     answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
-                7: {
+                '7': {
                     question: 'What is View-only?',
                     answer: 'Even when your Trezor device is disconnected, you can still keep track of your balances with the View-Only. This feature provides peace of mind by allowing you to monitor your funds without compromising security. Plus no more waiting for retrieving all the assets and balances while connecting your Trezor device.',
                 },
             },
             usbDisabled: {
-                0: {
+                '0': {
                     question: 'What is public key? (XPUB) or a receive address?',
                     answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. For Ethereum, share only your address, while keeping your private key secure.',
                 },
-                1: {
+                '1': {
                     question: 'Can I connect my Trezor to Trezor Suite Lite?',
                     answer: 'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
                 },
-                2: {
+                '2': {
                     question: 'How do I send {coinLabel} in Trezor Suite Lite?',
                     answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send {coinLabel} using Trezor Suite Lite. To send {coinLabel}, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
                 },
-                3: {
+                '3': {
                     question: 'Why don’t I see my coin listed?',
                     answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
                 },
-                4: {
+                '4': {
                     question: 'What does the graph display?',
                     answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
-                5: {
+                '5': {
                     question:
                         'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
                     answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
@@ -1273,11 +1285,9 @@ export const messages = {
                 button: 'Recover',
             },
         },
-
         createWalletLoadingScreen: {
             title: 'Let’s protect your assets with a wallet backup',
         },
-
         walletBackupTutorialScreen: {
             step1: {
                 callout: 'What’s a wallet backup?',
@@ -1416,14 +1426,12 @@ export const messages = {
                     title: 'Want to access your exchange account?',
                     paragraph1:
                         "You can't directly recover your exchange account on Trezor, but you can always transfer your assets to it.",
-
                     paragraph2: 'To transfer:',
                     bullets: {
-                        1: 'Set up your Trezor',
-                        2: 'Generate a receive address',
-                        3: 'Use the receive address to transfer funds from the exchange account to your Trezor',
+                        '1': 'Set up your Trezor',
+                        '2': 'Generate a receive address',
+                        '3': 'Use the receive address to transfer funds from the exchange account to your Trezor',
                     },
-
                     cta: 'Set up my new Trezor',
                 },
             },
@@ -1458,7 +1466,6 @@ export const messages = {
                 title: 'No one can recover your wallet backup—not even Trezor Support',
             },
         },
-
         backupFailedModalScreen: {
             title: 'Your wallet backup failed.',
             subtitle: 'You need to wipe your device and create a wallet backup.',
@@ -1469,7 +1476,6 @@ export const messages = {
             },
             primaryButton: 'Wipe device',
             secondaryButton: 'Contact Trezor Support',
-
             alert: {
                 title: 'Erase all data?',
                 description:
@@ -1549,7 +1555,10 @@ export const messages = {
         receive: 'Receive',
         send: 'Send',
         more: 'Load more',
-        status: { pending: 'Pending', confirmed: 'Confirmed' },
+        status: {
+            pending: 'Pending',
+            confirmed: 'Confirmed',
+        },
         phishing: {
             badge: 'Caution!',
             warning:
@@ -1840,7 +1849,9 @@ export const messages = {
             },
         },
         fees: {
-            recipient: { singular: 'Recipient' },
+            recipient: {
+                singular: 'Recipient',
+            },
             description: {
                 title: 'Transaction fee',
                 body: 'Fees are paid directly to network miners for processing your transactions.',
@@ -1912,7 +1923,6 @@ export const messages = {
                 step1: 'Go to the app or place where you originally got the address.',
                 step2: 'Compare the original address with what’s on your Trezor.',
                 step3: 'If they match exactly, confirm on your Trezor.',
-
                 originBottomSheet: {
                     title: 'What’s the place of origin?',
                     subtitle: 'Think of how you’ve initially retrieved the address.',
@@ -2369,7 +2379,10 @@ export const messages = {
             title: 'Your assets',
             emptyTitle: 'No assets found',
             emptyDescription: 'You do not have any assets available for this operation.',
-            noPair: { note: 'No pair', toast: 'There is no pair for this asset' },
+            noPair: {
+                note: 'No pair',
+                toast: 'There is no pair for this asset',
+            },
         },
         advancedSettings: {
             slippage: {
@@ -2423,15 +2436,21 @@ export const messages = {
         },
         firmwareUpdateProgress: {
             generalSubtitle: 'Firmware is your Trezor’s operating system.',
-            initializing: { title: 'Preparing your Trezor' },
-            confirming: { title: 'Confirm firmware update on your Trezor.' },
+            initializing: {
+                title: 'Preparing your Trezor',
+            },
+            confirming: {
+                title: 'Confirm firmware update on your Trezor.',
+            },
             updating: {
                 title: 'Updating your firmware',
             },
             installing: {
                 title: 'Installing firmware',
             },
-            restarting: { title: 'Restarting Trezor' },
+            restarting: {
+                title: 'Restarting Trezor',
+            },
             completed: {
                 title: 'Firmware installed',
                 subtitle: 'You’re all set.',
@@ -2540,12 +2559,10 @@ export const messages = {
     },
     navigation: {
         tabs: {
-            home: 'Home',
+            home: 'XXX HOME XXX',
             accounts: 'My assets',
             trade: 'Trade',
-            settings: 'Settings',
+            settings: 'TEST ROZHLASU',
         },
     },
 };
-
-export type Translations = typeof messages;

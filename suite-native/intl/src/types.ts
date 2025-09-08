@@ -1,4 +1,6 @@
-import { Translations } from './messages';
+import { messages } from './messages';
+
+export type Translations = typeof messages;
 
 /**
  * Builds up valid keypaths for translations.

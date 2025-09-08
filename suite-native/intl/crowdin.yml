@@ -1,0 +1,15 @@
+#"project_id": "826498" # production suite crowdin project
+"project_id": "827254" # personal test project
+"base_path": "translations"
+"base_url": "https://api.crowdin.com"
+
+"preserve_hierarchy": true
+
+files:
+  [
+    {
+      "source": "master.json",
+      "translation": "%locale%.json",
+      "update_option": "update_as_unapproved",
+    },
+  ]
