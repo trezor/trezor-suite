@@ -11,8 +11,6 @@ export const getCurrencyLabel = (currencyCode: FiatCurrencyCode | string) => {
         return supportedCurrencyLabel;
     }
 
-    console.error(`Trading: Currency [${currencyCode}] is not in supportedFiatCurrenciesMap`);
-
     const otherCurrencyLabel = otherCurrenciesMap[currencyCode as Lowercase<string>];
     if (otherCurrencyLabel) {
         return otherCurrencyLabel;
