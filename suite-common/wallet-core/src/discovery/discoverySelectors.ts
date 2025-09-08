@@ -5,8 +5,6 @@ import { DiscoveryRootState } from './discoveryReducer';
 import { DeviceRootState } from '../device/deviceReducer';
 import { selectSelectedDevice } from '../device/deviceSelectors';
 
-export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.discovery;
-
 export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>
     path !== undefined ? state.wallet.discovery[path] : undefined;
 
