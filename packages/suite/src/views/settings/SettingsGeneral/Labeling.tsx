@@ -80,8 +80,7 @@ export const Labeling = () => {
                         <Translation id="TR_LABELING_FEATURE_ALLOWS" />
                         {isLocalFirstStorageEnabled && (
                             <Banner>
-                                Local First Storage (Evolu) will be turned off by enabling this
-                                Legacy Labeling
+                                <Translation id="LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE" />
                             </Banner>
                         )}
                     </>

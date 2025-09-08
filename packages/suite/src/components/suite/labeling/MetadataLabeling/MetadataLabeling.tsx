@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { processMetadataMessageThunk } from '@suite-common/local-first-storage';
-import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
+import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
@@ -407,13 +407,6 @@ export const MetadataLabeling = ({
         !showSuccess &&
         !editActive;
 
-    console.log('____???', {
-        showActionButton,
-        isLegacyLabelingEnabled,
-        isLegacyLabelingInitPossible,
-        isEvoluLabeling,
-    });
-
     const isVisible = pending || visible;
 
     // Metadata is still initiating, on hover, show only disabled button with spinner.
@@ -435,95 +428,106 @@ export const MetadataLabeling = ({
         showActionButton && (!payload.value || (payload.value && pending));
 
     return (
-        <LabelContainer
-            data-testid={labelContainerDataTest}
-            onClick={e => payload.value && !editActive && e.stopPropagation()}
+        <Tooltip
+            content={
+                !showActionButton &&
+                !isEvoluSupportedByDevice && (
+                    <Text variant="warning">
+                        <Translation id="FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU" />
+                    </Text>
+                )
+            }
         >
-            {payload.type === 'outputLabel' ? (
-                <>
-                    <ButtonLikeLabelWithDropdown
-                        editActive={editActive}
-                        onSubmit={onSubmit || defaultOnSubmit}
-                        onBlur={handleBlur}
-                        data-testid={dataTestBase}
-                        payload={payload}
-                        defaultEditableValue={defaultEditableValue}
-                        defaultVisibleValue={defaultVisibleValue}
-                        dropdownOptions={dropdownItems}
-                        deviceStaticSessionId={deviceStaticSessionId}
-                    />
-                    {showOutputLabelActionButton && (
-                        <ActionButton
-                            data-testid={`${dataTestBase}/add-label-button`}
-                            variant="tertiary"
-                            icon={!actionButtonsDisabled ? 'tag' : undefined}
-                            isLoading={actionButtonsDisabled}
-                            isDisabled={actionButtonsDisabled}
-                            $isVisible={isVisible}
-                            size="tiny"
-                            onClick={e => {
-                                e.stopPropagation();
-                                // By clicking on add label button, metadata.editing field is set
-                                // to default value of whatever may be labeled (address, etc..)
-                                // this way we ensure that only one field may be active at time.
-                                activateEdit();
-                            }}
-                        >
-                            {l10nLabelling.add}
-                        </ActionButton>
-                    )}
-                </>
-            ) : (
-                <>
-                    <TextLikeLabel
-                        editActive={editActive}
-                        accountType={accountType}
-                        onSubmit={onSubmit || defaultOnSubmit}
-                        onBlur={handleBlur}
-                        data-testid={dataTestBase}
-                        payload={payload}
-                        networkType={networkType}
-                        path={path}
-                        defaultEditableValue={defaultEditableValue}
-                        defaultVisibleValue={defaultVisibleValue}
-                        updateFlag={updateFlag}
-                        deviceStaticSessionId={deviceStaticSessionId}
-                    />
+            <LabelContainer
+                data-testid={labelContainerDataTest}
+                onClick={e => payload.value && !editActive && e.stopPropagation()}
+            >
+                {payload.type === 'outputLabel' ? (
+                    <>
+                        <ButtonLikeLabelWithDropdown
+                            editActive={editActive}
+                            onSubmit={onSubmit || defaultOnSubmit}
+                            onBlur={handleBlur}
+                            data-testid={dataTestBase}
+                            payload={payload}
+                            defaultEditableValue={defaultEditableValue}
+                            defaultVisibleValue={defaultVisibleValue}
+                            dropdownOptions={dropdownItems}
+                            deviceStaticSessionId={deviceStaticSessionId}
+                        />
+                        {showOutputLabelActionButton && (
+                            <ActionButton
+                                data-testid={`${dataTestBase}/add-label-button`}
+                                variant="tertiary"
+                                icon={!actionButtonsDisabled ? 'tag' : undefined}
+                                isLoading={actionButtonsDisabled}
+                                isDisabled={actionButtonsDisabled}
+                                $isVisible={isVisible}
+                                size="tiny"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    // By clicking on add label button, metadata.editing field is set
+                                    // to default value of whatever may be labeled (address, etc..)
+                                    // this way we ensure that only one field may be active at time.
+                                    activateEdit();
+                                }}
+                            >
+                                {l10nLabelling.add}
+                            </ActionButton>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        <TextLikeLabel
+                            editActive={editActive}
+                            accountType={accountType}
+                            onSubmit={onSubmit || defaultOnSubmit}
+                            onBlur={handleBlur}
+                            data-testid={dataTestBase}
+                            payload={payload}
+                            networkType={networkType}
+                            path={path}
+                            defaultEditableValue={defaultEditableValue}
+                            defaultVisibleValue={defaultVisibleValue}
+                            updateFlag={updateFlag}
+                            deviceStaticSessionId={deviceStaticSessionId}
+                        />
 
-                    {showActionButton && (
-                        <ActionButton
-                            data-testid={
-                                payload.value
-                                    ? `${dataTestBase}/edit-label-button`
-                                    : `${dataTestBase}/add-label-button`
-                            }
-                            variant="tertiary"
-                            icon={!actionButtonsDisabled ? 'tag' : undefined}
-                            isLoading={actionButtonsDisabled}
-                            isDisabled={actionButtonsDisabled}
-                            $isVisible={isVisible}
-                            size="tiny"
-                            onClick={e => {
-                                e.stopPropagation();
-                                activateEdit();
-                            }}
-                        >
-                            {payload.value ? l10nLabelling.edit : l10nLabelling.add}
-                        </ActionButton>
-                    )}
-                </>
-            )}
+                        {showActionButton && (
+                            <ActionButton
+                                data-testid={
+                                    payload.value
+                                        ? `${dataTestBase}/edit-label-button`
+                                        : `${dataTestBase}/add-label-button`
+                                }
+                                variant="tertiary"
+                                icon={!actionButtonsDisabled ? 'tag' : undefined}
+                                isLoading={actionButtonsDisabled}
+                                isDisabled={actionButtonsDisabled}
+                                $isVisible={isVisible}
+                                size="tiny"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    activateEdit();
+                                }}
+                            >
+                                {payload.value ? l10nLabelling.edit : l10nLabelling.add}
+                            </ActionButton>
+                        )}
+                    </>
+                )}
 
-            {showSuccess && !editActive && (
-                <SuccessButton
-                    variant="tertiary"
-                    data-testid={`${dataTestBase}/success`}
-                    icon="check"
-                    size="tiny"
-                >
-                    {l10nLabelling.edited}
-                </SuccessButton>
-            )}
-        </LabelContainer>
+                {showSuccess && !editActive && (
+                    <SuccessButton
+                        variant="tertiary"
+                        data-testid={`${dataTestBase}/success`}
+                        icon="check"
+                        size="tiny"
+                    >
+                        {l10nLabelling.edited}
+                    </SuccessButton>
+                )}
+            </LabelContainer>
+        </Tooltip>
     );
 };

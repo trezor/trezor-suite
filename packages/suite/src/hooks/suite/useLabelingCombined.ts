@@ -12,6 +12,8 @@ import { selectSuiteFlags } from '../../selectors/suite/suiteSelectors';
 
 export const useLabelingCombined = () => {
     const dispatch = useDispatch();
+
+    // Todo: device needs to be passed as arg
     const device = useSelector(selectSelectedDevice);
 
     const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled } =

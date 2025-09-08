@@ -293,6 +293,8 @@ export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
     const device = selectSelectedDevice(state);
     const { isLocalFirstStorageEnabled } = selectSuiteFlags(state);
 
+    // If Evolu is enabled, we do not want to allow for enabling Legacy Labeling just by
+    // clicking on the stuff.
     if (isLocalFirstStorageEnabled) {
         return false;
     }
