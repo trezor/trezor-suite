@@ -5,7 +5,11 @@ import styled from 'styled-components';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { selectDevices } from '@suite-common/wallet-core';
+import {
+    DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
+    selectDevices,
+    selectIsBluetoothDevice,
+} from '@suite-common/wallet-core';
 import { Column, Note, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -24,6 +28,7 @@ import {
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
+import { FirmwareLowBatteryModal } from './FirmwareLowBatteryModal';
 import { PrerequisitesGuide, Translation } from '../suite';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
@@ -129,8 +134,11 @@ export const FirmwareInitial = ({
     const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
     const isDebug = useSelector(selectIsDebugModeActive);
+    const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
+
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
+    const [showLowBatteryWarning, setShowLowBatteryWarning] = useState(false);
 
     // Just to satisfy TS, disconnected device should be handled upstream.
     if (!device?.connected || !device?.features) {
@@ -158,10 +166,24 @@ export const FirmwareInitial = ({
     const isBitcoinOnlyAvailable = !!device.firmwareReleaseConfigInfo?.isBitcoinOnlyAvailable;
 
     const installFirmware = (firmwareType: FirmwareType) => {
+        if (
+            isBluetoothDevice &&
+            device.features.soc &&
+            device?.features.soc <= DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
+        ) {
+            setShowLowBatteryWarning(true);
+
+            return;
+        }
+
         console.log('installFirmware');
         firmwareUpdate({ firmwareType });
         updateAnalytics({ firmware: 'install' });
     };
+
+    if (showLowBatteryWarning === true) {
+        return <FirmwareLowBatteryModal onClose={() => setShowLowBatteryWarning(false)} />;
+    }
 
     if (bitcoinOnlyOffer) {
         // Installing Bitcoin-only firmware in onboarding
