@@ -7,8 +7,8 @@ on:
         description: "Emulator model identifier (e.g. T3W1)"
         required: true
         type: string
-      detox_extra_args:
-        description: "Extra arguments to pass to the Detox run"
+      jest_test_name_pattern:
+        description: "(Optional) Jest test name pattern to filter tests"
         required: false
         default: ""
         type: string
@@ -113,6 +113,7 @@ jobs:
           RELEASE_BUILD: ${{ env.release_build }}
           EMULATOR_MODEL: ${{ inputs.emulator_model }}
           PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
+          JEST_TEST_NAME_PATTERN: ${{ inputs.jest_test_name_pattern }}
         with:
           api-level: 31
           profile: pixel_3a
@@ -124,7 +125,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
           script: |
             npx jest --listTests e2e | sort | awk "NR % 4 == ${{ matrix.TEST_GROUP }}" > shard.txt
-            xargs yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing ${{ inputs.detox_extra_args }} < shard.txt
+            xargs yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing < shard.txt
 
       - name: Upload results to Currents.dev
         if: ${{ ! cancelled() }}
