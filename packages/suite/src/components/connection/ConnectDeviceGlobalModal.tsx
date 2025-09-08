@@ -222,11 +222,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <Button onClick={toggleShowHints} icon="question" variant="infoLight">
                 <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
             </Button>
-            <Modal.ModalBase
-                padding={{ bottom: isBluetoothMode ? spacings.md : spacings.zero }}
-                size="tiny"
-                onCancel={onCancel}
-            >
+            <Modal.ModalBase padding={{ bottom: spacings.zero }} size="tiny" onCancel={onCancel}>
                 <Content>
                     <Column
                         alignItems="center"
