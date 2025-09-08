@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { selectKnownDevices } from '@suite-common/bluetooth';
-import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
@@ -10,11 +9,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 export const PowerMonitorManager = () => {
     const dispatch = useDispatch();
     const knownDevices = useSelector(selectKnownDevices);
+    const isDesktopApiAvailable = desktopApi?.available === true;
 
     useEffect(() => {
-        if (typeof window === 'undefined' || !isDesktop) {
-            return;
-        }
+        if (!isDesktopApiAvailable) return;
 
         const disconnectAllDevices = () => {
             knownDevices.forEach(device => {
@@ -26,7 +24,7 @@ export const PowerMonitorManager = () => {
         return () => {
             desktopApi.removeAllListeners('power-monitor/screen-locked');
         };
-    }, [dispatch, knownDevices]);
+    }, [dispatch, knownDevices, isDesktopApiAvailable]);
 
     return null;
 };
