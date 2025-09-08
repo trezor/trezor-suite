@@ -93,13 +93,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             return <DiscoveryLoader />;
 
         case 'passphrase-duplicate':
-            return (
-                <PassphraseDuplicateModal
-                    isExistingWallet={!!discovery.isAddingExistingWallet}
-                    device={device}
-                    discovery={discovery}
-                />
-            );
+            return <PassphraseDuplicateModal device={device} discovery={discovery} />;
 
         case 'passphrase-mismatch':
             return <PassphraseMismatchModal device={device} discovery={discovery} />;
