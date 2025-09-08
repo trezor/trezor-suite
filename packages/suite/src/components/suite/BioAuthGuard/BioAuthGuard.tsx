@@ -83,10 +83,10 @@ const BioAuthOverlay = ({
                                 {isBioAuthValidationRequired ? (
                                     <Container $elevation={elevation}>
                                         <Icon name="lockFilled" />
-                                        <Paragraph typographyStyle="titleSmall">
+                                        <Paragraph align="center" typographyStyle="titleSmall">
                                             <Translation id="TR_BIO_AUTH_LOCKED_HEADING" />
                                         </Paragraph>
-                                        <Paragraph typographyStyle="body">
+                                        <Paragraph align="center" typographyStyle="body">
                                             {isMacOs() ? (
                                                 <Translation id="TR_BIO_AUTH_LOCKED_TEXT_MAC" />
                                             ) : (
