@@ -10,7 +10,7 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
         isLocalFirstStorageEnabled,
         isLocalFirstStorageDebugEnabled,
         isEvoluSupportedByDevice,
-    } = useLabelingCombined();
+    } = useLabelingCombined({ deviceStaticSessionId: device.state?.staticSessionId });
 
     if (
         !isLocalFirstStorageDebugEnabled ||
