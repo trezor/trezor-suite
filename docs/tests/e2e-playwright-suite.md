@@ -75,6 +75,8 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 1. **To run with x-main firmware** instead of x-latest you can use CANARY_FIRMWARE env variable like this: `CANARY_FIRMWARE=true yarn workspace @trezor/suite-desktop-core test:e2e:web` or `CANARY_FIRMWARE=true yarn workspace @trezor/suite-desktop-core test:e2e:desktop`
 
+1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @trezor/suite-desktop git:bisect <last_good_commit> <desktop|web> <test_file>`
+
 ## Contribution
 
 Please follow our general [Playwright contribution guide](e2e-playwright-contribution-guide.md)
