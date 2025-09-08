@@ -50,3 +50,5 @@ export const WordInput = memo(() => {
         />
     );
 });
+
+WordInput.displayName = 'WordInput';
