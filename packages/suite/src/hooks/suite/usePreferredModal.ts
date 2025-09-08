@@ -66,9 +66,9 @@ export const usePreferredModal = () => {
     if (modal.context !== MODAL.CONTEXT_NONE) {
         // NOTE: in case when passphrase flow is active, we handle the device passphrase request
         // within the passphrase flow
+        const windowType = 'windowType' in modal ? modal.windowType : undefined;
         if (
-            'windowType' in modal &&
-            modal.windowType === UI.REQUEST_PASSPHRASE &&
+            windowType === UI.REQUEST_PASSPHRASE &&
             isPassphraseFlow &&
             discoveryForSelectedDevice
         ) {
@@ -77,7 +77,7 @@ export const usePreferredModal = () => {
             } as const;
         }
 
-        if ('windowType' in modal && modal.windowType === UI.REQUEST_PASSPHRASE) {
+        if (windowType === UI.REQUEST_PASSPHRASE) {
             return {
                 type: 'device-request-passphrase',
                 payload: modal,
