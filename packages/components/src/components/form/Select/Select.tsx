@@ -394,7 +394,6 @@ export const Select = ({
                     closeMenuOnScroll={closeMenuOnScroll}
                     menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                     menuPortalTarget={menuPortalTarget}
-                    styles={createSelectStyle(theme, isRenderedInModal)}
                     onChange={handleOnChange}
                     isSearchable={isSearchable}
                     menuIsOpen={isMenuOpen}
@@ -402,6 +401,10 @@ export const Select = ({
                     menuPlacement="auto"
                     placeholder={placeholder || ''}
                     {...rest}
+                    styles={{
+                        ...createSelectStyle(theme, isRenderedInModal),
+                        ...(rest.styles || {}),
+                    }}
                     components={memoizedComponents}
                 />
 
