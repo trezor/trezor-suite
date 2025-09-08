@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { isThpDevice } from '@suite-common/suite-utils';
+import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
 import {
     deviceActions,
     deviceConnectThunks,
@@ -125,5 +126,17 @@ deviceConnectionMiddleware.startListening({
                 },
             });
         }
+    },
+});
+
+deviceConnectionMiddleware.startListening({
+    predicate: (action: UnknownAction) => isThpPairingUIRequestButtonAction(action),
+    effect: (_action: UnknownAction, { getState }) => {
+        if (selectIsFirmwareInstallationRunning(getState())) return;
+
+        // Nothing can be accomplished before a THP connection is established.
+        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ThpConfirmation,
+        });
     },
 });
