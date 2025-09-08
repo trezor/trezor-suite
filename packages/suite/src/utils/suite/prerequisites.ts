@@ -1,5 +1,3 @@
-import { DefinedUnionMember } from '@trezor/type-utils';
-
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
 import type { AppState, TrezorDevice } from 'src/types/suite';
@@ -15,8 +13,29 @@ type GetPrerequisiteNameParams = {
     transport?: TransportState;
 };
 
-export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisiteNameParams) => {
-    if (!router || router.app === 'unknown') return;
+export type PrerequisiteType =
+    | 'no-transport'
+    | 'device-disconnected'
+    | 'device-disconnect-required'
+    | 'device-used-elsewhere'
+    | 'device-unacquired-requires-thp'
+    | 'device-unacquired'
+    | 'device-unreadable'
+    | 'device-unknown'
+    | 'device-seedless'
+    | 'device-recovery-mode'
+    | 'multi-share-backup-in-progress'
+    | 'device-initialize'
+    | 'device-bootloader'
+    | 'firmware-missing'
+    | 'firmware-required';
+
+export const getPrerequisiteName = ({
+    router,
+    device,
+    transport,
+}: GetPrerequisiteNameParams): PrerequisiteType | null => {
+    if (!router || router.app === 'unknown') return null;
 
     // no transport available
     if (transport && !transport.transports.length) return 'no-transport';
@@ -70,6 +89,8 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
 
     // device firmware update required
     if (device.firmware === 'required') return 'firmware-required';
+
+    return null;
 };
 
 export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[] => {
@@ -94,5 +115,3 @@ export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[
 
     return [];
 };
-
-export type PrerequisiteType = DefinedUnionMember<ReturnType<typeof getPrerequisiteName>>;

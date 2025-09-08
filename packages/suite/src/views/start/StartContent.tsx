@@ -11,7 +11,7 @@ export const StartContent = () => {
     const prerequisite = useSelector(selectPrerequisite);
 
     if (
-        prerequisite &&
+        prerequisite !== null &&
         !['device-initialize', 'firmware-missing', 'device-recovery-mode'].includes(prerequisite)
     ) {
         return (
