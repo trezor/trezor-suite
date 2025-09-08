@@ -149,7 +149,10 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
             size="tiny"
             onCancel={onCancelClick}
             bottomContent={
-                <Modal.Button onClick={proceedToEverstakeModal}>
+                <Modal.Button
+                    onClick={proceedToEverstakeModal}
+                    data-testid="@modal/staking/continue-button"
+                >
                     <Translation id="TR_CONTINUE" />
                 </Modal.Button>
             }

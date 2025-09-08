@@ -291,6 +291,7 @@ export const StakingCard = ({
                             isDisabled={isStakingDisabled}
                             icon={isStakingDisabled ? 'info' : undefined}
                             variant="tertiary"
+                            data-testid="@account/staking/stake-more-button"
                         >
                             <Translation id="TR_STAKE_STAKE_MORE" />
                         </Button>
@@ -301,6 +302,7 @@ export const StakingCard = ({
                             onClick={openUnstakeModal}
                             icon={isUnstakingDisabled ? 'info' : undefined}
                             variant="tertiary"
+                            data-testid="@account/staking/unstake-button"
                         >
                             <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
                         </Button>

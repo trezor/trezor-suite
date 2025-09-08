@@ -175,6 +175,7 @@ export const TransactionItem = memo(
                 icon="gauge"
                 onClick={() => openTxDetailsModal({ flow: 'bump-fee' })}
                 isDisabled={isDisabled}
+                data-testid="@transaction-item/bump-fee-button"
             >
                 <Translation id="TR_BUMP_FEE" />
             </Button>

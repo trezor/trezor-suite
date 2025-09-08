@@ -57,26 +57,28 @@ export class StakingSection {
         this.stakedAmount = this.page.getByTestId('@account/staking/staked');
         this.rewardsAmount = this.page.getByTestId('@account/staking/rewards');
         this.unstakingAmount = this.page.getByTestId('@account/staking/unstaking');
-        this.unstakeToClaimButton = this.page.getByRole('button', { name: 'Unstake to claim' });
+        this.unstakeToClaimButton = this.page.getByTestId('@account/staking/unstake-button');
         this.availableBalanceWithSymbol = this.page.getByTestId(
             '@staking/available-balance-with-symbol',
         );
         this.cryptoInput = this.page.getByTestId('@staking/form/crypto-input');
         this.fiatInput = this.page.getByTestId('@staking/form/fiat-input');
-        this.unstakeButton = this.page
-            .getByTestId('@modal')
-            .getByRole('button', { name: 'Unstake' });
-        this.speedUpButton = this.page.getByRole('button', { name: 'Speed up' });
+        this.unstakeButton = this.page.getByTestId('@modal/staking/unstake-button');
+        this.speedUpButton = this.page.getByTestId('@transaction-item/bump-fee-button');
         this.pendingTransactionText = this.page.getByText('Pending transaction•1');
-        this.stakeMoreButton = this.page.getByRole('button', { name: 'Stake more' });
-        this.startStakingButton = this.page.getByRole('button', { name: 'Start staking' });
-        this.continueButton = this.page.getByRole('button', { name: 'Continue' });
-        this.confirmButton = this.page.getByRole('button', { name: 'Confirm' });
+        this.stakeMoreButton = this.page.getByTestId('@account/staking/stake-more-button');
+        this.startStakingButton = this.page.getByTestId(
+            '@wallet/staking/empty-card/start-staking-button',
+        );
+        this.continueButton = this.page.getByTestId('@modal/staking/continue-button');
+        this.confirmButton = this.page.getByTestId('@modal/staking/confirm-button');
         this.acknowledgeCheckbox = this.page.getByTestId('@staking/acknowledge-checkbox');
         this.everstakeAcknowledgeCheckbox = this.page.getByTestId(
             '@staking/everstake-acknowledge-checkbox',
         );
-        this.confirmAndStakeButton = this.page.getByRole('button', { name: 'Confirm & stake' });
+        this.confirmAndStakeButton = this.page.getByTestId(
+            '@modal/staking/confirm-and-stake-button',
+        );
         this.progressLabels = this.page.getByTestId('@staking/progress-labels');
         this.transactionStatus = this.page.getByTestId('@staking/transaction-status');
         this.transactionStatusContainer = this.page.getByTestId(
@@ -96,11 +98,9 @@ export class StakingSection {
         );
         this.claimCard = this.page.getByTestId('@staking/can-claim-card');
         this.claimBalanceWithSymbol = this.page.getByTestId('@staking/can-claim-with-symbol');
-        this.claimButton = this.page.getByRole('button', { name: 'Claim', exact: true });
+        this.claimButton = this.page.getByTestId('@account/staking/claim-button');
         this.claimModalAmount = this.page.getByTestId('@staking/claim-modal/amount-with-symbol');
-        this.claimModalButton = this.page
-            .getByTestId('@staking/claim-modal')
-            .getByRole('button', { name: 'Claim', exact: true });
+        this.claimModalButton = this.page.getByTestId('@staking/claim-modal/continue-button');
         this.cryptoInputBottomText = this.page.getByTestId(
             '@staking/form/crypto-input/bottom-text',
         );

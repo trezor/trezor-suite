@@ -114,6 +114,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                             isLoading={isLoading}
                             onClick={onClaimClick}
                             icon={isClaimingDisabled ? 'info' : undefined}
+                            data-testid="@staking/claim-modal/continue-button"
                         >
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>
