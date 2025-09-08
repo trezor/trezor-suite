@@ -1,10 +1,14 @@
+import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { getChangelogUrl } from '@suite-common/suite-utils';
+import { DEVICE_LOW_BATTERY_THRESHOLD } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
+import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
@@ -54,6 +58,7 @@ interface FirmwareVersionProps {
 }
 
 export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
+    const [lowBatteryWarning, setLowBatteryWarning] = useState(true);
     const dispatch = useDispatch();
     const { device } = useDevice();
 
@@ -66,7 +71,14 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const changelogUrl = getChangelogUrl(device, revision);
     const githubButtonIcon = revision ? 'arrowUpRight' : undefined;
 
-    const handleUpdate = () => dispatch(goto('firmware-index', { params: { cancelable: true } }));
+    const handleUpdate = () => {
+        if (device.features?.soc && device.features?.soc < DEVICE_LOW_BATTERY_THRESHOLD) {
+            setLowBatteryWarning(true);
+
+            return;
+        }
+        dispatch(goto('firmware-index', { params: { cancelable: true } }));
+    };
 
     const GithubButton = () => (
         <Button
@@ -79,6 +91,10 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             {currentFwVersion}
         </Button>
     );
+
+    if (lowBatteryWarning === true) {
+        return <FirmwareLowBatteryModal onClose={() => setLowBatteryWarning(false)} />;
+    }
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.FirmwareVersion}>
