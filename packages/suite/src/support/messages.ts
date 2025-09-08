@@ -4847,6 +4847,14 @@ export default defineMessages({
         id: 'TR_CHARGE_TREZOR_BEFORE_CONTINUING',
         defaultMessage: 'Charge your Trezor before continuing',
     },
+    TR_FW_INSTALL_MAY_TAKE_A_WHILE: {
+        id: 'TR_FW_INSTALL_MAY_TAKE_A_WHILE',
+        defaultMessage: 'Firmware installation may take a while',
+    },
+    TR_CHARGE_TO_50_ATLEAST: {
+        id: 'TR_CHARGE_TO_50_ATLEAST',
+        defaultMessage: 'Charge your Trezor to at least 50% or power it with a cable to prevent interruptions.',
+    },
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
         defaultMessage: 'Remove',
