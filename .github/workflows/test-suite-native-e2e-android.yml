@@ -20,8 +20,8 @@ on:
       - release-native/*
   workflow_dispatch:
     inputs:
-      publishResultsToGitHub:
-        description: "(optional) Publish test report to GitHub Project"
+      publish_results_to_github:
+        description: "Publish test report to GitHub Project"
         required: false
         default: false
         type: boolean
@@ -40,8 +40,8 @@ jobs:
     needs: prepare_android_test_app
     with:
       emulator_model: "T3T1"
+      publish_results_to_github: ${{ inputs.publish_results_to_github == true }}
     secrets:
-      PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publishResultsToGitHub }}
       TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
       TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}

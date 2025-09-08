@@ -12,6 +12,11 @@ on:
         required: false
         default: ""
         type: string
+      publish_results_to_github:
+        description: "Publish test report to GitHub Project"
+        required: false
+        default: false
+        type: boolean
     secrets:
       TREZOR_BOT_APP_ID:
         required: true
@@ -107,6 +112,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           RELEASE_BUILD: ${{ env.release_build }}
           EMULATOR_MODEL: ${{ inputs.emulator_model }}
+          PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
         with:
           api-level: 31
           profile: pixel_3a
