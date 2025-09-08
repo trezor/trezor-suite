@@ -110,7 +110,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     // display prerequisite for regular application as page view
     // Fullscreen Apps should handle prerequisites by themselves!!!
-    if (prerequisite) {
+    if (prerequisite !== null) {
         return (
             <WelcomeLayout>
                 <Card paddingType="large">

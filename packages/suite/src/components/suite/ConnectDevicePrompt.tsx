@@ -74,7 +74,7 @@ type GetMessageIdParams = {
     connected: boolean;
     deviceStatus: ConnectedDeviceStatus | null;
     showWarning: boolean;
-    prerequisite?: PrerequisiteType;
+    prerequisite: PrerequisiteType | null;
 };
 
 const getMessageId = ({
@@ -104,7 +104,7 @@ const getMessageId = ({
 
     const defaultKey = getDefaultKey();
 
-    if (prerequisite === undefined) {
+    if (prerequisite === null) {
         return defaultKey;
     }
 
@@ -151,7 +151,7 @@ interface ConnectDevicePromptProps {
     showWarning?: boolean;
     showWarningIcon: boolean;
     allowSwitchDevice?: boolean;
-    prerequisite?: PrerequisiteType;
+    prerequisite: PrerequisiteType | null;
     deviceStatus: ConnectedDeviceStatus | null;
 }
 

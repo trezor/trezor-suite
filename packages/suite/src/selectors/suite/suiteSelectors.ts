@@ -7,7 +7,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { RouterRootState, selectRouter } from 'src/reducers/suite/routerReducer';
 import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { AppState, TorStatus, TrezorDevice } from 'src/types/suite';
+import { AppState, PrerequisiteType, TorStatus, TrezorDevice } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
@@ -58,7 +58,9 @@ export const selectIsActionAbortable = (state: SuiteRootState) => {
     return !bridge || versionUtils.isNewerOrEqual(bridge.version as string, '2.0.31');
 };
 
-export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {
+export const selectPrerequisite = (
+    state: SuiteRootState & RouterRootState & DeviceRootState,
+): PrerequisiteType | null => {
     const { transport } = state.suite;
     const device = selectSelectedDevice(state);
     const router = selectRouter(state);
@@ -66,10 +68,8 @@ export const selectPrerequisite = (state: SuiteRootState & RouterRootState & Dev
     const excluded = getExcludedPrerequisites(router);
     const prerequisite = getPrerequisiteName({ router, device, transport });
 
-    if (prerequisite === undefined) return;
-
-    if (excluded.includes(prerequisite)) {
-        return;
+    if (prerequisite === null || excluded.includes(prerequisite)) {
+        return null;
     }
 
     return prerequisite;
