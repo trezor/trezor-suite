@@ -9749,6 +9749,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/thp@workspace:suite-common/thp"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@trezor/connect": "workspace:*"

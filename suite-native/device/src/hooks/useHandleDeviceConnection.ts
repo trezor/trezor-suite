@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { useAtomValue } from 'jotai';
 
-import { selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
+import { selectIsThpInProgress } from '@suite-common/thp';
 import {
     selectIsDeviceConnected,
     selectIsDeviceInitialized,
@@ -46,7 +46,6 @@ export const useHandleDeviceConnection = () => {
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
     const isThpInProgress = useSelector(selectIsThpInProgress);
-    const thpStep = useSelector(selectThpStep);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
@@ -70,19 +69,6 @@ export const useHandleDeviceConnection = () => {
     const isOnPinMatrixBlacklistedRoute = pinMatrixBlacklistedScreens.includes(
         lastRoute as RootStackRoutes,
     );
-
-    // Nothing can be accomplished before a THP connection is established.
-    useEffect(() => {
-        if (
-            isOnboardingFinished &&
-            !isFirmwareInstallationRunning &&
-            (thpStep === 'ConfirmConnectionBeforePairing' || thpStep === 'ConfirmOnlyConnection')
-        ) {
-            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.ThpConfirmation,
-            });
-        }
-    }, [isOnboardingFinished, isFirmwareInstallationRunning, thpStep, navigation]);
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
