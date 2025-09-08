@@ -63,7 +63,8 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
 type SuiteOwnerId = string;
 
-export const DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL = 'https://free.evoluhq.com';
+// The `https://evolu.suite.sldev.cz/evolu/` MUST have the last `/` in the URL.
+export const DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL = 'https://evolu.suite.sldev.cz/evolu/';
 
 export class LocalFirstStorageProvider {
     private storages = new Map<SuiteOwnerId, LocalFirstStorage>();

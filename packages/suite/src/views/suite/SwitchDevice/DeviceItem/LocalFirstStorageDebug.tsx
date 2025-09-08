@@ -1,20 +1,23 @@
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { Banner, Code, Row, Text, Tooltip } from '@trezor/components';
+import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 
 export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) => {
-    const { legacyMetadataState, isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled } =
-        useLabelingCombined();
+    const {
+        legacyMetadataState,
+        isLocalFirstStorageEnabled,
+        isLocalFirstStorageDebugEnabled,
+        isEvoluSupportedByDevice,
+    } = useLabelingCombined();
 
-    if (!isLocalFirstStorageDebugEnabled || !device.state?.staticSessionId) {
+    if (
+        !isLocalFirstStorageDebugEnabled ||
+        !isEvoluSupportedByDevice ||
+        !device.state?.staticSessionId
+    ) {
         return;
-    }
-
-    if (device.unavailableCapabilities.evolu) {
-        // Todo: better UX to cover this
-        return <Banner variant="warning">Upgrade Firmware for Evolu Labeling.</Banner>;
     }
 
     return isLocalFirstStorageEnabled ? (

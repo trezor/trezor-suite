@@ -6330,6 +6330,15 @@ export default defineMessages({
         defaultMessage: 'Select how to sync your labels. Your data is encrypted by Trezor.',
         id: 'METADATA_MODAL_DESCRIPTION',
     },
+    FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU: {
+        id: 'FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU',
+        defaultMessage: 'Upgrade Firmware for Evolu Labeling.',
+    },
+    LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE: {
+        id: 'LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE',
+        defaultMessage:
+            'Local First Storage (Evolu) will be turned off by enabling this Legacy Labeling',
+    },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
         defaultMessage: 'Connect & unlock device to change',
