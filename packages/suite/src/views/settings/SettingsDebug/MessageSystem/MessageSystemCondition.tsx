@@ -1,17 +1,17 @@
 import { IconName, InfoItem } from '@trezor/components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-type MessageSystemManagerConditionProps<T extends Record<string, unknown>> = {
+type MessageSystemConditionProps<T extends Record<string, unknown>> = {
     label: string;
     iconName: IconName;
     data?: T | readonly T[] | null;
 };
 
-export const MessageSystemManagerCondition = <T extends Record<string, unknown>>({
+export const MessageSystemCondition = <T extends Record<string, unknown>>({
     label,
     iconName,
     data,
-}: MessageSystemManagerConditionProps<T>) => {
+}: MessageSystemConditionProps<T>) => {
     // eslint-disable-next-line no-nested-ternary
     const list: ReadonlyArray<T> = data == null ? [] : Array.isArray(data) ? data : [data];
 

@@ -23,7 +23,7 @@ import { Elevation, borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { MessageSystemManagerConditionGroup } from './MessageSystemManagerConditionGroup';
+import { MessageSystemConditionGroup } from '../MessageSystemConditionGroup';
 import { MessageSystemManagerDetail } from './MessageSystemManagerDetail';
 import { CategoryFilterOption, MessageSystemManagerFilters } from './MessageSystemManagerFilters';
 import { MessageSystemManagerInfo } from './MessageSystemManagerInfo';
@@ -103,7 +103,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                         <Column flex="1" gap={spacings.md}>
                             <MessageSystemManagerDetail message={message} />
                             <Divider color="backgroundNeutralBold" />
-                            <MessageSystemManagerConditionGroup conditions={conditions} />
+                            <MessageSystemConditionGroup conditions={conditions} />
                         </Column>
                         <Column gap={spacings.xs}>
                             <MessageSystemManagerInfo

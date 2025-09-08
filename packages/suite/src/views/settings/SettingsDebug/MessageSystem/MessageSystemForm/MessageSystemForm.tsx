@@ -99,8 +99,6 @@ export const MessageSystemForm = () => {
         return CONDITION_OPTIONS.filter(option => !used.has(option.value));
     }, [parsedData]);
 
-    console.log({ availableConditionOptions });
-
     const handlePresetForm = useCallback((category: Category) => {
         setFormData(JSON.stringify(getDefaultActionByCategory(category), null, 2));
     }, []);
