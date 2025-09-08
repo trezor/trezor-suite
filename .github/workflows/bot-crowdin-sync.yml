@@ -1,8 +1,16 @@
 name: "[Bot] Crowdin translations update"
 
 on:
+  pull_request: # TODO: FOR TESTING ONLY, DO NOT MERGE!!!
   workflow_dispatch:
     inputs:
+      platform:
+        type: choice
+        options:
+          - desktop
+          - mobile
+        description: Should be synced desktop or mobile crowdin project?
+        required: true
       remove_unused_translations:
         description: "Confirm removal of unused translations. Check them first in misc tests pipeline."
         required: true
@@ -10,7 +18,7 @@ on:
         type: boolean
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.inputs.platform }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -35,6 +43,25 @@ jobs:
       - name: Set source branch
         run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
+      - name: Set platform specific ENV variables
+        run: |
+          # if [[ "${{ github.event.inputs.platform }}" == "desktop" ]]; then
+            # echo "SUITE_WORKSPACE=@trezor/suite" >> $GITHUB_ENV
+            # echo "MASTER_SOURCE_FILE=packages/suite-data/files/translations/master.json" >> $GITHUB_ENV
+            # echo "COMMIT_MSG=chore(suite): crowdin translation update" >> $GITHUB_ENV
+            # echo "PR_TITLE=Crowdin translations update [DESKTOP]" >> $GITHUB_ENV
+            # echo "PR_BODY=Automatically generated PR for updating DESKTOP crowdin translations from ${{ env.SOURCE_BRANCH }} branch." >> $GITHUB_ENV
+            # echo "PR_LABEL=desktop" >> $GITHUB_ENV
+          # else
+            echo "SUITE_WORKSPACE=@suite-native/intl" >> $GITHUB_ENV
+            echo "MASTER_SOURCE_FILE=suite-native/intl/translations/master.json" >> $GITHUB_ENV
+            echo "COMMIT_MSG=chore(suite-native): crowdin translation update" >> $GITHUB_ENV
+            echo "PR_TITLE=Crowdin translations update [MOBILE]" >> $GITHUB_ENV
+            echo "PR_BODY=Automatically generated PR for updating MOBILE crowdin translations from ${{ env.SOURCE_BRANCH }} branch." >> $GITHUB_ENV
+            echo "PR_PLATFORM_LABEL=mobile" >> $GITHUB_ENV
+          # else
+          # fi
+
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@v1
@@ -43,19 +70,22 @@ jobs:
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Run crowdin sync
+        env:
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          BRANCH_NAME: trezor-ci/crowdin-sync-${{ github.event.inputs.platform }}-${{ env.NOW }}
         run: |
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
           git checkout -B ${{ env.BRANCH_NAME }}
-          yarn workspace @trezor/suite translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-          yarn workspace @trezor/suite translations:backport-en
-          if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
-            yarn workspace @trezor/suite translations:list-unused --cleanup
-          fi
-          yarn workspace @trezor/suite translations:format
-          yarn workspace @trezor/suite translations:extract
-          cat packages/suite-data/files/translations/master.json
-          yarn workspace @trezor/suite translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:backport-en
+          #if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
+          #  yarn workspace ${{ env.SUITE_WORKSPACE }} translations:list-unused --cleanup
+          #fi
+          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:format
+          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:extract
+          cat ${{ env.MASTER_SOURCE_FILE }}
+          yarn workspace ${{ env.SUITE_WORKSPACE }} translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
           if [[ "${{ env.SOURCE_BRANCH }}" == release/* ]]; then
             SUFFIX=" [RELEASE ONLY]"
@@ -64,20 +94,17 @@ jobs:
           fi
 
           COMMIT_MSG="chore: crowdin translation update${SUFFIX}"
-          PR_TITLE="Crowdin translations update${SUFFIX}"
 
           git add .
-          git commit -m "$COMMIT_MSG"
+          git commit -m "${{ env.COMMIT_MSG }}${SUFFIX}"
           git push origin ${{ env.BRANCH_NAME }} -f
 
           gh config set prompt disabled
           gh pr create \
             --repo trezor/trezor-suite \
-            --title "$PR_TITLE" \
-            --body "Automatically generated PR for updating crowdin translations from ${{ env.SOURCE_BRANCH }} branch." \
+            --title " ${{ env.PR_TITLE }}${SUFFIX}" \
+            --body "${{ env.PR_BODY }}" \
             --base ${{ env.SOURCE_BRANCH }} \
             --label translations \
+            --label ${{ env.PR_PLATFORM_LABEL }} \
             --label no-project
-        env:
-          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
-          BRANCH_NAME: trezor-ci/crowdin-sync-${{ env.NOW }}

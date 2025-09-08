@@ -10633,6 +10633,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/intl@workspace:suite-native/intl"
   dependencies:
+    "@crowdin/cli": "npm:4.8.0"
+    "@formatjs/cli": "npm:6.7.2"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/suite-types": "workspace:*"
     expo-localization: "npm:16.1.6"
@@ -10641,6 +10643,7 @@ __metadata:
     react-intl: "npm:^7.1.11"
     react-native: "npm:0.79.3"
     react-redux: "npm:9.2.0"
+    tsx: "npm:^4.20.3"
   languageName: unknown
   linkType: soft
 
