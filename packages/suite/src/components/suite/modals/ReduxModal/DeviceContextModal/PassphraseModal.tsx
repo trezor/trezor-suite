@@ -4,6 +4,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
+    selectHasDevicePassphraseEntryCapability,
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
     submitPassphrase,
 } from '@suite-common/wallet-core';
@@ -82,11 +83,9 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         [device, confirmEmptyPassphrase, dispatch, discovery, onPassphraseConfirm],
     );
 
-    if (!device || !discovery || !discovery.isAddingHiddenWallet) return null;
+    const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);
 
-    const offerPassphraseOnDevice = !!device?.features?.capabilities.includes(
-        'Capability_PassphraseEntry',
-    );
+    if (!device || !discovery || !discovery.isAddingHiddenWallet) return null;
 
     switch (discovery.status) {
         case 'progress':
