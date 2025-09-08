@@ -6,8 +6,8 @@ import { messages as defaultMessages } from '../messages';
 import { flatten } from '../utils';
 
 const LANGUAGE_TRANSLATIONS_MAP = {
-    'en-US': require('../translations/en-US.json'),
-    'cs-CZ': require('../translations/cs-CZ.json'),
+    'en-US': require('../../translations/en-US.json'),
+    'cs-CZ': require('../../translations/cs-CZ.json'),
 } as const satisfies Record<NativeLocale, any>;
 
 // default values defined during the development.

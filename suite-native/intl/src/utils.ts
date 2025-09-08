@@ -13,3 +13,25 @@ export const flatten = (obj: Record<string, any>, prefix = '') => {
 
     return result;
 };
+
+export const unflatten = (obj: Record<string, any>) => {
+    const result: Record<string, any> = {};
+
+    for (const [flatKey, value] of Object.entries(obj)) {
+        const keys = flatKey.split('.');
+        let current = result;
+
+        keys.forEach((key, index) => {
+            if (index === keys.length - 1) {
+                current[key] = value;
+            } else {
+                if (!(key in current)) {
+                    current[key] = {};
+                }
+                current = current[key];
+            }
+        });
+    }
+
+    return result;
+};

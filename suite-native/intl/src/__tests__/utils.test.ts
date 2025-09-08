@@ -1,4 +1,4 @@
-import { flatten } from '../utils';
+import { flatten, unflatten } from '../utils';
 
 describe('flatten', () => {
     it('should flatten nested translation object to dot notation', () => {
@@ -63,5 +63,53 @@ describe('flatten', () => {
             'section2.key4': 'value4',
         };
         expect(flatten(input)).toEqual(expected);
+    });
+});
+
+describe('unflatten', () => {
+    it('should convert flat object with dot notation to nested object', () => {
+        const input = {
+            'navigation.tabs.home': 'Home',
+            'navigation.tabs.accounts': 'My assets',
+            'navigation.tabs.trade': 'Trade',
+            'navigation.tabs.settings': 'Settings',
+        };
+
+        const expected = {
+            navigation: {
+                tabs: {
+                    home: 'Home',
+                    accounts: 'My assets',
+                    trade: 'Trade',
+                    settings: 'Settings',
+                },
+            },
+        };
+
+        expect(unflatten(input)).toEqual(expected);
+    });
+
+    it('should handle empty objects', () => {
+        expect(unflatten({})).toEqual({});
+    });
+
+    it('should handle deeply nested objects', () => {
+        const input = {
+            'level1.level2.level3.level4.value': 'deep value',
+        };
+
+        const expected = {
+            level1: {
+                level2: {
+                    level3: {
+                        level4: {
+                            value: 'deep value',
+                        },
+                    },
+                },
+            },
+        };
+
+        expect(unflatten(input)).toEqual(expected);
     });
 });

@@ -10,17 +10,27 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest"
+        "test:unit": "yarn g:jest",
+        "translations:format": "yarn g:prettier --write \"translations/*\"",
+        "translations:extract": "tsx ./scripts/extractTranslations.ts",
+        "translations:backport-en": "tsx ./scripts/backportEnglish.ts && yarn g:prettier --write src/messages.ts",
+        "translations:upload": "crowdin upload",
+        "translations:download": "crowdin download --all"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/suite-types": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "expo-localization": "16.1.6",
         "intl-pluralrules": "^2.0.1",
         "react": "19.0.0",
         "react-intl": "^7.1.11",
         "react-native": "0.79.3",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@crowdin/cli": "4.8.0",
+        "tsx": "^4.20.3"
     }
 }
