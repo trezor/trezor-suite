@@ -121,9 +121,6 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         <PassphraseWalletIsNotExistFlow
             discovery={discovery}
             device={device}
-            isAddingHiddenWalletWithRespectToSettings={
-                discovery.isAddingHiddenWalletWithRespectToSettings
-            }
             onBackToInitial={onBackToInitial}
             deviceOffer={deviceOffer}
             onCancel={onCancel}
