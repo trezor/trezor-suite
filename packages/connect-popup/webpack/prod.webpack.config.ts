@@ -75,6 +75,11 @@ const config: webpack.Configuration = {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: ['node_modules'],
         mainFields: ['browser', 'module', 'main'],
+        fallback: {
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+            vm: require.resolve('vm-browserify'),
+        },
     },
     plugins: [
         new DefinePlugin({
