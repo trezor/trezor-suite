@@ -106,10 +106,10 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     if (discovery.isAddingExistingWallet) {
         return (
             <PassphraseWalletExistsFlow
-                discovery={discovery}
+                authConfirmation={authConfirmation}
                 device={device}
                 deviceOffer={deviceOffer}
-                authConfirmation={authConfirmation}
+                discovery={discovery}
                 onBackToInitial={onBackToInitial}
                 onCancel={onCancel}
                 onSubmit={onSubmit}
@@ -119,10 +119,10 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     return (
         <PassphraseWalletIsNotExistFlow
-            discovery={discovery}
             device={device}
-            onBackToInitial={onBackToInitial}
             deviceOffer={deviceOffer}
+            discovery={discovery}
+            onBackToInitial={onBackToInitial}
             onCancel={onCancel}
             onSubmit={onSubmit}
         />
