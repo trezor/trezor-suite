@@ -89,12 +89,12 @@ deviceConnectionMiddleware.startListening({
 
         if (isDeviceUsingPassphrase) return;
 
-        const isUsbRememberedDeviceConnectAction =
+        const isNonThpRememberedDeviceConnectAction =
             isDeviceConnectedAndAuthorized &&
             deviceConnectThunks.fulfilled.match(action) &&
             !isThpDevice(action.meta.arg.device);
 
-        if (isUsbRememberedDeviceConnectAction) return;
+        if (isNonThpRememberedDeviceConnectAction) return;
 
         handleDeviceConnectNavigation({ isCoinEnablingInitFinished });
     },
