@@ -2,6 +2,7 @@ import { AnyAction } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import { DEVICE, Device, DeviceEvent, KnownDevice, UnavailableCapability } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
+import { ThpStateSerialized } from '@trezor/protocol';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
 import { isArrayMember } from '@trezor/utils';
@@ -454,3 +455,7 @@ export const getDeviceInternalModel = (device: Pick<Device, 'features' | 'thp'>)
 
 export const getDeviceColorVariant = (device: Pick<Device, 'features' | 'thp'>) =>
     device.features?.unit_color ?? device.thp?.properties?.model_variant;
+
+export const isThpDevice = <T extends Device | TrezorDevice>(
+    device: T,
+): device is T & { thp: ThpStateSerialized } => device.thp !== undefined;

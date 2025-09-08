@@ -1,4 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils/';
+import { isThpDevice } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -28,7 +29,7 @@ export const removeThpAutoconnectThunk = createThunk<
     ): Promise<RemoveThpAutoconnectThunkResult> => {
         const device = selectSelectedDevice(getState());
 
-        if (device === undefined || device.thp === undefined) {
+        if (device === undefined || !isThpDevice(device)) {
             return fulfillWithValue(undefined);
         }
 
