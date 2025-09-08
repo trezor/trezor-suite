@@ -84,7 +84,9 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     if (!device || !discovery || !discovery.isAddingHiddenWallet) return null;
 
-    const deviceOffer = !!device?.features?.capabilities.includes('Capability_PassphraseEntry');
+    const offerPassphraseOnDevice = !!device?.features?.capabilities.includes(
+        'Capability_PassphraseEntry',
+    );
 
     switch (discovery.status) {
         case 'progress':
@@ -108,7 +110,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             <PassphraseWalletExistsFlow
                 authConfirmation={authConfirmation}
                 device={device}
-                deviceOffer={deviceOffer}
+                offerPassphraseOnDevice={offerPassphraseOnDevice}
                 discovery={discovery}
                 onBackToInitial={onBackToInitial}
                 onCancel={onCancel}
@@ -120,7 +122,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     return (
         <PassphraseWalletIsNotExistFlow
             device={device}
-            deviceOffer={deviceOffer}
+            offerPassphraseOnDevice={offerPassphraseOnDevice}
             discovery={discovery}
             onBackToInitial={onBackToInitial}
             onCancel={onCancel}
