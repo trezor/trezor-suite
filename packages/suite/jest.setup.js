@@ -14,6 +14,9 @@ Object.defineProperty(Uint8Array, Symbol.hasInstance, {
     },
 });
 
+// Todo: once we are on ESM this should not be needed + the WASM import will needs to be solved in jest
+jest.mock('@evolu/web', () => ({ evoluWebDeps: {} }));
+
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation(query => ({
