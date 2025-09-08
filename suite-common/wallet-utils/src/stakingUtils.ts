@@ -47,7 +47,7 @@ export const getAccountTotalStakingBalance = (account: Account) => {
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
 
-export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol) => {
+export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol | undefined) => {
     switch (symbol) {
         case 'eth':
             return {
@@ -56,16 +56,17 @@ export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol) => {
                 MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_STAKING: MIN_ETH_BALANCE_FOR_STAKING,
             };
-        case 'sol': {
+        case 'sol':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_SOL_AMOUNT_FOR_STAKING,
                 MAX_AMOUNT_FOR_STAKING: MAX_SOL_AMOUNT_FOR_STAKING,
                 MIN_FOR_WITHDRAWALS: MIN_SOL_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_STAKING: MIN_SOL_BALANCE_FOR_STAKING,
             };
-        }
         default:
-            throw new Error(`Unsupported network symbol: ${symbol}`);
+            console.warn(`Unsupported or missing network symbol: ${symbol}`);
+
+            return null;
     }
 };
 

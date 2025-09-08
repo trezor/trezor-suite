@@ -16,7 +16,7 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { displaySymbol, name } = getNetwork(symbol);
-    const { MIN_AMOUNT_FOR_STAKING } = getStakingLimitsByNetworkSymbol(symbol);
+    const minStakingAmount = getStakingLimitsByNetworkSymbol(symbol)?.MIN_AMOUNT_FOR_STAKING;
 
     const startNetworkDiscovery = () => {
         if (!device) return;
@@ -46,7 +46,7 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
                     <Translation
                         id="TR_STAKING_DASHBOARD_MINIMUM_STAKE"
                         values={{
-                            amount: MIN_AMOUNT_FOR_STAKING.toString(),
+                            amount: minStakingAmount?.toString(),
                             displaySymbol,
                         }}
                     />

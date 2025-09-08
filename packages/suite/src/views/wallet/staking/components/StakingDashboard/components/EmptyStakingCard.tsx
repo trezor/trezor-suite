@@ -4,7 +4,10 @@ import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import {
+    getStakingDataForNetwork,
+    getStakingLimitsByNetworkSymbol,
+} from '@suite-common/wallet-utils';
 import {
     Button,
     Card,
@@ -51,7 +54,9 @@ export const EmptyStakingCard = () => {
     const accountBalance = account?.formattedBalance ?? '0';
     const stakingBalance = stakingData?.depositedBalance ?? '0';
 
-    const isAccountEmpty = new BigNumber(accountBalance).eq(0);
+    const stakingLimits = getStakingLimitsByNetworkSymbol(account?.symbol);
+    const hasEnoughBalanceForStaking =
+        stakingLimits && new BigNumber(accountBalance).gte(stakingLimits.MIN_AMOUNT_FOR_STAKING);
 
     const potentialRewards = useMemo(() => {
         const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
@@ -164,7 +169,7 @@ export const EmptyStakingCard = () => {
                             />
                         </H3>
                         <Paragraph variant="tertiary" maxWidth={700}>
-                            {isAccountEmpty ? (
+                            {!hasEnoughBalanceForStaking ? (
                                 <Translation
                                     id="TR_STAKING_CARD_TEXT_EMPTY"
                                     values={{ displaySymbol }}
