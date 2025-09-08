@@ -1,5 +1,6 @@
 import { CryptoId } from 'invity-api';
 
+import { ExperimentId } from '@suite-common/message-system';
 import {
     TradingExchangeStepType,
     TradingSellStepType,
@@ -79,7 +80,7 @@ export const TradingInfoItem = ({
                         <Column>
                             <TradingCryptoAmount amount={amount} cryptoId={currency} />
                             <ExperimentWrapper
-                                id="tradingFiatValues"
+                                id={ExperimentId.tradingFiatValues}
                                 components={[
                                     { variant: 'A', element: <></> },
                                     {

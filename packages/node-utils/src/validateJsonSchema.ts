@@ -25,4 +25,23 @@ export const validateJsonSchema = (config: string, schema: string) => {
     if (!isValid) {
         throw Error(`Config is invalid: ${JSON.stringify(validate.errors)}`);
     }
+
+    const invalidExperiments =
+        (parsedConfig as { experiments?: unknown[] }).experiments
+            ?.map((experiment: any) => {
+                const sum = (experiment?.experiment?.groups as any[]).reduce(
+                    (acc: number, g: any) => acc + Number(g?.percentage ?? 0),
+                    0,
+                );
+
+                return { id: experiment?.experiment?.id as string | undefined, sum };
+            })
+            .filter((x: { sum: number }) => x.sum !== 100) ?? [];
+
+    if (invalidExperiments.length > 0) {
+        const details = invalidExperiments.map(exp => `id=${exp.id}, sum=${exp.sum}`).join('; ');
+        throw new Error(
+            `Config is invalid: percentages must sum to 100. Failed experiments: ${details}`,
+        );
+    }
 };

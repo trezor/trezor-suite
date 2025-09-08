@@ -9,7 +9,7 @@ import {
     Vendor,
 } from '@suite-common/suite-types';
 
-import { Context, Feature } from './messageSystemTypes';
+import { Context, ExperimentId, Feature } from './messageSystemTypes';
 import { collectStringsDeep, toMessageSystemOptions } from './messageSystemUtils';
 import schema from '../schema/config.schema.v1.json';
 
@@ -71,6 +71,10 @@ export const CONTEXT_PATTERNS = {
         regex: /^legal\.[a-z0-9-]+$/,
     },
 } as const satisfies Record<keyof typeof Context, { pattern: string; regex: RegExp }>;
+
+export const EXPERIMENT_MAP = Object.fromEntries(
+    Object.entries(ExperimentId).map(([name, id]) => [id, name]),
+) as Record<ExperimentId, keyof typeof ExperimentId>;
 
 export const CATEGORY_ENUM = schema.definitions.category.enum.sort() as readonly Category[];
 export const VARIANT_ENUM = schema.properties.actions.items.properties.message.properties.variant

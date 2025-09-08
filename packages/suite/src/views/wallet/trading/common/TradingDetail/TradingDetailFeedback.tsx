@@ -8,6 +8,7 @@ import {
 } from 'invity-api';
 
 import { Rating, buildUserFeedbackData, sendFeedback } from '@suite-common/feedback';
+import { ExperimentId } from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
 import { Button, Card, Column, IconCircle, Row, Text, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -119,7 +120,7 @@ export const TradingDetailFeedback = ({
 
     return (
         <ExperimentWrapper
-            id="tradingFeedbackForm"
+            id={ExperimentId.tradingFeedbackForm}
             components={[
                 { variant: 'A', element: <></> },
                 {

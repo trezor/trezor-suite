@@ -93,11 +93,13 @@ export const MessageSystemForm = () => {
             return CONDITION_OPTIONS;
         }
 
-        const bucket = parsedData.conditions[0] as Record<keyof Condition, unknown>;
-        const used = new Set(Object.keys(bucket));
+        const conditions = parsedData.conditions[0] as Record<keyof Condition, unknown>;
+        const used = new Set(Object.keys(conditions));
 
-        return CONDITION_OPTIONS.filter(o => !used.has(o.value));
+        return CONDITION_OPTIONS.filter(option => !used.has(option.value));
     }, [parsedData]);
+
+    console.log({ availableConditionOptions });
 
     const handlePresetForm = useCallback((category: Category) => {
         setFormData(JSON.stringify(getDefaultActionByCategory(category), null, 2));

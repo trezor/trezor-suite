@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_DEX,
@@ -299,7 +300,7 @@ export const TradingFormOffer = () => {
                 )}
                 {isTradingExchangeContext(context) && contractAddress && network && (
                     <ExperimentWrapper
-                        id="tradingFiatValues"
+                        id={ExperimentId.tradingFiatValues}
                         components={[
                             {
                                 variant: 'A',
