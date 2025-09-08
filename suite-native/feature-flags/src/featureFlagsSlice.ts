@@ -7,7 +7,7 @@ export const FeatureFlag = {
     IsBluetoothEnabled: 'isBluetoothEnabled',
     AreDebugOnlyNetworksEnabled: 'areDebugOnlyNetworksEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
-    IsConnectPopupEnabled: 'isConnectPopupEnabled',
+    IsConnectPopupEnabled: 'isConnectPopupEnabled_v2', // v2: after changing default value for Android
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
     IsWalletConnectEnabled: 'isWalletConnectEnabled_v2', // v2: after changing default value for Android
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
@@ -34,7 +34,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsCardanoSendEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
     [FeatureFlag.IsConnectPopupEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true',
+        process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true' ||
+        (isAndroid() && process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED !== 'false'),
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
     [FeatureFlag.IsWalletConnectEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true' ||

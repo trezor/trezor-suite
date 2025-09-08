@@ -19,7 +19,7 @@ const INITIAL_LAUNCH_ARGS: LaunchArgumentsWithPreloadedState = {
     // Main loop synchronization is infinitely blocking iOS tests while is the graph displayed, so we need to disable it.
     // Not sure about the cause of it yet.
     DTXDisableMainRunLoopSync: platform === 'ios',
-    isConnectPopupEnabled: true,
+    isConnectPopupEnabled_v2: true,
     isDebugKeysAllowed: true,
     isTradingBuyEnabled: true,
     areDebugOnlyNetworksEnabled: true,
