@@ -5,6 +5,7 @@ import {
     getDeviceInstances,
     getFirstDeviceInstance,
     getSelectedDevice,
+    isThpDevice,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
 import {
@@ -407,7 +408,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
         switch (type) {
             case DEVICE.CONNECT:
                 dispatch(deviceActions.connectDevice({ device }));
-                if (device.thp !== undefined) {
+                if (isThpDevice(device)) {
                     dispatch(connectThpDeviceThunk({ device }));
                 }
                 break;
@@ -526,7 +527,7 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
         }
         // TODO: this works only for a connected device, as we intentionally do not link THP credentials in a remembered wallet.
-        if (device.thp !== undefined) {
+        if (isThpDevice(device)) {
             dispatch(thpActions.removeCredentials({ credentials: device.thp.credentials }));
         }
     },

@@ -3,6 +3,7 @@ import { UnknownAction } from '@reduxjs/toolkit';
 import * as semver from 'semver';
 
 import { AnyAction } from '@suite-common/redux-utils';
+import { isThpDevice } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
 import { deviceConnectThunks } from '@suite-common/wallet-core';
 import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
@@ -67,7 +68,7 @@ export const isDeviceConnectAction = (action: UnknownAction) => {
     if (deviceConnectThunks.fulfilled.match(action)) {
         const { device } = action.meta.arg;
 
-        if (device.thp === undefined) {
+        if (!isThpDevice(device)) {
             return true;
         }
     }

@@ -5,6 +5,7 @@ import {
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
+import { isThpDevice } from '@suite-common/suite-utils';
 import {
     deviceActions,
     deviceConnectThunks,
@@ -91,7 +92,7 @@ deviceConnectionMiddleware.startListening({
         const isUsbRememberedDeviceConnectAction =
             isDeviceConnectedAndAuthorized &&
             deviceConnectThunks.fulfilled.match(action) &&
-            action.meta.arg.device.thp === undefined;
+            !isThpDevice(action.meta.arg.device);
 
         if (isUsbRememberedDeviceConnectAction) return;
 
