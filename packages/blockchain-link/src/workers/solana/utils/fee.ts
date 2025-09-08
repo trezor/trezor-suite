@@ -19,6 +19,7 @@ import {
 import {
     MAX_COMPUTE_UNIT_LIMIT,
     SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR,
+    getSetComputeUnitLimitInstructionDataEncoder,
 } from '@solana-program/compute-budget';
 
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
@@ -49,9 +50,9 @@ const bumpUnitLimitComputeBudgetInstructions = (
             message.staticAccounts[ix.programAddressIndex] === COMPUTE_BUDGET_PROGRAM_ID &&
             ix.data?.[0] === SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR
         ) {
-            const data = new Uint8Array(5);
-            data[0] = SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR; // SetComputeUnitLimit
-            new DataView(data.buffer).setUint32(1, MAX_COMPUTE_UNIT_LIMIT, true);
+            const data = getSetComputeUnitLimitInstructionDataEncoder().encode({
+                units: MAX_COMPUTE_UNIT_LIMIT,
+            });
 
             return { ...ix, data };
         }

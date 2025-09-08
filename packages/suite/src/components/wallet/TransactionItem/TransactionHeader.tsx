@@ -133,8 +133,8 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 symbol: getNetworkDisplaySymbol(transaction.symbol),
             })),
         ];
-        const fromSymbol = combined.find(t => t.type === 'sent')?.symbol;
-        const toSymbol = combined.find(t => t.type === 'recv')?.symbol;
+        const fromSymbol = combined.find(t => t.type === 'sent')?.symbol?.toUpperCase();
+        const toSymbol = combined.find(t => t.type === 'recv')?.symbol?.toUpperCase();
 
         if (fromSymbol && toSymbol && !transaction.cardanoSpecific) {
             return (
