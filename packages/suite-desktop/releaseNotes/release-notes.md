@@ -9,6 +9,7 @@
 
 - The approve/revoke flow for EVM token allowances has been redesigned for improved clarity and stronger security.
 - The welcome screen has been refreshed with a more consistent and polished design.
+- The flow for adding EVM accounts has been fixed—users can now add a new account even if the previous one is empty.
 - Send options have been streamlined—Locktime and Broadcast settings are now grouped under Advanced Send for better organization.
 - Graph messaging has been refined to provide clearer context and usability.
 
