@@ -16,7 +16,6 @@ type PassphraseWalletExistsFlowProps = {
     device: TrezorDevice;
     deviceOffer: boolean;
     authConfirmation?: boolean;
-    passphraseState: DiscoveryStatus['status'];
     submittingPassphrase: boolean;
     onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
@@ -27,7 +26,6 @@ export const PassphraseWalletExistsFlow = ({
     discovery,
     device,
     deviceOffer,
-    passphraseState,
     submittingPassphrase,
     onCancel,
     onSubmit,
@@ -48,7 +46,7 @@ export const PassphraseWalletExistsFlow = ({
         );
     };
 
-    if (passphraseState === 'confirm-empty-passphrase') {
+    if (discovery.status === 'confirm-empty-passphrase') {
         switch (confirmPassphraseFlowState) {
             case 'empty-wallet':
                 return (

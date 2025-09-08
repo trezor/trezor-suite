@@ -108,7 +108,6 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             <PassphraseWalletExistsFlow
                 discovery={discovery}
                 device={device}
-                passphraseState={discovery.status}
                 deviceOffer={deviceOffer}
                 authConfirmation={authConfirmation}
                 submittingPassphrase={Boolean(discovery.passphraseSubmitted ?? false)}
