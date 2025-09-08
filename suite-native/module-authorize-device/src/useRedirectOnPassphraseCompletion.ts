@@ -39,10 +39,12 @@ export const useRedirectOnPassphraseCompletion = () => {
                 store.getState() as DiscoveryRootState,
                 device?.path,
             );
-            analytics.report({
-                type: EventType.PassphraseFlowFinished,
-                payload: { isEmptyWallet: Boolean(discovery?.emptyWallet) },
-            });
+            if (discovery) {
+                analytics.report({
+                    type: EventType.PassphraseFlowFinished,
+                    payload: { isEmptyWallet: !discovery.hasLoadedAnyNonEmptyAccount },
+                });
+            }
         }
     }, [
         passphraseDiscoveryCompleted,
