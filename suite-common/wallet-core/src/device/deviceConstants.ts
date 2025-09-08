@@ -8,6 +8,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 export const PORTFOLIO_TRACKER_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
 export const PORTFOLIO_TRACKER_DEVICE_STATE = `state@${PORTFOLIO_TRACKER_DEVICE_ID}:1`;
 
+export const DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD = 50;
+
 export const portfolioTrackerDevice: TrezorDevice = {
     type: 'acquired',
     id: PORTFOLIO_TRACKER_DEVICE_ID,
