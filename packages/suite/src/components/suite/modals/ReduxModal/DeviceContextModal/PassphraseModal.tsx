@@ -4,7 +4,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
-    selectIsDiscoveryAuthConfirmationRequired,
+    selectIsDiscoveryStatusConfirmEmptyPassphrase,
     submitPassphrase,
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
@@ -37,8 +37,8 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         [discovery, dispatch, device],
     );
 
-    const authConfirmation = useSelector(state =>
-        selectIsDiscoveryAuthConfirmationRequired(state, device?.path),
+    const confirmEmptyPassphrase = useSelector(state =>
+        selectIsDiscoveryStatusConfirmEmptyPassphrase(state, device?.path),
     );
 
     const onBackToInitial = () => {
@@ -65,7 +65,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         (value: string, passphraseOnDevice?: boolean) => {
             if (!device || !discovery) return;
 
-            if (authConfirmation) {
+            if (confirmEmptyPassphrase) {
                 onPassphraseConfirm(value, passphraseOnDevice);
 
                 return;
@@ -79,7 +79,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 }),
             );
         },
-        [device, authConfirmation, dispatch, discovery, onPassphraseConfirm],
+        [device, confirmEmptyPassphrase, dispatch, discovery, onPassphraseConfirm],
     );
 
     if (!device || !discovery || !discovery.isAddingHiddenWallet) return null;

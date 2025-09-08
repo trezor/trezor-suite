@@ -42,7 +42,7 @@ export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRoot
 /**
  * Helper selector called from components
  */
-export const selectIsDiscoveryAuthConfirmationRequired = (
+export const selectIsDiscoveryStatusConfirmEmptyPassphrase = (
     state: DiscoveryRootState & DeviceRootState,
     path?: DeviceUniquePath,
 ) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
