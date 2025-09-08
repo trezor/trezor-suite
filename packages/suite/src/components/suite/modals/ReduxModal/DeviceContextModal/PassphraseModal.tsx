@@ -93,7 +93,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         case 'passphrase-duplicate':
             return (
                 <PassphraseDuplicateModal
-                    isExistingWallet={discovery?.isAddingExistingWallet ?? false}
+                    isExistingWallet={!!discovery.isAddingExistingWallet}
                     device={device}
                     discovery={discovery}
                 />
@@ -110,7 +110,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 device={device}
                 deviceOffer={deviceOffer}
                 authConfirmation={authConfirmation}
-                submittingPassphrase={Boolean(discovery.passphraseSubmitted ?? false)}
+                submittingPassphrase={!!discovery.passphraseSubmitted}
                 onBackToInitial={onBackToInitial}
                 onCancel={onCancel}
                 onSubmit={onSubmit}
@@ -127,7 +127,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             onBackToInitial={onBackToInitial}
             passphraseState={discovery.status}
             deviceOffer={deviceOffer}
-            submittingPassphrase={Boolean(discovery.passphraseSubmitted ?? false)}
+            submittingPassphrase={!!discovery.passphraseSubmitted}
             onCancel={onCancel}
             onSubmit={onSubmit}
         />
