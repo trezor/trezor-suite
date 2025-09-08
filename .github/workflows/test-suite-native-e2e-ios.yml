@@ -9,10 +9,11 @@ on:
   #     - release-native/*
   workflow_dispatch:
     inputs:
-      publishResultsToGitHub:
-        description: "(optional) Publish test report to GitHub Project"
+      publish_results_to_github:
+        description: "Publish test report to GitHub Project"
         required: false
         default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -138,7 +139,7 @@ jobs:
       - name: Run Detox E2E iOS tests
         working-directory: ./suite-native/app
         env:
-          PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publishResultsToGitHub }}
+          PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           GITHUB_REPORTER_VERBOSE: false
           RELEASE_BUILD: ${{ env.release_build }}

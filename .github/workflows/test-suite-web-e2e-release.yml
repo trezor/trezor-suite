@@ -13,15 +13,15 @@ on:
       - release/2*
   workflow_dispatch:
     inputs:
-      publishResultsToGitHub:
-        description: "(optional) Publish test report to GitHub Project"
+      publish_results_to_github:
+        description: "Publish test report to GitHub Project"
         required: false
         default: false
         type: boolean
   workflow_call:
     inputs:
-      publishResultsToGitHub:
-        description: "(optional) Publish test report to GitHub Project"
+      publish_results_to_github:
+        description: "Publish test report to GitHub Project"
         required: false
         default: false
         type: boolean
@@ -89,4 +89,4 @@ jobs:
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
           github-token: ${{ steps.trezor-bot-token.outputs.token }}
           release-build: ${{ env.release_build }}
-          run-reporter: ${{ inputs.publishResultsToGitHub }}
+          run-reporter: ${{ inputs.publish_results_to_github == true }}

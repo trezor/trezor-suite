@@ -16,7 +16,7 @@ When executed during release builds, the reporter adds new draft issues to a Git
 ## How to run
 
 Reporter no longer has automatic trigger. It needs to be triggered manually by running its orchestration workflow **[Test] Release Suite Report orchestration** which will run 3 relevant workflows (Web, Desktop and Manual). All automated tests will be run on the release again, their results reported to GitHub project and issues for manual regression will be generated as well.
-You can also run the specific workflow one by one. Web and Desktop workflows needs to be run with parameter publishResultsToGitHub set to `true`.
+You can also run the specific workflow one by one. Web and Desktop workflows needs to be run with parameter `publish_results_to_github set` to `true`.
 
 ## What to do when workflow fails
 
@@ -206,4 +206,4 @@ The reporter is integrated into release branch CI workflows:
 - `test-suite-native-e2e-ios.yml` for Suite native iOS tests (wf is broken ATM so we cannot guarantee reporter is working)
 
 Each workflow passes the `RELEASE_BUILD` and `GITHUB_TOKEN` environment variables to enable test reporting.
-On the Web, Desktop, Android and iOS workflows, reporter is enabled only when workflow is run manually with param `publishResultsToGitHub` se to `true`. Otherwise only test are run. That way we have full control on the generation of issues in GitHub. We had a problem of duplicate and unwanted triggers when it was based on push to release branch.
+On the Web, Desktop, Android and iOS workflows, reporter is enabled only when workflow is run manually with param `publish_results_to_github` se to `true`. Otherwise only test are run. That way we have full control on the generation of issues in GitHub. We had a problem of duplicate and unwanted triggers when it was based on push to release branch.
