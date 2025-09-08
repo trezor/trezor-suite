@@ -13,9 +13,9 @@ import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 
 type PassphraseWalletIsNotExistFlowProps = {
+    discovery: DiscoveryStatus;
     device: TrezorDevice;
     deviceOffer: boolean;
-    passphraseState: DiscoveryStatus['status'];
     onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     submittingPassphrase?: boolean;
@@ -26,7 +26,7 @@ type PassphraseWalletIsNotExistFlowProps = {
 export const PassphraseWalletIsNotExistFlow = ({
     device,
     deviceOffer,
-    passphraseState,
+    discovery,
     onBackToInitial,
     onSubmit,
     onCancel,
@@ -35,7 +35,7 @@ export const PassphraseWalletIsNotExistFlow = ({
 }: PassphraseWalletIsNotExistFlowProps) => {
     const dispatch = useDispatch();
 
-    if (passphraseState === 'starting') {
+    if (discovery.status === 'starting') {
         return (
             <PassphraseWalletBestPractices
                 device={device}
@@ -46,7 +46,7 @@ export const PassphraseWalletIsNotExistFlow = ({
         );
     }
 
-    if (passphraseState === 'confirm-empty-passphrase') {
+    if (discovery.status === 'confirm-empty-passphrase') {
         return (
             <PassphraseWalletConfirmation
                 onCancel={onCancel}
@@ -57,7 +57,7 @@ export const PassphraseWalletIsNotExistFlow = ({
         );
     }
 
-    if (passphraseState === 'enter-passphrase') {
+    if (discovery.status === 'enter-passphrase') {
         return (
             <EnterPassphrase
                 device={device}
