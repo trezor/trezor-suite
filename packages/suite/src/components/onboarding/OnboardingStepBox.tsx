@@ -38,7 +38,7 @@ const OuterActions = styled.div<{ $smallMargin?: boolean }>`
     margin-top: ${({ $smallMargin }) => ($smallMargin ? '0px' : spacingsPx.lg)};
     width: 100%;
     justify-content: center;
-    z-index: ${zIndices.modal};
+    z-index: ${zIndices.onboardingForeground};
 `;
 
 const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVisible: boolean }>`
