@@ -1241,7 +1241,7 @@ export default defineMessages({
         id: 'TR_TRADING_PAYMENT_METHOD',
     },
     TR_TRADING_RECEIVE_METHOD: {
-        defaultMessage: 'Receive method',
+        defaultMessage: 'Payout method',
         id: 'TR_TRADING_RECEIVE_METHOD',
     },
     TR_TRADING_YOU_BUY: {
@@ -1397,7 +1397,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
-        defaultMessage: 'Receive method:',
+        defaultMessage: 'Payout method:',
         id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
         dynamic: true,
     },
@@ -2061,7 +2061,7 @@ export default defineMessages({
         id: 'TR_COIN_DISCOVERY_LOADER_DESCRIPTION',
     },
     TR_COINS: {
-        defaultMessage: 'Coins',
+        defaultMessage: 'Assets',
         id: 'TR_COINS',
     },
     TR_HIDDEN: {
@@ -3183,7 +3183,7 @@ export default defineMessages({
         id: 'TR_BASE_CURRENCY_FIAT',
     },
     TR_BASE_CURRENCY_VALUABLES: {
-        defaultMessage: 'Valuables',
+        defaultMessage: 'Commodities',
         id: 'TR_BASE_CURRENCY_VALUABLES',
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
@@ -4074,15 +4074,15 @@ export default defineMessages({
     },
     TOAST_TX_REVOKED: {
         id: 'TOAST_TX_REVOKED',
-        defaultMessage: 'Revoke transaction of {tokenSymbol} was broadcasted',
+        defaultMessage: 'Revoke transaction of {tokenSymbol} was broadcast',
     },
     TOAST_TX_APPROVED: {
         id: 'TOAST_TX_APPROVED',
-        defaultMessage: 'Approve transaction of {amount} {tokenSymbol} was broadcasted',
+        defaultMessage: 'Approve transaction of {amount} {tokenSymbol} was broadcast',
     },
     TOAST_TX_APPROVED_MAX: {
         id: 'TOAST_TX_APPROVED_MAX',
-        defaultMessage: 'Approve transaction of unlimited {tokenSymbol} was broadcasted',
+        defaultMessage: 'Approve transaction of unlimited {tokenSymbol} was broadcast',
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
@@ -4456,7 +4456,7 @@ export default defineMessages({
     },
     TR_DONE: {
         id: 'TR_DONE',
-        defaultMessage: 'Done',
+        defaultMessage: 'Confirmed',
     },
     TR_CANCELLED: {
         id: 'TR_CANCELLED',
@@ -4505,7 +4505,7 @@ export default defineMessages({
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
-        defaultMessage: 'Enter all words in the correct order.',
+        defaultMessage: 'Enter all words of your wallet backup in the correct order.',
     },
     TR_SEED_WORDS_ENTER_COMPUTER: {
         id: 'TR_SEED_WORDS_ENTER_COMPUTER',
@@ -4581,7 +4581,7 @@ export default defineMessages({
     },
     TR_SELECT_COIN_FOR_SETTINGS: {
         id: 'TR_SELECT_COIN_FOR_SETTINGS',
-        defaultMessage: 'Select active coin to change settings',
+        defaultMessage: 'Select active asset to change settings',
     },
     FW_CAPABILITY_UPDATE_REQUIRED: {
         id: 'FW_CAPABILITY_UPDATE_REQUIRED',
@@ -5504,7 +5504,7 @@ export default defineMessages({
     BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION: {
         id: 'BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION',
         defaultMessage:
-            'A previous attempt to back up this device failed. Wallet backup may be done only once.',
+            'The last wallet backup attempt on this device failed. You can only back up your wallet once.',
     },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
@@ -7722,11 +7722,11 @@ export default defineMessages({
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
-        defaultMessage: 'Activate coins',
+        defaultMessage: 'Activate assets',
     },
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
-        defaultMessage: 'Select which coins to show in Trezor Suite. You can update this anytime.',
+        defaultMessage: 'Select which assets to show in Trezor Suite. You can change this anytime.',
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
@@ -10384,7 +10384,7 @@ export default defineMessages({
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING: {
         id: 'TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING',
-        defaultMessage: 'Manually pair your Trezor',
+        defaultMessage: 'Manually pair your Trezor:',
         description: 'Displayed as hints of bluetooth connection in connect modal',
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_DESCRIPTION: {
@@ -10622,13 +10622,12 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED: {
         id: 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED',
-        defaultMessage:
-            'Some required networks are inactive. Activate them to use all app features.',
+        defaultMessage: 'Some required assets are inactive. Activate them to use all app features.',
     },
     TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
         id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
         defaultMessage:
-            'To connect to the app, activate at least one supported network in Trezor Suite.',
+            'To connect to the app, activate at least one supported asset in Trezor Suite.',
     },
     TR_REQUESTED_NETWORKS: {
         id: 'TR_REQUESTED_NETWORKS',
