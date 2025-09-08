@@ -19,7 +19,12 @@ import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
-import { getFirmwareReleaseConfigInfo, getFirmwareStatus, getLanguage } from '../data/firmwareInfo';
+import {
+    getFirmwareReleaseConfigInfo,
+    getFirmwareStatus,
+    getLanguage,
+    getReleaseByVersion,
+} from '../data/firmwareInfo';
 import {
     DEVICE,
     DeviceButtonRequestPayload,
@@ -646,6 +651,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             payload,
         );
         this._updateFeatures(message);
+        this._updateCurrentRelease(message);
         this.setState({ deriveCardano: payload?.derive_cardano });
     }
 
@@ -657,6 +663,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async getFeatures() {
         const { message } = await this.getCurrentSession().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
+        this._updateCurrentRelease(message);
     }
 
     getAuthenticityChecks() {
@@ -780,6 +787,27 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return response.message;
     }
 
+    private async _updateCurrentRelease(feat: Features) {
+        const newVersion = [
+            feat.major_version,
+            feat.minor_version,
+            feat.patch_version,
+        ] satisfies VersionArray;
+        const newFirmwareType = getFirmwareType(feat);
+
+        if (
+            this._currentRelease &&
+            newFirmwareType === this.firmwareType &&
+            versionUtils.isEqual(this._currentRelease.version, newVersion)
+        ) {
+            return;
+        }
+
+        const release = await getReleaseByVersion(feat, newVersion, newFirmwareType);
+        this._currentRelease = release;
+        this.availableTranslations = this._currentRelease?.translations ?? {};
+    }
+
     private _updateFeatures(feat: Features) {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
@@ -819,15 +847,17 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     device: this.toMessageObject(),
                 });
             }
-            this._currentRelease = getReleaseAsset(
-                feat.internal_model,
-                newVersion,
-                getFirmwareType(feat),
-            );
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
             this._firmwareStatus = getFirmwareStatus(feat, getFirmwareType(feat));
             this._firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(
                 feat,
+                getFirmwareType(feat),
+            );
+            // Here we update `currentRelease` in case of a release JSON that was bundled.
+            // In case it was not bundled it will be fetched after `_updateFeatures` by `_updateCurrentRelease`.
+            this._currentRelease = getReleaseAsset(
+                feat.internal_model,
+                newVersion,
                 getFirmwareType(feat),
             );
             this.availableTranslations = this._currentRelease?.translations ?? {};
