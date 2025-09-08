@@ -33,4 +33,5 @@ module.exports = {
     setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts'],
     testMatch: ['<rootDir>/e2e/tests/**/*.test.ts'],
     testPathIgnorePatterns: ['/e2e/tests/manual/'],
+    testNamePattern: process.env.JEST_TEST_NAME_PATTERN || undefined,
 };

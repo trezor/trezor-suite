@@ -40,7 +40,7 @@ jobs:
     needs: prepare_android_test_app
     with:
       emulator_model: "T3W1"
-      detox_extra_args: "--testNamePattern '^(?!.*@specificModel)'"
+      jest_test_name_pattern: "^(?!.*@specificModel)" # exclude @specificModel tests
       publish_results_to_github: ${{ inputs.publish_results_to_github == true }}
     secrets:
       TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
