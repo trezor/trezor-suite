@@ -14,7 +14,7 @@ import { PassphraseWalletIsEmpty } from './PassphraseWalletIsEmpty';
 type PassphraseWalletExistsFlowProps = {
     discovery: DiscoveryStatus;
     device: TrezorDevice;
-    deviceOffer: boolean;
+    offerPassphraseOnDevice: boolean;
     authConfirmation?: boolean;
     onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
@@ -24,7 +24,7 @@ type PassphraseWalletExistsFlowProps = {
 export const PassphraseWalletExistsFlow = ({
     discovery,
     device,
-    deviceOffer,
+    offerPassphraseOnDevice,
     onCancel,
     onSubmit,
     onBackToInitial,
@@ -80,7 +80,7 @@ export const PassphraseWalletExistsFlow = ({
                         isExistingWallet={true}
                         device={device}
                         onCancel={onCancel}
-                        onDeviceOffer={deviceOffer}
+                        offerPassphraseOnDevice={offerPassphraseOnDevice}
                         onSubmit={onSubmit}
                     />
                 );
@@ -92,7 +92,7 @@ export const PassphraseWalletExistsFlow = ({
             isExistingWallet={true}
             device={device}
             submitting={discovery.passphraseSubmitted}
-            onDeviceOffer={deviceOffer}
+            offerPassphraseOnDevice={offerPassphraseOnDevice}
             onBack={onBackToInitial}
             onCancel={onCancel}
             onSubmit={onSubmit}

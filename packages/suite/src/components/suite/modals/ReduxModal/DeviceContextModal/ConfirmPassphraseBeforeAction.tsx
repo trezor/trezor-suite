@@ -38,7 +38,9 @@ export const ConfirmPassphraseBeforeAction = () => {
         return null;
     }
 
-    const onDeviceOffer = !!device?.features?.capabilities?.includes('Capability_PassphraseEntry');
+    const offerPassphraseOnDevice = !!device?.features?.capabilities?.includes(
+        'Capability_PassphraseEntry',
+    );
 
     return (
         <SwitchDeviceModal onCancel={onEnterPassphraseDialogCancel}>
@@ -53,7 +55,7 @@ export const ConfirmPassphraseBeforeAction = () => {
                     <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
                         onSubmit={onSubmit}
-                        offerPassphraseOnDevice={onDeviceOffer}
+                        offerPassphraseOnDevice={offerPassphraseOnDevice}
                         allowNonAsciiCharacters
                     />
                 </Column>

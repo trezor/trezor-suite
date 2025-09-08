@@ -19,7 +19,7 @@ import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/Switc
 import { Translation, TranslationKey } from '../../../Translation';
 
 type EnterPassphraseProps = {
-    onDeviceOffer: boolean;
+    offerPassphraseOnDevice: boolean;
     device: TrezorDevice;
     submitting?: boolean;
     isExistingWallet?: boolean;
@@ -30,7 +30,7 @@ type EnterPassphraseProps = {
 
 export const EnterPassphrase = ({
     device,
-    onDeviceOffer,
+    offerPassphraseOnDevice,
     isExistingWallet = false,
     submitting,
     onBack,
@@ -192,7 +192,7 @@ export const EnterPassphrase = ({
                         deviceModel={deviceModel ?? undefined}
                         isLoading={submitting}
                         onSubmit={onSubmit}
-                        offerPassphraseOnDevice={onDeviceOffer}
+                        offerPassphraseOnDevice={offerPassphraseOnDevice}
                         allowNonAsciiCharacters={isExistingWallet}
                         value={value}
                         setValue={setValue}

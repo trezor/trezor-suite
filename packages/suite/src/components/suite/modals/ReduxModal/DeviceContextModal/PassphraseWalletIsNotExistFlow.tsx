@@ -15,7 +15,7 @@ import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 type PassphraseWalletIsNotExistFlowProps = {
     discovery: DiscoveryStatus;
     device: TrezorDevice;
-    deviceOffer: boolean;
+    offerPassphraseOnDevice: boolean;
     onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     onBackToInitial: () => void;
@@ -23,7 +23,7 @@ type PassphraseWalletIsNotExistFlowProps = {
 
 export const PassphraseWalletIsNotExistFlow = ({
     device,
-    deviceOffer,
+    offerPassphraseOnDevice,
     discovery,
     onBackToInitial,
     onSubmit,
@@ -48,7 +48,7 @@ export const PassphraseWalletIsNotExistFlow = ({
                 onCancel={onCancel}
                 onSubmit={onSubmit}
                 device={device}
-                onDeviceOffer={deviceOffer}
+                offerPassphraseOnDevice={offerPassphraseOnDevice}
             />
         );
     }
@@ -58,7 +58,7 @@ export const PassphraseWalletIsNotExistFlow = ({
             <EnterPassphrase
                 device={device}
                 submitting={discovery.passphraseSubmitted}
-                onDeviceOffer={deviceOffer}
+                offerPassphraseOnDevice={offerPassphraseOnDevice}
                 onBack={() => {
                     dispatch(cancelDiscoveryThunk(device));
                     // TODO: best practices flow should not be initiated along with discovery

@@ -12,7 +12,7 @@ import { Translation } from '../../../Translation';
 
 type PassphraseWalletConfirmationProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
-    onDeviceOffer: boolean;
+    offerPassphraseOnDevice: boolean;
     onCancel?: () => void;
     onBack?: () => void;
     device: TrezorDevice;
@@ -23,7 +23,7 @@ export const PassphraseWalletConfirmation = ({
     onCancel,
     onBack,
     onSubmit,
-    onDeviceOffer,
+    offerPassphraseOnDevice,
     device,
     isExistingWallet,
 }: PassphraseWalletConfirmationProps) => {
@@ -42,7 +42,7 @@ export const PassphraseWalletConfirmation = ({
                     <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
                         onSubmit={onSubmit}
-                        offerPassphraseOnDevice={onDeviceOffer}
+                        offerPassphraseOnDevice={offerPassphraseOnDevice}
                         allowNonAsciiCharacters={isExistingWallet}
                     />
                 </Column>
