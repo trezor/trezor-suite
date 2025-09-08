@@ -85,7 +85,11 @@ export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmSta
             variant="warning"
             bottomContent={
                 <>
-                    <Modal.Button isDisabled={isDisabled} onClick={onClick}>
+                    <Modal.Button
+                        isDisabled={isDisabled}
+                        onClick={onClick}
+                        data-testid="@modal/staking/confirm-and-stake-button"
+                    >
                         <Translation id="TR_STAKE_CONFIRM_AND_STAKE" />
                     </Modal.Button>
                     <Modal.Button variant="tertiary" onClick={handleOnCancel}>

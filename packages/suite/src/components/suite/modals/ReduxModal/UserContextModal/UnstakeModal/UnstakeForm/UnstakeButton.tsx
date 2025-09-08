@@ -61,6 +61,7 @@ export const UnstakeButton = () => {
                 isLoading={isLoading}
                 onClick={onUnstakeClick}
                 icon={isUnstakingDisabled ? 'info' : undefined}
+                data-testid="@modal/staking/unstake-button"
             >
                 <Translation id="TR_CONTINUE" />
             </Modal.Button>

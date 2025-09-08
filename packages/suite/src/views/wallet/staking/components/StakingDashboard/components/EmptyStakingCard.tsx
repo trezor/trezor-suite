@@ -202,6 +202,7 @@ export const EmptyStakingCard = () => {
                             onClick={openStakeInANutshellModal}
                             isDisabled={isStakingDisabled}
                             icon={isStakingDisabled ? 'info' : undefined}
+                            data-testid="@wallet/staking/empty-card/start-staking-button"
                         >
                             <Translation id="TR_STAKING_CARD_START_STAKING" />
                         </Button>

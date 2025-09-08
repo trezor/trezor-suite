@@ -112,6 +112,7 @@ export const ClaimCard = () => {
                         onClick={openClaimModal}
                         isDisabled={isClaimingDisabled}
                         icon={isClaimingDisabled ? 'info' : undefined}
+                        data-testid="@account/staking/claim-button"
                     >
                         <Translation id="TR_STAKE_CLAIM" />
                     </Button>

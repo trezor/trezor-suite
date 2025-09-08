@@ -100,7 +100,11 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
             size="small"
             bottomContent={
                 <>
-                    <Modal.Button isDisabled={!hasAgreed} onClick={proceedToStaking}>
+                    <Modal.Button
+                        isDisabled={!hasAgreed}
+                        onClick={proceedToStaking}
+                        data-testid="@modal/staking/confirm-button"
+                    >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
                     <Modal.Button variant="tertiary" onClick={onCancelClick}>
