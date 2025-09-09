@@ -18,6 +18,7 @@ interface CTA {
     variant?: ComponentProps<typeof Button>['variant'];
     action: () => void;
     icon?: IconName;
+    isDisabled?: boolean;
 }
 
 interface ContainerProps {
@@ -53,7 +54,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                         key={a.label || 'TR_RETRY'}
                         variant={a.variant || 'warning'}
                         icon={a.icon || 'plus'}
-                        isLoading={isLocked()}
+                        isLoading={a.isDisabled ?? isLocked()}
                         onClick={a.action}
                         data-testid={`@exception/${dataTestBase}/${a.variant || 'primary'}-button`}
                     >
@@ -128,6 +129,7 @@ export const PortfolioCardException = ({
                     cta={[
                         {
                             action: () => dispatch(goto('settings-coins')),
+                            isDisabled: false,
                             icon: 'gear',
                             label: 'TR_COIN_SETTINGS',
                         },
