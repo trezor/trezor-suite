@@ -28,7 +28,8 @@ export type PrerequisiteType =
     | 'device-initialize'
     | 'device-bootloader'
     | 'firmware-missing'
-    | 'firmware-required';
+    | 'firmware-required'
+    | 'device-busy';
 
 export const getPrerequisiteName = ({
     router,
@@ -48,6 +49,8 @@ export const getPrerequisiteName = ({
 
     if (device.type === 'unacquired' && device?.transportSessionOwner)
         return 'device-used-elsewhere';
+
+    if (device.status === 'busy') return 'device-busy';
 
     // Unacquired device with Trezor Host Protocol properties means
     // that the user must perform the Trezor Host Protocol paring

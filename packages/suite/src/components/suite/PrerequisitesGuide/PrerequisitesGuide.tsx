@@ -58,6 +58,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                 case 'device-disconnected':
                     return <DeviceConnect />;
                 case 'device-unacquired':
+                case 'device-busy':
                     return <DeviceAcquire />;
                 case 'device-unacquired-requires-thp':
                     return <DeviceTrezorHostProtocolPair />;

@@ -69,6 +69,10 @@ export const getStatus = (device: TrezorDevice) => {
         return 'connected';
     }
 
+    if (device.type === 'unacquired' && device.status === 'busy') {
+        return 'device-busy';
+    }
+
     if (device.type === 'unacquired' && device.thp?.properties !== undefined) {
         return 'unacquired-thp-required';
     }
@@ -107,6 +111,7 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boole
         case 'unacquired':
         case 'firmware-required':
         case 'unreadable':
+        case 'device-busy':
         case 'unacquired-thp-required':
             return true;
 
