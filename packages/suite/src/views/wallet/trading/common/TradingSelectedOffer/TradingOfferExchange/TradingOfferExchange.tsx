@@ -1,21 +1,18 @@
 import { Fragment } from 'react';
 
-import { selectTradingExchangeFormStep } from '@suite-common/trading';
-import { Card, Divider } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import {
+    selectTradingExchangeFormStep,
+    selectTradingExchangeReceiveAccountKey,
+} from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-core';
+import { Card } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { TradingOfferExchangeSend } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSend';
 import { TradingOfferExchangeSendSwap } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendSwap';
 import { TradingOfferExchangeSignData } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSignData';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
-import {
-    TradingSelectedOfferStepper,
-    TradingSelectedOfferStepperItemProps,
-} from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
-import { TradingVerify } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerify';
 
 export const TradingOfferExchange = ({
     account,
@@ -25,53 +22,31 @@ export const TradingOfferExchange = ({
     quoteAmounts,
 }: TradingOfferExchangeProps) => {
     const formStep = useSelector(selectTradingExchangeFormStep);
-    const cryptoId = selectedQuote?.receive;
-    const tradingVerifyAccount = useTradingVerifyAccount({
-        cryptoId,
-        nonSuiteAccount: !selectedQuote.tags?.includes('noExternalAddress'),
-    });
-
-    const steps: TradingSelectedOfferStepperItemProps[] = [
-        {
-            step: 'RECEIVING_ADDRESS',
-            translationId: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
-            isActive: formStep === 'RECEIVING_ADDRESS',
-            component: cryptoId ? (
-                <TradingVerify tradingVerifyAccount={tradingVerifyAccount} cryptoId={cryptoId} />
-            ) : null,
-        },
-        {
-            step: 'SEND_TRANSACTION',
-            translationId: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
-            isActive: formStep === 'SEND_TRANSACTION' || formStep === 'SIGN_DATA',
-            component: !selectedQuote.isDex ? (
-                <TradingOfferExchangeSend />
-            ) : (
-                <>
-                    {formStep === 'SIGN_DATA' ? (
-                        <TradingOfferExchangeSignData />
-                    ) : (
-                        <TradingOfferExchangeSendSwap />
-                    )}
-                </>
-            ),
-        },
-    ];
+    const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
+    const receiveAccount = useSelector(
+        state => selectAccountByKey(state, receiveAccountKey) ?? undefined,
+    );
 
     return (
         <>
             <Card>
-                <TradingSelectedOfferStepper steps={steps} />
-                <Divider margin={{ top: spacings.lg, bottom: spacings.xl }} />
-                {steps.map((step, index) => (
-                    <Fragment key={index}>{step.isActive && step.component}</Fragment>
-                ))}
+                <Fragment>
+                    {!selectedQuote.isDex ? (
+                        <TradingOfferExchangeSend />
+                    ) : (
+                        <>
+                            {formStep === 'SEND_TRANSACTION' && <TradingOfferExchangeSendSwap />}
+
+                            {formStep === 'SIGN_DATA' && <TradingOfferExchangeSignData />}
+                        </>
+                    )}
+                </Fragment>
             </Card>
             <Card paddingType="large">
                 <TradingSelectedOfferInfo
                     formStep={formStep}
                     account={account}
-                    selectedAccount={tradingVerifyAccount.selectedAccountOption?.account}
+                    selectedAccount={receiveAccount}
                     selectedQuote={selectedQuote}
                     providers={providers}
                     type={type}

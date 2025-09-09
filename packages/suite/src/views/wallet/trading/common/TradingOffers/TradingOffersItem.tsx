@@ -1,4 +1,4 @@
-import { ExchangeTrade, SellFiatTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
 import {
@@ -20,6 +20,7 @@ import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectQuoteTyped,
+    isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -125,9 +126,18 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
             const trade = quote as ExchangeTrade;
             dispatch(tradingExchangeActions.savePreselectedQuote(trade));
             navigateToExchangeForm();
-        } else {
-            selectQuote(quote);
+
+            return;
         }
+
+        if (isTradingBuyContext(context)) {
+            const trade = quote as BuyTrade;
+            context.selectQuote(trade);
+
+            return;
+        }
+
+        selectQuote(quote);
     };
 
     const isSellVerificationRequired =

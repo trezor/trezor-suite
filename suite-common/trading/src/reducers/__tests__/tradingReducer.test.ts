@@ -29,7 +29,7 @@ describe('Testing trading reducer', () => {
         });
     });
 
-    it('buyThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
+    it('buyThunks.handleRequestThunk.rejected should clear quotes and amountLimits', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -57,7 +57,6 @@ describe('Testing trading reducer', () => {
 
         expect(store.getState().wallet.trading.buy).toEqual(
             expect.objectContaining({
-                isLoading: false,
                 quotesRequest: undefined,
                 quotes: [],
                 amountLimits: undefined,

@@ -287,24 +287,29 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         }
     }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, pageType, type]);
 
-    // call change handler on every change of select inputs
+    // call change handler on every change of receive address
     // effect only for exchange form
     useEffect(() => {
         if (type !== 'exchange' || pageType === 'confirm' || pageType === 'retry') return;
 
-        if (
-            isChanged(
-                (previousValues.current as TradingExchangeFormProps)?.receiveCryptoSelect?.value,
-                (values as TradingExchangeFormProps)?.receiveCryptoSelect?.value,
-            )
-        ) {
+        const formValues = values as TradingExchangeFormProps | null;
+        const prevFormValues = previousValues.current as TradingExchangeFormProps | null;
+
+        const receiveAddressChanged = isChanged(
+            formValues?.receiveAddress,
+            prevFormValues?.receiveAddress,
+        );
+
+        if (receiveAddressChanged) {
+            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+
             handleSubmit(() => {
                 handleChange();
             })();
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, pageType, type]);
+    }, [values, previousValues, handleChange, handleSubmit, dispatch, pageType, type]);
 
     return {
         isBalanceZero,

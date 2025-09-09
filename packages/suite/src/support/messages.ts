@@ -4863,8 +4863,7 @@ export default defineMessages({
     },
     TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
         id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage:
-            'This is the address for receiving your assets. Verify this receive address on your Trezor.',
+        defaultMessage: 'This is the address for receiving your assets.',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',

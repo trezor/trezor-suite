@@ -9,7 +9,6 @@ import {
     invityEndpoint,
     invityRequest,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 const allAvailableAddressesBTC = [
@@ -61,7 +60,11 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
 
     test('Buy Bitcoin from compared offer', async ({ page, tradingPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await tradingPage.fillBuyForm(fiatAmount);
+            await tradingPage.fillBuyForm({
+                amount: fiatAmount,
+                receiveAccount: 'Bitcoin #1',
+                receiveAddress,
+            });
             await expect(tradingPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
             await expect(tradingPage.quoteProvider).toHaveText(bestBuyProvider);
             await tradingPage.compareButton.click();
@@ -95,7 +98,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         });
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
-            await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
+            await tradingPage.termsConfirmButton.click();
             await expect(tradingPage.confirmationAddress).toHaveText(receiveAddress);
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedUpdateFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
@@ -107,9 +110,11 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
 
     test('Buy Bitcoin from best offer', async ({ page, tradingPage, tradingMock }) => {
         await test.step('Request a trade', async () => {
-            await tradingPage.fillBuyForm(fiatAmount);
-            await tradingPage.buyBestOfferButton.click();
-            await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
+            await tradingPage.fillBuyForm({
+                amount: fiatAmount,
+                receiveAccount: 'Bitcoin #1',
+                receiveAddress,
+            });
         });
 
         await page.clock.install();
@@ -118,7 +123,10 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
             await tradingMock.changeBuyWatchResponseTo('SUBMITTED');
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
-            await tradingPage.finishTransactionButton.click();
+
+            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.termsConfirmButton.click();
+
             await expect.soft(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
             });
@@ -148,48 +156,36 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         });
     });
 
-    test('Choose different Bitcoin receive address', async ({
-        page,
-        tradingPage,
-        devicePrompt,
-        trezorUserEnvLink,
-    }) => {
+    test('Choose different Bitcoin receive address', async ({ page, tradingPage }) => {
         const differentAddress = allAvailableAddressesBTC[5];
 
         await test.step('Request a trade', async () => {
-            await tradingPage.fillBuyForm(fiatAmount);
-            await tradingPage.buyBestOfferButton.click();
-        });
-
-        await test.step('Confirm the first receive address', async () => {
-            await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
-            await expect(tradingPage.finishTransactionButton).toBeEnabled();
+            await tradingPage.fillBuyForm({
+                amount: fiatAmount,
+                receiveAccount: 'Bitcoin #1',
+                receiveAddress,
+            });
         });
 
         await test.step('Change the receive address', async () => {
-            await tradingPage.confirmationAddress.click();
+            await expect(tradingPage.confirmationAddress).toBeEnabled();
             // Adding retry because of the dropdown animation
             await expect(async () => {
+                await tradingPage.confirmationAddress.click();
+
                 const allAddressesFromDropdown = await page
                     .getByRole('option')
                     .getByTestId('@trading/form/verify/address')
                     .allTextContents();
+
                 expect(allAddressesFromDropdown).toEqual(allAvailableAddressesBTC);
             }).toPass({ timeout: 3_000 });
             await page.getByRole('option', { name: differentAddress }).click();
-            await expect(tradingPage.finishTransactionButton).toBeHidden();
         });
 
-        await test.step('Confirm the changed receive address', async () => {
-            await tradingPage.confirmOnTrezorButton.click();
-            await expect(devicePrompt.headerParagraph).toHaveText('Bitcoin #1');
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                formatAddress(differentAddress),
-            );
-            await expect(devicePrompt).toDisplayReceiveAddress(differentAddress);
-            await trezorUserEnvLink.pressYes();
-            await expect(tradingPage.finishTransactionButton).toBeEnabled();
+        await test.step('Confirm the receive address', async () => {
+            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.termsConfirmButton.click();
         });
     });
 });

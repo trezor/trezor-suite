@@ -245,7 +245,7 @@ export const useExchangeFlow = () => {
             const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
                 commonFunctions;
 
-            return await dispatch(
+            return !!(await dispatch(
                 exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
@@ -257,7 +257,7 @@ export const useExchangeFlow = () => {
                     processResponseData,
                     nextStep,
                 }),
-            ).unwrap();
+            ).unwrap());
         },
         [getCommonFunctions, sendAccount, dispatch],
     );

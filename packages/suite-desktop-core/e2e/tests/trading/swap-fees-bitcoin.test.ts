@@ -5,6 +5,7 @@ import { expect, test } from '../../support/fixtures';
 
 const sendAmount = '0.0004';
 const customFee = '10';
+const { receiveAddress } = swapTradeBTCEthereum;
 
 test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -36,14 +37,14 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
                 receiveCurrency: 'Ethereum',
                 receiveSymbol: 'eth',
                 receiveNetwork: 'ethereum',
+                receiveAddress,
             });
             feeRate = await tradingPage.fees.getBitcoinFeeRate('custom');
         });
 
         await test.step('Continue Swap flow towards Send section', async () => {
             await tradingPage.swapBestOfferButton.click();
-            await tradingPage.confirmTrade('Ethereum #1');
-            await tradingPage.finishTransactionButton.click();
+            await tradingPage.termsConfirmButton.click();
             await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
             await tradingPage.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');

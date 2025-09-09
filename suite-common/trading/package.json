@@ -35,6 +35,6 @@
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
-        "@types/invity-api": "^1.1.9"
+        "@types/invity-api": "^1.1.10"
     }
 }

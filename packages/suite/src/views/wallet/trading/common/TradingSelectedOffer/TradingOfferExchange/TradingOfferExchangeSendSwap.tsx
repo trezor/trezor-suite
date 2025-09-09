@@ -116,7 +116,6 @@ export const TradingOfferExchangeSendSwap = () => {
             ) {
                 confirmTrade({
                     receiveAddress: selectedQuote.receiveAddress,
-                    extraField: undefined,
                     trade: {
                         ...selectedQuote,
                         swapSlippage: customSlippage,
@@ -164,7 +163,6 @@ export const TradingOfferExchangeSendSwap = () => {
 
             await confirmTrade({
                 receiveAddress: selectedQuote.receiveAddress,
-                extraField: undefined,
                 trade: {
                     ...selectedQuote,
                     swapSlippage: value,

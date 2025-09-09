@@ -44,6 +44,7 @@ import { FeeLevel } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';
 
 import type { TranslationKey } from 'src/components/suite/Translation';
+import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import { AppState } from 'src/reducers/store';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
@@ -116,6 +117,7 @@ type TradingVerifyAccountProps = (
 ) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
 export type TradingBuyConfirmTradeProps = {
+    trade?: BuyTrade;
     receiveAddress: string;
 };
 
@@ -135,9 +137,12 @@ export interface TradingBuyFormContextProps
     form: {
         state: TradingFormStateProps;
     };
+    tradingReceiveAddress: ReturnType<typeof useTradingReceiveAddress>;
 
     selectQuote: (quote: BuyTrade) => Promise<void>;
-    confirmTrade: ({ receiveAddress }: TradingBuyConfirmTradeProps) => void;
+    confirmTrade: ({
+        receiveAddress,
+    }: TradingBuyConfirmTradeProps) => Promise<BuyTrade | undefined>;
     verifyAddress: TradingVerifyAccountProps;
     removeDraft: (key: string) => void;
     setAmountLimits: (limits?: AmountLimitProps) => void;
@@ -219,15 +224,13 @@ export interface TradingExchangeFormContextProps
         receiveAddress,
         extraField,
         trade,
-    }: TradingExchangeConfirmTradeProps) => Promise<boolean>;
+    }: TradingExchangeConfirmTradeProps) => Promise<ExchangeTrade | undefined>;
     sendTransaction: () => Promise<boolean>;
     signDataAndConfirm: () => Promise<void>;
     selectQuote: (quote: ExchangeTrade) => void;
     verifyAddress: TradingVerifyAccountProps;
     approveTransaction: (trade: ExchangeTrade) => Promise<boolean>;
     revokeApproval: (trade: ExchangeTrade) => Promise<boolean>;
-    fetchApprovalStatus: (trade?: ExchangeTrade) => Promise<void>;
-    isFetchingApprovalStatus: boolean;
     confirmApproval: ({
         trade,
         receiveAddress,
@@ -240,6 +243,12 @@ export interface TradingExchangeFormContextProps
     isScheduledQuotesRefresh: boolean;
     resetSelectedOffer: () => void;
     fetchFeesAndCompose: () => Promise<void>;
+    tradingReceiveAddress: ReturnType<typeof useTradingReceiveAddress>;
+
+    isLoadingQuote: boolean;
+    setIsLoadingQuote: (isLoadingQuote: boolean) => void;
+    isApproval: boolean;
+    setIsApproval: (isApproval: boolean) => void;
 }
 
 export type TradingExchangeApprovalType = 'APPROVE' | 'REVOKE';

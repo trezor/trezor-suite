@@ -5,14 +5,9 @@ import {
     initialState,
 } from '@suite-common/trading';
 
-export interface TradingExchangeState extends CommonTradingExchangeState {
-    receiveAddress: string | undefined;
-}
+export interface TradingExchangeState extends CommonTradingExchangeState {}
 
-export const exchangeInitialState: TradingExchangeState = {
-    ...initialState.exchange,
-    receiveAddress: undefined,
-};
+export const exchangeInitialState: TradingExchangeState = { ...initialState.exchange };
 
 export const TRADING_EXCHANGE = 'tradingExchange';
 

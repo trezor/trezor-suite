@@ -3,7 +3,6 @@ import messages from '@trezor/suite/src/support/messages';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { buyQuotesEthereum, buyTradeEthereum, invityEndpoint } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -11,7 +10,7 @@ const fiatAmount = buyQuotesEthereum[3].fiatStringAmount;
 const provider = capitalizeFirstLetter(buyQuotesEthereum[3].exchange);
 const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3].receiveStringAmount)} ETH`;
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
-const { receiveAddress, paymentMethodName } = buyTradeEthereum.trade;
+const { receiveAddress } = buyTradeEthereum.trade;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage }) => {
@@ -25,31 +24,38 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] },
     test('Enable Ethereum on account by buying it', async ({
         page,
         settingsPage,
-        devicePrompt,
         walletPage,
         tradingPage,
-        trezorUserEnvLink,
     }) => {
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.openTradingGlobalButton.click();
             await tradingPage.selectAccount('Ethereum', 'eth');
-            await tradingPage.fillBuyForm(fiatAmount, 'ethereum');
-            await expect(tradingPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.quoteProvider).toHaveText(provider);
-            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.fillBuyForm({
+                amount: fiatAmount,
+                cryptoCurrency: 'ethereum',
+            });
+            await expect(tradingPage.bestOfferAmount).toContainText('0 ETH');
         });
 
         await test.step('Create Ethereum account in trade confirmation dialog', async () => {
-            await tradingPage.termsConfirmButton.click();
             await expect(tradingPage.confirmationAccountDropdown).toHaveText(
-                'Select ETHEREUM receive account',
+                "Use an account (Ethereum) that isn't in Trezor Suite.",
             );
-            await expect(tradingPage.confirmationAddress).toBeHidden();
+            await expect(tradingPage.confirmationAddress).toHaveValue('');
             await tradingPage.confirmationAccountDropdown.click();
             await page.getByRole('option', { name: 'Create a new Ethereum account' }).click();
             await expect(settingsPage.coins.networkButton('eth')).toBeEnabledCoin();
             await page.getByRole('button', { name: 'Find my Ethereum accounts' }).click();
             await page.discoveryShouldFinish();
+        });
+
+        await test.step('Check both Ethereum account are options on Confirmation screen', async () => {
+            await tradingPage.confirmationAccountDropdown.click();
+            await expect(page.getByRole('option', { name: 'Ethereum #1 ' })).toBeVisible();
+            await expect(page.getByRole('option', { name: 'Ethereum #2 ' })).toBeVisible();
+
+            await page.getByRole('option', { name: 'Ethereum #1 ' }).click();
+
             await expect(tradingPage.confirmationAccountDropdown).toHaveText(
                 'Ethereum #1Balance: 0 ETH',
             );
@@ -57,30 +63,9 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] },
             await expect(tradingPage.confirmationAddress).toHaveValue(receiveAddress);
         });
 
-        await test.step('Check both Ethereum account are options on Confirmation screen', async () => {
-            await tradingPage.confirmationAccountDropdown.click();
-            await expect(page.getByRole('option', { name: 'Ethereum #1 ' })).toBeVisible();
-            await expect(page.getByRole('option', { name: 'Ethereum #2 ' })).toBeVisible();
-            await tradingPage.confirmationAccountDropdown.click();
-        });
-
         await test.step('Confirm Trade', async () => {
-            await tradingPage.confirmOnTrezorButton.click();
-            await expect(devicePrompt.headerParagraph).toHaveText('Ethereum #1');
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                formatAddress(receiveAddress),
-            );
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await devicePrompt.confirmOnDevicePromptIsHidden();
-
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(
-                capitalizeFirstLetter(provider),
-            );
-            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await tradingPage.finishTransactionButton.click();
+            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.termsConfirmButton.click();
         });
 
         await tradingPage.waitForRedirectCompletion();

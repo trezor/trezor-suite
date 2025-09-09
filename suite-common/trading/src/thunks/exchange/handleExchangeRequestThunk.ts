@@ -35,7 +35,7 @@ export const getQuoteRequestData = ({
     network,
     shouldSendInSats,
 }: GetQuoteRequestData): ExchangeTradeQuoteRequest | undefined => {
-    const { outputs, receiveCryptoSelect, sendCryptoSelect } = formValues;
+    const { outputs, receiveCryptoSelect, sendCryptoSelect, receiveAddress } = formValues;
     const decimals = getTradingNetworkDecimals({ network });
 
     const unformattedOutputAmount = outputs[0].amount ?? '';
@@ -45,6 +45,7 @@ export const getQuoteRequestData = ({
             : unformattedOutputAmount;
 
     if (
+        !receiveAddress ||
         !receiveCryptoSelect?.value ||
         !sendCryptoSelect?.value ||
         !sendStringAmount ||
@@ -57,6 +58,7 @@ export const getQuoteRequestData = ({
         receive: receiveCryptoSelect.value,
         send: sendCryptoSelect.value,
         sendStringAmount,
+        receiveAddress,
         dex: 'enable',
     };
 

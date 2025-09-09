@@ -16,6 +16,7 @@ export const TradingVerifyOptions = ({
     isMenuOpen,
     label,
     onChangeAccount,
+    isDisabled = false,
 }: TradingVerifyOptionsProps) => {
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo();
 
@@ -38,7 +39,7 @@ export const TradingVerifyOptions = ({
                 <TradingVerifyOptionsItem option={option} receiveNetwork={receiveNetwork} />
             )}
             isMenuOpen={isMenuOpen}
-            isDisabled={selectAccountOptions.length === 1}
+            isDisabled={isDisabled || selectAccountOptions.length === 1}
             placeholder={
                 <Translation
                     id="TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT"

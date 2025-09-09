@@ -6,6 +6,8 @@ import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-ap
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TRADING_EXCHANGE_FORM_DEX,
+    TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     type TradingExchangeAmountLimitProps,
@@ -74,6 +76,7 @@ import {
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingPreviousRoute } from './common/useTradingPreviousRoute';
+import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
 export const useTradingExchangeForm = ({
     selectedAccount,
@@ -128,8 +131,9 @@ export const useTradingExchangeForm = ({
         isLoading,
     });
 
+    const [isApproval, setIsApproval] = useState<boolean>(false);
     const [approvalInitiated, setApprovalInitiated] = useState<boolean>(false);
-    const [isFetchingApprovalStatus, setIsFetchingApprovalStatus] = useState<boolean>(false);
+    const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
 
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const {
@@ -185,8 +189,21 @@ export const useTradingExchangeForm = ({
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
 
+    const receiveCryptoId = receiveCryptoSelect?.value;
+
+    const tradingReceiveAddress = useTradingReceiveAddress({
+        type: 'exchange',
+        cryptoId: receiveCryptoId,
+        isPreviousRouteFromTradeSection,
+        nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
+        pageType,
+    });
+    const { receiveAddress, extraField } = tradingReceiveAddress;
+    const isReceiveAddressFormValid =
+        Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
+
     useTradingFiatValues({
-        cryptoId: receiveCryptoSelect?.value,
+        cryptoId: receiveCryptoId,
         amount: receiveCryptoSelect?.balance,
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
@@ -203,7 +220,7 @@ export const useTradingExchangeForm = ({
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
-    const isFormInvalid = !(formIsValid && hasValues);
+    const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
     const decimals = getTradingNetworkDecimals({ sendCryptoSelect, network });
 
@@ -422,13 +439,12 @@ export const useTradingExchangeForm = ({
 
     const confirmTrade = async ({
         receiveAddress,
-        extraField,
         trade,
-        approvalFlow,
-    }: TradingExchangeConfirmTradeProps): Promise<boolean> => {
+        ...props
+    }: TradingExchangeConfirmTradeProps): Promise<ExchangeTrade | undefined> => {
         const commonFunctions = await getCommonFunctions(trade);
 
-        if (!commonFunctions) return false;
+        if (!commonFunctions) return undefined;
 
         const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
             commonFunctions;
@@ -438,9 +454,8 @@ export const useTradingExchangeForm = ({
                 returnUrl,
                 receiveAddress,
                 account,
-                extraField,
+                extraField: props.extraField ?? extraField,
                 trade,
-                approvalFlow,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,
@@ -586,9 +601,8 @@ export const useTradingExchangeForm = ({
             trade,
             receiveAddress,
             refundAddress,
-            extraField: undefined,
+            extraField,
             returnUrl: undefined,
-            approvalFlow: true,
         });
 
         if (!response) {
@@ -694,18 +708,20 @@ export const useTradingExchangeForm = ({
     };
 
     const approveTransaction = async (trade: ExchangeTrade) => {
+        if (!receiveAddress) return false;
+
         setApprovalInitiated(true);
 
         const newTrade = await confirmApproval({
             trade: { ...trade, status: 'CONFIRM' },
-            receiveAddress: account.descriptor,
+            receiveAddress,
         });
 
         return !!newTrade;
     };
 
     const revokeApproval = async (trade: ExchangeTrade) => {
-        if (!trade.receiveAddress) return false;
+        if (!receiveAddress) return false;
 
         setApprovalInitiated(true);
 
@@ -720,23 +736,10 @@ export const useTradingExchangeForm = ({
 
         const newTrade = await confirmApproval({
             trade: updatedTrade,
-            receiveAddress: trade.receiveAddress,
+            receiveAddress,
         });
 
         return !!newTrade;
-    };
-
-    const fetchApprovalStatus = async (trade?: ExchangeTrade) => {
-        if (!trade || !trade.isDex) return;
-
-        setIsFetchingApprovalStatus(true);
-
-        await confirmApproval({
-            trade: { ...trade, status: 'CONFIRM' },
-            receiveAddress: account.descriptor,
-        });
-
-        setIsFetchingApprovalStatus(false);
     };
 
     const resetSelectedOffer = () => {
@@ -752,6 +755,42 @@ export const useTradingExchangeForm = ({
         await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
         composeRequest();
     };
+
+    // set ethereumDataHex from DEX quote for correct fees fetching
+    useEffect(() => {
+        if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
+            setValue('ethereumDataHex', '');
+
+            return;
+        }
+
+        const quote = isApproval ? selectedQuote : dexQuotes[0];
+
+        if (!quote) return;
+
+        const { dexTx } = quote;
+        if (!dexTx) return;
+
+        setValue('ethereumDataHex', dexTx.data);
+        setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [quotes, selectedQuote, exchangeType, isApproval]);
+
+    // fetch fees when ethereumDataHex changes
+    useEffect(() => {
+        fetchFeesAndCompose();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [values.ethereumDataHex]);
+
+    useEffect(() => {
+        setValue('receiveAddress', receiveAddress);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [receiveAddress]);
+
+    useEffect(() => {
+        setValue('extraField', extraField);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [extraField]);
 
     useEffect(() => {
         if (isPreviousRouteFromTradeSection && tradingAccountKey !== selectedAccount.account?.key) {
@@ -877,7 +916,6 @@ export const useTradingExchangeForm = ({
         verifiedAddress,
         shouldSendInSats,
         trade,
-        isFetchingApprovalStatus,
         setReceiveAccount,
         composeRequest,
         composedTransactionInfo,
@@ -891,12 +929,16 @@ export const useTradingExchangeForm = ({
         confirmTrade,
         approveTransaction,
         revokeApproval,
-        fetchApprovalStatus,
         confirmApproval,
         watchApproval,
         refreshQuotes,
         isScheduledQuotesRefresh,
         resetSelectedOffer,
         fetchFeesAndCompose,
+        tradingReceiveAddress,
+        isLoadingQuote,
+        setIsLoadingQuote,
+        isApproval,
+        setIsApproval,
     };
 };

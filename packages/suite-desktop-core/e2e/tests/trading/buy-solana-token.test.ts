@@ -16,7 +16,7 @@ const cryptoAmount = buyQuotesSolanaToken[0].receiveStringAmount;
 const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0].exchange);
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
 const formattedFiatAmount = `CZK ${fiatAmount}`;
-const { receiveAddress, paymentMethodName } = buyTradeSolanaToken.trade;
+const { receiveAddress } = buyTradeSolanaToken.trade;
 
 test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
@@ -38,27 +38,22 @@ test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, (
             await tradingPage.waitForOffersSync();
             await tradingPage.youPayFiatCryptoSwitchButton.click();
             const isCryptoInput = true;
-            await tradingPage.fillBuyForm(
-                cryptoAmount,
-                'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
-                isCryptoInput,
-            );
+            await tradingPage.fillBuyForm({
+                amount: cryptoAmount,
+                cryptoCurrency: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+                wantCrypto: isCryptoInput,
+                receiveAccount: 'Solana #1',
+                receiveAddress,
+            });
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(provider);
             await tradingPage.buyBestOfferButton.click();
         });
 
         await test.step('Confirm the trade', async () => {
-            await tradingPage.confirmTrade('Solana #1', receiveAddress);
-            await expect(tradingPage.confirmationAccountDropdown).toContainText('Solana #1');
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(
-                capitalizeFirstLetter(provider),
-            );
-            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            await tradingPage.finishTransactionButton.click();
+            await tradingPage.termsConfirmButton.click();
+
             await expect
                 .soft(tradeRequestPromise)
                 .toHavePayload(invityRequest.buyTradeSolanaPayload, {
