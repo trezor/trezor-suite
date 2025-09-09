@@ -1,6 +1,5 @@
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
@@ -49,20 +48,23 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         setMax,
         composeTransaction,
         getCurrentFiatRate,
+        watch,
     } = useSendFormContext();
     const { symbol, tokens } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const { isBelowLaptop } = useLayoutSize();
-    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const locale = useSelector(selectLanguage);
 
     const amountName = `outputs.${outputId}.amount` as const;
     const tokenInputName = `outputs.${outputId}.token`;
+    const currencyInputName = `outputs.${outputId}.currency` as const;
     const maxOutputId = getDefaultValue('setMaxOutputId');
     const isSendMaxActive = maxOutputId === outputId;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
+
+    const selectedBaseCurrency = watch(currencyInputName);
 
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
     const isSendMaxVisible = isSendMaxActive && !error && !Object.keys(errors).length;
@@ -77,8 +79,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         currencyCode: (output.currency?.value ?? '') as BaseCurrencyCode,
     });
 
-    const isWithBaseCurrency =
-        shallDisplayBaseCurrency && (!!currentRate?.rate || !!currentRate?.isLoading);
+    const showBaseCurrency = !!currentRate?.rate || !!currentRate?.isLoading;
+    const showTokenCurrency = selectedBaseCurrency.value !== symbol || !showBaseCurrency; // Show always at least one currency
 
     let decimals: number;
     if (token) {
@@ -155,46 +157,56 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 alignItems={isBelowLaptop ? 'center' : 'normal'}
                 gap={spacings.sm}
             >
-                <NumberInput
-                    inputState={inputState}
-                    locale={locale}
-                    labelHoverRight={
-                        !isSendMaxVisible && (!isWithBaseCurrency || isBelowLaptop) && sendMaxSwitch
-                    }
-                    labelRight={
-                        isSendMaxVisible && (!isWithBaseCurrency || isBelowLaptop) && sendMaxSwitch
-                    }
-                    labelLeft={
-                        <Row>
-                            <Translation id="AMOUNT" />
-                        </Row>
-                    }
-                    bottomText={bottomText || null}
-                    onChange={handleInputChange}
-                    name={amountName}
-                    data-testid={amountName}
-                    defaultValue={amountValue}
-                    maxLength={formInputsMaxLength.amount}
-                    rules={cryptoAmountRules}
-                    control={control}
-                    innerAddon={
-                        <Text variant="tertiary">
-                            {withTokens && token ? token?.symbol?.toUpperCase() : displayTicker}
-                        </Text>
-                    }
-                />
+                {showTokenCurrency && (
+                    <NumberInput
+                        inputState={inputState}
+                        locale={locale}
+                        labelHoverRight={
+                            !isSendMaxVisible &&
+                            (!showBaseCurrency || isBelowLaptop) &&
+                            sendMaxSwitch
+                        }
+                        labelRight={
+                            isSendMaxVisible &&
+                            (!showBaseCurrency || isBelowLaptop) &&
+                            sendMaxSwitch
+                        }
+                        labelLeft={
+                            <Row>
+                                <Translation id="AMOUNT" />
+                            </Row>
+                        }
+                        bottomText={bottomText || null}
+                        onChange={handleInputChange}
+                        name={amountName}
+                        data-testid={amountName}
+                        defaultValue={amountValue}
+                        maxLength={formInputsMaxLength.amount}
+                        rules={cryptoAmountRules}
+                        control={control}
+                        innerAddon={
+                            <Text variant="tertiary">
+                                {withTokens && token ? token?.symbol?.toUpperCase() : displayTicker}
+                            </Text>
+                        }
+                    />
+                )}
 
-                {isWithBaseCurrency && (
+                {showBaseCurrency && (
                     <BaseCurrencyValue amount="1" symbol={symbol}>
                         {({ rate }) =>
                             rate && (
                                 <>
-                                    <Icon
-                                        name={isBelowLaptop ? 'arrowsDownUp' : 'arrowsLeftRight'}
-                                        size={20}
-                                        variant="tertiary"
-                                        margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
-                                    />
+                                    {showTokenCurrency && (
+                                        <Icon
+                                            name={
+                                                isBelowLaptop ? 'arrowsDownUp' : 'arrowsLeftRight'
+                                            }
+                                            size={20}
+                                            variant="tertiary"
+                                            margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
+                                        />
+                                    )}
                                     <BaseCurrencyInput
                                         output={output}
                                         outputId={outputId}
