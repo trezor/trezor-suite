@@ -51,7 +51,7 @@ export const DeviceStatus = ({
     );
 
     return (
-        <Row flex="1" gap={spacings.sm}>
+        <Row flex="1" gap={spacings.sm} justifyContent="center">
             {isDeviceDetailVisible ? (
                 <>
                     {image}
