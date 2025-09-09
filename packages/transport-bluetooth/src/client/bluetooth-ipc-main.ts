@@ -93,6 +93,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
                 const scanResult = await this.api.send('start_scan');
                 if (scanResult.length === 0) {
+                    // todo: why there is this wait AFTER all api operations?
                     // wait. devices may not be returned immediately
                     await resolveAfter(1000);
                 }
