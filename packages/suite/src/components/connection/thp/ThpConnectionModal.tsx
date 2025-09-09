@@ -1,6 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
-import TrezorConnect from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -14,7 +13,6 @@ export const ThpConnectionModal = ({ device }: ThpConnectionModalProps) => {
     const dispatch = useDispatch();
 
     const onCancel = () => {
-        TrezorConnect.cancel();
         dispatch(thpActions.finishThpFlow());
     };
 
