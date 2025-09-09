@@ -11,6 +11,15 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.6.3-beta.1
+
+We’ve added support for Cardano message signing based on the CIP-8 standard, available through the new cardanoSignMessage method.
+
+    - feat(connect-explorer): Add cardanoSignMessage (bc88818)
+    - feat(connect): Cardano message signing (01c4a0f)
+
+Other than that only bug fixing, refactorings and chores are present.
+
 # 9.6.2
 
 This release is important for smooth support of 2.9.0 trezor firmware, namely commits:
