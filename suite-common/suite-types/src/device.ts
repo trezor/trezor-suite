@@ -50,7 +50,10 @@ export interface ExtendedDevice {
     firstConnectedTimestamp: number;
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
-    localFirstStorageSecret?: { evoluKeys?: EvoluKeys };
+    localFirstStorageSecret?: {
+        isRetrieving: boolean; // To prevent consequential call of the TrezorConnect.evoluGetNode(...)
+        evoluKeys: EvoluKeys | undefined;
+    };
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice

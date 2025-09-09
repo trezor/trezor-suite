@@ -4,7 +4,6 @@ import { initEvoluKeysThunk, selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
-import { subscriptionStorage } from './sharedObjects';
 import { subscribeLabelingUpdatesThunk } from '../labeling/subscribeLabelingUpdatesThunk';
 
 type SubscribeLocalFirstStorageThunkParams = {
@@ -26,15 +25,7 @@ export const subscribeLocalFirstStorageThunk = createThunk<
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        if (subscriptionStorage[walletDescriptor]) {
-            console.error(
-                `____${deviceStaticSessionId} was already subscribed! This shall NOT happen.`,
-            );
-
-            return;
-        }
-
-        if (device.localFirstStorageSecret === undefined) {
+        if (device.localFirstStorageSecret?.evoluKeys === undefined) {
             await dispatch(initEvoluKeysThunk({ device }));
         }
 

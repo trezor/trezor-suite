@@ -133,6 +133,13 @@ const setLocalFirstStorageSecret = createAction(
     }),
 );
 
+const setLocalFirstStorageSecretRetrieving = createAction(
+    `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecretRetrieving`,
+    ({ device, isRetrieving }: { device: TrezorDevice; isRetrieving: boolean }) => ({
+        payload: { device, isRetrieving },
+    }),
+);
+
 const toggleIsDeviceAutoEjectEnabled = createAction(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectDevices`,
 );
@@ -166,6 +173,7 @@ export const deviceActions = {
     setEntropyCheckFail,
     setThpCredentials,
     setLocalFirstStorageSecret,
+    setLocalFirstStorageSecretRetrieving,
     toggleIsDeviceAutoEjectEnabled,
     setDiscovered,
 };
