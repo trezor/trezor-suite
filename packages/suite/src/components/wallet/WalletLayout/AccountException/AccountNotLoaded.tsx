@@ -1,4 +1,4 @@
-import { restartDiscoveryThunk } from '@suite-common/wallet-core';
+import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
@@ -14,7 +14,7 @@ export const AccountNotLoaded = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(restartDiscoveryThunk());
+    const handleClick = () => dispatch(startOrRestartDiscoveryThunk());
 
     return (
         <AccountExceptionLayout

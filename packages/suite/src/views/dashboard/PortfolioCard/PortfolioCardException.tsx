@@ -1,7 +1,7 @@
 import { ComponentProps, JSX } from 'react';
 
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
-import { restartDiscoveryThunk } from '@suite-common/wallet-core';
+import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
 import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -147,7 +147,7 @@ export const PortfolioCardException = ({
                             values={{ details: discoveryFailedMessage(discovery, failed) }}
                         />
                     }
-                    cta={{ action: () => dispatch(restartDiscoveryThunk()), icon: 'repeat' }}
+                    cta={{ action: () => dispatch(startOrRestartDiscoveryThunk()), icon: 'repeat' }}
                     dataTestBase={exception.type}
                 />
             );
@@ -167,7 +167,7 @@ export const PortfolioCardException = ({
                             const result = await dispatch(applySettings({ use_passphrase: true }));
                             if (!result || !result.success) return;
                             // restart discovery
-                            dispatch(restartDiscoveryThunk());
+                            dispatch(startOrRestartDiscoveryThunk());
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                     }}
