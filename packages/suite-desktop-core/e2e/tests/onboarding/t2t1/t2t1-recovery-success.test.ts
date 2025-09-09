@@ -10,8 +10,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
     });
     test.beforeEach(async ({ analyticsSection, onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
-
-        analyticsSection.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
     });
 
     test(
