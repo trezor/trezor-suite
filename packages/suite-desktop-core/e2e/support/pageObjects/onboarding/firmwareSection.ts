@@ -25,7 +25,7 @@ export class FirmwareSection {
 
     @step()
     async continueThroughFirmware() {
-        await expect(this.onboardingLayout).toBeVisible({ timeout: 15_000 });
+        await expect(this.onboardingLayout).toBeVisible();
         // Test using this method do not care if we have current firmware or not
         // that is way we are using Promise.race to get through firmware check either way
         await Promise.race([this.continueButton.click(), this.skip()]);
