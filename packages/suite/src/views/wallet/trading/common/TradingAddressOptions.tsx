@@ -53,6 +53,7 @@ interface TradingAddressOptionsProps<TFieldValues extends TradingBuyAddressOptio
     address?: string;
     menuPlacement?: MenuPlacement;
     label: ReactNode;
+    isDisabled?: boolean;
 }
 
 export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOptionsType>({
@@ -61,6 +62,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
     account,
     label,
     menuPlacement,
+    isDisabled = false,
     ...props
 }: TradingAddressOptionsProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
@@ -94,6 +96,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
                     options={buildOptions(addresses)}
                     minValueWidth="70px"
                     menuPlacement={menuPlacement}
+                    isDisabled={isDisabled}
                     formatOptionLabel={(accountAddress: AccountAddress) => {
                         if (!accountAddress || !account || !receiveSymbol) return null;
 

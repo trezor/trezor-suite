@@ -62,6 +62,9 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 receiveCurrency: 'Bitcoin',
                 receiveSymbol: 'btc',
                 receiveNetwork: 'bitcoin',
+
+                receiveAccount: 'Bitcoin #1',
+                receiveAddress,
             });
         });
 
@@ -70,25 +73,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.swapBestOfferButton.click();
-            await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
-        });
-
-        await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmationAccountDropdown).toContainText('Bitcoin #1');
-            await expect(tradingPage.confirmationAddress).toContainText(receiveAddress);
-            await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
-                formattedSendAmount,
-            );
-            await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
-                formattedReceiveAmount,
-            );
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
-        });
-
-        await test.step('Finish transaction', async () => {
-            await tradingPage.finishTransactionButton.click();
-            await expect(tradingPage.swapTransactionFromAccount).toContainText('Solana #1');
-            await expect(tradingPage.swapTransactionToAddress).toContainText(formattedSendAddress);
+            await tradingPage.termsConfirmButton.click();
         });
 
         await test.step('Initiate send', async () => {

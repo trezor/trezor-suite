@@ -112,7 +112,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(store.getActions().length).toEqual(2); // loadings
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(exchange.isLoading).toBeFalsy();
-        expect(response).toBeFalsy();
+        expect(!!response).toBeFalsy();
     });
 
     it('should return false from confirmation when refundAddress is undefined', async () => {
@@ -147,7 +147,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(store.getActions().length).toEqual(2); // loadings
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(exchange.isLoading).toBeFalsy();
-        expect(response).toBeFalsy();
+        expect(!!response).toBeFalsy();
     });
 
     it('should return false from confirmation when trade is undefined', async () => {
@@ -180,7 +180,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toBeUndefined();
-        expect(response).toBeFalsy();
+        expect(!!response).toBeFalsy();
     });
 
     it('should return false from confirmation when trade.quoteId is undefined (using default selectedQuote)', async () => {
@@ -212,7 +212,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(store.getActions().length).toEqual(2); // loadings
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(exchange.isLoading).toBeFalsy();
-        expect(response).toBeFalsy();
+        expect(!!response).toBeFalsy();
     });
 
     it('should return false from confirmation when response is undefined ', async () => {
@@ -255,7 +255,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(store.getActions().length).toEqual(4);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
-        expect(response).toBeFalsy();
+        expect(!!response).toBeFalsy();
     });
 
     describe('should return false from confirmation', () => {
@@ -329,7 +329,7 @@ describe('confirmExchangeTradeThunk', () => {
 
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
-            expect(response).toBeFalsy();
+            expect(!!response).toBeFalsy();
         });
     });
 
@@ -382,7 +382,7 @@ describe('confirmExchangeTradeThunk', () => {
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
             expect(exchange.formStep).toEqual(step);
-            expect(response).toBeTruthy();
+            expect(!!response).toBeTruthy();
         });
     });
 
@@ -429,7 +429,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
         expect(exchange.formStep).toEqual('SEND_TRANSACTION');
-        expect(response).toBeTruthy();
+        expect(!!response).toBeTruthy();
     });
 
     describe('should return true from confirmation for trade, which is in to confirm state from dex and request approval transaction', () => {
@@ -477,7 +477,7 @@ describe('confirmExchangeTradeThunk', () => {
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
             expect(exchange.formStep).toEqual('SEND_TRANSACTION');
-            expect(response).toBeTruthy();
+            expect(!!response).toBeTruthy();
         });
     });
 
@@ -524,7 +524,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
-        expect(response).toBeTruthy();
+        expect(!!response).toBeTruthy();
     });
 
     it('should return true from confirmation for trade with status CONFIRMING and SUCCESS and set trade, transactionId and call nextStep', async () => {
@@ -581,7 +581,7 @@ describe('confirmExchangeTradeThunk', () => {
             data: tradeResponse,
             key: mockResponse.orderId,
         });
-        expect(response).toBeTruthy();
+        expect(!!response).toBeTruthy();
     });
 
     it('should return true from confirmation for trade with status CONFIRMING and SUCCESS and set trade, transactionId and call nextStep when fromAddress in trade is undefined', async () => {
@@ -644,7 +644,7 @@ describe('confirmExchangeTradeThunk', () => {
             data: tradeResponse,
             key: mockResponse.orderId,
         });
-        expect(response).toBeTruthy();
+        expect(!!response).toBeTruthy();
     });
 
     it('should return true from confirmation for trade, set trade, transactionId and call processResponseData when status CONFIRMING or SUCCESS', async () => {
@@ -711,7 +711,7 @@ describe('confirmExchangeTradeThunk', () => {
             key: mockResponse.orderId,
         });
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);
-        expect(response).toBeTruthy();
+        expect(!!response).toBeTruthy();
     });
 
     it('should return true from confirmation for trade with status LOADING and set trade, transactionId and set step to SEND_TRANSACTION', async () => {
@@ -768,6 +768,6 @@ describe('confirmExchangeTradeThunk', () => {
             key: mockResponse.orderId,
         });
         expect(exchange.formStep).toEqual('SEND_TRANSACTION');
-        expect(response).toBeTruthy();
+        expect(!!response).toBeTruthy();
     });
 });

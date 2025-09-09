@@ -11,6 +11,7 @@ import {
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     cryptoIdToNetworkAndContractAddress,
+    selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -21,6 +22,7 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 import {
@@ -37,6 +39,7 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 import { TradingFormSwitcherExchangeRates } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherExchangeRates';
 
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
+import { TradingVerify } from '../TradingSelectedOffer/TradingVerify/TradingVerify';
 
 const generateFractionButtons = (
     helpers: TradingUseFormActionsReturnProps,
@@ -68,6 +71,8 @@ const generateFractionButtons = (
 
 export const TradingFormInputs = () => {
     const context = useTradingFormContext();
+
+    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
     if (isTradingSellContext(context)) {
         const {
@@ -158,7 +163,10 @@ export const TradingFormInputs = () => {
             account,
             composedLevels,
             formState: { errors, isDirty },
-            form: { helpers },
+            form: {
+                helpers,
+                state: { isFormLoading, isFormInvalid },
+            },
             exchangeInfo,
             register,
             setValue,
@@ -166,8 +174,13 @@ export const TradingFormInputs = () => {
             changeFeeLevel,
             shouldSendInSats,
             trigger,
+            selectedQuote,
+            tradingReceiveAddress,
+            quotes,
+            isLoadingQuote,
         } = context;
-        const { rateType, sendCryptoSelect, outputs, amountInCrypto } = getValues();
+        const { rateType, sendCryptoSelect, receiveCryptoSelect, outputs, amountInCrypto } =
+            getValues();
         const output = outputs[0];
         const currencySelect = output.currency;
         const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
@@ -179,6 +192,8 @@ export const TradingFormInputs = () => {
                       getTradingNetworkDecimals({ sendCryptoSelect }),
                   )
                 : output.amount;
+
+        const receiveCryptoId = receiveCryptoSelect?.value;
 
         return (
             <>
@@ -207,7 +222,6 @@ export const TradingFormInputs = () => {
                                         onClick={() => {
                                             button.onClick();
                                             context.resetSelectedOffer();
-                                            context.refreshQuotes();
                                         }}
                                     />
                                 ))}
@@ -245,6 +259,16 @@ export const TradingFormInputs = () => {
                     supportedCryptoCurrencies={supportedCryptoCurrencies}
                     methods={{ ...context }}
                 />
+
+                {receiveCryptoId && !isLoading && (
+                    <TradingVerify
+                        tradingReceiveAddress={tradingReceiveAddress}
+                        cryptoId={receiveCryptoId}
+                        exchangeQuote={selectedQuote ?? quotes?.[0]}
+                        isLoading={(isFormLoading && !isFormInvalid) || isLoadingQuote}
+                    />
+                )}
+
                 <Fees
                     control={control}
                     feeInfo={feeInfo}
@@ -264,12 +288,21 @@ export const TradingFormInputs = () => {
         );
     }
 
-    const { buyInfo, device } = context;
+    const {
+        buyInfo,
+        device,
+        tradingReceiveAddress,
+        form: {
+            state: { isFormLoading, isFormInvalid },
+        },
+    } = context;
     const { currencySelect, cryptoSelect, amountInCrypto, cryptoInput } = context.getValues();
     const supportedCryptoCurrencies = buyInfo?.supportedCryptoCurrencies;
 
     const tokenAddress = (cryptoSelect.contractAddress as TokenAddress | null) ?? undefined;
     const { network } = cryptoIdToNetworkAndContractAddress(cryptoSelect.value);
+
+    const cryptoId = cryptoSelect.value;
 
     return (
         <>
@@ -321,6 +354,15 @@ export const TradingFormInputs = () => {
             </Column>
             <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
             <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+
+            {cryptoId && !isLoading && (
+                <TradingVerify
+                    tradingReceiveAddress={tradingReceiveAddress}
+                    cryptoId={cryptoId}
+                    isLoading={isFormLoading && !isFormInvalid}
+                />
+            )}
+
             <TradingFormFeesDisclamer />
         </>
     );

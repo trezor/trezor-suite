@@ -45,6 +45,7 @@ const getQuoteRequestData = ({
 }: GetQuoteRequestData): BuyTradeQuoteRequest | undefined => {
     const { fiatInput, cryptoInput, currencySelect, cryptoSelect, countrySelect, amountInCrypto } =
         formValues;
+
     const decimals = getTradingNetworkDecimals({ network });
     const cryptoStringAmount =
         cryptoInput && shouldSendInSats
@@ -85,6 +86,7 @@ export const handleBuyRequestThunk = createThunk<
         timer.loading();
 
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
+
         const requestData = getQuoteRequestData({
             formValues,
             quotesRequest,

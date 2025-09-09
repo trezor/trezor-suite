@@ -176,6 +176,7 @@ export type TradingBuyFormProps = {
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_BUY_RECEIVE_ADDRESS]?: string;
 };
 
 export interface TradingAccountOptionsGroupOptionProps {
@@ -244,6 +245,8 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_EXCHANGE_FORM]: TradingExchangeFormType;
     [constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]: TradingExchangeKycFilter;
     [constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]: TradingExchangeRateFilter;
+    [constants.TRADING_EXCHANGE_RECEIVE_ADDRESS]?: string | undefined;
+    [constants.TRADING_EXCHANGE_EXTRA_FIELD]?: string | undefined;
 }
 
 export type MinimalExchangeFormProps = {
@@ -251,6 +254,7 @@ export type MinimalExchangeFormProps = {
     receiveCryptoSelect?: { value: CryptoId } | null;
     sendCryptoSelect?: { value: CryptoId } | null;
     setMaxOutputId?: number;
+    receiveAddress?: string | undefined;
 };
 
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';

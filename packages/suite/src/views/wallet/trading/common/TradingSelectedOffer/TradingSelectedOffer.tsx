@@ -5,21 +5,15 @@ import { spacings } from '@trezor/theme';
 
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    TradingOfferBuyProps,
-    TradingOfferExchangeProps,
-    TradingOfferSellProps,
-} from 'src/types/trading/tradingForm';
+import { TradingOfferExchangeProps, TradingOfferSellProps } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getPaymentMethod,
     getProvidersInfoProps,
-    isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
-import { TradingOfferBuy } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferBuy/TradingOfferBuy';
 import { TradingOfferExchange } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange';
 import { TradingOfferSell } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSell';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
@@ -46,16 +40,6 @@ export const TradingSelectedOffer = () => {
             {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
             <Wrapper data-testid="@trading/selected-offer">
-                {isTradingBuyContext(context) && (
-                    <TradingOfferBuy
-                        account={account}
-                        selectedQuote={selectedTrade as TradingOfferBuyProps['selectedQuote']}
-                        providers={providers}
-                        type={context.type}
-                        quoteAmounts={quoteAmounts}
-                        {...paymentMethod}
-                    />
-                )}
                 {isTradingSellContext(context) && (
                     <TradingOfferSell
                         account={account}

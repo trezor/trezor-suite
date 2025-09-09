@@ -47,31 +47,16 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
                 receiveCurrency: 'USDC',
                 receiveSymbol: 'sol',
                 receiveNetwork: usdcMint,
+
+                receiveAccount: 'Solana #1',
+                receiveAddress,
             });
         });
 
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.clickSwapBestOfferAndWaitForFees();
-            await tradingPage.confirmTrade('Solana #1', receiveAddress);
-        });
-
-        await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmationAccountDropdown).toContainText('Solana #1');
-            await expect(tradingPage.confirmationAddress).toHaveValue(receiveAddress);
-            await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
-                formattedSendAmount,
-            );
-            await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
-                formattedReceiveAmount,
-            );
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
-        });
-
-        await test.step('Finish transaction', async () => {
-            await tradingPage.finishTransactionButton.click();
-            await expect(tradingPage.swapTransactionFromAccount).toContainText('Solana #1');
-            await expect(tradingPage.swapTransactionToAddress).toContainText(formattedSendAddress);
+            await tradingPage.termsConfirmButton.click();
         });
 
         await test.step('Initiate send', async () => {

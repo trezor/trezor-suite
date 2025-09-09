@@ -69,6 +69,7 @@ export const useTradingBuyFormDefaultValues = (
             countrySelect: defaultCountry,
             paymentMethod: defaultPaymentMethod,
             amountInCrypto: false,
+            receiveAddress: undefined,
         }),
         [
             buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,

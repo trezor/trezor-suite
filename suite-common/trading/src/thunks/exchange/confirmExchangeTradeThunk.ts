@@ -51,14 +51,12 @@ export const confirmExchangeTradeThunk = createThunk(
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
 
-        let isConfirmationOk = false;
-
         if (!trade) {
             trade = selectedQuote;
         }
 
         if (!trade || !refundAddress || !trade.quoteId) {
-            return isConfirmationOk;
+            return undefined;
         }
 
         if (trade.isDex) {
@@ -88,7 +86,7 @@ export const confirmExchangeTradeThunk = createThunk(
                 }),
             );
 
-            return isConfirmationOk;
+            return undefined;
         }
 
         if (
@@ -105,36 +103,34 @@ export const confirmExchangeTradeThunk = createThunk(
             );
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
-            return isConfirmationOk;
+            return undefined;
         }
-
-        isConfirmationOk = true; // is should be true from this moment - errors are handled above
 
         if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
-            return isConfirmationOk;
+            return response;
         }
 
         if (response.status === 'SIGN_DATA') {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
             dispatch(tradingExchangeActions.setFormStep('SIGN_DATA'));
 
-            return isConfirmationOk;
+            return response;
         }
 
         if (response.status === 'CONFIRM' && !response.isDex) {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
             dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
 
-            return isConfirmationOk;
+            return response;
         }
 
         if (response.status === 'CONFIRM' && response.isDex) {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
             dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
 
-            return isConfirmationOk;
+            return response;
         }
 
         // CONFIRMING, SUCCESS, LOADING
@@ -153,16 +149,16 @@ export const confirmExchangeTradeThunk = createThunk(
         if (response.tradeForm?.form) {
             processResponseData(response);
 
-            return isConfirmationOk;
+            return response;
         }
         if (response.status === 'LOADING') {
             dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
 
-            return isConfirmationOk;
+            return response;
         }
 
         nextStep();
 
-        return isConfirmationOk;
+        return response;
     },
 );

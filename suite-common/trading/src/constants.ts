@@ -42,6 +42,11 @@ export const TRADING_FORM_COUNTRY_SELECT = 'countrySelect';
 export const TRADING_FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
 
+export const TRADING_EXCHANGE_RECEIVE_ADDRESS = 'receiveAddress';
+export const TRADING_EXCHANGE_EXTRA_FIELD = 'extraField';
+
+export const TRADING_BUY_RECEIVE_ADDRESS = 'receiveAddress';
+
 export const TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT = 'sendCryptoSelect';
 export const TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT = 'receiveCryptoSelect';
 

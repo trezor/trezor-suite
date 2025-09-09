@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
 import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_DEX,
-    TRADING_FORM_OUTPUT_ADDRESS,
     type TradingTradeType,
     type TradingType,
     isSendingEvmNativeToken,
@@ -38,6 +37,7 @@ import {
     getProvidersInfoProps,
     getSelectQuoteTyped,
     getSelectedCrypto,
+    isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -85,8 +85,12 @@ export const TradingFormOffer = () => {
         form: { state },
     } = context;
 
-    const isFetchingApprovalStatus =
-        isTradingExchangeContext(context) && context.isFetchingApprovalStatus;
+    const tradingReceiveAddress =
+        isTradingExchangeContext(context) || isTradingBuyContext(context)
+            ? context.tradingReceiveAddress
+            : undefined;
+
+    const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
 
     const { cryptoIdToPlatformName } = useTradingInfo();
     const providers = getProvidersInfoProps(context);
@@ -139,15 +143,28 @@ export const TradingFormOffer = () => {
         (quote as ExchangeTrade)?.send !== context.getValues().sendCryptoSelect?.value;
 
     useEffect(() => {
-        if (isTradingExchangeContext(context) && requiresTokenApproval) {
-            const { fetchApprovalStatus } = context;
-            const trade = quote as ExchangeTrade | undefined;
-            fetchApprovalStatus(trade);
-        }
+        // confirm the quote once it loads
+        const initConfirmTrade = async () => {
+            if (
+                isTradingExchangeContext(context) &&
+                requiresTokenApproval &&
+                tradingReceiveAddress?.receiveAddress
+            ) {
+                dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+                const { receiveAddress } = tradingReceiveAddress;
+                const trade = quote as ExchangeTrade | undefined;
+
+                context.setIsLoadingQuote(true);
+                await context.confirmTrade({ trade, receiveAddress });
+                context.setIsLoadingQuote(false);
+            }
+        };
+
+        initConfirmTrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [quote, requiresTokenApproval]);
 
-    const onSelectQuote = () => {
+    const onSelectQuote = async () => {
         if (!quote) {
             return;
         }
@@ -164,10 +181,21 @@ export const TradingFormOffer = () => {
             }
         }
 
-        if (isTradingExchangeContext(context)) {
+        if (isTradingExchangeContext(context) && tradingReceiveAddress?.receiveAddress) {
             const trade = quote as ExchangeTrade;
-            dispatch(tradingExchangeActions.saveSelectedQuote(trade));
-            dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+            const { receiveAddress } = tradingReceiveAddress;
+            const newTrade = await context.confirmTrade({ trade, receiveAddress });
+            if (!newTrade) return;
+            context.selectQuote(newTrade);
+
+            return;
+        }
+
+        if (isTradingBuyContext(context)) {
+            const trade = quote as BuyTrade;
+            context.selectQuote(trade);
+
+            return;
         }
 
         selectQuote(quote);
@@ -192,14 +220,9 @@ export const TradingFormOffer = () => {
         areSatsUsed = !!shouldSendInSats;
     }
 
-    const onOpenApproveModal = async () => {
+    const onOpenApproveModal = () => {
         if (isTradingExchangeContext(context)) {
-            if (context.selectedQuote?.status === 'APPROVAL_REQ' && context.selectedQuote?.dexTx) {
-                context.setValue('ethereumDataHex', context.selectedQuote?.dexTx.data);
-                context.setValue(TRADING_FORM_OUTPUT_ADDRESS, context.selectedQuote?.dexTx.to);
-            }
-
-            await context.fetchFeesAndCompose();
+            context.setIsApproval(true);
         }
 
         setIsApproveModalOpen(true);
@@ -209,27 +232,22 @@ export const TradingFormOffer = () => {
         setIsApproveModalOpen(false);
 
         if (isTradingExchangeContext(context)) {
+            context.setIsApproval(false);
+
             if (isSubmitting) return;
+
             if (context.selectedQuote?.receiveAddress) {
                 await context.confirmApproval({
                     trade: { ...context.selectedQuote, approvalType: undefined },
                     receiveAddress: context.selectedQuote.receiveAddress,
                 });
             }
-
-            context.setValue('ethereumDataHex', '');
-            await context.fetchFeesAndCompose();
         }
     };
 
-    const onOpenRevokeModal = async () => {
+    const onOpenRevokeModal = () => {
         if (isTradingExchangeContext(context)) {
-            if (context.selectedQuote?.dexTx) {
-                context.setValue('ethereumDataHex', context.selectedQuote?.dexTx.data);
-                context.setValue(TRADING_FORM_OUTPUT_ADDRESS, context.selectedQuote?.dexTx.to);
-            }
-
-            await context.fetchFeesAndCompose();
+            context.setIsApproval(true);
         }
 
         setIsRevokeModalOpen(true);
@@ -239,16 +257,16 @@ export const TradingFormOffer = () => {
         setIsRevokeModalOpen(false);
 
         if (isTradingExchangeContext(context)) {
+            context.setIsApproval(false);
+
             if (isSubmitting) return;
+
             if (context.selectedQuote?.receiveAddress) {
                 await context.confirmApproval({
                     trade: { ...context.selectedQuote, approvalType: undefined },
                     receiveAddress: context.selectedQuote?.receiveAddress,
                 });
             }
-
-            context.setValue('ethereumDataHex', '');
-            await context.fetchFeesAndCompose();
         }
     };
 
@@ -267,8 +285,8 @@ export const TradingFormOffer = () => {
         amountTooHigh;
 
     const isLoading = requiresTokenApproval
-        ? state.isFormLoading || isFetchingApprovalStatus || isQuoteOutdated
-        : state.isFormLoading;
+        ? state.isFormLoading || isLoadingQuote || isQuoteOutdated
+        : state.isFormLoading || isLoadingQuote;
 
     const selectedAssetCryptoId =
         !state.isLoadingOrInvalid && receiveCurrency
@@ -289,7 +307,7 @@ export const TradingFormOffer = () => {
                     <TradingFormOfferCryptoAmount
                         amount={
                             !state.isLoadingOrInvalid &&
-                            !isFetchingApprovalStatus &&
+                            !isLoadingQuote &&
                             bestScoredQuoteAmounts?.receiveAmount &&
                             !isQuoteOutdated
                                 ? bestScoredQuoteAmounts.receiveAmount

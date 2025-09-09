@@ -113,6 +113,7 @@ describe('handleExchangeRequestThunk', () => {
             exchangeType: 'CEX',
             exchangeComparatorKycFilter: 'all',
             exchangeComparatorRateFilter: 'all',
+            receiveAddress: '0x0000000000000000000000000000000000000000',
         };
         const input: HandleExchangeRequestThunkProps = {
             formValues,
@@ -152,6 +153,7 @@ describe('handleExchangeRequestThunk', () => {
             receive: 'ethereum',
             send: 'bitcoin',
             sendStringAmount: '0.0015',
+            receiveAddress: '0x0000000000000000000000000000000000000000',
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
@@ -193,6 +195,7 @@ describe('handleExchangeRequestThunk', () => {
             receive: 'ethereum',
             send: 'bitcoin',
             sendStringAmount: '0.0015',
+            receiveAddress: '0x0000000000000000000000000000000000000000',
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(0);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);

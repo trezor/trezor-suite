@@ -1,72 +1,50 @@
-import { useEffect, useMemo } from 'react';
+import { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { CryptoId } from 'invity-api';
-
-import {
-    TradingTradeBuyExchangeType,
-    cryptoIdToNetwork,
-    tradingActions,
-    useTradingInfo,
-} from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { cryptoIdToNetwork, useTradingInfo } from '@suite-common/trading';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
-import { Button, Column, Divider, Input, Paragraph, Tooltip } from '@trezor/components';
-import { useClickCooldown } from '@trezor/react-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { Column, Input, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingVerifyAccountReturnProps } from 'src/types/trading/tradingVerify';
-import {
-    isTradingBuyContext,
-    isTradingExchangeContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
-import { ConfirmedOnTrezor } from 'src/views/wallet/trading/common/ConfirmedOnTrezor';
-import { TradingAddressOptions } from 'src/views/wallet/trading/common/TradingAddressOptions';
-import { TradingVerifyDestinationTag } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyDestinationTag';
-import { TradingVerifyOptions } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptions';
+import { useTranslation } from 'src/hooks/suite';
+import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
+
+import { TradingVerifyDestinationTag } from './TradingVerifyDestinationTag';
+import { TradingVerifyOptions } from './TradingVerifyOptions';
+import { TradingAddressOptions } from '../../TradingAddressOptions';
 
 interface TradingVerifyProps {
-    tradingVerifyAccount: TradingVerifyAccountReturnProps;
+    tradingReceiveAddress: ReturnType<typeof useTradingReceiveAddress>;
     cryptoId: CryptoId;
+    exchangeQuote?: ExchangeTrade;
+    isLoading: boolean;
 }
 
-export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyProps) => {
-    const { handleClick, disabled } = useClickCooldown();
-
-    const dispatch = useDispatch();
+export const TradingVerify = ({
+    tradingReceiveAddress,
+    cryptoId,
+    exchangeQuote,
+    isLoading,
+}: TradingVerifyProps) => {
     const { translationString } = useTranslation();
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const context = useTradingFormContext<TradingTradeBuyExchangeType>();
-    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToNativeCoinSymbol } = useTradingInfo();
+
     const {
-        form: {
-            state: { isFormLoading },
-        },
-        device,
-        verifyAddress,
-        verifiedAddress,
-        confirmTrade,
-    } = context;
-    const exchangeQuote = isTradingExchangeContext(context) ? context.selectedQuote : null;
-    const {
-        form,
         selectedAccountOption,
-        accountAddress,
         selectAccountOptions,
         isMenuOpen,
-        getTranslationIds,
         onChangeAccount,
-    } = tradingVerifyAccount;
+        getTranslationIds,
+        form,
+    } = tradingReceiveAddress;
+
+    const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
+        selectedAccountOption?.type,
+    );
 
     const address = form.watch('address');
-    const extraField = form.watch('extraField');
+
     const extraFieldDescription = exchangeQuote?.extraFieldDescription
         ? {
               extraFieldName: exchangeQuote?.extraFieldDescription?.name,
@@ -74,12 +52,6 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
               toCurrency: exchangeQuote?.receive,
           }
         : {};
-
-    const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
-        selectedAccountOption?.type,
-    );
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
-    const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
     const { ref: networkRef, ...networkField } = form.register('address', {
         required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
@@ -113,70 +85,15 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
         },
     });
 
-    // close modals and reset verifiedAddress on device connection change
-    useEffect(() => {
-        dispatch(tradingActions.setVerifiedAddress(undefined));
-        dispatch(modalActions.onCancel());
-    }, [device?.connected, dispatch]);
-
-    const isButtonDisabled = useMemo(() => {
-        const isFormInvalid = !form.formState.isValid;
-        const isAddressInvalid = address === '';
-        const isExtraFieldInvalid =
-            exchangeQuote?.extraFieldDescription?.required && extraField === '';
-
-        switch (selectedAccountOption?.type) {
-            case 'NON_SUITE':
-            case 'ADD_SUITE':
-                return isFormLoading || isFormInvalid || isAddressInvalid || isExtraFieldInvalid;
-            case 'SUITE':
-                return isFormLoading || isFormInvalid || isExtraFieldInvalid;
-        }
-
-        return isFormLoading || isFormInvalid || isAddressInvalid || isExtraFieldInvalid;
-    }, [selectedAccountOption, form, address, isFormLoading, exchangeQuote, extraField]);
-
-    const onFinishTransactionClick = () => {
-        if (!address) {
-            return;
-        }
-
-        if (isTradingExchangeContext(context)) {
-            analytics.report({
-                type: EventType.TradingExchange,
-                payload: {
-                    action: 'continue',
-                    step: 'receive-address',
-                    accountType: selectedAccountOption?.type,
-                },
-            });
-        }
-
-        if (isTradingExchangeContext(context) && context.selectedQuote) {
-            confirmTrade({
-                trade: { ...context.selectedQuote, status: 'CONFIRM' },
-                receiveAddress: address,
-                extraField,
-            });
-        } else {
-            confirmTrade({ receiveAddress: address, extraField });
-        }
-    };
-
     return (
         <Column gap={spacings.xl}>
-            <Paragraph typographyStyle="hint" variant="tertiary">
-                <Translation
-                    id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
-                    values={{ symbol: displaySymbol }}
-                />
-            </Paragraph>
             <TradingVerifyOptions
                 receiveNetwork={cryptoId}
                 selectedAccountOption={selectedAccountOption}
                 selectAccountOptions={selectAccountOptions}
                 isMenuOpen={isMenuOpen}
                 onChangeAccount={onChangeAccount}
+                isDisabled={isLoading}
                 label={
                     <Tooltip hasIcon content={<Translation id={accountTooltipTranslationId} />}>
                         <Translation id="TR_BUY_RECEIVING_ACCOUNT" />
@@ -194,6 +111,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                                 control={form.control}
                                 receiveSymbol={cryptoId}
                                 setValue={form.setValue}
+                                isDisabled={isLoading}
                                 label={
                                     <Tooltip
                                         hasIcon
@@ -204,6 +122,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                                 }
                             />
                         )}
+
                     {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
                         <Input
                             data-testid="@trading/form/verify/address"
@@ -219,6 +138,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                             }
                             bottomText={form.formState.errors.address?.message || null}
                             innerRef={networkRef}
+                            isDisabled={isLoading}
                             {...networkField}
                         />
                     )}
@@ -238,6 +158,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                                     }
                                     bottomText={form.formState.errors.extraField?.message || null}
                                     innerRef={descriptionRef}
+                                    isDisabled={isLoading}
                                     {...descriptionField}
                                 />
                             }
@@ -246,59 +167,8 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                             }
                             required={exchangeQuote.extraFieldDescription.required}
                             extraFieldDescription={exchangeQuote.extraFieldDescription}
+                            isDisabled={isLoading}
                         />
-                    )}
-
-                    {device?.connected &&
-                        device.available &&
-                        verifiedAddress &&
-                        verifiedAddress.address === address && (
-                            <ConfirmedOnTrezor device={device} />
-                        )}
-                </Column>
-            )}
-            {selectedAccountOption && (
-                <Column>
-                    <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
-                    {(!verifiedAddress || verifiedAddress.address !== address) &&
-                        selectedAccountOption.account && (
-                            <Button
-                                data-testid="@trading/offer/confirm-on-trezor-button"
-                                isLoading={isFormLoading || disabled}
-                                isDisabled={disabled || isDiscoveryRunning || isFormLoading}
-                                onClick={() => {
-                                    handleClick(() => {
-                                        if (selectedAccountOption.account && accountAddress) {
-                                            dispatch(
-                                                verifyAddress(
-                                                    selectedAccountOption.account,
-                                                    accountAddress.address,
-                                                    accountAddress.path,
-                                                ),
-                                            );
-                                        }
-                                    });
-                                }}
-                            >
-                                <Translation
-                                    id={
-                                        device?.connected || !isTradingBuyContext(context)
-                                            ? 'TR_CONFIRM_ON_TREZOR'
-                                            : 'TR_CONFIRM_ADDRESS'
-                                    }
-                                />
-                            </Button>
-                        )}
-                    {((verifiedAddress && verifiedAddress.address === address) ||
-                        selectedAccountOption?.type === 'NON_SUITE') && (
-                        <Button
-                            data-testid="@trading/offer/continue-transaction-button"
-                            isLoading={isFormLoading}
-                            onClick={onFinishTransactionClick}
-                            isDisabled={isButtonDisabled}
-                        >
-                            <Translation id="TR_BUY_GO_TO_PAYMENT" />
-                        </Button>
                     )}
                 </Column>
             )}

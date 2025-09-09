@@ -5,18 +5,12 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import messages from '@trezor/suite/src/support/messages';
 
-import { Fees } from './fees';
 import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
-import {
-    TrezorUserEnvLinkProxy,
-    calculatePercentageOfBalance,
-    formatAddress,
-    getCountryLabel,
-    step,
-} from '../../common';
+import { calculatePercentageOfBalance, getCountryLabel, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
 import { DevicePrompt } from '../devicePrompt';
+import { Fees } from './fees';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 
@@ -264,13 +258,24 @@ export class TradingPage {
     }
 
     @step()
-    async fillBuyForm(
-        amount: string,
-        cryptoCurrency: string = 'bitcoin',
-        wantCrypto: boolean = false,
-        fiatCurrencyCode: BaseCurrencyCode = 'czk',
-        country: TradingCountryCode = 'CZ',
-    ) {
+    async fillBuyForm({
+        amount,
+        cryptoCurrency = 'bitcoin',
+        wantCrypto = false,
+        fiatCurrencyCode = 'czk',
+        country = 'CZ',
+        receiveAccount,
+        receiveAddress,
+    }: {
+        amount: string;
+        cryptoCurrency?: string;
+        wantCrypto?: boolean;
+        fiatCurrencyCode?: BaseCurrencyCode;
+        country?: TradingCountryCode;
+
+        receiveAccount?: string;
+        receiveAddress?: string;
+    }) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
         await expect(inputField).not.toHaveValue('');
         if (wantCrypto) {
@@ -280,6 +285,17 @@ export class TradingPage {
         }
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(fiatCurrencyCode);
+
+        if (receiveAccount && receiveAddress) {
+            await expect(this.confirmationAccountDropdown).toContainText(receiveAccount);
+
+            if (cryptoCurrency === 'bitcoin') {
+                await expect(this.confirmationAddress).toContainText(receiveAddress);
+            } else {
+                await expect(this.confirmationAddress).toHaveValue(receiveAddress);
+            }
+        }
+
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.buyQuotes);
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
         await inputField.fill(amount);
@@ -346,6 +362,9 @@ export class TradingPage {
         receiveCurrency: string;
         receiveSymbol: NetworkSymbol;
         receiveNetwork: string;
+
+        receiveAccount?: string;
+        receiveAddress?: string;
     }) {
         await this.page.selectDropdownOptionWithRetry(
             this.swapFromAccountInput,
@@ -354,6 +373,16 @@ export class TradingPage {
         await this.selectAccount(params.receiveCurrency, params.receiveSymbol);
         // We should not fill in amount until account change takes effect = correct ticker is displayed
         await expect(this.swapAmountInputCurrencyTicker).toHaveText(params.sendTicker);
+
+        if (params.receiveAccount && params.receiveAddress) {
+            await expect(this.confirmationAccountDropdown).toContainText(params.receiveAccount);
+
+            if (params.receiveSymbol === 'btc') {
+                await expect(this.confirmationAddress).toContainText(params.receiveAddress);
+            } else {
+                await expect(this.confirmationAddress).toHaveValue(params.receiveAddress);
+            }
+        }
 
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.swapQuotes);
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
@@ -364,6 +393,7 @@ export class TradingPage {
             send: params.sendCurrency,
             sendStringAmount: params.amount,
             dex: 'enable',
+            receiveAddress: params.receiveAddress,
         });
         await quotesResponsePromise;
         await this.waitForOffersSync();
@@ -377,23 +407,6 @@ export class TradingPage {
         const swapFeeCallsPromise = this.fees.promiseForResponseSolanaFeeCalls();
         await this.swapBestOfferButton.click();
         await swapFeeCallsPromise;
-    }
-
-    @step()
-    async confirmTrade(accountName: string, addressToCheck?: string) {
-        await this.termsConfirmButton.click();
-        await this.confirmOnTrezorButton.click();
-        await expect(this.devicePrompt.headerParagraph).toHaveText(accountName);
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        if (addressToCheck) {
-            await expect(this.devicePrompt.outputValueOf('address')).toHaveText(
-                formatAddress(addressToCheck),
-            );
-            await expect(this.devicePrompt).toDisplayReceiveAddress(addressToCheck);
-        }
-        await TrezorUserEnvLinkProxy.pressYes();
-        await this.devicePrompt.confirmOnDevicePromptIsHidden();
-        await expect(this.confirmOnTrezorButton).toHaveText('Confirmed on Trezor');
     }
 
     @step()

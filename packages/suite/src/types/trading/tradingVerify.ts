@@ -42,7 +42,11 @@ export interface TradingVerifyAccountReturnProps {
     onChangeAccount: (account: TradingVerifyFormAccountOptionProps) => void;
 }
 
-export type TradingVerifyOptionsProps = { receiveNetwork: CryptoId; label: ReactNode } & Pick<
+export type TradingVerifyOptionsProps = {
+    receiveNetwork: CryptoId;
+    label: ReactNode;
+    isDisabled?: boolean;
+} & Pick<
     TradingVerifyAccountReturnProps,
     'selectAccountOptions' | 'selectedAccountOption' | 'onChangeAccount' | 'isMenuOpen'
 >;

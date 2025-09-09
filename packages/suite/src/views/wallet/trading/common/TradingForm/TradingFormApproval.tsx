@@ -3,7 +3,7 @@ import { usePrevious } from 'react-use';
 
 import styled, { DefaultTheme, keyframes } from 'styled-components';
 
-import { TradingExchangeType, tradingExchangeActions, useTradingInfo } from '@suite-common/trading';
+import { TradingExchangeType, useTradingInfo } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -11,7 +11,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useTradingExchangeWatchApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchApproval';
@@ -67,7 +67,6 @@ export const TradingFormApproval = ({
     setApprovalType,
     setIsManuallyApproved,
 }: TradingFormApprovalProps) => {
-    const dispatch = useDispatch();
     const context = useTradingFormContext<TradingExchangeType>();
 
     const {
@@ -255,7 +254,6 @@ export const TradingFormApproval = ({
             return;
         }
 
-        dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
         selectQuote(selectedQuote);
     };
 

@@ -14,6 +14,7 @@ export interface TradingVerifyDestinationTagProps {
     onToggle?: (toggled: boolean) => void;
     required: boolean;
     extraFieldDescription?: ExchangeTrade['extraFieldDescription'];
+    isDisabled?: boolean;
 }
 
 export const TradingVerifyDestinationTag = ({
@@ -21,6 +22,7 @@ export const TradingVerifyDestinationTag = ({
     onToggle,
     required,
     extraFieldDescription,
+    isDisabled = false,
 }: TradingVerifyDestinationTagProps) => {
     const { openNodeById } = useGuideOpenNode();
 
@@ -52,7 +54,7 @@ export const TradingVerifyDestinationTag = ({
                             <Translation id="DESTINATION_TAG_SWITCH" />
                         )
                     }
-                    isDisabled={required}
+                    isDisabled={isDisabled || required}
                 />
                 <Button variant="tertiary" type="button" size="tiny" onClick={handleOpenGuide}>
                     <Translation id="DESTINATION_TAG_GUIDE_LINK" />

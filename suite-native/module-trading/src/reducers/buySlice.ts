@@ -2,14 +2,9 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { TradingBuyState as CommonTradingBuyState, initialState } from '@suite-common/trading';
 
-export interface TradingBuyState extends CommonTradingBuyState {
-    receiveAddress: string | undefined;
-}
+export interface TradingBuyState extends CommonTradingBuyState {}
 
-export const buyInitialState: TradingBuyState = {
-    ...initialState.buy,
-    receiveAddress: undefined,
-};
+export const buyInitialState: TradingBuyState = { ...initialState.buy };
 
 export const TRADING_BUY = 'tradingBuy';
 

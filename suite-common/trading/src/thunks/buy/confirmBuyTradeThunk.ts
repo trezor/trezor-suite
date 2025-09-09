@@ -1,4 +1,4 @@
-import { BuyTradeResponse } from 'invity-api';
+import { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -14,6 +14,7 @@ import {
 } from '../../selectors/tradingSelectors';
 
 export type ConfirmTradeThunkProps = {
+    quote?: BuyTrade;
     returnUrl: string;
     address: string;
     account: Account;
@@ -26,6 +27,7 @@ export const confirmBuyTradeThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/confirmTrade`,
     async (
         {
+            quote,
             returnUrl,
             address,
             account,
@@ -37,14 +39,16 @@ export const confirmBuyTradeThunk = createThunk(
         const selectedQuote = selectTradingBuySelectedQuote(getState());
         const receiveAccountKey = selectTradingBuyReceiveAccountKey(getState());
 
-        if (!selectedQuote) return;
+        const buyTrade = quote ?? selectedQuote;
+
+        if (!buyTrade) return undefined;
 
         dispatch(tradingBuyActions.setIsLoading(true));
 
         triggerAnalyticsTradeConfirmation();
 
         const trade = {
-            ...selectedQuote,
+            ...buyTrade,
             receiveAddress: address,
         };
 
@@ -60,6 +64,10 @@ export const confirmBuyTradeThunk = createThunk(
                     error: 'No response from the server',
                 }),
             );
+
+            dispatch(tradingBuyActions.setIsLoading(false));
+
+            return undefined;
         } else if (response.trade.error) {
             dispatch(
                 notificationsActions.addToast({
@@ -67,6 +75,10 @@ export const confirmBuyTradeThunk = createThunk(
                     error: response.trade.error,
                 }),
             );
+
+            dispatch(tradingBuyActions.setIsLoading(false));
+
+            return undefined;
         } else {
             dispatch(
                 tradingActions.saveTrade({
@@ -84,5 +96,7 @@ export const confirmBuyTradeThunk = createThunk(
         }
 
         dispatch(tradingBuyActions.setIsLoading(false));
+
+        return response.trade;
     },
 );

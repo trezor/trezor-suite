@@ -99,6 +99,7 @@ export const useTradingExchangeFormDefaultValues = (
             amountInCrypto: true,
             sendCryptoSelect: defaultSendCryptoSelect,
             receiveCryptoSelect: null,
+            receiveAddress: undefined,
             [TRADING_EXCHANGE_RATE]: TRADING_EXCHANGE_RATE_FIXED as TradingExchangeRateType,
             [TRADING_EXCHANGE_FORM]: TRADING_EXCHANGE_FORM_CEX as TradingExchangeFormType,
             [TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]:
