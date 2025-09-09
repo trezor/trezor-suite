@@ -1,19 +1,10 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { useAtomValue } from 'jotai';
 
-import { selectIsThpInProgress } from '@suite-common/thp';
-import {
-    selectIsDeviceConnected,
-    selectIsDeviceInitialized,
-    selectIsDeviceThpRequired,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
-import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
-import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
@@ -29,7 +20,6 @@ import {
     isOnboardingDeviceDisconnectedAlertDisplayedAtom,
     wasDeviceOnboardingCancelledAtom,
 } from '../deviceAtoms';
-import { selectIsDeviceCompromised, selectIsDeviceSetupSupported } from '../selectors';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
@@ -39,18 +29,9 @@ const pinMatrixBlacklistedScreens = [
 ];
 
 export const useHandleDeviceConnection = () => {
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
-    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
-    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
-    const isThpInProgress = useSelector(selectIsThpInProgress);
-    const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
-    const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
-    const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
 
-    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
         isOnboardingDeviceDisconnectedAlertDisplayedAtom,
     );
@@ -58,7 +39,6 @@ export const useHandleDeviceConnection = () => {
     const wasDeviceOnboardingCancelled = useAtomValue(wasDeviceOnboardingCancelledAtom);
 
     const navigation = useNavigation<NavigationProp>();
-    const dispatch = useDispatch();
 
     const isDeviceOnboardingConnectAndUnlockScreenFocused = useNavigationRouteMatch(
         DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
@@ -73,19 +53,9 @@ export const useHandleDeviceConnection = () => {
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
         if (
-            isDeviceSetupSupported &&
-            isDeviceConnected &&
-            isOnboardingFinished &&
-            !isDeviceInitialized &&
-            !isDeviceThpRequired &&
-            !isThpInProgress &&
-            !isPortfolioTrackerDevice &&
-            !isBiometricsOverlayVisible &&
             !isOnboardingDeviceDisconnectedAlertDisplayed &&
-            !isFirmwareInstallationRunning &&
             (!isDeviceOnboardingStackFocused || isDeviceOnboardingConnectAndUnlockScreenFocused) &&
-            !wasDeviceOnboardingCancelled &&
-            !isDeviceCompromised
+            !wasDeviceOnboardingCancelled
         ) {
             // If THP confirmation screen was shown, we want to prevent swiping/navigating back to
             // that THP confirmation screen. Swiping/navigating back shall lead to the Home screen.
@@ -108,22 +78,11 @@ export const useHandleDeviceConnection = () => {
             });
         }
     }, [
-        dispatch,
-        isDeviceConnected,
-        isOnboardingFinished,
-        isBiometricsOverlayVisible,
-        navigation,
-        isDeviceInitialized,
-        isDeviceThpRequired,
-        isThpInProgress,
-        isPortfolioTrackerDevice,
-        isDeviceSetupSupported,
-        isDeviceOnboardingStackFocused,
-        isFirmwareInstallationRunning,
-        isOnboardingDeviceDisconnectedAlertDisplayed,
         isDeviceOnboardingConnectAndUnlockScreenFocused,
+        isDeviceOnboardingStackFocused,
+        isOnboardingDeviceDisconnectedAlertDisplayed,
+        navigation,
         wasDeviceOnboardingCancelled,
-        isDeviceCompromised,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked

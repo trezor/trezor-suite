@@ -10,10 +10,12 @@ import {
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    DeviceOnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
     StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls';
@@ -28,7 +30,9 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const FirmwareAuthenticityCheckFailModalContent = () => {
     const dispatch = useDispatch();
+
     const navigation = useNavigation<NavigationProps>();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
@@ -43,10 +47,14 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
     const handleClose = () => {
         dismissCheck();
 
-        if (!isCoinEnablingInitFinished && isDeviceInitialized) {
-            navigation.navigate(RootStackRoutes.CoinEnablingInit);
+        if (!isDeviceInitialized) {
+            navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
+                screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+            });
+        } else if (!isCoinEnablingInitFinished) {
+            navigation.popTo(RootStackRoutes.CoinEnablingInit);
         } else {
-            if (navigation.canGoBack()) navigation.goBack();
+            navigateToInitialScreen();
         }
     };
 
