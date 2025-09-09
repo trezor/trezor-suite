@@ -12,8 +12,8 @@ use windows::{
     core::Ref,
     Devices::Bluetooth::BluetoothLEDevice,
     Devices::Enumeration::{
-        DeviceInformationCustomPairing, DevicePairingKinds, DevicePairingRequestedEventArgs, DeviceUnpairingResultStatus,
-        DevicePairingResultStatus,
+        DeviceInformationCustomPairing, DevicePairingKinds, DevicePairingRequestedEventArgs,
+        DevicePairingResultStatus, DeviceUnpairingResultStatus,
     },
     Foundation::TypedEventHandler,
 };

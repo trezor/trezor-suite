@@ -35,7 +35,10 @@ impl ConnectionBroadcast {
 
     pub fn send(&self, msg: ChannelMessage) {
         if let Err(err) = self.sender.send(msg.clone()) {
-            info!("ConnectionBroadcast message {msg:?} not sent. {err}");
+            info!(
+                "ConnectionBroadcast {} message {msg:?} not sent. {err}",
+                self.peer
+            );
         }
     }
 }
