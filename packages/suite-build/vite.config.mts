@@ -287,6 +287,14 @@ if (typeof window !== 'undefined' && typeof global === 'undefined') {
 if (typeof window !== 'undefined' && typeof globalThis === 'undefined') {
     window.globalThis = window;
 };
+// Polyfill process.nextTick for jws.createVerify
+if (
+    typeof window !== 'undefined' &&
+    typeof window.process !== 'undefined' &&
+    typeof window.process.nextTick === 'undefined'
+) {
+    window.process.nextTick = cb => Promise.resolve().then(cb);
+}
 
 // Export nothing - this module is only for side effects
 export {};
