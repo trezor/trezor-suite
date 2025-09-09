@@ -69,7 +69,7 @@ const getDiscoveryStatus = ({
         };
     }
 
-    if (discovery?.status === 'progress' || discovery?.status === 'starting') {
+    if (discovery?.status === 'progress') {
         return {
             status: 'loading',
             type: 'discovery',
