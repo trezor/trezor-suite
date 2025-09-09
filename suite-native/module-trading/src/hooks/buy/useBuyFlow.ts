@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
 
+import { invariant } from '@suite-common/suite-utils';
 import {
     TradingRootState,
     buyThunks,
@@ -29,6 +30,10 @@ import {
     getAnalyticsTradingBuyPayload,
     getSourceForForm,
 } from '../../utils/general/formUtils';
+import {
+    getReceiveAccountAddressText,
+    isFullySelectedReceiveAccount,
+} from '../../utils/general/receiveAccountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConsent } from '../general/useConsent';
 import { useConsentDenier } from '../general/useConsentDenier';
@@ -179,7 +184,7 @@ export const useBuyFlow = (form: BuyFormType) => {
             },
         });
 
-        if (!receiveAccount || (!!receiveAccount.account.addresses && !receiveAccount.address)) {
+        if (!isFullySelectedReceiveAccount(receiveAccount)) {
             selectReceiveAccount();
 
             analytics.report({
@@ -193,6 +198,9 @@ export const useBuyFlow = (form: BuyFormType) => {
 
             return;
         }
+
+        const addressText = getReceiveAccountAddressText(receiveAccount);
+        invariant(addressText, 'addressText is not defined');
 
         const returnUrl = buildTradingUrl({
             actionType: 'quote',
@@ -209,10 +217,7 @@ export const useBuyFlow = (form: BuyFormType) => {
                 loginRequest: formResponse => handleWebview(formResponse, returnUrl),
                 userConsent: handleConsent.request,
                 nextStep: () => {
-                    confirmTrade(
-                        candidateQuote,
-                        receiveAccount.address?.address ?? receiveAccount.account.descriptor,
-                    );
+                    confirmTrade(candidateQuote, addressText);
                 },
             }),
         );

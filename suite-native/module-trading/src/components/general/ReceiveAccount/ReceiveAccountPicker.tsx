@@ -15,6 +15,7 @@ import {
 import { Color } from '@trezor/theme';
 
 import { ReceiveAccount } from '../../../types/general';
+import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 import { AccountAddress } from '../AccountAddress';
 import { OverviewRow } from '../OverviewRow';
 
@@ -119,10 +120,7 @@ export const ReceiveAccountPicker = ({
         navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol, tradingType });
 
     const accountLabel = receiveAccount?.account.accountLabel;
-    const addressText =
-        (receiveAccount?.account.addresses
-            ? receiveAccount?.address?.address
-            : receiveAccount?.account.descriptor) ?? '';
+    const addressText = getReceiveAccountAddressText(receiveAccount) ?? '';
 
     return (
         <OverviewRow
