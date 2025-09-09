@@ -176,6 +176,9 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         try {
             await this.connectApi();
             await this.api.send('forget_device', id);
+
+            // todo: not sure where, but on macos, forget_device does not handle unparing on the system level. user needs to do it manually. maybe we should
+            // start some kind of scanning in loop after forget to detect that user indeed did remove the device from the system settings
         } catch (error) {
             return this.result(error.message);
         }
