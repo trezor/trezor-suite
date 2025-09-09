@@ -79,7 +79,10 @@ export class LocalFirstStorageProvider {
 
         if (storage === undefined) {
             const evolu = createEvoluInstance({
-                relayUrl: this.relayUrl ?? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
+                relayUrl:
+                    this.relayUrl === null || this.relayUrl.trim() === ''
+                        ? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL
+                        : this.relayUrl,
                 evoluKeys,
                 evoluDeps: this.evoluDeps,
             });
