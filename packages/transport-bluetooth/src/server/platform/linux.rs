@@ -138,18 +138,12 @@ fn watch_abort(current_id: String, broadcast: ConnectionBroadcast) -> tokio::tas
 
     tokio::spawn(async move {
         while let Ok(event) = receiver.recv().await {
-            if let ChannelMessage::Abort(event) = event {
-                #[allow(clippy::single_match)] // see TODO below
-                match event {
-                    AbortProcess::DeviceDisconnected(id) => {
-                        if current_id == id {
-                            disconnect_device(id).await;
-                            break;
-                        }
-                    }
-                    // TODO: if websocket client connection is related to this device
-                    #[allow(clippy::single_match)]
-                    _ => {} // ignore
+            // TODO: if websocket client connection is related to this device
+            // AbortProcess::ClientDisconnected
+            if let ChannelMessage::Abort(AbortProcess::DeviceDisconnected(id)) = event {
+                if current_id == id {
+                    disconnect_device(id).await;
+                    break;
                 }
             }
         }
@@ -252,7 +246,7 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
         .dispatch_notification(NotificationEvent::DeviceSettingsUi)
         .await;
 
-    let ui_process = open_bluetooth_ui();
+    let _ui_process = open_bluetooth_ui();
     // TODO: some loader, only if ui_process is some?
     sleep(Duration::from_millis(1000)).await;
 

@@ -375,7 +375,7 @@ impl AdapterManager {
 
     // get TrezorDevice from AdapterManager or None
     async fn get_device(&self, id: &PeripheralId) -> Option<TrezorDevice> {
-        if !self.is_discovered(&id) {
+        if !self.is_discovered(id) {
             return None;
         }
 
@@ -457,18 +457,18 @@ impl AdapterManager {
 
         let update_count = device.unwrap().update_count;
         self.serviceless_peripherals.remove(&id.to_string());
-        if self.is_discovered(&id) {
+        if self.is_discovered(id) {
             return Ok(());
         }
 
         let peripheral = self.get_peripheral_or_die(&id.to_string()).await?;
-        if peripheral.services().len() == 0 {
+        if peripheral.services().is_empty() {
             let _ = peripheral.discover_services().await;
         }
 
         let adapter = self.get_adapter_or_die().await?;
-        if let Some(_device) = utils::scan_filter(&adapter, &id).await {
-            if let Ok(_device) = self.add_device(&id).await {
+        if let Some(_device) = utils::scan_filter(&adapter, id).await {
+            if let Ok(_device) = self.add_device(id).await {
                 let devices = self.get_devices().await;
                 self.dispatch_notification(NotificationEvent::DeviceDiscovered {
                     id: id.to_string(),
@@ -476,8 +476,8 @@ impl AdapterManager {
                 })
                 .await;
             }
-        } else if update_count < 1000 && peripheral.services().len() == 0 {
-            let _ = self.add_serviceless_device(&id, update_count + 1).await;
+        } else if update_count < 1000 && peripheral.services().is_empty() {
+            let _ = self.add_serviceless_device(id, update_count + 1).await;
         }
 
         Ok(())

@@ -1,7 +1,7 @@
 use crate::server::{
     adapter_manager::AdapterManager,
     platform::{BluetoothDevice, ConnectDeviceContext, PlatformDevice},
-    types::{ConnectDeviceParams, MethodError, MethodResult, WsResponsePayload},
+    types::{ConnectDeviceParams, MethodResult, WsResponsePayload},
     ConnectionBroadcast,
 };
 
