@@ -49,11 +49,14 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
 
     const isEvoluSupportedByDevice = device?.unavailableCapabilities?.evolu === undefined;
 
+    const hasDeviceLocalFirstStorageKeys = device?.localFirstStorageSecret?.evoluKeys !== undefined;
+
     return {
         /** New Labeling: LocalFirstStorage (Evolu) */
         isLocalFirstStorageEnabled,
         isEvoluSupportedByDevice,
         isLocalFirstStorageDebugEnabled,
+        hasDeviceLocalFirstStorageKeys,
         localFirstEnable,
         localFirstDisable,
 

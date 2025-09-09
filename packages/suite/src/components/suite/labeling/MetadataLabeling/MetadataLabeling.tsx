@@ -296,8 +296,12 @@ export const MetadataLabeling = ({
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
 
-    const { isLocalFirstStorageEnabled, isEvoluSupportedByDevice, legacyMetadataState } =
-        useLabelingCombined({ deviceStaticSessionId });
+    const {
+        isLocalFirstStorageEnabled,
+        isEvoluSupportedByDevice,
+        legacyMetadataState,
+        hasDeviceLocalFirstStorageKeys,
+    } = useLabelingCombined({ deviceStaticSessionId });
 
     let timeout: TimerId | undefined;
     useEffect(() => {
@@ -398,7 +402,8 @@ export const MetadataLabeling = ({
 
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
-    const isEvoluLabeling = isLocalFirstStorageEnabled && isEvoluSupportedByDevice;
+    const isEvoluLabeling =
+        isLocalFirstStorageEnabled && isEvoluSupportedByDevice && hasDeviceLocalFirstStorageKeys;
 
     // Should "add label"/"edit label" button be visible?
     const showActionButton =
