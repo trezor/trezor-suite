@@ -23,7 +23,6 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../biometrics" },
         { "path": "../device-authorization" },
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },

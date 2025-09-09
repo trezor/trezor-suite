@@ -10424,6 +10424,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/device-onboarding@workspace:*, @suite-native/device-onboarding@workspace:suite-native/device-onboarding":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/device-onboarding@workspace:suite-native/device-onboarding"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/device@workspace:*, @suite-native/device@workspace:suite-native/device":
   version: 0.0.0-use.local
   resolution: "@suite-native/device@workspace:suite-native/device"
@@ -10440,7 +10448,6 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/biometrics": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
@@ -10962,6 +10969,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/device-onboarding": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -11401,6 +11409,7 @@ __metadata:
     "@suite-native/bluetooth": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/device-onboarding": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"

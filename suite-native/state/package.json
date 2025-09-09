@@ -27,6 +27,7 @@
         "@suite-native/bluetooth": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-authorization": "workspace:*",
+        "@suite-native/device-onboarding": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/firmware": "workspace:*",

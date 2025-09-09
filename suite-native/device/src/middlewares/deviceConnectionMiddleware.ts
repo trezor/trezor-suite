@@ -15,6 +15,7 @@ import {
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
+import { selectWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
@@ -45,10 +46,12 @@ const handleDeviceConnectNavigation = ({
     isCoinEnablingInitFinished,
     isDeviceInitialized,
     isDeviceSetupSupported,
+    wasDeviceOnboardingCancelled,
 }: {
     isCoinEnablingInitFinished: boolean;
     isDeviceInitialized: boolean;
     isDeviceSetupSupported: boolean;
+    wasDeviceOnboardingCancelled: boolean;
 }) => {
     // If device setup is not supported, we don't want to navigate anywhere
     // We handle it separately in `useDetectDeviceError` hook
@@ -59,25 +62,29 @@ const handleDeviceConnectNavigation = ({
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
         });
     } else if (!isDeviceInitialized) {
-        // If THP confirmation screen was shown, we want to prevent swiping/navigating back to
-        // that THP confirmation screen. Swiping/navigating back shall lead to the Home screen.
-        navigationContainerRef.reset({
-            index: 1,
-            routes: [
-                {
-                    name: RootStackRoutes.AppTabs,
-                    params: {
-                        screen: HomeStackRoutes.Home,
+        if (wasDeviceOnboardingCancelled) {
+            console.warn('navigate home');
+        } else {
+            // If THP confirmation screen was shown, we want to prevent swiping/navigating back to
+            // that THP confirmation screen. Swiping/navigating back shall lead to the Home screen.
+            navigationContainerRef.reset({
+                index: 1,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
                     },
-                },
-                {
-                    name: RootStackRoutes.DeviceOnboardingStack,
-                    params: {
-                        screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                    {
+                        name: RootStackRoutes.DeviceOnboardingStack,
+                        params: {
+                            screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                        },
                     },
-                },
-            ],
-        });
+                ],
+            });
+        }
     } else {
         navigationContainerRef.navigate(RootStackRoutes.CoinEnablingInit);
     }
@@ -123,6 +130,7 @@ deviceConnectionMiddleware.startListening({
             isCoinEnablingInitFinished: selectIsCoinEnablingInitFinished(getState()),
             isDeviceInitialized: selectIsDeviceInitialized(getState()),
             isDeviceSetupSupported: selectIsDeviceSetupSupported(getState()),
+            wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
         });
     },
 });

@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
-import { useSetAtom } from 'jotai';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { wasDeviceOnboardingCancelledAtom } from '@suite-native/device';
+import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useFirmware } from '@suite-native/firmware';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -25,11 +24,15 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 export const useExitAlert = (handleContinueButtonPress?: () => void) => {
+    const dispatch = useDispatch();
+
     const navigation = useNavigation<NavigationProps>();
+
     const { showAlert } = useAlert();
+
     const { translate } = useTranslate();
+
     const selectedDevice = useSelector(selectSelectedDevice);
-    const setWasDeviceOnboardingCancelled = useSetAtom(wasDeviceOnboardingCancelledAtom);
     const { setIsFirmwareInstallationRunning } = useFirmware();
 
     const handleExitButtonPress = useCallback(() => {
@@ -47,7 +50,7 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
             onPressPrimaryButton: () => {
                 if (selectedDevice) {
                     setIsFirmwareInstallationRunning(false);
-                    setWasDeviceOnboardingCancelled(true);
+                    dispatch(setWasDeviceOnboardingCancelled(true));
                     navigation.popTo(RootStackRoutes.AppTabs, {
                         screen: AppTabsRoutes.HomeStack,
                         params: {
@@ -64,13 +67,13 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
             },
         });
     }, [
+        dispatch,
         handleContinueButtonPress,
-        selectedDevice,
-        setWasDeviceOnboardingCancelled,
-        setIsFirmwareInstallationRunning,
-        translate,
-        showAlert,
         navigation,
+        selectedDevice,
+        setIsFirmwareInstallationRunning,
+        showAlert,
+        translate,
     ]);
 
     return { handleExitButtonPress };

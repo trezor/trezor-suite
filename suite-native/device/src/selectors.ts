@@ -46,6 +46,7 @@ import {
     asBaseCurrencyAmount,
     getAccountFiatBalance,
 } from '@suite-common/wallet-utils';
+import { DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
@@ -70,7 +71,8 @@ export type NativeDeviceRootState = DeviceRootState &
     FiatRatesRootState &
     FeatureFlagsRootState &
     NativeFirmwareRootState &
-    MessageSystemRootState;
+    MessageSystemRootState &
+    DeviceOnboardingSliceRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 

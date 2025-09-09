@@ -31,6 +31,7 @@ import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/wal
 import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banner-flags';
 import { bluetoothSlice } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
+import { deviceOnboardingReducer } from '@suite-native/device-onboarding';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
@@ -277,6 +278,7 @@ export const prepareRootReducers = async () => {
             graph: graphReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,
+            deviceOnboarding: deviceOnboardingReducer,
             firmware: firmwarePersistedReducer,
             nativeFirmware: nativeFirmwareReducer,
             logs: logsSlice.reducer,

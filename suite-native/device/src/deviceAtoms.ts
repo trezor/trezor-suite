@@ -1,8 +1,5 @@
 import { atom } from 'jotai';
 
-export const wasDeviceOnboardingCancelledAtom = atom<boolean>(false);
-export const isOnboardingDeviceDisconnectedAlertDisplayedAtom = atom<boolean>(false);
-
 export type DeviceDangerBannerCause = 'device-compromised' | 'backup-needed' | 'backup-failed';
 
 type DeviceDangerBanner =
