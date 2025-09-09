@@ -1,4 +1,4 @@
-import { tradingSettingsActions } from '@suite-common/trading';
+import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
 import {
     PreloadedState,
     TestStore,
@@ -9,6 +9,7 @@ import {
 
 import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
+import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { ExchangeFormType } from '../../../types/exchange';
 import { useExchangeForm } from '../useExchangeForm';
@@ -157,7 +158,7 @@ describe('useExchangeSelectQuote', () => {
             );
         });
 
-        it('should call selectQuoteThunk  with correct maxSlippage value', async () => {
+        it('should call selectQuoteThunk with correct maxSlippage value', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             act(() => {
                 store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('1.5'));
@@ -177,6 +178,30 @@ describe('useExchangeSelectQuote', () => {
                     }),
                 }),
             );
+        });
+
+        it('should not call selectQuoteThunk when account is not fully selected', async () => {
+            act(() => {
+                [
+                    tradingExchangeActions.setReceiveAccountKey('btc-account-key'),
+                    tradingExchangeActions.setTradingAccountKey('eth-account-key'),
+                ].forEach(store.dispatch);
+                exchangeForm.setValue('receiveAsset', btcAsset);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            dispatchSpy.mockClear();
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalled();
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('ReceiveAccounts', {
+                symbol: 'btc',
+                tradingType: 'exchange',
+            });
         });
 
         it('should navigate to TradingExchangePreview when nextStep callback is executed', async () => {

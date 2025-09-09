@@ -30,6 +30,7 @@ import { buyActions, exchangeActions } from '../../../reducers';
 import { selectBuySelectedReceiveAccount } from '../../../selectors/buySelectors';
 import { selectExchangeSelectedReceiveAccount } from '../../../selectors/exchangeSelectors';
 import { ReceiveAccount } from '../../../types/general';
+import { isFullySelectedReceiveAccount } from '../../../utils/general/receiveAccountUtils';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -96,7 +97,7 @@ export const AccountList = ({
         if (receiveAccount.account && hasAddresses) {
             onSetPickerMode('address');
         }
-        if ((hasAddresses && receiveAccount.address) || !hasAddresses) {
+        if (isFullySelectedReceiveAccount(receiveAccount)) {
             navigation.popToTop();
         }
     };

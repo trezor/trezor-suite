@@ -33,7 +33,7 @@ export const getEthAccount = (key = 'eth-account-1') =>
         accountLabel: 'Ethereum #1',
         index: 0,
         path: "m/44'/60'/0'/0/0",
-        descriptor: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+        descriptor: 'descriptor-' + key,
         accountType: 'normal',
         symbol: 'eth',
         empty: false,

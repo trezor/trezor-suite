@@ -22,6 +22,7 @@ import {
     selectExchangeSelectedSendAccount,
 } from '../../selectors/exchangeSelectors';
 import { ExchangeFormType } from '../../types/exchange';
+import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConsent } from '../general/useConsent';
 import { useConsentDenier } from '../general/useConsentDenier';
@@ -74,7 +75,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             return;
         }
 
-        if (!receiveAccount) {
+        if (!isFullySelectedReceiveAccount(receiveAccount)) {
             selectReceiveAccount();
 
             return;
