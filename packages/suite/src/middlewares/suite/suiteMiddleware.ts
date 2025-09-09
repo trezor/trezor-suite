@@ -9,7 +9,7 @@ import {
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    restartDiscoveryThunk,
+    startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
@@ -112,7 +112,7 @@ const suite =
             case SUITE.ONLINE_STATUS:
                 // Restart discovery to reconnect to backends when user goes offline -> online.
                 if (action.payload === true) {
-                    api.dispatch(restartDiscoveryThunk());
+                    api.dispatch(startOrRestartDiscoveryThunk());
                 }
                 break;
 

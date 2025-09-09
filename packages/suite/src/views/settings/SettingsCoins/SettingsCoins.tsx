@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
 import {
-    restartDiscoveryThunk,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
     selectShowRediscoverButton,
+    startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -106,7 +106,7 @@ export const SettingsCoins = () => {
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     const startDiscovery = () => {
-        dispatch(restartDiscoveryThunk());
+        dispatch(startOrRestartDiscoveryThunk());
     };
 
     const animation = getDiscoveryButtonAnimationConfig(!!isDiscoveryRunning);

@@ -4,9 +4,9 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import {
-    restartDiscoveryThunk,
     selectSelectedDevice,
     selectShowRediscoverButton,
+    startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -55,7 +55,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
         return null;
     }
 
-    const restartDiscovery = () => dispatch(restartDiscoveryThunk());
+    const restartDiscovery = () => dispatch(startOrRestartDiscoveryThunk());
 
     return (
         <AnimatePresence>

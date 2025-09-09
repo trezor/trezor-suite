@@ -7,10 +7,9 @@ import {
     changeNetworks,
     deviceActions,
     discoveryActions,
-    restartDiscoveryThunk,
     selectSelectedDevice,
     selectShouldRediscover,
-    startDiscoveryThunk,
+    startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import {
     createAndBackupWalletThunk,
@@ -72,12 +71,10 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 device.connected &&
                 isDeviceAcquired(device)
             ) {
-                if (!device.state) {
-                    dispatch(startDiscoveryThunk({}));
-                } else if (device.state.staticSessionId) {
-                    if (selectShouldRediscover(getState(), device)) {
-                        dispatch(restartDiscoveryThunk());
-                    }
+                const shouldRediscover = selectShouldRediscover(getState(), device);
+                const noDiscoveryYet = device?.state?.staticSessionId === undefined;
+                if (noDiscoveryYet || shouldRediscover) {
+                    dispatch(startOrRestartDiscoveryThunk());
                 }
             }
         }

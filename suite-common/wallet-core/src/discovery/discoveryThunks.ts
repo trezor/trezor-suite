@@ -768,19 +768,33 @@ export const cancelDiscoveryThunk = createThunk(
 /**
  * Helper to restart discovery for currently selected device
  */
-export const restartDiscoveryThunk = createThunk(
+export const startOrRestartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    (_, { dispatch, getState }) => {
+    (_, { dispatch, getState, extra }) => {
         const device = selectSelectedDevice(getState());
         if (!device) return;
         const staticSessionId = device.state?.staticSessionId;
         if (staticSessionId) {
             // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
             dispatch(runAdditionalDiscoveryThunk(staticSessionId));
-        } else {
-            // if no staticSessionId available yet it means we failed sooner, for example during pin input
-            dispatch(startDiscoveryThunk({ device }));
+
+            return;
         }
+
+        // Note: currently used only in Suite. If a Suite Lite implementation is needed, create a new extra selector
+        // for this particular setting, and provide it for Suite Lite.
+        const isAddingHiddenWallet =
+            extra.selectors.selectSuiteSettings(getState()).defaultWalletLoading === 'passphrase';
+
+        // if no staticSessionId available yet it means we failed sooner, for example during pin input
+        dispatch(
+            startDiscoveryThunk({
+                device,
+                isAddingExistingWallet: true,
+                isAddingHiddenWallet,
+                isAddingHiddenWalletWithRespectToSettings: isAddingHiddenWallet,
+            }),
+        );
     },
 );
 
