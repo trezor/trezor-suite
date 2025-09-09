@@ -17,6 +17,7 @@ import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '../selectors/exchangeSelectors';
+import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
 type FlowStep = 'confirm' | 'composeFeesTxn' | 'signTxn' | 'sendTxn' | 'finished';
 
@@ -54,9 +55,9 @@ export const TradingExchangePreviewScreen = () => {
     const [flowStep, setFlowStep] = useState<FlowStep>('confirm');
 
     const handleConfirmTrade = async () => {
-        const { account } = toAccount;
+        const addressText = getReceiveAccountAddressText(toAccount);
 
-        if (!account.descriptor) {
+        if (!addressText) {
             console.warn('receiveAddress is not defined', quote);
 
             return;
@@ -64,7 +65,7 @@ export const TradingExchangePreviewScreen = () => {
 
         await confirmTrade({
             sendAccount: fromAccount,
-            receiveAddress: account.descriptor,
+            receiveAddress: addressText,
             trade: quote,
             approvalFlow: false,
         });
