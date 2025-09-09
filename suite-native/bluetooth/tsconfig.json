@@ -9,7 +9,6 @@
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },
         { "path": "../intl" },
-        { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         {
