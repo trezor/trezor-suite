@@ -88,7 +88,7 @@ export const thpCall = async <T extends MessageKey>(
     return result.payload as ThpCallResponse[T];
 };
 
-export const abortThpWorkflow = async (device: Device, abort?: () => any) => {
+export const abortThpWorkflow = async (device: Device) => {
     const thpState = device.getThpState();
     if (!thpState || !device.currentRun) {
         return Promise.resolve(); // not a THP device
@@ -106,10 +106,6 @@ export const abortThpWorkflow = async (device: Device, abort?: () => any) => {
     } else if (thpState.cancelablePromise) {
         thpState.sync('send', 'Cancel');
         await device.getCurrentSession().send('Cancel', {});
-        // abort current run and wait for the result
-        if (abort) {
-            abort();
-        }
         await device.currentRun;
     }
 };
