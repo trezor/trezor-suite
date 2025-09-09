@@ -10304,7 +10304,6 @@ __metadata:
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"

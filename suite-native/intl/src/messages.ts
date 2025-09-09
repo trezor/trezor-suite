@@ -171,9 +171,13 @@ export const messages = {
                     'Bluetooth is currently turned off on this phone. Go to phone settings and turn on Bluetooth.',
                 primaryButton: 'Open system settings',
             },
-        },
-        toasts: {
-            pairingCanceled: 'Bluetooth pairing canceled.',
+            pairingFailed: {
+                title: 'Bluetooth pairing failed',
+                description:
+                    'The Trezor you’re trying to connect may still be remembered in your phone’s Bluetooth settings. Remove it and try again.',
+                primaryButton: 'Open system settings',
+                secondaryButton: 'Device removed',
+            },
         },
         deviceList: {
             connect: {

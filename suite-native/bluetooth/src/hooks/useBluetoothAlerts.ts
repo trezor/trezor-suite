@@ -73,7 +73,18 @@ export const useBluetoothAlerts = () => {
         hideAlert,
     ]);
 
+    const showPairingFailedAlert = useCallback(() => {
+        showAlert({
+            title: translate('bluetooth.alerts.pairingFailed.title'),
+            description: translate('bluetooth.alerts.pairingFailed.description'),
+            primaryButtonTitle: translate('bluetooth.alerts.pairingFailed.primaryButton'),
+            onPressPrimaryButton: openBluetoothSettings,
+            secondaryButtonTitle: translate('bluetooth.alerts.pairingFailed.secondaryButton'),
+        });
+    }, [showAlert, openBluetoothSettings, translate]);
+
     return {
         showOrHideBluetoothAlert,
+        showPairingFailedAlert,
     };
 };
