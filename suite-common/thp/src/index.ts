@@ -4,5 +4,6 @@ export { selectIsThpInProgress, selectThpStep, selectThpCredentials } from './th
 export { thpActions } from './thpActions';
 export * from './thpUtils';
 export { connectThpDeviceThunk } from './connectThpDeviceThunk';
+export { finishThpAutoconnectThunk } from './finishThpAutoconnectThunk';
 export { startThpAutoconnectThunk } from './startThpAutoconnectThunk';
 export { autoInitThpAfterDeviceConnectionThunk } from './autoInitThpAfterDeviceConnectionThunk';

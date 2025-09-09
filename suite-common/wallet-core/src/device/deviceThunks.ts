@@ -410,13 +410,14 @@ type DeviceConnectThunksParams = {
 
 export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
-    ({ type, device }, { dispatch }) => {
+    async ({ type, device }, { dispatch }) => {
         switch (type) {
             case DEVICE.CONNECT:
-                dispatch(deviceActions.connectDevice({ device }));
                 if (isThpDevice(device)) {
-                    dispatch(connectThpDeviceThunk({ device }));
+                    // awaited so that discoveryMiddleware knows what state THP is when processing deviceActions.connectDevice
+                    await dispatch(connectThpDeviceThunk({ device }));
                 }
+                dispatch(deviceActions.connectDevice({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(

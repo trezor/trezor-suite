@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
+import { finishThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
@@ -18,7 +18,7 @@ export const ThpAutoconnectInfoModal = () => {
     };
 
     const onCancel = () => {
-        dispatch(thpActions.finishThpFlow());
+        dispatch(finishThpAutoconnectThunk());
     };
 
     return (
