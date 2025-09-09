@@ -73,6 +73,13 @@ export const config: webpack.Configuration = {
                 },
             },
             {
+                test: /\workers\/stellar\/index/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/stellar-worker.[contenthash].js',
+                },
+            },
+            {
                 test: /\.(js|ts)$/,
                 exclude: /node_modules/,
                 use: {
