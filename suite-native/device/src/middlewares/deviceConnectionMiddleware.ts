@@ -17,7 +17,6 @@ import {
 } from '@suite-common/wallet-core';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
-    AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
     HomeStackRoutes,
@@ -122,9 +121,8 @@ deviceConnectionMiddleware.startListening({
             navigationContainerRef.reset({
                 index: 0,
                 routes: [
-                    RootStackRoutes.AppTabs,
                     {
-                        screen: AppTabsRoutes.HomeStack,
+                        name: RootStackRoutes.AppTabs,
                         params: {
                             screen: HomeStackRoutes.Home,
                         },
