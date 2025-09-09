@@ -24,9 +24,20 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
         );
 
-        if (device === undefined || device.localFirstStorageSecret !== undefined) {
+        if (
+            device === undefined ||
+            device.localFirstStorageSecret?.evoluKeys !== undefined ||
+            // We are already getting the keys in different "await"
+            // This may happen if selectedDeviceThunk is called concurrently.
+            // Todo: This probably shall not happen, but it happens currently.
+            device.localFirstStorageSecret?.isRetrieving
+        ) {
             return;
         }
+
+        dispatch(
+            deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: true }),
+        );
 
         const result = await TrezorConnect.evoluGetNode({
             device: {
@@ -53,9 +64,12 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
                 ),
             };
 
+            // This also sets the `isRetrieving` flag to `false`
             dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys }));
         } else {
-            console.error('Error:', result.payload);
+            dispatch(
+                deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: false }),
+            );
 
             return rejectWithValue(result.payload);
         }

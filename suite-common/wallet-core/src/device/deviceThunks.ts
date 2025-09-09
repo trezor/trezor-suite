@@ -56,7 +56,7 @@ type SelectDeviceThunkParams = {
  */
 export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void>(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
-    ({ device }, { dispatch, getState }) => {
+    ({ device }, { dispatch, getState, extra }) => {
         let trezorDevice: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
 
@@ -76,6 +76,9 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
         }
 
         dispatch(deviceActions.selectDevice(trezorDevice));
+        if (trezorDevice?.state?.staticSessionId !== undefined) {
+            dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));
+        }
     },
 );
 
