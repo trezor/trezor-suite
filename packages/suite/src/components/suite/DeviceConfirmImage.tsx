@@ -1,11 +1,12 @@
-import { TrezorDevice } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { ImageProps } from '@trezor/components';
+import { Device } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceWithScene } from '@trezor/product-components';
 
 type DeviceConfirmImageProps = Omit<ImageProps, 'image'> & {
-    device?: TrezorDevice;
+    device?: Pick<Device, 'features' | 'thp'>;
+} & {
     width?: number;
     height?: number;
 };
