@@ -60,14 +60,28 @@ const getWarningMessage = ({
 }: {
     deviceStatus: ConnectedDeviceStatus | null;
     showWarning: boolean;
-}) => {
+}): {
+    heading: TranslationKey;
+    description?: TranslationKey;
+} => {
     switch (deviceStatus) {
         case 'bootloader':
-            return 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE';
+            return {
+                heading: 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE',
+            };
+        case 'device-busy':
+            return {
+                heading: 'TR_DEVICE_CONNECTED_BUSY_BOOTLOADER',
+                description: 'TR_DEVICE_CONNECTED_BUSY_BOOTLOADER_DESCRIPTION',
+            };
         case 'initialize':
-            return 'TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE';
+            return {
+                heading: 'TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE',
+            };
         default:
-            return showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
+            return {
+                heading: showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE',
+            };
     }
 };
 
@@ -92,9 +106,7 @@ const getMessageId = ({
         description?: TranslationKey;
     } => {
         if (connected) {
-            return {
-                heading: getWarningMessage({ deviceStatus, showWarning }),
-            };
+            return getWarningMessage({ deviceStatus, showWarning });
         }
 
         return {
@@ -132,6 +144,7 @@ const getMessageId = ({
             heading: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
         },
 
+        'device-busy': defaultKey,
         'device-disconnect-required': defaultKey,
         'device-disconnected': defaultKey,
         'device-initialize': defaultKey,
