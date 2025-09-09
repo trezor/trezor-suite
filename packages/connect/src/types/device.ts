@@ -160,7 +160,7 @@ export type UnreadableDevice = BaseDevice & {
     availableTranslations?: typeof undefined;
     transportSessionOwner?: undefined;
     hid: boolean;
-    bluetoothProps?: BluetoothDeviceProps;
+    bluetoothProps?: typeof undefined;
 };
 
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
