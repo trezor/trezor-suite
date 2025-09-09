@@ -119,11 +119,17 @@ deviceConnectionMiddleware.startListening({
                 screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
             });
         } else {
-            navigationContainerRef.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
+            navigationContainerRef.reset({
+                index: 0,
+                routes: [
+                    RootStackRoutes.AppTabs,
+                    {
+                        screen: AppTabsRoutes.HomeStack,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    },
+                ],
             });
         }
     },
