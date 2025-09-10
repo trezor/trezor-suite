@@ -14,7 +14,6 @@ describe('THP pairing', () => {
 
     const waitForDevice = async (settings: Partial<ConnectSettings['thp']>) => {
         await initTrezorConnect(controller, {
-            debug: true,
             pendingTransportEvent: false,
             thp: {
                 appName: 'TrezorConnect',
@@ -170,22 +169,35 @@ describe('THP pairing', () => {
         expect(address).toMatchObject({ success: true });
     });
 
-    it('ThpPairing cancelled', async () => {
+    const ERR = new Error('Unexpected success');
+    const CANCEL_ERR = 'Custom cancel';
+    const FW_CANCEL_ERR = 'Cancelled';
+    const cancelOnHost = async () => {
+        // events are emitted before ButtonAck is sent to device
+        await new Promise(resolve => setTimeout(resolve, 10));
+        TrezorConnect.cancel(CANCEL_ERR);
+    };
+    const buttonRequestHandler = (msg?: string) => (br: { name?: string }) => {
+        if (msg && msg === br.name) {
+            controller.send({ type: 'emulator-press-no' });
+        } else {
+            controller.send({ type: 'emulator-press-yes' });
+        }
+    };
+
+    it('ThpPairing cancel workflow', async () => {
         const device = await waitForDevice({
             pairingMethods: ['CodeEntry'],
             knownCredentials: [],
         });
 
-        const ERR = new Error('Unexpected success');
         let result;
 
         // 1. reject pairing tag request from host
-        TrezorConnect.on('ui-request_thp_pairing', () => {
-            TrezorConnect.cancel('Custom cancel');
-        });
+        TrezorConnect.on('ui-request_thp_pairing', cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch('Custom cancel');
+        expect(result.payload.error).toMatch(CANCEL_ERR);
 
         // 2. reject pairing tag request from Trezor
         TrezorConnect.removeAllListeners('ui-request_thp_pairing');
@@ -194,7 +206,7 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch('Cancelled');
+        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
 
         // 3. reject pairing confirmation from Trezor
         TrezorConnect.removeAllListeners('ui-button');
@@ -203,23 +215,19 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch('Cancelled');
+        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
 
         // 3. reject pairing confirmation from host
         TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', () => {
-            TrezorConnect.cancel('Custom canceled');
-        });
+        TrezorConnect.on('ui-button', cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch('Custom canceled');
+        expect(result.payload.error).toMatch(FW_CANCEL_ERR); // canceled gracefully on Trezor
 
         // check if pairing is still responsive
         TrezorConnect.removeAllListeners('ui-button');
         TrezorConnect.removeAllListeners('ui-request_thp_pairing');
-        TrezorConnect.on('ui-button', () => {
-            controller.send({ type: 'emulator-press-yes' });
-        });
+        TrezorConnect.on('ui-button', buttonRequestHandler());
         TrezorConnect.on('ui-request_thp_pairing', async ({ nfcData, ...rest }) => {
             const state = await controller.getPairingInfo(rest.device.thp!.channel, nfcData);
             TrezorConnect.uiResponse({
@@ -229,19 +237,43 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         expect(result).toMatchObject({ success: true });
+    });
+
+    it('ThpState cancel workflow', async () => {
+        // enable passphrase
+        await setup(controller, { mnemonic: 'mnemonic_all', passphrase_protection: true });
+
+        const device = await waitForDevice({ pairingMethods: ['SkipPairing'] });
+
+        const passphraseHandler = (value: string) => () => {
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_passphrase',
+                payload: {
+                    passphraseOnDevice: false,
+                    value,
+                },
+            });
+            TrezorConnect.removeAllListeners('ui-request_passphrase');
+        };
+
+        let result;
+
+        // pair
+        result = await TrezorConnect.getFeatures({ device });
+        expect(result).toMatchObject({ success: true });
+
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler(''));
 
         // 4. reject ButtonRequest from host
         TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', () => {
-            TrezorConnect.cancel('Custom canceled');
-        });
+        TrezorConnect.on('ui-button', cancelOnHost);
         result = await TrezorConnect.getAddress({
             device,
             path: "m/44'/0'/0'/1/1",
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch('Custom canceled');
+        expect(result.payload.error).toMatch(CANCEL_ERR);
 
         // 4. reject ButtonRequest from Trezor
         TrezorConnect.removeAllListeners('ui-button');
@@ -254,18 +286,60 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch('Cancelled');
+        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
 
-        // and finally check if device is still responsive
+        // 5. reject passphrase from host
+        TrezorConnect.removeAllListeners('ui-request_passphrase');
         TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', () => {
-            controller.send({ type: 'emulator-press-yes' });
-        });
+        TrezorConnect.on('ui-button', buttonRequestHandler());
+        TrezorConnect.on('ui-request_passphrase', cancelOnHost);
         result = await TrezorConnect.getAddress({
-            device,
+            device: {
+                ...device,
+                instance: 1,
+            },
             path: "m/44'/0'/0'/1/1",
             showOnTrezor: true,
         });
-        expect(result).toMatchObject({ success: true });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch(CANCEL_ERR);
+
+        // 6. reject passphrase from Trezor
+        TrezorConnect.removeAllListeners('ui-request_passphrase');
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        TrezorConnect.on('ui-button', buttonRequestHandler('passphrase_host1')); // NOTE: .name may be changed in the future
+        result = await TrezorConnect.getAddress({
+            device: {
+                ...device,
+                instance: 1,
+            },
+            path: "m/44'/0'/0'/1/1",
+            showOnTrezor: true,
+        });
+        if (result.success) throw ERR;
+        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+
+        // and finally check if device is still responsive
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.removeAllListeners('ui-request_passphrase');
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        TrezorConnect.on('ui-button', buttonRequestHandler());
+        result = await TrezorConnect.getAddress({
+            device: {
+                ...device,
+                state: 'ms1TJk4b4s7aisyL3jfrkCqwznttWwiS4r@448CCE89D32A733A1632F345:1',
+                instance: 1,
+            },
+            path: "m/44'/0'/0'/1/1",
+            showOnTrezor: true,
+        });
+        expect(result).toMatchObject({
+            success: true,
+            payload: { address: '17vNxNJDg2djoFntLUhY6BbdovTnZ9YYhn' },
+        });
+
+        // disable passphrase
+        await setup(controller, { mnemonic: 'mnemonic_all' });
     });
 });
