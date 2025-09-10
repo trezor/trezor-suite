@@ -15,7 +15,7 @@ import { FirmwareUpdateSource } from '@trezor/connect/src/data/firmwareInfo';
 
 import { firmwareActions } from './firmwareActions';
 
-type FirmwwareUpdateUiEvent =
+type FirmwareUpdateUiEvent =
     | DeviceButtonRequest
     | FirmwareProgress
     | FirmwareReconnect
@@ -26,7 +26,7 @@ type FirmwareUpdateCommon = {
     // Stores firmware type currently being installed so that it can be displayed to the user during installation
     targetType?: FirmwareType;
     useDevkit: boolean;
-    uiEvent?: FirmwwareUpdateUiEvent;
+    uiEvent?: FirmwareUpdateUiEvent;
     firmwareUpdateSource: FirmwareUpdateSource;
 };
 
@@ -96,8 +96,8 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(firmwareActions.setFirmwareUpdateSource, (state, { payload }) => {
             state.firmwareUpdateSource = payload;
         })
-        .addMatcher<FirmwwareUpdateUiEvent>(
-            (action: FirmwwareUpdateUiEvent) =>
+        .addMatcher<FirmwareUpdateUiEvent>(
+            (action: FirmwareUpdateUiEvent) =>
                 action.type === UI.FIRMWARE_RECONNECT ||
                 action.type === UI.FIRMWARE_PROGRESS ||
                 action.type === UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
