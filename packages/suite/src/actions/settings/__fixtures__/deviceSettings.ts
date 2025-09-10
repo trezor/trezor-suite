@@ -80,6 +80,10 @@ const fixture: Feature[] = [
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
+                    type: deviceActions.forgetDevicePersistentData.type,
+                    payload: { deviceId: 'device-id' },
+                },
+                {
                     type: notificationsActions.addToast.type,
                     payload: { type: 'device-wiped', context: 'toast', id: expect.any(Number) },
                 } satisfies ReturnType<typeof notificationsActions.addToast>,
@@ -211,6 +215,10 @@ const fixture: Feature[] = [
                         },
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
+                {
+                    type: deviceActions.forgetDevicePersistentData.type,
+                    payload: { deviceId: 'device-id' },
+                },
                 {
                     type: notificationsActions.addToast.type,
                     payload: { type: 'device-wiped', context: 'toast', id: expect.any(Number) },
