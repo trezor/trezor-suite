@@ -6487,7 +6487,7 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA_NETWORKS: {
         id: 'TR_GRAPH_MISSING_DATA_NETWORKS',
         defaultMessage:
-            "{networks} are included in the portfolio balance, but aren't currently supported in graph view.",
+            "{networks} are included in your portfolio balance, but aren't currently supported in graph view.",
     },
     TR_GRAPH_MISSING_DATA_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_TOKENS',
@@ -9593,7 +9593,7 @@ export default defineMessages({
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
         defaultMessage:
-            "The fee you're willing to pay network miners to process transaction. A higher fee may speed up confirmation times.",
+            "The fee you're willing to pay network miners to process the transaction. A higher fee may speed up confirmation times.",
     },
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
@@ -9805,7 +9805,7 @@ export default defineMessages({
     },
     TOAST_ESTIMATED_FEE_ERROR: {
         id: 'TOAST_ESTIMATED_FEE_ERROR',
-        defaultMessage: 'Fee estimation from network failed. Using backup value.',
+        defaultMessage: 'Network fee estimate unavailable. Using backup value instead.',
     },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',

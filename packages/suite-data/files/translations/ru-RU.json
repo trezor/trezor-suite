@@ -845,7 +845,6 @@
   "TR_GO_TO_SUITE": "Открыть Suite",
   "TR_GRAPH_LINEAR": "Линейный",
   "TR_GRAPH_LOGARITHMIC": "Логарифмический",
-  "TR_GRAPH_MISSING_DATA": "Транзакции с токенами XRP и ERC20 включены в баланс, но в настоящее время не поддерживаются их показ в графике. ",
   "TR_GRAPH_VIEW": "Вид графика",
   "TR_GUIDE_ARTICLES": "Статьи",
   "TR_GUIDE_BUG_LABEL": "Заявить о ошибке в Suite",

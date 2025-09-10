@@ -1034,7 +1034,6 @@
   "TR_GRANT_PERMISSIONS_DESCRIPTION": "Questa app vuole connettersi con Trezor Suite e necessita delle seguenti autorizzazioni.",
   "TR_GRAPH_LINEAR": "Lineare",
   "TR_GRAPH_LOGARITHMIC": "Logaritmico",
-  "TR_GRAPH_MISSING_DATA": "XRP, SOL e gli importi di tutti i token sono inclusi nel saldo del portfolio ma, al momento, non sono visualizzabili nella vista grafico.",
   "TR_GRAPH_VIEW": "Vista grafico",
   "TR_GUIDE_ARTICLES": "Articoli",
   "TR_GUIDE_BUG_LABEL": "C'è qualcosa che non va?",
