@@ -17,6 +17,7 @@
     ],
     "main": "./src/index.ts",
     "browser": {
+        "./src/pinger/ping": "./src/pinger/ping.browser.ts",
         "./src/transports/nodeusb": "./src/transports/nodeusb.browser.ts",
         "./src/transports/udp": "./src/transports/udp.browser.ts",
         "./src/transports/webusb": "./src/transports/webusb.browser.ts"
@@ -28,6 +29,7 @@
     "publishConfig": {
         "main": "./lib/index.js",
         "browser": {
+            "./lib/pinger/ping": "./lib/pinger/ping.browser.ts",
             "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.ts",
             "./lib/transports/udp": "./lib/transports/udp.browser.ts",
             "./lib/transports/webusb": "./lib/transports/webusb.browser.ts"
