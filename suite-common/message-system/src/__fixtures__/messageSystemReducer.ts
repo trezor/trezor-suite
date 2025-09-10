@@ -9,6 +9,7 @@ const config = {
     timestamp: '2021-03-03T03:48:16+00:00',
     sequence: 2,
     actions: [],
+    experiments: [],
 };
 const messageIds = ['22e6444d-a586-4593-bc8d-5d013f193eba', '469c65a8-8632-11eb-8dcd-0242ac130003'];
 const experimentIds = ['3bed56a4-ecd8-4e0f-9e5f-014b484c2aff'];
@@ -34,6 +35,7 @@ const initialState = {
     validExperiments: [],
 
     manuallyAddedMessageIds: {},
+    manuallyAddedExperimentIds: {},
 };
 
 export const fixtures = [

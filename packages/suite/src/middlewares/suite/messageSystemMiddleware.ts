@@ -20,6 +20,8 @@ const actions = [
     messageSystemActions.fetchSuccessUpdate.type,
     messageSystemActions.addMessage.type,
     messageSystemActions.removeMessage.type,
+    messageSystemActions.addExperiment.type,
+    messageSystemActions.removeExperiment.type,
     changeNetworks.type,
     TRANSPORT.START,
     DEVICE.CONNECT,
