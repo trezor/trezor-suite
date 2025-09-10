@@ -5,10 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 
 import { useAlert } from '@suite-native/alerts';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
-import {
-    setIsOnboardingDeviceDisconnectedAlertDisplayed,
-    setWasDeviceOnboardingCancelled,
-} from '@suite-native/device-onboarding';
+import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -36,9 +33,6 @@ export const ConnectAndUnlockDeviceScreen = () => {
 
     const navigation = useNavigation<NavigationProp>();
 
-    const hideDeviceDisconnectedAlert = () =>
-        dispatch(setIsOnboardingDeviceDisconnectedAlertDisplayed(false));
-
     const navigateToHome = () =>
         navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
@@ -48,9 +42,6 @@ export const ConnectAndUnlockDeviceScreen = () => {
         });
 
     useEffect(() => {
-        // This alert should be shown only if the device was physically disconnected from the phone.
-        // In case that user "disconnects" device by cancelling the onboarding flow via the app UI, the alert is not shown!
-        dispatch(setIsOnboardingDeviceDisconnectedAlertDisplayed(true));
         dispatch(setWasDeviceOnboardingCancelled(false));
 
         showAlert({
@@ -63,10 +54,8 @@ export const ConnectAndUnlockDeviceScreen = () => {
             primaryButtonVariant: 'redBold',
             secondaryButtonTitle: translate('generic.buttons.cancel'),
             secondaryButtonVariant: 'redElevation0',
-            onPressPrimaryButton: hideDeviceDisconnectedAlert,
             onPressSecondaryButton: () => {
                 setWasDeviceOnboardingCancelled(true);
-                hideDeviceDisconnectedAlert();
                 navigateToHome();
             },
         });
