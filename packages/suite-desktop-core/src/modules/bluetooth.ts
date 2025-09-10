@@ -27,8 +27,8 @@ export const init: ModuleInit = () => {
 
     const getBluetoothProcess = async () => {
         if (!bluetoothProcess) {
-            const [port] = await getFreePort();
-            bluetoothProcess = new BluetoothProcess(port);
+            // const [port] = await getFreePort();
+            bluetoothProcess = new BluetoothProcess(21327);
         }
 
         return bluetoothProcess;
