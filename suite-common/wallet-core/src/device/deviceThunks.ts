@@ -532,7 +532,6 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
         if (device.bluetoothProps !== undefined) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
         }
-        // TODO: this works only for a connected device, as we intentionally do not link THP credentials in a remembered wallet.
         if (isThpDevice(device)) {
             dispatch(thpActions.removeCredentials({ credentials: device.thp.credentials }));
         }

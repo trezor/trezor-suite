@@ -44,7 +44,6 @@ export const serializeDevice = (
         connected: false,
         buttonRequests: [],
         authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
-        thp: undefined,
     };
     if (forceRemember) sd.forceRemember = true;
 
