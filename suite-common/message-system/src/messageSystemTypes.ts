@@ -16,6 +16,7 @@ export type MessageSystemState = {
     validExperiments: string[];
     configSource: MessageSystemConfigSource;
     manuallyAddedMessageIds: Record<string, true>;
+    manuallyAddedExperimentIds: Record<string, true>;
 };
 
 export type MessageSystemRootState = {

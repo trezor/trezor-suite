@@ -112,6 +112,7 @@ const getPreloadedState = ({
             validExperiments: [],
             configSource: 'local' as const,
             manuallyAddedMessageIds: {},
+            manuallyAddedExperimentIds: {},
         },
     };
 };

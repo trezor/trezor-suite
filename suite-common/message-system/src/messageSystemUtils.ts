@@ -10,6 +10,7 @@ import type {
     Device,
     Duration,
     Environment,
+    Experiments,
     Message,
     MessageSystem,
     Settings,
@@ -412,6 +413,23 @@ export const getDefaultActionByCategory = (category: Category): Action => {
         conditions: [{}],
     };
 };
+
+export const getDefaultExperiment = (): Experiments => ({
+    experiment: {
+        id: uuidv4(),
+        groups: [
+            {
+                variant: 'A',
+                percentage: 50,
+            },
+            {
+                variant: 'B',
+                percentage: 50,
+            },
+        ],
+    },
+    conditions: [{}],
+});
 
 export const getDefaultConditionValue = (key: keyof Condition): Condition[keyof Condition] => {
     switch (key) {
