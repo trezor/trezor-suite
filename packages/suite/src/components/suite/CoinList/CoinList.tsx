@@ -29,7 +29,7 @@ export const CoinList = ({
     const { device, isLocked } = useDevice();
 
     const blockchain = useSelector(state => state.wallet.blockchain);
-    const isDeviceLocked = !!device && isLocked();
+    const isDeviceLocked = !!device && isLocked(true);
     const { isDiscoveryRunning } = useDiscovery();
     const lockedTooltip = isDeviceLocked ? 'TR_DISABLED_SWITCH_TOOLTIP' : null;
     const discoveryTooltip = isDiscoveryRunning ? 'TR_LOADING_ACCOUNTS' : null;
