@@ -7405,7 +7405,7 @@ export default defineMessages({
     },
     TR_NEEDS_ATTENTION_INITIALIZE: {
         id: 'TR_NEEDS_ATTENTION_INITIALIZE',
-        defaultMessage: 'Trezor has not been set up.',
+        defaultMessage: 'Trezor is not set up',
     },
     TR_DEVICE_CONNECTED_NEW_DEVICE_STATE: {
         id: 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE',

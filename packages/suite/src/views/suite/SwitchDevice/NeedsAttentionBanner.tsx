@@ -17,6 +17,7 @@ const getDeviceResolveStatusCTAMessage = (
         case 'bootloader':
             return 'TR_SELECT_DEVICE_SHORT';
         case 'initialize':
+            return 'TR_CONTINUE_SETUP';
         case 'unacquired-thp-required':
             return 'TR_CONTINUE_SETUP';
         default:
