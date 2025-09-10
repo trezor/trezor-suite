@@ -64,8 +64,6 @@ export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol | undefine
                 MIN_BALANCE_FOR_STAKING: MIN_SOL_BALANCE_FOR_STAKING,
             };
         default:
-            console.warn(`Unsupported or missing network symbol: ${symbol}`);
-
             return null;
     }
 };
