@@ -1400,7 +1400,7 @@
   "TR_NAV_TRADE": "Trade",
   "TR_NAV_TRANSACTIONS": "Overview",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Firmware update required.",
-  "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor has not been set up.",
+  "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor is not set up",
   "TR_NEEDS_ATTENTION_NEW_DEVICE": "New Trezor connected",
   "TR_NEEDS_ATTENTION_SEEDLESS": "Trezor doesn't have a wallet backup.",
   "TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT": "Failed to communicate with your Trezor",
