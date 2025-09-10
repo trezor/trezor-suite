@@ -71,22 +71,35 @@ export class BluetoothProcess extends BaseProcess {
         };
     }
 
-    async start() {
+    start() {
         if (this.debug) {
             process.env.RUST_LOG = 'debug';
             process.env.RUST_BACKTRACE = '1';
         }
 
-        if (isMacOs()) {
+        return super.start();
+    }
+
+    // workaround for macos pairing issue
+    async connectAndSubscribeInMainThread(
+        id: string,
+    ): Promise<{ success: true } | { success: false; error: string }> {
+        if (!isMacOs()) {
+            return Promise.resolve({ success: true });
+        }
+
+        try {
             const processPath = path.join(super.getProcessDir(), `index.js`);
             this.logger.info(this.logTopic, `Loading bluetooth native module from ${processPath}`);
 
-            const { trezorBluetoothRun } = await import(/*webpackIgnore: true */ processPath);
-            trezorBluetoothRun(this.port);
+            const { connectDevice } = await import(/*webpackIgnore: true */ processPath);
+            await connectDevice(id, 30000, (...args: any[]) => {
+                console.warn('callback', args);
+            });
 
-            return;
+            return { success: true } as const;
+        } catch (error) {
+            return { success: false, error: error.message } as const;
         }
-
-        return super.start(['-p', this.port.toString()]); // TODO: remove params after next binary release
     }
 }

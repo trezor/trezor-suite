@@ -1,3 +1,3 @@
 var nativeBinding = require('./trezor-bluetooth.node');
 module.exports = nativeBinding;
-module.exports.trezorBluetoothRun = nativeBinding.trezorBluetoothRun;
+module.exports.connectDevice = nativeBinding.connectDevice;
