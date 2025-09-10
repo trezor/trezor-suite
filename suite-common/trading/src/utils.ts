@@ -94,7 +94,7 @@ export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId) =>
 };
 
 export const toTokenCryptoId = (symbol: NetworkSymbol, contractAddress: string): CryptoId =>
-    `${getCoingeckoId(symbol)}${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}`.toLowerCase() as CryptoId;
+    `${getCoingeckoId(symbol)}${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}` as CryptoId;
 
 /** Convert testnet cryptoId to prod cryptoId (test-bitcoin -> bitcoin) */
 export const testnetToProdCryptoId = (cryptoId: CryptoId): CryptoId => {

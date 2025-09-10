@@ -287,12 +287,6 @@ describe('toTokenCryptoId', () => {
             'ethereum--0x1234123412341234123412341234123412341234',
         );
     });
-
-    it('should always return lowercase value', () => {
-        expect(toTokenCryptoId('eth', '0x6982508145454Ce325dDbE47a25d4ec3d2311933')).toBe(
-            'ethereum--0x6982508145454ce325ddbe47a25d4ec3d2311933',
-        );
-    });
 });
 
 describe('getDefaultCountry', () => {
