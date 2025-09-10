@@ -20,6 +20,8 @@ const getDeviceResolveStatusCTAMessage = (
             return 'TR_CONTINUE_SETUP';
         case 'unacquired-thp-required':
             return 'TR_CONTINUE_SETUP';
+        case 'firmware-required':
+            return 'TR_JUST_INSTALL';
         default:
             return 'TR_SOLVE_ISSUE';
     }
@@ -68,6 +70,8 @@ const getDeviceStatusWarningVariant = (
         case 'bootloader':
         case 'initialize':
             return 'info';
+        case 'firmware-required':
+            return 'destructive';
         default:
             return 'warning';
     }

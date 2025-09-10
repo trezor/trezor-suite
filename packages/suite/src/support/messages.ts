@@ -10993,6 +10993,10 @@ export default defineMessages({
         id: 'TR_DYK_ITEM_10',
         defaultMessage: 'Trezor has sold wallets in over 150 countries.',
     },
+    TR_JUST_INSTALL: {
+        id: 'TR_JUST_INSTALL',
+        defaultMessage: 'Install',
+    },
     TR_DYK_ITEM_11: {
         id: 'TR_DYK_ITEM_11',
         defaultMessage:
