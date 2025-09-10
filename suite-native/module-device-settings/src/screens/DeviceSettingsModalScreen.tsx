@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TitledSection, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceBluetoothCard } from '../components/DeviceBluetoothCard';
@@ -28,6 +28,7 @@ export const DeviceSettingsModalScreen = () => {
     const deviceModel = useSelector(selectDeviceModel);
     const deviceName = useSelector(selectDeviceName);
     const deviceLabel = useSelector(selectDeviceLabel);
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
@@ -38,7 +39,9 @@ export const DeviceSettingsModalScreen = () => {
     }
 
     return (
-        <Screen header={<ScreenHeader closeActionType="close" />}>
+        <Screen
+            header={<ScreenHeader closeActionType="close" closeAction={navigateToInitialScreen} />}
+        >
             <VStack spacing="sp40">
                 <DeviceInfo deviceName={deviceLabel || deviceName} deviceModel={deviceModel} />
                 <TitledSection
