@@ -2275,8 +2275,12 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW',
     },
     TR_NEEDS_ATTENTION_UNACQUIRED: {
-        defaultMessage: 'Trezor is already in use in another window.',
+        defaultMessage: 'Trezor is already in use.',
         id: 'TR_NEEDS_ATTENTION_UNACQUIRED',
+    },
+    TR_USE_HERE: {
+        defaultMessage: 'Use here',
+        id: 'TR_USE_HERE',
     },
     TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED: {
         defaultMessage: 'Firmware update required.',
@@ -2291,7 +2295,7 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_UNREADABLE',
     },
     TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED: {
-        defaultMessage: 'Secure connection not set up',
+        defaultMessage: "Secure connection isn't set up",
         id: 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED',
     },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {

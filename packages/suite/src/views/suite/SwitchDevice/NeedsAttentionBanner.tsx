@@ -1,7 +1,7 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
-import { Banner, BannerVariant } from '@trezor/components';
+import { Banner, BannerVariant, Icon, IconName, Row } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { goto } from '../../../actions/suite/routerActions';
@@ -19,9 +19,13 @@ const getDeviceResolveStatusCTAMessage = (
         case 'initialize':
             return 'TR_CONTINUE_SETUP';
         case 'unacquired-thp-required':
-            return 'TR_CONTINUE_SETUP';
+            return 'TR_TRY_AGAIN';
         case 'firmware-required':
             return 'TR_JUST_INSTALL';
+        case 'was-used-in-other-window':
+        case 'used-in-other-window':
+        case 'unacquired':
+            return 'TR_USE_HERE';
         default:
             return 'TR_SOLVE_ISSUE';
     }
@@ -69,11 +73,28 @@ const getDeviceStatusWarningVariant = (
     switch (deviceStatus) {
         case 'bootloader':
         case 'initialize':
+        case 'was-used-in-other-window':
+        case 'used-in-other-window':
+        case 'unacquired':
+        case 'unacquired-thp-required':
             return 'info';
         case 'firmware-required':
             return 'destructive';
         default:
             return 'warning';
+    }
+};
+
+const getDeviceStatusBannerIcon = (
+    deviceStatusVariant: ReturnType<typeof getDeviceStatusWarningVariant>,
+): IconName => {
+    switch (deviceStatusVariant) {
+        case 'warning':
+            return 'warning';
+        case 'destructive':
+            return 'warningCircle';
+        default:
+            return 'info';
     }
 };
 
@@ -90,6 +111,7 @@ export const NeedsAttentionBanner = ({
 }: NeedsAttentionBannerProps) => {
     const deviceResolveIssueCTAMessage = getDeviceResolveStatusCTAMessage(deviceStatus);
     const deviceStatusBannerVariant = getDeviceStatusWarningVariant(deviceStatus);
+    const deviceStatusBannerIcon = getDeviceStatusBannerIcon(deviceStatusBannerVariant);
     const deviceStatusMessage = getDeviceNeedsAttentionMessage(deviceStatus);
     const isLocked = useDevice().isLocked(true);
     const dispatch = useDispatch();
@@ -149,7 +171,12 @@ export const NeedsAttentionBanner = ({
                 </Banner.Button>
             }
         >
-            {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
+            {deviceStatusMessage && (
+                <Row gap={8}>
+                    <Icon size="medium" name={deviceStatusBannerIcon} />
+                    <Translation id={deviceStatusMessage} />
+                </Row>
+            )}
         </Banner>
     );
 };

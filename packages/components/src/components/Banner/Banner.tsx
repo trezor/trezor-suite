@@ -9,12 +9,7 @@ import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
 import { DEFAULT_VARIANT } from './consts';
 import { BannerVariant } from './types';
-import {
-    mapVariantToBackgroundColor,
-    mapVariantToIcon,
-    mapVariantToIconColor,
-    mapVariantToTextColor,
-} from './utils';
+import { mapVariantToBackgroundColor, mapVariantToIcon, mapVariantToIconColor } from './utils';
 import { variables } from '../../config';
 import { uiAlignments } from '../../config/types';
 import { SCREEN_SIZE } from '../../config/variables';
@@ -81,8 +76,6 @@ const Wrapper = styled.div<WrapperParams>`
                   border-radius: ${borders.radii.xs};
               `
             : ''}
-
-    color: ${mapVariantToTextColor};
     display: flex;
     ${typography.hint}
     gap: ${spacingsPx.sm};
@@ -128,7 +121,7 @@ export const Banner = ({
                 {children}
             </Column>
         ) : (
-            <Row alignItems="center" gap={spacings.lg} {...commonProps}>
+            <Row alignItems="center" gap={spacings.md} {...commonProps}>
                 {children}
             </Row>
         );
