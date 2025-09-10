@@ -42,8 +42,10 @@ if [ "\$TARGET" = "desktop" ]; then
   yarn workspace @trezor/suite-desktop build:ui
   yarn workspace @trezor/suite-desktop build:app
 
+  set +e
   yarn workspace @trezor/suite-desktop-core test:e2e:desktop "\$TEST_FILE"
   RESULT=\$?
+  set -e
 
 elif [ "\$TARGET" = "web" ]; then
   yarn install
@@ -52,8 +54,10 @@ elif [ "\$TARGET" = "web" ]; then
 
   wait_for_web_server || { kill "\$SERVER_PID" || true; exit 125; }
 
+  set +e
   yarn workspace @trezor/suite-desktop-core test:e2e:web "\$TEST_FILE"
   RESULT=\$?
+  set -e
 
   kill "\$SERVER_PID" || true
   wait "\$SERVER_PID" 2>/dev/null || true
@@ -77,4 +81,5 @@ git bisect start HEAD "$LAST_GOOD_COMMIT"
 git bisect run "$RUNNER"
 
 git bisect reset
+echo "Do not forget to reinstall your dependencies and rebuild desktop."
 rm "$RUNNER"
