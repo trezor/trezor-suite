@@ -6,18 +6,21 @@ import { Button, Row, variables } from '@trezor/components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
+import { MODAL } from 'src/actions/suite/constants';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { SuiteBanners } from 'src/components/suite/banners';
+import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
+import { useFilteredModal, useSelector } from 'src/hooks/suite';
 
 import {
     OnboardingCancelButtonContext,
     useOnboardingCancelButtonContext,
 } from './OnboardingCancelButtonContext';
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
+import { ConnectionGlobalModal } from '../connection/ConnectionGlobalModal';
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
 import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 
@@ -164,8 +167,16 @@ type OnboardingLayoutProps = {
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const theme = useSelector(state => state.suite.settings.theme);
 
+    const allowedModal = useFilteredModal(
+        [MODAL.CONTEXT_USER],
+        ['advanced-coin-settings', 'disable-tor'],
+    );
+
     return (
         <TrafficLightOffset>
+            <ConnectionGlobalModal />
+            {allowedModal && <ReduxModal {...allowedModal} />}
+
             <Wrapper>
                 <SuiteBanners isOnboarding />
 

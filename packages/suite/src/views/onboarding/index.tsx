@@ -2,12 +2,9 @@ import { useMemo } from 'react';
 
 import { exhaustive } from '@trezor/type-utils';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { ConnectionGlobalModal } from 'src/components/connection/ConnectionGlobalModal';
 import { OnboardingLayout } from 'src/components/onboarding';
-import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useFilteredModal, useOnboarding } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
 import { BackupStep } from 'src/views/onboarding/steps/Backup';
 import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
@@ -64,16 +61,8 @@ export const Onboarding = () => {
         }
     }, [activeStepId, goToNextStep]);
 
-    const allowedModal = useFilteredModal(
-        [MODAL.CONTEXT_USER],
-        ['advanced-coin-settings', 'disable-tor'],
-    );
-
     return (
         <OnboardingLayout>
-            {allowedModal && <ReduxModal {...allowedModal} />}
-            <ConnectionGlobalModal />
-
             <UnexpectedState>
                 <StepComponent />
             </UnexpectedState>
