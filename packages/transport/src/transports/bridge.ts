@@ -13,6 +13,7 @@ import {
 } from './abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
+import { ping } from '../pinger/ping';
 import { parseThpMessage } from '../thp/receive';
 import {
     AnyError,
@@ -63,9 +64,7 @@ type IncompleteRequestOptions = {
     signal?: AbortController['signal'];
 };
 
-type BridgeConstructorParameters = AbstractTransportParams & {
-    port?: number;
-};
+type BridgeConstructorParameters = AbstractTransportParams & { port?: number };
 
 export class BridgeTransport extends AbstractTransport {
     private useProtocolMessages: boolean = false;
@@ -83,10 +82,8 @@ export class BridgeTransport extends AbstractTransport {
         this.url = `${DEFAULT_URL}:${port}`;
     }
 
-    ping({ signal }: AbstractTransportMethodParams<'ping'> = {}) {
-        return this.scheduleAction(signal => this.post('/', { signal }), { signal })
-            .then(({ success }) => success)
-            .catch(() => false);
+    ping(_: AbstractTransportMethodParams<'ping'> = {}) {
+        return ping(`${this.url}/`).catch(() => false);
     }
 
     public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {

@@ -52,6 +52,13 @@ export const config: webpack.Configuration = {
                 ],
             },
             {
+                test: /pinger\/pingWorker.ts/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/ping-worker.[contenthash].js',
+                },
+            },
+            {
                 test: /workers\/blockbook\/index/i,
                 loader: 'worker-loader',
                 options: {
