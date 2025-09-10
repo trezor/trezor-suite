@@ -2,7 +2,6 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 type DeviceOnboardingSliceState = {
     wasDeviceOnboardingCancelled: boolean;
-    isOnboardingDeviceDisconnectedAlertDisplayed: boolean;
 };
 
 export type DeviceOnboardingSliceRootState = {
@@ -11,7 +10,6 @@ export type DeviceOnboardingSliceRootState = {
 
 const deviceOnboardingSliceInitialState: DeviceOnboardingSliceState = {
     wasDeviceOnboardingCancelled: false,
-    isOnboardingDeviceDisconnectedAlertDisplayed: false,
 };
 
 export const deviceOnboardingSlice = createSlice({
@@ -21,23 +19,12 @@ export const deviceOnboardingSlice = createSlice({
         setWasDeviceOnboardingCancelled: (state, { payload }: PayloadAction<boolean>) => {
             state.wasDeviceOnboardingCancelled = payload;
         },
-        setIsOnboardingDeviceDisconnectedAlertDisplayed: (
-            state,
-            { payload }: PayloadAction<boolean>,
-        ) => {
-            state.isOnboardingDeviceDisconnectedAlertDisplayed = payload;
-        },
     },
 });
 
 export const selectWasDeviceOnboardingCancelled = (state: DeviceOnboardingSliceRootState) =>
     state.deviceOnboarding.wasDeviceOnboardingCancelled;
 
-export const selectIsOnboardingDeviceDisconnectedAlertDisplayed = (
-    state: DeviceOnboardingSliceRootState,
-) => state.deviceOnboarding.isOnboardingDeviceDisconnectedAlertDisplayed;
-
-export const { setWasDeviceOnboardingCancelled, setIsOnboardingDeviceDisconnectedAlertDisplayed } =
-    deviceOnboardingSlice.actions;
+export const { setWasDeviceOnboardingCancelled } = deviceOnboardingSlice.actions;
 
 export const deviceOnboardingReducer = deviceOnboardingSlice.reducer;

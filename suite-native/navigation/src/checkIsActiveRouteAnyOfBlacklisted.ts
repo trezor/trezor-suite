@@ -1,7 +1,7 @@
 import { navigationContainerRef } from './components/NavigationContainerWithAnalytics';
-import { DeviceOnboardingStackRoutes, RootStackRoutes } from './routes';
+import { DeviceOnboardingStackRoutes, HomeStackRoutes, RootStackRoutes } from './routes';
 
-type RouteType = RootStackRoutes | DeviceOnboardingStackRoutes;
+type RouteType = RootStackRoutes | DeviceOnboardingStackRoutes | HomeStackRoutes;
 type Routes = RouteType[];
 
 const getActiveRouteName = () =>

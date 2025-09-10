@@ -15,10 +15,7 @@ import {
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
-import {
-    selectIsOnboardingDeviceDisconnectedAlertDisplayed,
-    selectWasDeviceOnboardingCancelled,
-} from '@suite-native/device-onboarding';
+import { selectWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
@@ -50,34 +47,37 @@ const handleDeviceConnectNavigation = ({
     isDeviceInitialized,
     isDeviceSetupSupported,
     wasDeviceOnboardingCancelled,
-    isOnboardingDeviceDisconnectedAlertDisplayed,
-    isReconnectingDeviceOnDeviceOnboarding,
 }: {
     isCoinEnablingInitFinished: boolean;
     isDeviceInitialized: boolean;
     isDeviceSetupSupported: boolean;
     wasDeviceOnboardingCancelled: boolean;
-    isOnboardingDeviceDisconnectedAlertDisplayed: boolean;
-    isReconnectingDeviceOnDeviceOnboarding: boolean;
 }) => {
-    // If device setup is not supported, we don't want to navigate anywhere
-    // We handle it separately in `useDetectDeviceError` hook
-    if (!isDeviceSetupSupported) return;
-
     if (isCoinEnablingInitFinished) {
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
         });
     } else if (!isDeviceInitialized) {
-        if (
-            isOnboardingDeviceDisconnectedAlertDisplayed ||
-            isReconnectingDeviceOnDeviceOnboarding
-        ) {
-            return;
-        }
+        // If device setup is not supported, we don't want to navigate anywhere
+        // We handle it separately in `useDetectDeviceError` hook. Ideally, the alert would be triggered here (it would need to be in redux though).
+        if (!isDeviceSetupSupported) return;
 
+        // If user previously cancelled the onboarding, they should remaing on homescreen
         if (wasDeviceOnboardingCancelled) {
-            console.warn('navigate home');
+            // No need to navigate if we are already on home screen (preventing sliding to new screen)
+            if (checkIsActiveRouteAnyOf([HomeStackRoutes.Home])) return;
+
+            navigationContainerRef.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    },
+                ],
+            });
         } else {
             // If THP confirmation screen was shown, we want to prevent swiping/navigating back to
             // that THP confirmation screen. Swiping/navigating back shall lead to the Home screen.
@@ -145,13 +145,6 @@ deviceConnectionMiddleware.startListening({
             isDeviceInitialized: selectIsDeviceInitialized(getState()),
             isDeviceSetupSupported: selectIsDeviceSetupSupported(getState()),
             wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
-            isOnboardingDeviceDisconnectedAlertDisplayed:
-                selectIsOnboardingDeviceDisconnectedAlertDisplayed(getState()),
-            isReconnectingDeviceOnDeviceOnboarding:
-                checkIsActiveRouteAnyOf([RootStackRoutes.DeviceOnboardingStack]) &&
-                checkIsActiveRouteAnyOfBlacklisted([
-                    DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
-                ]),
         });
     },
 });

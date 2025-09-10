@@ -9,7 +9,6 @@ export const DEVICE_DISCONNECTION_BLACKLISTED_ROUTES = [
 
 export const DEVICE_CONNECTION_BLACKLISTED_ROUTES = [
     RootStackRoutes.DeviceCompromisedModal,
-    RootStackRoutes.DeviceOnboardingStack,
     RootStackRoutes.SendStack,
 ];
 
