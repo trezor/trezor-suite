@@ -2,9 +2,10 @@ import { useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { getPackagingUrl } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Banner, variables } from '@trezor/components';
+import { Banner, Image, Row, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
@@ -38,9 +39,19 @@ export const Hologram = () => {
     const hologramRef = useRef<HTMLVideoElement>(null);
 
     const packagingUrl = getPackagingUrl(device);
+    const deviceModelInternal = device?.features?.internal_model;
     const isOldT2B1Packaging =
-        device?.features?.internal_model === DeviceModelInternal.T2B1 &&
-        (device.features.unit_packaging === undefined || device.features.unit_packaging === 0);
+        deviceModelInternal === DeviceModelInternal.T2B1 &&
+        (device?.features?.unit_packaging === undefined || device?.features?.unit_packaging === 0);
+
+    const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;
+
+    const getDeviceModel = () => {
+        if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN)
+            return DEFAULT_FLAGSHIP_MODEL;
+
+        return deviceModelInternal;
+    };
 
     return (
         <>
@@ -54,22 +65,27 @@ export const Hologram = () => {
                 )}
             </HologramSubHeading>
 
-            <AnimationWrapper>
-                <DeviceAnimation
-                    type="HOLOGRAM"
-                    shape="ROUNDED-SMALL"
-                    loop
-                    width="100%"
-                    deviceModelInternal={device?.features?.internal_model}
-                    onVideoMouseOver={() => {
-                        // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again
-                        // As a quick workaround user can hover a mouse to play it again
-                        hologramRef.current?.play();
-                    }}
-                    ref={hologramRef}
-                    isOldT2B1Packaging={isOldT2B1Packaging}
-                />
-            </AnimationWrapper>
+            {isT1B1 ? (
+                <AnimationWrapper>
+                    <DeviceAnimation
+                        type="HOLOGRAM"
+                        shape="ROUNDED-SMALL"
+                        loop
+                        width="100%"
+                        deviceModelInternal={DeviceModelInternal.T1B1}
+                        onVideoMouseOver={() => {
+                            // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again
+                            // As a quick workaround user can hover a mouse to play it again
+                            hologramRef.current?.play();
+                        }}
+                        ref={hologramRef}
+                    />
+                </AnimationWrapper>
+            ) : (
+                <Row justifyContent="center" margin={{ top: 20, bottom: 40 }}>
+                    <Image isFilterActive={false} image={`TREZOR_${getDeviceModel()}_HOLOGRAM`} />
+                </Row>
+            )}
 
             <StyledWarning>
                 <Translation

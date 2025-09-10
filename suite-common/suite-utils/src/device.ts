@@ -449,12 +449,16 @@ export const isDeviceWithButtons = (
 export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
     isArrayMember(action.type, Object.values(DEVICE));
 
-export const getDeviceInternalModel = (device: Pick<Device, 'features' | 'thp'>) =>
-    device.features?.internal_model ??
-    (device.thp?.properties?.internal_model as DeviceModelInternal);
+export const getDeviceInternalModel = (
+    device?: Pick<Device, 'features' | 'thp'> | undefined,
+): DeviceModelInternal =>
+    device?.features?.internal_model ??
+    (device?.thp?.properties?.internal_model as DeviceModelInternal) ??
+    DeviceModelInternal.UNKNOWN;
 
-export const getDeviceColorVariant = (device: Pick<Device, 'features' | 'thp'>) =>
-    device.features?.unit_color ?? device.thp?.properties?.model_variant;
+export const getDeviceColorVariant = (
+    device: Pick<Device, 'features' | 'thp'>,
+): number | undefined => device.features?.unit_color ?? device.thp?.properties?.model_variant ?? 1;
 
 export const isThpDevice = <T extends Device | TrezorDevice>(
     device: T,

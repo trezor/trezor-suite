@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Image, Row } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
@@ -31,8 +31,7 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
 
     const isConnected = selectedDevice !== undefined;
 
-    const selectedDeviceModelInternal =
-        selectedDevice?.features?.internal_model || DeviceModelInternal.UNKNOWN;
+    const selectedDeviceModelInternal = getDeviceInternalModel(selectedDevice);
 
     return (
         <Row

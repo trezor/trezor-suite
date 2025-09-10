@@ -220,10 +220,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                     <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
                 </Button>
             </Box>
-            <Modal.ModalBase
-                size="tiny"
-                onCancel={onCancel}
-                heading={<Translation id="TR_CONNECT_UNLOCK_YOUR_DEVICE" />}
+            <Modal.ModalBase size="tiny" onCancel={onCancel}heading={<Translation id="TR_CONNECT_UNLOCK_YOUR_DEVICE" />}
             >
                 <Column
                     alignItems="center"

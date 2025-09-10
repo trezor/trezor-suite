@@ -10,9 +10,7 @@ type SupportedDeviceModels = DeviceModelInternal.T3W1;
 
 const deviceImageMap: Record<SupportedDeviceModels | typeof DEFAULT_CONNECT_DEVICE_NAME, string> = {
     [DeviceModelInternal.T3W1]: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TREZOR_T3W1_LARGE_2x}`),
-    [DEFAULT_CONNECT_DEVICE_NAME]: resolveStaticPath(
-        `${PNG_PATH}/${PNG_IMAGES.TREZOR_T3T1_ON_CONNECT}`,
-    ),
+    [DEFAULT_CONNECT_DEVICE_NAME]: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TREZOR_T3W1_LARGE}`),
 };
 
 type DeviceImageSize = 'small' | 'normal' | 'large';

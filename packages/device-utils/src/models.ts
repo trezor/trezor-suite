@@ -1,8 +1,12 @@
 import { DeviceModelInternal } from './';
 
+type ModelColor = string;
+type ModelFrontColor = string;
+
 type ModelConfig = {
     name: string;
-    colors: Record<string, string>;
+    colors: Record<ModelColor, string>;
+    frontColors?: Record<ModelColor, ModelFrontColor>;
 };
 
 const safe3Model: ModelConfig = {
@@ -47,7 +51,11 @@ export const models: Record<DeviceModelInternal, ModelConfig> = {
             '1': 'Fantastic Ethereum', // TODO T3W1
             '2': 'Lunatic Dogecoin', // TODO T3W1
             '3': 'Galactic Litecoin', // TODO T3W1
-            '4': 'Majestic Bitcoin', // TODO T3W1
+        },
+        frontColors: {
+            '1': '1',
+            '2': '2',
+            '3': '1',
         },
     },
 };

@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
+import { Button, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 
@@ -14,7 +14,7 @@ import {
     setDeviceTutorialStatus,
 } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { DeviceConfirmImage, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
@@ -37,10 +37,7 @@ export const DeviceTutorial = () => {
     const dispatch = useDispatch();
     const intl = useIntl();
 
-    const deviceModelInternal = device?.features?.internal_model;
     const isContinueButtonVisible = status && ['cancelled', 'completed'].includes(status);
-    const imgName =
-        deviceModelInternal && (`DEVICE_CONFIRM_TREZOR_${deviceModelInternal}` as const);
     const showDevicePrompt = status === 'active';
 
     const handleContinue = () => {
@@ -57,7 +54,12 @@ export const DeviceTutorial = () => {
     const getHeading = () => {
         switch (status) {
             case 'active':
-                return <Translation id="TR_TREZOR_DEVICE_TUTORIAL_HEADING" />;
+                return (
+                    <Column justifyContent="center" alignItems="center" gap={40}>
+                        <DeviceConfirmImage device={device} height={200} />
+                        <Translation id="TR_TREZOR_DEVICE_TUTORIAL_HEADING" />
+                    </Column>
+                );
             case 'completed':
                 return <Translation id="TR_TREZOR_DEVICE_TUTORIAL_COMPLETED_HEADING" />;
             case 'cancelled':
@@ -107,7 +109,6 @@ export const DeviceTutorial = () => {
 
     return (
         <StyledOnboardingStepBox
-            image={imgName}
             heading={getHeading()}
             description={getDescription()}
             device={device}
