@@ -1,5 +1,6 @@
 import { MouseEventHandler } from 'react';
 
+import { getDeviceColorVariant } from '@suite-common/suite-utils';
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
 import { Row, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -32,11 +33,13 @@ export const DeviceStatus = ({
 
     const image = (
         <Row justifyContent="center" width={24} opacity={deviceNeedsRefresh ? 0.4 : 1}>
-            <RotateDeviceImage
-                deviceModel={deviceModel}
-                deviceColor={device?.features?.unit_color}
-                animationHeight="34px"
-            />
+            {device && (
+                <RotateDeviceImage
+                    deviceModel={deviceModel}
+                    deviceColor={getDeviceColorVariant(device)}
+                    animationHeight="34px"
+                />
+            )}
         </Row>
     );
 

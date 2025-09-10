@@ -1,10 +1,8 @@
 import { useIntl } from 'react-intl';
 
-import styled from 'styled-components';
-
 import { TranslationKey } from '@suite-common/intl-types';
 import { getDeviceColorVariant, getDeviceInternalModel } from '@suite-common/suite-utils';
-import { H2, Modal } from '@trezor/components';
+import { Column, H2, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -14,11 +12,6 @@ import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop'
 import { Translation } from 'src/components/suite/Translation';
 import messages from 'src/support/messages';
 import { TrezorDevice } from 'src/types/suite';
-
-const ImageWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-`;
 
 interface ConfirmActionProps {
     device: TrezorDevice;
@@ -52,15 +45,15 @@ export const ConfirmActionModal = ({
                 onCancel={handleCancel}
             />
             <Modal.ModalBase size="tiny">
-                <ImageWrapper>
+                <Column alignItems="center" gap={16}>
                     <DeviceConfirmImage device={device} />
-                </ImageWrapper>
-                <H2
-                    align="center"
-                    margin={{ left: spacings.md, right: spacings.md, bottom: spacings.md }}
-                >
-                    <Translation id={title ?? 'TR_CONFIRM_ACTION_ON_YOUR'} />
-                </H2>
+                    <H2
+                        align="center"
+                        margin={{ left: spacings.md, right: spacings.md, bottom: spacings.md }}
+                    >
+                        <Translation id={title ?? 'TR_CONFIRM_ACTION_ON_YOUR'} />
+                    </H2>
+                </Column>
             </Modal.ModalBase>
         </ConnectModalBackdrop>
     );

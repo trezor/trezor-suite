@@ -118,7 +118,7 @@ const NonBluetooth = ({ allowSwitchDevice }: NonBluetoothProps) => {
     const deviceStatus = (device && getStatus(device)) ?? null;
 
     return (
-        <Column alignItems="center" gap={spacings.xxxl}>
+        <Column alignItems="center" gap={spacings.xxxl} margin={{ vertical: 40 }}>
             {allowSwitchDevice && connectedDevicesCount > 1 && (
                 <Button variant="tertiary" onClick={handleSwitchDeviceClick} icon="trezorDevices">
                     <Translation id="TR_SWITCH_DEVICE" />

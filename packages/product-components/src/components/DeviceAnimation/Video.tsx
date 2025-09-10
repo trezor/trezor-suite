@@ -13,16 +13,18 @@ type VideoProps = {
     loop: boolean;
     videoRef: React.Ref<HTMLVideoElement>;
     onMouseOver?: MouseEventHandler<HTMLVideoElement>;
+    onEnded?: () => void;
     rerenderKey: string;
 };
 
-export const Video = ({ src, loop, videoRef, onMouseOver, rerenderKey }: VideoProps) => {
+export const Video = ({ src, loop, videoRef, onMouseOver, rerenderKey, onEnded }: VideoProps) => {
     const commonProps = {
         loop,
         autoPlay: true,
         muted: true,
         ref: videoRef,
         onMouseOver,
+        onEnded,
     };
 
     return (

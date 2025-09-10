@@ -8,6 +8,7 @@ export type RotateDeviceImageProps = {
     deviceModel?: DeviceModelInternal;
     deviceColor?: number;
     className?: string;
+    loop?: boolean;
     animationHeight?: string;
     animationWidth?: string;
 };
@@ -16,6 +17,7 @@ export const RotateDeviceImage = ({
     deviceModel,
     deviceColor,
     className,
+    loop,
     animationHeight,
     animationWidth,
 }: RotateDeviceImageProps) => {
@@ -25,6 +27,7 @@ export const RotateDeviceImage = ({
 
     return (
         <DeviceAnimation
+            loop={loop}
             className={className}
             type="ROTATE"
             deviceModelInternal={deviceModel}

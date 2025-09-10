@@ -1,14 +1,15 @@
-import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
+import { CSSProperties, forwardRef, MouseEventHandler } from 'react';
 
 import { useTheme } from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
-
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { AnimationWrapper, Shape } from '@trezor/components';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 
+import { ConnectBtAnimation } from './ConnectBtAnimation';
 import { Video } from './Video';
+import { getModelFrontColor } from '../../utils/getModelFrontColor';
 
 export const animationDeviceTypes = [
     'BOOTLOADER', // No longer available for T3T1
@@ -17,6 +18,8 @@ export const animationDeviceTypes = [
     'SUCCESS',
     'HOLOGRAM',
     'ROTATE',
+    'CONNECT_BT',
+    'CONNECT_CABLE',
 ] as const;
 export type AnimationDeviceType = (typeof animationDeviceTypes)[number];
 
@@ -27,7 +30,6 @@ type DeviceAnimationProps = {
     loop?: boolean;
     shape?: Shape;
     deviceModelInternal?: DeviceModelInternal;
-    isOldT2B1Packaging?: boolean;
     deviceUnitColor?: number;
     className?: string;
     sizeVariant?: 'LARGE';
@@ -44,7 +46,6 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             loop = false,
             shape,
             deviceModelInternal = DEFAULT_FLAGSHIP_MODEL,
-            isOldT2B1Packaging,
             deviceUnitColor,
             sizeVariant,
             onVideoMouseOver: onMouseOver,
@@ -64,19 +65,8 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             ? ''
             : `_${theme.legacy.THEME}`;
 
-        const deviceModelInFilename = (
-            type === 'HOLOGRAM' && isOldT2B1Packaging
-                ? DeviceModelInternal.T2B1
-                : getNarrowedDeviceModelInternal(deviceModelInternal)
-        ).toLowerCase();
-
-        const getFrontColor = () => {
-            if (deviceModelInternal === DeviceModelInternal.T3W1) {
-                return deviceUnitColor === 2 ? 2 : 1;
-            }
-
-            return 1;
-        };
+        const deviceModelInFilename =
+            getNarrowedDeviceModelInternal(deviceModelInternal).toLowerCase();
 
         // Key is used to force re-render of the video element. When `src` of the inner <source> tag
         // changes, the video element does not re-render. This is a workaround.
@@ -86,6 +76,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             loop,
             videoRef,
             onMouseOver,
+            rerenderKey,
         };
 
         return (
@@ -93,14 +84,12 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 {['BOOTLOADER'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`}
-                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}
                 {['SUCCESS'].includes(type) && (
                     <Video
-                        src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}_frontcolor_${getFrontColor()}.webm`}
-                        rerenderKey={rerenderKey}
+                        src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}_frontcolor_${getModelFrontColor(deviceModelInternal, deviceUnitColor)}.webm`}
                         {...commonProps}
                     />
                 )}
@@ -108,14 +97,12 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 {['BOOTLOADER_TWO_BUTTONS', 'NORMAL'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${DeviceModelInternal.T1B1.toLowerCase()}_${type.toLowerCase()}${themeSuffix}.webm`}
-                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}
                 {type === 'HOLOGRAM' && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_hologram.webm`}
-                        rerenderKey={rerenderKey}
                         {...commonProps}
                     />
                 )}
@@ -125,8 +112,17 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                             // if device unit color is not set, use first color available
                             deviceUnitColor ?? 1
                         }${sizeVariant ? `_${sizeVariant.toLowerCase()}` : ''}.webm`}
-                        rerenderKey={rerenderKey}
                         {...commonProps}
+                    />
+                )}
+                {type === 'CONNECT_CABLE' && (
+                    <Video src="videos/device/trezor_t3w1_connect_cable.webm" {...commonProps} />
+                )}
+                {type === 'CONNECT_BT' && (
+                    <ConnectBtAnimation
+                        rerenderKey={rerenderKey}
+                        videoRef={videoRef}
+                        onMouseOver={onMouseOver}
                     />
                 )}
             </AnimationWrapper>

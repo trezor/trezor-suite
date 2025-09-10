@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { ConnectedDeviceStatus } from '@suite-common/suite-utils';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Box,
     Column,
@@ -9,21 +11,21 @@ import {
     ElevationUp,
     Icon,
     IconVariant,
-    Image,
     Text,
     iconSizes,
     motionEasing,
     useElevation,
     variables,
 } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import { DeviceWithScene } from '@trezor/product-components';
 import { Elevation, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import type { PrerequisiteType } from 'src/types/suite';
 
 import { TranslationKey } from './Translation';
+import { useSelector } from '../../hooks/suite';
 
 const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     display: flex;
@@ -31,7 +33,6 @@ const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
 
     padding: 10px;
     align-items: center;
-    margin: 0;
 
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
         border-radius: 61px;
@@ -160,6 +161,9 @@ const ConnectImage = ({
     showWarningIcon,
 }: Pick<ConnectDevicePromptProps, 'connected' | 'showWarningIcon'>) => {
     const theme = useTheme();
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const selectedDeviceModelInternal =
+        selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 
     const getIconData = (): { variant: IconVariant; icon: React.ReactNode } | undefined => {
         const commonProps = {
@@ -193,10 +197,9 @@ const ConnectImage = ({
                 iconPadding={spacings.xxs}
                 iconOffset={spacings.xs}
             >
-                <Image
-                    maxHeight={300}
-                    isFilterActive={false}
-                    image={`TREZOR_${DeviceModelInternal.T3T1}_LARGE`}
+                <DeviceWithScene
+                    deviceModel={selectedDeviceModelInternal}
+                    unitColor={selectedDevice?.features?.unit_color}
                 />
             </ComponentWithSubIcon>
         </Box>
