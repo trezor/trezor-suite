@@ -59,7 +59,16 @@ const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareUpdateSource, RemoteBaseInfo> = 
     'localhost-signed': SIGNED_LOCALHOST,
 };
 
-export const getOnlineFirmwareBaseUrl = () => {
+type OnlineFirmwareBaseUrl = RemoteBaseInfo & { env: FirmwareUpdateSource };
+
+/**
+ * Obtains the base URL and middle path where to find firmware releases, based on the current settings.
+ * Examples:
+ *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', env: 'production' }
+ *   { BASE_URL: 'https://suite.corp.sldev.cz', MIDDLE_PATH: 'firmware/signed', env: 'test-signed' }
+ *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', env: 'localhost-unsigned' }
+ */
+export const getOnlineFirmwareBaseUrl = (): OnlineFirmwareBaseUrl => {
     const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
 
     if (!firmwareUpdateSource) {
@@ -80,7 +89,7 @@ export const getOnlineFirmwareBaseUrl = () => {
 const getBundledFirmwareVersion = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
-) => {
+): string | undefined => {
     const localFirmwareReleaseConfig = DataManager.getLocalFirmwareReleaseConfig();
     const modelReleases = localFirmwareReleaseConfig.releases[deviceModel];
     const bundledRelease = modelReleases?.[firmwareType];
@@ -98,7 +107,10 @@ const getBundledFirmwareVersion = (
     return bundledVersion[0];
 };
 
-export const getBundledRelease = (deviceModel: DeviceModelInternal, firmwareType: FirmwareType) => {
+export const getBundledRelease = (
+    deviceModel: DeviceModelInternal,
+    firmwareType: FirmwareType,
+): FirmwareRelease | undefined => {
     const version = getBundledFirmwareVersion(deviceModel, firmwareType);
     if (!version) {
         // Probably it is a new device model
@@ -113,6 +125,12 @@ export const getBundledRelease = (deviceModel: DeviceModelInternal, firmwareType
 };
 
 const getOnlineReleaseByPath = async (releasePath: string) => {
+    /*
+        Example final URLs for reference:
+        - production (default) https://data.trezor.io/firmware/t3t1/universal/t3t1-2.8.10-universal.json
+        - test-unsigned https://data.trezor.io/dev/firmware/releases/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
+        - localhost-unsigned http://localhost:3000/firmware/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
+     */
     const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl();
     const url = `${onlineFirmwareBaseUrl.BASE_URL}/${releasePath}`;
 
@@ -124,11 +142,15 @@ const getOnlineReleaseByPath = async (releasePath: string) => {
     return response as FirmwareRelease;
 };
 
-export const getOnlineReleaseByVersion = async (
+/**
+ * Returns only the path where to find firmware release (at a base URL), based on the current settings.
+ * Example: 'firmware/t3t1/universal/t3t1-2.8.10-universal.json'
+ */
+const getOnlineReleasePath = (
     deviceModel: DeviceModelInternal,
     firmwareVersion: VersionArray,
     firmwareType: FirmwareType,
-) => {
+): string => {
     const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl();
     const firmwareTypeFileString =
         firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
@@ -136,6 +158,15 @@ export const getOnlineReleaseByVersion = async (
     const origin = `${onlineFirmwareBaseUrl.MIDDLE_PATH}/${deviceModel.toLowerCase()}/${firmwareTypeFileString}`;
     const releasePath = `${origin}/${relaseJsonFilename}`;
 
+    return releasePath;
+};
+
+export const getOnlineReleaseByVersion = async (
+    deviceModel: DeviceModelInternal,
+    firmwareVersion: VersionArray,
+    firmwareType: FirmwareType,
+): Promise<FirmwareRelease | undefined> => {
+    const releasePath = getOnlineReleasePath(deviceModel, firmwareVersion, firmwareType);
     const onlineRelease = await getOnlineReleaseByPath(releasePath);
     if (!onlineRelease || !versionUtils.isEqual(onlineRelease.version, firmwareVersion)) {
         return;
@@ -144,7 +175,10 @@ export const getOnlineReleaseByVersion = async (
     return onlineRelease;
 };
 
-export const getReleaseConfig = (features: Features, firmwareType: FirmwareType) => {
+export const getReleaseConfig = (
+    features: Features,
+    firmwareType: FirmwareType,
+): ConditionalRelease | undefined => {
     const { internal_model } = features;
     if (internal_model === DeviceModelInternal.UNKNOWN) {
         return undefined;
@@ -190,7 +224,7 @@ export const getReleaseByVersion = async (
     }
 
     const release =
-        // Orden is important!
+        // Order is important!
         (await tryGetRelease(() => getReleaseAsset(deviceModel, firmwareVersion, firmwareType))) ||
         (await tryGetRelease(() =>
             getOnlineReleaseByVersion(deviceModel, firmwareVersion, firmwareType),
@@ -576,13 +610,25 @@ type GetFirmwareLocationParam = {
     intermediaryVersion?: number;
 };
 
+type FirmwareLocationPathParams = {
+    baseUrl: string;
+    path: string;
+};
+
+/**
+ * Get firmware location parameters (baseUrl and path) where the firmware binary can be downloaded.
+ * The function checks multiple locations in the following order:
+ * 1. Bundled firmware location (if the firmware version matches the bundled version).
+ * 2. Local firmware directory (if the firmware file exists locally).
+ * 3. Online firmware location (default fallback).
+ */
 export const getFirmwareLocation = ({
     firmwareVersion,
     remotePath,
     deviceModel,
     firmwareType,
     intermediaryVersion,
-}: GetFirmwareLocationParam) => {
+}: GetFirmwareLocationParam): FirmwareLocationPathParams => {
     const firmwareName = intermediaryVersion
         ? buildIntermediaryFirmwareFileName(deviceModel, intermediaryVersion)
         : buildLocalFirmwareFileName(firmwareType, deviceModel, firmwareVersion);
