@@ -132,19 +132,17 @@ export const BluetoothDeviceListItem = ({
     const isGhostDevice = isKnownDevice && !isNearbyDevice;
 
     return (
-        <>
-            <Column gap={spacings.xs}>
-                <Row gap={spacings.md} alignItems="center">
-                    <BluetoothDeviceComponent device={device} flex="1" />
+        <Column gap={spacings.xs}>
+            <Row gap={spacings.md} alignItems="center">
+                <BluetoothDeviceComponent device={device} flex="1" />
 
-                    <ActionButton
-                        onPairAgain={onPairAgain}
-                        isGhostDevice={isGhostDevice}
-                        device={device}
-                        onConnect={onConnect}
-                    />
-                </Row>
-            </Column>
-        </>
+                <ActionButton
+                    onPairAgain={onPairAgain}
+                    isGhostDevice={isGhostDevice}
+                    device={device}
+                    onConnect={onConnect}
+                />
+            </Row>
+        </Column>
     );
 };
