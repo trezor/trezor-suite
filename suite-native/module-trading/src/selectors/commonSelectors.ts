@@ -12,12 +12,7 @@ import {
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import {
-    TradingType,
-    selectTradingExchangeSellCryptoIds,
-    selectTradingSellSellCryptoIds,
-    toTokenCryptoId,
-} from '@suite-common/trading';
+import { TradingType, selectTradingSupportedSymbols, toTokenCryptoId } from '@suite-common/trading';
 import {
     getNetwork,
     getNetworkDisplaySymbolName,
@@ -157,8 +152,8 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectTokenDefinitions,
             selectCurrentFiatRates,
             selectBaseCurrency,
-            selectTradingSellSellCryptoIds,
-            selectTradingExchangeSellCryptoIds,
+            (state: CombinedSelectorsRootState, tradingType: TradingType) =>
+                selectTradingSupportedSymbols(state, tradingType),
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,
@@ -168,17 +163,14 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             tokenDefinitions,
             fiatRates,
             localCurrency,
-            sellSellCryptoIds,
-            exchangeSellCryptoIds,
+            sellCryptoIds,
             isCardanoSendEnabled,
             tradingType,
         ) => {
             if (tradingType === 'buy') {
                 return returnStableArrayIfEmpty([]);
             }
-
-            const sellCryptoIds =
-                tradingType === 'sell' ? sellSellCryptoIds : exchangeSellCryptoIds;
+            const sellCryptoIdsSet = new Set(sellCryptoIds);
 
             // TODO: Remove this filter when Cardano send is implemented (#15068)
             // Currently filtering out Cardano accounts and tokens from trading until Cardano send is supported
@@ -232,7 +224,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                                 tokenSymbol,
                                 contract: token.contract as TokenAddress,
                                 cryptoId,
-                                isEnabled: sellCryptoIds.includes(cryptoId),
+                                isEnabled:
+                                    sellCryptoIdsSet.has(cryptoId) ||
+                                    sellCryptoIdsSet.has(cryptoId.toLowerCase() as CryptoId),
                                 fiatRateKey,
                                 rate,
                             };
@@ -264,7 +258,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                             shouldIncludeTokens: false,
                         }),
                         cryptoId,
-                        isEnabled: sellCryptoIds.includes(cryptoId),
+                        isEnabled:
+                            sellCryptoIdsSet.has(cryptoId) ||
+                            sellCryptoIdsSet.has(cryptoId.toLowerCase() as CryptoId),
                     };
 
                     const assets: MyAsset[] = [
