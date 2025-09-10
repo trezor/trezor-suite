@@ -357,7 +357,7 @@ describe('commonSelectors', () => {
             expect(result.length).toBeGreaterThan(0);
             expect(result[0]).toEqual(
                 expect.objectContaining({
-                    key: expect.stringContaining('section_'),
+                    key: 'section_btc-account-1',
                     label: expect.any(String),
                     sectionData: expect.any(Object),
                     data: expect.any(Array),
@@ -461,6 +461,7 @@ describe('commonSelectors', () => {
             expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
             expect(result[0].data[0].symbol).toBe('eth'); // Account asset
             expect(result[0].data[1].contract).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'); // USDC
+            expect(result[0].data[1].isEnabled).toBe(true);
         });
 
         it('should handle accounts with zero balance but tokens with positive balance', () => {
@@ -791,6 +792,63 @@ describe('commonSelectors', () => {
             const symbols = result.map(section => section.sectionData.symbol);
             expect(symbols).toContain('btc');
             expect(symbols).toContain('ada');
+        });
+
+        it('should handle contractIds as case insensitive', () => {
+            const testDeviceState = 'test-device';
+            const ethAccount = {
+                ...getEthAccount(),
+                balance: '1000000000000000000', // 1 ETH
+                formattedBalance: '1',
+                visible: true,
+                deviceState: testDeviceState,
+                tokens: [
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'USDC',
+                        contract: '0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48',
+                        transfers: 1,
+                        symbol: 'usdc',
+                        decimals: 6,
+                        balance: '1000000', // 1 USDC
+                    },
+                ],
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
+                wallet: {
+                    trading: cleanState,
+                    accounts: [ethAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {
+                    eth: {
+                        coin: {
+                            data: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+                            error: false,
+                            isLoading: false,
+                            hide: [],
+                            show: [],
+                        },
+                    },
+                },
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
+            expect(result[0].data[1].contract).toBe('0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48'); // USDC
+            expect(result[0].data[1].isEnabled).toBe(true);
         });
     });
 });
