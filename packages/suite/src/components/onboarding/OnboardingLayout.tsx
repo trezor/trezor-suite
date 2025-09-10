@@ -2,7 +2,8 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Row, variables } from '@trezor/components';
+import { Button, Flex, Row, variables } from '@trezor/components';
+import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
@@ -21,7 +22,7 @@ import {
 } from './OnboardingCancelButtonContext';
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 import { ConnectionGlobalModal } from '../connection/ConnectionGlobalModal';
-import { TrafficLightOffset } from '../suite/TrafficLightOffset';
+import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '../suite/TrafficLightOffset';
 import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 
 const Wrapper = styled.div`
@@ -42,6 +43,12 @@ const Body = styled.div`
 const ScrollingWrapper = styled.div`
     position: relative;
     display: flex;
+    flex-direction: column;
+    width: 100%;
+`;
+
+const OnboardingSpacer = styled.div`
+    height: ${TRAFFIC_LIGHT_DEFAULT_OFFSET}px;
     width: 100%;
 `;
 
@@ -167,21 +174,26 @@ type OnboardingLayoutProps = {
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const theme = useSelector(state => state.suite.settings.theme);
 
+    const isMac = isMacOs();
+    const isDesktopApp = isDesktop();
+
     const allowedModal = useFilteredModal(
         [MODAL.CONTEXT_USER],
         ['advanced-coin-settings', 'disable-tor'],
     );
 
     return (
-        <TrafficLightOffset>
+        <>
             <ConnectionGlobalModal />
-            {allowedModal && <ReduxModal {...allowedModal} />}
+            {allowedModal !== null ? <ReduxModal {...allowedModal} /> : null}
 
             <Wrapper>
-                <SuiteBanners isOnboarding />
-
                 <Body data-testid="@onboarding-layout/body">
                     <ScrollingWrapper>
+                        {isMac && isDesktopApp && <OnboardingSpacer />}
+                        <Flex direction="column" alignItems="center">
+                            <SuiteBanners isOnboarding />
+                        </Flex>
                         <OnboardingCancelButtonContext>
                             <OnboardingContent>{children}</OnboardingContent>
                         </OnboardingCancelButtonContext>
@@ -192,6 +204,6 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                 </Body>
             </Wrapper>
             {theme.variant === 'debug' && <DebugLegend />}
-        </TrafficLightOffset>
+        </>
     );
 };

@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { zIndices } from '@trezor/theme';
 
+export const TRAFFIC_LIGHT_DEFAULT_OFFSET = 35;
+
 type Props = {
     children?: React.ReactNode;
     offset?: number;
@@ -46,7 +48,7 @@ export const TrafficLightDraggableWindowHeader = ({ children, isVisible = true }
 // on Mac in desktop app we don't use window bar and close/maximize/minimize icons are positioned directly in the app
 export const TrafficLightOffset = ({
     children,
-    offset = 35,
+    offset = TRAFFIC_LIGHT_DEFAULT_OFFSET,
     isVisible = true,
     expand = true,
 }: Props) => {
