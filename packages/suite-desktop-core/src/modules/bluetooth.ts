@@ -85,6 +85,16 @@ export const init: ModuleInit = () => {
 
                     if (!api) throw apiError;
 
+                    if (method === 'connectDevice') {
+                        // special case for macos
+                        const result = await bluetoothProcess?.connectAndSubscribeInMainThread(
+                            params[0],
+                        );
+                        if (result && !result.success) {
+                            return result;
+                        }
+                    }
+
                     if (method === 'dispose') {
                         killBluetoothProcess();
                     }
