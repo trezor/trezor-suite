@@ -34,6 +34,8 @@ import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 import { LocalFirstStorageDebug } from './LocalFirstStorageDebug';
+import { METADATA_LABELING } from '../../../../actions/suite/constants';
+import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 
 type WalletInstanceProps = {
     instance: AcquiredDevice;
@@ -58,6 +60,9 @@ export const WalletInstance = ({
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
     const store = useStore();
+    const { isLocalFirstStorageEnabled } = useLabelingCombined({
+        deviceStaticSessionId: instance?.state?.staticSessionId,
+    });
 
     const { defaultAccountLabelString } = useWalletLabeling();
 
@@ -165,7 +170,16 @@ export const WalletInstance = ({
                                                     type: 'walletLabel',
                                                     entityKey: instance.state.staticSessionId,
                                                     defaultValue: instance.state.staticSessionId,
-                                                    value: valueLabel,
+                                                    value:
+                                                        // This is some legacy weird stuff I do not want to refacotr.
+                                                        // `payload.value` needs to be falsey for the `MetadataLabeling` component
+                                                        // to display `add` button, instead of `edit` button
+                                                        isLocalFirstStorageEnabled &&
+                                                        instance?.metadata[
+                                                            METADATA_LABELING.ENCRYPTION_VERSION
+                                                        ]
+                                                            ? oldWalletLabel
+                                                            : walletLabel,
                                                 }}
                                                 defaultEditableValue={valueLabel}
                                             />
