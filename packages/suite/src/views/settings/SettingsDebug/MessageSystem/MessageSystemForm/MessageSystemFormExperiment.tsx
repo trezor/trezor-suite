@@ -1,41 +1,42 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
-    CATEGORY_OPTIONS,
-    CONDITION_OPTIONS,
     ValidateError,
-    getDefaultActionByCategory,
-    getDefaultConditionValue,
+    getDefaultExperiment,
     messageSystemActions,
     selectMessageSystemConfig,
     stripFieldFromMessage,
-    validateMessageForm,
+    validateExperimentForm,
 } from '@suite-common/message-system';
-import { Action, Category, Condition } from '@suite-common/suite-types';
+import { Experiments } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
-import { MessageSystemInfoButtons } from './MessageSystemInfoButtons';
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
-import { MessageSystemPresetControls } from './MessageSystemPresetControls';
+import { useConditionControls } from './useConditionControls';
+import { MessageSystemExperimentToolbar } from '../MessageSystemExperiment/MessageSystemExperimentToolbar';
 
-export const MessageSystemForm = () => {
-    const defaultAction = JSON.stringify(getDefaultActionByCategory('banner'), null, 2);
+export const MessageSystemFormExperiment = () => {
+    const defaultAction = JSON.stringify(getDefaultExperiment(), null, 2);
     const config = useSelector(selectMessageSystemConfig);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState<string>(defaultAction);
-    const [parsedData, setParsedData] = useState<Action | null>(null);
+    const [parsedData, setParsedData] = useState<Experiments | null>(null);
     const [validationErrors, setValidationErrors] = useState<ValidateError[]>([]);
+    const { availableConditionOptions, canAddCondition, addCondition } = useConditionControls(
+        parsedData,
+        setFormData,
+    );
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
 
     const isValid = validationErrors.length === 0;
 
-    const messageIds = useMemo(
-        () => new Set(config?.actions.map(action => action.message.id)),
+    const experimentIds = useMemo(
+        () => new Set(config?.experiments?.map(experiment => experiment.experiment.id)),
         [config],
     );
 
@@ -44,13 +45,13 @@ export const MessageSystemForm = () => {
             const parsed = JSON.parse(formData);
             setParsedData(parsed);
 
-            const validatedData = validateMessageForm(parsed);
+            const validatedData = validateExperimentForm(parsed);
 
-            if (messageIds.has(validatedData.message.id)) {
+            if (experimentIds.has(validatedData.experiment.id)) {
                 setValidationErrors([
                     {
-                        field: 'message.id',
-                        message: `must be unique. “${validatedData.message.id}” is already in use.`,
+                        field: 'experiment.id',
+                        message: `must be unique. “${validatedData.experiment.id}” is already in use.`,
                     },
                 ]);
             } else {
@@ -82,53 +83,19 @@ export const MessageSystemForm = () => {
             setParsedData(null);
             setValidationErrors([{ field: 'JSON', message: 'Unknown error occurred' }]);
         }
-    }, [formData, messageIds, translationString]);
+    }, [formData, experimentIds, translationString]);
 
     const formatJSON = useCallback(() => {
         setFormData(JSON.stringify(parsedData, null, 2));
     }, [parsedData]);
 
-    const availableConditionOptions = useMemo(() => {
-        if (!Array.isArray(parsedData?.conditions) || !parsedData.conditions[0]) {
-            return CONDITION_OPTIONS;
-        }
-
-        const conditions = parsedData.conditions[0] as Record<keyof Condition, unknown>;
-        const used = new Set(Object.keys(conditions));
-
-        return CONDITION_OPTIONS.filter(option => !used.has(option.value));
-    }, [parsedData]);
-
-    const handlePresetForm = useCallback((category: Category) => {
-        setFormData(JSON.stringify(getDefaultActionByCategory(category), null, 2));
+    const handlePresetForm = useCallback(() => {
+        setFormData(JSON.stringify(getDefaultExperiment(), null, 2));
     }, []);
 
-    const handleAddCondition = (conditionKey: keyof Condition) => {
-        if (!parsedData) return;
-
-        const defaultValue = getDefaultConditionValue(conditionKey);
-
-        const existing = Array.isArray(parsedData.conditions) ? parsedData.conditions : [];
-
-        const head = (existing[0] ?? {}) as Record<string, unknown>;
-
-        if (Object.prototype.hasOwnProperty.call(head, conditionKey)) {
-            return;
-        }
-
-        const updatedHead = { ...head, [conditionKey]: defaultValue };
-
-        const next = {
-            ...parsedData,
-            conditions: [updatedHead, ...existing.slice(1)],
-        };
-
-        setFormData(JSON.stringify(next, null, 2));
-    };
-
-    const handleAddMessage = () => {
+    const handleAddExperiment = () => {
         if (parsedData) {
-            dispatch(messageSystemActions.addMessage(parsedData));
+            dispatch(messageSystemActions.addExperiment(parsedData));
             setShowForm(false);
             setFormData(defaultAction);
         }
@@ -137,23 +104,19 @@ export const MessageSystemForm = () => {
     if (!showForm) {
         return (
             <Button size="small" onClick={() => setShowForm(true)}>
-                Add new message
+                Add new experiment
             </Button>
         );
     }
 
     return (
         <Column width="100%" gap={spacings.sm}>
-            <Row justifyContent="space-between" alignItems="center">
-                <MessageSystemPresetControls
-                    categories={CATEGORY_OPTIONS}
-                    availableConditions={availableConditionOptions}
-                    canAddCondition={!!parsedData && availableConditionOptions.length > 0}
-                    onPreset={handlePresetForm}
-                    onAddCondition={handleAddCondition}
-                />
-                <MessageSystemInfoButtons />
-            </Row>
+            <MessageSystemExperimentToolbar
+                availableConditions={availableConditionOptions}
+                canAddCondition={canAddCondition}
+                onPreset={handlePresetForm}
+                onAddCondition={addCondition}
+            />
 
             <MessageSystemJsonEditor
                 value={formData}
@@ -165,8 +128,8 @@ export const MessageSystemForm = () => {
             />
 
             <Row isReversed gap={spacings.xs}>
-                <Button isDisabled={!isValid} onClick={handleAddMessage} size="small">
-                    Add message
+                <Button isDisabled={!isValid} onClick={handleAddExperiment} size="small">
+                    Add experiment
                 </Button>
                 <Button size="small" variant="tertiary" onClick={() => setShowForm(false)}>
                     Cancel

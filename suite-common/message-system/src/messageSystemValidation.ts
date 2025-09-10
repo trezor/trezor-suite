@@ -227,3 +227,50 @@ export const validateMessageForm = (parsed: unknown) =>
         abortEarly: false,
         strict: true,
     });
+
+export const experimentGroupSchema = yup.object({
+    variant: yup.string().required(),
+    percentage: yup
+        .number()
+        .min(0, 'Percentage must be at least 0')
+        .max(100, 'Percentage cannot exceed 100')
+        .required(),
+});
+
+const experimentItemSchema = yup
+    .object({
+        id: yup.string().required(),
+        groups: yup
+            .array()
+            .of(experimentGroupSchema)
+            .min(1)
+            .required()
+            .test(
+                'unique-variants',
+                'Group variants must be unique within an experiment',
+                groups =>
+                    Array.isArray(groups)
+                        ? new Set(groups.map(group => group.variant)).size === groups.length
+                        : false,
+            )
+            .test('sum-100', 'Sum of percentages across groups must equal 100', groups => {
+                if (!Array.isArray(groups)) return false;
+                const sum = groups.reduce((acc, g) => acc + (g.percentage ?? 0), 0);
+
+                return sum === 100;
+            }),
+    })
+    .noUnknown(true);
+
+const ExperimentFormSchema = yup
+    .object({
+        experiment: experimentItemSchema.required(),
+        conditions: yup.array(conditionItemSchema).required(),
+    })
+    .required();
+
+export const validateExperimentForm = (parsed: unknown) =>
+    ExperimentFormSchema.validateSync(parsed, {
+        abortEarly: false,
+        strict: true,
+    });

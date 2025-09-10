@@ -197,6 +197,7 @@ describe('Message system middleware', () => {
                     manuallyAddedMessageIds: {
                         [manuallyAddedMessageId]: true,
                     },
+                    manuallyAddedExperimentIds: {},
                 },
                 undefined,
                 undefined,

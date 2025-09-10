@@ -97,6 +97,21 @@ const FIELDS = {
             allowed: '{ domain: string | string[] }',
         },
     ],
+    experimental: [
+        {
+            field: 'id',
+            required: <Icon name="checkCircleFilled" variant="primary" />,
+            description: 'Unique identifier of the experiment',
+            allowed: 'string (e.g. "6f92b4ec-7dc4-4b57-a7fb-b2e4c4e97920")',
+        },
+        {
+            field: 'groups',
+            required: <Icon name="checkCircleFilled" variant="primary" />,
+            description: 'List of variant buckets with traffic allocation',
+            allowed:
+                'Array of { variant: string, percentage: integer (0–100) } (sum across all groups must be 100)',
+        },
+    ],
     conditions: [
         {
             field: 'duration',
@@ -151,44 +166,55 @@ const FIELDS = {
 
 const SECTIONS = [
     { title: 'Message fields', key: 'message' },
+    { title: 'Experimental fields', key: 'experimental' },
     { title: 'Condition fields', key: 'conditions' },
 ] as const;
 
-export const MessageSystemInfo = () => (
-    <Table hasBorders>
-        <Table.Header>
-            <Table.Row>
-                <Table.Cell>
-                    <strong>Field</strong>
-                </Table.Cell>
-                <Table.Cell>
-                    <strong>Required</strong>
-                </Table.Cell>
-                <Table.Cell>
-                    <strong>Description</strong>
-                </Table.Cell>
-                <Table.Cell>
-                    <strong>Allowed values</strong>
-                </Table.Cell>
-            </Table.Row>
-        </Table.Header>
+type MessageSystemManualProps = {
+    include?: ReadonlyArray<(typeof SECTIONS)[number]['key']>;
+};
 
-        {SECTIONS.map(section => (
-            <Table.Body key={section.key}>
+export const MessageSystemManual = ({ include }: MessageSystemManualProps) => {
+    const visibleSections = include
+        ? SECTIONS.filter(section => include?.includes(section.key))
+        : SECTIONS;
+
+    return (
+        <Table hasBorders>
+            <Table.Header>
                 <Table.Row>
-                    <Table.Cell colSpan={4}>
-                        <H3>{section.title}</H3>
+                    <Table.Cell>
+                        <strong>Field</strong>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <strong>Required</strong>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <strong>Description</strong>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <strong>Allowed values</strong>
                     </Table.Cell>
                 </Table.Row>
-                {FIELDS[section.key].map((row, i) => (
-                    <Table.Row key={i}>
-                        <Table.Cell>{row.field}</Table.Cell>
-                        <Table.Cell>{row.required}</Table.Cell>
-                        <Table.Cell>{row.description}</Table.Cell>
-                        <Table.Cell>{row.allowed}</Table.Cell>
+            </Table.Header>
+
+            {visibleSections.map(section => (
+                <Table.Body key={section.key}>
+                    <Table.Row>
+                        <Table.Cell colSpan={4}>
+                            <H3>{section.title}</H3>
+                        </Table.Cell>
                     </Table.Row>
-                ))}
-            </Table.Body>
-        ))}
-    </Table>
-);
+                    {FIELDS[section.key].map((row, i) => (
+                        <Table.Row key={i}>
+                            <Table.Cell>{row.field}</Table.Cell>
+                            <Table.Cell>{row.required}</Table.Cell>
+                            <Table.Cell>{row.description}</Table.Cell>
+                            <Table.Cell>{row.allowed}</Table.Cell>
+                        </Table.Row>
+                    ))}
+                </Table.Body>
+            ))}
+        </Table>
+    );
+};

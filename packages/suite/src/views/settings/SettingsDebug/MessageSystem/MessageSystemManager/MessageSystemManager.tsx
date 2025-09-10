@@ -27,7 +27,7 @@ import { MessageSystemConditionGroup } from '../MessageSystemConditionGroup';
 import { MessageSystemManagerDetail } from './MessageSystemManagerDetail';
 import { CategoryFilterOption, MessageSystemManagerFilters } from './MessageSystemManagerFilters';
 import { MessageSystemManagerInfo } from './MessageSystemManagerInfo';
-import { MessageSystemForm } from '../MessageSystemForm/MessageSystemForm';
+import { MessageSystemFormMessage } from '../MessageSystemForm/MessageSystemFormMessage';
 
 const MessageContainer = styled.div<{ $variant: BannerVariant; $elevation: Elevation }>`
     display: flex;
@@ -83,7 +83,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
             size="huge"
             onCancel={onCloseModal}
             heading={`Messages (${allValidMessages.length} active of ${actions.length})`}
-            bottomContent={<MessageSystemForm />}
+            bottomContent={<MessageSystemFormMessage />}
         >
             <Column gap={spacings.sm}>
                 <MessageSystemManagerFilters
