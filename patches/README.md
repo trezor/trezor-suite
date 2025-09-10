@@ -1,13 +1,8 @@
 # Patches
 
-## react-native-quick-crypto
+## blakejs
 
-Add `libreactnative.so` to the list of files to not strip. Just temporary because it's already fixed upstream but not released yet.
-
-## expo-updates
-
-fix e2e tests in debug mode
-upstream PR https://github.com/expo/expo/pull/32951
+Fixing only types, no runtime code.
 
 ## expo-modules-core
 
