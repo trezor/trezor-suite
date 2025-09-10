@@ -15,7 +15,10 @@ import {
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
-import { selectWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
+import {
+    selectIsOnboardingDeviceDisconnectedAlertDisplayed,
+    selectWasDeviceOnboardingCancelled,
+} from '@suite-native/device-onboarding';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
@@ -47,11 +50,15 @@ const handleDeviceConnectNavigation = ({
     isDeviceInitialized,
     isDeviceSetupSupported,
     wasDeviceOnboardingCancelled,
+    isOnboardingDeviceDisconnectedAlertDisplayed,
+    isReconnectingDeviceOnDeviceOnboarding,
 }: {
     isCoinEnablingInitFinished: boolean;
     isDeviceInitialized: boolean;
     isDeviceSetupSupported: boolean;
     wasDeviceOnboardingCancelled: boolean;
+    isOnboardingDeviceDisconnectedAlertDisplayed: boolean;
+    isReconnectingDeviceOnDeviceOnboarding: boolean;
 }) => {
     // If device setup is not supported, we don't want to navigate anywhere
     // We handle it separately in `useDetectDeviceError` hook
@@ -62,6 +69,13 @@ const handleDeviceConnectNavigation = ({
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
         });
     } else if (!isDeviceInitialized) {
+        if (
+            isOnboardingDeviceDisconnectedAlertDisplayed ||
+            isReconnectingDeviceOnDeviceOnboarding
+        ) {
+            return;
+        }
+
         if (wasDeviceOnboardingCancelled) {
             console.warn('navigate home');
         } else {
@@ -131,6 +145,13 @@ deviceConnectionMiddleware.startListening({
             isDeviceInitialized: selectIsDeviceInitialized(getState()),
             isDeviceSetupSupported: selectIsDeviceSetupSupported(getState()),
             wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
+            isOnboardingDeviceDisconnectedAlertDisplayed:
+                selectIsOnboardingDeviceDisconnectedAlertDisplayed(getState()),
+            isReconnectingDeviceOnDeviceOnboarding:
+                checkIsActiveRouteAnyOf([RootStackRoutes.DeviceOnboardingStack]) &&
+                checkIsActiveRouteAnyOfBlacklisted([
+                    DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+                ]),
         });
     },
 });
