@@ -33,7 +33,8 @@ const Body = styled.div`
     justify-content: center;
     display: flex;
     width: 100%;
-    height: 100%;
+    height: auto;
+    overflow: scroll;
 `;
 
 const ScrollingWrapper = styled.div`
