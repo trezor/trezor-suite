@@ -8,6 +8,7 @@ import {
     deviceActions,
     discoveryActions,
     selectIsBitcoinEnabled,
+    selectIsCoinEnablingFinished,
     selectSelectedDevice,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
@@ -17,10 +18,6 @@ import {
     recoverWalletThunk,
     selectIsDeviceFirmwareSupported,
 } from '@suite-native/device';
-import {
-    selectIsCoinEnablingInitFinished,
-    setIsCoinEnablingInitFinished,
-} from '@suite-native/settings';
 import { DEVICE } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
@@ -38,7 +35,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         next(action);
 
         const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
-        const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
+        const isCoinEnablingFinished = selectIsCoinEnablingFinished(getState());
         const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
 
         // ensure that BTC is enabled when device with BTC-only firmware is connected
@@ -49,14 +46,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 if (!isBitcoinEnabled) {
                     dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
                 }
-                if (!isCoinEnablingInitFinished) {
-                    dispatch(setIsCoinEnablingInitFinished(true));
-                }
             }
         }
 
         // if we changed enabled networks, check for token definitions right away
-        if (changeNetworks.match(action) && isCoinEnablingInitFinished) {
+        if (changeNetworks.match(action)) {
             dispatch(periodicCheckTokenDefinitionsThunk());
         }
 
@@ -64,14 +58,13 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             action.type === DEVICE.CONNECT ||
             deviceActions.selectDevice.match(action) ||
             changeCoinVisibility.fulfilled.match(action) ||
-            setIsCoinEnablingInitFinished.match(action) ||
             accountsActions.changeAccountVisibility.match(action) ||
             createAndBackupWalletThunk.fulfilled.match(action) ||
             recoverWalletThunk.fulfilled.match(action)
         ) {
             const device = selectSelectedDevice(getState());
             if (
-                isCoinEnablingInitFinished &&
+                isCoinEnablingFinished &&
                 isDeviceFirmwareVersionSupported &&
                 device &&
                 device.connected &&

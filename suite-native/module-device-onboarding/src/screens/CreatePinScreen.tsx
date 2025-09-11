@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import {
+    selectDeviceModel,
+    selectHasBitcoinOnlyFirmware,
+    selectIsCoinEnablingFinished,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, TitleHeader, VStack } from '@suite-native/atoms';
 import { ConnectorImage, usePinAction } from '@suite-native/device';
@@ -21,7 +25,6 @@ import {
     ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
@@ -40,12 +43,12 @@ export const CreatePinScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const deviceModel = useSelector(selectDeviceModel);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
+    const isCoinEnablingFinished = useSelector(selectIsCoinEnablingFinished);
     const { showAlert } = useAlert();
     const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
     const handlePinCreated = useCallback(() => {
-        if (hasBitcoinOnlyFirmware || isCoinEnablingInitFinished) {
+        if (hasBitcoinOnlyFirmware || isCoinEnablingFinished) {
             navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
@@ -60,7 +63,7 @@ export const CreatePinScreen = () => {
         reportOnboardingSuccessAnalytics();
     }, [
         hasBitcoinOnlyFirmware,
-        isCoinEnablingInitFinished,
+        isCoinEnablingFinished,
         navigation,
         reportOnboardingSuccessAnalytics,
     ]);
