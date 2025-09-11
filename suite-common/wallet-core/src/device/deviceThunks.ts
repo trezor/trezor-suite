@@ -30,7 +30,7 @@ import TrezorConnect, {
     Device,
 } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { getEnvironment } from '@trezor/env-utils';
+import { getEnvironment, isNative } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
@@ -39,12 +39,26 @@ import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceCon
 import {
     selectDeviceById,
     selectDevices,
+    selectIsSameOrNewDevice,
     selectPhysicalDevices,
     selectSelectedDevice,
 } from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk } from '../discovery/selectDeviceThunk';
+
+export const selectNewlyConnectedDeviceThunk = createThunk<void, SelectDeviceThunkParams, void>(
+    `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
+    ({ device }, { dispatch, getState, rejectWithValue }) => {
+        if (!isNative() && !selectIsSameOrNewDevice(getState(), device)) {
+            // Select automatically when it is the first known device (none selected),
+            // or when we connected physical device corresponding to a selected remembered wallet.
+            return rejectWithValue('no-need-to-select');
+        }
+
+        dispatch(selectDeviceThunk({ device }));
+    },
+);
 
 /**
  * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
@@ -376,6 +390,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                     await dispatch(connectThpDeviceThunk({ device }));
                 }
                 dispatch(deviceActions.connectDevice({ device }));
+                dispatch(selectNewlyConnectedDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(
@@ -384,6 +399,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                     }),
                 );
                 dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
+                dispatch(selectNewlyConnectedDeviceThunk({ device }));
                 break;
             default:
                 exhaustive(type);

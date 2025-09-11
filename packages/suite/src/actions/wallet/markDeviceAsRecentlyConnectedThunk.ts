@@ -1,9 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    DEVICE_MODULE_PREFIX,
-    selectDeviceThunk,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { DEVICE_MODULE_PREFIX } from '@suite-common/wallet-core';
 import { Device } from '@trezor/connect';
 
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
@@ -13,20 +9,9 @@ import { setRecentlyConnectedDevicePath } from '../suite/suiteActions';
 // duration to visually indicate the device as recently connected
 const RECENTLY_CONNECTED_DEVICE_TIMEOUT = 5_000;
 
-export const handleDeviceConnect = createThunk<void, Device, void>(
+export const markDeviceAsRecentlyConnectedThunk = createThunk<void, Device, void>(
     `${DEVICE_MODULE_PREFIX}/handleDeviceConnect`,
     (device, { dispatch, getState }) => {
-        const selectedDevice = selectSelectedDevice(getState());
-
-        // Select automatically when it is the first known device (none selected),
-        // or when we connected physical device corresponding to a selected remembered wallet.
-        const shouldSelectDevice = selectedDevice === undefined || device.id === selectedDevice.id;
-        if (shouldSelectDevice) {
-            dispatch(selectDeviceThunk({ device }));
-
-            return;
-        }
-
         // Set the Device as recently connected to show a notification in the UI, and schedule disappearance.
         // device.path preferred because we only care about current session (not persistent),
         // and the device may initially connect as unacquired before becoming acquired.
