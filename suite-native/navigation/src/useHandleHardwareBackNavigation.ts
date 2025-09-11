@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
 import { BackHandler } from 'react-native';
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 export const useHandleHardwareBackNavigation = (onPress?: () => void) => {
+    const navigation = useNavigation();
+
     useFocusEffect(
         useCallback(() => {
             // do nothing unless onPress has some custom handling
@@ -13,7 +15,10 @@ export const useHandleHardwareBackNavigation = (onPress?: () => void) => {
                 return true;
             });
 
-            return () => subscription.remove();
-        }, [onPress]),
+            return () => {
+                navigation.getParent()?.setOptions({ gestureEnabled: true });
+                subscription.remove();
+            };
+        }, [navigation, onPress]),
     );
 };

@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
@@ -10,24 +11,27 @@ export const useShowReviewCancellationAlert = () => {
     const { showAlert } = useAlert();
     const dispatch = useDispatch();
 
-    const showReviewCancellationAlert = () =>
-        new Promise<AlertResolveValue>(resolve =>
-            showAlert({
-                title: <Translation id="moduleSend.review.cancelAlert.title" />,
-                primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                primaryButtonVariant: 'redBold',
-                secondaryButtonVariant: 'redElevation0',
-                secondaryButtonTitle: (
-                    <Translation id="moduleSend.review.cancelAlert.continueButton" />
-                ),
-                onPressPrimaryButton: () => {
-                    dispatch(cancelSignSendFormTransactionThunk());
+    const showReviewCancellationAlert = useCallback(
+        () =>
+            new Promise<AlertResolveValue>(resolve =>
+                showAlert({
+                    title: <Translation id="moduleSend.review.cancelAlert.title" />,
+                    primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    primaryButtonVariant: 'redBold',
+                    secondaryButtonVariant: 'redElevation0',
+                    secondaryButtonTitle: (
+                        <Translation id="moduleSend.review.cancelAlert.continueButton" />
+                    ),
+                    onPressPrimaryButton: () => {
+                        dispatch(cancelSignSendFormTransactionThunk());
 
-                    return resolve({ wasReviewCanceled: true });
-                },
-                onPressSecondaryButton: () => resolve({ wasReviewCanceled: false }),
-            }),
-        );
+                        return resolve({ wasReviewCanceled: true });
+                    },
+                    onPressSecondaryButton: () => resolve({ wasReviewCanceled: false }),
+                }),
+            ),
+        [dispatch, showAlert],
+    );
 
     return showReviewCancellationAlert;
 };

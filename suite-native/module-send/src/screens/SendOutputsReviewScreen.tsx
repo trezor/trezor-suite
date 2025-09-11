@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
 
 import {
     AccountsRootState,
@@ -12,13 +10,12 @@ import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
-    StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
+    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -27,11 +24,6 @@ import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
 import { selectIsTransactionAlreadySigned } from '../selectors';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
-    SendStackParamList,
-    SendStackRoutes.SendOutputsReview,
-    RootStackParamList
->;
 const spacerStyle = prepareNativeStyle(_ => ({
     height: 150,
 }));
@@ -40,7 +32,6 @@ export const SendOutputsReviewScreen = ({
     route,
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>) => {
     const { accountKey, tokenContract } = route.params;
-    const navigation = useNavigation<NavigationProps>();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
@@ -57,24 +48,16 @@ export const SendOutputsReviewScreen = ({
 
     const showOutputsReviewFooter = isTransactionAlreadySigned && account;
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', async e => {
-            // We want to modify only behavior of back button actions.
+    const onNavigateBack = useCallback(async () => {
+        const { wasReviewCanceled } = await showReviewCancellationAlert();
 
-            if (e.data.action.type !== 'GO_BACK') return;
+        if (wasReviewCanceled) {
+            dispatch(cancelSignSendFormTransactionThunk());
+            navigateToInitialScreen();
+        }
+    }, [dispatch, navigateToInitialScreen, showReviewCancellationAlert]);
 
-            e.preventDefault();
-
-            const { wasReviewCanceled } = await showReviewCancellationAlert();
-
-            if (wasReviewCanceled) {
-                dispatch(cancelSignSendFormTransactionThunk());
-                navigateToInitialScreen();
-            }
-        });
-
-        return unsubscribe;
-    });
+    useOverrideBackNavigation({ onNavigateBack });
 
     useEffect(() => {
         if (showOutputsReviewFooter) {
