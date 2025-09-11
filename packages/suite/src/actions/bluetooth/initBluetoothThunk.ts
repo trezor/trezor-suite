@@ -13,7 +13,7 @@ import {
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
-import { remapKnownDevicesForLinux } from './remapKnownDevicesForLinux';
+import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinuxAndWindows';
 
 export const initBluetoothThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,
@@ -73,15 +73,21 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
 
-            const remappedKnownDevices = remapKnownDevicesForLinux({
+            const remappedKnownDevices = remapKnownDevicesForLinuxAndWindows({
                 knownDevices,
                 nearbyDevices,
             });
 
             dispatch(
-                bluetoothActions.knownDevicesUpdateAction({ knownDevices: remappedKnownDevices }),
+                bluetoothActions.knownDevicesUpdateAction({
+                    knownDevices: remappedKnownDevices,
+                }),
             );
-            dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
+            dispatch(
+                bluetoothActions.nearbyDevicesUpdateAction({
+                    nearbyDevices,
+                }),
+            );
         });
 
         bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {

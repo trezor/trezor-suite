@@ -1,20 +1,20 @@
 import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
-type RemapKnownDevicesForLinuxParams = {
+type RemapKnownDevicesForLinuxAndWindowsParams = {
     knownDevices: DesktopBluetoothDevice[];
     nearbyDevices: DesktopBluetoothDevice[];
 };
 
 /**
- * On linux, when bluetooth adapter is turned off/on again, the paired
+ * On linux and windows, when bluetooth adapter is turned off/on again, the paired
  * devices will get different `id`, but `address` will remain the same.
  *
  * Therefore, we have to remap the knownDevices to change the `id`.
  */
-export const remapKnownDevicesForLinux = ({
+export const remapKnownDevicesForLinuxAndWindows = ({
     knownDevices,
     nearbyDevices,
-}: RemapKnownDevicesForLinuxParams): DesktopBluetoothDevice[] =>
+}: RemapKnownDevicesForLinuxAndWindowsParams): DesktopBluetoothDevice[] =>
     knownDevices.map(knownDevice => {
         const nearbyDeviceWithSameAddress = nearbyDevices.find(
             nearbyDevice =>
