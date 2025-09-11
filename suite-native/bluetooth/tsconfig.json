@@ -10,6 +10,7 @@
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         {
             "path": "../../packages/transport-native-bluetooth"

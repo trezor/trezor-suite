@@ -2,9 +2,14 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
+import {
+    bluetoothActions,
+    filterOutOldDuplicatesByName,
+    parseManufacturerData,
+} from '@suite-common/bluetooth';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
+import { isIOs } from '@trezor/env-utils';
 import {
     BluetoothDevice as TransportBluetoothDevice,
     bluetoothManager,
@@ -68,9 +73,13 @@ export const useBluetoothAdapter = () => {
                     dispatch(bluetoothActions.adapterEventAction({ status }));
                 }),
                 bluetoothManager.onNearbyDevicesChange(nearbyDevices => {
+                    const mappedNearbyDevices = isIOs()
+                        ? filterOutOldDuplicatesByName(nearbyDevices.map(toBluetoothDevice))
+                        : nearbyDevices.map(toBluetoothDevice);
+
                     dispatch(
                         bluetoothActions.nearbyDevicesUpdateAction({
-                            nearbyDevices: nearbyDevices.map(toBluetoothDevice),
+                            nearbyDevices: mappedNearbyDevices,
                         }),
                     );
                 }),
