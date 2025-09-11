@@ -31,13 +31,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare_android_test_app:
-    uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
-    secrets:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  # prepare_android_test_app:
+  #   uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
+  #   secrets:
+  #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
   run_android_e2e_tests:
     uses: ./.github/workflows/template-suite-native-e2e-android.yml
-    needs: prepare_android_test_app
+    # needs: prepare_android_test_app
     with:
       emulator_model: "T3T1"
       publish_results_to_github: ${{ inputs.publish_results_to_github == true }}

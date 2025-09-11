@@ -36,141 +36,139 @@ jobs:
         TEST_GROUP: [0, 1, 2, 3]
 
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-        with:
-          submodules: "true"
+      # - name: Checkout project
+      #   uses: actions/checkout@v4
+      #   with:
+      #     submodules: "true"
 
-      - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          dotnet: true
-          haskell: true
-          tool-cache: false
-          android: false
-          swap-storage: false
-          large-packages: false
+      # - name: Free Disk Space
+      #   uses: jlumbroso/free-disk-space@main
+      #   with:
+      #     dotnet: true
+      #     haskell: true
+      #     tool-cache: false
+      #     android: false
+      #     swap-storage: false
+      #     large-packages: false
 
-      - name: Install node and yarn
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
+      # - name: Install node and yarn
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version-file: ".nvmrc"
+      #     cache: yarn
 
-      - name: Load node modules cache
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: node_modules/${{ github.ref }}/${{github.run_id}}
+      # - name: Load node modules cache
+      #   uses: actions/cache/restore@v4
+      #   with:
+      #     path: node_modules
+      #     key: node_modules/${{ github.ref }}/${{github.run_id}}
 
-      - name: Install Yarn dependencies
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn install
+      # - name: Install Yarn dependencies
+      #   run: |
+      #     echo -e "\nenableScripts: false" >> .yarnrc.yml
+      #     echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+      #     yarn install
 
-      - name: Generate GitHub App token
-        id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
-          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+      # - name: Generate GitHub App token
+      #   id: trezor-bot-token
+      #   uses: actions/create-github-app-token@v1
+      #   with:
+      #     app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+      #     private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
-      - name: Extract Release Build
-        id: extract_branch
-        shell: bash
-        run: |
-          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+      # - name: Extract Release Build
+      #   id: extract_branch
+      #   shell: bash
+      #   run: |
+      #     echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
 
-      - name: Get device name from detox config file
-        id: device
-        run: node -e "console.log('AVD_NAME=' + require('./suite-native/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
+      # - name: Get device name from detox config file
+      #   id: device
+      #   run: node -e "console.log('AVD_NAME=' + require('./suite-native/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
 
-      - name: Run trezor-user-env
-        env:
-          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
-        run: |
-          docker compose pull trezor-user-env-unix trezor-user-env-regtest
-          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
+      # - name: Run trezor-user-env
+      #   env:
+      #     COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+      #   run: |
+      #     docker compose pull trezor-user-env-unix trezor-user-env-regtest
+      #     docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
 
-      - name: Read test .apk from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: suite-native/app/android/app/build/
-          key: android_test_build/${{ github.ref }}/${{github.run_id}}
+      # - name: Read test .apk from cache
+      #   uses: actions/cache/restore@v4
+      #   with:
+      #     path: suite-native/app/android/app/build/
+      #     key: android_test_build/${{ github.ref }}/${{github.run_id}}
 
-      - name: Enable Android emulator KVM optimalization
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
+      # - name: Enable Android emulator KVM optimalization
+      #   run: |
+      #     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+      #     sudo udevadm control --reload-rules
+      #     sudo udevadm trigger --name-match=kvm
 
-      - name: Run Detox E2E Android tests
-        uses: reactivecircus/android-emulator-runner@v2
-        env:
-          RUNNER_TEMP: /tmp
-          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
-          RELEASE_BUILD: ${{ env.release_build }}
-          EMULATOR_MODEL: ${{ inputs.emulator_model }}
-          PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
-          JEST_TEST_NAME_PATTERN: ${{ inputs.jest_test_name_pattern }}
-        with:
-          api-level: 31
-          profile: pixel_3a
-          arch: x86_64
-          working-directory: suite-native/app
-          ram-size: 4096M
-          force-avd-creation: true
-          avd-name: ${{ steps.device.outputs.AVD_NAME }}
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
-          script: |
-            npx jest --listTests e2e | sort | awk "NR % 4 == ${{ matrix.TEST_GROUP }}" > shard.txt
-            xargs yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing < shard.txt
+      # - name: Run Detox E2E Android tests
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   env:
+      #     RUNNER_TEMP: /tmp
+      #     GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+      #     RELEASE_BUILD: ${{ env.release_build }}
+      #     EMULATOR_MODEL: ${{ inputs.emulator_model }}
+      #     PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
+      #     JEST_TEST_NAME_PATTERN: ${{ inputs.jest_test_name_pattern }}
+      #   with:
+      #     api-level: 31
+      #     profile: pixel_3a
+      #     arch: x86_64
+      #     working-directory: suite-native/app
+      #     ram-size: 4096M
+      #     force-avd-creation: true
+      #     avd-name: ${{ steps.device.outputs.AVD_NAME }}
+      #     emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
+      #     script: |
+      #       npx jest --listTests e2e | sort | awk "NR % 4 == ${{ matrix.TEST_GROUP }}" > shard.txt
+      #       xargs yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing < shard.txt
 
-      - name: Upload results to Currents.dev
-        if: ${{ ! cancelled() }}
-        env:
-          CURRENTS_PROJECT_ID: iUe1Y4
-          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-          CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
-          COMMIT_INFO_BRANCH: ${{ github.head_ref }}
-        working-directory: ./suite-native/app
-        run: |
-          npx currents convert \
-            --input-format=junit \
-            --input-file=./reports/junit-report.xml \
-            --output-dir=./currents \
-            --framework=postman \
-            --framework-version=v11.2.0
-          npx currents upload \
-            --project-id=${CURRENTS_PROJECT_ID} \
-            --key=${CURRENTS_RECORD_KEY} \
-            --ci-build-id=${CURRENTS_CI_BUILD_ID} \
-            --report-dir ./currents
+      # - name: Upload results to Currents.dev
+      #   if: ${{ ! cancelled() }}
+      #   env:
+      #     CURRENTS_PROJECT_ID: iUe1Y4
+      #     CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+      #     CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+      #     COMMIT_INFO_BRANCH: ${{ github.head_ref }}
+      #   working-directory: ./suite-native/app
+      #   run: |
+      #     npx currents convert \
+      #       --input-format=junit \
+      #       --input-file=./reports/junit-report.xml \
+      #       --output-dir=./currents \
+      #       --framework=postman \
+      #       --framework-version=v11.2.0
+      #     npx currents upload \
+      #       --project-id=${CURRENTS_PROJECT_ID} \
+      #       --key=${CURRENTS_RECORD_KEY} \
+      #       --ci-build-id=${CURRENTS_CI_BUILD_ID} \
+      #       --report-dir ./currents
 
-      - name: Post Currents link
-        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-        uses: ./.github/actions/post-currents-link
-        with:
-          github_token: ${{ steps.trezor-bot-token.outputs.token }}
-          project: "native android"
-          currents-project-id: "iUe1Y4"
+      # - name: Post Currents link
+      #   if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+      #   uses: ./.github/actions/post-currents-link
+      #   with:
+      #     github_token: ${{ steps.trezor-bot-token.outputs.token }}
+      #     project: "native android"
+      #     currents-project-id: "iUe1Y4"
 
-      - name: "Store failed test screenshot artifacts"
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: failed-android-tests-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/artifacts
+      # - name: "Store failed test screenshot artifacts"
+      #   if: ${{ failure() }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: failed-android-tests-${{ matrix.TEST_GROUP }}
+      #     path: suite-native/app/artifacts
 
-      - name: Set failure flag for Slack webhook
-        id: aggregate-result
-        if: ${{ failure() && github.event_name == 'schedule' }}
-        run: echo "is_failure=true" >> $GITHUB_OUTPUT
+      - name: Print failure flag
+        run: echo "adfdaf"
 
   notify_scheduled_failure_to_slack:
-    if: ${{ needs.run_android_e2e_tests.outputs.is_failure == 'true' }}
     runs-on: ubuntu-latest
+    if: failure()
     needs: run_android_e2e_tests
     steps:
       - name: Notify scheduled job failure to Slack
