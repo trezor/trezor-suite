@@ -176,7 +176,7 @@ export const useFirmwareInstallation = (
             return { operation: 'restarting', progress: 100 };
         }
 
-        if (!progressEvent) {
+        if (!progressEvent && firmware.status !== 'started') {
             return { operation: null, progress: 100 };
         }
 
