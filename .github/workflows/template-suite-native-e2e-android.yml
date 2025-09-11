@@ -163,20 +163,11 @@ jobs:
           name: failed-android-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
 
-      - name: Set failure flag for Slack webhook
-        id: aggregate-result
-        if: ${{ failure() && github.event_name == 'schedule' }}
-        run: echo "is_failure=true" >> $GITHUB_OUTPUT
-
   notify_scheduled_failure_to_slack:
-    if: ${{ needs.run_android_e2e_tests.outputs.is_failure == 'true' }}
     runs-on: ubuntu-latest
+    if: ${{ failure() && github.event_name == 'schedule' }}
     needs: run_android_e2e_tests
     steps:
       - name: Notify scheduled job failure to Slack
-        uses: slackapi/slack-github-action@v2.1.1
-        with:
-          webhook: ${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}
-          webhook-type: incoming-webhook
-          payload: |
-            text: "Scheduled run of mobile Android E2E tests failed!"
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly Android E2E tests failed :pepe_flame: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' ${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}
