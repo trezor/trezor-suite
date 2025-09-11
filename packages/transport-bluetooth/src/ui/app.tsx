@@ -64,7 +64,7 @@ export const App: React.FC = () => {
     };
 
     useEffect(() => {
-        const api = new TrezorBluetooth({ url: `ws://localhost:21327/` });
+        const api = new TrezorBluetooth({ url: `ws://127.0.0.1:${window.location.port}/` });
         apiRef.current = api;
 
         const onDisconnected = () => writeOutput('Api disconnected');
