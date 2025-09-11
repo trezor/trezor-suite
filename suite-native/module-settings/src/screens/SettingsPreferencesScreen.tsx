@@ -5,6 +5,7 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { BitcoinUnitsSelector } from '../components/BitcoinUnitsSelector';
 import { ColorSchemePicker } from '../components/ColorSchemePicker';
 import { CurrencySelector } from '../components/CurrencySelector';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 export const SettingsPreferencesScreen = () => (
     <Screen
@@ -13,6 +14,7 @@ export const SettingsPreferencesScreen = () => (
         }
     >
         <VStack spacing="sp16">
+            <LanguageSelector />
             <CurrencySelector />
             <BitcoinUnitsSelector />
             <ColorSchemePicker />

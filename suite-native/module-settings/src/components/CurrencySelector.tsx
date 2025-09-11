@@ -30,7 +30,7 @@ export const CurrencySelector = () => {
 
     return (
         <PreferencesSettingsCard
-            iconName="translate"
+            iconName="coins"
             title={<Translation id="moduleSettings.preferences.fiatCurrencyLabel" />}
         >
             <Select<BaseCurrencyCode>

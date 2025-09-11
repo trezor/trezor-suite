@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { NativeLocale } from '@suite-common/suite-types';
 
-type LanguageOption = NativeLocale | 'system';
+export type LanguageOption = NativeLocale | 'system';
 
 export type LocaleState = {
     language: LanguageOption;

@@ -1021,6 +1021,7 @@ export const messages = {
             title: 'Preferences',
             fiatCurrencyLabel: 'Currency',
             bitcoinUnitsLabel: 'Bitcoin units',
+            languageLabel: 'Language',
             theme: 'Theme',
         },
         customization: {

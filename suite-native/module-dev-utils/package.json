@@ -17,7 +17,6 @@
         "@suite-common/firmware": "workspace:*",
         "@suite-common/local-first-storage": "workspace:*",
         "@suite-common/message-system": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
