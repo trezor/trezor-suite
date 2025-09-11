@@ -232,7 +232,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                     overflow="hidden"
                     margin={{ top: 12, bottom: !isBluetoothMode ? -16 : 24 }}
                 >
-                    {!isBluetoothEnabled && (
+                    {isBluetoothEnabled && (
                         <Button
                             icon={isBluetoothMode ? 'cableUsbC' : 'bluetooth'}
                             onClick={toggleBluetoothMode}
