@@ -440,7 +440,7 @@ impl AdapterManager {
                     update_count,
                     timestamp: utils::get_timestamp(),
                 };
-
+                // todo: prune old devices by timestamp
                 self.serviceless_peripherals
                     .insert(id.to_string(), device.clone());
             }

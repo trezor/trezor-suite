@@ -161,9 +161,13 @@ async fn handle_http_request(
             }
         });
         Ok(response)
-    } else {
-        // TODO: serve index.html file
-        Ok(HyperResponse::new(Full::<Bytes>::from("OK")))
+    } else { 
+        if std::env::var("RUST_LOG").ok().filter(|v| !v.is_empty()).is_some() {
+            const INDEX_HTML: &str = include_str!("../../build/index.html");
+            Ok(HyperResponse::new(Full::<Bytes>::from(INDEX_HTML)))
+        } else {
+            Ok(HyperResponse::new(Full::<Bytes>::from("ok")))
+        }
     }
 }
 

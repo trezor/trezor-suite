@@ -13029,6 +13029,8 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
     html-webpack-plugin: "npm:^5.6.3"
+    react: "npm:19.0.0"
+    react-dom: "npm:19.0.0"
     webpack: "npm:5.100.0"
   languageName: unknown
   linkType: soft
