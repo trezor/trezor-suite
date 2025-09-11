@@ -121,6 +121,12 @@ async fn handle_ws_connection(
     Ok(())
 }
 
+pub const INDEX_HTML: &str = if cfg!(debug_assertions) {
+    include_str!("../../build/index.html")
+} else {
+    "ok"
+};
+
 async fn handle_http_request(
     peer: String,
     req: hyper::Request<Incoming>,
@@ -162,8 +168,7 @@ async fn handle_http_request(
         });
         Ok(response)
     } else {
-        // TODO: serve index.html file
-        Ok(HyperResponse::new(Full::<Bytes>::from("OK")))
+        Ok(HyperResponse::new(Full::<Bytes>::from(INDEX_HTML)))
     }
 }
 
