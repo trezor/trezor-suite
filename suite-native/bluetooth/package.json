@@ -18,6 +18,7 @@
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/transport-native-bluetooth": "workspace:*",
         "expo-constants": "17.1.7",

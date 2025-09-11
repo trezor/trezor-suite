@@ -16,7 +16,7 @@ const defaultDeviceAdditionalParams: Pick<
     },
 };
 
-describe('filterOutOldDuplicatesByName', () => {
+describe(filterOutOldDuplicatesByName.name, () => {
     it('returns all devices if names are unique', () => {
         const devices: BluetoothDeviceCommon[] = [
             {

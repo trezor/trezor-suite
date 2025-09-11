@@ -7,13 +7,11 @@ export const filterOutOldDuplicatesByName = <T extends BluetoothDeviceCommon>(de
     devices.filter(device => {
         const duplicates = devices.filter(d => d.name === device.name);
 
-        if (duplicates.length > 1) {
-            const latest = duplicates.reduce((a, b) =>
-                a.lastUpdatedTimestamp > b.lastUpdatedTimestamp ? a : b,
-            );
+        if (duplicates.length <= 1) return true;
 
-            return device.id === latest.id;
-        }
+        const latest = duplicates.reduce((a, b) =>
+            a.lastUpdatedTimestamp > b.lastUpdatedTimestamp ? a : b,
+        );
 
-        return true;
+        return device.id === latest.id;
     });
