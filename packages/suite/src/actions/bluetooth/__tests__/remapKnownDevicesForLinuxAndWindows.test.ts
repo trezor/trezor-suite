@@ -2,7 +2,7 @@ import { BluetoothManufacturerData } from '@suite-common/bluetooth';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
-import { remapKnownDevicesForLinux } from '../remapKnownDevicesForLinux';
+import { remapKnownDevicesForLinuxAndWindows } from '../remapKnownDevicesForLinuxAndWindows';
 
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,
@@ -58,9 +58,9 @@ const knownDeviceA: DesktopBluetoothDevice = {
     connectionStatus: { type: 'pairing' },
 };
 
-describe(remapKnownDevicesForLinux.name, () => {
+describe(remapKnownDevicesForLinuxAndWindows.name, () => {
     it('remaps the changed id of the device, while leaving the others intact', () => {
-        const result = remapKnownDevicesForLinux({
+        const result = remapKnownDevicesForLinuxAndWindows({
             nearbyDevices: [nearbyDeviceA, nearbyDeviceC],
             knownDevices: [knownDeviceA, knownDeviceB],
         });
