@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions } from '@suite-common/wallet-core';
+import { deviceActions, selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -305,6 +305,36 @@ const selectDevice = [
     },
 ];
 
+const selectNewlyConnectedDevice = [
+    {
+        description: `select a new device`,
+        state: {
+            device: { devices: [] },
+        },
+        newlyConnectedDevice: CONNECT_DEVICE,
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.fulfilled.type,
+    },
+    {
+        description:
+            'selects a newly connected physical device corresponding to selected remembered wallet',
+        state: {
+            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
+            suite: {},
+        },
+        newlyConnectedDevice: CONNECT_DEVICE,
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.fulfilled.type,
+    },
+    {
+        description: `doesn't select a newly connected device if it is already selected`,
+        state: {
+            device: { devices: [SUITE_DEVICE], selectedDevice: SUITE_DEVICE },
+            suite: {},
+        },
+        newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.rejected.type,
+    },
+];
+
 type HandleDeviceConnectFixture = {
     description: string;
     state: {
@@ -315,22 +345,7 @@ type HandleDeviceConnectFixture = {
     expectedNextActionType: string;
 };
 
-const handleDeviceConnect: HandleDeviceConnectFixture[] = [
-    {
-        description: `selects a newly connected device if there are none`,
-        state: { device: {}, suite: {} },
-        newlyConnectedDevice: CONNECT_DEVICE,
-        expectedNextActionType: deviceActions.selectDevice.type,
-    },
-    {
-        description: `selects a newly connected physical device corresponding to selected remembered wallet `,
-        state: {
-            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
-            suite: {},
-        },
-        newlyConnectedDevice: CONNECT_DEVICE,
-        expectedNextActionType: deviceActions.selectDevice.type,
-    },
+const markDeviceAsRecentlyConnected: HandleDeviceConnectFixture[] = [
     {
         description: `marks device as recently connected if not seen before`,
         state: {
@@ -758,9 +773,10 @@ export default {
     reducerActions,
     initialRun,
     selectDevice,
-    handleDeviceConnect,
+    markDeviceAsRecentlyConnected,
     handleDeviceDisconnect,
     forgetDisconnectedDevices,
     observeSelectedDevice,
     acquireDevice,
+    selectNewlyConnectedDevice,
 };

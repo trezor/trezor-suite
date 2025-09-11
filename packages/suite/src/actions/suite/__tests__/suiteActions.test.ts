@@ -11,10 +11,11 @@ import {
     observeSelectedDevice,
     prepareDeviceReducer,
     selectDeviceThunk,
+    selectNewlyConnectedDeviceThunk,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
-import { handleDeviceConnect } from 'src/actions/wallet/handleDeviceConnectThunk';
+import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -145,13 +146,25 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.handleDeviceConnect.forEach(f => {
-        it(`handleDeviceConnect: ${f.description}`, async () => {
+    fixtures.selectNewlyConnectedDevice.forEach(f => {
+        it(`selectNewlyConnectedDevice: ${f.description}`, async () => {
+            const state = getInitialState({}, f.state.device, undefined);
+            const store = initStore(state);
+
+            const device = f.newlyConnectedDevice;
+            await store.dispatch(selectNewlyConnectedDeviceThunk({ device }));
+            // a lot of actions may get called, and the one we are interested in may not be the last one
+            expect(store.getActions().some(a => a?.type === f.expectedNextActionType)).toBe(true);
+        });
+    });
+
+    fixtures.markDeviceAsRecentlyConnected.forEach(f => {
+        it(`markDeviceAsRecentlyConnected: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device, undefined);
             const store = initStore(state);
 
             const device = f.newlyConnectedDevice;
-            await store.dispatch(handleDeviceConnect(device));
+            await store.dispatch(markDeviceAsRecentlyConnectedThunk(device));
             // a lot of actions may get called, and the one we are interested in may not be the last one
             expect(store.getActions().some(a => a?.type === f.expectedNextActionType)).toBe(true);
         });

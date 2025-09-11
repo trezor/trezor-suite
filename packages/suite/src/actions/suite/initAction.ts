@@ -17,7 +17,7 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { handleDeviceConnect } from 'src/actions/wallet/handleDeviceConnectThunk';
+import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
@@ -75,10 +75,10 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         await dispatch(
             trezorConnectActions.connectInitThunk({
                 [DEVICE.CONNECT]: device => {
-                    dispatch(handleDeviceConnect(device));
+                    dispatch(markDeviceAsRecentlyConnectedThunk(device));
                 },
                 [DEVICE.CONNECT_UNACQUIRED]: device => {
-                    dispatch(handleDeviceConnect(device));
+                    dispatch(markDeviceAsRecentlyConnectedThunk(device));
                 },
                 [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
                     dispatch(
