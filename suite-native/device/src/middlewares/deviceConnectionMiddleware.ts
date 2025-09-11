@@ -53,11 +53,7 @@ const handleDeviceConnectNavigation = ({
     isDeviceSetupSupported: boolean;
     wasDeviceOnboardingCancelled: boolean;
 }) => {
-    if (isCoinEnablingInitFinished) {
-        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
-        });
-    } else if (!isDeviceInitialized) {
+    if (!isDeviceInitialized) {
         // If device setup is not supported, we don't want to navigate anywhere
         // We handle it separately in `useDetectDeviceError` hook. Ideally, the alert would be triggered here (it would need to be in redux though).
         if (!isDeviceSetupSupported) return;
@@ -78,6 +74,8 @@ const handleDeviceConnectNavigation = ({
                     },
                 ],
             });
+
+            return;
         } else {
             // If THP confirmation screen was shown, we want to prevent swiping/navigating back to
             // that THP confirmation screen. Swiping/navigating back shall lead to the Home screen.
@@ -98,7 +96,15 @@ const handleDeviceConnectNavigation = ({
                     },
                 ],
             });
+
+            return;
         }
+    }
+
+    if (isCoinEnablingInitFinished) {
+        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
+        });
     } else {
         navigationContainerRef.navigate(RootStackRoutes.CoinEnablingInit);
     }
