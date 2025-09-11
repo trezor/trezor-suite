@@ -24,7 +24,7 @@
         "@stellar/stellar-sdk": "^13.3.0",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "xrpl": "^4.4.0"
+        "xrpl": "^4.4.1"
     },
     "devDependencies": {
         "@solana/addresses": "^2.3.0",
