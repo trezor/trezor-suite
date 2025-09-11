@@ -3,7 +3,6 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
-    createImportedDeviceThunk,
     deviceActions,
     forgetAccountsThunk,
     forgetDisconnectedDevices,
@@ -62,10 +61,6 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
         /* The `next` function has to be executed here, because the further dispatched actions of this middleware
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
-
-        if (isAnyOf(createImportedDeviceThunk.fulfilled)(action)) {
-            dispatch(selectDeviceThunk({ device: action.payload.device }));
-        }
 
         if (deviceActions.forgetDevice.match(action)) {
             dispatch(handleDeviceDisconnect(action.payload.device));

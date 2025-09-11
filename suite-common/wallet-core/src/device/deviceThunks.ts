@@ -264,25 +264,22 @@ export const initDevices = createThunk(
 );
 
 export const createImportedDeviceThunk = createThunk<
-    { device: TrezorDevice },
+    void,
     undefined,
     { rejectValue: { error: 'already-created' } }
->(
-    `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
-    (_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-        const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
+>(`${DEVICE_MODULE_PREFIX}/createImportedDevice`, (_, { dispatch, getState, rejectWithValue }) => {
+    const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
-        if (device) return rejectWithValue({ error: 'already-created' });
+    if (device) return rejectWithValue({ error: 'already-created' });
 
-        dispatch(
-            deviceActions.createDeviceInstance({
-                device: portfolioTrackerDevice,
-            }),
-        );
+    dispatch(
+        deviceActions.createDeviceInstance({
+            device: portfolioTrackerDevice,
+        }),
+    );
 
-        return fulfillWithValue({ device: portfolioTrackerDevice });
-    },
-);
+    dispatch(selectDeviceThunk({ device: portfolioTrackerDevice }));
+});
 
 type ConfirmAddressOnDeviceThunk = {
     accountKey: AccountKey;
