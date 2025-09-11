@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
 import { openSettings } from 'react-native-permissions';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
+import { setShouldShowSystemUnpairingAlert } from '../bluetoothSlice';
 import { selectBluetoothAdapterStatus, selectBluetoothPermissionStatus } from '../selectors';
 import { useBluetoothPermissions } from './useBluetoothPermissions';
 import { useBluetoothSettings } from './useBluetoothSettings';
@@ -15,6 +16,7 @@ export const useBluetoothAlerts = () => {
     const { showAlert, hideAlert } = useAlert();
     const { translate } = useTranslate();
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const { requestBluetoothPermission } = useBluetoothPermissions();
     const { openBluetoothSettings } = useBluetoothSettings();
@@ -83,8 +85,25 @@ export const useBluetoothAlerts = () => {
         });
     }, [showAlert, openBluetoothSettings, translate]);
 
+    const showSystemUnpairingAlert = useCallback(() => {
+        showAlert({
+            title: translate('bluetooth.alerts.systemUnpairing.title'),
+            description: translate('bluetooth.alerts.systemUnpairing.description'),
+            primaryButtonTitle: translate('bluetooth.alerts.systemUnpairing.primaryButton'),
+            onPressPrimaryButton: () => {
+                dispatch(setShouldShowSystemUnpairingAlert(false));
+                openBluetoothSettings();
+            },
+            secondaryButtonTitle: translate('bluetooth.alerts.systemUnpairing.secondaryButton'),
+            onPressSecondaryButton: () => {
+                dispatch(setShouldShowSystemUnpairingAlert(false));
+            },
+        });
+    }, [showAlert, dispatch, openBluetoothSettings, translate]);
+
     return {
         showOrHideBluetoothAlert,
         showPairingFailedAlert,
+        showSystemUnpairingAlert,
     };
 };

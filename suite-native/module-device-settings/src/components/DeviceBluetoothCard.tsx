@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { CompactCardWithIconLayout } from '@suite-native/atoms';
-import { useBluetoothDevice, useBluetoothSettings } from '@suite-native/bluetooth';
+import { useBluetoothDevice } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -22,7 +22,6 @@ export const DeviceBluetoothCard = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const { unpairBluetoothDevice } = useBluetoothDevice();
-    const { openBluetoothSettings } = useBluetoothSettings();
 
     const unpairTrezor = async () => {
         navigation.navigate(DeviceSettingsStackRoutes.ContinueOnTrezor);
@@ -33,9 +32,8 @@ export const DeviceBluetoothCard = () => {
                     variant: 'success',
                     message: <Translation id="moduleDeviceSettings.bluetooth.successMessage" />,
                 });
-                openBluetoothSettings();
             },
-            onCancel: () => navigation.goBack(),
+            onCancel: navigation.goBack,
         });
     };
 
