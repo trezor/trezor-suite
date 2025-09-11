@@ -632,6 +632,10 @@ impl AdapterManager {
             }
         }
     }
+    pub async fn is_listeners_empty(&self) -> bool {
+        let state = self.manager_state.lock().await;
+        state.listeners.is_empty()
+    }
 
     async fn dispatch_adapter_event(&self) {
         let state = self.adapter_state.lock().await.clone();

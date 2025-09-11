@@ -64,6 +64,14 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
                     info!("Abort start_scan loop");
                     break;
                 }
+                ChannelMessage::Abort(AbortProcess::ClientDisconnected(_client)) => {
+                    if manager_ref.is_listeners_empty().await {
+                        info!("All clients disconnected, stopping scanning");
+                        stop_scanning(&adapter).await;
+                        manager_ref.set_scanning(false).await;
+                    }
+                    break;
+                }
                 ChannelMessage::Notification(NotificationEvent::AdapterStateChanged { state }) => {
                     match state {
                         AdapterState::Enabled => {
