@@ -1,0 +1,32 @@
+name: "[Test] Nightly Suite Desktop e2e Windows tests"
+# Nightly scheduled check on develop branch
+# Builds the desktop app
+# Runs full e2e test suite for Suite Desktop
+
+on:
+#   schedule:
+#     - cron: "0 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # build-app:
+  #   if: github.repository == 'trezor/trezor-suite'
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Build and Upload Suite Desktop
+  #       uses: ./.github/actions/build-desktop
+  
+  run-e2e-suite-desktop-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: windows-latest
+    # needs:
+    #   - build-app
+    steps:
+      - name: Hello
+        run: echo "Hello World!"
