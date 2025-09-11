@@ -1,10 +1,12 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 import {
+    type BaseTransactionMessage,
     type Blockhash,
-    type CompilableTransactionMessage,
     type SignatureBytes,
     type Transaction,
     type TransactionMessage,
+    type TransactionMessageWithFeePayer,
+    type TransactionMessageWithLifetime,
 } from '@solana/kit';
 
 import type { TokenAccount } from '@trezor/blockchain-link-types';
@@ -78,7 +80,11 @@ async function createTransactionShimCommon(transaction: Transaction) {
     };
 }
 
-export async function createTransactionShim(message: CompilableTransactionMessage) {
+export async function createTransactionShim(
+    message: BaseTransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithLifetime,
+) {
     const { compileTransaction } = await loadSolanaLib();
 
     const transaction = compileTransaction(message);
@@ -314,7 +320,9 @@ export const buildTokenTransferTransaction = async (
         setTransactionMessageLifetimeUsingBlockhash,
     } = await loadSolanaLib();
 
-    let message: CompilableTransactionMessage = await pipe(
+    let message: BaseTransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithLifetime = await pipe(
         createTransactionMessage({ version: 'legacy' }),
         m => setTransactionMessageFeePayer(address(fromAddress), m),
         m =>

@@ -1,6 +1,8 @@
 import {
-    CompilableTransactionMessage,
+    BaseTransactionMessage,
     TransactionMessageWithBlockhashLifetime,
+    TransactionMessageWithFeePayer,
+    TransactionMessageWithLifetime,
     compileTransaction,
 } from '@solana/kit';
 
@@ -26,7 +28,10 @@ import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
 export const transformTx = (
-    tx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime,
+    tx: BaseTransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithLifetime &
+        TransactionMessageWithBlockhashLifetime,
     path: string | number[],
     tokenAccountsInfos?: {
         baseAddress: string;
@@ -49,9 +54,19 @@ export const transformTx = (
 
 // Type guard to check if transaction is of type CompilableTransactionMessage
 function isCompilableTransactionMessage(
-    tx: TransactionMessageWithBlockhashLifetime | CompilableTransactionMessage,
-): tx is CompilableTransactionMessage {
-    return (tx as CompilableTransactionMessage).feePayer !== undefined;
+    tx:
+        | TransactionMessageWithBlockhashLifetime
+        | (BaseTransactionMessage &
+              TransactionMessageWithFeePayer &
+              TransactionMessageWithLifetime),
+): tx is BaseTransactionMessage & TransactionMessageWithFeePayer & TransactionMessageWithLifetime {
+    return (
+        (
+            tx as BaseTransactionMessage &
+                TransactionMessageWithFeePayer &
+                TransactionMessageWithLifetime
+        ).feePayer !== undefined
+    );
 }
 
 export const dummyPriorityFeesForFeeEstimation: PriorityFees = {

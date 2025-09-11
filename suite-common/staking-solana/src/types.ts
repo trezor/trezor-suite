@@ -1,13 +1,15 @@
 import {
     Account,
     Address,
+    BaseTransactionMessage,
     ClusterUrl,
-    CompilableTransactionMessage,
     RpcFromTransport,
     RpcTransportFromClusterUrl,
     SolanaRpcApiFromTransport,
     Transaction,
     TransactionMessageWithBlockhashLifetime,
+    TransactionMessageWithFeePayer,
+    TransactionMessageWithLifetime,
 } from '@solana/kit';
 import { StakeStateAccount } from '@solana-program/stake';
 
@@ -30,7 +32,10 @@ export interface SolNetworkConfig {
 
 export type StakeResponse = {
     stakeTx:
-        | (CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime)
+        | (BaseTransactionMessage &
+              TransactionMessageWithFeePayer &
+              TransactionMessageWithLifetime &
+              TransactionMessageWithBlockhashLifetime)
         | (Transaction & TransactionMessageWithBlockhashLifetime);
     stakeAccount: Address;
 };
@@ -38,7 +43,10 @@ export type StakeResponse = {
 export type Delegations = Array<Account<StakeStateAccount, Address>>;
 
 export type UnstakeResponse = {
-    unstakeTx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime;
+    unstakeTx: BaseTransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithLifetime &
+        TransactionMessageWithBlockhashLifetime;
     unstakeAmount: bigint;
 };
 
@@ -48,7 +56,10 @@ export type Connection = RpcFromTransport<
 >;
 
 export type ClaimResponse = {
-    claimTx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime;
+    claimTx: BaseTransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithLifetime &
+        TransactionMessageWithBlockhashLifetime;
     totalClaimAmount: bigint;
 };
 

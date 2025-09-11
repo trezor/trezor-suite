@@ -12,10 +12,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@solana-program/compute-budget": "^0.8.0",
-        "@solana-program/stake": "^0.2.1",
-        "@solana-program/system": "^0.7.0",
-        "@solana/kit": "^2.3.0",
+        "@solana-program/compute-budget": "^0.9.0",
+        "@solana-program/stake": "^0.3.0",
+        "@solana-program/system": "^0.8.0",
+        "@solana/kit": "^3.0.3",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",

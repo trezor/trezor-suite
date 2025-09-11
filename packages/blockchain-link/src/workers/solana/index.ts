@@ -16,9 +16,8 @@ import {
     SolanaRpcApiMainnet,
     SolanaRpcResponse,
     SolanaRpcSubscriptionsApi,
-    TransactionWithBlockhashLifetime,
     address,
-    assertTransactionIsFullySigned,
+    assertIsFullySignedTransaction,
     createDefaultRpcTransport,
     createSolanaRpcFromTransport,
     createSolanaRpcSubscriptions,
@@ -28,8 +27,8 @@ import {
     getCompiledTransactionMessageDecoder,
     getSignatureFromTransaction,
     getTransactionDecoder,
-    isDurableNonceTransaction,
     isSolanaError,
+    isTransactionMessageWithDurableNonceLifetime,
     mainnet,
     pipe,
     sendAndConfirmTransactionFactory,
@@ -153,26 +152,28 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
 
     const txByteArray = getBase16Encoder().encode(rawTx);
     const transaction = getTransactionDecoder().decode(txByteArray);
-    assertTransactionIsFullySigned(transaction);
+    assertIsFullySignedTransaction(transaction);
 
     const compiledMessage = getCompiledTransactionMessageDecoder().decode(transaction.messageBytes);
     const message = await decompileTransactionMessageFetchingLookupTables(compiledMessage, api.rpc);
-    if (isDurableNonceTransaction(message)) {
+    if (isTransactionMessageWithDurableNonceLifetime(message)) {
         // TODO: Handle durable nonce transactions.
         throw new Error('Unimplemented: Confirming durable nonce transactions');
     }
 
+    const sendAndConfirmTransaction = sendAndConfirmTransactionFactory(api);
+
     let transactionWithBlockhashLifetime = transaction as typeof transaction &
-        TransactionWithBlockhashLifetime;
+        Parameters<typeof sendAndConfirmTransaction>[0];
 
     // If lifetimeConstraint is not provided, fetch the latest blockhash and lastValidBlockHeight
     if (message.lifetimeConstraint === undefined) {
         const {
-            value: { blockhash, lastValidBlockHeight },
+            value: { lastValidBlockHeight },
         } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
         transactionWithBlockhashLifetime = {
             ...transactionWithBlockhashLifetime,
-            lifetimeConstraint: { blockhash, lastValidBlockHeight },
+            lifetimeConstraint: { lastValidBlockHeight },
         };
     } else {
         transactionWithBlockhashLifetime = {
@@ -183,7 +184,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
 
     try {
         const signature = getSignatureFromTransaction(transaction);
-        const sendAndConfirmTransaction = sendAndConfirmTransactionFactory(api);
+
         await sendAndConfirmTransaction(transactionWithBlockhashLifetime, {
             commitment: 'confirmed',
             skipPreflight: false,

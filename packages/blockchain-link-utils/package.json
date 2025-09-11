@@ -27,10 +27,10 @@
         "xrpl": "^4.4.1"
     },
     "devDependencies": {
-        "@solana/addresses": "^2.3.0",
-        "@solana/keys": "^2.3.0",
-        "@solana/rpc-api": "^2.3.0",
-        "@solana/rpc-types": "^2.3.0",
+        "@solana/addresses": "^3.0.3",
+        "@solana/keys": "^3.0.3",
+        "@solana/rpc-api": "^3.0.3",
+        "@solana/rpc-types": "^3.0.3",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",

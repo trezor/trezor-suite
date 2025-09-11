@@ -1,12 +1,14 @@
 import {
     Account,
     Address,
+    BaseTransactionMessage,
     Blockhash,
-    CompilableTransactionMessage,
     Instruction,
     SignatureBytes,
     Transaction,
     TransactionMessageWithBlockhashLifetime,
+    TransactionMessageWithFeePayer,
+    TransactionMessageWithLifetime,
     address,
     appendTransactionMessageInstruction,
     createAddressWithSeed,
@@ -124,11 +126,18 @@ const baseTx = async (
     connection: Connection,
     sender: string,
     params?: Params<Blockhash>,
-): Promise<CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime> => {
+): Promise<
+    BaseTransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithLifetime &
+        TransactionMessageWithBlockhashLifetime
+> => {
     const finalLatestBlockhash =
         params?.finalLatestBlockhash || (await connection.getLatestBlockhash().send()).value;
 
-    let transactionMessage: CompilableTransactionMessage = pipe(
+    let transactionMessage: BaseTransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithLifetime = pipe(
         createTransactionMessage({ version: 0 }),
         tx => setTransactionMessageFeePayer(address(sender), tx),
         tx => setTransactionMessageLifetimeUsingBlockhash(finalLatestBlockhash, tx),
