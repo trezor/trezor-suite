@@ -77,8 +77,11 @@ test.describe('Reset application', { tag: ['@group=settings'] }, () => {
             await settingsPage.changeTheme(Theme.Dark);
             await settingsPage.changeLanguage(Language.Czech);
             await page.getByTestId('@settings/reset-app-button').click();
-        
+
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
             const suite = await launchSuite({
+            keepUserData: true,
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
@@ -100,6 +103,7 @@ test.describe('Reset application', { tag: ['@group=settings'] }, () => {
             await settingsPageAfterRestart.navigateTo('application');
             await expect(settingsPageAfterRestart.themeInput).toHaveText('System');
             await expect(settingsPageAfterRestart.languageInput).toHaveText('System');
+            await suite.electronApp.close();
         },
 
     );
