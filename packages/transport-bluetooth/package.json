@@ -20,6 +20,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
+        "lint:rs:fix": "cargo fmt --all",
         "dev:server": "RUST_BACKTRACE=1 RUST_LOG=debug cargo run --bin trezor-bluetooth",
         "build:server": "./scripts/build.sh",
         "build:napi:apple-arm": "napi build -s -t aarch64-apple-darwin --release --platform --js index.js  --output-dir ./napi --features napi",
