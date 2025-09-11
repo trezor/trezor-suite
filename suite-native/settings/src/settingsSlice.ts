@@ -5,7 +5,6 @@ import { DEVICE } from '@trezor/connect';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
-    isCoinEnablingInitFinished: boolean;
     isDeviceAuthenticityCheckEnabled: boolean;
     isFirmwareRevisionCheckEnabled: boolean;
     isFirmwareHashCheckEnabled: boolean;
@@ -20,7 +19,6 @@ export type SettingsSliceRootState = {
 
 export const appSettingsInitialState: AppSettingsState = {
     isOnboardingFinished: false,
-    isCoinEnablingInitFinished: false,
     isDeviceAuthenticityCheckEnabled:
         process.env.EXPO_PUBLIC_IS_DEVICE_AUTHENTICITY_CHECK_ENABLED !== 'false',
     isFirmwareRevisionCheckEnabled:
@@ -33,7 +31,6 @@ export const appSettingsInitialState: AppSettingsState = {
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isOnboardingFinished',
-    'isCoinEnablingInitFinished',
     'isDeviceAuthenticityCheckEnabled',
     'isFirmwareRevisionCheckEnabled',
     'isFirmwareHashCheckEnabled',
@@ -57,9 +54,6 @@ export const appSettingsSlice = createSlice({
         },
         toggleAreTestnetsEnabled: state => {
             state.areTestnetsEnabled = !state.areTestnetsEnabled;
-        },
-        setIsCoinEnablingInitFinished: (state, { payload }: PayloadAction<boolean>) => {
-            state.isCoinEnablingInitFinished = payload;
         },
         setShouldShowAutoEjectAlert: (state, { payload }: PayloadAction<boolean>) => {
             state.shouldShowAutoEjectAlert = payload;
@@ -86,9 +80,6 @@ export const selectShouldShowAutoEjectAlert = (state: SettingsSliceRootState) =>
 export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.areTestnetsEnabled;
 
-export const selectIsCoinEnablingInitFinished = (state: SettingsSliceRootState) =>
-    state.appSettings.isCoinEnablingInitFinished;
-
 export const selectHasAutoEjectAlertBeenDisplayed = (state: SettingsSliceRootState) =>
     state.appSettings.hasAutoEjectAlertBeenDisplayed;
 
@@ -105,7 +96,6 @@ export const {
     setDeviceAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticityEnabled,
     toggleAreTestnetsEnabled,
-    setIsCoinEnablingInitFinished,
     setShouldShowAutoEjectAlert,
     setHasAutoEjectAlertBeenDisplayed,
 } = appSettingsSlice.actions;

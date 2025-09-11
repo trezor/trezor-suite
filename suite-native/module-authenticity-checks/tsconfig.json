@@ -13,7 +13,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../settings" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" }
     ]

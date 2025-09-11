@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
+import { selectIsCoinEnablingFinished } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
@@ -16,7 +17,6 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 const LOADING_TIMEOUT = 2500;
 
@@ -34,7 +34,7 @@ export const useOnDeviceReadyNavigation = () => {
     const deviceEnabledDiscoveryNetworkSymbols = useSelector(
         selectDeviceEnabledDiscoveryNetworkSymbols,
     );
-    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
+    const isCoinEnablingFinished = useSelector(selectIsCoinEnablingFinished);
     const isConnectPopupOpened = useIsConnectPopupOpened();
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
 
@@ -57,7 +57,7 @@ export const useOnDeviceReadyNavigation = () => {
 
             if (
                 (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
-                (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingInitFinished)
+                (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingFinished)
             ) {
                 if (navigation.canGoBack() && isConnectPopupOpened) {
                     // NOTE: we don't want to go back to the home screen if Connect Popup is opened
@@ -74,7 +74,7 @@ export const useOnDeviceReadyNavigation = () => {
             }
         }, [
             deviceEnabledDiscoveryNetworkSymbols.length,
-            isCoinEnablingInitFinished,
+            isCoinEnablingFinished,
             isConnectPopupOpened,
             isDeviceReadyToUseAndAuthorized,
             isFirmwareInstallationRunning,

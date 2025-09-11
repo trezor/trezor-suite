@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     deviceActions,
+    selectIsCoinEnablingFinished,
     selectIsDeviceInitialized,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -20,7 +21,6 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls';
 
 import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
@@ -39,7 +39,7 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
 
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
-    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
+    const isCoinEnablingFinished = useSelector(selectIsCoinEnablingFinished);
     const device = useSelector(selectSelectedDevice);
 
     const dismissCheck = () => {
@@ -58,7 +58,7 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
                     deviceModel: getDeviceInternalModel(device),
                 },
             });
-        } else if (!isCoinEnablingInitFinished) {
+        } else if (!isCoinEnablingFinished) {
             navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
             });

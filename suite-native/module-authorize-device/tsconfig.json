@@ -25,7 +25,6 @@
         { "path": "../link" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
-        { "path": "../settings" },
         { "path": "../thp" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },

@@ -6,7 +6,6 @@ import { PreloadedState } from '@suite-native/state';
  */
 export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
     appSettings: {
-        isCoinEnablingInitFinished: true,
         areTestnetsEnabled: true,
     },
     wallet: {

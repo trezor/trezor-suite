@@ -14,6 +14,7 @@ import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
 import {
     deviceActions,
     selectDevices,
+    selectIsCoinEnablingFinished,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
@@ -29,7 +30,6 @@ import {
     checkIsHomeStackFocused,
     navigationContainerRef,
 } from '@suite-native/navigation';
-import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import {
@@ -47,15 +47,15 @@ export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceR
 
 const handleDeviceConnectNavigation = ({
     deviceModel,
+    isCoinEnablingFinished,
     hasDeviceBitcoinOnlyFirmware,
-    isCoinEnablingInitFinished,
     isDeviceInitialized,
     isDeviceSetupSupported,
     wasDeviceOnboardingCancelled,
 }: {
     deviceModel: DeviceModelInternal;
+    isCoinEnablingFinished: boolean;
     hasDeviceBitcoinOnlyFirmware: boolean;
-    isCoinEnablingInitFinished: boolean;
     isDeviceInitialized: boolean;
     isDeviceSetupSupported: boolean;
     wasDeviceOnboardingCancelled: boolean;
@@ -111,7 +111,7 @@ const handleDeviceConnectNavigation = ({
         }
     }
 
-    if (isCoinEnablingInitFinished || hasDeviceBitcoinOnlyFirmware) {
+    if (isCoinEnablingFinished || hasDeviceBitcoinOnlyFirmware) {
         // Bitcoin is enabled and coin enabling finished with btc-only FW in discoverMiddleware.
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
@@ -166,9 +166,9 @@ deviceConnectionMiddleware.startListening({
         const isDeviceRemembered =
             !!device.features && selectDevices(getOriginalState()).some(d => d.id === device.id);
 
-        const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
+        const isCoinEnablingFinished = selectIsCoinEnablingFinished(getState());
 
-        if (isDeviceRemembered && isCoinEnablingInitFinished) return;
+        if (isDeviceRemembered && isCoinEnablingFinished) return;
 
         handleDeviceConnectNavigation({
             deviceModel: getDeviceInternalModel(device),
@@ -179,7 +179,7 @@ deviceConnectionMiddleware.startListening({
             }),
             isDeviceSetupSupported: getIsDeviceSetupSupported(getDeviceInternalModel(device)),
             wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
-            isCoinEnablingInitFinished,
+            isCoinEnablingFinished,
         });
     },
 });

@@ -19,7 +19,6 @@ import {
     StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
-import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
@@ -51,8 +50,6 @@ export const CoinEnablingInitScreen = () => {
         values.enabledCoins.forEach(symbol => {
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true }));
         });
-
-        dispatch(setIsCoinEnablingInitFinished(true));
 
         analytics.report({
             type: EventType.CoinEnablingInitState,

@@ -1,3 +1,5 @@
+import { A } from '@mobily/ts-belt';
+
 import { selectIsFeatureEnabled } from '@suite-common/message-system/src/messageSystemSelectors';
 import {
     Feature,
@@ -118,6 +120,9 @@ export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
 export const selectIsAutoForgetDeviceDataEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.autoForgetDeviceData;
+
+export const selectIsCoinEnablingFinished = (state: WalletSettingsRootState) =>
+    A.isNotEmpty(selectEnabledNetworks(state));
 
 export const selectIsBitcoinEnabled = createMemoizedSelector(
     [selectEnabledNetworks],
