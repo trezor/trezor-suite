@@ -80,6 +80,15 @@ jobs:
         run: yarn lint:js --cache-strategy content
       - name: Lint Styles
         run: yarn nx:lint:styles --output-style=stream
+      - name: Check rust files changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            rust: packages/transport-bluetooth/**/*.rs
+      - name: Lint Rust
+        if: steps.changes.outputs.rust == 'true'
+        run: yarn lint:rs
 
   unit-tests:
     name: Unit Tests
