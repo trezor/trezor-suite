@@ -16,8 +16,7 @@ export const WipeDeviceContinueOnTrezorScreen = () => {
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
     useDeviceConnectionGuard();
-
-    useHandleHardwareBackNavigation(() => TrezorConnect.cancel());
+    useHandleHardwareBackNavigation(TrezorConnect.cancel);
 
     const device = useSelector(selectSelectedDevice);
 

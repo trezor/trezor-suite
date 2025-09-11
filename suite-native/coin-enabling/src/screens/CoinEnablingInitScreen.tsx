@@ -19,7 +19,7 @@ import {
     Screen,
     ScreenFooterGradient,
     StackToStackCompositeNavigationProps,
-    useHandleHardwareBackNavigation,
+    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
@@ -35,7 +35,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    useHandleHardwareBackNavigation();
+    useOverrideBackNavigation();
 
     const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 

@@ -9,7 +9,7 @@ import {
     RootStackParamList,
     Screen,
     StackToStackCompositeScreenProps,
-    useHandleHardwareBackNavigation,
+    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 import { AccountInfo } from '@trezor/connect';
 
@@ -36,7 +36,7 @@ export const AccountImportLoadingScreen = ({
     const [accountInfoFetchResult, setAccountInfoFetchResult] =
         useState<SpinnerLoadingState>('idle');
 
-    useHandleHardwareBackNavigation();
+    useOverrideBackNavigation();
 
     const fetchAccountInfo = useCallback(async () => {
         try {
