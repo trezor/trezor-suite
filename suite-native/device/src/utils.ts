@@ -25,6 +25,7 @@ export const isFirmwareVersionSupported = (
     model: DeviceModelInternal | null,
 ) => {
     if (G.isNullable(version) || G.isNullable(model)) return true;
+    if (model === DeviceModelInternal.UNKNOWN) return true;
 
     const minimalVersion = minimalSupportedFirmwareVersion[model];
 
