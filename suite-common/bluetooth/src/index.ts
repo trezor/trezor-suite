@@ -17,4 +17,6 @@ export {
     selectNearbyDevices,
 } from './bluetoothSelectors';
 
+export { filterOutOldDuplicatesByName } from './filterOutOldDuplicatesByName';
+
 export { parseManufacturerData, serializeManufacturerData } from './manufacturerDataUtils';
