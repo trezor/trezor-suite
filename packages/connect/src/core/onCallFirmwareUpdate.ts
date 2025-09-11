@@ -422,13 +422,13 @@ export const onCallFirmwareUpdate = async ({
         }),
     );
 
-    // Sometiemes we use `intermediary` FW that will be uploaded before the `final`,
+    // Sometimes we use `intermediary` FW that will be uploaded before the `final`,
     // where `final` is the one that will stay in the device and will be used.
     let intermediaryBinaryInfo: BinaryInfo | undefined;
     let finalBinaryInfo: BinaryInfo;
     const fwFetchPromises = [];
 
-    // Initiate the download for the intermediary firmware if requeried.
+    // Initiate the download for the intermediary firmware if required.
     if (intermediary) {
         fwFetchPromises.push(
             getBinaryHelper({ device, params, firmwareType, isIntermediary: true, log }),
