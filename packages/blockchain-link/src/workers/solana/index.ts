@@ -241,8 +241,39 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const tokenMetadata = await request.getTokenMetadata();
 
+    const getTokenAccountsForProgram = (programPublicKey: string) =>
+        api.rpc
+            .getTokenAccountsByOwner(
+                publicKey,
+                { programId: address(programPublicKey) } /* filter */,
+                {
+                    encoding: 'jsonParsed',
+                },
+            )
+            .send();
+
+    const tokenAccounts = (
+        await Promise.all(
+            Object.values(tokenProgramsInfo).map(programInfo =>
+                getTokenAccountsForProgram(programInfo.publicKey),
+            ),
+        )
+    )
+        .map(res => res.value)
+        .flat();
+
+    const recognisedWithBalance = tokenAccounts.filter(acc => {
+        const info = acc.account.data.parsed?.info;
+        const mint = info?.mint;
+        const amount = info?.tokenAmount?.amount;
+
+        return mint && tokenMetadata[mint] && amount !== '0';
+    });
+
+    const recognizedAccountsPubkeys = recognisedWithBalance.map(a => a.pubkey);
+
     const getAllTxIds = async (tokenAccountPubkeys: string[]) => {
-        const sortedTokenAccountPubkeys = tokenAccountPubkeys.sort();
+        const sortedTokenAccountPubkeys = [...tokenAccountPubkeys].sort();
 
         const allAccounts = [payload.descriptor, ...sortedTokenAccountPubkeys];
 
@@ -282,8 +313,14 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         return deferred.promise;
     };
 
+    // Fetch token info only if the account owns tokens
+    let tokens: TokenInfo[] = [];
+    if (tokenAccounts.length > 0) {
+        tokens = transformTokenInfo(tokenAccounts, tokenMetadata);
+    }
+
     if (details === 'txids') {
-        const txids = await getAllTxIds(request.payload.tokenAccountsPubKeys || []);
+        const txids = await getAllTxIds(recognizedAccountsPubkeys);
         const solEpoch = await getEpoch();
 
         const account: AccountInfo = {
@@ -296,6 +333,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                 unconfirmed: 0,
                 txids,
             },
+            tokens,
             misc: { solEpoch },
         };
 
@@ -371,41 +409,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         return transactions;
     };
 
-    const getTokenAccountsForProgram = (programPublicKey: string) =>
-        api.rpc
-            .getTokenAccountsByOwner(
-                publicKey,
-                { programId: address(programPublicKey) } /* filter */,
-                {
-                    encoding: 'jsonParsed',
-                },
-            )
-            .send();
-
-    const tokenAccounts = (
-        await Promise.all(
-            Object.values(tokenProgramsInfo).map(programInfo =>
-                getTokenAccountsForProgram(programInfo.publicKey),
-            ),
-        )
-    )
-        .map(res => res.value)
-        .flat();
-
-    const recognisedWithBalance = tokenAccounts.filter(acc => {
-        const info = acc.account.data.parsed?.info;
-        const mint = info?.mint;
-        const amount = info?.tokenAmount?.amount;
-
-        return mint && tokenMetadata[mint] && amount !== '0';
-    });
-
-    const allAccounts =
-        tokenAccounts.length > 100
-            ? recognisedWithBalance.map(a => a.pubkey)
-            : [payload.descriptor, ...recognisedWithBalance.map(a => a.pubkey)];
-
-    const allTxIds = await getAllTxIds(allAccounts);
+    const allTxIds = await getAllTxIds(recognizedAccountsPubkeys);
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
@@ -424,12 +428,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const transactionPage =
         details === 'txs' ? await getTransactionPage(txIdPage, tokenAccountsInfos) : undefined;
-
-    // Fetch token info only if the account owns tokens
-    let tokens: TokenInfo[] = [];
-    if (tokenAccounts.length > 0) {
-        tokens = transformTokenInfo(tokenAccounts, tokenMetadata);
-    }
 
     const { value: balance } = await api.rpc.getBalance(publicKey).send();
 
