@@ -28,8 +28,8 @@ export const BluetoothDeviceList = ({
     isScanning,
     onPairAgain,
 }: BluetoothDeviceListProps) => (
-    <Card paddingType="tiny">
-        <Column gap={spacings.md} alignItems="stretch">
+    <Card paddingType="large">
+        <Column gap={32}>
             {deviceList.map(device => (
                 <BluetoothDeviceListItem
                     key={device.id}

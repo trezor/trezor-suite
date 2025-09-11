@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
-import { Button, Card, Column, Icon, List, Modal, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import { Translation } from '../../suite/Translation';
@@ -24,32 +23,30 @@ export const ThpAutoconnectInfoModal = () => {
 
     return (
         <Modal
-            heading={<Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER" />}
             data-testid="@modal/thp-autoconnect-info"
             bottomContent={
                 <>
-                    <Button onClick={onTurnOn} isLoading={isLoading || isDeviceLocked}>
+                    <Modal.Button onClick={onTurnOn} isLoading={isLoading || isDeviceLocked}>
                         <Translation id="TR_THP_TURN_ON_AUTO_CONNECT" />
-                    </Button>
-                    <Button onClick={onCancel} variant="tertiary" isDisabled={isLoading}>
+                    </Modal.Button>
+                    <Modal.Button onClick={onCancel} variant="tertiary" isDisabled={isLoading}>
                         <Translation id="TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS" />
-                    </Button>
+                    </Modal.Button>
                 </>
             }
             onCancel={onCancel}
+            size="small"
+            variant="info"
+            iconName="bluetooth"
         >
-            <Card>
-                <Column gap={spacings.xs}>
-                    <List
-                        bulletComponent={<Icon name="dotOutlineFilled" />}
-                        bulletGap={spacings.xs}
-                    >
-                        <Text>
-                            <Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION" />
-                        </Text>
-                    </List>
-                </Column>
-            </Card>
+            <Column gap={4}>
+                <H3>
+                    <Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER" />
+                </H3>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION" />
+                </Paragraph>
+            </Column>
         </Modal>
     );
 };

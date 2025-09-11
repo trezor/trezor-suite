@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
 import { TranslationKey } from '@suite-common/intl-types';
-import { Button, Modal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
@@ -109,14 +109,14 @@ export const CantSeeTrezorModal = ({
         <Modal
             bottomContent={
                 <>
-                    <Button onClick={handlePrimaryCta} variant="info">
+                    <Modal.Button onClick={handlePrimaryCta} variant="info">
                         <Translation
                             id={isBluetoothMode ? 'TR_BLUETOOTH_SCAN_AGAIN' : 'TR_GOT_IT'}
                         />
-                    </Button>
-                    <Button variant="tertiary" onClick={handleTertiaryCta}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={handleTertiaryCta}>
                         <Translation id={tertiaryButtonTranslation} />
-                    </Button>
+                    </Modal.Button>
                 </>
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}

@@ -1,5 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 
+import { Box, Column } from '@trezor/components';
+
 import { ConnectorImage } from './ConnectorImage';
 import { DEFAULT_CONNECT_DEVICE_NAME, DeviceImage } from './DeviceImage';
 
@@ -13,27 +15,13 @@ const slideUp = keyframes`
         opacity: 0.8;
     }
     100% {
-        transform: translateY(-4px);
+        transform: translateY(0px);
         opacity: 1;
     }
 `;
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-`;
-
-const DeviceWrapper = styled.div`
-    z-index: 2;
-`;
-
 const CableWrapper = styled.div`
     animation: ${slideUp} 1.2s ease-out 0.3s both;
     animation-delay: 2s;
-    z-index: 1;
-    margin-top: -20px; /* Overlap slightly with device for connection effect */
 `;
 
 type CableConnectionAnimationProps = {
@@ -43,14 +31,16 @@ type CableConnectionAnimationProps = {
 export const CableConnectionAnimation = ({
     isBluetoothMode: isBluetooth,
 }: CableConnectionAnimationProps) => (
-    <Wrapper>
-        <DeviceWrapper>
+    <Column alignItems="center" position={{ type: 'relative' }}>
+        <Box zIndex={2}>
             <DeviceImage size="large" deviceModel={DEFAULT_CONNECT_DEVICE_NAME} />
-        </DeviceWrapper>
+        </Box>
         {!isBluetooth && (
-            <CableWrapper>
-                <ConnectorImage />
-            </CableWrapper>
+            <Box zIndex={1} margin={{ top: -20 }}>
+                <CableWrapper>
+                    <ConnectorImage />
+                </CableWrapper>
+            </Box>
         )}
-    </Wrapper>
+    </Column>
 );

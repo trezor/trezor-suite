@@ -26,7 +26,6 @@ const mapVariantToColor: Record<ButtonVariant, string> = {
     primary: 'textPrimaryDefault',
     tertiary: 'textSubdued',
     info: 'textAlertBlue',
-    infoLight: 'textAlertBlue',
     warning: 'textAlertYellow',
     destructive: 'textAlertRed',
 };
@@ -35,7 +34,6 @@ const mapVariantToHoverColor: Record<ButtonVariant, string> = {
     primary: 'textPrimaryPressed',
     tertiary: 'textPrimaryPressed',
     info: 'textPrimaryPressed',
-    infoLight: 'textPrimaryPressed',
     warning: 'textPrimaryPressed',
     destructive: 'textPrimaryPressed',
 };

@@ -1,11 +1,9 @@
 import { ReactNode } from 'react';
 
 import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
-import { Card, Column, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, Row } from '@trezor/components';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
-import { BluetoothDialogCard } from './BluetoothDialogCard';
 import { BluetoothTips } from './BluetoothTips';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
@@ -27,12 +25,9 @@ const OkComponent = ({ device }: OkComponentProps) => {
     };
 
     return (
-        <Row gap={spacings.md} alignItems="center" justifyContent="stretch">
-            <BluetoothDeviceComponent device={device} flex="1" />
-
-            <Column alignItems="center" gap={spacings.md}>
-                {map[device.connectionStatus.type]}
-            </Column>
+        <Row gap={16} justifyContent="space-between">
+            <BluetoothDeviceComponent device={device} />
+            {map[device.connectionStatus.type]}
         </Row>
     );
 };
@@ -55,18 +50,12 @@ export type BluetoothSelectedDeviceProps = {
     onReScanClick: () => void;
 };
 
-export const BluetoothSelectedDevice = ({
-    device,
-    onReScanClick,
-}: BluetoothSelectedDeviceProps) => (
-    <BluetoothDialogCard>
-        {device.connectionStatus.type === 'connection-error' ||
-        device.connectionStatus.type === 'pairing-error' ? (
-            <ErrorComponent onReScanClick={onReScanClick} device={device} />
-        ) : (
-            <Card>
-                <OkComponent device={device} />
-            </Card>
-        )}
-    </BluetoothDialogCard>
-);
+export const BluetoothSelectedDevice = ({ device, onReScanClick }: BluetoothSelectedDeviceProps) =>
+    device.connectionStatus.type === 'connection-error' ||
+    device.connectionStatus.type === 'pairing-error' ? (
+        <ErrorComponent onReScanClick={onReScanClick} device={device} />
+    ) : (
+        <Card>
+            <OkComponent device={device} />
+        </Card>
+    );

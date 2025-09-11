@@ -1,5 +1,4 @@
 import { Icon, Row, Spinner, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { Translation, TranslationKey } from '../Translation';
 
@@ -9,8 +8,8 @@ type PairingStateProps = {
 };
 
 export const PairingState = ({ isLoading, text }: PairingStateProps) => (
-    <Row gap={isLoading ? spacings.xxs : spacings.md} alignItems="center">
-        {isLoading ? <Spinner size={spacings.md} /> : <Icon size="small" name="check" />}
+    <Row gap={10}>
+        {isLoading ? <Spinner size={18} /> : <Icon size={18} name="check" variant="primary" />}
         <Text variant={isLoading ? 'tertiary' : 'primary'}>
             <Translation id={text} />
         </Text>
