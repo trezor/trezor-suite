@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 import {
@@ -22,7 +21,6 @@ import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { FirmwareUpdateEnvironmentSelect } from '../components/FirmwareUpdateEnvironmentSelect';
-import { LanguageSelect } from '../components/LanguageSelect';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { TestnetsToggle } from '../components/TestnetsToggle';
@@ -39,7 +37,6 @@ export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const copyToClipboard = useCopyToClipboard();
     const versionString = `${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`;
-    const isLocalizationEnabled = useFeatureFlag(FeatureFlag.IsLocalizationEnabled);
 
     const handleCopyVersion = () => {
         copyToClipboard(versionString);
@@ -100,15 +97,6 @@ export const DevUtilsScreen = () => {
                         <TradingDeeplinks />
                     </VStack>
                 </Card>
-
-                {isLocalizationEnabled && (
-                    <Card>
-                        <VStack>
-                            <Text variant="highlight">Language</Text>
-                            <LanguageSelect />
-                        </VStack>
-                    </Card>
-                )}
                 <MessageSystemInfo />
                 <Card>
                     <VStack>
