@@ -12,6 +12,9 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<NativeBluetoothRo
 export const selectBluetoothPermissionStatus = (state: NativeBluetoothRootState) =>
     state.bluetooth.permissionStatus;
 
+export const selectShouldShowSystemUnpairingAlert = (state: NativeBluetoothRootState) =>
+    state.bluetooth.shouldShowSystemUnpairingAlert;
+
 export const selectBluetoothAdapterStatus = (state: NativeBluetoothRootState) =>
     selectAdapterStatus(state);
 

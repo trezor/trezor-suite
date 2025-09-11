@@ -5,6 +5,7 @@ import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, SuiteNativeAnalyticsEvent, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
+import { selectShouldShowSystemUnpairingAlert } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
 import {
     selectHasAutoEjectAlertBeenDisplayed,
@@ -23,6 +24,7 @@ export const useShowAutoEjectAlert = () => {
     const { showToast } = useToast();
 
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
+    const shouldShowSystemUnpairingAlert = useSelector(selectShouldShowSystemUnpairingAlert);
     const hasAutoEjectAlertBeenDisplayed = useSelector(selectHasAutoEjectAlertBeenDisplayed);
 
     const reportAutoEjectToAnalytics = useCallback(
@@ -36,6 +38,10 @@ export const useShowAutoEjectAlert = () => {
     );
 
     useEffect(() => {
+        if (shouldShowSystemUnpairingAlert) {
+            // The alert regarding system unpairing has a higher priority.
+            return;
+        }
         if (!hasAutoEjectAlertBeenDisplayed && shouldShowAutoEjectAlert) {
             showAlert({
                 appendix: (
@@ -83,6 +89,7 @@ export const useShowAutoEjectAlert = () => {
         hideAlert,
         reportAutoEjectToAnalytics,
         shouldShowAutoEjectAlert,
+        shouldShowSystemUnpairingAlert,
         showAlert,
         showToast,
     ]);

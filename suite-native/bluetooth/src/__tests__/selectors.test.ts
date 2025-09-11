@@ -13,6 +13,7 @@ import { BluetoothDevice } from '../types';
 const initialState: NativeBluetoothState = {
     ...prepareInitialState<BluetoothDevice>(),
     permissionStatus: 'granted',
+    shouldShowSystemUnpairingAlert: false,
 };
 
 const unknownDevice: BluetoothDevice = {

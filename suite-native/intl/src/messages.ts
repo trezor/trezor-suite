@@ -178,6 +178,13 @@ export const messages = {
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
             },
+            systemUnpairing: {
+                title: 'Remove Trezor from system settings',
+                description:
+                    'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
+                primaryButton: 'Open system settings',
+                secondaryButton: 'Device removed',
+            },
         },
         deviceList: {
             connect: {
@@ -772,11 +779,11 @@ export const messages = {
         bluetooth: {
             title: 'Unpair Trezor',
             content: 'Unpair your Trezor from this device',
-            unpairTrezorButton: 'Unpair Trezor',
+            unpairTrezorButton: 'Unpair',
             info: {
                 title: 'Unpair Trezor',
                 description:
-                    'This will remove your Trezor from the list of paired devices in Trezor Suite. You should also remove your Trezor from your phone’s Bluetooth devices.',
+                    'This removes your Trezor from the list of paired devices in Trezor Suite.',
             },
             successMessage: 'Trezor has been unpaired.',
         },

@@ -16,6 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
+import { selectShouldShowSystemUnpairingAlert } from '@suite-native/bluetooth';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
@@ -68,6 +69,7 @@ export const useDetectDeviceError = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
+    const shouldShowSystemUnpairingAlert = useSelector(selectShouldShowSystemUnpairingAlert);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -288,8 +290,17 @@ export const useDetectDeviceError = () => {
         // Device with error can't be view-only.
         // Edge case: If user has connected two devices simultaneously,
         // it will not hide the alert.
-        if (isNoPhysicalDeviceConnected && !shouldShowAutoEjectAlert) {
+        if (
+            isNoPhysicalDeviceConnected &&
+            !shouldShowAutoEjectAlert &&
+            !shouldShowSystemUnpairingAlert
+        ) {
             hideAlert();
         }
-    }, [isNoPhysicalDeviceConnected, hideAlert, shouldShowAutoEjectAlert]);
+    }, [
+        isNoPhysicalDeviceConnected,
+        hideAlert,
+        shouldShowAutoEjectAlert,
+        shouldShowSystemUnpairingAlert,
+    ]);
 };

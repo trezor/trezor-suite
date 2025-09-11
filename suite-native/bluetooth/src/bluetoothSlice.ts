@@ -13,6 +13,7 @@ import { BluetoothDevice, BluetoothPermissionStatus } from './types';
 
 export type NativeBluetoothState = BluetoothState<BluetoothDevice> & {
     permissionStatus: BluetoothPermissionStatus;
+    shouldShowSystemUnpairingAlert: boolean;
 };
 
 export type NativeBluetoothRootState = {
@@ -24,6 +25,7 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     initialState: {
         ...prepareInitialState<BluetoothDevice>(),
         permissionStatus: 'unavailable',
+        shouldShowSystemUnpairingAlert: false,
     },
     reducers: {
         updatePermissionStatus: (state, { payload }: PayloadAction<BluetoothPermissionStatus>) => {
@@ -32,6 +34,9 @@ export const bluetoothSlice = createSliceWithExtraDeps({
             if (state.permissionStatus !== 'blocked' || payload !== 'denied') {
                 state.permissionStatus = payload;
             }
+        },
+        setShouldShowSystemUnpairingAlert: (state, { payload }: PayloadAction<boolean>) => {
+            state.shouldShowSystemUnpairingAlert = payload;
         },
     },
     extraReducers: (builder, extra) => {
@@ -49,4 +54,4 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     },
 });
 
-export const { updatePermissionStatus } = bluetoothSlice.actions;
+export const { updatePermissionStatus, setShouldShowSystemUnpairingAlert } = bluetoothSlice.actions;
