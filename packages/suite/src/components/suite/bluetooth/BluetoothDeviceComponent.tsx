@@ -1,5 +1,5 @@
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { Column, Image, InfoSegments, Row,Text } from '@trezor/components';
+import { Column, Image, InfoSegments, Row, Text } from '@trezor/components';
 import { models } from '@trezor/device-utils';
 
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
@@ -31,7 +31,7 @@ export const BluetoothDeviceComponent = ({ device }: BluetoothDeviceProps) => {
                 <Image
                     height="36px"
                     imageSrc={resolveStaticPath(
-                        `images/t3w1-backs//${internalModel.toLocaleLowerCase()}-back-color-${color}.webp`,
+                        `images/png/t3w1/${internalModel.toLocaleLowerCase()}-back-color-${color}.webp`,
                     )}
                 />
             </Column>

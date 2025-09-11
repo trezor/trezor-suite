@@ -19,6 +19,7 @@ import { SuiteBanners } from 'src/components/suite/banners';
 import { useSelector } from 'src/hooks/suite';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
+import { TrafficLightOffset } from '../../TrafficLightOffset';
 import { ContentContainer } from '../ContentContainer';
 import { LoggedOutSidebar } from '../LoggedOutSidebar';
 import { PageHeader } from '../SuiteLayout';
@@ -30,6 +31,7 @@ const Content = styled.div<{ $elevation: Elevation; $verticalCenter?: boolean }>
     flex: 1;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     overflow-y: auto;
     height: 100%;
     ${props =>
@@ -74,12 +76,16 @@ const RightSideContent = ({ showPureChildren, children }: RightContentProps) => 
 
     if (showPureChildren) {
         return (
-            <Content $elevation={elevation} $verticalCenter={true}>
-                <SuiteBanners />
-                <PureChildrenWrapper>
-                    <ElevationUp>{children}</ElevationUp>
-                </PureChildrenWrapper>
-            </Content>
+            <TrafficLightOffset>
+                <Column alignItems="center" width="100%" height="100%">
+                    <SuiteBanners />
+                    <Content $elevation={elevation} $verticalCenter={true}>
+                        <PureChildrenWrapper>
+                            <ElevationUp>{children}</ElevationUp>
+                        </PureChildrenWrapper>
+                    </Content>
+                </Column>
+            </TrafficLightOffset>
         );
     }
 

@@ -21,15 +21,11 @@ export const DeviceAnimation: StoryObj<typeof DeviceAnimationComponent> = {
         loop: false,
         shape: 'CIRCLE',
         deviceModelInternal: DeviceModelInternal.T1B1,
-        isOldT2B1Packaging: true,
         deviceUnitColor: 1,
         sizeVariant: 'LARGE',
     },
     argTypes: {
         loop: {
-            control: 'boolean',
-        },
-        isOldT2B1Packaging: {
             control: 'boolean',
         },
         type: {

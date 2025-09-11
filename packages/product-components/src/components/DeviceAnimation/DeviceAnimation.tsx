@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, MouseEventHandler } from 'react';
+import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
