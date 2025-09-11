@@ -44,6 +44,8 @@
     },
     "devDependencies": {
         "html-webpack-plugin": "^5.6.3",
+        "react": "19.0.0",
+        "react-dom": "19.0.0",
         "webpack": "5.100.0"
     }
 }
