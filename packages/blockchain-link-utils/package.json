@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@stellar/stellar-sdk": "^13.3.0",
+        "@stellar/stellar-sdk": "^14.1.1",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "xrpl": "^4.4.1"

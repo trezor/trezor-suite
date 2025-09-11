@@ -77,7 +77,7 @@
         "@solana-program/token-2022": "^0.4.2",
         "@solana/kit": "^2.3.0",
         "@solana/rpc-types": "^2.3.0",
-        "@stellar/stellar-sdk": "^13.3.0",
+        "@stellar/stellar-sdk": "^14.1.1",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",

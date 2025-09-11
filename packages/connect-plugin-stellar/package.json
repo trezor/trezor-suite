@@ -34,12 +34,12 @@
         "!**/*.map"
     ],
     "peerDependencies": {
-        "@stellar/stellar-sdk": "^13.3.0",
+        "@stellar/stellar-sdk": "^14.1.1",
         "@trezor/connect": "9.x.x",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@stellar/stellar-sdk": "^13.3.0",
+        "@stellar/stellar-sdk": "^14.1.1",
         "@trezor/eslint": "workspace:*"
     },
     "dependencies": {
