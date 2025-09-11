@@ -32,7 +32,7 @@ module.exports = {
     target: 'web',
     mode: 'production',
     entry: {
-        index: `${SRC}/ui/index.ts`,
+        index: `${SRC}/ui/index.tsx`,
     },
     output: {
         path: BUILD,
@@ -41,13 +41,24 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.[jt]sx?$/,
                 exclude: /node_modules/,
                 use: [
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['@babel/preset-typescript'],
+                            presets: [
+                                [
+                                    '@babel/preset-env',
+                                    {
+                                        targets: {
+                                            browsers: ['>0.25%', 'not ie 11', 'not op_mini all'],
+                                        },
+                                    },
+                                ],
+                                ['@babel/preset-react', { runtime: 'automatic' }],
+                                ['@babel/preset-typescript'],
+                            ],
                         },
                     },
                 ],
@@ -56,7 +67,7 @@ module.exports = {
     },
     resolve: {
         modules: [SRC, 'node_modules'],
-        extensions: ['.ts', '.js'],
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
         mainFields: ['main', 'module'], // prevent wrapping default exports by harmony export (bignumber.js in ripple issue)
     },
     performance: {
@@ -87,10 +98,6 @@ module.exports = {
                     name.endsWith('.js'),
                 );
                 const jsBundleContent = compilation.assets[jsBundleName].source();
-                const cssBundleContent = compilation.inputFileSystem.readFileSync(
-                    `${SRC}ui/index.css`,
-                    'utf-8',
-                );
                 const originalTemplate = compilation.inputFileSystem.readFileSync(
                     `${SRC}ui/index.html`,
                     'utf-8',
@@ -98,7 +105,7 @@ module.exports = {
 
                 return originalTemplate.replace(
                     '</head>',
-                    `<style>${cssBundleContent}</style><script>${jsBundleContent}</script></head>`,
+                    `<script>${jsBundleContent}</script></head>`,
                 );
             },
         }),
