@@ -8,7 +8,7 @@ import type { UIAlignment, UISize, UIVariant } from '../../config/types';
 const SUBTLE_ALPHA = 0.12;
 const SUBTLE_ALPHA_HOVER = 0.2;
 
-export const subtleButtonVariants = ['info', 'infoLight', 'warning', 'destructive'] as const;
+export const subtleButtonVariants = ['info', 'warning', 'destructive'] as const;
 
 export const buttonVariants = ['primary', 'tertiary', ...subtleButtonVariants] as const;
 
@@ -139,14 +139,6 @@ export const useVariantStyle = (
             backgroundHover: theme.backgroundAlertBlueBoldAlt,
             backgroundSubtleHover: hexToRgba(theme.backgroundAlertBlueBoldAlt, SUBTLE_ALPHA_HOVER),
             text: theme.textOnBlue,
-            textSubtle: theme.textAlertBlue,
-        },
-        infoLight: {
-            background: theme.backgroundAlertBlueSubtleOnElevation1,
-            backgroundSubtle: hexToRgba(theme.backgroundAlertBlueBold, SUBTLE_ALPHA),
-            backgroundHover: theme.backgroundAlertBlueSubtleOnElevation2,
-            backgroundSubtleHover: hexToRgba(theme.backgroundAlertBlueBoldAlt, SUBTLE_ALPHA_HOVER),
-            text: theme.textAlertBlue,
             textSubtle: theme.textAlertBlue,
         },
         warning: {

@@ -1,5 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
-import { Flex, H3, Modal, Text } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
@@ -21,25 +20,6 @@ type BluetoothConnectionModalProps = {
     onCancel: () => void;
 };
 
-type BluetoothModalConnectionHeadingProps = {
-    heading: TranslationKey;
-    description: TranslationKey;
-};
-
-const BluetoothModalConnectionHeading = ({
-    heading,
-    description,
-}: BluetoothModalConnectionHeadingProps) => (
-    <Flex direction="column">
-        <H3>
-            <Translation id={heading} />
-        </H3>
-        <Text typographyStyle="hint" variant="tertiary">
-            <Translation id={description} />
-        </Text>
-    </Flex>
-);
-
 export const BluetoothConnectionModal = ({
     devices,
     nearbyDevices,
@@ -59,12 +39,8 @@ export const BluetoothConnectionModal = ({
         return (
             <Modal
                 onCancel={() => onPairingCancel(selectedDevice.id)}
-                heading={
-                    <BluetoothModalConnectionHeading
-                        heading="TR_CONNECT_YOUR_TREZOR"
-                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
-                    />
-                }
+                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
+                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
             >
                 <BluetoothPairingPin
                     device={selectedDevice}
@@ -78,12 +54,9 @@ export const BluetoothConnectionModal = ({
         return (
             <Modal
                 onCancel={onCancel}
-                heading={
-                    <BluetoothModalConnectionHeading
-                        heading="TR_CONNECT_YOUR_TREZOR"
-                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
-                    />
-                }
+                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
+                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
+                size="small"
             >
                 <BluetoothSelectedDevice device={selectedDevice} onReScanClick={onRescanClick} />
             </Modal>
@@ -95,12 +68,9 @@ export const BluetoothConnectionModal = ({
         return (
             <Modal
                 onCancel={onCancel}
-                heading={
-                    <BluetoothModalConnectionHeading
-                        heading="TR_CONNECT_YOUR_TREZOR"
-                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
-                    />
-                }
+                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
+                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
+                size="small"
             >
                 <BluetoothScanningList
                     devices={devices}
@@ -116,12 +86,9 @@ export const BluetoothConnectionModal = ({
         return (
             <Modal
                 onCancel={onCancel}
-                heading={
-                    <BluetoothModalConnectionHeading
-                        heading="TR_CONNECT_YOUR_TREZOR"
-                        description="TR_CONNECT_YOUR_TREZOR_DESCRIPTION"
-                    />
-                }
+                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
+                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
+                size="small"
             >
                 <BluetoothDeviceList
                     deviceList={knownDevices}

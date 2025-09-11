@@ -6,8 +6,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { Button, Column, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, Row } from '@trezor/components';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
@@ -52,13 +51,7 @@ const GhostDeviceActionButton = ({
     const isDisabled = isLoading || isConnectingDevice;
 
     return (
-        <Button
-            size="small"
-            margin={{ vertical: spacings.xxs }}
-            isDisabled={isDisabled}
-            isLoading={isLoading}
-            onClick={handleDelete}
-        >
+        <Button size="small" isDisabled={isDisabled} isLoading={isLoading} onClick={handleDelete}>
             <Translation id="TR_PAIR_AGAIN" />
         </Button>
     );
@@ -81,34 +74,28 @@ const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionB
 
     if (isGhostDevice) {
         return (
-            <Row gap={spacings.xs}>
-                <GhostDeviceActionButton
-                    onPairAgain={onPairAgain}
-                    device={device}
-                    isLoading={isLoading}
-                    isConnectingDevice={isSuiteTryingToConnectToDevice}
-                />
-            </Row>
+            <GhostDeviceActionButton
+                onPairAgain={onPairAgain}
+                device={device}
+                isLoading={isLoading}
+                isConnectingDevice={isSuiteTryingToConnectToDevice}
+            />
         );
+    }
+
+    if (isLoading) {
+        return <PairingState isLoading text={connectionStatus.text} />;
     }
 
     const handleOnClick = () => onConnect(device.id);
 
-    return (
-        <Row gap={spacings.xs}>
-            {isClickable && (
-                <Button
-                    variant="primary"
-                    size="small"
-                    margin={{ vertical: spacings.xxs }}
-                    onClick={handleOnClick}
-                >
-                    <Translation id={connectionStatus.text} />
-                </Button>
-            )}
-            {isLoading && <PairingState isLoading text={connectionStatus.text} />}
-        </Row>
-    );
+    if (isClickable) {
+        return (
+            <Button variant="primary" size="small" onClick={handleOnClick}>
+                <Translation id={connectionStatus.text} />
+            </Button>
+        );
+    }
 };
 
 type BluetoothDeviceItemProps = {
@@ -132,17 +119,14 @@ export const BluetoothDeviceListItem = ({
     const isGhostDevice = isKnownDevice && !isNearbyDevice;
 
     return (
-        <Column gap={spacings.xs}>
-            <Row gap={spacings.md} alignItems="center">
-                <BluetoothDeviceComponent device={device} flex="1" />
-
-                <ActionButton
-                    onPairAgain={onPairAgain}
-                    isGhostDevice={isGhostDevice}
-                    device={device}
-                    onConnect={onConnect}
-                />
-            </Row>
-        </Column>
+        <Row gap={16} justifyContent="space-between">
+            <BluetoothDeviceComponent device={device} />
+            <ActionButton
+                onPairAgain={onPairAgain}
+                isGhostDevice={isGhostDevice}
+                device={device}
+                onConnect={onConnect}
+            />
+        </Row>
     );
 };

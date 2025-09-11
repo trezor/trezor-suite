@@ -1,17 +1,12 @@
 import styled from 'styled-components';
 
-import { Card, Row } from '@trezor/components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { Card, Row, Text } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 
-const Pin = styled.div`
-    display: flex;
-    flex: 1;
-
-    ${typography.titleLarge} /* Amount */ margin: 0 auto;
-
+const Pin = styled.span`
     letter-spacing: ${spacingsPx.md};
 `;
 
@@ -21,18 +16,12 @@ type BluetoothPairingPinProps = {
 };
 
 export const BluetoothPairingPin = ({ pairingPin, device }: BluetoothPairingPinProps) => (
-    <Card paddingType="none" overflow="hidden">
-        <Row
-            alignItems="center"
-            gap={spacings.xs}
-            justifyContent="space-between"
-            margin={{ vertical: spacings.xxl, horizontal: spacings.xxl }}
-        >
-            <Pin>{pairingPin}</Pin>
-            <BluetoothDeviceComponent
-                device={device}
-                margin={{ vertical: spacings.xxs, horizontal: spacings.xxs }}
-            />
+    <Card overflow="hidden" paddingType="large">
+        <Row gap={8} justifyContent="space-between" padding={{ horizontal: 8, vertical: 4 }}>
+            <Text typographyStyle="titleLarge">
+                <Pin>{pairingPin}</Pin>
+            </Text>
+            <BluetoothDeviceComponent device={device} />
         </Row>
     </Card>
 );

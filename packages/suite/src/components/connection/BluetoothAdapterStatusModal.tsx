@@ -1,9 +1,8 @@
 import { useState } from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { Button, Flex, Modal, Text } from '@trezor/components';
+import { Banner, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -65,31 +64,30 @@ export const BluetoothAdapterStatusModal = ({
     return (
         <Modal
             heading={<Translation id={status.title} />}
+            size="small"
             onCancel={onCancel}
             bottomContent={
                 <>
                     {status.ctaText && (
-                        <Button isDisabled={hasDeeplinkFailed} onClick={status.onCtaClick}>
+                        <Modal.Button isDisabled={hasDeeplinkFailed} onClick={status.onCtaClick}>
                             <Translation id={status.ctaText} />
-                        </Button>
+                        </Modal.Button>
                     )}
-                    <Button onClick={onCancel} variant="tertiary">
+                    <Modal.Button onClick={onCancel} variant="tertiary">
                         <Translation id="TR_CANCEL" />
-                    </Button>
+                    </Modal.Button>
                 </>
             }
         >
-            <Flex gap={spacings.md} direction="column">
-                <Text variant="tertiary">
+            {hasDeeplinkFailed && status.deeplinkFailed ? (
+                <Banner variant="warning" icon>
+                    <Translation id={status.deeplinkFailed} />
+                </Banner>
+            ) : (
+                <Paragraph>
                     <Translation id={status.description}></Translation>
-                </Text>
-
-                {hasDeeplinkFailed && status.deeplinkFailed && (
-                    <Text variant="warning">
-                        <Translation id={status.deeplinkFailed} />
-                    </Text>
-                )}
-            </Flex>
+                </Paragraph>
+            )}
         </Modal>
     );
 };

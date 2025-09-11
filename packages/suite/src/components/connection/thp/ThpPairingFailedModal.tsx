@@ -2,8 +2,7 @@ import { useState } from 'react';
 
 import { thpActions } from '@suite-common/thp';
 import { acquireDevice } from '@suite-common/wallet-core';
-import { Button, Column, Modal, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, Modal, Paragraph } from '@trezor/components';
 
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
 import { useDevice, useDispatch, useSelector } from '../../../hooks/suite';
@@ -30,26 +29,23 @@ export const ThpPairingFailedModal = () => {
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             data-testid="@modal/thp-paring-failed"
+            size="small"
             bottomContent={
                 <>
-                    <Button onClick={handleRetry} isLoading={isLoading} variant="destructive">
+                    <Modal.Button onClick={handleRetry} isLoading={isLoading} variant="destructive">
                         <Translation id="TR_THP_GET_NEW_CODE" />
-                    </Button>
-                    <Button onClick={onCancel} variant="tertiary">
+                    </Modal.Button>
+                    <Modal.Button onClick={onCancel} variant="tertiary">
                         <Translation id="TR_CANCEL" />
-                    </Button>
+                    </Modal.Button>
                 </>
             }
         >
-            <Column
-                margin={{ bottom: spacings.xxl, top: spacings.xxl }}
-                gap={spacings.md}
-                alignItems="start"
-            >
+            <Column gap={16} margin={{ top: 16 }}>
                 <ThpPairingCodeEntry disabled lastCode={lastThpCode} />
-                <Text variant="destructive">
+                <Paragraph variant="destructive">
                     <Translation id="TR_THP_INCORRECT_SECURITY_CODE" />
-                </Text>
+                </Paragraph>
             </Column>
         </Modal>
     );

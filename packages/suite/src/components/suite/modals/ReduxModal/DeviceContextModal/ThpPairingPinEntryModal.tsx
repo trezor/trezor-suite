@@ -1,9 +1,8 @@
 import { useIntl } from 'react-intl';
 
 import { thpActions } from '@suite-common/thp';
-import { Flex, Modal } from '@trezor/components';
+import { Box, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from '../../../../../hooks/suite';
 import messages from '../../../../../support/messages';
@@ -28,9 +27,9 @@ export const ThpPairingPinEntryModal = () => {
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
         >
-            <Flex margin={{ bottom: spacings.xxxxl, top: spacings.xxl }}>
+            <Box margin={{ top: 24, bottom: 4 }}>
                 <ThpPairingCodeEntry />
-            </Flex>
+            </Box>
         </Modal>
     );
 };
