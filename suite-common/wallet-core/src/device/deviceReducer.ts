@@ -5,40 +5,20 @@ import {
     deviceAuthenticityActions,
 } from '@suite-common/device-authenticity';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
+import {
+    AcquiredDevice,
+    ButtonRequest,
+    PersistentDeviceData,
+    TrezorDevice,
+} from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
-import {
-    Device,
-    DeviceState,
-    Features,
-    KnownDevice,
-    StaticSessionId,
-    VersionArray,
-} from '@trezor/connect';
+import { Device, DeviceState, Features, KnownDevice, StaticSessionId } from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
-import { UnionSubset } from '@trezor/type-utils';
 
 import { deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
-
-export type PersistedFeatureKey = UnionSubset<
-    keyof Features,
-    | 'device_id'
-    | 'internal_model'
-    | 'fw_vendor'
-    | 'revision'
-    | 'unit_color'
-    | 'label'
-    | 'initialized'
->;
-export type PersistentDeviceData = Pick<Features, PersistedFeatureKey> & {
-    firmwareVersion: VersionArray | null;
-    lastConnectedBy: 'bluetooth' | 'usb' | null;
-    // TODO move devicesWithFailedEntropyCheck to this object, including persistence & migration
-    // TODO move deviceAuthenticity to this object and newly introduce persistence
-};
 
 export type DeviceReducerState = {
     devices: TrezorDevice[];
