@@ -76,7 +76,7 @@ const createDevice = (api: TrezorBluetooth, d: BluetoothDevice) => {
                     writeOutput({ error: e.message });
                 });
         } else {
-            api.send('disconnect_device', d.id).catch(e => {
+            api.send('disconnect_device', { id: d.id }).catch(e => {
                 writeOutput({ error: e.message });
             });
         }
@@ -136,7 +136,7 @@ async function init() {
         updateDeviceList(api, event.devices);
     });
     api.on('device_connection_status', event => {
-        updateDevice(api, event);
+        updateDevice(api, event.device);
     });
 
     getElement('api_connect').onclick = () => {
@@ -159,7 +159,7 @@ async function init() {
 
     getElement('start_scan').onclick = () => {
         api.send('start_scan')
-            .then(devices => {
+            .then(({ devices }) => {
                 updateDeviceList(api, devices);
             })
             .catch(e => {
@@ -210,7 +210,7 @@ async function init() {
 
     getElement('disconnect_device').onclick = () => {
         const id = getDeviceId();
-        api.send('disconnect_device', id)
+        api.send('disconnect_device', { id })
             .then(r => {
                 writeOutput(r);
             })
@@ -221,7 +221,7 @@ async function init() {
 
     getElement('forget_device').onclick = () => {
         const id = getDeviceId();
-        api.send('forget_device', id)
+        api.send('forget_device', { id })
             .then(r => {
                 writeOutput(r);
             })
@@ -232,7 +232,7 @@ async function init() {
 
     getElement('open_device').onclick = () => {
         const id = getDeviceId();
-        api.send('open_device', id)
+        api.send('open_device', { id })
             .then(r => {
                 writeOutput(r);
             })
@@ -243,7 +243,7 @@ async function init() {
 
     getElement('close_device').onclick = () => {
         const id = getDeviceId();
-        api.send('close_device', id)
+        api.send('close_device', { id })
             .then(r => {
                 writeOutput(r);
             })
@@ -264,8 +264,8 @@ async function init() {
     };
 
     getElement('read').onclick = () => {
-        const value = getDeviceId();
-        api.send('read', value)
+        const id = getDeviceId();
+        api.send('read', { id })
             .then(r => {
                 writeOutput(r);
             })

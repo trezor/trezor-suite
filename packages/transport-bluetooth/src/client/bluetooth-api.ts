@@ -49,7 +49,7 @@ export class BluetoothApi extends AbstractApi {
     enumerate() {
         return this.api
             .send('enumerate')
-            .then(devices => this.success(this.devicesToDescriptors(devices)))
+            .then(({ devices }) => this.success(this.devicesToDescriptors(devices)))
             .catch(() => this.success([]));
     }
 
@@ -99,7 +99,7 @@ export class BluetoothApi extends AbstractApi {
 
     openDevice(path: string) {
         return this.api
-            .send('open_device', path)
+            .send('open_device', { id: path })
             .then(() => this.success(undefined))
             .catch(e =>
                 this.error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
@@ -110,7 +110,7 @@ export class BluetoothApi extends AbstractApi {
         this.readBuffer.cancelRead(path);
 
         return this.api
-            .send('close_device', path)
+            .send('close_device', { id: path })
             .then(() => this.success(undefined))
             .catch(e =>
                 this.error({ error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),

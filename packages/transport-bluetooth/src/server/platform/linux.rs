@@ -57,11 +57,11 @@ impl PlatformDevice for LinuxDevice {
         // let res: Result<(), dbus::Error> = adapter_proxy.method_call("org.bluez.Device1", "CancelPairing", ()).await;
         // match res {
         //     Ok(()) => {
-        //         Ok(WsResponsePayload::Success(true))
+        //         Ok(WsResponsePayload::Success{ success: true })
         //     }
         //     Err(err) => {
         //         println!("Forget error {:?}", err);
-        //         Ok(WsResponsePayload::Success(false))
+        //         Ok(WsResponsePayload::Success{ success: false })
         //     }
         // }
 

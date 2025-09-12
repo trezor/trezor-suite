@@ -20,5 +20,5 @@ pub async fn connect_device(
 
     BluetoothDevice::connect(context).await?;
 
-    Ok(WsResponsePayload::Success(true))
+    Ok(WsResponsePayload::Success { success: true })
 }

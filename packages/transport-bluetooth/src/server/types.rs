@@ -35,11 +35,36 @@ pub struct ConnectDeviceParams {
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct DisconnectDeviceParams {
+    pub id: String,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct ForgetDeviceParams {
+    pub id: String,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct OpenDeviceParams {
+    pub id: String,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct CloseDeviceParams {
+    pub id: String,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct WriteParams {
     pub id: String,
     pub data: Vec<u8>,
     #[serde(rename = "withResponse")]
     pub with_response: bool,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct ReadParams {
+    pub id: String,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
@@ -51,12 +76,12 @@ pub enum WsRequestMethod {
     StopScan,
     SetState(SetStateParams),
     ConnectDevice(ConnectDeviceParams),
-    DisconnectDevice(String),
-    ForgetDevice(String),
-    OpenDevice(String),
-    CloseDevice(String),
+    DisconnectDevice(DisconnectDeviceParams),
+    ForgetDevice(ForgetDeviceParams),
+    OpenDevice(OpenDeviceParams),
+    CloseDevice(CloseDeviceParams),
     Write(WriteParams),
-    Read(String),
+    Read(ReadParams),
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -76,9 +101,15 @@ pub enum WsResponsePayload {
         adapter_info: String,
         adapter_version: u8,
     },
-    Peripherals(Vec<TrezorDevice>),
-    Success(bool),
-    Read(Vec<u8>),
+    Peripherals {
+        devices: Vec<TrezorDevice>,
+    },
+    Success {
+        success: bool,
+    },
+    Read {
+        data: Vec<u8>,
+    },
 }
 
 #[derive(serde::Serialize, Clone, Debug)]
@@ -140,7 +171,9 @@ pub enum NotificationEvent {
     DeviceRemoved {
         id: String,
     },
-    DeviceConnectionStatus(TrezorDevice),
+    DeviceConnectionStatus {
+        device: TrezorDevice,
+    },
     #[allow(dead_code)]
     DeviceSettingsUi, // only on linux
     DeviceRead {

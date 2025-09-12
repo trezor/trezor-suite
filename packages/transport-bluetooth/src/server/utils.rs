@@ -50,7 +50,7 @@ pub async fn dispatch_status(
 ) {
     device.set_connection_status(phase);
     manager
-        .dispatch_notification(NotificationEvent::DeviceConnectionStatus(device))
+        .dispatch_notification(NotificationEvent::DeviceConnectionStatus { device })
         .await
 }
 

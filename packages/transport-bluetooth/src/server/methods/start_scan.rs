@@ -38,7 +38,7 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
     if manager.is_scanning().await {
         info!("AdapterManager is already scanning");
         let devices = manager.get_devices().await;
-        return Ok(WsResponsePayload::Peripherals(devices));
+        return Ok(WsResponsePayload::Peripherals { devices });
     } else {
         manager.set_scanning(true).await;
     }
@@ -96,5 +96,5 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
     sleep(Duration::from_millis(200)).await;
 
     let devices = manager.get_devices().await;
-    Ok(WsResponsePayload::Peripherals(devices))
+    Ok(WsResponsePayload::Peripherals { devices })
 }

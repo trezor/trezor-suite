@@ -9,5 +9,5 @@ pub async fn set_state(manager: AdapterManager, params: SetStateParams) -> Metho
 
     manager.set_known_peripherals(params.devices).await;
 
-    Ok(WsResponsePayload::Success(true))
+    Ok(WsResponsePayload::Success { success: true })
 }

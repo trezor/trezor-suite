@@ -52,7 +52,7 @@ export interface NotificationEvent {
     device_discovered: { id: string; devices: BluetoothDevice[] };
     device_updated: { id: string; devices: BluetoothDevice[] };
     device_connected: { id: string; devices: BluetoothDevice[] };
-    device_connection_status: BluetoothDevice;
+    device_connection_status: { device: BluetoothDevice };
     device_disconnected: { id: string; devices: BluetoothDevice[] };
     device_read: { id: string; data: number[] };
     device_settings_ui: undefined; // dispatched by linux pairing process

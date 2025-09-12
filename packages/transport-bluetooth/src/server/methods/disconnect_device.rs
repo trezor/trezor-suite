@@ -4,16 +4,19 @@ use log::info;
 use crate::server::{
     adapter_manager::AdapterManager,
     device::DeviceConnectionStatus,
-    types::{AbortProcess, ChannelMessage, MethodResult, WsResponsePayload},
+    types::{
+        AbortProcess, ChannelMessage, DisconnectDeviceParams, MethodResult, WsResponsePayload,
+    },
     ConnectionBroadcast,
 };
 
 pub async fn disconnect_device(
     manager: AdapterManager,
     broadcast: ConnectionBroadcast,
-    id: String,
+    params: DisconnectDeviceParams,
 ) -> MethodResult {
-    info!("disconnect_device {:?}", id);
+    let id = params.id;
+    info!("disconnect_device {id}");
     // notify other threads: connect_device pairing, open_device read
     broadcast.send(ChannelMessage::Abort(AbortProcess::DeviceDisconnected(
         id.clone(),
@@ -33,7 +36,7 @@ pub async fn disconnect_device(
     let peripheral = manager.get_peripheral_or_die(&id).await?;
 
     match peripheral.disconnect().await {
-        Ok(_) => Ok(WsResponsePayload::Success(true)),
+        Ok(_) => Ok(WsResponsePayload::Success { success: true }),
         Err(err) => {
             info!("disconnect_device error: {err:?}");
             Err(err.into())
