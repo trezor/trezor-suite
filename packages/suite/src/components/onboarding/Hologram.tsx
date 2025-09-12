@@ -47,8 +47,10 @@ export const Hologram = () => {
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;
 
     const getDeviceModel = () => {
-        if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN)
+        if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN || isT1B1)
             return DEFAULT_FLAGSHIP_MODEL;
+
+        if (deviceModelInternal === DeviceModelInternal.T2B1) return DeviceModelInternal.T3B1;
 
         return deviceModelInternal;
     };
