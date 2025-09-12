@@ -91,7 +91,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                     devices: this.state.knownDevices,
                 });
 
-                const scanResult = await this.api.send('start_scan');
+                const { devices: scanResult } = await this.api.send('start_scan');
                 if (scanResult.length === 0) {
                     // wait. devices may not be returned immediately
                     await resolveAfter(1000);
@@ -116,7 +116,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         }
 
         try {
-            const devices = await this.api.send('start_scan');
+            const { devices } = await this.api.send('start_scan');
             this.isScanning = true;
             this.emit('device-list-update', this.filterConnectableDevices(devices));
         } catch (error) {
@@ -149,7 +149,8 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
         // this is intentionally not wrapped in try/catch
         // we want to remove event listeners before error is returned
-        const emitDeviceUpdate = (device: BluetoothDevice) => this.emit('device-update', device);
+        const emitDeviceUpdate = ({ device }: { device: BluetoothDevice }) =>
+            this.emit('device-update', device);
         this.api.on('device_connection_status', emitDeviceUpdate);
         const result = await this.api
             .send('connect_device', { id, timeout: 30000 })
@@ -163,7 +164,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     async disconnectDevice(id: string) {
         try {
             await this.connectApi();
-            await this.api.send('disconnect_device', id);
+            await this.api.send('disconnect_device', { id });
         } catch (error) {
             return this.result(error.message);
         }
@@ -174,7 +175,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     async forgetDevice(id: string) {
         try {
             await this.connectApi();
-            await this.api.send('forget_device', id);
+            await this.api.send('forget_device', { id });
         } catch (error) {
             return this.result(error.message);
         }

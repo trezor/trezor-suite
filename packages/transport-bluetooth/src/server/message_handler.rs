@@ -72,13 +72,19 @@ pub async fn handle_message(
         WsRequestMethod::ConnectDevice(params) => {
             methods::connect_device(manager, broadcast, params).await
         }
-        WsRequestMethod::DisconnectDevice(id) => {
-            methods::disconnect_device(manager, broadcast, id).await
+        WsRequestMethod::DisconnectDevice(params) => {
+            methods::disconnect_device(manager, broadcast, params).await
         }
-        WsRequestMethod::ForgetDevice(id) => methods::forget_device(manager, broadcast, id).await,
-        WsRequestMethod::OpenDevice(id) => methods::open_device(manager, broadcast, id).await,
-        WsRequestMethod::CloseDevice(id) => methods::close_device(manager, broadcast, id).await,
-        WsRequestMethod::Read(id) => methods::read(manager, id).await,
+        WsRequestMethod::ForgetDevice(params) => {
+            methods::forget_device(manager, broadcast, params).await
+        }
+        WsRequestMethod::OpenDevice(params) => {
+            methods::open_device(manager, broadcast, params).await
+        }
+        WsRequestMethod::CloseDevice(params) => {
+            methods::close_device(manager, broadcast, params).await
+        }
+        WsRequestMethod::Read(params) => methods::read(manager, params).await,
         WsRequestMethod::Write(params) => methods::write(manager, params).await,
     };
 

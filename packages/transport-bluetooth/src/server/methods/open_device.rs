@@ -8,7 +8,7 @@ use crate::server::{
     device::CHARACTERISTIC_TX,
     types::{
         AbortProcess, ChannelMessage, MethodError, MethodResult, NotificationEvent,
-        WsResponsePayload,
+        OpenDeviceParams, WsResponsePayload,
     },
     ConnectionBroadcast,
 };
@@ -16,8 +16,9 @@ use crate::server::{
 pub async fn open_device(
     manager: AdapterManager,
     broadcast: ConnectionBroadcast,
-    id: String,
+    params: OpenDeviceParams,
 ) -> MethodResult {
+    let id = params.id;
     info!("open_device {id}");
 
     manager.get_powered_adapter_or_die().await?;
@@ -88,5 +89,5 @@ pub async fn open_device(
         }
     });
 
-    Ok(WsResponsePayload::Success(true))
+    Ok(WsResponsePayload::Success { success: true })
 }

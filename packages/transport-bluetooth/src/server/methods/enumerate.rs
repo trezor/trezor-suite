@@ -10,5 +10,5 @@ pub async fn enumerate(manager: AdapterManager) -> MethodResult {
 
     let devices = manager.get_devices().await;
 
-    Ok(WsResponsePayload::Peripherals(devices))
+    Ok(WsResponsePayload::Peripherals { devices })
 }

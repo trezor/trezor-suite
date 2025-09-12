@@ -15,8 +15,8 @@ pub async fn stop_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) 
     if let Err(err) = adapter.stop_scan().await {
         info!("stop_scan/adapter.stop_scan error: {err}");
 
-        return Ok(WsResponsePayload::Success(false));
+        return Ok(WsResponsePayload::Success { success: false });
     }
 
-    Ok(WsResponsePayload::Success(true))
+    Ok(WsResponsePayload::Success { success: true })
 }

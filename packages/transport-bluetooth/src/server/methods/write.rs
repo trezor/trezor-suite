@@ -57,5 +57,5 @@ pub async fn write(manager: AdapterManager, params: WriteParams) -> MethodResult
 
     peripheral.write(rx, &vec, write_type).await?;
 
-    Ok(WsResponsePayload::Success(true))
+    Ok(WsResponsePayload::Success { success: true })
 }
