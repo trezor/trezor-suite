@@ -75,6 +75,23 @@ export const sendDexTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
+        let serializedTx = selectedQuote.dexTx.data;
+        if (account.networkType === 'solana' && serializedTx) {
+            // let's assume data obtained from trading api are always base64
+            // convert from base64 to hex (base16)
+            try {
+                const transactionBuffer = Buffer.from(serializedTx, 'base64');
+                serializedTx = transactionBuffer.toString('hex');
+            } catch (error) {
+                console.error(error);
+
+                return rejectWithValue({
+                    type: 'error',
+                    error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
+                });
+            }
+        }
+
         // after discussion with 1inch, adjust the gas limit by the factor of 1.25
         // swap can use different swap paths when mining tx than when estimating tx
         // the geth gas estimate may be too low
@@ -84,12 +101,12 @@ export const sendDexTransactionThunk = createThunk<
                 address: selectedQuote.dexTx.to,
                 amount: selectedQuote.dexTx.value,
                 destinationTag: selectedQuote.partnerPaymentExtraId,
-                transactionData: serializedTx,
                 recalculateCustomLimit: true,
                 ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
                 tradingFormState,
+                transactionData: serializedTx,
             }),
         );
 

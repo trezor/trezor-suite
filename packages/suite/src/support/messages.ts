@@ -374,6 +374,10 @@ export default defineMessages({
         defaultMessage: 'Unable to send transaction, missing data',
         id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
     },
+    TR_TRADING_INCORRECT_SERIALIZED_DATA: {
+        defaultMessage: 'Unable to send transaction, incorrect serialized data',
+        id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA',
+    },
     TR_TRADING_NO_RESPONSE: {
         defaultMessage: 'No response from the server {error}',
         id: 'TR_TRADING_NO_RESPONSE',

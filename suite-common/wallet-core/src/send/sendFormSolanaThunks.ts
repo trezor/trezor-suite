@@ -104,6 +104,16 @@ const calculate = (
         };
     }
 
+    if (output.type === 'payment-noaddress') {
+        return {
+            ...payloadData,
+            type: 'final',
+            inputs: [],
+            outputsPermutation: [0],
+            outputs: [],
+        };
+    }
+
     return payloadData;
 };
 
@@ -180,7 +190,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 computeUnitPrice: formState.feePerUnit || '1',
                 computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
             },
-            txData: formState.transactionData,
+            serializedTx: formState.transactionData,
         });
 
         if (!transaction.success) {
@@ -322,7 +332,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             coin: selectedAccount.symbol,
             identity: getAccountIdentity(selectedAccount),
-            txData: formState.transactionData,
+            serializedTx: formState.transactionData,
         });
 
         if (!transaction.success) {
