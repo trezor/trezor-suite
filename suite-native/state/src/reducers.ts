@@ -39,6 +39,7 @@ import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { tradingSlice } from '@suite-native/module-trading';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
+    backfillDeviceAuthenticityChecks,
     bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
@@ -195,7 +196,7 @@ export const prepareRootReducers = async () => {
         reducer: deviceReducer,
         persistedKeys: ['devices', 'isDeviceAutoEjectEnabled'],
         key: 'devices',
-        version: 2,
+        version: 3,
         transforms: [devicePersistTransform],
         migrations: {
             2: oldState => {
@@ -206,6 +207,12 @@ export const prepareRootReducers = async () => {
                 const migratedState = { ...oldState, devices: migratedDevices };
 
                 return migratedState;
+            },
+            3: oldState => {
+                if (!oldState.devices) return oldState;
+                const migratedDevices = backfillDeviceAuthenticityChecks(oldState.devices);
+
+                return { ...oldState, devices: migratedDevices };
             },
         },
     });
