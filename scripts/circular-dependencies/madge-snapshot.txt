@@ -195,7 +195,6 @@ packages/suite-desktop-api/src/bioAuthAPIFactory.ts > packages/suite-desktop-api
 packages/suite-desktop-api/src/ipc.ts > packages/suite-desktop-api/src/api.ts > packages/suite-desktop-api/src/bioAuthAPIFactory.ts
 packages/suite-desktop-api/src/ipc.ts > packages/suite-desktop-api/src/api.ts > packages/suite-desktop-api/src/bioAuthAPIFactory.ts > packages/suite-desktop-api/src/factory.ts
 packages/suite-desktop-core/e2e/support/analytics.ts > packages/suite-desktop-core/e2e/support/fixtures.ts
-packages/suite-desktop-core/playwright-report/trace/assets/codeMirrorModule-DwAiTpyC.js > packages/suite-desktop-core/playwright-report/trace/assets/defaultSettingsView-DkkRvn5X.js
 packages/suite-desktop-core/src/modules/auto-start.ts > packages/suite-desktop-core/src/modules/index.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/auto-updater.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/bluetooth.ts
