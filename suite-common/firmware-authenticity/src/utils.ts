@@ -1,3 +1,4 @@
+import { AcquiredDevice } from '@suite-common/suite-types';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import type { FilterPropertiesByType } from '@trezor/type-utils';
 
@@ -47,3 +48,27 @@ export const isHashCheckErrorWithNotification = (
 ): error is HashCheckErrorWithNotification =>
     // @ts-expect-error if this no longer gives error, then TODO hash check notifications must be implemented
     hashCheckErrorScenarios[error].shouldNotify === true;
+
+type AuthenticityChecks = AcquiredDevice['authenticityChecks'];
+
+export const filterInconclusiveAuthenticityChecks = (
+    checks: AuthenticityChecks,
+): AuthenticityChecks => {
+    let { firmwareRevision, firmwareHash } = checks;
+    if (
+        firmwareRevision &&
+        !firmwareRevision.success &&
+        revisionCheckErrorScenarios[firmwareRevision.error].isConclusive === false
+    ) {
+        firmwareRevision = null;
+    }
+    if (
+        firmwareHash &&
+        !firmwareHash.success &&
+        hashCheckErrorScenarios[firmwareHash.error].isConclusive === false
+    ) {
+        firmwareHash = null;
+    }
+
+    return { firmwareRevision, firmwareHash };
+};
