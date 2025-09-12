@@ -3,15 +3,15 @@ import { FC, useRef } from 'react';
 import { Menu, Popover, PopoverRef } from '@trezor/components';
 import { RequiredKey } from '@trezor/type-utils';
 
-import { ExtendedProps } from './definitions';
+import { PrimitiveProps } from './definitions';
 
-type Props = RequiredKey<ExtendedProps, 'dropdownOptions'>;
+type Props = RequiredKey<PrimitiveProps, 'dropdownOptions'>;
 
 /**
  * Returns component wrapped into Dropdown.
  * ONLY for the MetadataLabeling component.
  */
-export const withDropdown = (WrappedComponent: FC<ExtendedProps>) => (props: Props) => {
+export const withDropdown = (WrappedComponent: FC<PrimitiveProps>) => (props: Props) => {
     const popoverRef = useRef<PopoverRef>(null);
 
     return (

@@ -56,6 +56,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
             <Table.Cell>
                 <Text typographyStyle="hint" data-testid={`@wallet/receive/used-address/${index}`}>
                     <MetadataLabeling
+                        variant="text"
                         deviceStaticSessionId={account.deviceState}
                         payload={{
                             ...metadataPayload,

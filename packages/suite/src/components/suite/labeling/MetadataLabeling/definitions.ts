@@ -6,7 +6,9 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
-export interface Props {
+export type LabelingVariant = 'button' | 'text';
+
+interface BaseProps {
     accountType?: AccountType;
     networkType?: NetworkType;
     path?: Bip43Path;
@@ -24,9 +26,18 @@ export interface Props {
     deviceStaticSessionId: StaticSessionId;
 }
 
-export interface ExtendedProps extends Props {
+export interface MetadataProps extends BaseProps {
+    variant: LabelingVariant;
+}
+
+export interface PrimitiveProps extends BaseProps {
     editActive: boolean;
     onSubmit: (value: string | undefined) => void;
+    onClick?: () => void | undefined;
     onBlur: () => void;
     'data-testid': string;
+}
+
+export interface LabelContentProps extends PrimitiveProps {
+    variant: LabelingVariant;
 }

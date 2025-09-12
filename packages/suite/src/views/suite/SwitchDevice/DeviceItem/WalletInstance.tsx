@@ -162,6 +162,7 @@ export const WalletInstance = ({
                                     {instance.state?.staticSessionId ? (
                                         <Column>
                                             <MetadataLabeling
+                                                variant="text"
                                                 deviceStaticSessionId={
                                                     instance.state.staticSessionId
                                                 }

@@ -456,6 +456,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 metadataEnabled && broadcastEnabled ? (
                     <Box maxWidth={200}>
                         <MetadataLabeling
+                            variant="button"
                             deviceStaticSessionId={device.state.staticSessionId}
                             defaultVisibleValue=""
                             payload={{

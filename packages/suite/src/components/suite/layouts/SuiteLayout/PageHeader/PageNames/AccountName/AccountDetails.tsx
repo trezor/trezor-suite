@@ -131,6 +131,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
             <div>
                 <AccountHeading $isBalanceShown={isBalanceShown}>
                     <MetadataLabeling
+                        variant="text"
                         accountType={accountType}
                         networkType={selectedAccount.networkType}
                         path={path}

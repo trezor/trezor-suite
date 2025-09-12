@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
+import { selectAddressLabels } from '@suite-common/local-first-storage';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -28,7 +29,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { AccountLabel, Address, Translation } from 'src/components/suite';
+import { AccountLabel, Address, MetadataLabeling, Translation } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -70,6 +71,11 @@ export const ConfirmValueModal = ({
     const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
+
+    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const localFirstAddressLabels = useSelector(state =>
+        selectAddressLabels({ state, deviceStaticSessionId: account!.deviceState }),
+    );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
     const isCancelable = isActionAbortable || isConfirmed;
@@ -176,7 +182,7 @@ export const ConfirmValueModal = ({
                             alignItems="stretch"
                             data-testid="@modal/output-address"
                         >
-                            <Box aspectRatio="1" flex="1 0 auto" minWidth={120}>
+                            <Box aspectRatio="1" width={180} height={180}>
                                 <QrCode value={value} />
                             </Box>
                             <Column gap={spacings.lg}>
@@ -185,6 +191,19 @@ export const ConfirmValueModal = ({
                                 ) : (
                                     outputValue
                                 )}
+                                <MetadataLabeling
+                                    variant="button"
+                                    deviceStaticSessionId={account!.deviceState}
+                                    payload={{
+                                        type: 'addressLabel',
+                                        entityKey: value,
+                                        defaultValue: value,
+                                        value:
+                                            localFirstAddressLabels.find(it => it.address === value)
+                                                ?.label ?? addressLabels[value],
+                                    }}
+                                    visible
+                                />
                                 {isCopyButtonVisible && (
                                     <Button
                                         onClick={copy}
