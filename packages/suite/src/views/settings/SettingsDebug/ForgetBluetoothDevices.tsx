@@ -1,9 +1,8 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
 export const ForgetAllDevicesButton = () => {
@@ -22,12 +21,16 @@ export const ForgetAllDevicesButton = () => {
                 description="Forgets devices persisted in Suite. In order to fully remove, go to system settings and manually remove the device there."
             />
             <ActionColumn>
-                <Button onClick={handleForgetButtonClick} size="small" variant="destructive">
+                <ActionButton onClick={handleForgetButtonClick} size="small" variant="destructive">
                     Forget in Suite
-                </Button>
-                <Button onClick={handleOpenSettingsButtonClick} size="small" variant="tertiary">
+                </ActionButton>
+                <ActionButton
+                    onClick={handleOpenSettingsButtonClick}
+                    size="small"
+                    variant="tertiary"
+                >
                     Open system settings
-                </Button>
+                </ActionButton>
             </ActionColumn>
         </SectionItem>
     );
