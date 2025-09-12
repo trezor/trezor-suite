@@ -574,6 +574,8 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
         unit_color: device.features.unit_color,
         label: device.features.label,
         initialized: device.features.initialized,
+        thp: device.thp,
+        bluetoothProps: device.bluetoothProps,
         lastConnectedBy: device.bluetoothProps ? 'bluetooth' : 'usb',
         firmwareVersion: getFirmwareVersionArray(device),
     };
