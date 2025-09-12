@@ -3,8 +3,10 @@ use napi::threadsafe_function::{ThreadsafeFunction, ThreadsafeFunctionCallMode};
 use napi_derive::napi;
 
 use crate::server::{
-    adapter_manager::AdapterManager, connection_broadcast::ConnectionBroadcast,
-    methods::connect_device as connect_device_method, types::ConnectDeviceParams,
+    adapter_manager::AdapterManager,
+    connection_broadcast::ConnectionBroadcast,
+    methods::connect_device as connect_device_method,
+    types::{ChannelMessage, ConnectDeviceParams},
 };
 
 use btleplug::api::Central;
@@ -30,6 +32,23 @@ pub async fn connect_device(
         Ok(broadcast) => broadcast,
         Err(e) => Err(error(e.to_string()))?,
     };
+
+    // spawn thread and listen for Notification messages
+    let mut receiver = broadcast.subscribe();
+    manager.add_listener(broadcast.clone()).await;
+    let channel_message_listener = tokio::spawn(async move {
+        while let Ok(ChannelMessage::Notification(event)) = receiver.recv().await {
+            let json = match serde_json::to_string(&event) {
+                Ok(json) => json,
+                Err(err) => {
+                    println!("Error serialize notification {err:?}");
+                    return;
+                }
+            };
+            callback.call(Ok(json), ThreadsafeFunctionCallMode::NonBlocking);
+        }
+    });
+
     let adapter = match manager.get_adapter().await {
         Ok(Some(adapter)) => adapter,
         Ok(None) => Err(error("AdapterNotFound".to_string()))?,

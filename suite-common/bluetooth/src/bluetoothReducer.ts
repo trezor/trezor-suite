@@ -15,6 +15,7 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     // This will be persisted. Those are devices we believed that are paired
     // (because we already successfully paired them in the Suite) in the Operating System
     knownDevices: T[];
+    ignoredDevices: string[];
 };
 
 export const prepareInitialState = <T extends BluetoothDeviceCommon>(): BluetoothState<T> => ({
@@ -22,6 +23,7 @@ export const prepareInitialState = <T extends BluetoothDeviceCommon>(): Bluetoot
     scanStatus: 'idle',
     nearbyDevices: null,
     knownDevices: [] as T[],
+    ignoredDevices: [],
 });
 
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
@@ -42,7 +44,9 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                         // won't be possible to connect to them ever again. User has to start pairing again,
                         // which would produce a device with new id.
                         .filter(
-                            nearbyDevice => nearbyDevice.connectionStatus?.type !== 'pairing-error',
+                            nearbyDevice =>
+                                nearbyDevice.connectionStatus?.type !== 'pairing-error' &&
+                                !state.ignoredDevices.includes(nearbyDevice.id),
                         ) as Draft<T>[];
                 },
             )
@@ -53,6 +57,12 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                         state.nearbyDevices = state.nearbyDevices.map(it =>
                             it.id === deviceId ? { ...it, connectionStatus } : it,
                         ) as Draft<T>[];
+                    }
+
+                    // pairing error can be received from NAPI connectDevice
+                    // in that case the rust server doesnt know about it
+                    if (connectionStatus.type === 'pairing-error') {
+                        state.ignoredDevices.push(deviceId);
                     }
 
                     state.knownDevices = state.knownDevices.map(it =>

@@ -89,6 +89,7 @@ export const init: ModuleInit = () => {
                         // special case for macos
                         const result = await bluetoothProcess?.connectAndSubscribeInMainThread(
                             params[0],
+                            device => api?.emit('device-update', device),
                         );
                         if (result && !result.success) {
                             return result;
