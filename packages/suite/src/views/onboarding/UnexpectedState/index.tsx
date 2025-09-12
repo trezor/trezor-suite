@@ -1,7 +1,5 @@
 import { JSX } from 'react';
 
-import styled from 'styled-components';
-
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { PrerequisitesGuide } from 'src/components/suite';
@@ -10,10 +8,6 @@ import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferent } from './DeviceDifferent';
 import { ShowPinMatrix } from './ShowPinMatrix';
-
-const UnexpectedContainer = styled.div`
-    margin-top: 100px;
-`;
 
 interface UnexpectedStateProps {
     children: JSX.Element;
@@ -39,20 +33,12 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     // there may be specif onboarding prerequisites
     if (activeStep?.prerequisites?.includes('device-different') && isDeviceDifferent) {
         // in case we can 100% detect that user reconnected different device than he had previously connected
-        return (
-            <UnexpectedContainer>
-                <DeviceDifferent />
-            </UnexpectedContainer>
-        );
+        return <DeviceDifferent />;
     }
 
     // otherwise handle common prerequisite which are determined and passed as prop from Preloader component
     if (prerequisite && activeStep?.prerequisites?.includes(prerequisite)) {
-        return (
-            <UnexpectedContainer>
-                <PrerequisitesGuide />
-            </UnexpectedContainer>
-        );
+        return <PrerequisitesGuide />;
     }
 
     return children;

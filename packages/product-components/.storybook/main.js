@@ -49,6 +49,11 @@ module.exports = {
             ],
         });
 
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            stream: false,
+        };
+
         // NOTE: remove the previous loaders from handling the svgs
         const imageRule = config.module.rules.find(rule => rule?.['test']?.test('.svg'));
         if (imageRule) {

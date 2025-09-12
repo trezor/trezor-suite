@@ -8,7 +8,7 @@ type CableConnectionAnimationProps = {
 export const CableConnectionAnimation = ({
     isBluetoothMode: isBluetooth,
 }: CableConnectionAnimationProps) => (
-    <Card paddingType="none">
+    <Card paddingType="none" height={490}>
         <DeviceAnimation type={isBluetooth ? 'CONNECT_BT' : 'CONNECT_CABLE'} />
     </Card>
 );

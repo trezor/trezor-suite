@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { ConnectedDeviceStatus } from '@suite-common/suite-utils';
+import { ConnectedDeviceStatus, getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Box,
@@ -162,8 +162,9 @@ const ConnectImage = ({
 }: Pick<ConnectDevicePromptProps, 'connected' | 'showWarningIcon'>) => {
     const theme = useTheme();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const selectedDeviceModelInternal =
-        selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
+    const selectedDeviceModelInternal = selectedDevice
+        ? getDeviceInternalModel(selectedDevice)
+        : DEFAULT_FLAGSHIP_MODEL;
 
     const getIconData = (): { variant: IconVariant; icon: React.ReactNode } | undefined => {
         const commonProps = {
