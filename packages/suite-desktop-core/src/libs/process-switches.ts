@@ -18,6 +18,7 @@ export type SuiteSwitch =
     | 'log-no-print'
     | 'remove-user-data-on-start'
     | 'expose-connect-ws'
+    | 'expose-store'
     | 'state'; // very special handling, see `./app-utils.ts`
 
 /**
