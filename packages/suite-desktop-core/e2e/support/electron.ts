@@ -13,10 +13,12 @@ const disableFirmwareRevisionChecksPatch =
     '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
 const showDebugMenuStatePatch = '--state.suite.settings.debug.showDebugMenu=true';
 const disableDisconnectPromptPatch = '--state.suite.flags.hasSeenDisconnectTooltip=true';
+const showConnectLogsArgument = '--state.suite.settings.debug.showConnectLogs=true';
 // #15670 Bug in desktop app that loglevel is ignored
 const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
 const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error GetVSyncParametersIfAvailable()
 const removeUserDataArgument = '--remove-user-data-on-start';
+const exposeStoreArgument = '--expose-store';
 
 export type LaunchSuiteParams = {
     keepUserData?: boolean;
@@ -46,6 +48,7 @@ const formatErrorLogMessage = (data: string) => {
 const buildArgs = (params: LaunchSuiteParams) => {
     const args = [
         path.join(appDir, './dist/app.js'),
+        exposeStoreArgument,
         `--width=${params.viewport.width}`,
         `--height=${params.viewport.height}`,
         logLevelArgument,
@@ -53,7 +56,7 @@ const buildArgs = (params: LaunchSuiteParams) => {
         disableHashChecksPatch,
         showDebugMenuStatePatch,
         disableDisconnectPromptPatch,
-        '--state.suite.settings.debug.showConnectLogs=true',
+        showConnectLogsArgument,
     ];
 
     if (params.bridgeDaemon) {
