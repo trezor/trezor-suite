@@ -1,9 +1,6 @@
-import { useSelector } from 'react-redux';
-
 import * as Haptics from 'expo-haptics';
 
 import { BackupType } from '@suite-common/suite-types';
-import { selectIsDeviceInitialized } from '@suite-common/wallet-core';
 import {
     Box,
     Button,
@@ -57,7 +54,6 @@ export const WalletBackupTutorialStep5 = ({
     selectedType,
     onSelectType,
 }: WalletBackupTutorialStep5Props) => {
-    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const { applyStyle } = useNativeStyles();
@@ -122,17 +118,15 @@ export const WalletBackupTutorialStep5 = ({
                         />
                     )}
                 </Card>
-                {!isDeviceInitialized && (
-                    <Button
-                        viewLeft={<Icon name="caretDown" size="medium" />}
-                        colorScheme="tertiaryElevation0"
-                        size="small"
-                        style={applyStyle(moreOptionsStyle)}
-                        onPress={openBackupSelection}
-                    >
-                        <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step5.moreOptionsButton" />
-                    </Button>
-                )}
+                <Button
+                    viewLeft={<Icon name="caretDown" size="medium" />}
+                    colorScheme="tertiaryElevation0"
+                    size="small"
+                    style={applyStyle(moreOptionsStyle)}
+                    onPress={openBackupSelection}
+                >
+                    <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step5.moreOptionsButton" />
+                </Button>
             </Box>
             <WalletBackupSheet
                 ref={bottomSheetRef}
