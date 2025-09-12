@@ -2,7 +2,7 @@ import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
-    selectIsMevProtectionFeatureEnabled,
+    selectIsMevProtectionSettingsVisible,
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 
@@ -68,7 +68,7 @@ export const SettingsGeneral = () => {
 
     const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
-    const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
+    const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -120,7 +120,7 @@ export const SettingsGeneral = () => {
                 {isDesktop() && !isLinux() && <BioAuthSettings />}
             </SettingsSection>
 
-            {isMevProtectionFeatureEnabled && (
+            {isMevProtectionSettingsVisible && (
                 <SettingsSection title={<Translation id="TR_SECURITY" />} icon="shield">
                     <MevProtection />
                 </SettingsSection>
