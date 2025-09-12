@@ -18,8 +18,6 @@ type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
 type FullPreloadedState = Parameters<RootReducerShape>[0];
 export type PreloadedState = DeepPartial<FullPreloadedState> | undefined;
 
-const ENABLE_REDUX_LOGGER = false;
-
 const middlewares: Middleware[] = [
     messageSystemMiddleware,
     blockchainMiddleware,
@@ -31,6 +29,8 @@ const middlewares: Middleware[] = [
 ];
 
 const enhancers: Array<StoreEnhancer<any, any>> = [];
+
+const ENABLE_REDUX_LOGGER = false;
 
 if (__DEV__) {
     enhancers.push(devToolsEnhancer({ maxAge: 150 })!);

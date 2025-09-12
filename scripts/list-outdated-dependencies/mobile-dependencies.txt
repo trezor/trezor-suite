@@ -5,6 +5,7 @@
 @gorhom/bottom-sheet
 @jest/reporters
 @mobily/ts-belt
+@types/react-native-get-random-values
 @react-native-async-storage/async-storage
 @react-native-community/cli
 @react-native-community/netinfo
@@ -15,6 +16,11 @@
 @react-navigation/native
 @react-navigation/native-stack
 @react-navigation/routers
+@rozenite/metro
+@rozenite/mmkv-plugin
+@rozenite/network-activity-plugin
+@rozenite/performance-monitor-plugin
+@rozenite/redux-devtools-plugin
 @sentry/react-native
 @shopify/flash-list
 @shopify/react-native-skia
@@ -79,9 +85,11 @@ react-native
 react-native-ble-plx
 react-native-edge-to-edge
 react-native-gesture-handler
+react-native-get-random-values
 react-native-keyboard-controller
 react-native-launch-arguments
 react-native-mmkv
+react-native-performance
 react-native-permissions
 react-native-quick-crypto
 react-native-reanimated
