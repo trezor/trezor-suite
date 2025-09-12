@@ -1,33 +1,9 @@
 import { connectInitThunk } from '@suite-common/connect-init';
-import {
-    hashCheckErrorScenarios,
-    revisionCheckErrorScenarios,
-} from '@suite-common/firmware-authenticity';
+import { filterInconclusiveAuthenticityChecks } from '@suite-common/firmware-authenticity';
 import { DeviceWithEmptyPath } from '@suite-common/suite-types';
 
 import { AcquiredDevice } from 'src/types/suite';
 import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
-
-type AuthenticityChecks = AcquiredDevice['authenticityChecks'];
-const filterInconclusiveAuthenticityChecks = (checks: AuthenticityChecks): AuthenticityChecks => {
-    let { firmwareRevision, firmwareHash } = checks;
-    if (
-        firmwareRevision &&
-        !firmwareRevision.success &&
-        revisionCheckErrorScenarios[firmwareRevision.error].isConclusive === false
-    ) {
-        firmwareRevision = null;
-    }
-    if (
-        firmwareHash &&
-        !firmwareHash.success &&
-        hashCheckErrorScenarios[firmwareHash.error].isConclusive === false
-    ) {
-        firmwareHash = null;
-    }
-
-    return { firmwareRevision, firmwareHash };
-};
 
 /**
  * Strip fields from Device
