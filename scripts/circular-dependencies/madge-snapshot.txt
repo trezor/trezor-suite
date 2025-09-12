@@ -1,3 +1,4 @@
+
 1) packages/blockchain-link-types/src/blockbook.ts > packages/blockchain-link-types/src/common.ts
 2) packages/blockchain-link-types/src/blockbook.ts > packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/index.ts
 3) packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/index.ts
@@ -221,152 +222,153 @@
 221) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/bluetooth/src/index.ts > suite-common/bluetooth/src/bluetoothReducer.ts
 222) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk.ts
 223) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/finishThpAutoconnectThunk.ts
-224) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/startThpAutoconnectThunk.ts
-225) suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/wallet-core/src/discovery/discoveryThunks.ts
-226) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/send/sendFormThunks.ts
-227) suite-common/wallet-core/src/stake/stakeThunks.ts > suite-common/wallet-core/src/stake/stakeSelectors.ts > suite-common/wallet-core/src/stake/stakeReducer.ts
-228) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts
-229) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts
-230) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts > suite-common/trading/src/utils/buy/buyUtils.ts
-231) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/createPaymentRequestsThunk.ts > suite-common/trading/src/thunks/common/getNonce.ts
-232) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/createPaymentRequestsThunk.ts > suite-common/trading/src/thunks/common/getRefundAddress.ts
-233) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/createPaymentRequestsThunk.ts
-234) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts
-235) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts
-236) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts
-237) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/recomposeAndSignTxThunk.ts
-238) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/recomposeAndSignTxThunk.ts
-239) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/verifyAddressThunk.ts
-240) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/watchTradeThunk.ts
-241) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/watchTradeThunk.ts
-242) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/confirmExchangeTradeThunk.ts
-243) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/handleExchangeRequestThunk.ts
-244) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/handleExchangeRequestThunk.ts > suite-common/trading/src/utils/exchange/exchangeUtils.ts
-245) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/selectExchangeQuoteThunk.ts
-246) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
-247) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
-248) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
-249) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
-250) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
-251) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
-252) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/signDataAndConfirmThunk.ts
-253) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/signDataAndConfirmThunk.ts
-254) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/confirmSellTradeThunk.ts
-255) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/confirmSellTradeThunk.ts > suite-common/trading/src/thunks/sell/handleSellTradeThunk.ts
-256) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts
-257) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts
-258) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts > suite-common/trading/src/utils/sell/sellUtils.ts
-259) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/loadSellInfoThunk.ts
-260) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/selectSellQuoteThunk.ts
-261) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
-262) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
-263) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
-264) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts
-265) packages/suite-desktop-core/e2e/support/analytics.ts > packages/suite-desktop-core/e2e/support/fixtures.ts
-266) suite-common/feedback/src/constants.ts > suite-common/feedback/src/types.ts
-267) packages/suite-desktop-core/playwright-report/trace/assets/codeMirrorModule-DwAiTpyC.js > packages/suite-desktop-core/playwright-report/trace/assets/defaultSettingsView-DkkRvn5X.js
-268) packages/suite-desktop-core/src/modules/auto-start.ts > packages/suite-desktop-core/src/modules/index.ts
-269) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/auto-updater.ts
-270) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/bluetooth.ts
-271) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/bridge.ts
-272) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/coinjoin.ts
-273) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/crash-recover.ts
-274) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/csp.ts
-275) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/custom-protocols.ts
-276) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/dev-tools.ts
-277) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
-278) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts
-279) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/index.ts
-280) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/process.ts
-281) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/external-links.ts
-282) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/file-protocol.ts
-283) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/firmware.ts
-284) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/http-receiver.ts
-285) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/menu.ts
-286) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/metadata.ts
-287) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/power-monitor.ts
-288) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/request-filter.ts
-289) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/request-interceptor.ts
-290) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/shortcuts.ts
-291) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/store.ts
-292) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/system-settings.ts
-293) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/theme.ts
-294) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/tray.ts
-295) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/trezor-connect.ts
-296) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/user-data.ts
-297) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/window-controls.ts
-298) suite-common/local-first-storage/src/labeling/labelingReducer.ts > suite-common/local-first-storage/src/labeling/labelingSelectors.ts
-299) suite-common/firmware/src/index.ts > suite-common/firmware/src/hooks/useFirmwareInstallation.ts
-300) packages/suite/src/actions/suite/metadataActions.ts > packages/suite/src/actions/suite/metadataProviderActions.ts
-301) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/addressConfirmation.ts
-302) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/bitcoinSignTransaction.ts
-303) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/ethereumSignTransaction.ts
-304) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/solanaSignTransaction.ts
-305) packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx
-306) packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsItemComponent.tsx
-307) packages/suite/src/components/wallet/WalletLayout/AccountsMenu/AccountItem/AccountItem.tsx > packages/suite/src/components/wallet/WalletLayout/AccountsMenu/AccountItem/AccountRow.tsx
-308) packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/Preloader/Preloader.tsx > packages/suite/src/components/suite/SecurityCheck/DeviceCompromised.tsx > packages/suite/src/components/suite/layouts/WelcomeLayout/WelcomeLayout.tsx > packages/suite/src/components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher.tsx > packages/suite/src/components/suite/layouts/SuiteLayout/index.ts > packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader.tsx > packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendReceive.tsx > packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal.tsx > packages/suite/src/components/suite/modals/index.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseWalletExistsFlow.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/EnterPassphrase.tsx > packages/suite/src/views/suite/SwitchDevice/CardWithDevice.tsx > packages/suite/src/views/suite/SwitchDevice/NeedsAttentionBanner.tsx
-309) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx
-310) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx
-311) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalContent.tsx
-312) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalExchange.tsx
-313) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalSell.tsx
-314) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupStep2to4.tsx
-315) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/CollapsibleIOSection.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IOGroup.tsx
-316) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/TokenSpecificBalanceDetailsRow.tsx
-317) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal.tsx
-318) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/DeviceContextModal.tsx
-319) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx
-320) packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/Preloader/Preloader.tsx > packages/suite/src/views/start/AnalyticsConsentScreen.tsx
-321) packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipAccount.tsx
-322) packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipDashboard.tsx
-323) packages/suite/src/components/wallet/Fees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CustomFee/CustomFeeEthereum.tsx
-324) packages/suite/src/components/wallet/Fees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CustomFee/CustomFeeMisc.tsx
-325) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx
-326) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/BitcoinFeeCards.tsx
-327) packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/BitcoinFeeCards.tsx
-328) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/EthereumFeeCards.tsx
-329) packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/EthereumFeeCards.tsx
-330) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/MiscFeeCards.tsx
-331) packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/MiscFeeCards.tsx
-332) packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTargetsList.tsx > packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTarget.tsx
-333) packages/suite/src/utils/wallet/graph/utils.ts > packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
-334) packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
-335) packages/suite/src/views/dashboard/AssetsView/AssetTable/AssetTable.tsx > packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx
-336) packages/suite/src/views/onboarding/steps/SelectBackupType/SelectBackupType.tsx > packages/suite/src/views/onboarding/steps/SelectBackupType/FloatingSelections.tsx
-337) suite-common/graph/src/graphDataFetching.ts > suite-common/graph/src/graphUtils.ts
-338) suite-native/atoms/src/index.ts > suite-native/atoms/src/Accordion/AccordionList.tsx > suite-native/atoms/src/Accordion/AccordionItem.tsx > suite-native/icons/src/index.ts > suite-native/icons/src/CryptoIconWithNetwork.tsx
-339) suite-native/atoms/src/index.ts > suite-native/atoms/src/AnimatedDoubleView/AnimatedDoubleInput.tsx > suite-native/helpers/src/index.ts > suite-native/helpers/src/hooks/useCopyToClipboard.ts > suite-native/toasts/src/index.ts > suite-native/toasts/src/components/ToastRenderer.tsx
-340) suite-native/atoms/src/index.ts > suite-native/atoms/src/AnimatedDoubleView/AnimatedDoubleInput.tsx > suite-native/helpers/src/index.ts > suite-native/helpers/src/hooks/useCopyToClipboard.ts > suite-native/toasts/src/index.ts > suite-native/toasts/src/components/ToastRenderer.tsx > suite-native/toasts/src/components/Toast.tsx
-341) suite-native/atoms/src/index.ts > suite-native/atoms/src/CardStepper/CardStepper.tsx > suite-native/atoms/src/CardStepper/CardStepperItem.tsx
-342) suite-native/atoms/src/index.ts > suite-native/atoms/src/CircularSpinner.tsx
-343) suite-native/atoms/src/index.ts > suite-native/atoms/src/HoldToConfirmButton.tsx
-344) suite-native/atoms/src/index.ts > suite-native/atoms/src/Input/SearchInputWithCancel.tsx
-345) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeader.tsx
-346) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeader.tsx > suite-native/navigation/src/components/GoBackIcon.tsx
-347) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeaderContent.tsx
-348) suite-native/navigation/src/components/ScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeaderContent.tsx
-349) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/LoadingSuccessScreen.tsx
-350) suite-native/navigation/src/index.ts > suite-native/navigation/src/components/LoadingSuccessScreen.tsx
-351) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/Screen.tsx
-352) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/Screen.tsx > suite-native/navigation/src/components/DynamicHeader/DynamicScrollableScreenContentHeader.tsx
-353) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/Screen.tsx > suite-native/navigation/src/components/ScreenContentWrapper.tsx > suite-native/navigation/src/useScrollDivider.tsx
-354) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/TabBar.tsx
-355) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/TabBar.tsx > suite-native/navigation/src/components/TabBarItem.tsx
-356) suite-native/navigation/src/index.ts > suite-native/navigation/src/useNavigateToInitialScreen.ts
-357) suite-native/atoms/src/index.ts > suite-native/atoms/src/SwipeableWalkthrough/SwipeableWalkthroughCloseButton.tsx
-358) suite-native/atoms/src/index.ts > suite-native/atoms/src/TitledSection.tsx
-359) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/ConnectButton.tsx
-360) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/DeviceList.tsx > suite-native/device-manager/src/components/DeviceItem/DeviceItem.tsx > suite-native/device-manager/src/components/DeviceItem/DeviceItemContent.tsx
-361) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/DeviceList.tsx > suite-native/device-manager/src/components/DeviceManagerModal.tsx
-362) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/WalletList.tsx > suite-native/device-manager/src/components/WalletItem.tsx
-363) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/WalletList.tsx
-364) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx
-365) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceSwitch.tsx > suite-native/device-manager/src/components/DeviceSwitchContent.tsx
-366) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device/src/selectors.ts > suite-native/firmware/src/index.ts > suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx
-367) suite-native/device/src/components/ConfirmOnTrezor/ConfirmOnTrezorWrapper.tsx > suite-native/device/src/components/ConfirmOnTrezor/ConfirmOnTrezorContent.tsx
-368) suite-native/device/src/index.ts > suite-native/device/src/components/ConnectAndUnlockDeviceScreenContent.tsx
-369) suite-native/device/src/index.ts > suite-native/device/src/components/DeviceDangerBanner.tsx
-370) suite-native/device/src/index.ts > suite-native/device/src/hooks/useRenderDeviceDangerBanner.ts
-371) suite-native/react-native-graph/src/LineGraphProps.ts > suite-native/react-native-graph/src/CreateGraphPath.ts
+224) suite-common/thp/src/index.ts > suite-common/thp/src/removeThpAutoconnectThunk.ts
+225) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/removeThpAutoconnectThunk.ts
+226) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/startThpAutoconnectThunk.ts
+227) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/send/sendFormThunks.ts
+228) suite-common/wallet-core/src/stake/stakeThunks.ts > suite-common/wallet-core/src/stake/stakeSelectors.ts > suite-common/wallet-core/src/stake/stakeReducer.ts
+229) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts
+230) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts
+231) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts > suite-common/trading/src/utils/buy/buyUtils.ts
+232) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/createPaymentRequestsThunk.ts > suite-common/trading/src/thunks/common/getNonce.ts
+233) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/createPaymentRequestsThunk.ts > suite-common/trading/src/thunks/common/getRefundAddress.ts
+234) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/createPaymentRequestsThunk.ts
+235) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts
+236) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts
+237) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts
+238) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/recomposeAndSignTxThunk.ts
+239) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/recomposeAndSignTxThunk.ts
+240) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/verifyAddressThunk.ts
+241) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/watchTradeThunk.ts
+242) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/common/watchTradeThunk.ts
+243) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/confirmExchangeTradeThunk.ts
+244) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/handleExchangeRequestThunk.ts
+245) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/handleExchangeRequestThunk.ts > suite-common/trading/src/utils/exchange/exchangeUtils.ts
+246) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/selectExchangeQuoteThunk.ts
+247) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
+248) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
+249) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
+250) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
+251) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
+252) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
+253) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/signDataAndConfirmThunk.ts
+254) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/exchange/signDataAndConfirmThunk.ts
+255) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/confirmSellTradeThunk.ts
+256) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/confirmSellTradeThunk.ts > suite-common/trading/src/thunks/sell/handleSellTradeThunk.ts
+257) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts
+258) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts
+259) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts > suite-common/trading/src/utils/sell/sellUtils.ts
+260) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/loadSellInfoThunk.ts
+261) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/selectSellQuoteThunk.ts
+262) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
+263) suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
+264) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
+265) suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts
+266) packages/suite-desktop-core/e2e/support/analytics.ts > packages/suite-desktop-core/e2e/support/fixtures.ts
+267) suite-common/feedback/src/constants.ts > suite-common/feedback/src/types.ts
+268) packages/suite-desktop-core/playwright-report/trace/assets/codeMirrorModule-DwAiTpyC.js > packages/suite-desktop-core/playwright-report/trace/assets/defaultSettingsView-DkkRvn5X.js
+269) packages/suite-desktop-core/src/modules/auto-start.ts > packages/suite-desktop-core/src/modules/index.ts
+270) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/auto-updater.ts
+271) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/bluetooth.ts
+272) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/bridge.ts
+273) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/coinjoin.ts
+274) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/crash-recover.ts
+275) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/csp.ts
+276) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/custom-protocols.ts
+277) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/dev-tools.ts
+278) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
+279) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts
+280) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/index.ts
+281) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/process.ts
+282) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/external-links.ts
+283) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/file-protocol.ts
+284) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/firmware.ts
+285) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/http-receiver.ts
+286) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/menu.ts
+287) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/metadata.ts
+288) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/power-monitor.ts
+289) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/request-filter.ts
+290) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/request-interceptor.ts
+291) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/shortcuts.ts
+292) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/store.ts
+293) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/system-settings.ts
+294) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/theme.ts
+295) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/tray.ts
+296) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/trezor-connect.ts
+297) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/user-data.ts
+298) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/window-controls.ts
+299) suite-common/local-first-storage/src/labeling/labelingReducer.ts > suite-common/local-first-storage/src/labeling/labelingSelectors.ts
+300) suite-common/firmware/src/index.ts > suite-common/firmware/src/hooks/useFirmwareInstallation.ts
+301) packages/suite/src/actions/suite/metadataActions.ts > packages/suite/src/actions/suite/metadataProviderActions.ts
+302) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/addressConfirmation.ts
+303) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/bitcoinSignTransaction.ts
+304) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/ethereumSignTransaction.ts
+305) suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/solanaSignTransaction.ts
+306) packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx
+307) packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsItemComponent.tsx
+308) packages/suite/src/components/wallet/WalletLayout/AccountsMenu/AccountItem/AccountItem.tsx > packages/suite/src/components/wallet/WalletLayout/AccountsMenu/AccountItem/AccountRow.tsx
+309) packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/Preloader/Preloader.tsx > packages/suite/src/components/suite/SecurityCheck/DeviceCompromised.tsx > packages/suite/src/components/suite/layouts/WelcomeLayout/WelcomeLayout.tsx > packages/suite/src/components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher.tsx > packages/suite/src/components/suite/layouts/SuiteLayout/index.ts > packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader.tsx > packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendReceive.tsx > packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal.tsx > packages/suite/src/components/suite/modals/index.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseWalletExistsFlow.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/EnterPassphrase.tsx > packages/suite/src/views/suite/SwitchDevice/CardWithDevice.tsx > packages/suite/src/views/suite/SwitchDevice/NeedsAttentionBanner.tsx
+310) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx
+311) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx
+312) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalContent.tsx
+313) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalExchange.tsx
+314) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalSell.tsx
+315) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupStep2to4.tsx
+316) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/CollapsibleIOSection.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IOGroup.tsx
+317) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/TokenSpecificBalanceDetailsRow.tsx
+318) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal.tsx
+319) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/DeviceContextModal.tsx
+320) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx
+321) packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/Preloader/Preloader.tsx > packages/suite/src/views/start/AnalyticsConsentScreen.tsx
+322) packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipAccount.tsx
+323) packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipDashboard.tsx
+324) packages/suite/src/components/wallet/Fees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CustomFee/CustomFeeEthereum.tsx
+325) packages/suite/src/components/wallet/Fees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CustomFee/CustomFeeMisc.tsx
+326) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx
+327) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/BitcoinFeeCards.tsx
+328) packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/BitcoinFeeCards.tsx
+329) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/EthereumFeeCards.tsx
+330) packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/EthereumFeeCards.tsx
+331) packages/suite/src/components/wallet/Fees/Fees.tsx > packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/MiscFeeCards.tsx
+332) packages/suite/src/components/wallet/Fees/StandardFee/StandardFee.tsx > packages/suite/src/components/wallet/Fees/StandardFee/MiscFeeCards.tsx
+333) packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTargetsList.tsx > packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTarget.tsx
+334) packages/suite/src/utils/wallet/graph/utils.ts > packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
+335) packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
+336) packages/suite/src/views/dashboard/AssetsView/AssetTable/AssetTable.tsx > packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx
+337) packages/suite/src/views/onboarding/steps/SelectBackupType/SelectBackupType.tsx > packages/suite/src/views/onboarding/steps/SelectBackupType/FloatingSelections.tsx
+338) suite-common/graph/src/graphDataFetching.ts > suite-common/graph/src/graphUtils.ts
+339) suite-native/atoms/src/index.ts > suite-native/atoms/src/Accordion/AccordionList.tsx > suite-native/atoms/src/Accordion/AccordionItem.tsx > suite-native/icons/src/index.ts > suite-native/icons/src/CryptoIconWithNetwork.tsx
+340) suite-native/atoms/src/index.ts > suite-native/atoms/src/AnimatedDoubleView/AnimatedDoubleInput.tsx > suite-native/helpers/src/index.ts > suite-native/helpers/src/hooks/useCopyToClipboard.ts > suite-native/toasts/src/index.ts > suite-native/toasts/src/components/ToastRenderer.tsx
+341) suite-native/atoms/src/index.ts > suite-native/atoms/src/AnimatedDoubleView/AnimatedDoubleInput.tsx > suite-native/helpers/src/index.ts > suite-native/helpers/src/hooks/useCopyToClipboard.ts > suite-native/toasts/src/index.ts > suite-native/toasts/src/components/ToastRenderer.tsx > suite-native/toasts/src/components/Toast.tsx
+342) suite-native/atoms/src/index.ts > suite-native/atoms/src/CardStepper/CardStepper.tsx > suite-native/atoms/src/CardStepper/CardStepperItem.tsx
+343) suite-native/atoms/src/index.ts > suite-native/atoms/src/CircularSpinner.tsx
+344) suite-native/atoms/src/index.ts > suite-native/atoms/src/HoldToConfirmButton.tsx
+345) suite-native/atoms/src/index.ts > suite-native/atoms/src/Input/SearchInputWithCancel.tsx
+346) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeader.tsx
+347) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeader.tsx > suite-native/navigation/src/components/GoBackIcon.tsx
+348) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeaderContent.tsx
+349) suite-native/navigation/src/components/ScreenHeader.tsx > suite-native/navigation/src/components/ScreenHeaderContent.tsx
+350) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/LoadingSuccessScreen.tsx
+351) suite-native/navigation/src/index.ts > suite-native/navigation/src/components/LoadingSuccessScreen.tsx
+352) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/Screen.tsx
+353) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/Screen.tsx > suite-native/navigation/src/components/DynamicHeader/DynamicScrollableScreenContentHeader.tsx
+354) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/Screen.tsx > suite-native/navigation/src/components/ScreenContentWrapper.tsx > suite-native/navigation/src/useScrollDivider.tsx
+355) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/TabBar.tsx
+356) suite-native/atoms/src/index.ts > suite-native/atoms/src/Select/Select.tsx > suite-native/atoms/src/Sheet/BottomSheetModal.tsx > suite-native/navigation/src/index.ts > suite-native/navigation/src/components/TabBar.tsx > suite-native/navigation/src/components/TabBarItem.tsx
+357) suite-native/navigation/src/index.ts > suite-native/navigation/src/useNavigateToInitialScreen.ts
+358) suite-native/atoms/src/index.ts > suite-native/atoms/src/SwipeableWalkthrough/SwipeableWalkthroughCloseButton.tsx
+359) suite-native/atoms/src/index.ts > suite-native/atoms/src/TitledSection.tsx
+360) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/ConnectButton.tsx
+361) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/DeviceList.tsx > suite-native/device-manager/src/components/DeviceItem/DeviceItem.tsx > suite-native/device-manager/src/components/DeviceItem/DeviceItemContent.tsx
+362) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/DeviceList.tsx > suite-native/device-manager/src/components/DeviceManagerModal.tsx
+363) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/WalletList.tsx > suite-native/device-manager/src/components/WalletItem.tsx
+364) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx > suite-native/device-manager/src/components/WalletList.tsx
+365) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceManagerContent.tsx
+366) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device-manager/src/index.ts > suite-native/device-manager/src/components/DeviceManager.tsx > suite-native/device-manager/src/components/DeviceSwitch.tsx > suite-native/device-manager/src/components/DeviceSwitchContent.tsx
+367) suite-native/device/src/index.ts > suite-native/device/src/components/BootloaderModeScreen.tsx > suite-native/device/src/selectors.ts > suite-native/firmware/src/index.ts > suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx
+368) suite-native/device/src/components/ConfirmOnTrezor/ConfirmOnTrezorWrapper.tsx > suite-native/device/src/components/ConfirmOnTrezor/ConfirmOnTrezorContent.tsx
+369) suite-native/device/src/index.ts > suite-native/device/src/components/ConnectAndUnlockDeviceScreenContent.tsx
+370) suite-native/device/src/index.ts > suite-native/device/src/components/DeviceDangerBanner.tsx
+371) suite-native/device/src/index.ts > suite-native/device/src/hooks/useRenderDeviceDangerBanner.ts
+372) suite-native/react-native-graph/src/LineGraphProps.ts > suite-native/react-native-graph/src/CreateGraphPath.ts
 
