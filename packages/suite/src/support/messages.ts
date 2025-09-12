@@ -46,15 +46,6 @@ export default defineMessages({
         defaultMessage: 'Enable passphrase',
         id: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
     },
-    TR_ACCOUNT_EXCEPTION_AUTH_ERROR: {
-        defaultMessage: 'Authorization error',
-        id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR',
-    },
-    TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC: {
-        defaultMessage:
-            'The authorization process for this device failed. Click "Retry" or reconnect your Trezor device.',
-        id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC',
-    },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
         defaultMessage: 'All coins are disabled in Settings.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
@@ -819,10 +810,6 @@ export default defineMessages({
     TR_REQUIRED_FIELD: {
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
-    },
-    TR_ORDER_NOW: {
-        defaultMessage: 'Order now',
-        id: 'TR_ORDER_NOW',
     },
     TR_SELL_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Sell {cryptocurrency} with {provider}',
@@ -2039,10 +2026,6 @@ export default defineMessages({
         defaultMessage: 'Check',
         id: 'TR_CHECK_SEED',
     },
-    TR_TREZOR_NOT_DETECTED: {
-        defaultMessage: 'Trezor not detected?',
-        id: 'TR_TREZOR_NOT_DETECTED',
-    },
     TR_CHECKSUM_CONVERSION_INFO: {
         defaultMessage: 'Converted to checksum. <a>Learn more</a>',
         id: 'TR_CHECKSUM_CONVERSION_INFO',
@@ -2132,10 +2115,6 @@ export default defineMessages({
         defaultMessage: 'Connect your Trezor to manage your assets.',
         description: 'Description under the connection prompt',
         id: 'TR_CONNECT_DEVICE_DESCRIPTION',
-    },
-    TR_CONNECT_VIA_BLUETOOTH: {
-        defaultMessage: 'Connect via Bluetooth',
-        id: 'TR_CONNECT_VIA_BLUETOOTH',
     },
     TR_RECONNECT_YOUR_DEVICE: {
         defaultMessage: 'Reconnect your Trezor',
@@ -3540,10 +3519,6 @@ export default defineMessages({
         id: 'TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS',
         defaultMessage: 'Not now',
     },
-    TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS: {
-        id: 'TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS',
-        defaultMessage: 'Skip confirmation on trusted computers',
-    },
     TR_SOUTH: {
         defaultMessage: 'South',
         id: 'TR_SOUTH',
@@ -4504,10 +4479,6 @@ export default defineMessages({
         id: 'TR_CANCEL',
         defaultMessage: 'Cancel',
     },
-    TR_DONE: {
-        id: 'TR_DONE',
-        defaultMessage: 'Done',
-    },
     TR_CANCELLED: {
         id: 'TR_CANCELLED',
         defaultMessage: 'Canceled',
@@ -4655,10 +4626,6 @@ export default defineMessages({
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
         defaultMessage: 'Previous account is empty',
     },
-    MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED: {
-        id: 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED',
-        defaultMessage: 'The maximum allowed number of accounts has been created.',
-    },
     MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED',
         defaultMessage: 'You can have only one coinjoin account per wallet.',
@@ -4724,16 +4691,6 @@ export default defineMessages({
     TR_FORGET_DEVICE_DESCRIPTION: {
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
         defaultMessage: 'Removes all device-related data from Trezor Suite',
-    },
-    TR_VIEW_ONLY_CALL_TO_ACTION: {
-        id: 'TR_VIEW_ONLY_CALL_TO_ACTION',
-        defaultMessage:
-            'Enable view-only to see your balances <primary>after you disconnect your Trezor</primary>',
-    },
-    TR_VIEW_ONLY_EXPLANATION: {
-        id: 'TR_VIEW_ONLY_EXPLANATION',
-        defaultMessage:
-            'To send or swap assets, <secondLine>simply reconnect your device</secondLine>',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -5904,10 +5861,6 @@ export default defineMessages({
         id: 'LOCKTIME_ADD_TOOLTIP',
         defaultMessage: 'Locktime sets the earliest time a transaction can be mined into a block.',
     },
-    LOCKTIME_SCHEDULE_SEND: {
-        id: 'LOCKTIME_SCHEDULE_SEND',
-        defaultMessage: 'Locktime',
-    },
     LOCKTIME_DESCRIPTION: {
         id: 'LOCKTIME_DESCRIPTION',
         defaultMessage: "The transaction can't be broadcasted until:",
@@ -6180,11 +6133,6 @@ export default defineMessages({
     BROADCAST_TOOLTIP: {
         id: 'BROADCAST_TOOLTIP',
         defaultMessage: 'Broadcast the transaction to the network.',
-    },
-    BROADCAST_TOOLTIP_DISABLED_LOCKTIME: {
-        id: 'BROADCAST_TOOLTIP_DISABLED_LOCKTIME',
-        defaultMessage:
-            'A transaction with a locktime set beyond the current block or timestamp will be rejected by the network.',
     },
     IMPORT_CSV: {
         id: 'IMPORT_CSV',
@@ -8854,22 +8802,6 @@ export default defineMessages({
         defaultMessage:
             'Slush Pool is the oldest Bitcoin mining pool, and also the first to be publicly available. Today it is operated by Braiins Pool',
     },
-    TR_REMEMBER_WALLET_TITLE: {
-        id: 'TR_REMEMBER_WALLET_TITLE',
-        description: 'Displayed during coinjoin account discovery',
-        defaultMessage: 'Remember wallet',
-    },
-    TR_REMEMBER_WALLET_NOTE: {
-        id: 'TR_REMEMBER_WALLET_NOTE',
-        description: 'Displayed during coinjoin account discovery',
-        defaultMessage: 'This will remember all assets on this wallet',
-    },
-    TR_REMEMBER_WALLET_DESCRIPTION: {
-        id: 'TR_REMEMBER_WALLET_DESCRIPTION',
-        description: 'Displayed during coinjoin account discovery',
-        defaultMessage:
-            'It will still be loaded privately, but with faster loading times and saved custom setups.',
-    },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
         defaultMessage: 'Almost there...',
@@ -9146,14 +9078,6 @@ export default defineMessages({
     TR_DESKTOP_APP_PROMO_GET: {
         id: 'TR_DESKTOP_APP_PROMO_GET',
         defaultMessage: 'Get for desktop',
-    },
-    TR_MOBILE_APP_PROMO_TEXT: {
-        id: 'TR_MOBILE_APP_PROMO_TEXT',
-        defaultMessage: 'With more security features',
-    },
-    TR_MOBILE_APP_PROMO_TEXT_FOOTER: {
-        id: 'TR_MOBILE_APP_PROMO_TEXT_FOOTER',
-        defaultMessage: 'Sync & track your assets on the go with <b>Trezor Suite on mobile</b>',
     },
     TR_DASHBOARD_REFERRAL_BUTTON: {
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
@@ -9518,14 +9442,6 @@ export default defineMessages({
         id: 'TR_STAKE_ETH_CARD_TITLE',
         defaultMessage: 'The easiest way to earn {symbol}',
     },
-    TR_STAKE_ETH_EARN_REPEAT: {
-        id: 'TR_STAKE_ETH_EARN_REPEAT',
-        defaultMessage: 'Stake. Receive rewards. Repeat.',
-    },
-    TR_STAKE_ETH_SEE_MONEY_DANCE: {
-        id: 'TR_STAKE_ETH_SEE_MONEY_DANCE',
-        defaultMessage: 'Grow your assets',
-    },
     TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
         defaultMessage: 'Earn ~{apyPercent}% <t>APY</t> by staking your {symbol} with Trezor.',
@@ -9538,15 +9454,6 @@ export default defineMessages({
         id: 'TR_STAKE_FULL_BALANCE_AND_EARN',
         defaultMessage:
             'Stake your full balance and earn around {amount} {symbol}/year at the current APY. Your {symbol} stay in your account, ready to use anytime—while helping secure the network.',
-    },
-    TR_STAKE_KEEP_EARNING: {
-        id: 'TR_STAKE_KEEP_EARNING',
-        defaultMessage: 'Keep earning',
-    },
-    TR_STAKE_APY_INFO: {
-        id: 'TR_STAKE_APY_INFO',
-        defaultMessage:
-            'APY (Annual Percentage Yield) is your yearly return on staked funds, with compounding.',
     },
     TR_STAKE_USE_ANYTIME: {
         id: 'TR_STAKE_USE_ANYTIME',
@@ -9604,42 +9511,6 @@ export default defineMessages({
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
         defaultMessage: '*Annual Percentage Yield',
-    },
-    TR_STAKE_ETH_LOCK_FUNDS: {
-        id: 'TR_STAKE_ETH_LOCK_FUNDS',
-        defaultMessage: 'Lock in funds with flexibility',
-    },
-    TR_STAKE_ETH_LOCK_FUNDS_DESC: {
-        id: 'TR_STAKE_ETH_LOCK_FUNDS_DESC',
-        defaultMessage: 'Staking locks in your funds, but you can unstake them anytime.',
-    },
-    TR_STAKE_ETH_EVERSTAKE: {
-        id: 'TR_STAKE_ETH_EVERSTAKE',
-        defaultMessage: 'Trezor & Everstake',
-    },
-    TR_STAKE_ETH_EVERSTAKE_DESC: {
-        id: 'TR_STAKE_ETH_EVERSTAKE_DESC',
-        defaultMessage: 'Everstake is a global leader and supplier of staking technology.',
-    },
-    TR_STAKE_ETH_MAXIMIZE_REWARDS: {
-        id: 'TR_STAKE_ETH_MAXIMIZE_REWARDS',
-        defaultMessage: 'Maximize your rewards',
-    },
-    TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC: {
-        id: 'TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC',
-        defaultMessage: 'Soar high! Earn rewards on your rewards. Staking has never felt so good.',
-    },
-    TR_AVAILABLE_NOW_FOR: {
-        id: 'TR_AVAILABLE_NOW_FOR',
-        defaultMessage: 'Available now for',
-    },
-    TR_STAKE_START_STAKING: {
-        id: 'TR_STAKE_START_STAKING',
-        defaultMessage: 'Start staking',
-    },
-    TR_MAYBE_LATER: {
-        id: 'TR_MAYBE_LATER',
-        defaultMessage: 'Maybe later',
     },
     TR_STAKE_STAKING_IN_A_NUTSHELL: {
         id: 'TR_STAKE_STAKING_IN_A_NUTSHELL',
@@ -10090,19 +9961,6 @@ export default defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
         defaultMessage: 'Cancel',
     },
-    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE: {
-        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE',
-        defaultMessage: 'Disabling view-only will eject this wallet',
-    },
-    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION: {
-        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION',
-        defaultMessage:
-            "Your assets and transactions won't be visible until you reconnect your device.",
-    },
-    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON: {
-        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON',
-        defaultMessage: 'Disable',
-    },
     TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_TITLE: {
         id: 'TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_TITLE',
         defaultMessage: 'Eject all wallets on this Trezor?',
@@ -10233,27 +10091,33 @@ export default defineMessages({
     TR_PASSPHRASE_EXAMPLES_ITEM1_DESCRIPTION: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM1_DESCRIPTION',
         defaultMessage: 'freeway oppose spinout managing',
+        dynamic: true,
     },
     TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM1_HEADING',
         defaultMessage: 'Enter a few unique random words.',
+        dynamic: true,
     },
     TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION',
         defaultMessage: 'aM7xQ9zLpV',
+        dynamic: true,
     },
     TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING',
         defaultMessage: 'Use 10+ characters: mix uppercase, lowercase, and numbers.',
+        dynamic: true,
     },
     TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION',
         defaultMessage: 'Red clouds drifted above the silent forest as shadows stretched.',
+        dynamic: true,
     },
     TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING',
         defaultMessage:
             'Create a sentence only you would come up with—avoid quotes and famous lines.',
+        dynamic: true,
     },
     TR_UNRECOGNIZED: {
         id: 'TR_UNRECOGNIZED',
@@ -10440,59 +10304,18 @@ export default defineMessages({
         id: 'TR_DONE_REMOVING_TREZOR_FROM_SETTINGS',
         defaultMessage: 'I’ve removed it',
     },
-    TR_CABLE: {
-        id: 'TR_CABLE',
-        defaultMessage: 'Cable',
-    },
     TR_PAIR_NEW_BLUETOOTH_DEVICE: {
         id: 'TR_PAIR_NEW_BLUETOOTH_DEVICE',
         defaultMessage: 'Connect via Bluetooth',
-    },
-    TR_BLUETOOTH_TIP_PROXIMITY_HEADER: {
-        id: 'TR_BLUETOOTH_TIP_PROXIMITY_HEADER',
-        defaultMessage: 'Move your Trezor Safe 7 closer to your computer',
-    },
-    TR_BLUETOOTH_TIP_PROXIMITY_TEXT: {
-        id: 'TR_BLUETOOTH_TIP_PROXIMITY_TEXT',
-        defaultMessage: 'The maximum range for Bluetooth is 10 meters.',
-    },
-    TR_BLUETOOTH_TIP_PARING_MODE_HEADER: {
-        id: 'TR_BLUETOOTH_TIP_PARING_MODE_HEADER',
-        defaultMessage: 'Turn on pairing mode for your Trezor Safe 7',
-    },
-    TR_BLUETOOTH_TIP_PARING_MODE_TEXT: {
-        id: 'TR_BLUETOOTH_TIP_PARING_MODE_TEXT',
-        defaultMessage: 'Press & hold your Trezor’s power button for 3 seconds.',
     },
     TR_BLUETOOTH_TIP_CABLE_HEADER: {
         id: 'TR_BLUETOOTH_TIP_CABLE_HEADER',
         defaultMessage: 'Connect via cable',
     },
-    TR_BLUETOOTH_TIP_CABLE_TEXT: {
-        id: 'TR_BLUETOOTH_TIP_CABLE_TEXT',
-        defaultMessage: 'Connect your Trezor Safe 7 using the USB-C cable.',
-    },
-    TR_BLUETOOTH_TIP_SETTINGS_HEADER: {
-        id: 'TR_BLUETOOTH_TIP_SETTINGS_HEADER',
-        defaultMessage: 'Check your computer’s Bluetooth settings',
-    },
-    TR_BLUETOOTH_TIP_SETTINGS_TEXT: {
-        id: 'TR_BLUETOOTH_TIP_SETTINGS_TEXT',
-        defaultMessage:
-            'If you see your Trezor in <a>Bluetooth settings</a>, remove it and pair again.',
-    },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE',
         defaultMessage:
             "Unable to open Bluetooth settings. Go to your device's settings manually. If your Trezor appears in the Bluetooth list, remove it and then pair it again.",
-    },
-    TR_CONNECTION_TYPE: {
-        id: 'TR_CONNECTION_TYPE',
-        defaultMessage: 'Connection type',
-    },
-    TR_TREZOR_SAFE_7: {
-        id: 'TR_TREZOR_SAFE_7',
-        defaultMessage: 'Trezor Safe 7',
     },
     TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS: {
         id: 'TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS',
@@ -10526,10 +10349,6 @@ export default defineMessages({
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR: {
         defaultMessage: 'Unpair',
         id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR',
-    },
-    TR_BLUETOOTH_VERSION_NOT_COMPATIBLE: {
-        id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE',
-        defaultMessage: 'Incompatible Bluetooth version',
     },
     TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1: {
         id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1',
@@ -10565,28 +10384,16 @@ export default defineMessages({
         defaultMessage: "Go to your Trezor's Menu > Pair & Connect > Pair new device",
         description: 'Displayed as hints of bluetooth connection in connect modal',
     },
-    TR_BLUETOOTH_SETTINGS: {
-        id: 'TR_BLUETOOTH_SETTINGS',
-        defaultMessage: 'Open System Settings',
-    },
     TR_ALLOW_BLUETOOTH_CTA: {
         id: 'TR_ALLOW_BLUETOOTH_CTA',
         defaultMessage: 'Allow',
         description:
             'Button text to allow Bluetooth permissions in the modal when the Bluetooth permissions are denied',
     },
-    TR_BLUETOOTH_TURN_ON_BLUETOOTH: {
-        id: 'TR_BLUETOOTH_TURN_ON_BLUETOOTH',
-        defaultMessage: 'Turn on Bluetooth',
-    },
     TR_BLUETOOTH_TURNED_OFF_TEXT: {
         id: 'TR_BLUETOOTH_TURNED_OFF_TEXT',
         defaultMessage:
             'Bluetooth is currently turned off on this computer. Go to System Settings > Bluetooth and turn on Bluetooth.',
-    },
-    TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS: {
-        id: 'TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS',
-        defaultMessage: 'Open permissions settings',
     },
     TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS: {
         id: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
@@ -10629,25 +10436,9 @@ export default defineMessages({
         id: 'TR_BLUETOOTH_PAIRED',
         defaultMessage: 'Paired',
     },
-    TR_BLUETOOTH_SCANNING: {
-        id: 'TR_BLUETOOTH_SCANNING',
-        defaultMessage: 'Scanning',
-    },
-    TR_BLUETOOTH_CANCELLING: {
-        id: 'TR_BLUETOOTH_CANCELLING',
-        defaultMessage: 'Canceling',
-    },
     TR_BLUETOOTH_PAIRING_FAILED: {
         id: 'TR_BLUETOOTH_PAIRING_FAILED',
         defaultMessage: 'Pairing failed',
-    },
-    TR_BLUETOOTH_PIN_CODE: {
-        id: 'TR_BLUETOOTH_PIN_CODE',
-        defaultMessage: 'Bluetooth pairing code',
-    },
-    TR_BLUETOOTH_PIN_CODE_DONT_MATCH: {
-        id: 'TR_BLUETOOTH_PIN_CODE_DONT_MATCH',
-        defaultMessage: "Codes don't match?",
     },
     TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN: {
         id: 'TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN',
@@ -10657,21 +10448,9 @@ export default defineMessages({
         id: 'TR_BLUETOOTH_X_TREZORS_FOUND',
         defaultMessage: '{number} Trezors found',
     },
-    TR_BLUETOOTH_NO_TREZOR_FOUND: {
-        id: 'TR_BLUETOOTH_NO_TREZOR_FOUND',
-        defaultMessage: 'No Trezor found',
-    },
     TR_BLUETOOTH_SCAN_AGAIN: {
         id: 'TR_BLUETOOTH_SCAN_AGAIN',
         defaultMessage: 'Scan again',
-    },
-    TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR: {
-        id: 'TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR',
-        defaultMessage: 'Not the Trezor you’re looking for?',
-    },
-    TR_BLUETOOTH_GHOST_DEVICE: {
-        id: 'TR_BLUETOOTH_GHOST_DEVICE',
-        defaultMessage: 'Trezor not found. Disconnect it and create a new connection.',
     },
     TR_PAIR_AGAIN: {
         id: 'TR_PAIR_AGAIN',
