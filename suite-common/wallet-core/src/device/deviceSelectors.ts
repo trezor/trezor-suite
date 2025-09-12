@@ -338,8 +338,8 @@ export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
     device => getFirmwareVersionArray(device),
 );
 
-// Selects all wallets of all physical devices. Use `selectPhysicalDevicesGrouppedById` instead to select unique devices.
-export const selectPhysicalDevices = createMemoizedSelector([selectDevices], devices =>
+// Selects all wallets of all physical devices. See `selectPhysicalDevicesGrouppedById` for grouping by the same device.
+export const selectPhysicalDeviceWallets = createMemoizedSelector([selectDevices], devices =>
     pipe(
         devices,
         A.filter(device => device.id !== PORTFOLIO_TRACKER_DEVICE_ID),
@@ -348,7 +348,7 @@ export const selectPhysicalDevices = createMemoizedSelector([selectDevices], dev
 );
 
 export const selectIsNoPhysicalDeviceConnected = createMemoizedSelector(
-    [selectPhysicalDevices],
+    [selectPhysicalDeviceWallets],
     devices => devices.every(device => !device.connected),
 );
 
@@ -373,7 +373,7 @@ export const selectIsDeviceForceRemembered = createMemoizedSelector(
 );
 
 export const selectRememberedStandardWalletsCount = createMemoizedSelector(
-    [selectPhysicalDevices],
+    [selectPhysicalDeviceWallets],
     devices =>
         returnStableArrayIfEmpty(
             devices.filter(device => device.remember && device.useEmptyPassphrase === true),
@@ -381,7 +381,7 @@ export const selectRememberedStandardWalletsCount = createMemoizedSelector(
 );
 
 export const selectRememberedHiddenWalletsCount = createMemoizedSelector(
-    [selectPhysicalDevices],
+    [selectPhysicalDeviceWallets],
     devices =>
         returnStableArrayIfEmpty(
             devices.filter(device => device.remember && device.useEmptyPassphrase === false),
@@ -405,8 +405,9 @@ export const selectIsDeviceUsingPassphrase = createMemoizedSelector(
     },
 );
 
+// Selects all physical devices wallets grouped per device
 export const selectPhysicalDevicesGrouppedById = createMemoizedSelector(
-    [selectPhysicalDevices],
+    [selectPhysicalDeviceWallets],
     devices => returnStableArrayIfEmpty(deviceUtils.getDeviceInstancesGroupedByDeviceId(devices)),
 );
 
