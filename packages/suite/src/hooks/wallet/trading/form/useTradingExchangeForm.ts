@@ -23,6 +23,7 @@ import {
     selectTradingExchangeAccountKey,
     selectTradingExchangeInfo,
     selectTradingExchangeReceiveAccountKey,
+    selectTradingIsSlip24Allowed,
     selectTradingTrades,
     selectTradingVerifiedAddress,
     tradingActions,
@@ -94,7 +95,6 @@ export const useTradingExchangeForm = ({
         isLoading,
     } = useSelector(selectTradingExchange);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
@@ -138,6 +138,11 @@ export const useTradingExchangeForm = ({
         navigateToExchangeOffers,
         navigateToExchangeConfirm,
     } = useTradingNavigation(account);
+
+    const isDebug = useSelector(selectIsDebugModeActive);
+    const isSlip24Active = useSelector(state =>
+        selectTradingIsSlip24Allowed(state, account, isDebug),
+    );
 
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
@@ -480,7 +485,7 @@ export const useTradingExchangeForm = ({
                     decimals,
                     shouldSendInSats,
                     // TODO: slip24 - exclude from debug mode
-                    isSlip24Active: isDebugModeActive,
+                    isSlip24Active,
                     nextStep,
                     processResponseData,
                     triggerAnalyticsTradeConfirmation,

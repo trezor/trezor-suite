@@ -28,7 +28,7 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${localizeNumber(swapQuotesSolanaBTC[1].receiveStringAmount)} BTC`;
 const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
 const formattedSendAddress = formatAddress(sendAddress);
-const toastText = `${formattedSendAmount} sent from Solana #1`;
+const toastText = `Swap transaction of ${formattedSendAmount} (Solana #1) to ${formattedReceiveAmount} (Bitcoin #1) was broadcasted`;
 
 test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -127,7 +127,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
             await page.clock.install();
             await devicePrompt.sendButton.click();
             await expect(tradingPage.transactionDetailStatus).toHaveText('Pending');
-            await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
+            await expect(page.getByTestId('@toast/tx-exchange')).toContainText(toastText);
         });
 
         await test.step('Verify button opens provider support page in new tab', async () => {

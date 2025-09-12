@@ -17,6 +17,7 @@ import {
     type TradingTransactionSell,
     getTradingQuotesByPaymentMethod,
     selectTradingComposedTransactionInfo,
+    selectTradingIsSlip24Allowed,
     selectTradingPaymentMethods,
     selectTradingSell,
     selectTradingTrades,
@@ -83,7 +84,6 @@ export const useTradingSellForm = ({
         sellInfo,
         amountLimits,
     } = useSelector(selectTradingSell);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
@@ -111,6 +111,11 @@ export const useTradingSellForm = ({
 
     const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
         useTradingNavigation(account);
+
+    const isDebug = useSelector(selectIsDebugModeActive);
+    const isSlip24Active = useSelector(state =>
+        selectTradingIsSlip24Allowed(state, account, isDebug),
+    );
 
     const { symbol } = account;
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -473,7 +478,7 @@ export const useTradingSellForm = ({
                     decimals,
                     formValues: values as TradingSellFormProps,
                     // TODO: slip24 - exclude from debug mode
-                    isSlip24Active: isDebugModeActive,
+                    isSlip24Active,
                     nextStep,
                     signAndPushSendFormTransaction,
                 }),
