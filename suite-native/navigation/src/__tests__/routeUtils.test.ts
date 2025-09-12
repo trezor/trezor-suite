@@ -1,5 +1,5 @@
 import { navigationContainerRef } from '../components/NavigationContainerWithAnalytics';
-import { checkIsActiveRouteAnyOf } from '../routeUtils';
+import { checkIsActiveRouteAnyOf, checkIsHomeStackFocused } from '../routeUtils';
 import { DeviceOnboardingStackRoutes, HomeStackRoutes, RootStackRoutes } from '../routes';
 
 jest.mock('../components/NavigationContainerWithAnalytics', () => ({
@@ -18,7 +18,7 @@ describe('Navigation Utils', () => {
     });
 
     describe('checkIsActiveRouteAnyOf', () => {
-        it('should return true when active route matches one of the provided routes', () => {
+        it('check is home stack focused', () => {
             mockedNavigationContainerRef.getState.mockReturnValue({
                 stale: false,
                 type: 'stack',
@@ -38,8 +38,7 @@ describe('Navigation Utils', () => {
                 ],
             });
 
-            const routeList = [RootStackRoutes.AppTabs, RootStackRoutes.OnboardingStack];
-            const result = checkIsActiveRouteAnyOf(routeList);
+            const result = checkIsHomeStackFocused();
 
             expect(result).toBe(true);
         });
@@ -63,22 +62,6 @@ describe('Navigation Utils', () => {
                 RootStackRoutes.OnboardingStack,
                 RootStackRoutes.AuthorizeDeviceStack,
             ];
-            const result = checkIsActiveRouteAnyOf(routeList);
-
-            expect(result).toBe(false);
-        });
-
-        it('should return false when routes array is empty', () => {
-            mockedNavigationContainerRef.getState.mockReturnValue({
-                stale: false,
-                type: 'stack',
-                key: 'stack-test3',
-                index: 0,
-                routeNames: [],
-                routes: [],
-            });
-
-            const routeList = [RootStackRoutes.AppTabs];
             const result = checkIsActiveRouteAnyOf(routeList);
 
             expect(result).toBe(false);

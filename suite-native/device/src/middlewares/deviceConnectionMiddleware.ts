@@ -23,6 +23,8 @@ import {
     HomeStackRoutes,
     RootStackRoutes,
     checkIsActiveRouteAnyOf,
+    checkIsDeviceOnboardingFocused,
+    checkIsHomeStackFocused,
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
@@ -60,7 +62,7 @@ const handleDeviceConnectNavigation = ({
         // If user previously cancelled the onboarding, they should remaing on homescreen
         if (wasDeviceOnboardingCancelled) {
             // No need to navigate if we are already on home screen (preventing sliding to new screen)
-            if (checkIsActiveRouteAnyOf([HomeStackRoutes.Home])) return;
+            if (checkIsHomeStackFocused()) return;
 
             navigationContainerRef.reset({
                 index: 0,
@@ -169,22 +171,24 @@ deviceConnectionMiddleware.startListening({
         )
             return;
 
-        if (checkIsActiveRouteAnyOf([RootStackRoutes.DeviceOnboardingStack])) {
+        if (checkIsDeviceOnboardingFocused()) {
             navigationContainerRef.navigate(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
             });
         } else {
-            navigationContainerRef.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AppTabs,
-                        params: {
-                            screen: HomeStackRoutes.Home,
+            if (!checkIsHomeStackFocused()) {
+                navigationContainerRef.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: RootStackRoutes.AppTabs,
+                            params: {
+                                screen: HomeStackRoutes.Home,
+                            },
                         },
-                    },
-                ],
-            });
+                    ],
+                });
+            }
         }
     },
 });
