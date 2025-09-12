@@ -13,7 +13,11 @@ import { ThpConnectionModal } from './thp/ThpConnectionModal';
 import { ThpPairingFailedModal } from './thp/ThpPairingFailedModal';
 import { ThpPairingPinEntryModal } from '../suite/modals/ReduxModal/DeviceContextModal/ThpPairingPinEntryModal';
 
-export const ConnectionGlobalModal = () => {
+type ConnectionGlobalModalProps = {
+    showThpModals?: boolean;
+};
+
+export const ConnectionGlobalModal = ({ showThpModals = true }: ConnectionGlobalModalProps) => {
     const dispatch = useDispatch();
     const isConnectDeviceModalOpen = useSelector(selectIsConnectionModalOpen);
     const device = useSelector(selectSelectedDevice);
@@ -24,7 +28,7 @@ export const ConnectionGlobalModal = () => {
     };
 
     // handle THP modals first if we have a device and thpStep
-    if (device !== undefined && thpStep !== null) {
+    if (device !== undefined && thpStep !== null && showThpModals) {
         switch (thpStep) {
             case 'BeforeConnectionInfo':
                 return null;

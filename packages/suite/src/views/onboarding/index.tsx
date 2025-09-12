@@ -72,7 +72,7 @@ export const Onboarding = () => {
     return (
         <OnboardingLayout>
             {allowedModal && <ReduxModal {...allowedModal} />}
-            <ConnectionGlobalModal />
+            <ConnectionGlobalModal showThpModals={false} />
 
             <UnexpectedState>
                 <StepComponent />
