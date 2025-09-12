@@ -31,6 +31,9 @@ export const selectSelectedDevice = (state: DeviceRootState) => state.device.sel
 export const selectIsDeviceAutoEjectEnabled = (state: DeviceRootState) =>
     state.device.isDeviceAutoEjectEnabled;
 
+export const selectPersistentDeviceData = (state: DeviceRootState) =>
+    state.device.persistentDeviceData;
+
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(
     [selectDevices],
