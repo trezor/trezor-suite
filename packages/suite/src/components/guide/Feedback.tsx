@@ -7,7 +7,7 @@ import {
     FeedbackType,
     Rating,
     buildUserFeedbackData,
-    sendFeedback,
+    sendFeedbackAction,
 } from '@suite-common/feedback';
 import { Button, CollapsibleBox, Select, Textarea, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -123,7 +123,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
 
         if (type === 'BUG') {
             dispatch(
-                sendFeedback({
+                sendFeedbackAction({
                     type: 'BUG',
                     payload: {
                         description,
@@ -136,7 +136,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             );
         } else {
             dispatch(
-                sendFeedback({
+                sendFeedbackAction({
                     type: 'SUGGESTION',
                     payload: {
                         description,

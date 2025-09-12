@@ -260,7 +260,6 @@ suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup
 suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/bitcoinSignTransaction.ts
 suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/ethereumSignTransaction.ts
 suite-common/connect-popup/src/methodHooks/index.ts > suite-common/connect-popup/src/methodHooks/solanaSignTransaction.ts
-suite-common/feedback/src/constants.ts > suite-common/feedback/src/types.ts
 suite-common/firmware/src/index.ts > suite-common/firmware/src/hooks/useFirmwareInstallation.ts
 suite-common/graph/src/graphDataFetching.ts > suite-common/graph/src/graphUtils.ts
 suite-common/intl-types/src/index.ts > suite-common/intl-types/src/types.ts > packages/suite/src/components/suite/Translation.tsx
