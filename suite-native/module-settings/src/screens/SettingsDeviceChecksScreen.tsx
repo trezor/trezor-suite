@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/wallet-core';
+import { selectIsMevProtectionSettingsVisible } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -11,7 +11,7 @@ import { TurnOffFirmwareAuthenticityCheckCard } from '../components/TurnOffFirmw
 import { TurnOffMevProtectionCard } from '../components/TurnOffMevProtectionCard';
 
 export const SettingsDeviceChecksScreen = () => {
-    const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
+    const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
 
     return (
         <Screen
@@ -28,7 +28,7 @@ export const SettingsDeviceChecksScreen = () => {
                 </VStack>
                 <TurnOffFirmwareAuthenticityCheckCard />
                 <TurnOffDeviceAuthenticityCheckCard />
-                {isMevProtectionFeatureEnabled && <TurnOffMevProtectionCard />}
+                {isMevProtectionSettingsVisible && <TurnOffMevProtectionCard />}
             </VStack>
         </Screen>
     );
