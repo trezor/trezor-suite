@@ -1,5 +1,9 @@
 /* eslint-disable require-await */
+
 const { mergeConfig } = require('@react-native/metro-config');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { withRozenite } = require('@rozenite/metro');
+const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/metro');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const nodejs = require('node-libs-browser');
 
@@ -113,4 +117,14 @@ const config = {
         },
     },
 };
-module.exports = mergeConfig(jsonExpoConfig, config);
+
+const mergedConfig = mergeConfig(jsonExpoConfig, config);
+
+if (!process.env.EXPO_PUBLIC_ENVIRONMENT || process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug') {
+    // enable Rozenite plugins only in debug build
+    module.exports = withRozenite(mergedConfig, {
+        enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),
+    });
+} else {
+    module.exports = mergedConfig;
+}
