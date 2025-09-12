@@ -55,6 +55,8 @@ const getDeviceNeedsAttentionMessage = (
             return 'TR_NEEDS_ATTENTION_UNREADABLE';
         case 'unacquired-thp-required':
             return 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED';
+        case 'device-busy':
+            return 'TR_NEEDS_ATTENTION_DEVICE_BUSY';
 
         case 'connected':
         case 'disconnected':
@@ -122,15 +124,16 @@ export const NeedsAttentionBanner = ({
         onCancel?.(false);
     };
 
-    const onSolveIssueClick = (): void => {
+    const createOnIssueClickHandler = (): (() => void) | null => {
         switch (deviceStatus) {
             // If onboarding is pending, then it should pass through Manual Device Check.
             case 'initialize': // Wiped device with firmware present.
             case 'bootloader': // Fresh or factory-reset device? Can also be initalized device manually put into BL,
                 // but we cannot tell (device.features.initialized is null)
-                selectDevice();
-                dispatch(goto('suite-start'));
-                break;
+                return () => {
+                    selectDevice();
+                    dispatch(goto('suite-start'));
+                };
 
             case 'seedless':
             case 'firmware-required':
@@ -140,35 +143,41 @@ export const NeedsAttentionBanner = ({
             case 'disconnected':
             case 'firmware-recommended':
             case 'unknown':
-                selectDevice();
-                break;
+                return () => selectDevice();
 
             case 'used-in-other-window':
             case 'was-used-in-other-window':
             case 'unacquired':
-                dispatch(acquireDevice({ requestedDevice: device }));
-                break;
+                return () => dispatch(acquireDevice({ requestedDevice: device }));
             case 'unacquired-thp-required':
-                onCancel?.(false);
-                dispatch(acquireDevice({ requestedDevice: device }));
-                break;
+                return () => {
+                    onCancel?.(false);
+                    dispatch(acquireDevice({ requestedDevice: device }));
+                };
+
+            case 'device-busy':
+                return null;
 
             default:
                 return exhaustive(deviceStatus);
         }
     };
 
+    const onIssueClick = createOnIssueClickHandler();
+
     return (
         <Banner
             variant={deviceStatusBannerVariant}
             rightContent={
-                <Banner.Button
-                    onClick={onSolveIssueClick}
-                    data-testid="@switch-device/solve-issue-button"
-                    isDisabled={isLocked}
-                >
-                    <Translation id={deviceResolveIssueCTAMessage} />
-                </Banner.Button>
+                onIssueClick && (
+                    <Banner.Button
+                        onClick={onIssueClick}
+                        data-testid="@switch-device/solve-issue-button"
+                        isDisabled={isLocked}
+                    >
+                        <Translation id={deviceResolveIssueCTAMessage} />
+                    </Banner.Button>
+                )
             }
         >
             {deviceStatusMessage && (
