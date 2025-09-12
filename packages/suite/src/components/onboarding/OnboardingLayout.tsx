@@ -184,7 +184,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
 
     return (
         <>
-            <ConnectionGlobalModal />
+            <ConnectionGlobalModal showThpModals={false} />
             {allowedModal !== null ? <ReduxModal {...allowedModal} /> : null}
 
             <Wrapper>
