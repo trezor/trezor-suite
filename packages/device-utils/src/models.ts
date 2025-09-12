@@ -48,9 +48,9 @@ export const models: Record<DeviceModelInternal, ModelConfig> = {
     T3W1: {
         name: 'Trezor Safe 7',
         colors: {
-            '1': 'Fantastic Ethereum', // TODO T3W1
-            '2': 'Lunatic Dogecoin', // TODO T3W1
-            '3': 'Galactic Litecoin', // TODO T3W1
+            '1': 'Charcoal Black',
+            '2': 'Obsidian Green',
+            '3': 'Bitcoin Orange',
         },
         frontColors: {
             '1': '1',
