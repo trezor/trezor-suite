@@ -55,6 +55,18 @@ export default class SolanaComposeTransaction extends AbstractMethod<
             this.params.identity,
         );
 
+        // if the serializedTx is set, there is nothing to compose
+        if (this.params.serializedTx) {
+            return {
+                serializedTx: this.params.serializedTx,
+                additionalInfo: {},
+            };
+        }
+
+        if (!this.params.toAddress) {
+            throw ERRORS.TypedError('Method_InvalidParameter', 'toAddress not found');
+        }
+
         const [recipientAccountOwner, recipientTokenAccounts] = this.params.token
             ? await fetchAccountOwnerAndTokenInfoForAddress(
                   backend,

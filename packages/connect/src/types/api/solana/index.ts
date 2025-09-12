@@ -50,15 +50,16 @@ export const SolanaProgramName = Type.Union([
     Type.Literal('spl-token-2022'),
 ]);
 
-export type SolanaComposeTransaction = Static<typeof SolanaComposeTransaction>;
-export const SolanaComposeTransaction = Type.Object({
+const SolanaComposeTransactionCommon = {
     fromAddress: Type.String(),
-    toAddress: Type.String(),
     amount: Type.String(),
     blockHash: Type.String(),
     lastValidBlockHeight: Type.Number(),
     priorityFees: Type.Optional(
-        Type.Object({ computeUnitPrice: Type.String(), computeUnitLimit: Type.String() }),
+        Type.Object({
+            computeUnitPrice: Type.String(),
+            computeUnitLimit: Type.String(),
+        }),
     ),
     token: Type.Optional(
         Type.Object({
@@ -70,7 +71,26 @@ export const SolanaComposeTransaction = Type.Object({
     ),
     coin: Type.Optional(Type.String()),
     identity: Type.Optional(Type.String()),
+};
+
+const SolanaComposeSerializedTransaction = Type.Object({
+    ...SolanaComposeTransactionCommon,
+    toAddress: Type.Optional(Type.String()),
+    serializedTx: Type.String(),
 });
+
+const SolanaComposeTransactionRaw = Type.Object({
+    ...SolanaComposeTransactionCommon,
+    toAddress: Type.String(), // required
+    serializedTx: Type.Optional(Type.Undefined()), // forbidden
+});
+
+export const SolanaComposeTransaction = Type.Union([
+    SolanaComposeSerializedTransaction,
+    SolanaComposeTransactionRaw,
+]);
+
+export type SolanaComposeTransaction = Static<typeof SolanaComposeTransaction>;
 
 export type SolanaComposedTransaction = Static<typeof SolanaComposedTransaction>;
 export const SolanaComposedTransaction = Type.Object({
