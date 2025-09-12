@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { selectDevices } from '@suite-common/wallet-core';
-import { Modal, Switch } from '@trezor/components';
+import { selectDevices, selectIsAutoForgetDeviceDataEnabled } from '@suite-common/wallet-core';
+import { Modal, Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
@@ -46,6 +46,7 @@ const AutoEjectConfirmationModal = ({
 
 export const AutoEject = () => {
     const isAutoEjectEnabled = useSelector(selectIsAutoEjectEnabled);
+    const isAutoForgetDeviceDataEnabled = useSelector(selectIsAutoForgetDeviceDataEnabled);
     const dispatch = useDispatch();
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
@@ -84,11 +85,17 @@ export const AutoEject = () => {
                 description={<Translation id="TR_AUTO_EJECT_DESCRIPTION" />}
             />
             <ActionColumn>
-                <Switch
-                    isChecked={isAutoEjectEnabled}
-                    onChange={handleSubmit}
-                    data-testid="@settings/auto-eject-switch"
-                />
+                <Tooltip
+                    isActive={isAutoForgetDeviceDataEnabled}
+                    content={<Translation id="TR_AUTO_EJECT_FORCED_TOOLTIP" />}
+                >
+                    <Switch
+                        isChecked={isAutoEjectEnabled}
+                        isDisabled={isAutoForgetDeviceDataEnabled}
+                        onChange={handleSubmit}
+                        data-testid="@settings/auto-eject-switch"
+                    />
+                </Tooltip>
             </ActionColumn>
             {isConfirmationModalOpen && (
                 <AutoEjectConfirmationModal
