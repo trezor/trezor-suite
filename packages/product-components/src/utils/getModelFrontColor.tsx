@@ -11,6 +11,8 @@ export const getLargeModelImagePath = (
     deviceUnitColor?: number,
 ) => {
     const frontColor = getModelFrontColor(deviceModelInternal, deviceUnitColor);
+    const deviceName =
+        deviceModelInternal === DeviceModelInternal.T2B1 ? 'T3B1' : deviceModelInternal;
 
-    return `TREZOR_${deviceModelInternal}${frontColor === 1 ? '' : `_FRONTCOLOR_${frontColor}`}_LARGE` as ImageKey;
+    return `TREZOR_${deviceName}${String(frontColor) === '1' ? '' : `_FRONTCOLOR_${frontColor}`}_LARGE` as ImageKey;
 };

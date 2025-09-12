@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Button, Flex, Row, variables } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
-import { spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -61,8 +61,6 @@ const ContentWrapper = styled.div`
 `;
 
 const Header = styled.div`
-    position: sticky;
-    top: 0;
     display: flex;
     width: 100%;
     padding: ${spacingsPx.sm};
@@ -71,7 +69,6 @@ const Header = styled.div`
     flex-direction: column;
     max-width: ${MAX_ONBOARDING_WIDTH}px;
     margin-bottom: ${spacingsPx.md};
-    z-index: ${zIndices.base};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         padding: 0 ${spacingsPx.lg};

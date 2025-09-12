@@ -79,6 +79,8 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             rerenderKey,
         };
 
+        if (deviceModelInternal === DeviceModelInternal.UNKNOWN) return null;
+
         return (
             <AnimationWrapper height={height} width={width} shape={shape} {...props}>
                 {['BOOTLOADER'].includes(type) && (
