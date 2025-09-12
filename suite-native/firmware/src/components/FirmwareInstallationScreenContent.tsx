@@ -29,14 +29,11 @@ import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './Update
 import { useFirmware } from '../hooks/useFirmware';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 
-const bottomButtonsContainerStyle = prepareNativeStyle<{ isConfirmOnDeviceShown: boolean }>(
-    (utils, { isConfirmOnDeviceShown }) => ({
-        position: 'absolute',
-        left: utils.spacings.sp16,
-        right: utils.spacings.sp16,
-        bottom: isConfirmOnDeviceShown ? 180 : utils.spacings.sp52,
-    }),
-);
+const bottomButtonsContainerStyle = prepareNativeStyle(() => ({
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+}));
 
 type FirmwareInstallationScreenContentProps = {
     onFirmwareInstallationSuccess: () => void;
@@ -249,9 +246,7 @@ export const FirmwareInstallationScreenContent = ({
 
     const showConfirmOnDevice = confirmOnDevice && !isError && !isDone;
 
-    const buttonStyle = applyStyle(bottomButtonsContainerStyle, {
-        isConfirmOnDeviceShown: showConfirmOnDevice,
-    });
+    const buttonStyle = applyStyle(bottomButtonsContainerStyle);
 
     useEffect(() => {
         if (isSheetOpen && !showConfirmOnDevice) {
@@ -275,70 +270,79 @@ export const FirmwareInstallationScreenContent = ({
                 )
             }
         >
-            <VStack justifyContent="center" alignItems="center" flex={1}>
-                <UpdateProgressIndicator progress={progress} status={indicatorStatus} />
-                <Animated.View entering={FadeInUp} exiting={FadeOutDown} key={translatedText.title}>
-                    <Box marginTop="sp12" alignItems="center">
-                        <Text variant="titleSmall" textAlign="center">
-                            {translatedText.title}
-                        </Text>
-                    </Box>
-                    <Box marginTop="sp8" alignItems="center">
-                        <Text variant="body" color="textSubdued" textAlign="center">
-                            {translatedText.subtitle ?? ' '}
-                        </Text>
-                    </Box>
-                    <Box paddingTop="sp24" alignItems="center" justifyContent="center">
-                        {!isError && !isDone ? (
-                            <Badge
-                                variant="blue"
-                                label={
-                                    <Translation id="firmware.firmwareUpdateProgress.dontCloseAppMessage" />
-                                }
-                            />
-                        ) : (
-                            // Blank space to prevent layout shift when done
-                            <Text variant="hint"> </Text>
-                        )}
-                    </Box>
-                </Animated.View>
-            </VStack>
-            {isError && (
-                <VStack spacing="sp12" style={buttonStyle}>
-                    {isRetryAllowed && (
-                        <Button onPress={handleRetry} colorScheme="redBold">
-                            <Translation id="firmware.firmwareUpdateProgress.retryButton" />
-                        </Button>
-                    )}
-                    <Button onPress={handleContactSupport} colorScheme="tertiaryElevation0">
-                        <Translation id="firmware.firmwareUpdateProgress.contactSupportButton" />
-                    </Button>
+            <Box flex={1}>
+                <VStack justifyContent="center" alignItems="center" flex={1}>
+                    <UpdateProgressIndicator progress={progress} status={indicatorStatus} />
+                    <Animated.View
+                        entering={FadeInUp}
+                        exiting={FadeOutDown}
+                        key={translatedText.title}
+                    >
+                        <Box marginTop="sp12" alignItems="center">
+                            <Text variant="titleSmall" textAlign="center">
+                                {translatedText.title}
+                            </Text>
+                        </Box>
+                        <Box marginTop="sp8" alignItems="center">
+                            <Text variant="body" color="textSubdued" textAlign="center">
+                                {translatedText.subtitle ?? ' '}
+                            </Text>
+                        </Box>
+                        <Box paddingTop="sp24" alignItems="center" justifyContent="center">
+                            {!isError && !isDone ? (
+                                <Badge
+                                    variant="blue"
+                                    label={
+                                        <Translation id="firmware.firmwareUpdateProgress.dontCloseAppMessage" />
+                                    }
+                                />
+                            ) : (
+                                // Blank space to prevent layout shift when done
+                                <Text variant="hint"> </Text>
+                            )}
+                        </Box>
+                    </Animated.View>
                 </VStack>
-            )}
-            {mayBeStucked && (
-                <Animated.View
-                    entering={FadeInDown}
-                    exiting={FadeOutDown}
-                    layout={LinearTransition}
-                    style={buttonStyle}
-                >
-                    <Button onPress={openMayBeStuckBottomSheet} colorScheme="tertiaryElevation0">
-                        <Translation id="firmware.firmwareUpdateProgress.stuckButton" />
-                    </Button>
-                </Animated.View>
-            )}
-            {isDone && (
-                <Animated.View
-                    entering={FadeInDown}
-                    exiting={FadeOutDown}
-                    layout={LinearTransition}
-                    style={buttonStyle}
-                >
-                    <Button onPress={handleFirmwareUpdateFinished}>
-                        <Translation id="generic.buttons.continue" />
-                    </Button>
-                </Animated.View>
-            )}
+                {isError && (
+                    <VStack spacing="sp12" style={buttonStyle}>
+                        {isRetryAllowed && (
+                            <Button onPress={handleRetry} colorScheme="redBold">
+                                <Translation id="firmware.firmwareUpdateProgress.retryButton" />
+                            </Button>
+                        )}
+                        <Button onPress={handleContactSupport} colorScheme="tertiaryElevation0">
+                            <Translation id="firmware.firmwareUpdateProgress.contactSupportButton" />
+                        </Button>
+                    </VStack>
+                )}
+                {mayBeStucked && (
+                    <Animated.View
+                        entering={FadeInDown}
+                        exiting={FadeOutDown}
+                        layout={LinearTransition}
+                        style={buttonStyle}
+                    >
+                        <Button
+                            onPress={openMayBeStuckBottomSheet}
+                            colorScheme="tertiaryElevation0"
+                        >
+                            <Translation id="firmware.firmwareUpdateProgress.stuckButton" />
+                        </Button>
+                    </Animated.View>
+                )}
+                {isDone && (
+                    <Animated.View
+                        entering={FadeInDown}
+                        exiting={FadeOutDown}
+                        layout={LinearTransition}
+                        style={buttonStyle}
+                    >
+                        <Button onPress={handleFirmwareUpdateFinished}>
+                            <Translation id="generic.buttons.continue" />
+                        </Button>
+                    </Animated.View>
+                )}
+            </Box>
 
             <MayBeStuckedBottomSheet
                 ref={bottomSheetRef}
