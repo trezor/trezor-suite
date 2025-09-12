@@ -10,11 +10,6 @@ export type BioAuthApi = {
     isBioAuthAvailable: () => Promise<boolean>;
 };
 
-const createTimeoutPromise = () =>
-    new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('timeout')), BIO_AUTH_TIMEOUT);
-    });
-
 export const createBioAuthAPI = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
     ipcRenderer?: R,
 ): BioAuthApi => {
@@ -27,40 +22,38 @@ export const createBioAuthAPI = <R extends StrictIpcRenderer<any, IpcRendererEve
                 message?: string;
             };
 
-            const resultPromise = Promise.race([
-                new Promise<boolean>((resolve, reject) => {
-                    ipcRenderer.on('bio-auth/validated', (_, result: RendererResult) => {
-                        if (result.success) {
-                            resolve(true);
-                        } else {
-                            reject(result.message);
-                        }
-                    });
+            let timeoutId: ReturnType<typeof setTimeout>;
 
-                    setTimeout(() => {
-                        reject(new Error('timeout'));
-                    }, BIO_AUTH_TIMEOUT);
-                }),
-                createTimeoutPromise(),
-            ]);
+            const resultPromise = new Promise<boolean>((resolve, reject) => {
+                ipcRenderer.on('bio-auth/validated', (_, result: RendererResult) => {
+                    if (result.success) {
+                        resolve(true);
+                    } else {
+                        reject(result.message);
+                    }
+                });
+
+                timeoutId = setTimeout(() => {
+                    reject(new Error('timeout'));
+                }, BIO_AUTH_TIMEOUT);
+            }).finally(() => clearTimeout(timeoutId));
 
             ipcRenderer.send('bio-auth/request', options);
 
             return resultPromise;
         },
         isBioAuthAvailable: () => {
-            const resultPromise = Promise.race([
-                new Promise<boolean>((resolve, reject) => {
-                    ipcRenderer.on('bio-auth/is-available', (_, result: boolean) => {
-                        resolve(result);
-                    });
+            let timeoutId: ReturnType<typeof setTimeout>;
 
-                    setTimeout(() => {
-                        reject(new Error('timeout'));
-                    }, BIO_AUTH_TIMEOUT);
-                }),
-                createTimeoutPromise(),
-            ]);
+            const resultPromise = new Promise<boolean>((resolve, reject) => {
+                ipcRenderer.on('bio-auth/is-available', (_, result: boolean) => {
+                    resolve(result);
+                });
+
+                timeoutId = setTimeout(() => {
+                    reject(new Error('timeout'));
+                }, BIO_AUTH_TIMEOUT);
+            }).finally(() => clearTimeout(timeoutId));
 
             ipcRenderer.send('bio-auth/request-availability');
 
