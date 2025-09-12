@@ -1,4 +1,8 @@
-import { DeviceOnboardingStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import {
+    DeviceOnboardingStackRoutes,
+    RootStackRoutes,
+    SendStackRoutes,
+} from '@suite-native/navigation';
 
 // We encourage user to disconnect device when he is redirected to suspicious device screen.
 // We should not redirect him away so he can read the screen content and decide what to do.
@@ -7,9 +11,12 @@ export const DEVICE_DISCONNECTION_BLACKLISTED_ROUTES = [
     DeviceOnboardingStackRoutes.SuspiciousDevice,
 ];
 
+const SEND_STACK_ROUTES = [...Object.keys(SendStackRoutes), RootStackRoutes.SendStack];
+
 export const DEVICE_CONNECTION_BLACKLISTED_ROUTES = [
     RootStackRoutes.DeviceCompromisedModal,
-    RootStackRoutes.SendStack,
+    DeviceOnboardingStackRoutes.SuspiciousDevice,
+    ...SEND_STACK_ROUTES,
 ];
 
 export const buildDisconnectionBlacklist = (
@@ -21,5 +28,5 @@ export const buildDisconnectionBlacklist = (
     // however Entropy check modal should be dismissed on disconnect because you cannot exit the modal via normal means
     ...(!isEntropyCheckEnabledAndFailed ? [RootStackRoutes.DeviceCompromisedModal] : []),
     // Add SendStack only if device is remembered
-    ...(isDeviceRemembered ? [RootStackRoutes.SendStack] : []),
+    ...(isDeviceRemembered ? SEND_STACK_ROUTES : []),
 ];

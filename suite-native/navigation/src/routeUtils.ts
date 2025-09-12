@@ -1,16 +1,34 @@
 import { navigationContainerRef } from './components/NavigationContainerWithAnalytics';
-import { DeviceOnboardingStackRoutes, HomeStackRoutes, RootStackRoutes } from './routes';
+import { AppNavigationState, getActiveRouteName } from './hooks/useNavigationRoute';
+import {
+    AppTabsRoutes,
+    DeviceOnboardingStackRoutes,
+    HomeStackRoutes,
+    RootStackRoutes,
+} from './routes';
 
 type RouteType = RootStackRoutes | DeviceOnboardingStackRoutes | HomeStackRoutes;
 export type Routes = RouteType[];
 
-const getActiveRouteName = () =>
-    navigationContainerRef.getState()?.routes.at(-1)?.name as RouteType;
+export const checkIsActiveRouteAnyOf = (routeList: string[]): boolean => {
+    const activeRoute = getActiveRouteName(navigationContainerRef.getState() as AppNavigationState);
 
-export const checkIsActiveRouteAnyOf = (routeList: Routes) => {
-    const activeRouteName = getActiveRouteName();
+    if (!activeRoute) return false;
 
-    if (!activeRouteName) return false;
+    return routeList.includes(activeRoute);
+};
 
-    return routeList.includes(activeRouteName);
+export const checkIsDeviceOnboardingFocused = () => {
+    const DEVICE_ONBOARDING_ROUTES = [
+        RootStackRoutes.DeviceOnboardingStack,
+        ...Object.keys(DeviceOnboardingStackRoutes),
+    ];
+
+    return checkIsActiveRouteAnyOf(DEVICE_ONBOARDING_ROUTES);
+};
+
+export const checkIsHomeStackFocused = () => {
+    const HOME_ROUTES = [HomeStackRoutes.Home, AppTabsRoutes.HomeStack];
+
+    return checkIsActiveRouteAnyOf(HOME_ROUTES);
 };
