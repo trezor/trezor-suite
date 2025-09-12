@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
 import { BackupType } from '@suite-common/suite-types';
-import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
+import {
+    selectDeviceDefaultBackupType,
+    selectIsDeviceInitialized,
+} from '@suite-common/wallet-core';
 import { SwipeableWalkthrough, SwipeableWalkthroughScreenHeader } from '@suite-native/atoms';
 import {
     DeviceOnboardingStackParamList,
@@ -31,6 +34,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const WalletBackupTutorialScreen = () => {
     const currentStepIndex = useSharedValue(0);
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+
     const defaultBackupType = useSelector(selectDeviceDefaultBackupType);
     const [selectedBackupType, setSelectedBackupType] = useState<BackupType>(defaultBackupType);
 
@@ -40,6 +45,11 @@ export const WalletBackupTutorialScreen = () => {
         // Skip loader screen and navigate back to the create or recover crossroads.
         navigation.pop(2);
     };
+
+    const totalSteps = useMemo(
+        () => WALLET_BACKUP_TUTORIAL_STEPS_COUNT - (isDeviceInitialized ? 1 : 0),
+        [isDeviceInitialized],
+    );
 
     return (
         <Screen
@@ -52,22 +62,22 @@ export const WalletBackupTutorialScreen = () => {
             isScrollable={false}
             noHorizontalPadding
         >
-            <SwipeableWalkthrough
-                currentStepIndex={currentStepIndex}
-                totalSteps={WALLET_BACKUP_TUTORIAL_STEPS_COUNT}
-            >
+            <SwipeableWalkthrough currentStepIndex={currentStepIndex} totalSteps={totalSteps}>
                 <WalletBackupTutorialStep1 currentStepIndex={currentStepIndex} />
                 <WalletBackupTutorialStep2 currentStepIndex={currentStepIndex} />
                 <WalletBackupTutorialStep3 currentStepIndex={currentStepIndex} />
                 <WalletBackupTutorialStep4 currentStepIndex={currentStepIndex} />
-                <WalletBackupTutorialStep5
-                    currentStepIndex={currentStepIndex}
-                    selectedType={selectedBackupType}
-                    onSelectType={setSelectedBackupType}
-                />
+                {!isDeviceInitialized && (
+                    <WalletBackupTutorialStep5
+                        currentStepIndex={currentStepIndex}
+                        selectedType={selectedBackupType}
+                        onSelectType={setSelectedBackupType}
+                    />
+                )}
                 <WalletBackupTutorialStep6
                     currentStepIndex={currentStepIndex}
                     selectedType={selectedBackupType}
+                    stepIndex={totalSteps - 1}
                 />
             </SwipeableWalkthrough>
         </Screen>

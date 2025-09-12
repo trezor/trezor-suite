@@ -20,6 +20,7 @@ import { updateOnboardingAnalyticsAtom } from '../../../atoms';
 
 type WalletBackupTutorialStep6Props = WalletBackupTutorialNumberedStepProps & {
     selectedType: BackupType;
+    stepIndex?: number;
 };
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -31,11 +32,12 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const WalletBackupTutorialStep6 = ({
     currentStepIndex,
     selectedType,
+    stepIndex,
 }: WalletBackupTutorialStep6Props) => {
     const navigation = useNavigation<NavigationProps>();
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
-    const isStepFocused = useDerivedValue(() => currentStepIndex.value === 5);
+    const isStepFocused = useDerivedValue(() => currentStepIndex.value === stepIndex);
 
     const isMultishareSelected = selectedType === 'shamir-advanced';
 
