@@ -1,10 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils/';
 import { isThpDevice } from '@suite-common/suite-utils';
-import { thpActions } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { THP_PREFIX } from './thpActions';
+import { THP_PREFIX, thpActions } from './thpActions';
 
 type RemoveThpAutoconnectThunkParams =
     | {
