@@ -39,7 +39,7 @@ import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceCon
 import {
     selectDeviceById,
     selectDevices,
-    selectPhysicalDevices,
+    selectPhysicalDeviceWallets,
     selectSelectedDevice,
 } from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -144,8 +144,8 @@ export const forgetDisconnectedDevices = createThunk(
 export const forgetAllDisconnectedDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetAllDisconnectedDevices`,
     (_, { dispatch, getState }) => {
-        const physicalDevices = selectPhysicalDevices(getState());
-        physicalDevices.forEach(device => {
+        const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
+        physicalDeviceWallets.forEach(device => {
             if (!device.connected) {
                 dispatch(forgetDisconnectedDevices({ device, forceForget: true }));
             }
@@ -458,10 +458,10 @@ export const wipeDeviceThunk = createThunk(
 export const toggleAutoEjectThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
     (_, { dispatch, getState }) => {
-        const physicalDevices = selectPhysicalDevices(getState());
+        const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
         dispatch(deviceActions.toggleIsDeviceAutoEjectEnabled());
 
-        physicalDevices.forEach(wallet => {
+        physicalDeviceWallets.forEach(wallet => {
             if (!wallet.connected && wallet.remember) {
                 dispatch(deviceActions.forgetDevice({ device: wallet }));
             } else {
