@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-09-05T14:00:00+00:00",
-    "sequence": 110,
+    "timestamp": "2025-09-12T14:00:00+00:00",
+    "sequence": 111,
     "actions": [
         {
             "conditions": [
@@ -1837,9 +1837,9 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=25.8.0 <25.9.0",
+                        "desktop": ">=25.8.0 <25.9.2",
                         "mobile": "!",
-                        "web": ">=25.8.0 <25.9.0"
+                        "web": ">=25.8.0 <25.9.2"
                     }
                 }
             ],
