@@ -85,6 +85,7 @@ export type AuthorizedDevice = AcquiredDevice & {
  */
 export type DeviceWithEmptyPath = Omit<AcquiredDevice, 'path'> & { path: '' };
 
+type PersistedDeviceKey = UnionSubset<keyof AcquiredDevice, 'thp' | 'bluetoothProps'>;
 type PersistedFeatureKey = UnionSubset<
     keyof Features,
     | 'device_id'
@@ -95,9 +96,10 @@ type PersistedFeatureKey = UnionSubset<
     | 'label'
     | 'initialized'
 >;
-export type PersistentDeviceData = Pick<Features, PersistedFeatureKey> & {
-    firmwareVersion: VersionArray | null;
-    lastConnectedBy: 'bluetooth' | 'usb' | null;
-    // TODO move devicesWithFailedEntropyCheck to this object, including persistence & migration
-    // TODO move deviceAuthenticity to this object and newly introduce persistence
-};
+export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
+    Pick<Features, PersistedFeatureKey> & {
+        firmwareVersion: VersionArray | null;
+        lastConnectedBy: 'bluetooth' | 'usb' | null;
+        // TODO move devicesWithFailedEntropyCheck to this object, including persistence & migration
+        // TODO move deviceAuthenticity to this object and newly introduce persistence
+    };
