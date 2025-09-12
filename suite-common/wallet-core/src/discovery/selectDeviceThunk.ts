@@ -2,9 +2,10 @@ import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
 import { Device } from '@trezor/connect';
+import { isNative } from '@trezor/env-utils';
 
 import { DEVICE_MODULE_PREFIX, deviceActions } from '../device/deviceActions';
-import { selectDevices } from '../device/deviceSelectors';
+import { selectDevices, selectIsSameOrNewDevice } from '../device/deviceSelectors';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -43,5 +44,18 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
         ) {
             dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));
         }
+    },
+);
+
+export const selectNewlyConnectedDeviceThunk = createThunk<void, SelectDeviceThunkParams, void>(
+    `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
+    ({ device }, { dispatch, getState, rejectWithValue }) => {
+        if (!isNative() && !selectIsSameOrNewDevice(getState(), device)) {
+            // Select automatically when it is the first known device (none selected),
+            // or when we connected physical device corresponding to a selected remembered wallet.
+            return rejectWithValue('no-need-to-select');
+        }
+
+        dispatch(selectDeviceThunk({ device }));
     },
 );
