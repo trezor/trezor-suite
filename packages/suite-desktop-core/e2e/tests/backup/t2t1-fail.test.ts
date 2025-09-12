@@ -1,3 +1,5 @@
+import { escapeRegExp } from 'lodash';
+
 import messages from '@trezor/suite/src/support/messages';
 import { EventType } from '@trezor/suite-analytics';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
@@ -59,9 +61,12 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
             await expect(onboardingPage.backup.failedBackupSetting).toContainText(
                 messages['TR_BACKUP_RECOVERY_SEED_FAILED_DESC'].defaultMessage,
             );
+            // removes URL query params .../recovery-issues?utm_medium=desktop|web|???
+            const urlBase = HELP_CENTER_RECOVERY_ISSUES_URL.split('?')[0];
+            const urlBaseRegexp = new RegExp(escapeRegExp(urlBase));
             await expect(onboardingPage.backup.backupFailedSettingLink).toHaveAttribute(
                 'href',
-                HELP_CENTER_RECOVERY_ISSUES_URL,
+                urlBaseRegexp,
             );
             await expect(onboardingPage.backup.backupFailedSettingButton).toBeDisabled();
         });

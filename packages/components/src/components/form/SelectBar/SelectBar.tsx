@@ -214,6 +214,7 @@ export const SelectBar = <V extends ValueTypes>({
                                         onClick={handleOptionClick(option)}
                                         $isDisabled={!!isDisabled}
                                         $isSelected={isSelected}
+                                        data-isdisabled={!!isDisabled}
                                         data-testid={`select-bar/${String(option.value)}`}
                                     >
                                         <Column

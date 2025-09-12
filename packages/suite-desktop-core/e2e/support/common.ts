@@ -210,3 +210,15 @@ export const analyzeObject = (obj: any): any => {
 
     return obj;
 };
+
+export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =>
+    JSON.stringify(
+        Object.fromEntries(
+            Object.entries(fields).map(([key, value]) => [
+                key,
+                typeof value === 'undefined' ? 'warning: undefined' : value,
+            ]),
+        ),
+        null,
+        2,
+    );

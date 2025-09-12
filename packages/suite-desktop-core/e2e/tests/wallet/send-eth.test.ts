@@ -47,10 +47,11 @@ test.describe('Send Eth', { tag: ['@group=wallet'] }, () => {
             await tradingPage.fees.expectEthereumFeeCalculated();
             await tradingPage.sendAddressInput.fill(sendAddress);
             await tradingPage.sendAmountInput.fill(sendAmount);
-            await tradingPage.fees.switchModeButton('custom').click();
-            await tradingPage.fees.ethereumFeeLimit.fill(gasLimit);
-            await tradingPage.fees.ethereumMaxFeePerGas.fill(maxFeePerGas);
-            await tradingPage.fees.ethereumMaxPriorityFeePerGas.fill(maxPriorityFeePerGas);
+            await tradingPage.fees.setEthereumCustomFees({
+                gasLimit,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+            });
         });
 
         const { ethereumMaximumFee, errorMessageMaxCalculation } =

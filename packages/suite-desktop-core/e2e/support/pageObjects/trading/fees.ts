@@ -50,7 +50,7 @@ export class Fees {
             isSolanaResponse(response, 'simulateTransaction'),
         );
 
-        // Suite calls the each request twice and we have to wait for all of them
+        // Suite calls each request twice and we have to wait for all of them
         return Promise.all([
             getFeeForMessagePromise,
             getRecentPrioritizationFeesPromise,
@@ -162,5 +162,23 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         await TrezorUserEnvLinkProxy.clickEmu(burgerMenuCoordinates);
         const feeInfoCoordinates = { x: 125, y: 100 };
         await TrezorUserEnvLinkProxy.clickEmu(feeInfoCoordinates);
+    }
+
+    @step()
+    async switchToCustom() {
+        await expect(this.switchModeButton('custom')).toHaveAttribute('data-isdisabled', 'false');
+        await this.switchModeButton('custom').click();
+    }
+
+    @step()
+    async setEthereumCustomFees(input: {
+        gasLimit: string;
+        maxFeePerGas: string;
+        maxPriorityFeePerGas: string;
+    }) {
+        await this.switchToCustom();
+        await this.ethereumFeeLimit.fill(input.gasLimit);
+        await this.ethereumMaxFeePerGas.fill(input.maxFeePerGas);
+        await this.ethereumMaxPriorityFeePerGas.fill(input.maxPriorityFeePerGas);
     }
 }
