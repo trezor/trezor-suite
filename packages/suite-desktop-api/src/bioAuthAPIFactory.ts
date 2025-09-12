@@ -1,6 +1,6 @@
-import { IpcRendererEvent } from 'electron';
+import { type IpcRendererEvent } from 'electron';
 
-import { StrictIpcRenderer } from './ipc';
+import { type StrictIpcRenderer } from './ipc';
 
 const BIO_AUTH_TIMEOUT = 60 * 1000;
 

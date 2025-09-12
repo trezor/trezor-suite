@@ -1,8 +1,8 @@
 import type { IpcRendererEvent } from 'electron';
 
-import { DesktopApi, RendererChannels } from './api';
+import { type DesktopApi, type RendererChannels } from './api';
 import { createBioAuthAPI } from './bioAuthAPIFactory';
-import { StrictIpcRenderer } from './ipc';
+import { type StrictIpcRenderer } from './ipc';
 import * as validation from './validation';
 
 // Provide fallback for missing ipcRenderer
