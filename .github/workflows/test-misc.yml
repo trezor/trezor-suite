@@ -57,6 +57,21 @@ jobs:
 
       - run: ./scripts/ci/find_duplicates.sh ./packages/suite-data/files ${{ matrix.extension }}
 
+  test-madge-circular-imports:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: ./scripts/circular-dependencies/check-circular-dependencies.sh
+
   test-unit:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'

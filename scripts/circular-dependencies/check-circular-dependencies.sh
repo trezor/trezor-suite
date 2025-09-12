@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -uo pipefail   # no -e here, we’ll handle errors manually
+
+SNAPSHOT_FILE="scripts/circular-dependencies/madge-snapshot.txt"
+TMP_FILE="$(mktemp)"
+
+# Run madge, allow it to fail
+if ! npx madge --circular --extensions ts,tsx,js,jsx --exclude "node_modules|lib|libDev" packages suite suite-native suite-common | tail -n +2 > "$TMP_FILE"; then
+  echo "⚠️ madge exited with non-zero status, continuing to compare results..."
+  echo
+fi
+
+# Compare results
+if ! git diff --no-index --color=always "$SNAPSHOT_FILE" "$TMP_FILE"; then
+  echo
+  echo "❌ Circular dependency snapshot mismatch!"
+  echo "Update the snapshot with:"
+  echo "  npx madge --circular --extensions ts,tsx,js,jsx --exclude \"node_modules|lib|libDev\" packages suite suite-native suite-common | tail -n +2 > $SNAPSHOT_FILE"
+  rm -f "$TMP_FILE"
+  exit 1
+fi
+
+echo "✅ Circular dependencies match snapshot."
+rm -f "$TMP_FILE"
+exit 0
