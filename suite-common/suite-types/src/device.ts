@@ -3,12 +3,14 @@ import {
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
+    Features,
     KnownDevice,
     PROTO,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
-import { Branded } from '@trezor/type-utils';
+import { VersionArray } from '@trezor/device-utils';
+import { Branded, UnionSubset } from '@trezor/type-utils';
 
 // Extend original ButtonRequestMessage from @trezor/connect
 // suite (deviceReducer) stores them in slightly different shape:
@@ -82,3 +84,20 @@ export type AuthorizedDevice = AcquiredDevice & {
  * used when saving device to storage
  */
 export type DeviceWithEmptyPath = Omit<AcquiredDevice, 'path'> & { path: '' };
+
+type PersistedFeatureKey = UnionSubset<
+    keyof Features,
+    | 'device_id'
+    | 'internal_model'
+    | 'fw_vendor'
+    | 'revision'
+    | 'unit_color'
+    | 'label'
+    | 'initialized'
+>;
+export type PersistentDeviceData = Pick<Features, PersistedFeatureKey> & {
+    firmwareVersion: VersionArray | null;
+    lastConnectedBy: 'bluetooth' | 'usb' | null;
+    // TODO move devicesWithFailedEntropyCheck to this object, including persistence & migration
+    // TODO move deviceAuthenticity to this object and newly introduce persistence
+};
