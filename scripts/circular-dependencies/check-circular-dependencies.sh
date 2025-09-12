@@ -18,7 +18,7 @@ if ! git diff --no-index --color=always "$SNAPSHOT_FILE" "$TMP_FILE"; then
   echo
   echo "❌ Circular dependency snapshot mismatch!"
   echo "Update the snapshot with:"
-  echo "  npx madge --circular --extensions ts,tsx,js,jsx --exclude \"node_modules|lib|libDev\" packages suite suite-native suite-common | tail -n +2 | sed 's/^[0-9]\+) *//' | sort > $SNAPSHOT_FILE"
+  echo "  LC_ALL=C npx madge --circular --extensions ts,tsx,js,jsx --exclude \"node_modules|lib|libDev\" packages suite suite-native suite-common | tail -n +2 | sed 's/^[0-9]\+) *//' | sort > $SNAPSHOT_FILE"
   rm -f "$TMP_FILE"
   exit 1
 fi

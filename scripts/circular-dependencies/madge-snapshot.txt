@@ -271,7 +271,6 @@ suite-common/graph/src/graphDataFetching.ts > suite-common/graph/src/graphUtils.
 suite-common/intl-types/src/index.ts > suite-common/intl-types/src/types.ts > packages/suite/src/components/suite/Translation.tsx
 suite-common/local-first-storage/src/labeling/labelingReducer.ts > suite-common/local-first-storage/src/labeling/labelingSelectors.ts
 suite-common/staking-solana/src/index.ts > suite-common/staking-solana/src/utils/index.ts > suite-common/staking-solana/src/utils/stakingUtils.ts
-suite-common/thp/src/index.ts > suite-common/thp/src/removeThpAutoconnectThunk.ts
 suite-common/trading/src/index.ts > suite-common/trading/src/hooks/useTradingInfo.ts > suite-common/trading/src/hooks/useSelector.ts > suite-common/trading/src/types.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/confirmBuyTradeThunk.ts > suite-common/trading/src/invityAPI.ts
 suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/confirmBuyTradeThunk.ts
 suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/index.ts > suite-common/trading/src/thunks/buy/confirmBuyTradeThunk.ts > suite-common/trading/src/selectors/tradingSelectors.ts
