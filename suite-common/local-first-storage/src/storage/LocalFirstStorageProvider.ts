@@ -28,7 +28,7 @@ type CreateEvoluInstanceProps = {
 const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
     const evoluOwnerId = getOrThrow(OwnerId.from(createIdFromString(evoluKeys.ownerId)));
 
-    const sanitizedOwnerId = evoluOwnerId.replace('_', '-');
+    const sanitizedOwnerId = evoluOwnerId.replaceAll('_', '-');
     const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${sanitizedOwnerId}`);
 
     if (!databaseName.ok) {
