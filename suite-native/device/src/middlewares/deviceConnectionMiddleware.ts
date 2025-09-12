@@ -23,7 +23,6 @@ import {
     HomeStackRoutes,
     RootStackRoutes,
     checkIsActiveRouteAnyOf,
-    checkIsActiveRouteAnyOfBlacklisted,
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
@@ -118,7 +117,7 @@ deviceConnectionMiddleware.startListening({
     ) => {
         const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
 
-        if (!checkIsActiveRouteAnyOfBlacklisted(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
+        if (checkIsActiveRouteAnyOf(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
 
         // During firmware installation, device restarts (disconnect + connect) and we want to ignore it.
         if (selectIsFirmwareInstallationRunning(getState())) return;
@@ -162,11 +161,13 @@ deviceConnectionMiddleware.startListening({
         const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(getState());
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
 
-        const isDeviceDisconnectionNavigationAllowed = checkIsActiveRouteAnyOfBlacklisted(
-            buildDisconnectionBlacklist(isEntropyCheckEnabledAndFailed, isDeviceRemembered),
-        );
-
-        if (!isDeviceDisconnectionNavigationAllowed || isFirmwareInstallationRunning) return;
+        if (
+            checkIsActiveRouteAnyOf(
+                buildDisconnectionBlacklist(isEntropyCheckEnabledAndFailed, isDeviceRemembered),
+            ) ||
+            isFirmwareInstallationRunning
+        )
+            return;
 
         if (checkIsActiveRouteAnyOf([RootStackRoutes.DeviceOnboardingStack])) {
             navigationContainerRef.navigate(RootStackRoutes.DeviceOnboardingStack, {
