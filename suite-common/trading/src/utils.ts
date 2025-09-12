@@ -385,8 +385,7 @@ export const getTradingFormState = ({
                 !trade.receiveStringAmount ||
                 !trade.send ||
                 !trade.sendStringAmount ||
-                !provider?.companyName ||
-                !isSlip24Active
+                !provider?.companyName
             ) {
                 return defaultState;
             }

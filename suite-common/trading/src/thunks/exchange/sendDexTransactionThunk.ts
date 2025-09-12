@@ -42,7 +42,6 @@ export const sendDexTransactionThunk = createThunk<
             account,
             returnUrl,
             setMaxOutputId,
-            isSlip24Active,
             nextStep,
             processResponseData,
             triggerAnalyticsTradeConfirmation,
@@ -71,7 +70,7 @@ export const sendDexTransactionThunk = createThunk<
             activeSection: 'exchange',
             providers,
             trade: selectedQuote,
-            isSlip24Active,
+            isSlip24Active: false,
             sendAccountKey: account.key,
             receiveAccountKey,
         });
