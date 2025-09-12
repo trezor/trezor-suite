@@ -9,7 +9,7 @@ test.describe(
     { tag: ['@group=settings', '@desktopOnly'] },
     () => {
         test.beforeEach(async ({ onboardingPage }) => {
-            await onboardingPage.completeOnboarding();
+            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
         });
 
         test(

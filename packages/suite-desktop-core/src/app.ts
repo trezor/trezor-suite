@@ -65,6 +65,7 @@ const createMainWindow = (winBounds: WinBounds, store: Store) => {
             webSecurity: !isDevEnv,
             allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
+            additionalArguments: hasSwitch('expose-store') ? ['--expose-store'] : [],
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
         backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].backgroundSurfaceElevation0,

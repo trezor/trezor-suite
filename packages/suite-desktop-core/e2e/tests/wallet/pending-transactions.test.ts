@@ -38,7 +38,7 @@ test.describe(
                 await page.waitForTimeout(5_000);
             });
 
-            await onboardingPage.completeOnboarding();
+            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
             await settingsPage.changeNetworks({
                 enableNetworks: ['regtest'],
                 disableNetworks: ['btc'],
