@@ -24,6 +24,7 @@ export * from './device/usePinHook';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoveryThunks';
+export * from './discovery/selectDeviceThunk';
 export * from './discovery/discoverySelectors';
 export * from './fees/feesActions';
 export * from './fees/feesConstants';

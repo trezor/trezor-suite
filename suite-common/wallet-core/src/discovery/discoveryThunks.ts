@@ -26,8 +26,8 @@ import {
     selectSelectedDevice,
     selectStandardWalletDevice,
 } from '../device/deviceSelectors';
-import { selectDeviceThunk } from '../device/deviceThunks';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
+import { selectDeviceThunk } from './selectDeviceThunk';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
