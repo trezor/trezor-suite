@@ -1,12 +1,12 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { getFeedbackUrl } from './feedbackUtils';
-import { Feedback } from './types';
+import { Feedback } from './feedback';
+import { getFeedbackUrl } from './getFeedbackUrl';
 
 const FEEDBACK_MODULE_PREFIX = '@suite/feedback';
 
-export const sendFeedback = createThunk<void, Feedback>(
+export const sendFeedbackAction = createThunk<void, Feedback>(
     `${FEEDBACK_MODULE_PREFIX}/sendFeedback`,
     async ({ type, payload }, { dispatch, rejectWithValue }) => {
         const url = getFeedbackUrl(type);

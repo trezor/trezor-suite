@@ -7,7 +7,7 @@ import {
     SellTradeStatus,
 } from 'invity-api';
 
-import { Rating, buildUserFeedbackData, sendFeedback } from '@suite-common/feedback';
+import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { ExperimentId } from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
 import { Button, Card, Column, IconCircle, Row, Text, Textarea } from '@trezor/components';
@@ -47,7 +47,7 @@ export const TradingDetailFeedback = ({
         const userData = buildUserFeedbackData(device);
 
         dispatch(
-            sendFeedback({
+            sendFeedbackAction({
                 type: 'SUGGESTION',
                 payload: {
                     category: 'trade',

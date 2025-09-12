@@ -1,6 +1,7 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import {
+    Environment,
     getCommitHash,
     getEnvironment,
     getOsName,
@@ -8,11 +9,20 @@ import {
     getUserAgent,
     getWindowHeight,
     getWindowWidth,
-    isCodesignBuild,
 } from '@trezor/env-utils';
 
-import { FEEDBACK_ENDPOINT } from './constants';
-import { FeedbackType, UserData } from './types';
+export interface UserData {
+    platform: Environment;
+    os: string;
+    user_agent: string;
+    suite_version: string;
+    suite_revision: string;
+    window_dimensions: string;
+    device_model?: DeviceModelInternal;
+    firmware_version: string;
+    firmware_revision: string;
+    firmware_type: string;
+}
 
 export const buildUserFeedbackData = (device?: TrezorDevice): UserData => ({
     platform: getEnvironment(),
@@ -26,14 +36,3 @@ export const buildUserFeedbackData = (device?: TrezorDevice): UserData => ({
     firmware_revision: device?.features?.revision || '',
     firmware_type: device?.firmwareType || '',
 });
-
-export const getFeedbackUrl = (type: FeedbackType) => {
-    const typeUri = type === 'BUG' ? 'bugs' : 'feedback';
-    const base = `${FEEDBACK_ENDPOINT}/${typeUri}`;
-
-    if (isCodesignBuild()) {
-        return `${base}/stable.log`;
-    }
-
-    return `${base}/develop.log`;
-};

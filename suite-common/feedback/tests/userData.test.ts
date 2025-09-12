@@ -2,25 +2,9 @@ import { testMocks } from '@suite-common/test-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import * as helpers from '@trezor/env-utils';
 
-import { FeedbackType, buildUserFeedbackData, getFeedbackUrl } from '../src';
-import { FEEDBACK_ENDPOINT } from '../src/constants';
+import { buildUserFeedbackData } from '../src/userData';
 
-describe('getFeedbackUrl', () => {
-    it.each([
-        ['BUG', true, `${FEEDBACK_ENDPOINT}/bugs/stable.log`],
-        ['BUG', false, `${FEEDBACK_ENDPOINT}/bugs/develop.log`],
-        ['SUGGESTION', true, `${FEEDBACK_ENDPOINT}/feedback/stable.log`],
-        ['SUGGESTION', false, `${FEEDBACK_ENDPOINT}/feedback/develop.log`],
-    ] as Array<[FeedbackType, boolean, string]>)(
-        '(%s, codesign=%s) → %s',
-        (type, isCodesignBuild, expected) => {
-            jest.spyOn(helpers, 'isCodesignBuild').mockReturnValue(isCodesignBuild);
-            expect(getFeedbackUrl(type)).toBe(expected);
-        },
-    );
-});
-
-describe('buildUserFeedbackData', () => {
+describe(buildUserFeedbackData.name, () => {
     beforeEach(() => {
         jest.spyOn(helpers, 'getEnvironment').mockReturnValue('desktop');
         jest.spyOn(helpers, 'getOsName').mockReturnValue('linux');
