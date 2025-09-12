@@ -1,10 +1,13 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
+import { selectThpStep } from '@suite-common/thp';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { OnboardingLayout } from 'src/components/onboarding';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useOnboarding } from 'src/hooks/suite';
+import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
 import { BackupStep } from 'src/views/onboarding/steps/Backup';
 import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
@@ -20,7 +23,19 @@ import { DeviceTutorial } from './steps/DeviceTutorial';
 import { DeviceAuthenticity } from './steps/SecurityCheck/DeviceAuthenticity';
 
 export const Onboarding = () => {
+    const dispatch = useDispatch();
+
     const { activeStepId, goToNextStep } = useOnboarding();
+    const device = useSelector(selectSelectedDevice);
+    const thpStep = useSelector(selectThpStep);
+
+    // This is a temporary hack until we refactor onboarding
+    // we cant include THP modals in the onboarding flow, so in a this specific edge we redirect user to the dashboard where onboarding starts over and picks up where it ended
+    useEffect(() => {
+        if (activeStepId !== STEP.ID_FIRMWARE_STEP && thpStep === 'ConfirmOnlyConnection') {
+            dispatch(goto('suite-index'));
+        }
+    }, [device, thpStep, activeStepId, dispatch]);
 
     const StepComponent = useMemo(() => {
         switch (activeStepId) {
