@@ -27,7 +27,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
     test('Swap custom fees for Bitcoin', async ({ page, tradingPage, devicePrompt }) => {
         let feeRate: string;
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.fees.switchModeButton('custom').click();
+            await tradingPage.fees.switchToCustom();
             await tradingPage.fees.customInput.fill(customFee);
             await tradingPage.fillSwapForm({
                 amount: sendAmount,

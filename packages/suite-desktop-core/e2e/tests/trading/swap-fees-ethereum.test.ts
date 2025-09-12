@@ -37,10 +37,11 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
 
     test('Swap custom fees for Ethereum', async ({ page, tradingPage, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.fees.switchModeButton('custom').click();
-            await tradingPage.fees.ethereumFeeLimit.fill(gasLimit);
-            await tradingPage.fees.ethereumMaxFeePerGas.fill(maxFeePerGas);
-            await tradingPage.fees.ethereumMaxPriorityFeePerGas.fill(maxPriorityFeePerGas);
+            await tradingPage.fees.setEthereumCustomFees({
+                gasLimit,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+            });
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sendCurrency: 'ethereum',

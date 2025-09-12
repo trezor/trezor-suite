@@ -115,7 +115,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
             {
                 feeType: 'custom',
                 feeSwitchFunction: async () => {
-                    await tradingPage.fees.switchModeButton('custom').click();
+                    await tradingPage.fees.switchToCustom();
                     await tradingPage.fees.customInput.fill('10');
                 },
             },

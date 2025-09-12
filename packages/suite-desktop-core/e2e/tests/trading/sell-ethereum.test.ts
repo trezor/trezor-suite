@@ -67,10 +67,11 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
 
     test('Sell Ethereum', async ({ tradingPage, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
-            await tradingPage.fees.switchModeButton('custom').click();
-            await tradingPage.fees.ethereumFeeLimit.fill(gasLimit);
-            await tradingPage.fees.ethereumMaxFeePerGas.fill(maxFeePerGas);
-            await tradingPage.fees.ethereumMaxPriorityFeePerGas.fill(maxPriorityFeePerGas);
+            await tradingPage.fees.setEthereumCustomFees({
+                gasLimit,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+            });
             await tradingPage.fillSellForm(cryptoAmount, 'ethereum');
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
