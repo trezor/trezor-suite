@@ -2853,6 +2853,11 @@ export default defineMessages({
         defaultMessage: 'Enable auto-eject?',
         id: 'TR_AUTO_EJECT_CONFIRMATION_TITLE',
     },
+    TR_AUTO_EJECT_FORCED_TOOLTIP: {
+        id: 'TR_AUTO_EJECT_FORCED_TOOLTIP',
+        defaultMessage:
+            'All wallets will be auto-ejected as storing device-related data is disabled.',
+    },
     TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE: {
         id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE',
         defaultMessage: 'Store device-related data',
@@ -2887,6 +2892,10 @@ export default defineMessages({
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION',
         defaultMessage:
             'No data gets stored, advanced security features are disabled. Requires secure pairing connection to be reestablished every time. For experienced users only. Use at your own risk.',
+    },
+    TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE: {
+        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE',
+        defaultMessage: 'Advanced',
     },
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
