@@ -2,7 +2,7 @@ import { navigationContainerRef } from './components/NavigationContainerWithAnal
 import { DeviceOnboardingStackRoutes, HomeStackRoutes, RootStackRoutes } from './routes';
 
 type RouteType = RootStackRoutes | DeviceOnboardingStackRoutes | HomeStackRoutes;
-type Routes = RouteType[];
+export type Routes = RouteType[];
 
 const getActiveRouteName = () =>
     navigationContainerRef.getState()?.routes.at(-1)?.name as RouteType;
@@ -14,6 +14,3 @@ export const checkIsActiveRouteAnyOf = (routeList: Routes) => {
 
     return routeList.includes(activeRouteName);
 };
-
-export const checkIsActiveRouteAnyOfBlacklisted = (blacklist: Routes) =>
-    !checkIsActiveRouteAnyOf(blacklist);
