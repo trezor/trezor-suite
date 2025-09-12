@@ -172,6 +172,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                 isBluetoothMode={isBluetoothMode}
                 onRescan={onReScanClick}
                 onGoBack={toggleShowHints}
+                onClose={onCancel}
                 onStillDontWork={toggleShouldPairAgain}
             />
         );

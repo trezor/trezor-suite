@@ -28,6 +28,7 @@ type DontSeeYourTrezorModalProps = {
     onGoBack: () => void;
     onRescan: () => void;
     onStillDontWork: () => void;
+    onClose: () => void;
 };
 
 const commonCableTips = [
@@ -41,6 +42,7 @@ export const CantSeeTrezorModal = ({
     isBluetoothMode,
     onRescan,
     onStillDontWork,
+    onClose,
 }: DontSeeYourTrezorModalProps) => {
     const nearbyDevices = useSelector(selectNearbyDevices);
     const knownDevices = useSelector(selectKnownDevices);
@@ -102,6 +104,7 @@ export const CantSeeTrezorModal = ({
             onGoBack();
         } else {
             openTrezorSupport();
+            onClose();
         }
     };
 
@@ -120,7 +123,7 @@ export const CantSeeTrezorModal = ({
                 </>
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
-            onCancel={onGoBack}
+            onCancel={onClose}
         >
             <TroubleshootingTipsList items={tipItems} />
         </Modal>
