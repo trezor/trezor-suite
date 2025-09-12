@@ -1,4 +1,5 @@
 import type { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { deviceActions, forgetSingleDevicePersistentDataThunk } from '@suite-common/wallet-core';
 import { IconButton, Paragraph, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -23,8 +24,10 @@ export const TemporaryForgetDeviceButton = ({
     const isDebug = useSelector(selectIsDebugModeActive);
     if (!isDebug) return null;
 
+    if (!isDeviceAcquired(device)) return null;
+
     const handleClick = () => {
-        dispatch(forgetSingleDevicePersistentDataThunk({ device }));
+        dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: device.id }));
 
         instances.forEach(instance => {
             dispatch(deviceActions.forgetDevice({ device: instance }));

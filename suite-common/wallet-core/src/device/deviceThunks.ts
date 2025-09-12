@@ -1,4 +1,4 @@
-import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -39,6 +39,7 @@ import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceCon
 import {
     selectDeviceById,
     selectDevices,
+    selectPersistentDeviceData,
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
 } from './deviceSelectors';
@@ -417,44 +418,53 @@ export const toggleAutoEjectThunk = createThunk(
 );
 
 type ForgetAllDeviceDataThunkParams = {
-    device: TrezorDevice;
+    deviceId: AcquiredDevice['id'];
 };
 
 /**
- * This thunk is the central place to remove all persistent data related to a device.
+ * This thunk is the central place to remove all persistent data related to a device_id.
+ * This includes wallets, `persistentDeviceData`, Bluetooth, THP.
+ * But not wallets, see `forgetDevice` (ejecting wallets & forgetting the rest are separate features).
  */
 export const forgetSingleDevicePersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
-    ({ device }: ForgetAllDeviceDataThunkParams, { dispatch, extra }) => {
-        if (typeof device.id === 'string') {
-            dispatch(deviceActions.forgetDevicePersistentData({ deviceId: device.id }));
-        }
-        if (device.bluetoothProps !== undefined) {
-            dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
+    ({ deviceId }: ForgetAllDeviceDataThunkParams, { dispatch, extra, getState }) => {
+        const persistentDeviceData = selectPersistentDeviceData(getState());
+
+        dispatch(deviceActions.forgetDevicePersistentData({ deviceId }));
+
+        const matchingDevice = persistentDeviceData.find(d => d.device_id === deviceId);
+        if (matchingDevice === undefined) return;
+
+        const bluetoothId = matchingDevice.bluetoothProps?.id;
+        if (bluetoothId !== undefined) {
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
             // try to remove OS-level Bluetooth bonds, if supported by the platform
-            dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId: device.bluetoothProps.id }));
+            dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId }));
         }
-        if (isThpDevice(device)) {
-            dispatch(thpActions.removeCredentials({ credentials: device.thp.credentials }));
+        const credentials = matchingDevice.thp?.credentials;
+        if (credentials !== undefined) {
+            dispatch(thpActions.removeCredentials({ credentials }));
         }
     },
 );
 
 /**
  * Helper thunk to do the same as `forgetSingleDevicePersistentDataThunk`, but for all devices as well as orphaned data.
- * Note that if you eject wallets, but BT, THP and persistentDeviceData are stil remembered, than they cannot be matched
- * by iterating through `devices`. So this thunk removes all data in a single swoop.
+ * Note that if you eject wallets, but BT, THP and persistentDeviceData are stil remembered,
+ * than they cannot be matched by iterating through `devices`, though they are in `persistentDeviceData`.
  */
 export const forgetAllDevicesPersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetAllDevicesPersistentDataThunk`,
-    (_, { dispatch, getState, extra }) => {
+    (_, { dispatch, getState }) => {
+        selectPersistentDeviceData(getState()).forEach(({ device_id }) =>
+            dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: device_id })),
+        );
+
+        // just to be extra sure that no trace of orphaned data is left:
         dispatch(deviceActions.forgetAllDevicesPersistentData());
         dispatch(thpActions.removeAllCredentials());
         dispatch(bluetoothActions.knownDevicesUpdateAction({ knownDevices: [] }));
-        // try to remove OS-level Bluetooth bonds for each device, if supported by the platform
-        selectKnownDevices(getState()).forEach(knownDevice => {
-            dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId: knownDevice.id }));
-        });
     },
 );
 
@@ -494,9 +504,11 @@ export const wipeDeviceThunk = createThunk(
                 dispatch(deviceActions.forgetDevice({ device: d }));
             });
 
-            // Wiping a device changes bluetoothId and THP static key, so wipe BT known device & THP credentials
-            // (and persistent device data as well, because device.id changed).
-            dispatch(forgetSingleDevicePersistentDataThunk({ device }));
+            if (device.id !== undefined) {
+                // Wiping a device changes bluetoothId and THP static key, so wipe BT known device & THP credentials
+                // (and persistent device data as well, because device.id changed).
+                dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: device.id }));
+            }
 
             dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
 

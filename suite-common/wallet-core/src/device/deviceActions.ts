@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
+    AcquiredDevice,
     ButtonRequest,
     EvoluKeys,
     ThpSuiteCredentials,
@@ -74,7 +75,7 @@ const forgetDevice = createAction(
 // Forget persistent deviceReducer data for a device. See `forgetSingleDevicePersistentDataThunk` for all device-associated data.
 const forgetDevicePersistentData = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevicePersistentData`,
-    (payload: { deviceId: string }) => ({ payload }),
+    (payload: { deviceId: AcquiredDevice['id'] }) => ({ payload }),
 );
 
 // Forget persistent deviceReducer data for all devices. See `forgetAllDevicesPersistentDataThunk` for all device-associated data.
