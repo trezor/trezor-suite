@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from './';
+import { DeviceModelInternal } from './deviceModelInternal';
 
 type ModelColor = string;
 type ModelFrontColor = string;
