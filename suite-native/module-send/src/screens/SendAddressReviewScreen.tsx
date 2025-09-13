@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -13,12 +12,13 @@ import {
     SendStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-
-import { AddressReviewStepList } from '../components/AddressReviewStepList';
 import {
+    TransactionReviewOutputsState,
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
-} from '../selectors';
+} from '@suite-native/transaction-management';
+
+import { AddressReviewStepList } from '../components/AddressReviewStepList';
 
 export const SendAddressReviewScreen = ({
     route,
@@ -27,14 +27,12 @@ export const SendAddressReviewScreen = ({
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, currentHeaderHeight } =
         useConfirmOnTrezorController();
     const { accountKey, tokenContract } = route.params;
-    const isAddressConfirmed = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsReceiveAddressOutputConfirmed(state, accountKey, tokenContract),
+    const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsReceiveAddressOutputConfirmed(state, 'send', accountKey, tokenContract),
     );
 
-    const isTransactionReviewInProgress = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsTransactionReviewInProgress(state, accountKey, tokenContract),
+    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
     );
 
     useFocusEffect(

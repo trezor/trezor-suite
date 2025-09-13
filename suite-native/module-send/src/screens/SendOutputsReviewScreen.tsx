@@ -17,12 +17,12 @@ import {
     useNavigateToInitialScreen,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
+import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
-import { selectIsTransactionAlreadySigned } from '../selectors';
 
 const spacerStyle = prepareNativeStyle(_ => ({
     height: 150,

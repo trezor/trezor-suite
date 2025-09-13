@@ -1,15 +1,15 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { ReviewOutputItemList as TMReviewOutputItemList } from '@suite-native/transaction-management';
-
 import {
+    ReviewOutputItemList as TMReviewOutputItemList,
+    TransactionReviewOutputsState,
     selectIsTransactionAlreadySigned,
     selectReviewSummaryOutput,
     selectTransactionReviewActiveStepIndex,
-    selectTransactionReviewOutputs,
-} from '../selectors';
+    selectTransactionReviewOutputsFromDraft,
+} from '@suite-native/transaction-management';
+
 type ReviewOutputItemListProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
@@ -17,16 +17,14 @@ type ReviewOutputItemListProps = {
 
 export const ReviewOutputItemList = ({ accountKey, tokenContract }: ReviewOutputItemListProps) => {
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
-    const activeStep = useSelector((state: AccountsRootState & DeviceRootState & SendRootState) =>
-        selectTransactionReviewActiveStepIndex(state, accountKey, tokenContract),
+    const activeStep = useSelector((state: TransactionReviewOutputsState) =>
+        selectTransactionReviewActiveStepIndex(state, 'send', accountKey, tokenContract),
     );
-    const reviewOutputs = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectTransactionReviewOutputs(state, accountKey, tokenContract),
+    const reviewOutputs = useSelector((state: TransactionReviewOutputsState) =>
+        selectTransactionReviewOutputsFromDraft(state, 'send', accountKey, tokenContract),
     );
-    const summaryOutput = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectReviewSummaryOutput(state, accountKey, tokenContract),
+    const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
+        selectReviewSummaryOutput(state, 'send', accountKey, tokenContract),
     );
 
     return (

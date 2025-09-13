@@ -3,18 +3,18 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import {
+    TransactionReviewOutputsState,
+    selectIsDestinationTagOutputConfirmed,
+    selectIsTransactionReviewInProgress,
+} from '@suite-native/transaction-management';
 
 import { ReviewDestinationTagCard } from '../components/ReviewDestinationTagCard';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
-import {
-    selectIsDestinationTagOutputConfirmed,
-    selectIsTransactionReviewInProgress,
-} from '../selectors';
 
 export const SendDestinationTagReviewScreen = ({
     route,
@@ -25,13 +25,11 @@ export const SendDestinationTagReviewScreen = ({
 
     const { confirmOnTrezorRef, currentHeaderHeight } = useConfirmOnTrezorController();
 
-    const isTransactionReviewInProgress = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsTransactionReviewInProgress(state, accountKey, tokenContract),
+    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
     );
-    const isDestinationTagConfirmed = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsDestinationTagOutputConfirmed(state, accountKey, tokenContract),
+    const isDestinationTagConfirmed = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsDestinationTagOutputConfirmed(state, 'send', accountKey, tokenContract),
     );
 
     const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview({

@@ -1,13 +1,49 @@
+import { A, G, pipe } from '@mobily/ts-belt';
+
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    FormDraftRootState,
+    selectAccountByKey,
+    selectFormDraft,
+    selectSelectedDevice,
+    selectSendFormDraftByKey,
+    selectSendFormReviewButtonRequestsCount,
+    selectSendPrecomposedTx,
+    selectSendSerializedTx,
+} from '@suite-common/wallet-core';
+import {
+    AccountKey,
+    FormDraftWithSendKeyPrefix,
+    FormState,
+    GeneralPrecomposedTransaction,
+    ReviewOutputState,
+    TokenAddress,
+} from '@suite-common/wallet-types';
+import {
+    constructTransactionReviewOutputs,
+    getFormDraftKey,
+    getIsUpdatedSendFlow,
+    getTransactionReviewOutputState,
+    isFormDraftKeyPrefix,
+    isRbfBumpFeeTransaction,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { NativeSendRootState } from './sendFormSlice';
-import { NativeSupportedFeeLevel } from './types';
+import { NativeSupportedFeeLevel, StatefulReviewOutput } from './types';
+
+export type TransactionReviewOutputsState = NativeSendRootState &
+    AccountsRootState &
+    DeviceRootState &
+    FormDraftRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeSendRootState>();
+const createSendMemoizedSelector = createWeakMapSelector.withTypes<TransactionReviewOutputsState>();
 
 export const selectFeeLevels = (state: NativeSendRootState) => state.wallet.send.feeLevels;
+
 export const selectCustomFeeLevel = (
     state: NativeSendRootState,
 ): GeneralPrecomposedTransaction | undefined => state.wallet.send.feeLevels.custom;
@@ -35,3 +71,216 @@ export const selectFeeLevelTransactionBytes = createMemoizedSelector(
         return 0;
     },
 );
+
+export const selectIsTransactionAlreadySigned = (state: NativeSendRootState) => {
+    const serializedTx = selectSendSerializedTx(state);
+
+    return G.isNotNullable(serializedTx);
+};
+
+export const selectTransactionReviewOutputs = createSendMemoizedSelector(
+    [
+        state => state,
+        (
+            _state,
+            _accountKey: string,
+            _tokenContract?: TokenAddress,
+            precomposedForm?: FormState | null,
+        ) => precomposedForm,
+        selectSendPrecomposedTx,
+        selectAccountByKey,
+        selectSelectedDevice,
+        selectIsTransactionAlreadySigned,
+    ],
+    (state, precomposedForm, precomposedTx, account, device, isTransactionAlreadySigned) => {
+        if (!account || !device || !precomposedForm || !precomposedTx) {
+            return null;
+        }
+
+        const decreaseOutputId =
+            isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
+                ? precomposedForm?.setMaxOutputId
+                : undefined;
+
+        const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
+            state,
+            account?.symbol,
+            decreaseOutputId,
+        );
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            decreaseOutputId,
+            device,
+            precomposedForm,
+            precomposedTx,
+        });
+
+        const newFlowOutputs = getIsUpdatedSendFlow(device)
+            ? outputs
+            : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
+
+        return newFlowOutputs.map(
+            (output, outputIndex) =>
+                ({
+                    ...output,
+                    state: isTransactionAlreadySigned
+                        ? 'success'
+                        : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
+                }) as StatefulReviewOutput,
+        );
+    },
+);
+
+export const selectTransactionReviewOutputsFromDraft = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const formDraft = isFormDraftKeyPrefix(prefix)
+        ? // TODO: right now we do not use account key in trading-exchange for drafts
+          // and this piece of code is not used anywhere else
+          selectFormDraft<FormState>(state, getFormDraftKey(prefix, ''))
+        : selectSendFormDraftByKey(state, accountKey, tokenContract);
+
+    return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft);
+};
+
+export const selectIsTransactionReviewInProgress = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const outputs = selectTransactionReviewOutputsFromDraft(
+        state,
+        prefix,
+        accountKey,
+        tokenContract,
+    );
+
+    return G.isNotNullable(outputs) && A.isNotEmpty(outputs);
+};
+
+export const selectIsDestinationTagOutputConfirmed = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const outputs = selectTransactionReviewOutputsFromDraft(
+        state,
+        prefix,
+        accountKey,
+        tokenContract,
+    );
+    if (!outputs) {
+        return false;
+    }
+
+    return pipe(
+        outputs,
+        A.find(output => output.type === 'destination-tag' && output.state === 'success'),
+        G.isNotNullable,
+    );
+};
+
+export const selectIsReceiveAddressOutputConfirmed = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const outputs = selectTransactionReviewOutputsFromDraft(
+        state,
+        prefix,
+        accountKey,
+        tokenContract,
+    );
+    if (!outputs) {
+        return false;
+    }
+
+    return pipe(
+        outputs,
+        A.find(
+            output =>
+                // 'regular_legacy' is address of BTC accounts used in older firmware versions.
+                (output.type === 'address' || output.type === 'regular_legacy') &&
+                output.state === 'success',
+        ),
+        G.isNotNullable,
+    );
+};
+
+export const selectReviewSummaryOutputState = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
+
+    if (isTransactionAlreadySigned) {
+        return 'success';
+    }
+
+    const reviewOutputs = selectTransactionReviewOutputsFromDraft(
+        state,
+        prefix,
+        accountKey,
+        tokenContract,
+    );
+
+    if (reviewOutputs && A.all(reviewOutputs, output => output.state === 'success')) {
+        return 'active';
+    }
+
+    return undefined;
+};
+
+export const selectReviewSummaryOutput = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const precomposedTx = selectSendPrecomposedTx(state);
+
+    if (!precomposedTx) {
+        return null;
+    }
+
+    const { totalSpent, fee } = precomposedTx;
+
+    const outputState = selectReviewSummaryOutputState(state, prefix, accountKey, tokenContract);
+
+    return {
+        state: outputState as ReviewOutputState,
+        totalSpent,
+        fee,
+    };
+};
+
+export const selectTransactionReviewActiveStepIndex = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const reviewOutputs = selectTransactionReviewOutputsFromDraft(
+        state,
+        prefix,
+        accountKey,
+        tokenContract,
+    );
+
+    if (!reviewOutputs) {
+        return 0;
+    }
+
+    const activeIndex = reviewOutputs.findIndex(output => output.state === 'active');
+
+    return activeIndex === -1 ? reviewOutputs.length : activeIndex;
+};

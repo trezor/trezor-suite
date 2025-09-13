@@ -4,6 +4,7 @@ import {
     selectCustomFeeLevel,
     selectFeeLevelTransactionBytes,
     selectFeeLevels,
+    selectIsTransactionAlreadySigned,
 } from '../selectors';
 import { NativeSendRootState } from '../sendFormSlice';
 import { NativeSupportedFeeLevel } from '../types';
@@ -21,7 +22,7 @@ const createMockState = (
     },
 });
 
-describe('send selectors', () => {
+describe('transaction-management selectors', () => {
     describe('selectFeeLevels', () => {
         it('should return fee levels from state', () => {
             const mockFeeLevels: GeneralPrecomposedLevels = {
@@ -153,6 +154,20 @@ describe('send selectors', () => {
             const result = selectFeeLevelTransactionBytes(state, 'normal');
 
             expect(result).toBe(0);
+        });
+    });
+
+    describe('selectIsTransactionAlreadySigned', () => {
+        it('should be false when wallet.send.serializedTx is not defined', () => {
+            const state = createMockState();
+
+            expect(selectIsTransactionAlreadySigned(state)).toBe(false);
+        });
+
+        it('should be true when wallet.send.serializedTx is defined', () => {
+            const state = createMockState({ serializedTx: { tx: 'tx_data', symbol: 'btc' } });
+
+            expect(selectIsTransactionAlreadySigned(state)).toBe(true);
         });
     });
 });
