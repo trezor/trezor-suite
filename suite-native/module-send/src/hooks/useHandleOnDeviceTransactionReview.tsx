@@ -4,13 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import {
-    AccountsRootState,
-    DeviceRootState,
-    SendRootState,
-    selectIsDeviceRemembered,
-    sendFormActions,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceRemembered, sendFormActions } from '@suite-common/wallet-core';
 import { GeneralPrecomposedTransactionFinal, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
@@ -21,10 +15,13 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import {
+    TransactionReviewOutputsState,
+    selectIsTransactionReviewInProgress,
+} from '@suite-native/transaction-management';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
-import { selectIsTransactionReviewInProgress } from '../selectors';
 import { signTransactionNativeThunk } from '../sendFormThunks';
 import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert';
 
@@ -53,9 +50,8 @@ export const useHandleOnDeviceTransactionReview = ({
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
 
-    const isTransactionReviewInProgress = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsTransactionReviewInProgress(state, accountKey, tokenContract),
+    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
     );
 
     useEffect(() => {
@@ -73,7 +69,7 @@ export const useHandleOnDeviceTransactionReview = ({
         });
 
         return unsubscribe;
-    });
+    }, [navigation, isTransactionReviewInProgress, showReviewCancellationAlert, dispatch]);
 
     const handleOnDeviceTransactionReview = useCallback(async () => {
         const response = await dispatch(

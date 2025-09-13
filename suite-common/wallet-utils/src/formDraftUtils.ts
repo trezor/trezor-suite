@@ -1,4 +1,8 @@
-import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import type { FormDraftKeyPrefix, FormDraftWithSendKeyPrefix } from '@suite-common/wallet-types';
+
+export const isFormDraftKeyPrefix = (
+    prefix: FormDraftWithSendKeyPrefix,
+): prefix is FormDraftKeyPrefix => prefix !== 'send';
 
 export const getFormDraftKey = (prefix: FormDraftKeyPrefix, key: string) => `${prefix}/${key}`;
 

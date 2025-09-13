@@ -5,13 +5,14 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
+    TransactionReviewOutputsState,
+    selectIsTransactionReviewInProgress,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
 
@@ -20,7 +21,6 @@ import { AddressReviewStep } from './AddressReviewStep';
 import { CompareAddressHelpButton } from './CompareAddressHelpButton';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
-import { selectIsTransactionReviewInProgress } from '../selectors';
 
 const NUMBER_OF_STEPS = 3;
 
@@ -38,9 +38,8 @@ export const AddressReviewStepList = () => {
         transaction,
     });
     const setWasAppLeftDuringReview = useSetAtom(wasAppLeftDuringReviewAtom);
-    const isTransactionReviewInProgress = useSelector(
-        (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsTransactionReviewInProgress(state, accountKey, tokenContract),
+    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
     );
 
     useFocusEffect(
