@@ -12,7 +12,6 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../test-utils" },
         { "path": "../theme" },
