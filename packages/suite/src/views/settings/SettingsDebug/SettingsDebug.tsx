@@ -9,6 +9,7 @@ import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { Backends } from './Backends';
 import { BluetoothEnabledCheckbox } from './BluetoothEnabledCheckbox';
+import { BluetoothServerStatus } from './BluetoothServerStatus';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
@@ -95,6 +96,7 @@ export const SettingsDebug = () => {
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
                     <BluetoothEnabledCheckbox />
                     <ShowBluetoothDebugInfo />
+                    <BluetoothServerStatus />
                     <ForgetAllDevicesButton />
                 </SettingsSection>
             )}

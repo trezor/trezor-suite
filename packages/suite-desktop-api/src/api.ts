@@ -129,6 +129,8 @@ export interface InvokeChannels {
               success: false;
               message: string;
           };
+    //   todo:
+    'bluetooth/get-status': () => InvokeResult<any>;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -202,4 +204,6 @@ export type DesktopApi = {
     // bioAuth
     isBioAuthAvailable: DesktopApiInvoke<'bio-auth/is-bio-auth-available'>;
     validateBioAuth: DesktopApiInvoke<'bio-auth/validate-bio-auth'>;
+    // Bluetooth
+    getBluetoothStatus: DesktopApiInvoke<'bluetooth/get-status'>;
 };

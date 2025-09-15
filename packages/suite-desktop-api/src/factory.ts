@@ -197,5 +197,6 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         openSystemSettings: settings => ipcRenderer.invoke('system/open-settings', settings),
         validateBioAuth: payload => ipcRenderer.invoke('bio-auth/validate-bio-auth', payload),
         isBioAuthAvailable: () => ipcRenderer.invoke('bio-auth/is-bio-auth-available'),
+        getBluetoothStatus: () => ipcRenderer.invoke('bluetooth/get-status'),
     };
 };

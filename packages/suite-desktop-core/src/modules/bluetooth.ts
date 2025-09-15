@@ -1,7 +1,11 @@
 import { ipcMain } from 'electron';
 
 import { isMacOs } from '@trezor/env-utils';
-import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import {
+    IpcProxyHandlerOptions,
+    createIpcProxyHandler,
+    validateIpcMessage,
+} from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
 
@@ -133,6 +137,19 @@ export const init: ModuleInit = () => {
         killBluetoothProcess();
         bluetoothModuleState.getTransport = () => undefined;
     };
+
+    ipcMain.handle('bluetooth/get-status', async ipcEvent => {
+        validateIpcMessage(ipcEvent);
+
+        try {
+            const url = bluetoothProcess?.getUrl();
+            const status = await bluetoothProcess?.status();
+
+            return { success: true, payload: { url, ...status } };
+        } catch (error) {
+            return { success: false, error };
+        }
+    });
 
     return { onLoad, onQuit };
 };
