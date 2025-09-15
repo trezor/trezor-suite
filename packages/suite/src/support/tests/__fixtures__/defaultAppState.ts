@@ -19,7 +19,6 @@ export const initialAppState: AppState = {
     device: initialState,
     bluetooth: {
         unpairedDeviceNeedsManualOsRemoval: false,
-        isBluetoothListOpen: false,
         connectingDeviceIds: [],
         isUnpairingDevice: false,
         adapterStatus: 'unknown',
