@@ -16,7 +16,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../device" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
