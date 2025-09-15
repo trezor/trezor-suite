@@ -175,10 +175,10 @@ export const HELP_CENTER_TOR_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/tor-in-trezor-suite',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T1B1_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/downgrade-firmware-model-one',
+    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-model-one',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T2T1_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/downgrade-firmware-model-t',
+    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-model-t',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T3B1_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/downgrade-firmware-trezor-safe-3',
