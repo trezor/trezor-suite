@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "./libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics"
+        },
+        {
             "path": "../../suite-common/connect-init"
         },
         {
@@ -29,6 +32,7 @@
         {
             "path": "../../suite-common/walletconnect"
         },
+        { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
@@ -38,6 +42,7 @@
         { "path": "../connection-status" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../discovery" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../local-first-storage" },
@@ -63,10 +68,13 @@
             "path": "../module-staking-management"
         },
         { "path": "../module-trading" },
+        { "path": "../navigation" },
+        { "path": "../notifications" },
         { "path": "../receive" },
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../state" },
+        { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../transactions" },
@@ -74,11 +82,15 @@
             "path": "../../packages/bundler-security"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/react-native-usb"
+        },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/trezor-user-env-link"
         },
+        { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/test-utils"
         },
