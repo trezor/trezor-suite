@@ -1,0 +1,8 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": [
+        "// Todo: This need so be solved. See: https://github.com/trezor/trezor-suite/issues/21554",
+        "@suite-native/test-utils",
+        "@suite-native/toasts"
+    ]
+}
