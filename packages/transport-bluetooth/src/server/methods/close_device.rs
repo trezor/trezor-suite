@@ -14,7 +14,10 @@ pub async fn close_device(
     let id = params.id;
     info!("close_device {id}");
 
-    broadcast.send(ChannelMessage::Abort(AbortProcess::Read(id)));
+    broadcast.send(ChannelMessage::Abort(AbortProcess::NotificationStream(
+        id,
+        params.characteristic,
+    )));
 
     Ok(WsResponsePayload::Success { success: true })
 }

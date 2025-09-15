@@ -5,6 +5,7 @@ import {
     BluetoothDevice,
     BluetoothInfo,
     Logger,
+    NotificationCharacteristic,
     NotificationEvent,
     TrezorBluetoothSettings,
 } from './types';
@@ -30,10 +31,12 @@ type ForgetDeviceParams = {
 
 type OpenDeviceParams = {
     id: string;
+    characteristic?: NotificationCharacteristic;
 };
 
 type CloseDeviceParams = {
     id: string;
+    characteristic?: NotificationCharacteristic;
 };
 
 type WriteParams = {
