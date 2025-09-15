@@ -13,6 +13,9 @@
         "protobufjs-cli",
         "buffer",
         "node-gyp",
-        "version-bump-prompt"
+        "version-bump-prompt",
+        "uuid",
+        "uint8array-tools",
+        "bitcore-lib"
     ]
 }

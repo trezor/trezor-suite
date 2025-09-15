@@ -39998,6 +39998,7 @@ __metadata:
     eslint: "npm:^9.34.0"
     husky: "npm:^9.1.7"
     jest: "npm:29.7.0"
+    jest-environment-node: "npm:^29.7.0"
     jest-expo: "npm:53.0.9"
     node-fetch: "npm:^2.6.4"
     node-gyp: "npm:10.2.0"
@@ -40009,6 +40010,7 @@ __metadata:
     tslib: "npm:^2.6.2"
     tsx: "npm:^4.20.3"
     typescript: "npm:5.8.3"
+    uuid: "npm:^11.1.0"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
     core-js-pure:
