@@ -1,4 +1,5 @@
-import type { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 

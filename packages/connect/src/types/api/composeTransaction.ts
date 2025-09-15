@@ -3,6 +3,7 @@ import type {
     AccountAddresses,
     Utxo as AccountUtxo,
 } from '@trezor/blockchain-link';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     ComposeInput as ComposeInputBase,
     ComposeOutput as ComposeOutputBase,
@@ -12,7 +13,6 @@ import type {
     TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
 
-import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 
 // for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api

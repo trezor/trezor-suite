@@ -1,6 +1,6 @@
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../constants';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
