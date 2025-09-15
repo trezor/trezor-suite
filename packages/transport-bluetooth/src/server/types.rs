@@ -5,7 +5,7 @@ use btleplug::api::CentralState;
 pub enum AbortProcess {
     ClientDisconnected(String), // websocket client disconnected
     DeviceDisconnected(String), // device disconnected
-    Read(String),               // device closed/disconnected
+    NotificationStream(String, Option<NotificationCharacteristic>), // device closed/disconnected
     Scan,                       // stop scan
 }
 
@@ -44,14 +44,23 @@ pub struct ForgetDeviceParams {
     pub id: String,
 }
 
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum NotificationCharacteristic {
+    Read,
+    PushNotification,
+}
+
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct OpenDeviceParams {
     pub id: String,
+    pub characteristic: Option<NotificationCharacteristic>,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct CloseDeviceParams {
     pub id: String,
+    pub characteristic: Option<NotificationCharacteristic>,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
@@ -82,6 +91,27 @@ pub enum WsRequestMethod {
     CloseDevice(CloseDeviceParams),
     Write(WriteParams),
     Read(ReadParams),
+}
+
+impl WsRequestMethod {
+    pub fn as_string(&self) -> String {
+        match self {
+            WsRequestMethod::GetInfo => "GetInfo".to_string(),
+            WsRequestMethod::Enumerate => "Enumerate".to_string(),
+            WsRequestMethod::StartScan => "StartScan".to_string(),
+            WsRequestMethod::StopScan => "StopScan".to_string(),
+            WsRequestMethod::SetState(_) => "SetState".to_string(),
+            WsRequestMethod::ConnectDevice(params) => format!("ConnectDevice(id={})", params.id),
+            WsRequestMethod::DisconnectDevice(params) => {
+                format!("DisconnectDevice(id={})", params.id)
+            }
+            WsRequestMethod::ForgetDevice(params) => format!("ForgetDevice(id={})", params.id),
+            WsRequestMethod::OpenDevice(params) => format!("OpenDevice(id={})", params.id),
+            WsRequestMethod::CloseDevice(params) => format!("CloseDevice(id={})", params.id),
+            WsRequestMethod::Write(params) => format!("Write(id={})", params.id),
+            WsRequestMethod::Read(params) => format!("Read(id={})", params.id),
+        }
+    }
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -178,6 +208,7 @@ pub enum NotificationEvent {
     DeviceSettingsUi, // only on linux
     DeviceRead {
         id: String,
+        characteristic: NotificationCharacteristic,
         data: Vec<u8>,
     },
 }

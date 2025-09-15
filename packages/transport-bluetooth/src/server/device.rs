@@ -116,6 +116,7 @@ const MANUFACTURER_DATA: u16 = 3881; // trezor-firmware CONFIG_BT_COMPANY_ID=0x0
 pub const SERVICE_UUID: Uuid = uuid!("8c000001-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_VAL
 pub const CHARACTERISTIC_RX: Uuid = uuid!("8c000002-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_TX_VAL
 pub const CHARACTERISTIC_TX: Uuid = uuid!("8c000003-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_RX_VAL
+pub const CHARACTERISTIC_PUSH_NOTIFICATION: Uuid = uuid!("8c000004-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware ...
 
 impl TrezorDevice {
     pub async fn new(peripheral: Peripheral, is_known: bool) -> Result<Self, Box<dyn Error>> {
