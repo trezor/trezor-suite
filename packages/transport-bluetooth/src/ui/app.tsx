@@ -319,10 +319,9 @@ export const App: React.FC = () => {
                                 }}
                             >
                                 <div className="device-list-item-details">
-                                    <div>
-                                        {d.name} {d.id}
-                                    </div>
-                                    <div>{d.macAddress}</div>
+                                    <div>name: {d.name}</div>
+                                    <div>id: {d.id}</div>
+                                    <div>macAddress: {d.macAddress}</div>
                                     <div>
                                         connectionStatus: {JSON.stringify(d.connectionStatus)}
                                     </div>
