@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 25.9.2
+
+- clear `security.devicesWithFailedEntropyCheck` because of false positives in 25.8
+
 ## 25.9.0
 
 - persist `suite.stakingDashboardCollapsed` in `suiteSettings`

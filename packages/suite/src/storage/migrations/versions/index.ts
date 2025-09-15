@@ -5,3 +5,4 @@
 
 export { default as m25_7_0 } from './25.7.0';
 export { default as m25_8_0 } from './25.8.0';
+export { default as m25_9_2 } from './25.9.2';
