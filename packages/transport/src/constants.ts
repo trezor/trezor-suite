@@ -35,6 +35,7 @@ export const TRANSPORT = {
     DEVICE_SESSION_CHANGED: 'transport-device_session_changed',
     DEVICE_REQUEST_RELEASE: 'transport-device_request_release',
     SEND_MESSAGE_PROGRESS: 'transport-send_message_progress',
+    TREZOR_PUSH_NOTIFICATION: 'trezor-push-notification',
     /* messages */
     DISABLE_WEBUSB: 'transport-disable_webusb',
     REQUEST_DEVICE: 'transport-request_device',

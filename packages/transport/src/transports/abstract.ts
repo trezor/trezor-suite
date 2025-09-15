@@ -78,6 +78,7 @@ type TransportEvents = {
     [TRANSPORT.ERROR]: BridgeCommonErrors | typeof ERRORS.API_DISCONNECTED; // BluetoothApi disconnected
     [TRANSPORT.STOPPED]: void;
     [TRANSPORT.SEND_MESSAGE_PROGRESS]: number;
+    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
 };
 
 export type TransportDeviceEvent =
