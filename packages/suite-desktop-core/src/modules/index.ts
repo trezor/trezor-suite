@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import type { DeviceEvent, LocalFirmwares } from '@trezor/connect';
+import type { DeviceEvent, FirmwareStoreEvent, LocalFirmwares } from '@trezor/connect';
 import { InterceptedEvent } from '@trezor/request-manager';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
 import { TypedEmitter, isNotUndefined } from '@trezor/utils';
@@ -86,7 +86,7 @@ interface MainThreadMessages {
         service: boolean;
         process: boolean;
     };
-    'module/trezor-connect/firmware-store': any;
+    'module/trezor-connect/firmware-store': FirmwareStoreEvent;
     'module/firmware/list': LocalFirmwares;
     'app/fully-quit': void;
     'app/show': void;
