@@ -465,6 +465,8 @@ export const onCallFirmwareUpdate = async ({
         }),
     );
 
+    const finalBinaryRelase = device?.firmwareReleaseConfigInfo?.release;
+
     // We have completed binary download and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
     postMessage(
@@ -474,6 +476,7 @@ export const onCallFirmwareUpdate = async ({
             releaseVersion: finalBinaryInfo.releaseVersion,
             firmwareType: device.firmwareType,
             internalModel: device.features.internal_model,
+            release: finalBinaryRelase,
         }),
     );
 
