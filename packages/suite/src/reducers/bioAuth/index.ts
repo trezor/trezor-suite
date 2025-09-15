@@ -112,7 +112,7 @@ export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
     },
 );
 
-export const selectBioAuthState = (state: BioAuthRootState) => state.bioAuth;
+const selectBioAuthState = (state: BioAuthRootState) => state.bioAuth;
 
 export const selectBioAuthEnabled = (state: BioAuthRootState) =>
     selectBioAuthState(state).bioAuthEnabled;
@@ -123,7 +123,7 @@ export const selectBioAuthChangeNextValue = (state: BioAuthRootState) =>
 export const selectIsRequestingBioAuthChange = (state: BioAuthRootState) =>
     selectBioAuthState(state).bioAuthEnabledNextValue !== null;
 
-export const selectLastBioAuthValidatedTimestamp = (state: BioAuthRootState) =>
+const selectLastBioAuthValidatedTimestamp = (state: BioAuthRootState) =>
     selectBioAuthState(state).lastBioAuthValidatedTimestamp;
 
 export const selectIsBioAuthValidationRequired = (
