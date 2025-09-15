@@ -59,7 +59,20 @@ export class BluetoothApi extends AbstractApi {
         const transportApiEvent = ({ devices }: { devices: BluetoothDevice[] }) => {
             this.emit('transport-interface-change', this.devicesToDescriptors(devices));
         };
-        api.on('device_connected', transportApiEvent);
+
+        api.on('device_connected', event => {
+            const [ee] = this.devicesToDescriptors(event.devices.filter(d => (d.id = event.id)));
+            if (ee) {
+                //
+                this.api
+                    .send('open_device', { id: event.id, characteristic: 'push-notification' })
+                    .then(() => {})
+                    .catch(e =>
+                        console.log({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }),
+                    );
+            }
+            transportApiEvent(event);
+        });
         api.on('device_disconnected', event => {
             this.readBuffer.cancelRead(event.id);
             transportApiEvent(event);
