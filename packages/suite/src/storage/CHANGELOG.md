@@ -4,11 +4,6 @@
 
 - clear `security.devicesWithFailedEntropyCheck` because of false positives in 25.8
 
-## 25.9.0
-
-- persist `suite.stakingDashboardCollapsed` in `suiteSettings`
-- persist `wallet.settings.mevProtection` in `walletSettings`
-
 ## 25.8.0
 
 - make `device.authenticityChecks` non-nullable
