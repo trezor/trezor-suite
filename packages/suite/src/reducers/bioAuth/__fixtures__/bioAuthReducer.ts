@@ -10,7 +10,6 @@ const initialState: BioAuthState = {
     lastBioAuthValidatedTimestamp: null,
     bioAuthValidationRequired: false,
     lastWindowBlurTimestamp: null,
-    bioAuthValidationInProgress: false,
     bioAuthValidationRequested: false,
     windowBlurred: false,
     bioAuthAvailable: null,

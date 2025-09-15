@@ -12,7 +12,6 @@ export interface BioAuthState {
     bioAuthEnabledNextValue: boolean | null;
     lastBioAuthValidatedTimestamp: number | null;
     lastWindowBlurTimestamp: number | null;
-    bioAuthValidationInProgress: boolean;
     bioAuthValidationRequested: boolean;
     bioAuthValidationRequired: boolean;
     windowBlurred: boolean;
@@ -33,7 +32,6 @@ const initialState: BioAuthState = {
     bioAuthEnabledNextValue: null,
     lastBioAuthValidatedTimestamp: null,
     lastWindowBlurTimestamp: null,
-    bioAuthValidationInProgress: false,
     bioAuthValidationRequested: false,
     bioAuthValidationRequired: false,
     windowBlurred: false,
