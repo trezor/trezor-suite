@@ -16,7 +16,6 @@ export type BluetoothInfo = {
     api_version: string;
     build: string;
     adapter_info: string;
-    adapter_version: number;
 };
 
 // see: ./src/server/device.rs
