@@ -1,5 +1,5 @@
 import { Context } from '@suite-common/message-system';
-import { isDesktop, isWeb } from '@trezor/env-utils';
+import { isDesktop } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -44,7 +44,7 @@ export const SettingsDebug = () => {
 
             <SettingsSection title="Debug">
                 <GithubIssue />
-                {!isWeb() && <WipeData />}
+                {isDesktop() && <WipeData />}
                 <TriggerHighlight />
                 <TriggerToast />
             </SettingsSection>
@@ -65,7 +65,7 @@ export const SettingsDebug = () => {
             <SettingsSection title="Testing">
                 <ThrowTestingError />
             </SettingsSection>
-            {!isWeb() && (
+            {isDesktop() && (
                 <SettingsSection title="Transport backends">
                     <TransportBackends />
                 </SettingsSection>
