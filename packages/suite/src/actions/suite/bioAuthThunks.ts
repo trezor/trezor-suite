@@ -58,7 +58,7 @@ export const bioAuthWindowFocusThunk = createThunk(
     },
 );
 
-const KNOWN_ERROR_MESSAGES = ['Authentication canceled.'];
+const KNOWN_ERROR_MESSAGES = ['Authentication canceled.', 'Authentication cancelled.'];
 
 const validateCall = (translationString: TranslationFunction) =>
     desktopApi.validateBioAuth({
