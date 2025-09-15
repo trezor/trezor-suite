@@ -1919,7 +1919,7 @@
                     "environment": {
                         "desktop": "*",
                         "mobile": "!",
-                        "web": "!"
+                        "web": "*"
                     }
                 }
             ],
@@ -1928,11 +1928,11 @@
                 "groups": [
                     {
                         "variant": "A",
-                        "percentage": 80
+                        "percentage": 50
                     },
                     {
                         "variant": "B",
-                        "percentage": 20
+                        "percentage": 50
                     }
                 ]
             }
