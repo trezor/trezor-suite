@@ -1,0 +1,6 @@
+{
+    "ignores": [
+        "raw-loader"
+    ],
+    "skip-missing": true
+}

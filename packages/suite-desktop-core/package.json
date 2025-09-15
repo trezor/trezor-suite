@@ -31,7 +31,6 @@
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/connect-common": "workspace:*",
         "@trezor/connect-web": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
@@ -51,6 +50,7 @@
         "electron-localshortcut": "^3.2.1",
         "electron-store": "8.2.0",
         "electron-updater": "6.6.4",
+        "node-loader": "^2.1.0",
         "openpgp": "^6.2.2",
         "ws": "^8.18.0"
     },
@@ -58,7 +58,6 @@
         "@currents/playwright": "^1.13.4",
         "@electron/fuses": "^2.0.0",
         "@electron/notarize": "3.1.0",
-        "@octokit/rest": "^21.1.1",
         "@playwright/browser-chromium": "^1.55.0",
         "@playwright/browser-firefox": "^1.55.0",
         "@playwright/browser-webkit": "^1.55.0",

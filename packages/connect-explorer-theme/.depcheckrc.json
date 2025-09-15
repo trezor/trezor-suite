@@ -1,0 +1,7 @@
+{
+    "ignores": [
+        "postcss-import",
+        "postcss-lightningcss"
+    ],
+    "skip-missing": true
+}

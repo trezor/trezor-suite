@@ -20,7 +20,6 @@
         "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
-        "@everstake/wallet-sdk-ethereum": "1.0.3",
         "@floating-ui/react": "^0.27.12",
         "@formatjs/intl": "3.1.6",
         "@hookform/resolvers": "^5.2.1",
@@ -40,7 +39,6 @@
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
-        "@suite-common/icons": "workspace:*",
         "@suite-common/intl-types": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -116,7 +114,6 @@
         "react-redux": "9.2.0",
         "react-router": "^7.8.2",
         "react-select": "^5.10.2",
-        "react-svg": "16.3.0",
         "react-toastify": "^10.0.4",
         "react-use": "^17.6.0",
         "react-zxing": "^2.1.0",
@@ -126,7 +123,6 @@
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
         "styled-components": "^6.1.19",
-        "uuid": "^11.1.0",
         "web3-utils": "^4.3.1"
     },
     "devDependencies": {
@@ -137,7 +133,6 @@
         "@trezor/eslint": "workspace:*",
         "@types/file-saver": "^2.0.6",
         "@types/invity-api": "^1.1.9",
-        "@types/jws": "^3.2.10",
         "@types/pako": "^2.0.3",
         "@types/pdfmake": "^0.2.11",
         "@types/react": "^19.0.0",
@@ -148,8 +143,6 @@
         "jest-canvas-mock": "^2.5.2",
         "jest-watch-typeahead": "2.2.2",
         "redux-mock-store": "^1.5.5",
-        "stylelint": "^16.14.1",
-        "stylelint-config-standard": "^38.0.0",
-        "typescript-styled-plugin": "^0.18.3"
+        "stylelint": "^16.14.1"
     }
 }

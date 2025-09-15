@@ -42,7 +42,6 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/intl-types"
         },

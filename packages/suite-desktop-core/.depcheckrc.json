@@ -1,0 +1,6 @@
+{
+    "ignores": [
+        "node-loader"
+    ],
+    "skip-missing": true
+}

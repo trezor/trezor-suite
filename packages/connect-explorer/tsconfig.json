@@ -16,7 +16,6 @@
     ],
     "references": [
         { "path": "../components" },
-        { "path": "../connect" },
         { "path": "../connect-explorer-theme" },
         { "path": "../connect-mobile" },
         { "path": "../connect-web" },
@@ -24,7 +23,6 @@
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
         { "path": "../theme" },
-        { "path": "../utils" },
         { "path": "../eslint" }
     ]
 }

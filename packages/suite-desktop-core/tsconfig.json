@@ -25,7 +25,6 @@
         },
         { "path": "../coinjoin" },
         { "path": "../connect" },
-        { "path": "../connect-common" },
         { "path": "../connect-web" },
         { "path": "../env-utils" },
         { "path": "../eslint" },

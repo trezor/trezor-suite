@@ -14,9 +14,6 @@
     "include": [".", "**/*.json"],
     "references": [
         {
-            "path": "../../suite-common/suite-utils"
-        },
-        {
             "path": "../../suite-common/validators"
         },
         {

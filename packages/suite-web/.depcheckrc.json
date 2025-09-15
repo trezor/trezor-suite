@@ -1,0 +1,6 @@
+{
+    "ignores": [
+        "tsx"
+    ],
+    "skip-missing": true
+}
