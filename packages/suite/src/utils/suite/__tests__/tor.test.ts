@@ -3,10 +3,6 @@ import { withPlatformUtm } from '@trezor/urls/src/platform-utm';
 
 import { getIsTorDomain, getTorUrlIfAvailable, isOnionUrl } from 'src/utils/suite/tor';
 
-jest.mock('@trezor/env-utils', () => ({
-    getEnvironment: jest.fn(() => 'web'),
-}));
-
 describe('tor', () => {
     beforeAll(() => {
         jest.spyOn(console, 'warn').mockImplementation();
@@ -17,6 +13,9 @@ describe('tor', () => {
     });
 
     describe('getTorUrlIfAvailable', () => {
+        const defaultSuiteTypeValue = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'web';
+
         const fixtures = [
             {
                 desc: 'simple domain',
@@ -60,6 +59,8 @@ describe('tor', () => {
                 expect(getTorUrlIfAvailable(f.in)).toEqual(f.out);
             });
         });
+
+        process.env.SUITE_TYPE = defaultSuiteTypeValue;
     });
 
     describe('getIsTorDomain', () => {
