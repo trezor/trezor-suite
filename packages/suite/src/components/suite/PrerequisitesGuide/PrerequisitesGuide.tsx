@@ -1,4 +1,4 @@
-import { JSX, PropsWithChildren, useMemo } from 'react';
+import { JSX, useMemo } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -9,14 +9,7 @@ import {
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import {
-    Button,
-    Column,
-    ElevationContext,
-    ElevationDown,
-    Flex,
-    motionEasing,
-} from '@trezor/components';
+import { Button, Column, motionEasing } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -39,33 +32,16 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { NoTransport } from './NoTransport';
-import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothSelectors';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
 
 const BottomAnimatedContainer = styled(motion.div)`
     display: flex;
 `;
 
-const BluetoothWrapper = ({ children }: PropsWithChildren) => (
-    <ElevationContext baseElevation={-1}>
-        {/* Here we need to draw the inner card with elevation -1 (custom design) */}
-        <ElevationDown>
-            <Flex width={470}>{children}</Flex>
-        </ElevationDown>
-    </ElevationContext>
-);
-
-type NonBluetoothProps = {
+type PrerequisitesGuideProps = {
     allowSwitchDevice?: boolean;
 };
 
-const NonBluetooth = ({ allowSwitchDevice }: NonBluetoothProps) => {
+export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
@@ -144,27 +120,5 @@ const NonBluetooth = ({ allowSwitchDevice }: NonBluetoothProps) => {
                 </Column>
             </BottomAnimatedContainer>
         </Column>
-    );
-};
-
-interface PrerequisitesGuideProps {
-    allowSwitchDevice?: boolean;
-}
-
-export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
-    const isBluetoothConnectOpen = useSelector(selectIsBluetoothListOpen);
-
-    /*     const setIsBluetoothConnectOpen = () => {
-        dispatch(setBluetoothListOpen({ isOpen: true }));
-    }; */
-
-    return (
-        <Wrapper>
-            {isBluetoothConnectOpen ? (
-                <BluetoothWrapper>{/* <BluetoothConnect uiMode="spatial" /> */}</BluetoothWrapper>
-            ) : (
-                <NonBluetooth allowSwitchDevice={allowSwitchDevice} />
-            )}
-        </Wrapper>
     );
 };
