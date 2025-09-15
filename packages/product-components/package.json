@@ -7,6 +7,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "sideEffects": false,
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:js && yarn lint:styles",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "lint-fix": "npx eslint ./src --fix",

@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "dev": "concurrently \"yarn dev:explorer\" \"PORT=8089 NO_HTTPS=true yarn workspace @trezor/connect-web dev\"",
         "dev:explorer": "NODE_OPTIONS=\"--no-experimental-global-navigator\" next -p 8088",
         "build": "NODE_OPTIONS=\"--no-experimental-global-navigator\" next build && rm -rf build && mv out build",

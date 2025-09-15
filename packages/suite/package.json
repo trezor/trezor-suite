@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:styles && yarn lint:js",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "translations:format": "yarn g:prettier --write \"../suite-data/files/translations/*\"",

@@ -7,6 +7,7 @@
     "private": true,
     "main": "src/index.tsx",
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "build:all": "yarn build:tailwind",
         "build:tailwind": "yarn postcss css/styles.css -o style.css --verbose",
         "clean": "rimraf ./style.css",

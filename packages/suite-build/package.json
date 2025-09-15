@@ -10,6 +10,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "trezor suite build",
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "base": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts",
         "core:web": "PROJECT=\"suite-web\" yarn workspace @trezor/connect-iframe build:core-module",
         "web": "yarn run core:web && PROJECT=web yarn run base",
