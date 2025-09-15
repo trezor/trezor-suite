@@ -28,7 +28,7 @@ const getInfoRowsData = (
         case 'ethereum':
             return {
                 readyForClaimDays: (
-                    <Translation id="TR_STAKE_DAYS" values={{ count: daysToUnstake }} />
+                    <Translation id="TR_STAKE_APPROXIMATE_DAYS" values={{ count: daysToUnstake }} />
                 ),
                 deactivatePeriodHeading: <Translation id="TR_STAKE_LEAVE_STAKING_POOL" />,
                 deactivatePeriodSubheading: (

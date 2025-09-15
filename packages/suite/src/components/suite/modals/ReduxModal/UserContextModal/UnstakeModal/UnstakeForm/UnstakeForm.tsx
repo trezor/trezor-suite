@@ -1,6 +1,5 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { getStakingDataForNetwork, getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -36,12 +35,6 @@ export const UnstakeForm = () => {
         trigger,
     } = useUnstakeFormContext();
 
-    const { symbol, networkType } = account;
-
-    const { validatorWithdrawTime } = useSelector(state =>
-        selectValidatorsQueueData(state, account?.symbol),
-    );
-    const unstakingPeriod = getUnstakingPeriodInDays({ networkType, validatorWithdrawTime });
     const {
         autocompoundBalance = '0',
         canClaim = false,
@@ -63,7 +56,7 @@ export const UnstakeForm = () => {
                                 id="TR_STAKE_CAN_CLAIM_WARNING"
                                 values={{
                                     amount: claimableAmount,
-                                    symbol: getDisplaySymbol(symbol),
+                                    symbol: getDisplaySymbol(account.symbol),
                                     br: <br />,
                                 }}
                             />
@@ -76,7 +69,10 @@ export const UnstakeForm = () => {
                     />
                 </Column>
 
-                <StakeAvailableBalance formattedBalance={autocompoundBalance} symbol={symbol} />
+                <StakeAvailableBalance
+                    formattedBalance={autocompoundBalance}
+                    symbol={account.symbol}
+                />
 
                 <Column gap={spacings.lg}>
                     <UnstakeInputs />
@@ -97,19 +93,6 @@ export const UnstakeForm = () => {
                     trigger={trigger}
                 />
 
-                <InfoItem
-                    label={<Translation id="TR_STAKE_UNSTAKING_PERIOD" />}
-                    typographyStyle="body"
-                    direction="row"
-                >
-                    <Translation
-                        id="TR_UP_TO_DAYS"
-                        values={{
-                            count: unstakingPeriod,
-                        }}
-                    />
-                </InfoItem>
-
                 {shouldShowInstantUnstakeEthAmount && (
                     <InfoItem
                         label={
@@ -123,7 +106,7 @@ export const UnstakeForm = () => {
                                 <Translation
                                     id="TR_STAKE_UNSTAKING_APPROXIMATE"
                                     values={{
-                                        symbol: getDisplaySymbol(symbol),
+                                        symbol: getDisplaySymbol(account.symbol),
                                     }}
                                 />
                             </Tooltip>
@@ -133,7 +116,7 @@ export const UnstakeForm = () => {
                     >
                         <ApproximateInstantEthAmount
                             value={approximatedInstantEthAmount}
-                            symbol={symbol}
+                            symbol={account.symbol}
                         />
                     </InfoItem>
                 )}
