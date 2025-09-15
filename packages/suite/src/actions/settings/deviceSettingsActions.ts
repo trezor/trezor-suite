@@ -93,7 +93,7 @@ export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());
-        const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(getState());
+        const isEntropyCheckEnabledInSettings = selectIsEntropyCheckEnabled(getState());
         const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
             getState(),
             Feature.entropyCheck,
@@ -143,16 +143,19 @@ export const resetDevice =
             passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
         };
 
+        const isEntropyCheckEnabled =
+            isEntropyCheckEnabledInSettings && !isEntropyCheckDisabledByMessageSystem;
+
         const result = await TrezorConnect.resetDevice({
             ...defaults,
             ...params,
             device: {
                 path: device.path,
             },
-            entropy_check: isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem,
+            entropy_check: isEntropyCheckEnabled,
         });
 
-        if (!result.success) {
+        if (isEntropyCheckEnabled && !result.success) {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
             if (result.payload.code === 'Failure_EntropyCheck') {
                 dispatch(failEntropyCheckThunk({ device, error: result.payload }));
