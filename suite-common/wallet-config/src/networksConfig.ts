@@ -591,6 +591,7 @@ export const networks = {
                 bip43Path: "m/1852'/1815'/i'",
             },
         },
+        isDebugOnlyNetwork: true,
         coingeckoId: undefined,
         tradeCryptoId: undefined,
     },
