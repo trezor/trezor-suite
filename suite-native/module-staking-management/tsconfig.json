@@ -3,6 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
@@ -12,6 +18,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../staking" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/urls" }
     ]
 }

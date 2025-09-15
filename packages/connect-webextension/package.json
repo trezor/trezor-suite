@@ -46,6 +46,7 @@
         "@babel/preset-typescript": "^7.27.1",
         "@trezor/eslint": "workspace:*",
         "@types/chrome": "^0.0.299",
+        "@types/w3c-web-usb": "^1.0.10",
         "babel-loader": "^10.0.0",
         "copy-webpack-plugin": "^13.0.1",
         "rimraf": "^6.0.1",

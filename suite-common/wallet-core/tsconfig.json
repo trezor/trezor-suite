@@ -5,7 +5,9 @@
         { "path": "../bluetooth" },
         { "path": "../device-authenticity" },
         { "path": "../fiat-services" },
+        { "path": "../message-system" },
         { "path": "../redux-utils" },
+        { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
@@ -25,6 +27,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/protobuf" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

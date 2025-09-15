@@ -1,6 +1,4 @@
 {
-    "ignores": [
-        "postcss-import",
-        "postcss-lightningcss"
-    ]
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": ["postcss-import", "postcss-lightningcss"]
 }

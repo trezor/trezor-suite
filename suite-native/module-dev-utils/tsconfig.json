@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -21,8 +22,10 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../module-trading" },
         { "path": "../navigation" },
         { "path": "../sentry" },
+        { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },

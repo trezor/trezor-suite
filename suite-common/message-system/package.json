@@ -16,13 +16,17 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/analytics": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@types/semver": "^7.7.0",
         "fs-extra": "^11.3.1",
@@ -35,6 +39,7 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/node-utils": "workspace:*",
         "@types/fs-extra": "^11.0.4",
         "jws": "^4.0.0",
         "tsx": "^4.20.3"

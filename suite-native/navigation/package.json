@@ -15,13 +15,17 @@
         "@react-navigation/bottom-tabs": "7.4.6",
         "@react-navigation/native": "7.1.17",
         "@react-navigation/native-stack": "7.3.25",
+        "@react-navigation/routers": "^7.5.1",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/sentry": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -34,6 +38,7 @@
         "react-native-keyboard-controller": "1.18.5",
         "react-native-reanimated": "^3.18.0",
         "react-native-safe-area-context": "5.6.1",
-        "react-redux": "9.2.0"
+        "react-redux": "9.2.0",
+        "type-fest": "4.24.0"
     }
 }

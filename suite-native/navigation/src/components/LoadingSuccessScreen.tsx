@@ -2,7 +2,8 @@ import { ReactNode } from 'react';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { AnimatedText, Box, Spinner, VStack } from '@suite-native/atoms';
-import { Screen } from '@suite-native/navigation';
+
+import { Screen } from './Screen';
 
 type LoadingSuccessScreenProps = {
     onFinish: () => void;

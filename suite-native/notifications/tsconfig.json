@@ -17,6 +17,7 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../icons" },
+        { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../transactions" },

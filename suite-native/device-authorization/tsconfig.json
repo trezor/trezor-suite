@@ -5,7 +5,10 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../atoms" },
         { "path": "../navigation" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/styles" }
     ]
 }

@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/validators"
         },
@@ -15,16 +16,22 @@
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },
+        { "path": "../feature-flags" },
+        { "path": "../firmware" },
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
+        { "path": "../settings" },
+        { "path": "../thp" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" }
     ],
     "include": [".", "**/*.json"]

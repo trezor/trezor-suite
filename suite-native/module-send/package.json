@@ -19,6 +19,7 @@
         "@shopify/flash-list": "1.7.6",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
@@ -58,5 +59,8 @@
         "react-native-svg": "15.12.1",
         "react-redux": "9.2.0",
         "web3-utils": "^4.3.1"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

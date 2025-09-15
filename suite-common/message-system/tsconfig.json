@@ -3,15 +3,20 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": ["schema/**/*.json"],
     "references": [
+        { "path": "../analytics" },
         { "path": "../geolocation" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
+        { "path": "../suite-utils" },
+        { "path": "../validators" },
         { "path": "../wallet-config" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },
-        { "path": "../../packages/eslint" }
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/node-utils" }
     ]
 }

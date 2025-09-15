@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import { HStack, TextButton } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { TextButton } from '../Button/TextButton';
+import { HStack } from '../Stack';
 
 type ClearAndBlur = {
     clear?: () => void;

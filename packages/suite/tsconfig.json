@@ -45,6 +45,9 @@
         {
             "path": "../../suite-common/intl-types"
         },
+        {
+            "path": "../../suite-common/local-first-storage"
+        },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -57,6 +60,9 @@
         },
         { "path": "../../suite-common/sentry" },
         { "path": "../../suite-common/staking" },
+        {
+            "path": "../../suite-common/staking-solana"
+        },
         {
             "path": "../../suite-common/suite-config"
         },

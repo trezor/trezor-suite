@@ -1,7 +1,6 @@
 import type tls from 'tls';
 
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-
+import { BaseCurrencyCode } from './baseCurrency';
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type {
     AddressAlias,

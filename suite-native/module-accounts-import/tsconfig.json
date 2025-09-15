@@ -35,11 +35,17 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../settings" },
+        { "path": "../tokens" },
         { "path": "../video-assets" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" },
+        { "path": "../state" },
         { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]

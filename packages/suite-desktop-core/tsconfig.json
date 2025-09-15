@@ -40,9 +40,16 @@
         { "path": "../transport-bridge" },
         { "path": "../urls" },
         { "path": "../utils" },
+        { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../blockchain-link-types" },
         { "path": "../device-utils" },
+        { "path": "../e2e-utils" },
         { "path": "../protobuf" },
+        { "path": "../suite-analytics" },
         { "path": "../trezor-user-env-link" },
         { "path": "../type-utils" }
     ]

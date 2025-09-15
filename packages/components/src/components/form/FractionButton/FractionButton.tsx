@@ -1,5 +1,5 @@
-import { Button, Tooltip } from '@trezor/components';
-
+import { Tooltip } from '../../Tooltip/Tooltip';
+import { Button } from '../../buttons/Button/Button';
 import { ButtonVariant } from '../../buttons/buttonStyleUtils';
 
 const DEFAULT_VARIANT = 'tertiary';

@@ -37,7 +37,10 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
+        "@suite-native/settings": "workspace:*",
+        "@suite-native/tokens": "workspace:*",
         "@suite-native/video-assets": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
@@ -49,6 +52,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite-native/state": "workspace:*",
         "@suite-native/test-utils": "workspace:*"
     }
 }

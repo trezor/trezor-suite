@@ -1,12 +1,12 @@
 import { useAtomValue } from 'jotai';
 
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { DeviceDangerBannerVariant, deviceDangerBannerAtom } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceDangerBannerExtension, bannerContentPresets } from './DeviceDangerBannerExtension';
+import { DeviceDangerBannerVariant, deviceDangerBannerAtom } from '../deviceAtoms';
 
 const containerStyle = prepareNativeStyle<{ bannerVariant: DeviceDangerBannerVariant }>(
     (utils, { bannerVariant }) => ({

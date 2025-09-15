@@ -2,7 +2,13 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../firmware" },
         { "path": "../redux-utils" },
+        { "path": "../suite-types" },
+        { "path": "../suite-utils" },
+        { "path": "../test-utils" },
+        { "path": "../toast-notifications" },
+        { "path": "../wallet-core" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/protocol" }
     ]

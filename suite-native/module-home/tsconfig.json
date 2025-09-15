@@ -6,21 +6,31 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../accounts" },
+        { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../blockchain" },
+        { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
+        { "path": "../firmware" },
         { "path": "../graph" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../theme" },
         { "path": "../toasts" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../test-utils" },
+        { "path": "../../packages/device-utils" }
     ],
     "include": [".", "**/*.json"]
 }

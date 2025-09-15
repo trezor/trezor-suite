@@ -2,7 +2,13 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/fiat-services"
+        },
         { "path": "../../suite-common/graph" },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -28,6 +34,8 @@
         { "path": "../graph" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../tokens" },

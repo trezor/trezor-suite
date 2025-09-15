@@ -15,6 +15,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
         "expo-localization": "16.1.6",
         "intl-pluralrules": "^2.0.1",
         "react": "19.0.0",

@@ -2,12 +2,17 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../biometrics" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]

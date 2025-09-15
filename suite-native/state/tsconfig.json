@@ -5,7 +5,13 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/connect-popup"
+        },
         { "path": "../../suite-common/firmware" },
+        {
+            "path": "../../suite-common/geolocation"
+        },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -32,6 +38,7 @@
         { "path": "../banner-flags" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
+        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../device-onboarding" },
@@ -39,12 +46,14 @@
         { "path": "../feature-flags" },
         { "path": "../firmware" },
         { "path": "../graph" },
+        { "path": "../intl" },
         { "path": "../message-system" },
         { "path": "../module-send" },
         { "path": "../module-trading" },
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },
+        { "path": "../transaction-management" },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/transport" },
         {
@@ -53,6 +62,7 @@
         {
             "path": "../../packages/transport-native-usb"
         },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

@@ -1,12 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    FirmwareUpdateProps,
-    firmwareActions,
-    firmwareUpdate as firmwareUpdateThunk,
-    selectFirmware,
-} from '@suite-common/firmware';
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { selectIsThpInProgress } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -17,6 +11,10 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
+
+import { firmwareActions } from '../firmwareActions';
+import { selectFirmware } from '../firmwareReducer';
+import { FirmwareUpdateProps, firmwareUpdate as firmwareUpdateThunk } from '../firmwareThunks';
 
 /*
 There are three firmware update flows, depending on current firmware version:

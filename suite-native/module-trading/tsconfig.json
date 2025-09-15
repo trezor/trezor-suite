@@ -2,15 +2,83 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/geolocation"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
         { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/validators"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../accounts" },
         { "path": "../analytics" },
+        { "path": "../device" },
+        { "path": "../device-manager" },
+        { "path": "../device-mutex" },
+        { "path": "../discovery" },
+        { "path": "../feature-flags" },
+        { "path": "../formatters" },
+        { "path": "../forms" },
+        { "path": "../helpers" },
+        { "path": "../icons" },
+        { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../message-system" },
+        { "path": "../module-add-accounts" },
         { "path": "../navigation" },
+        { "path": "../toasts" },
+        { "path": "../tokens" },
+        { "path": "../transaction-management" },
         {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/react-utils" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        {
+            "path": "../../suite-common/analytics"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../atoms" },
+        { "path": "../test-utils" },
+        { "path": "../../packages/theme" }
     ],
     "include": [".", "**/*.json"]
 }

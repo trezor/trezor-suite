@@ -5,13 +5,6 @@ import {
 } from '@solana/kit';
 
 import {
-    SolanaTx,
-    claim,
-    createTransactionShimCommon,
-    stake,
-    unstake,
-} from '@suite-common/staking-solana';
-import {
     SOL_COMPUTE_UNIT_LIMIT,
     SOL_COMPUTE_UNIT_PRICE,
     WALLET_SDK_SOURCE,
@@ -24,6 +17,9 @@ import {
 } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
+
+import { SolanaTx } from '../types';
+import { claim, createTransactionShimCommon, stake, unstake } from './transactionUtils';
 
 export const transformTx = (
     tx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime,

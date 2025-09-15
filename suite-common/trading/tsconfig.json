@@ -3,10 +3,15 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../geolocation" },
+        { "path": "../intl-types" },
         { "path": "../redux-utils" },
+        { "path": "../suite-types" },
+        { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-constants" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
         {
             "path": "../../packages/address-validator"
         },
@@ -16,6 +21,7 @@
         },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }
     ],

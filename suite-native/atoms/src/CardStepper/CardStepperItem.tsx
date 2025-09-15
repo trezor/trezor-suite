@@ -1,19 +1,15 @@
 import { ReactNode } from 'react';
 import { FadeInUp, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
-import {
-    AnimatedCard,
-    AnimatedVStack,
-    Button,
-    ButtonColorScheme,
-    Divider,
-    HStack,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+
+import { Button, ButtonColorScheme } from '../Button/Button';
+import { AnimatedCard } from '../Card/Card';
+import { Divider } from '../Divider';
+import { AnimatedVStack, HStack, VStack } from '../Stack';
+import { Text } from '../Text';
 
 export type CardStepperButtonsActionType = 'destructive' | 'primary';
 

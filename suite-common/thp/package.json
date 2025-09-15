@@ -13,7 +13,13 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/firmware": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/protocol": "workspace:*"
     }
