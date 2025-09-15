@@ -45,14 +45,14 @@ export type ThpState = {
     staticKey?: string;
 };
 
-const initialState: ThpState = {
+export const initialThpState: ThpState = {
     step: null,
     lastThpCode: undefined,
     credentials: [] as ThpSuiteCredentials[],
 };
 
 export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
-    initialState,
+    initialThpState,
     (builder, extra) =>
         builder
             .addCase(thpActions.invalidCode, state => {
