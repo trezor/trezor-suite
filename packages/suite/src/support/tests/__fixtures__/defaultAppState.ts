@@ -112,7 +112,6 @@ export const initialAppState: AppState = {
         bioAuthEnabledNextValue: null,
         lastBioAuthValidatedTimestamp: null,
         lastWindowBlurTimestamp: null,
-        bioAuthValidationInProgress: false,
         bioAuthValidationRequested: false,
         bioAuthValidationRequired: false,
         windowBlurred: false,

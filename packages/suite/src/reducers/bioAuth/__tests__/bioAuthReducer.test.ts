@@ -135,7 +135,6 @@ describe('bioAuthReducer', () => {
             bioAuthEnabledNextValue: null,
             lastBioAuthValidatedTimestamp: null,
             lastWindowBlurTimestamp: null,
-            bioAuthValidationInProgress: false,
             bioAuthValidationRequested: false,
             windowBlurred: false,
             bioAuthAvailable: null,

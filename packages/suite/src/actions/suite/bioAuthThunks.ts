@@ -66,6 +66,7 @@ const validateCall = (translationString: TranslationFunction) =>
             isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
         ),
     });
+
 const handleError = (error: string, dispatch: Dispatch, translationString: TranslationFunction) => {
     dispatch(bioAuthActions.bioAuthValidated(null));
 
