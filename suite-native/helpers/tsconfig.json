@@ -8,8 +8,6 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        { "path": "../test-utils" },
-        { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

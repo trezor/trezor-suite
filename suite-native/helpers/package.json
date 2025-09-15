@@ -15,8 +15,6 @@
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-native/test-utils": "workspace:*",
-        "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
