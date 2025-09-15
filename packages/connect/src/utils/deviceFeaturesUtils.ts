@@ -1,7 +1,7 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { isArrayMember, versionUtils } from '@trezor/utils';
 
-import { PROTO } from '../constants';
 import { config } from '../data/config';
 import { CoinInfo, Features, UnavailableCapabilities } from '../types';
 

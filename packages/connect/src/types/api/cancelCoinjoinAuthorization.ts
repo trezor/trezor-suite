@@ -1,6 +1,6 @@
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Static, Type } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 
 export type CancelCoinjoinAuthorization = Static<typeof CancelCoinjoinAuthorization>;

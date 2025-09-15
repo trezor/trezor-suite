@@ -1,6 +1,6 @@
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange } from './common/paramsValidator';

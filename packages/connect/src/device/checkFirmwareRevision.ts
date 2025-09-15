@@ -1,7 +1,7 @@
 import type { FirmwareType, VersionArray } from '@trezor/device-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { serializeError, versionUtils } from '@trezor/utils';
 
-import { PROTO } from '../constants';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 import { getOnlineReleaseByVersion } from '../data/firmwareInfo';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';

@@ -1,4 +1,5 @@
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetNonce extends AbstractMethod<'getNonce', PROTO.GetNonce> {

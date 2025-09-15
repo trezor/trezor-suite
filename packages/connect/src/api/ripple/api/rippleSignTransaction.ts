@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RippleSignTransaction.js
 
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { AssertWeak } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { RippleSignTransaction as RippleSignTransactionSchema } from '../../../types/api/ripple';

@@ -1,7 +1,7 @@
 import type { VersionArray } from '@trezor/device-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 
-import type { PROTO } from '../constants';
 import type { Device } from '../types/device';
 import type { MessageFactoryFn } from '../types/utils';
 

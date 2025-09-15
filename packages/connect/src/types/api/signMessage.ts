@@ -4,7 +4,8 @@
  * path.
  */
 
-import type { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+
 import type { Params, Response } from '../params';
 import type { SignMessage } from './bitcoin';
 

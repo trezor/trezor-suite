@@ -1,8 +1,8 @@
 import type { trezorUtils, types } from '@fivebinaries/coin-selection';
 
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Static, Type } from '@trezor/schema-utils';
 
-import { PROTO } from '../../exports';
 import type { AccountUtxo } from '../../exports';
 import { DerivationPath, type Params, type Response } from '../params';
 import { CardanoCertificate, CardanoCertificatePointer } from './cardano';

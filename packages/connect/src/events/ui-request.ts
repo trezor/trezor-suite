@@ -3,8 +3,8 @@
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { PROTO } from '../constants';
 import type {
     BinaryInfo,
     BitcoinNetworkInfo,
