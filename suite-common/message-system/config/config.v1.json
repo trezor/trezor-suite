@@ -719,6 +719,43 @@
         {
             "conditions": [
                 {
+                    "settings": [
+                        {
+                            "tada": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "4eda5e3c-745c-489d-9584-110374aebcf5",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en": "The Cardano Testnet network will be deprecated and removed from Trezor Suite in the 25.10 release.",
+                    "es": "La red de Cardano Testnet quedará obsoleta y se eliminará de Trezor Suite en la versión 25.10.",
+                    "cs": "Síť Cardano Testnet bude deaktivována a odstraněna z Trezor Suite verze 25.10.",
+                    "ru": "Сеть Cardano Testnet будет устаревшей и удалена из Trezor Suite в выпуске 25.10.",
+                    "ja": "Cardano Testnet ネットワークは非推奨となり、バージョン 25.10 で Trezor Suite から削除されます。",
+                    "hu": "A Cardano Testnet hálózat elavulttá válik és eltávolításra kerül a Trezor Suite-ból a 25.10-es kiadásban.",
+                    "it": "La rete Cardano Testnet sarà deprecata e rimossa da Trezor Suite nella versione 25.10.",
+                    "fr": "Le réseau Cardano Testnet sera obsolète et supprimé de Trezor Suite dans la version 25.10.",
+                    "de": "Das Cardano-Testnet-Netzwerk wird veraltet und in der Version 25.10 aus Trezor Suite entfernt.",
+                    "tr": "Cardano Testnet ağı kullanım dışı bırakılacak ve 25.10 sürümünde Trezor Suite'ten kaldırılacaktır.",
+                    "pt": "A rede Cardano Testnet será descontinuada e removida do Trezor Suite na versão 25.10.",
+                    "uk": "Мережа Cardano Testnet буде застарілою та видаленою з Trezor Suite у версії 25.10."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
                     "environment": {
                         "desktop": ">=25.2.1",
                         "mobile": "!",
