@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { TrezorBluetooth } from '../client/trezor-bluetooth';
-import { BluetoothDevice, NotificationEvent } from '../client/types';
+import { BluetoothDevice, NotificationCharacteristic, NotificationEvent } from '../client/types';
 
 // Inline CSS (simplified, readable)
 const INLINE_CSS = `
@@ -54,6 +54,9 @@ export const App: React.FC = () => {
     const [deviceId, setDeviceId] = useState('');
     const [messageInput, setMessageInput] = useState('{}');
     const [connected, setConnected] = useState(false);
+    const selectRef = useRef<(HTMLSelectElement & { value?: NotificationCharacteristic }) | null>(
+        null,
+    );
 
     const writeOutput = (message: unknown) => {
         try {
@@ -79,6 +82,10 @@ export const App: React.FC = () => {
             setDevices(prev => prev.map(d => (d.id === device.id ? device : d)));
         };
 
+        const onDeviceRead = (e: NotificationEvent['device_read']) => {
+            writeOutput(`${e.characteristic} at ${e.id} ${e.data.toString()}`);
+        };
+
         api.on('disconnected', onDisconnected);
         api.on('adapter_state_changed', onAdapterState);
         api.on('device_discovered', onDevices);
@@ -86,6 +93,8 @@ export const App: React.FC = () => {
         api.on('device_connected', onDevices);
         api.on('device_disconnected', onDevices);
         api.on('device_connection_status', onDeviceConnectionStatus);
+        api.on('device_read', onDeviceRead);
+
         (async () => {
             try {
                 await api.connect();
@@ -178,7 +187,10 @@ export const App: React.FC = () => {
 
     const openDevice = async () => {
         try {
-            const r = await api().send('open_device', { id: deviceId });
+            const r = await api().send('open_device', {
+                id: deviceId,
+                characteristic: selectRef.current?.value || undefined,
+            });
             writeOutput(r);
         } catch (e: any) {
             writeOutput({ error: e.message });
@@ -187,7 +199,10 @@ export const App: React.FC = () => {
 
     const closeDevice = async () => {
         try {
-            const r = await api().send('close_device', { id: deviceId });
+            const r = await api().send('close_device', {
+                id: deviceId,
+                characteristic: selectRef.current?.value || undefined,
+            });
             writeOutput(r);
         } catch (e: any) {
             writeOutput({ error: e.message });
@@ -370,6 +385,15 @@ export const App: React.FC = () => {
                                         >
                                             Forget
                                         </button>
+                                        <select ref={selectRef}>
+                                            <option value="">Select characteristic</option>
+                                            <option value="read" selected>
+                                                READ
+                                            </option>
+                                            <option value="push-notification">
+                                                PUSH_NOTIFICATION
+                                            </option>
+                                        </select>
                                         <button
                                             id="open_device"
                                             style={{ margin: '0 4px' }}

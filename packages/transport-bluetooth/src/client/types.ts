@@ -46,6 +46,8 @@ export interface BluetoothDevice {
 
 export type BluetoothAdapterState = 'enabled' | 'disabled' | 'permission-denied';
 
+export type NotificationCharacteristic = 'read' | 'push-notification';
+
 export interface NotificationEvent {
     adapter_state_changed: { state: BluetoothAdapterState };
     device_discovered: { id: string; devices: BluetoothDevice[] };
@@ -53,7 +55,7 @@ export interface NotificationEvent {
     device_connected: { id: string; devices: BluetoothDevice[] };
     device_connection_status: { device: BluetoothDevice };
     device_disconnected: { id: string; devices: BluetoothDevice[] };
-    device_read: { id: string; data: number[] };
+    device_read: { id: string; characteristic: NotificationCharacteristic; data: number[] };
     device_settings_ui: undefined; // dispatched by linux pairing process
     device_removed: { id: string };
 }
