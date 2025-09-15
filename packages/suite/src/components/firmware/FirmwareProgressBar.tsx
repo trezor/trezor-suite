@@ -31,8 +31,6 @@ export const FirmwareProgressBar = () => {
     };
 
     if (uiEvent?.type === 'ui-firmware_reconnect') {
-        console.warn('RECONNECT!!!', operation);
-
         return null;
     }
 
