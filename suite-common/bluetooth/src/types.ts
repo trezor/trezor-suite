@@ -38,6 +38,7 @@ export type DeviceBluetoothConnectionStatus =
 
 // Do not export this outside of this suite-common package, Suite uses ist own type
 // from the '@trezor/transport-bluetooth' and mobile (native) have its own type as well.
+// It's acceptable to use in @suite-common, where the code is still platform-agnostic, e.g. in unit tests.
 export type BluetoothDeviceCommon = {
     id: string;
     name: string;
