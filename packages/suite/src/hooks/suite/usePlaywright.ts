@@ -2,10 +2,7 @@ import { useEffect } from 'react';
 
 import { useStore } from 'src/hooks/suite/useStore';
 
-export const isRunningWithinPlaywright =
-    typeof window !== 'undefined' &&
-    // either of the properties can be present, depending on the Playwright environment
-    (window.Playwright || !!window.playwright);
+export const isRunningWithinPlaywright = typeof window !== 'undefined' && window.Playwright;
 
 /**
  * Utility for running tests in Playwright.

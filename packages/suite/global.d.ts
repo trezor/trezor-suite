@@ -6,11 +6,9 @@ import { AnyAction } from '@suite-common/redux-utils';
 declare global {
     interface Window {
         __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-        // Flag that Suite is running in Playwright environment, but currently available only on Web
+        // Flag that Suite is running in Playwright environment
         Playwright?: boolean;
-        // Internal global variable of Playwright, signifies reliably that Suite is running withing Playwright
-        playwright?: object;
-        // Needed for Playwright
+        // Needed for Playwright e2e tests
         store?: any;
     }
 }

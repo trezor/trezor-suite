@@ -37,6 +37,14 @@ type suiteBaseFixture = {
     exceptionLogger: void;
 };
 
+const setupFlagForAttachingReduxStore = async (page: Page) => {
+    // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
+    // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck
+    await page.context().addInitScript(() => {
+        window.Playwright = true;
+    });
+};
+
 const electronSetup = async (
     testInfo: TestInfo,
     locale: string | undefined,
@@ -50,10 +58,10 @@ const electronSetup = async (
         viewport: testInfo.project.use.viewport!,
         ...electronConf,
     });
-
     await suite.window
         .context()
         .tracing.start({ screenshots: true, snapshots: true, sources: true });
+    await setupFlagForAttachingReduxStore(suite.window);
 
     return suite;
 };
@@ -90,11 +98,7 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo, electronConf: 
 const webSetup = async (browserContext: BrowserContext) => {
     await TrezorUserEnvLinkProxy.startBridge();
     const page = await browserContext.newPage();
-    // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
-    // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck
-    await page.context().addInitScript(() => {
-        window.Playwright = true;
-    });
+    await setupFlagForAttachingReduxStore(page);
     await page.goto('./');
     await mockRemoteMessageSystem(page);
 
