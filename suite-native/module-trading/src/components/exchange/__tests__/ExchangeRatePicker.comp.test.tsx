@@ -55,4 +55,12 @@ describe('ExchangeRatePicker', () => {
 
         expect(getByText('Floating')).toBeOnTheScreen();
     });
+
+    it('should render correct value for dex quote', async () => {
+        const { getByText } = await renderExchangeRatePicker({
+            selectedValue: exchangeQuotes[3],
+        });
+
+        expect(getByText('DEX')).toBeOnTheScreen();
+    });
 });

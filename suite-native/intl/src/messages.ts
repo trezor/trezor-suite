@@ -2121,6 +2121,7 @@ export const messages = {
         selectRate: {
             fixed: 'Fixed',
             floating: 'Floating',
+            dex: 'DEX',
         },
         fiatCurrencySheet: {
             title: 'Currency',
