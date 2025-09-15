@@ -17,6 +17,7 @@ import { httpRequest } from '../utils/assets';
 import {
     buildIntermediaryFirmwareFileName,
     buildLocalFirmwareFileName,
+    buildLocalReleaseName,
     findBestCompatibleRelease,
     isStrictFeatures,
 } from '../utils/firmwareUtils';
@@ -221,6 +222,16 @@ export const getReleaseByVersion = async (
     const releaseFromConfig = getReleaseConfig(features, firmwareType)?.release;
     if (releaseFromConfig && versionUtils.isEqual(firmwareVersion, releaseFromConfig.version)) {
         return releaseFromConfig;
+    }
+
+    const releaseName = buildLocalReleaseName(firmwareType, deviceModel, firmwareVersion);
+
+    const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
+    if (firmwareList.includes(releaseName)) {
+        const localReleasePath = `${firmwareDir}${releaseName}`;
+        const localReleaseBuffer = await httpRequest(localReleasePath, 'json');
+
+        return JSON.parse(localReleaseBuffer.toString());
     }
 
     const release =

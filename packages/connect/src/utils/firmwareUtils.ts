@@ -61,16 +61,42 @@ export const findBestCompatibleRelease = (
     return compatibleFirmware;
 };
 
+const buildLocalFileBaseName = (
+    firmwareType: FirmwareType,
+    deviceModel: DeviceModelInternal,
+    version: VersionArray,
+): string => {
+    const firmwareSuffix = firmwareType === FirmwareType.BitcoinOnly ? '-bitcoinonly' : '';
+    const model = deviceModel.toLowerCase();
+    const versionString = version.join('.');
+
+    return `trezor-${model}-${versionString}${firmwareSuffix}`;
+};
+
+/**
+ * Builds the filename for a local release JSON file.
+ * Example: "trezor-t2t1-2.6.0-bitcoinonly.json"
+ */
+export const buildLocalReleaseName = (
+    firmwareType: FirmwareType,
+    deviceModel: DeviceModelInternal,
+    version: VersionArray,
+): string => `${buildLocalFileBaseName(firmwareType, deviceModel, version)}.json`;
+
+/**
+ * Builds the filename for a local firmware binary file.
+ * Example: "trezor-t2t1-2.6.0.bin"
+ */
 export const buildLocalFirmwareFileName = (
     firmwareType: FirmwareType,
     deviceModel: DeviceModelInternal,
     version: VersionArray,
-) => {
-    const firmwareTypeFileString = firmwareType === FirmwareType.BitcoinOnly ? '-bitcoinonly' : '';
+): string => `${buildLocalFileBaseName(firmwareType, deviceModel, version)}.bin`;
 
-    return `trezor-${deviceModel.toLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
-};
-
+/**
+ * Builds the filename for an intermediary firmware file.
+ * Example: "trezor-t2b1-inter-v2.bin"
+ */
 export const buildIntermediaryFirmwareFileName = (
     internalModel: DeviceModelInternal,
     version: number,

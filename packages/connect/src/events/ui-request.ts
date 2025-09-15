@@ -2,16 +2,16 @@
  * messages to UI emitted as UI_EVENT
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type {
-    BinaryInfo,
     BitcoinNetworkInfo,
     CoinInfo,
     Device,
     FirmwareType,
     SelectFeeLevel,
+    VersionArray,
 } from '../types';
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
 import { MethodPermission } from '../core/AbstractMethod';
@@ -232,14 +232,18 @@ export interface UiRequestSelectDevice {
     };
 }
 
+export type FirmwareStoreEvent = {
+    binary: ArrayBuffer;
+    binaryVersion: VersionArray;
+    internalModel: DeviceModelInternal;
+    release: FirmwareRelease | undefined;
+    firmwareType?: FirmwareType;
+    releaseVersion?: number[];
+};
+
 export interface UiRequestFirmwareDownloaded {
     type: typeof UI_REQUEST.FIRMWARE_DOWNLOADED;
-    payload:
-        | BinaryInfo
-        | {
-              internalModel?: DeviceModelInternal;
-              firmwareType?: FirmwareType;
-          };
+    payload: FirmwareStoreEvent;
 }
 
 export interface UiRequestUnexpectedDeviceMode {
