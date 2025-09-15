@@ -164,9 +164,6 @@ export const selectIsAppUiHidden = (state: BioAuthRootState) => {
     );
 };
 
-export const selectIsWindowFocused = (state: BioAuthRootState) =>
-    !selectBioAuthState(state).windowBlurred;
-
 export const selectIsBioAuthAvailableStateKnown = (state: BioAuthRootState) =>
     selectBioAuthState(state).bioAuthAvailable !== null;
 
