@@ -46,11 +46,6 @@ async fn get_adapter_info() -> Result<String, Box<dyn std::error::Error>> {
     // }
 }
 
-fn get_adapter_version() -> u8 {
-    // TODO: create platform specific util and parse adapter_info
-    0
-}
-
 pub async fn get_info(manager: AdapterManager) -> MethodResult {
     let api_version = utils::APP_VERSION.to_string();
     let build = utils::BUILD_VERSION_TAG.to_string();
@@ -60,25 +55,12 @@ pub async fn get_info(manager: AdapterManager) -> MethodResult {
         Err(error) => error.to_string(),
     };
 
-    let adapter = manager.get_adapter().await?;
     let state = manager.get_adapter_state().await;
-    let adapter_version = get_adapter_version();
-
-    if adapter.is_some() {
-        return Ok(WsResponsePayload::Info {
-            state,
-            api_version,
-            build,
-            adapter_info: info,
-            adapter_version,
-        });
-    }
 
     Ok(WsResponsePayload::Info {
         state,
         api_version,
         build,
         adapter_info: info,
-        adapter_version,
     })
 }

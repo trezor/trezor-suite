@@ -99,7 +99,6 @@ pub enum WsResponsePayload {
         api_version: String,
         build: String,
         adapter_info: String,
-        adapter_version: u8,
     },
     Peripherals {
         devices: Vec<TrezorDevice>,
