@@ -23,7 +23,6 @@
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
-        "@suite-native/module-device-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",

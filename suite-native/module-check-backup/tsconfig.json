@@ -15,7 +15,6 @@
         { "path": "../device-mutex" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-device-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
