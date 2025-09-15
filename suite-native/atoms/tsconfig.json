@@ -14,7 +14,6 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },
