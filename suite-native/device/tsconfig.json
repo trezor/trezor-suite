@@ -36,7 +36,6 @@
         { "path": "../bluetooth" },
         { "path": "../config" },
         { "path": "../device-authorization" },
-        { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../device-onboarding" },
         { "path": "../feature-flags" },
