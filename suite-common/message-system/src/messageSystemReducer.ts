@@ -150,6 +150,23 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
                     }
                 }
             })
+            .addCase(messageSystemActions.setExperimentInclusionOverride, (state, { payload }) => {
+                if (!state.experimentInclusionOverrides) {
+                    state.experimentInclusionOverrides = {};
+                }
+                state.experimentInclusionOverrides[payload.id] = payload.inclusion;
+            })
+            .addCase(
+                messageSystemActions.clearExperimentInclusionOverride,
+                (state, { payload }) => {
+                    if (state.experimentInclusionOverrides) {
+                        delete state.experimentInclusionOverrides[payload];
+                        if (Object.keys(state.experimentInclusionOverrides).length === 0) {
+                            delete state.experimentInclusionOverrides;
+                        }
+                    }
+                },
+            )
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 (state, action: AnyAction) => ({
