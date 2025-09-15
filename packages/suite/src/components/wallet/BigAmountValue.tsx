@@ -49,7 +49,7 @@ export const BigAmountValue = ({
     const language = useSelector(selectLanguage);
 
     // Todo: this is ugly hack, shall be refactored to some more safe alternative
-    const shouldFormatLocale: Locale[] = ['en-US', 'ja-JP', 'zh-CN'];
+    const shouldFormatLocale: Locale[] = ['en-US', 'ja-JP', 'zh-CN', 'zh-TW'];
     const [whole, separator, fractional] = shouldFormatLocale.includes(language)
         ? formattedStringAmount.split(/(\.)/)
         : formattedStringAmount.split(/(,)/);
