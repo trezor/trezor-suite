@@ -1,6 +1,5 @@
 {
     "ignores": [
         "es6-promise"
-    ],
-    "skip-missing": true
+    ]
 }

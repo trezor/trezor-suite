@@ -2,6 +2,5 @@
     "ignores": [
         "typescript",
         "@babel/core"
-    ],
-    "skip-missing": true
+    ]
 }
