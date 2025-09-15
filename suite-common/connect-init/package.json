@@ -22,9 +22,5 @@
         "@trezor/env-utils": "workspace:^",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*"
-    },
-    "devDependencies": {
-        "redux-mock-store": "^1.5.5",
-        "redux-thunk": "^3.1.0"
     }
 }

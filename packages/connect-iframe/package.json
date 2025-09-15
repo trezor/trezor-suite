@@ -21,7 +21,6 @@
     "devDependencies": {
         "@babel/preset-typescript": "^7.27.1",
         "@trezor/bundler-security": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "babel-loader": "^10.0.0",
         "copy-webpack-plugin": "^13.0.1",

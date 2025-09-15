@@ -19,7 +19,6 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
-        "@trezor/suite": "workspace:*",
         "@trezor/suite-analytics": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -35,8 +34,6 @@
     "devDependencies": {
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
-        "stylelint": "^16.14.1",
-        "stylelint-config-standard": "^38.0.0",
-        "typescript-styled-plugin": "^0.18.3"
+        "stylelint": "^16.14.1"
     }
 }

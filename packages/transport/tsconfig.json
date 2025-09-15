@@ -9,7 +9,6 @@
         { "path": "../protocol" },
         { "path": "../type-utils" },
         { "path": "../utils" },
-        { "path": "../eslint" },
-        { "path": "../trezor-user-env-link" }
+        { "path": "../eslint" }
     ]
 }

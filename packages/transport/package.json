@@ -56,13 +56,8 @@
         "@babel/preset-env": "^7.28.0",
         "@babel/preset-typescript": "^7.27.1",
         "@trezor/eslint": "workspace:*",
-        "@trezor/trezor-user-env-link": "workspace:*",
-        "@types/bytebuffer": "^5.0.49",
-        "@types/sharedworker": "^0.0.143",
         "@types/w3c-web-usb": "^1.0.10",
         "jest": "29.7.0",
-        "jest-environment-node": "^29.7.0",
-        "ts-node": "^10.9.2",
         "tsx": "^4.20.3"
     },
     "dependencies": {

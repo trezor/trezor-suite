@@ -8,7 +8,6 @@
         },
         { "path": "../bundler-security" },
         { "path": "../env-utils" },
-        { "path": "../suite" },
         { "path": "../eslint" }
     ]
 }

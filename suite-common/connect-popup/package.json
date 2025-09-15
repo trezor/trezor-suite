@@ -13,17 +13,9 @@
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
-        "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/env-utils": "workspace:^",
-        "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*"
-    },
-    "devDependencies": {
-        "redux-mock-store": "^1.5.5",
-        "redux-thunk": "^3.1.0"
     },
     "peerDependencies": {
         "@trezor/suite-desktop-api": "workspace:*"

@@ -61,7 +61,6 @@
         "@trezor/eslint": "workspace:*",
         "@types/bn.js": "^5.2.0",
         "@types/create-hmac": "^1.1.3",
-        "@types/events": "^3.0.3",
         "minimaldata": "^1.0.2",
         "tsx": "^4.20.3"
     },

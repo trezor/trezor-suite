@@ -11,9 +11,6 @@
         "clean": "node scripts/clean.js",
         "copy-binary": "node scripts/copy-binary.js"
     },
-    "dependencies": {
-        "node-addon-api": "^5.0.0"
-    },
     "devDependencies": {
         "@types/node": "^18.19.26",
         "node-gyp": "^9.3.1"
