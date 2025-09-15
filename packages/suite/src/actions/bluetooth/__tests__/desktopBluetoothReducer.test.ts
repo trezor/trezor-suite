@@ -21,7 +21,6 @@ const manufacturerData: BluetoothManufacturerData = {
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependenciesMock);
 
 const initialState: DesktopBluetoothState = {
-    isBluetoothListOpen: false,
     adapterStatus: 'unknown',
     scanStatus: 'idle',
     nearbyDevices: [] as DesktopBluetoothDevice[],
