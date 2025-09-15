@@ -725,9 +725,9 @@
                         }
                     ],
                     "environment": {
-                        "desktop": "<25.10.1",
-                        "mobile": "<25.10.1",
-                        "web": "<25.10.1"
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
                     }
                 }
             ],
