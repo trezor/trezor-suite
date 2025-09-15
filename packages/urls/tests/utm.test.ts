@@ -1,19 +1,10 @@
-import { getEnvironment } from '@trezor/env-utils';
-
 import { withPlatformUtm } from '../src/platform-utm';
 
-jest.mock('@trezor/env-utils', () => ({
-    getEnvironment: jest.fn(() => 'mobile'),
-}));
-
-const mGetEnvironment = getEnvironment as jest.MockedFunction<typeof getEnvironment>;
-
 describe('withUtm', () => {
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
-
     test('adds utm_medium=mobile for trezor.io urls', () => {
+        const defaultValue = process.env.EXPO_PUBLIC_ENVIRONMENT;
+        process.env.EXPO_PUBLIC_ENVIRONMENT = 'mobile';
+
         expect(
             withPlatformUtm(
                 'https://trezor.io/support/troubleshooting/device-issues/how-to-reset-your-pin',
@@ -35,10 +26,12 @@ describe('withUtm', () => {
         expect(withPlatformUtm('https://suite.trezor.io/web/firmware')).toBe(
             `https://suite.trezor.io/web/firmware?utm_medium=mobile`,
         );
+        process.env.EXPO_PUBLIC_ENVIRONMENT = defaultValue;
     });
 
     test('adds utm_medium=desktop for trezor.io urls', () => {
-        mGetEnvironment.mockReturnValue('desktop');
+        const defaultValue = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'desktop';
 
         expect(
             withPlatformUtm(
@@ -61,10 +54,13 @@ describe('withUtm', () => {
         expect(withPlatformUtm('https://suite.trezor.io/web/firmware')).toBe(
             `https://suite.trezor.io/web/firmware?utm_medium=desktop`,
         );
+
+        process.env.SUITE_TYPE = defaultValue;
     });
 
     test('adds utm_medium=web for trezor.io urls', () => {
-        mGetEnvironment.mockReturnValue('web');
+        const defaultValue = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'web';
 
         expect(
             withPlatformUtm(
@@ -87,6 +83,7 @@ describe('withUtm', () => {
         expect(withPlatformUtm('https://suite.trezor.io/web/firmware')).toBe(
             `https://suite.trezor.io/web/firmware?utm_medium=web`,
         );
+        process.env.SUITE_TYPE = defaultValue;
     });
 
     test('throws error for invalid domains', () => {
@@ -121,7 +118,8 @@ describe('withUtm', () => {
     });
 
     test('appends platform utm with & if query params already exist', () => {
-        mGetEnvironment.mockReturnValue('web');
+        const defaultValue = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'web';
 
         expect(withPlatformUtm('https://trezor.io/support?foo=bar')).toBe(
             'https://trezor.io/support?foo=bar&utm_medium=web',
@@ -134,5 +132,6 @@ describe('withUtm', () => {
         expect(withPlatformUtm('https://suite.trezor.io/web/firmware?existing=true')).toBe(
             'https://suite.trezor.io/web/firmware?existing=true&utm_medium=web',
         );
+        process.env.SUITE_TYPE = defaultValue;
     });
 });
