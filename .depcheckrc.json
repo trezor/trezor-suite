@@ -14,6 +14,5 @@
         "buffer",
         "node-gyp",
         "version-bump-prompt"
-    ],
-    "skip-missing": true
+    ]
 }
