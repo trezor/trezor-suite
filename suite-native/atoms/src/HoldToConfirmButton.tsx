@@ -13,9 +13,11 @@ import {
 
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
 
-import { AnimatedVStack, Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles';
+
+import { AnimatedVStack } from './Stack';
+import { Text } from './Text';
 const CANVAS_SIZE = 88;
 const CIRCLE_CENTER = CANVAS_SIZE / 2;
 const BORDER_WIDTH = 2;

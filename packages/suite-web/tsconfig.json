@@ -14,6 +14,7 @@
             "path": "../../suite-common/suite-types"
         },
         { "path": "../connect" },
-        { "path": "../eslint" }
+        { "path": "../eslint" },
+        { "path": "../suite-local-first-storage" }
     ]
 }

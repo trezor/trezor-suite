@@ -56,6 +56,7 @@
         "@babel/preset-env": "^7.28.0",
         "@babel/preset-typescript": "^7.27.1",
         "@trezor/eslint": "workspace:*",
+        "@types/node": "22.13.10",
         "@types/w3c-web-usb": "^1.0.10",
         "jest": "29.7.0",
         "tsx": "^4.20.3"

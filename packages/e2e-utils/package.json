@@ -10,6 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@octokit/rest": "^21.1.1",
         "@trezor/utils": "workspace:*",
         "dotenv": "^16.4.7",
         "express": "^5.1.0",

@@ -13,6 +13,7 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/config": "workspace:*",
+        "@suite-native/sentry": "workspace:*",
         "@trezor/analytics": "workspace:*",
         "@trezor/env-utils": "workspace:*"
     }

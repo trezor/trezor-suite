@@ -9,18 +9,18 @@ import {
     selectIsDeviceBackupUnfinished,
 } from '@suite-common/wallet-core';
 import {
-    DeviceDangerBannerCause,
-    deviceDangerBannerAtom,
-    selectFirmwareRevisionCheckErrorIfEnabled,
-    selectIsSkippedRevisionCheckError,
-} from '@suite-native/device';
-import {
     AppTabsRoutes,
     HomeStackRoutes,
     RootStackRoutes,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
+
+import { deviceDangerBannerAtom } from '../deviceAtoms';
+import {
+    selectFirmwareRevisionCheckErrorIfEnabled,
+    selectIsSkippedRevisionCheckError,
+} from '../selectors';
 
 export const useRenderDeviceDangerBanner = () => {
     const setBannerVariant = useSetAtom(deviceDangerBannerAtom);

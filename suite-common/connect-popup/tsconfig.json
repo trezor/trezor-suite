@@ -4,7 +4,10 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../redux-utils" },
+        { "path": "../toast-notifications" },
+        { "path": "../wallet-config" },
         { "path": "../wallet-core" },
+        { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
     ]

@@ -17,6 +17,9 @@
         {
             "path": "../../suite-common/suite-constants"
         },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
         { "path": "../asset-utils" },
         { "path": "../device-utils" },
         { "path": "../theme" },

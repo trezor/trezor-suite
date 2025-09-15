@@ -16,15 +16,21 @@
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/graph": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite-native/accounts": "workspace:*",
+        "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/assets": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/blockchain": "workspace:*",
+        "@suite-native/bluetooth": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/firmware": "workspace:*",
         "@suite-native/graph": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
@@ -37,5 +43,9 @@
         "react-native-reanimated": "^3.18.0",
         "react-native-svg": "15.12.1",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*",
+        "@trezor/device-utils": "workspace:*"
     }
 }

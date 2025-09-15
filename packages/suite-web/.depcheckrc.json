@@ -1,5 +1,4 @@
 {
-    "ignores": [
-        "tsx"
-    ]
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": ["tsx", "src", "rimraf"]
 }

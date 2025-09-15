@@ -5,7 +5,6 @@ import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import {
     Account,
     AccountKey,
@@ -83,6 +82,7 @@ import { selectSelectedDevice } from '../device/deviceSelectors';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
+    selectIsMevProtectionEnabled,
     selectIsMevProtectionFeatureEnabled,
 } from '../settings/walletSettingsReducer';
 import {

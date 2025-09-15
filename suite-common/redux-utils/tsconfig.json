@@ -4,6 +4,7 @@
     "references": [
         { "path": "../metadata-types" },
         { "path": "../suite-types" },
+        { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" }
     ]

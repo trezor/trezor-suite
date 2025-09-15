@@ -14,9 +14,15 @@
         "@evolu/common": "^6.0.1-preview.19",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

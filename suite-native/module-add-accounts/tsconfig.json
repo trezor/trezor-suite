@@ -22,6 +22,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" }
     ]
 }

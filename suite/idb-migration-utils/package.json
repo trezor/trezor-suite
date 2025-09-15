@@ -13,6 +13,7 @@
         "make:migration": "yarn g:tsx ./scripts/makeMigration.ts"
     },
     "dependencies": {
+        "idb": "^8.0.3",
         "semver": "^7.7.1"
     }
 }

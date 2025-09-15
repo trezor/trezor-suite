@@ -14,7 +14,11 @@
     "dependencies": {
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*"
     }
 }

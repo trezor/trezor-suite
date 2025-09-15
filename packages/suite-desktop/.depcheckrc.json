@@ -1,5 +1,4 @@
 {
-    "ignores": [
-        "openpgp"
-    ]
+    "ignore-patterns": ["libDev", "lib", "dist", "build"],
+    "ignores": ["openpgp", "usb", "blake-hash"]
 }

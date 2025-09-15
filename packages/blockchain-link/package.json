@@ -63,13 +63,12 @@
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
+        "@types/jest": "29.5.12",
+        "@types/node": "22.13.10",
         "html-webpack-plugin": "^5.6.3",
         "tiny-worker": "^2.3.0",
         "tsx": "^4.20.3",
-        "webpack": "5.100.0",
-        "webpack-cli": "^6.0.1",
-        "webpack-dev-server": "^5.2.2",
-        "worker-loader": "^3.0.8"
+        "webpack": "5.100.0"
     },
     "dependencies": {
         "@solana-program/compute-budget": "^0.8.0",
@@ -86,7 +85,9 @@
         "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.197",
+        "crypto-browserify": "3.12.0",
         "socks-proxy-agent": "8.0.5",
+        "stream-browserify": "^3.0.0",
         "xrpl": "^4.4.0"
     },
     "peerDependencies": {

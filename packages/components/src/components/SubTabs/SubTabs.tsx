@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { SubTabsContext } from './SubTabsContext';
@@ -15,6 +14,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { Row } from '../Flex/Flex';
 
 export const allowedSubTabsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSubTabsFrameProps)[number]>;

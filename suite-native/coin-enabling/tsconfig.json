@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -12,9 +15,11 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../discovery" },
+        { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/styles" }

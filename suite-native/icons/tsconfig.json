@@ -7,8 +7,15 @@
             "path": "../../suite-common/wallet-config"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../atoms" },
+        { "path": "../intl" },
+        { "path": "../test-utils" },
+        { "path": "../theme" },
         { "path": "../../packages/asset-utils" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },

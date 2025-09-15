@@ -11,6 +11,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device" },
@@ -22,6 +25,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" }
     ]
 }

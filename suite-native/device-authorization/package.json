@@ -14,8 +14,11 @@
         "@react-navigation/native": "7.1.17",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/styles": "workspace:*",
         "react": "19.0.0",
         "react-redux": "9.2.0"
     }

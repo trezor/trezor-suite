@@ -8,17 +8,6 @@ import {
     SellFiatTrade,
 } from 'invity-api';
 
-import {
-    TradingPaymentMethodProps,
-    TradingRootState,
-    TradingRootStateWithDeviceAndAccounts,
-    selectTradingBuyLoadingTimestampAndStatus,
-    selectTradingExchangeBuyCryptoIds,
-    selectTradingExchangeLoadingTimestampAndStatus,
-    selectTradingSellLoadingTimestampAndStatus,
-    selectTradingSellQuotes,
-    selectValidTradingSellQuotes,
-} from '@suite-common/trading';
 import { StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';

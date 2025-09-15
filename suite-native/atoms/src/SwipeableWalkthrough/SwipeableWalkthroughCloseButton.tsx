@@ -5,7 +5,8 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { IconButton } from '@suite-native/atoms';
+import { IconButton } from '../Button/IconButton';
+
 type SwipeableWalkthroughCloseButtonProps = {
     onPressBack: () => void;
     currentStepIndex: SharedValue<number>;

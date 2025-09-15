@@ -22,6 +22,7 @@
         "@suite-native/tokens": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-localization": "16.1.6",
         "react": "19.0.0",

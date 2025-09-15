@@ -27,15 +27,6 @@ import type {
     SellVoucherTradeRequest,
 } from 'invity-api';
 
-import type {
-    InvityServerEnvironment,
-    InvityServers,
-    TradingOTC,
-    TradingPaymentMethodType,
-    TradingTradeType,
-    TradingType,
-    TradingWatchTradeResponsePropsMap,
-} from '@suite-common/trading';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
 type BodyType =

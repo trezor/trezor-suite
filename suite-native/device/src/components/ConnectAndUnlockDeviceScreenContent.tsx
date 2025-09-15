@@ -1,8 +1,9 @@
 import { Button, Text, VStack } from '@suite-native/atoms';
-import { ConnectDeviceAnimation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { ConnectDeviceAnimation } from './ConnectDeviceAnimation';
 
 const ANIMATION_HEIGHT = getScreenHeight() * 0.6;
 

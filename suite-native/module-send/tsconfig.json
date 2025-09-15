@@ -9,6 +9,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {
@@ -52,7 +55,8 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/transport" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]
 }

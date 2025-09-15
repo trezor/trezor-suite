@@ -19,9 +19,13 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/helpers": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:^",
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/theme": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "expo-image": "2.4.0",
@@ -34,7 +38,8 @@
         "react-native-reanimated": "^3.18.0",
         "react-native-safe-area-context": "5.6.1",
         "react-native-svg": "15.12.1",
-        "react-redux": "9.2.0"
+        "react-redux": "9.2.0",
+        "type-fest": "4.24.0"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"

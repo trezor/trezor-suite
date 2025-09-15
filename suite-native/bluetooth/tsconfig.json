@@ -5,11 +5,19 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         {

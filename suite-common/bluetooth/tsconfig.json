@@ -3,6 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../redux-utils" },
-        { "path": "../../packages/connect" }
+        { "path": "../suite-types" },
+        { "path": "../test-utils" },
+        { "path": "../wallet-core" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" }
     ]
 }

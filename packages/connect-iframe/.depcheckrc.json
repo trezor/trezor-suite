@@ -1,5 +1,11 @@
 {
+    "ignore-patterns": ["libDev", "lib"],
     "ignores": [
-        "es6-promise"
+        "es6-promise",
+        "@babel/preset-typescript",
+        "babel-loader",
+        "rimraf",
+        "webpack-cli",
+        "worker-loader"
     ]
 }

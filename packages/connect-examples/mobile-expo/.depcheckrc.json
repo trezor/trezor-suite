@@ -1,6 +1,4 @@
 {
-    "ignores": [
-        "typescript",
-        "@babel/core"
-    ]
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": ["typescript", "@babel/core"]
 }

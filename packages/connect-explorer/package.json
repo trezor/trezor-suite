@@ -44,7 +44,10 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
+        "@types/chrome": "^0.0.299",
+        "@types/node": "22.13.10",
         "@types/redux-logger": "^3.0.13",
+        "@types/web": "^0.0.197",
         "babel-plugin-styled-components": "^2.1.4",
         "concurrently": "^8.2.2",
         "copy-webpack-plugin": "^13.0.1",

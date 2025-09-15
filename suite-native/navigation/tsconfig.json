@@ -8,6 +8,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -17,6 +18,8 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../icons" },
+        { "path": "../intl" },
+        { "path": "../sentry" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

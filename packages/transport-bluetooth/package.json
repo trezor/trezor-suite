@@ -43,6 +43,8 @@
         "@trezor/websocket-client": "workspace:*"
     },
     "devDependencies": {
+        "@types/jest": "29.5.12",
+        "@types/node": "22.13.10",
         "html-webpack-plugin": "^5.6.3",
         "react": "19.0.0",
         "react-dom": "19.0.0",

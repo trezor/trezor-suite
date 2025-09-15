@@ -1,12 +1,15 @@
 import { JSX, ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { Center, Column, Icon, List, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Card } from './Card/Card';
+import { Center, Column, Row } from './Flex/Flex';
+import { Icon } from './Icon/Icon';
+import { List } from './List/List';
 import { Button } from './buttons/Button/Button';
 import { Switch } from './form/Switch/Switch';
+import { Text } from './typography/Text/Text';
 
 interface DataAnalyticsProps {
     onConfirm: (trackingEnabled: boolean) => void;

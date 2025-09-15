@@ -7,11 +7,27 @@
         {
             "path": "../../suite-common/message-system"
         },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../analytics" },
+        { "path": "../atoms" },
+        { "path": "../config" },
+        { "path": "../device" },
+        { "path": "../icons" },
+        { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../navigation" },
+        { "path": "../sentry" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/react-native-usb"
         },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }

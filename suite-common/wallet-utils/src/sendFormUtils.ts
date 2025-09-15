@@ -33,7 +33,6 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import {
     ComposeOutput,
@@ -52,6 +51,7 @@ import {
     getUtxoOutpoint,
     networkAmountToSmallestUnit,
 } from './accountUtils';
+import { isBaseCurrencyWithSats } from './baseCurrency';
 import { getEvmTransactionTextSignature, isEip1559, sanitizeHex } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {

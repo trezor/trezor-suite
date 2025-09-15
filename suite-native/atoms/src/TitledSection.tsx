@@ -2,7 +2,8 @@ import { Children, ReactNode } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { Text, VStack } from '@suite-native/atoms';
+import { VStack } from './Stack';
+import { Text } from './Text';
 
 type TitledSectionProps = {
     title: ReactNode;
