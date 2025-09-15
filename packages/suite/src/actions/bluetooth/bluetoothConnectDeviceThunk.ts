@@ -7,7 +7,6 @@ import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
     setBluetoothDeviceNeedsManualOsRemoval,
-    setBluetoothListOpen,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
 } from './desktopBluetoothReducer';
@@ -77,7 +76,6 @@ export const bluetoothConnectDeviceThunk = createThunk<
         });
 
         dispatch(stopConnectingBluetoothDevice({ deviceId }));
-        dispatch(setBluetoothListOpen({ isOpen: false }));
 
         return fulfillWithValue({ success: result.success });
     },

@@ -8,7 +8,6 @@ import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 export type DesktopBluetoothState = BluetoothState<DesktopBluetoothDevice> & {
-    isBluetoothListOpen: boolean;
     // Flag to display some extra info (Modal) to instruct the user to remove
     // the device from the OS settings manually
     unpairedDeviceNeedsManualOsRemoval: boolean;
@@ -36,7 +35,6 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     name: 'bluetooth',
     initialState: {
         ...prepareInitialState<DesktopBluetoothDevice>(),
-        isBluetoothListOpen: false,
         unpairedDeviceNeedsManualOsRemoval: false,
         connectingDeviceIds: [] as string[],
         isUnpairingDevice: false,
@@ -50,9 +48,6 @@ export const bluetoothSlice = createSliceWithExtraDeps({
         },
         stopConnectingBluetoothDevice: (state, { payload: { deviceId } }) => {
             state.connectingDeviceIds = state.connectingDeviceIds.filter(id => id !== deviceId);
-        },
-        setBluetoothListOpen: (state, { payload: { isOpen } }) => {
-            state.isBluetoothListOpen = isOpen;
         },
         setIsUnpairingDevice: (state, { payload: { isUnpairing } }) => {
             state.isUnpairingDevice = isUnpairing;
@@ -71,6 +66,5 @@ export const {
     setBluetoothDeviceNeedsManualOsRemoval,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
-    setBluetoothListOpen,
     setIsUnpairingDevice,
 } = bluetoothSlice.actions;
