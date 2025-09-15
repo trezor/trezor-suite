@@ -13,6 +13,7 @@ import {
     selectIsBioAuthValidationRequired,
     selectIsRequestingBioAuthChange,
 } from 'src/reducers/bioAuth';
+import { Dispatch } from 'src/types/suite';
 
 import { bioAuthActions } from './bioAuthActions';
 import * as storageActions from './storageActions';
@@ -59,6 +60,28 @@ export const bioAuthWindowFocusThunk = createThunk(
 
 const KNOWN_ERROR_MESSAGES = ['Authentication canceled.'];
 
+const validateCall = (translationString: TranslationFunction) =>
+    desktopApi.validateBioAuth({
+        message: translationString(
+            isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
+        ),
+    });
+const handleError = (error: string, dispatch: Dispatch, translationString: TranslationFunction) => {
+    dispatch(bioAuthActions.bioAuthValidated(null));
+
+    if (KNOWN_ERROR_MESSAGES.some(message => error.includes(message))) {
+        // NOTE: known error message
+        return;
+    }
+
+    dispatch(
+        notificationsActions.addToast({
+            type: 'error',
+            error: translationString('TR_BIO_AUTH_FAILED'),
+        }),
+    );
+};
+
 export const requestBioAuthChangeThunk = createThunk(
     `${BIO_AUTH_PREFIX}/requestBioAuthChangeThunk`,
     async (
@@ -76,48 +99,26 @@ export const requestBioAuthChangeThunk = createThunk(
         const nextBioEnabled = nextBioAuthEnabledValue ?? !prevBioEnabled;
 
         if (nextBioEnabled === prevBioEnabled) {
-            return { success: true };
+            return;
         }
 
         if (isRequestingChange || selectIsBioAuthValidationRequested(getState())) {
-            return { success: false };
+            return;
         }
 
         dispatch(bioAuthActions.requestBioAuthChange(nextBioEnabled));
 
         try {
-            await desktopApi.validateBioAuth({
-                message: translationString(
-                    isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
-                ),
-            });
+            const result = await validateCall(translationString);
 
-            dispatch(bioAuthActions.setBioAuthEnabled(nextBioEnabled));
-            dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
-            // Persist bioAuthEnabled to storage
-            dispatch(storageActions.saveBioAuth());
-
-            return {
-                success: true,
-            };
-        } catch (error) {
-            dispatch(bioAuthActions.bioAuthValidated(null));
-
-            if (KNOWN_ERROR_MESSAGES.some(message => String(error).includes(message))) {
-                // NOTE: known error message
-                return;
+            if (result.success) {
+                dispatch(bioAuthActions.setBioAuthEnabled(nextBioEnabled));
+                dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
+                // Persist bioAuthEnabled to storage
+                dispatch(storageActions.saveBioAuth());
+            } else {
+                return handleError(result.message, dispatch, translationString);
             }
-            console.error(error);
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: translationString('TR_BIO_AUTH_FAILED'),
-                }),
-            );
-
-            return {
-                success: false,
-            };
         } finally {
             dispatch(bioAuthActions.requestBioAuthChangeEnd());
         }
@@ -138,31 +139,17 @@ export const requestBioAuthValidationThunk = createThunk(
 
         dispatch(bioAuthActions.toggleBioAuthValidationRequested(true));
         try {
-            await desktopApi.validateBioAuth({
-                message: translationString(
-                    isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
-                ),
-            });
-            dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
-            const blurTimeoutId = selectBlurTimeoutId(getState());
-            if (blurTimeoutId) {
-                clearTimeout(blurTimeoutId);
-            }
-        } catch (error) {
-            dispatch(bioAuthActions.bioAuthValidated(null));
+            const result = await validateCall(translationString);
 
-            if (KNOWN_ERROR_MESSAGES.some(message => String(error).includes(message))) {
-                // NOTE: known error message
-                return;
+            if (result.success) {
+                dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
+                const blurTimeoutId = selectBlurTimeoutId(getState());
+                if (blurTimeoutId) {
+                    clearTimeout(blurTimeoutId);
+                }
+            } else {
+                return handleError(result.message, dispatch, translationString);
             }
-            console.error(error);
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: translationString('TR_BIO_AUTH_FAILED'),
-                }),
-            );
         } finally {
             dispatch(bioAuthActions.toggleBioAuthValidationRequested(false));
         }
