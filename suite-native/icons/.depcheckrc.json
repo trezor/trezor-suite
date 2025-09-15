@@ -2,6 +2,7 @@
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
         "// Todo: This need so be solved. See: https://github.com/trezor/trezor-suite/issues/21555",
-        "@suite-native/atoms"
+        "@suite-native/atoms",
+        "@suite-native/test-utils"
     ]
 }
