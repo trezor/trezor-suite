@@ -2,7 +2,8 @@
  * Set tor proxy for @trezor/blockchain-link connections
  */
 
-import type { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+
 import type { CommonParams, Response } from '../params';
 import type { Proxy } from '../settings';
 

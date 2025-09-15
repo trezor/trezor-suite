@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CipherKeyValue.js
 
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';

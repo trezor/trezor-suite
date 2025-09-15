@@ -1,9 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignMessage.js
 
-import { MessagesSchema } from '@trezor/protobuf';
+import { MessagesSchema, MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import {

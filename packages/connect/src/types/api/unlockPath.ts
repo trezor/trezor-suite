@@ -1,6 +1,6 @@
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Static, Type } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../constants';
 import { DerivationPath, Params, Response } from '../params';
 
 export type UnlockPathParams = Static<typeof UnlockPathParams>;

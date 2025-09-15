@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RequestLogin.js
 
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { ERRORS } from '../constants';
-import type { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';

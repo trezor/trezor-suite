@@ -1,6 +1,6 @@
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpCredentials } from '@trezor/protocol';
 
-import type { PROTO } from '../../constants';
 import type { CommonParams, Response } from '../params';
 
 export declare function thpRemoveCredentials(

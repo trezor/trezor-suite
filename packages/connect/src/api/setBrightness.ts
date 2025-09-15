@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SetBrightness.js
 
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO.SetBrightness> {
