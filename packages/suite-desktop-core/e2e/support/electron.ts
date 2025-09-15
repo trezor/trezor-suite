@@ -18,7 +18,6 @@ const showConnectLogsArgument = '--state.suite.settings.debug.showConnectLogs=tr
 const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
 const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error GetVSyncParametersIfAvailable()
 const removeUserDataArgument = '--remove-user-data-on-start';
-const exposeStoreArgument = '--expose-store';
 
 export type LaunchSuiteParams = {
     keepUserData?: boolean;
@@ -48,7 +47,6 @@ const formatErrorLogMessage = (data: string) => {
 const buildArgs = (params: LaunchSuiteParams) => {
     const args = [
         path.join(appDir, './dist/app.js'),
-        exposeStoreArgument,
         `--width=${params.viewport.width}`,
         `--height=${params.viewport.height}`,
         logLevelArgument,

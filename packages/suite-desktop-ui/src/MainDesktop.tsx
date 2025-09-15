@@ -33,7 +33,11 @@ import { RouterHandler } from 'src/support/suite/RouterHandler';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
-import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
+import {
+    isRunningWithinPlaywright,
+    useDebugLanguageShortcut,
+    useFormattersConfig,
+} from 'src/hooks/suite';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
@@ -43,9 +47,11 @@ import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
+import { usePlaywright } from 'src/hooks/suite/usePlaywright';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 const MainDesktop = () => {
+    usePlaywright();
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupDesktop();
@@ -89,7 +95,9 @@ const MainDesktop = () => {
 };
 
 export const init = async (container: HTMLElement) => {
-    initSentry(SENTRY_CONFIG);
+    if (!isRunningWithinPlaywright) {
+        initSentry(SENTRY_CONFIG);
+    }
 
     // render simple loader with theme provider without redux, wait for indexedDB
     const root = createRoot(container);
@@ -98,11 +106,6 @@ export const init = async (container: HTMLElement) => {
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
     const store = initStore(preloadAction, statePatch);
-
-    // Expose Redux store for Playwright/e2e tests
-    if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
-        (window as any).store = store;
-    }
 
     // start logging to file if Debug menu is active
     if (

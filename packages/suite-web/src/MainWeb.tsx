@@ -22,9 +22,13 @@ import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
 import { RouterHandler } from 'src/support/suite/RouterHandler';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
-import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
+import {
+    isRunningWithinPlaywright,
+    useDebugLanguageShortcut,
+    useFormattersConfig,
+} from 'src/hooks/suite';
 
-import { usePlaywright } from './support/usePlaywright';
+import { usePlaywright } from 'src/hooks/suite/usePlaywright';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { Suspense } from 'react';
 import { webComponents } from './support/webComponents';
@@ -71,7 +75,7 @@ const MainWeb = () => {
 };
 
 export const init = async (container: HTMLElement) => {
-    if (!window.Playwright) {
+    if (!isRunningWithinPlaywright) {
         initSentry(SENTRY_CONFIG);
     }
 
