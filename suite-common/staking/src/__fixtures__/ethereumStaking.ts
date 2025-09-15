@@ -535,12 +535,12 @@ export const getDaysToAddToPoolFixture = [
         result: undefined,
     },
     {
-        description: 'should return 1 if blockTime is undefined',
+        description: 'should return 2 if blockTime is undefined',
         args: {
             stakeTxs: [{}], // blockTime is undefined
             validatorsQueue: { validatorAddingDelay: 86400, validatorActivationTime: 86400 },
         },
-        result: 1,
+        result: 2,
     },
     {
         description: 'should return the number of days to wait',

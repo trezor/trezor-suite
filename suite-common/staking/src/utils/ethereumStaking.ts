@@ -553,13 +553,11 @@ export const getDaysToAddToPool = (
         return undefined;
     }
 
-    const lastTx = stakeTxs[0];
-
-    if (!lastTx?.blockTime) return 1;
-
     const now = Math.floor(Date.now() / 1000);
+    const lastTxBlockTime = stakeTxs[0]?.blockTime || now;
+
     const secondsToWait =
-        lastTx.blockTime +
+        lastTxBlockTime +
         validatorsQueue.validatorAddingDelay +
         validatorsQueue.validatorActivationTime -
         now;
@@ -576,12 +574,14 @@ export const getDaysToUnstake = (
         return undefined;
     }
 
-    const lastTx = unstakeTxs[0];
-
-    if (!lastTx?.blockTime) return 1;
-
     const now = Math.floor(Date.now() / 1000);
-    const secondsToWait = lastTx.blockTime + validatorsQueue.validatorWithdrawTime - now;
+    const lastTxBlockTime = unstakeTxs[0]?.blockTime || now;
+
+    const secondsToWait =
+        lastTxBlockTime +
+        validatorsQueue.validatorWithdrawTime +
+        (validatorsQueue?.validatorExitTime || 0) -
+        now;
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;
