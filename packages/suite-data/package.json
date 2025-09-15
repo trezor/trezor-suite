@@ -10,6 +10,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Trezor data",
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "build:lib": "yarn browser-detection && yarn guide-pull-content",
         "browser-detection": "webpack --config ./browser-detection.webpack.ts",
         "guide-pull-content": "yarn tsx ./src/guide/index.ts",

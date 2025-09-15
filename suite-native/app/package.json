@@ -4,6 +4,7 @@
     "suiteNativeVersion": "25.9.1",
     "main": "index.js",
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "android": "expo run:android",
         "android:clean": "cd android && ./gradlew clean",
         "ios": "expo run:ios",

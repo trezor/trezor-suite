@@ -56,7 +56,8 @@
         "test:integration": "yarn g:jest -c jest.config.integration.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublish": "yarn tsx ../../scripts/prepublish.js",
+        "depcheck": "yarn g:depcheck"
     },
     "devDependencies": {
         "@trezor/e2e-utils": "workspace:*",

@@ -6,6 +6,7 @@
     "main": "src/index",
     "type": "module",
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "build:native": "node scripts/build-native.js",
         "clean": "node scripts/clean.js",
         "copy-binary": "node scripts/copy-binary.js"

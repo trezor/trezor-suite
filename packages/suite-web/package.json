@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
