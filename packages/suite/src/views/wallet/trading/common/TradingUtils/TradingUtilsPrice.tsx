@@ -1,19 +1,31 @@
 import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
+import { ExperimentId } from '@suite-common/message-system';
+import {
+    TradingTradeMapProps,
+    cryptoIdToNetworkSymbolAndContractAddress,
+} from '@suite-common/trading';
+import { TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Tooltip } from '@trezor/components';
+import { Column, Row, Text, Tooltip } from '@trezor/components';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation } from 'src/components/suite';
+import { BaseCurrencyValue, Translation } from 'src/components/suite';
+import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCryptoAmountProps } from 'src/types/trading/trading';
-import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+import {
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
+
+import { TradingUtilsKyc } from './TradingUtilsKyc';
 
 const PriceWrap = styled.div``;
 
@@ -39,13 +51,17 @@ const PriceValue = styled.div`
     }
 `;
 
+interface TradingUtilsPriceProps extends TradingCryptoAmountProps {
+    quote: TradingTradeMapProps[keyof TradingTradeMapProps];
+}
 export const TradingUtilsPrice = ({
     amountInCrypto,
     sendAmount,
     sendCurrency,
     receiveAmount,
     receiveCurrency,
-}: TradingCryptoAmountProps) => {
+    quote,
+}: TradingUtilsPriceProps) => {
     const context = useTradingFormContext();
     const { type } = context;
 
@@ -56,6 +72,10 @@ export const TradingUtilsPrice = ({
         !new BigNumber(receiveAmount).isEqualTo(
             new BigNumber(context.quotesRequest?.cryptoStringAmount),
         );
+
+    const { symbol, contractAddress } = receiveCurrency
+        ? cryptoIdToNetworkSymbolAndContractAddress(receiveCurrency)
+        : {};
 
     return (
         <PriceWrap>
@@ -99,29 +119,74 @@ export const TradingUtilsPrice = ({
                 )}
             </PriceTitle>
             <PriceValueWrap data-testid="@trading/offers/quote/amount">
-                <PriceValue>
-                    {amountInCrypto ? (
-                        <TradingFiatAmount
-                            amount={
-                                sendAmount !== undefined
-                                    ? asBaseCurrencyAmount(new BigNumber(sendAmount))
-                                    : undefined
-                            }
-                            currency={sendCurrency}
-                        />
-                    ) : (
-                        <>
-                            {receiveCurrency && (
-                                <TradingCryptoAmount
-                                    amount={receiveAmount}
-                                    cryptoId={receiveCurrency}
-                                    displayLogo
-                                />
+                <Column>
+                    <Row alignItems="flex-start">
+                        <PriceValue>
+                            {amountInCrypto ? (
+                                <>
+                                    <TradingFiatAmount
+                                        amount={
+                                            sendAmount !== undefined
+                                                ? asBaseCurrencyAmount(new BigNumber(sendAmount))
+                                                : undefined
+                                        }
+                                        currency={sendCurrency}
+                                    />
+                                </>
+                            ) : (
+                                <Column>
+                                    {receiveCurrency && (
+                                        <TradingCryptoAmount
+                                            amount={receiveAmount}
+                                            cryptoId={receiveCurrency}
+                                            displayLogo
+                                        />
+                                    )}
+                                    <ExperimentWrapper
+                                        id={ExperimentId.tradingFiatValues}
+                                        components={[
+                                            { variant: 'A', element: <></> },
+                                            {
+                                                variant: 'B',
+                                                element:
+                                                    symbol && receiveAmount ? (
+                                                        <Text
+                                                            variant="tertiary"
+                                                            typographyStyle="hint"
+                                                            margin={{ left: spacings.xxl }}
+                                                        >
+                                                            <BaseCurrencyValue
+                                                                amount={receiveAmount.toString()}
+                                                                symbol={symbol}
+                                                                rateType="current"
+                                                                tokenAddress={
+                                                                    contractAddress as
+                                                                        | TokenAddress
+                                                                        | undefined
+                                                                }
+                                                                showApproximationIndicator
+                                                            />
+                                                        </Text>
+                                                    ) : (
+                                                        <></>
+                                                    ),
+                                            },
+                                        ]}
+                                    />
+                                </Column>
                             )}
-                        </>
-                    )}
-                </PriceValue>
-                {/*<TradingUtilsTooltip quote={quote} />*/}
+                        </PriceValue>
+                        {isTradingExchangeContext(context) && (
+                            <Row margin={{ top: spacings.xs }}>
+                                <TradingUtilsKyc
+                                    exchange={quote.exchange}
+                                    providers={context.exchangeInfo?.providerInfos}
+                                    isForComparator
+                                />
+                            </Row>
+                        )}
+                    </Row>
+                </Column>
             </PriceValueWrap>
         </PriceWrap>
     );

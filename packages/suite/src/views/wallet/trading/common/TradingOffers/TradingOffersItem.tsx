@@ -24,7 +24,6 @@ import {
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingTestWrapper } from 'src/views/wallet/trading';
-import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
 import { TradingUtilsPrice } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsPrice';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
@@ -166,16 +165,8 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                         />
                     </ExchangeNameOfferColumn>
                     <AmountOfferColumn>
-                        <Row alignItems="flex-end" data-testid="@trading/offer/amount">
-                            <TradingUtilsPrice {...cryptoAmountProps} />
-
-                            {isTradingExchangeContext(context) && (
-                                <TradingUtilsKyc
-                                    exchange={exchange}
-                                    providers={context.exchangeInfo?.providerInfos}
-                                    isForComparator
-                                />
-                            )}
+                        <Row alignItems="flex-start" data-testid="@trading/offer/amount">
+                            <TradingUtilsPrice {...cryptoAmountProps} quote={quote} />
                         </Row>
                     </AmountOfferColumn>
                     <ActionsOfferColumn>
