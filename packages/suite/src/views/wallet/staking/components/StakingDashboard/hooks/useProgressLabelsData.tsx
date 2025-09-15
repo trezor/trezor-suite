@@ -55,9 +55,8 @@ export const useProgressLabelsData = ({
                         <Translation id="TR_STAKE_ADDING_TO_POOL" />
                         {isDaysToAddToPoolShown && (
                             <Paragraph typographyStyle="label" variant="tertiary">
-                                ~
                                 <Translation
-                                    id="TR_STAKE_DAYS"
+                                    id="TR_STAKE_APPROXIMATE_DAYS"
                                     values={{
                                         count: daysToAddToPool,
                                     }}

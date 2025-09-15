@@ -1,21 +1,18 @@
 import React, { JSX } from 'react';
-import { useSelector } from 'react-redux';
 
-import { getDaysToAddToPool } from '@suite-common/staking';
+import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
-    AccountsRootState,
     StakeRootState,
-    TransactionsRootState,
-    selectAccountStakeTransactions,
     selectPoolStatsApyData,
-    selectValidatorsQueue,
+    selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';
@@ -81,12 +78,7 @@ interface StakingInfoProps {
 export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
     const { account } = useSelector((state: CoinjoinRootState) => state.wallet.selectedAccount);
 
-    const { data } =
-        useSelector((state: StakeRootState) => selectValidatorsQueue(state, account?.symbol)) || {};
-
-    const stakeTxs = useSelector((state: TransactionsRootState & AccountsRootState) =>
-        selectAccountStakeTransactions(state, account?.key ?? ''),
-    );
+    const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
 
     const apy = useSelector((state: StakeRootState) =>
         selectPoolStatsApyData(state, account?.symbol),
@@ -94,8 +86,12 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
 
     if (!account) return null;
 
-    const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
-    const infoRowsData = getInfoRowsData(account.networkType, account.symbol, daysToAddToPool);
+    const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
+    const infoRowsData = getInfoRowsData(
+        account.networkType,
+        account.symbol,
+        daysToAddToPoolInitial,
+    );
 
     const infoRows = [
         {
