@@ -280,12 +280,7 @@ const init = async () => {
         mainThreadEmitter,
     });
 
-    const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule({
-        mainWindowProxy,
-        store,
-        interceptor,
-        mainThreadEmitter,
-    });
+    const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule();
 
     loadBioAuthModule();
 

@@ -1,7 +1,6 @@
 import type { IpcRendererEvent } from 'electron';
 
 import { type DesktopApi, type RendererChannels } from './api';
-import { createBioAuthAPI } from './bioAuthAPIFactory';
 import { type StrictIpcRenderer } from './ipc';
 import * as validation from './validation';
 
@@ -196,6 +195,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         connectPopupResponse: response => ipcRenderer.invoke('connect-popup/response', response),
 
         openSystemSettings: settings => ipcRenderer.invoke('system/open-settings', settings),
-        ...createBioAuthAPI(ipcRenderer),
+        validateBioAuth: payload => ipcRenderer.invoke('bio-auth/validate-bio-auth', payload),
+        isBioAuthAvailable: () => ipcRenderer.invoke('bio-auth/is-bio-auth-available'),
     };
 };
