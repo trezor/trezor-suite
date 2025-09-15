@@ -6,8 +6,9 @@ import { selectAnalyticsInstanceId } from '@suite-common/analytics';
 import {
     ExperimentsItemType,
     getActiveExperimentGroup,
-    getInclusionFromInstanceId,
+    getExperimentGroupByInclusion,
     messageSystemActions,
+    selectAllExperimentInclusionOverrides,
     selectAllManuallyAddedExperimentIds,
     selectAllValidExperiments,
 } from '@suite-common/message-system';
@@ -46,6 +47,7 @@ export const MessageSystemExperiments = ({
 }: MessageSystemManagerProps) => {
     const allValidExperiments = useSelector(selectAllValidExperiments);
     const allManuallyAddedExperimentIds = useSelector(selectAllManuallyAddedExperimentIds);
+    const allExperimentInclusionOverrides = useSelector(selectAllExperimentInclusionOverrides);
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const dispatch = useDispatch();
 
@@ -86,10 +88,15 @@ export const MessageSystemExperiments = ({
                     const experiment = rawExperiment as ExperimentsItemType;
                     const isActive = validExperimentIdSet.has(experiment.id);
 
-                    const assignedGroup = getActiveExperimentGroup({ experiment, instanceId });
-                    const inclusion = instanceId
-                        ? getInclusionFromInstanceId(instanceId, experiment.id)
-                        : null;
+                    const inclusionOverride = allExperimentInclusionOverrides?.[experiment.id];
+
+                    const assignedGroup =
+                        inclusionOverride != undefined
+                            ? getExperimentGroupByInclusion({
+                                  groups: experiment.groups,
+                                  inclusion: inclusionOverride,
+                              })
+                            : getActiveExperimentGroup({ experiment, instanceId });
 
                     return (
                         <MessageContainer key={`${experiment.id}-${index}`} $active={isActive}>
@@ -106,7 +113,9 @@ export const MessageSystemExperiments = ({
                                 <MessageSystemExperimentInfo
                                     assignedGroup={assignedGroup}
                                     isActive={isActive}
-                                    inclusion={inclusion}
+                                    instanceId={instanceId}
+                                    experiment={experiment}
+                                    inclusionOverride={inclusionOverride}
                                 />
                                 <Column alignItems="flex-end" gap={spacings.xs}>
                                     <Button
