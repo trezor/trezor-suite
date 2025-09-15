@@ -23,7 +23,7 @@ export type ExchangeRatePickerProps = ExchangeRatePickerRightProps & {
 
 const ExchangeRatePickerRight = ({ isLoading, selectedValue }: ExchangeRatePickerRightProps) => {
     const { translate } = useTranslate();
-    const { isFixedRate } = (useSelector((state: CommonTradingRootState) =>
+    const { isFixedRate, isDex } = (useSelector((state: CommonTradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, selectedValue?.exchange, 'exchange'),
     ) ?? {}) as ExchangeProviderInfo;
 
@@ -31,9 +31,10 @@ const ExchangeRatePickerRight = ({ isLoading, selectedValue }: ExchangeRatePicke
         return <OverviewValueSkeleton />;
     }
 
-    const rate = isFixedRate
+    let rate = isFixedRate
         ? translate('moduleTrading.selectRate.fixed')
         : translate('moduleTrading.selectRate.floating');
+    rate = isDex ? translate('moduleTrading.selectRate.dex') : rate;
 
     return (
         <HStack>
