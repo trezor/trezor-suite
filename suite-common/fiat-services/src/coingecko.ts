@@ -21,9 +21,14 @@ interface FetchCurrentFiatRatesOptions {
 
 const rateLimiter = new RateLimiter(1_000, 15_000);
 
-const fetchCoinGecko = async (url: string, init?: RequestInit) => {
+const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
     try {
-        const res = await rateLimiter.limit(signal => fetchUrl(url, { signal, ...init }));
+        let res: Response;
+        if (skipCache) {
+            res = await fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' } });
+        } else {
+            res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
+        }
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
 
@@ -112,11 +117,9 @@ export const fetchCurrentFiatRates = async (
     const urlParams =
         'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&localization=false';
 
-    const headers = options?.skipCache ? { 'X-Bypass-Cache': '1' } : undefined;
-
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}?${urlParams}`;
-        const rates = await fetchCoinGecko(url, { headers });
+        const rates = await fetchCoinGecko(url, options?.skipCache);
 
         if (rates) {
             return {
