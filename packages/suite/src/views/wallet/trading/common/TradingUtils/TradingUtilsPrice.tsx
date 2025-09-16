@@ -1,7 +1,6 @@
 import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
-import { ExperimentId } from '@suite-common/message-system';
 import {
     TradingTradeMapProps,
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -143,7 +142,7 @@ export const TradingUtilsPrice = ({
                                         />
                                     )}
                                     <ExperimentWrapper
-                                        id={ExperimentId.tradingFiatValues}
+                                        id="tradingFiatValues"
                                         components={[
                                             { variant: 'A', element: <></> },
                                             {
