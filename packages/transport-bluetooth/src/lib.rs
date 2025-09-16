@@ -4,7 +4,9 @@ use napi_derive::napi;
 
 use crate::server::{
     adapter_manager::AdapterManager, connection_broadcast::ConnectionBroadcast,
-    methods::connect_device as connect_device_method, types::ConnectDeviceParams,
+    methods::connect_device as connect_device_method,
+    methods::disconnect_device as disconnect_device_method, types::ConnectDeviceParams,
+    types::DisconnectDeviceParams,
 };
 
 use btleplug::api::Central;
@@ -42,7 +44,27 @@ pub async fn connect_device(
     tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
     let _ = adapter.stop_scan().await;
 
-    match connect_device_method(manager, broadcast, ConnectDeviceParams { id, timeout }).await {
+    match connect_device_method(
+        manager.clone(),
+        broadcast.clone(),
+        ConnectDeviceParams {
+            id: id.clone(),
+            timeout,
+        },
+    )
+    .await
+    {
+        Ok(_) => Ok::<(), napi::Error>(()),
+        Err(e) => Err(error(e.to_string()))?,
+    }?;
+
+    match disconnect_device_method(
+        manager.clone(),
+        broadcast.clone(),
+        DisconnectDeviceParams { id: id.clone() },
+    )
+    .await
+    {
         Ok(_) => Ok(()),
         Err(e) => Err(error(e.to_string()))?,
     }
