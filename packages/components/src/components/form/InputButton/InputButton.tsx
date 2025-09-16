@@ -26,6 +26,7 @@ const Wrapper = styled.div<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.full};
     background: ${({ theme, $elevation }) =>
         mapElevationToButtonOnBackground({ elevation: $elevation, theme, state: 'normal' })};
+    overflow-x: hidden;
 `;
 
 const HiddenPlaceholder = styled.div`
