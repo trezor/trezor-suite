@@ -15,6 +15,7 @@ COPY ./src ./src
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./build.rs ./build.rs
+COPY ./build/ ./build/
 
 ARG BUILD_VERSION_TAG
 ENV BUILD_VERSION_TAG=${BUILD_VERSION_TAG}
