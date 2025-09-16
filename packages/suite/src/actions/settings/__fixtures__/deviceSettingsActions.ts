@@ -28,7 +28,7 @@ export type DeviceSettingsFixtureState = {
 const deviceChange = getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' });
 assert(deviceChange.features !== undefined);
 
-type Feature = {
+type Fixture = {
     description: string;
     action: () => void;
     initialState: Partial<DeviceSettingsFixtureState>;
@@ -39,7 +39,7 @@ type Feature = {
     };
 };
 
-const fixture: Feature[] = [
+const fixture: Fixture[] = [
     {
         description: 'Wipe device',
         action: () => wipeDeviceThunk(),
@@ -347,6 +347,25 @@ const fixture: Feature[] = [
         },
     },
     {
+        description: 'Reset device - Entropy check success',
+        action: () => deviceSettingsActions.resetDevice(),
+        mocks: { success: true, payload: { message: 'whatever' } },
+        result: {
+            actions: [
+                {
+                    type: deviceActions.setEntropyCheckResult.type,
+                    payload: { deviceId: 'device-id', success: true },
+                } satisfies ReturnType<typeof deviceActions.setEntropyCheckResult>,
+            ],
+        },
+        initialState: {
+            device: {
+                ...deviceInitialState,
+                selectedDevice: getSuiteDevice({ mode: 'initialize' }),
+            },
+        },
+    },
+    {
         description: 'Reset device - Entropy check fail - show Device compromised',
         action: () => deviceSettingsActions.resetDevice(),
         mocks: {
@@ -365,9 +384,9 @@ const fixture: Feature[] = [
                     },
                 } satisfies ReturnType<typeof notificationsActions.addToast>,
                 {
-                    type: deviceActions.setEntropyCheckFail.type,
-                    payload: 'device-id',
-                } satisfies ReturnType<typeof deviceActions.setEntropyCheckFail>,
+                    type: deviceActions.setEntropyCheckResult.type,
+                    payload: { deviceId: 'device-id', success: false },
+                } satisfies ReturnType<typeof deviceActions.setEntropyCheckResult>,
             ],
         },
         initialState: {

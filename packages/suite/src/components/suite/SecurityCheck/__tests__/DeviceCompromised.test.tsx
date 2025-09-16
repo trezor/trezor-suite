@@ -1,5 +1,7 @@
-import { DeviceReducerState } from '@suite-common/wallet-core';
-import { DeepPartial } from '@trezor/type-utils';
+import { AcquiredDevice } from '@suite-common/suite-types';
+import { testMocks } from '@suite-common/test-utils';
+import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
+import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
 import { TranslationKey } from 'src/components/suite/Translation';
 import { AppState } from 'src/reducers/store';
@@ -20,7 +22,7 @@ const mockStore = configureStore<AppState, any>();
 
 const initStore = (state: AppState) => mockStore(state);
 
-const getInitialState = (device: DeepPartial<DeviceReducerState>): AppState =>
+const getInitialState = (device: DeviceReducerState): AppState =>
     ({
         ...initialAppState,
         device,
@@ -30,31 +32,41 @@ const getInitialState = (device: DeepPartial<DeviceReducerState>): AppState =>
         },
     }) as AppState;
 
+// TODO fix the mocks. The device actually is acquired, but the function casts it to TrezorDevice, why???
+const defaultDevice = testMocks.getSuiteDevice() as AcquiredDevice;
+
 const deviceCompromisedFixtures: Array<{
     description: string;
-    device: DeepPartial<DeviceReducerState>;
+    device: DeviceReducerState;
     result: TranslationKey;
 }> = [
     {
         description: 'Failed entropy check',
         device: {
-            devicesWithFailedEntropyCheck: ['deviceId'],
-            selectedDevice: {
-                id: 'deviceId',
-            },
+            ...deviceInitialState,
+            persistentDeviceData: [
+                {
+                    ...defaultDevicePersistentData,
+                    lastEntropyCheckResult: { success: false },
+                },
+            ],
+            selectedDevice: testMocks.getSuiteDevice(),
         },
         result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
     },
     {
         description: 'Failed firmware hash check',
         device: {
+            ...deviceInitialState,
             selectedDevice: {
+                ...defaultDevice,
                 authenticityChecks: {
                     firmwareHash: {
+                        success: false,
                         error: 'hash-mismatch',
                     },
+                    firmwareRevision: { success: true },
                 },
-                features: {},
             },
         },
         result: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
@@ -62,14 +74,17 @@ const deviceCompromisedFixtures: Array<{
     {
         description: 'Firmware hash check other-error (1st occurrence)',
         device: {
+            ...deviceInitialState,
             selectedDevice: {
+                ...defaultDevice,
                 connected: true,
                 authenticityChecks: {
                     firmwareHash: {
+                        success: false,
                         error: 'other-error',
                     },
+                    firmwareRevision: { success: true },
                 },
-                features: {},
             },
         },
         result: 'TR_FAILED_VERIFY_DEVICE_TEXT',
@@ -77,19 +92,24 @@ const deviceCompromisedFixtures: Array<{
     {
         description: 'Firmware hash check other-error (2nd occurrence)',
         device: {
+            ...deviceInitialState,
             selectedDevice: {
+                ...defaultDevice,
                 connected: true,
                 authenticityChecks: {
                     firmwareHash: {
+                        success: false,
                         error: 'other-error',
                     },
+                    firmwareRevision: { success: true },
                 },
-                features: {},
             },
             lastConnectedAuthenticityChecks: {
                 firmwareHash: {
+                    success: false,
                     error: 'other-error',
                 },
+                firmwareRevision: { success: true },
             },
         },
         result: 'TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT',
@@ -97,13 +117,16 @@ const deviceCompromisedFixtures: Array<{
     {
         description: 'Failed firmware revision check',
         device: {
+            ...deviceInitialState,
             selectedDevice: {
+                ...defaultDevice,
                 authenticityChecks: {
                     firmwareRevision: {
+                        success: false,
                         error: 'revision-mismatch',
                     },
+                    firmwareHash: { success: true },
                 },
-                features: {},
             },
         },
         result: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',

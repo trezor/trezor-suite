@@ -124,13 +124,15 @@ export const createAndBackupWalletThunk = createThunk(
         }
 
         const result = deviceResponse.payload;
-        if (
-            isEntropyCheckEnabled &&
-            !result.success &&
-            result.payload.code === 'Failure_EntropyCheck'
-        ) {
-            dispatch(failEntropyCheckThunk({ device, error: result.payload }));
-            navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal);
+        if (isEntropyCheckEnabled) {
+            if (!result.success && result.payload.code === 'Failure_EntropyCheck') {
+                dispatch(failEntropyCheckThunk({ device, error: result.payload }));
+                navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal);
+            } else {
+                dispatch(
+                    deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }),
+                );
+            }
         }
 
         return result;

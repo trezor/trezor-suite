@@ -100,6 +100,6 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
     Pick<Features, PersistedFeatureKey> & {
         firmwareVersion: VersionArray | null;
         lastConnectedBy: 'bluetooth' | 'usb' | null;
-        // TODO move devicesWithFailedEntropyCheck to this object, including persistence & migration
+        lastEntropyCheckResult?: { success: boolean };
         // TODO move deviceAuthenticity to this object and newly introduce persistence
     };

@@ -1,13 +1,15 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { DeepPartial } from '@trezor/type-utils';
+import { testMocks } from '@suite-common/test-utils';
+import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
+import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { AcquiredDevice, AppState } from 'src/types/suite';
 
 import { selectShouldDisplayDeviceCompromised } from '../selectShouldDisplayDeviceCompromised';
 
 type Fixture = {
     description: string;
-    state: DeepPartial<AppState>;
+    state: AppState;
     result: boolean;
 };
 
@@ -21,87 +23,89 @@ const authenticityChecksFail: AcquiredDevice['authenticityChecks'] = {
     firmwareHash: { success: false, error: 'hash-mismatch' },
 };
 
-const suiteAllSettingsEnabled: DeepPartial<AppState['suite']> = {
-    settings: {
-        enabledSecurityChecks: { firmwareRevision: true, firmwareHash: true, entropy: true },
-    },
-};
+// TODO fix the mocks. The device actually is acquired, but the function casts it to TrezorDevice, why???
+const defaultDevice = testMocks.getSuiteDevice() as AcquiredDevice;
 
 const fixtures: Fixture[] = [
     {
         description: 'returns false if all checks pass',
         state: {
-            router: { route: { app: 'dashboard' } },
+            ...initialAppState,
             messageSystem: messageSystemInitialState,
             device: {
+                ...initialAppState.device,
                 selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
+                    ...defaultDevice,
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-            suite: suiteAllSettingsEnabled,
         },
         result: false,
     },
     {
         description: 'returns false if check fails, but on a skipped route',
         state: {
-            router: { route: { app: 'settings' } },
+            ...initialAppState,
+            router: {
+                ...initialAppState.router,
+                // @ts-expect-error see defaultAppState comment about routerReducer typing
+                route: {
+                    name: 'settings-index',
+                    pattern: '/settings',
+                    app: 'settings',
+                },
+            },
             messageSystem: messageSystemInitialState,
             device: {
+                ...initialAppState.device,
                 selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
+                    ...defaultDevice,
                     authenticityChecks: authenticityChecksFail,
                 },
             },
-            suite: suiteAllSettingsEnabled,
         },
         result: false,
     },
     {
         description: 'returns true if firmware check failed and not dismissed',
         state: {
-            router: { route: { app: 'dashboard' } },
+            ...initialAppState,
             messageSystem: messageSystemInitialState,
             device: {
+                ...initialAppState.device,
                 selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
+                    ...defaultDevice,
                     authenticityChecks: authenticityChecksFail,
                 },
             },
-            suite: suiteAllSettingsEnabled,
         },
         result: true,
     },
     {
         description: 'returns false if firmware check failed and dismissed',
         state: {
-            router: { route: { app: 'dashboard' } },
+            ...initialAppState,
             messageSystem: messageSystemInitialState,
             device: {
-                dismissedSecurityChecks: { firmwareAuthenticity: ['deviceId'] },
+                ...initialAppState.device,
+                dismissedSecurityChecks: { firmwareAuthenticity: ['device-id'] },
                 selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
+                    ...defaultDevice,
                     authenticityChecks: authenticityChecksFail,
                 },
             },
-            suite: suiteAllSettingsEnabled,
         },
         result: false,
     },
     {
         description: 'returns false if a firmware check failed but is disabled',
         state: {
-            router: { route: { app: 'dashboard' } },
+            ...initialAppState,
             messageSystem: messageSystemInitialState,
             device: {
+                ...initialAppState.device,
                 selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
+                    ...defaultDevice,
                     authenticityChecks: {
                         firmwareRevision: { success: false, error: 'revision-mismatch' },
                         firmwareHash: { success: true },
@@ -109,11 +113,12 @@ const fixtures: Fixture[] = [
                 },
             },
             suite: {
+                ...initialAppState.suite,
                 settings: {
+                    ...initialAppState.suite.settings,
                     enabledSecurityChecks: {
+                        ...initialAppState.suite.settings.enabledSecurityChecks,
                         firmwareRevision: false,
-                        firmwareHash: true,
-                        entropy: true,
                     },
                 },
             },
@@ -123,34 +128,52 @@ const fixtures: Fixture[] = [
     {
         description: 'returns true if entropy check failed',
         state: {
-            router: { route: { app: 'dashboard' } },
+            ...initialAppState,
             messageSystem: messageSystemInitialState,
             device: {
-                devicesWithFailedEntropyCheck: ['deviceId'],
+                ...initialAppState.device,
+                persistentDeviceData: [
+                    {
+                        ...defaultDevicePersistentData,
+                        lastEntropyCheckResult: { success: false },
+                    },
+                ],
                 selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
+                    ...defaultDevice,
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-            suite: suiteAllSettingsEnabled,
         },
         result: true,
     },
     {
         description: 'returns false if entropy check failed but is disabled',
         state: {
-            router: { route: { app: 'dashboard' } },
+            ...initialAppState,
             messageSystem: messageSystemInitialState,
             device: {
-                devicesWithFailedEntropyCheck: ['deviceId'],
+                ...initialAppState.device,
+                persistentDeviceData: [
+                    {
+                        ...defaultDevicePersistentData,
+                        lastEntropyCheckResult: { success: false },
+                    },
+                ],
                 selectedDevice: {
-                    features: {},
-                    id: 'deviceId',
+                    ...defaultDevice,
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-            suite: { settings: { enabledSecurityChecks: { entropy: false } } },
+            suite: {
+                ...initialAppState.suite,
+                settings: {
+                    ...initialAppState.suite.settings,
+                    enabledSecurityChecks: {
+                        ...initialAppState.suite.settings.enabledSecurityChecks,
+                        entropy: false,
+                    },
+                },
+            },
         },
         result: false,
     },

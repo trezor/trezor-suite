@@ -252,6 +252,11 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
+export const selectSelectedPersistentDeviceData = createMemoizedSelector(
+    [selectSelectedDevice, selectPersistentDeviceData],
+    (device, persistentDeviceData) => persistentDeviceData.find(d => d.device_id === device?.id),
+);
+
 export const selectDeviceAuthenticity = (state: DeviceRootState) => state.device.deviceAuthenticity;
 
 export const selectSelectedDeviceAuthenticity = createMemoizedSelector(
@@ -265,9 +270,8 @@ export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector
 );
 
 export const selectIsEntropyCheckFailed = createMemoizedSelector(
-    [selectSelectedDevice, state => state.device.devicesWithFailedEntropyCheck],
-    (device, devicesWithFailedEntropyCheck) =>
-        !!(device?.id && devicesWithFailedEntropyCheck?.includes(device.id)),
+    [selectSelectedPersistentDeviceData],
+    persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult?.success === false,
 );
 
 export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(

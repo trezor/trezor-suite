@@ -540,14 +540,6 @@ export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: Get
     );
 };
 
-export const saveEntropyCheckFail = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
-    const { devicesWithFailedEntropyCheck } = getState().device;
-    if (!devicesWithFailedEntropyCheck) return;
-
-    db.addItem('security', { devicesWithFailedEntropyCheck }, 'security', true);
-};
-
 export const saveConnectSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
     const { connectPopup, walletConnect } = getState();
