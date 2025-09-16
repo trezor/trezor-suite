@@ -1,10 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { TradingBuyState as CommonTradingBuyState, initialState } from '@suite-common/trading';
-import { Address } from '@trezor/blockchain-link-types';
 
 export interface TradingBuyState extends CommonTradingBuyState {
-    receiveAddress: Address | undefined;
+    receiveAddress: string | undefined;
 }
 
 export const buyInitialState: TradingBuyState = {
@@ -18,7 +17,7 @@ const buySlice = createSlice({
     name: TRADING_BUY,
     initialState: buyInitialState,
     reducers: {
-        setReceiveAddress: (state, { payload }: PayloadAction<Address | undefined>) => {
+        setReceiveAddress: (state, { payload }: PayloadAction<string | undefined>) => {
             state.receiveAddress = payload;
         },
         clearState: state => {

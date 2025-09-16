@@ -11,7 +11,7 @@ import {
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
 } from '../reducers';
-import { ReceiveAccount } from '../types/general';
+import { getReceiveAccountFromAccountAndAddressString } from '../utils/general/receiveAccountUtils';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -26,10 +26,12 @@ export const selectExchangeSelectedSendAccount = createMemoizedSelectorWithAccou
 
 export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingExchange],
-    (state, { receiveAddress: address, receiveAccountKey }) => {
+    (state, { receiveAddress, receiveAccountKey }) => {
         const account = selectAccountByKey(state, receiveAccountKey);
 
-        return account ? ({ account, address } as ReceiveAccount) : undefined;
+        return account
+            ? getReceiveAccountFromAccountAndAddressString(account, receiveAddress)
+            : undefined;
     },
 );
 
