@@ -873,6 +873,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         };
 
         this.name = deviceInfo.name;
+        // NOTE: TS7 test devices do not have color specified, they are all defined unit_color=0
+        // fallback this color the existing ones to 1
+        if (feat?.internal_model === DeviceModelInternal.T3W1 && (feat?.unit_color ?? 0) === 0) {
+            feat.unit_color = 1;
+        }
 
         // todo: move to 553
         if (feat?.unit_color) {
