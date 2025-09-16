@@ -40,7 +40,7 @@ const getStateMockupBuy = (selectedAccount: ReceiveAccount) => ({
             ...initialState,
             buy: {
                 ...initialState.buy,
-                receiveAddress: selectedAccount?.address,
+                receiveAddress: selectedAccount?.address?.address,
                 tradingAccountKey: selectedAccount.account.key,
             },
         },
@@ -55,7 +55,7 @@ const getStateMockupExchange = (selectedAccount: ReceiveAccount) => ({
             ...initialState,
             exchange: {
                 ...initialState.exchange,
-                receiveAddress: selectedAccount?.address,
+                receiveAddress: selectedAccount?.address?.address,
                 receiveAccountKey: selectedAccount.account.key,
             },
         },

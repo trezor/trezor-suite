@@ -4,10 +4,9 @@ import {
     TradingExchangeState as CommonTradingExchangeState,
     initialState,
 } from '@suite-common/trading';
-import { Address } from '@trezor/blockchain-link-types';
 
 export interface TradingExchangeState extends CommonTradingExchangeState {
-    receiveAddress: Address | undefined;
+    receiveAddress: string | undefined;
 }
 
 export const exchangeInitialState: TradingExchangeState = {
@@ -21,7 +20,7 @@ const exchangeSlice = createSlice({
     name: TRADING_EXCHANGE,
     initialState: exchangeInitialState,
     reducers: {
-        setReceiveAddress: (state, { payload }: PayloadAction<Address | undefined>) => {
+        setReceiveAddress: (state, { payload }: PayloadAction<string | undefined>) => {
             state.receiveAddress = payload;
         },
         clearState: state => {

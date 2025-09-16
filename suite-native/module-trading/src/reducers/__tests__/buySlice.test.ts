@@ -1,14 +1,12 @@
 import { BuyTrade, CryptoId } from 'invity-api';
 
-import { Address } from '@trezor/blockchain-link-types';
-
 import quotes from '../../__fixtures__/buyQuotes.json';
 import { TradingBuyState, buyActions, buyInitialState, buyReducer } from '../buySlice';
 
 describe('buySlice', () => {
     describe('setReceiveAddress', () => {
         it('should set buy receive address', () => {
-            const address = { address: 'bc1qxyz' } as Address;
+            const address = 'bc1qxyz';
             const state = buyReducer(undefined, buyActions.setReceiveAddress(address));
 
             expect(state.receiveAddress).toEqual(address);
@@ -26,9 +24,7 @@ describe('buySlice', () => {
             const prevState: TradingBuyState = {
                 ...buyInitialState,
                 tradingAccountKey: 'account-key',
-                receiveAddress: {
-                    address: 'bc1qxyz',
-                } as Address,
+                receiveAddress: 'bc1qxyz',
                 quotesRequest: {
                     wantCrypto: true,
                     receiveCurrency: 'btc' as CryptoId,
@@ -78,9 +74,7 @@ describe('buySlice', () => {
             const prevState: TradingBuyState = {
                 ...buyInitialState,
                 tradingAccountKey: 'account-key',
-                receiveAddress: {
-                    address: 'bc1qxyz',
-                } as Address,
+                receiveAddress: 'bc1qxyz',
             };
 
             const state = buyReducer(prevState, buyActions.assetChanged());

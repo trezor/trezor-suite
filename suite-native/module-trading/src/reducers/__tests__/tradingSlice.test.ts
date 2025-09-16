@@ -8,7 +8,6 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
-import { Address } from '@trezor/blockchain-link-types';
 
 import quotes from '../../__fixtures__/buyQuotes.json';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
@@ -119,9 +118,7 @@ describe('tradingSlice', () => {
                 buy: {
                     ...buyInitialState,
                     tradingAccountKey: 'account-key',
-                    receiveAddress: {
-                        address: 'bc1qxyz',
-                    } as Address,
+                    receiveAddress: 'bc1qxyz',
                     quotesRequest: {
                         wantCrypto: true,
                         receiveCurrency: 'btc' as CryptoId,
@@ -325,11 +322,11 @@ describe('tradingSlice', () => {
                 ...initialState,
                 buy: {
                     ...initialState.buy,
-                    receiveAddress: { address: 'address' } as Address,
+                    receiveAddress: 'address',
                 },
                 exchange: {
                     ...initialState.exchange,
-                    receiveAddress: { address: 'address' } as Address,
+                    receiveAddress: 'address',
                 },
             };
 
