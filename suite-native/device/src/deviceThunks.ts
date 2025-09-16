@@ -9,6 +9,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { RootStackRoutes, navigationContainerRef } from '@suite-native/navigation';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -129,6 +130,7 @@ export const createAndBackupWalletThunk = createThunk(
             result.payload.code === 'Failure_EntropyCheck'
         ) {
             dispatch(failEntropyCheckThunk({ device, error: result.payload }));
+            navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal);
         }
 
         return result;
