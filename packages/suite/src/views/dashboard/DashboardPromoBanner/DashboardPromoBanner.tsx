@@ -1,27 +1,50 @@
 import React, { useState } from 'react';
 
-import { Feature, selectFeatureConfig } from '@suite-common/message-system';
+import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
+import { Feature as MessageFeature } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsTEXDashboardPromoBannerShown } from 'src/selectors/suite/suiteSelectors';
+import {
+    selectIsTEXDashboardPromoBannerShown,
+    selectIsTS7DashboardPromoBannerShown,
+} from 'src/selectors/suite/suiteSelectors';
 
+import { TS7Banner } from './TS7Banner';
 import { TrezorExpertBanner } from './TrezorExpertBanner';
-import { isDashboardBannerType } from './dashboardBannerTypes';
+import { DashboardBannerTypeWithNull, isDashboardBannerType } from './dashboardBannerTypes';
 
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
 
     const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
+    const shouldShowTS7DashboardPromoBanner = useSelector(selectIsTS7DashboardPromoBannerShown);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
-    const promoBanner = useSelector(state =>
-        selectFeatureConfig(state, Feature.dashboardPromoBanner),
+    const allPromoBanners = useSelector(state =>
+        selectFeaturesConfig(state, Feature.dashboardPromoBanner),
     );
 
-    const promoBannerPayload = promoBanner?.visibleBanner;
-    const currentBanner = isDashboardBannerType(promoBannerPayload) ? promoBannerPayload : null;
+    const deduplicatedBanners = allPromoBanners
+        .map(message => message?.feature?.[0])
+        .reduce<MessageFeature[]>((acc, feature) => {
+            const isAlreadyPresent = acc?.some(
+                previousFeature => previousFeature?.visibleBanner === feature?.visibleBanner,
+            );
 
-    const onCloseBanner = () => {
+            if (feature?.visibleBanner && !isAlreadyPresent) {
+                return [...acc, feature];
+            }
+
+            return acc;
+        }, []);
+
+    const deviceIsNotT3W1 = getDeviceInternalModel(selectedDevice) !== DeviceModelInternal.T3W1;
+
+    const onCloseBanner = (currentBanner: DashboardBannerTypeWithNull) => {
         analytics.report({
             type: EventType.DashboardBanner,
             payload: {
@@ -32,7 +55,7 @@ export const DashboardPromoBanner = () => {
         setIsVisible(false);
     };
 
-    const onCTAClick = () => {
+    const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
         analytics.report({
             type: EventType.DashboardBanner,
             payload: {
@@ -42,17 +65,41 @@ export const DashboardPromoBanner = () => {
         });
     };
 
-    if (!currentBanner) return null;
+    const promoBanner = deduplicatedBanners.find(banner => {
+        if (!banner) return null;
 
-    return (
-        <>
-            {currentBanner === 'tex' && shouldShowTEXDashboardPromoBanner && (
-                <TrezorExpertBanner
-                    onClose={onCloseBanner}
-                    onCTAClick={onCTAClick}
-                    isVisible={isVisible}
-                />
-            )}
-        </>
-    );
+        const isTS7BannerVisible =
+            banner.visibleBanner === 'ts7' && shouldShowTS7DashboardPromoBanner && deviceIsNotT3W1;
+        const isTEXBannerVisible =
+            banner.visibleBanner === 'tex' && shouldShowTEXDashboardPromoBanner;
+
+        return isDashboardBannerType(banner.visibleBanner) &&
+            (isTS7BannerVisible || isTEXBannerVisible)
+            ? banner.flag === true
+            : null;
+    });
+
+    if (!promoBanner) return null;
+    const { visibleBanner } = promoBanner;
+
+    if (visibleBanner === 'ts7')
+        return (
+            <TS7Banner
+                onClose={() => onCloseBanner(visibleBanner)}
+                onCTAClick={() => onCTAClick(visibleBanner)}
+                isVisible={isVisible}
+            />
+        );
+
+    if (visibleBanner === 'tex') {
+        return (
+            <TrezorExpertBanner
+                onClose={() => onCloseBanner(visibleBanner)}
+                onCTAClick={() => onCTAClick(visibleBanner)}
+                isVisible={isVisible}
+            />
+        );
+    }
+
+    return null;
 };

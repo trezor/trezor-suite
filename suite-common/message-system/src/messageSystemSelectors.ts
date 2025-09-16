@@ -107,6 +107,14 @@ export const selectFeatureMessage = createMemoizedSelector(
         ),
 );
 
+export const selectFeatureMessages = createMemoizedSelector(
+    [selectActiveFeatureMessages, (_state, domain: FeatureDomain) => domain],
+    (activeFeatureMessages, domain) =>
+        activeFeatureMessages.filter(message =>
+            message.feature?.some(feature => feature.domain === domain),
+        ),
+);
+
 export const selectFeatureMessageContent = createMemoizedSelector(
     [
         selectFeatureMessage,
@@ -121,6 +129,12 @@ export const selectFeatureConfig = createMemoizedSelector(
     [selectFeatureMessage, (_state, domain: FeatureDomain) => domain],
     (featureMessages, domain) =>
         featureMessages?.feature?.find(feature => feature.domain === domain),
+);
+
+export const selectFeaturesConfig = createMemoizedSelector(
+    [selectFeatureMessages, (_state, domain: FeatureDomain) => domain],
+    (messages, domain) =>
+        messages.filter(message => message?.feature?.find(feature => feature.domain === domain)),
 );
 
 // These don't need memoization as they're simple computations
