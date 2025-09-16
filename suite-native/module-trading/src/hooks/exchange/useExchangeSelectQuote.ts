@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -61,14 +61,13 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         }
     };
 
-    const handleConsent = useMemo(
-        () => ({
-            give: () => resolveConsent(true),
-            cancel: () => resolveConsent(false),
-            request: () => waitForConsent(),
-        }),
-        [resolveConsent, waitForConsent],
-    );
+    const giveConsent = useCallback(() => {
+        resolveConsent(true);
+    }, [resolveConsent]);
+
+    const cancelConsent = useCallback(() => {
+        resolveConsent(false);
+    }, [resolveConsent]);
 
     const selectQuote = async () => {
         if (!candidateQuote || isLoading) {
@@ -85,7 +84,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             exchangeThunks.selectQuoteThunk({
                 quote: { ...candidateQuote, swapSlippage },
                 timer,
-                userConsent: handleConsent.request,
+                userConsent: waitForConsent,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
                     navigation.navigate(TradingStackRoutes.TradingExchangePreview);
@@ -102,9 +101,9 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         receiveAccount,
         isLoading,
         isConsentRequested,
+        giveConsent,
+        cancelConsent,
         selectReceiveAccount,
         selectQuote,
-        giveConsent: handleConsent.give,
-        cancelConsent: handleConsent.cancel,
     };
 };

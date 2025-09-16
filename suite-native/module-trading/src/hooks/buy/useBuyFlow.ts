@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -91,36 +91,31 @@ export const useBuyFlow = (form: BuyFormType) => {
         }
     };
 
-    const handleConsent = useMemo(
-        () => ({
-            give: () => {
-                resolveConsent(true);
+    const giveConsent = useCallback(() => {
+        resolveConsent(true);
 
-                analytics.report({
-                    type: EventType.TradingBuy,
-                    payload: {
-                        step: 'buy-terms-modal',
-                        action: 'continue',
-                        ...quoteAnalyticsData,
-                    },
-                });
+        analytics.report({
+            type: EventType.TradingBuy,
+            payload: {
+                step: 'buy-terms-modal',
+                action: 'continue',
+                ...quoteAnalyticsData,
             },
-            cancel: () => {
-                resolveConsent(false);
+        });
+    }, [resolveConsent, quoteAnalyticsData]);
 
-                analytics.report({
-                    type: EventType.TradingBuy,
-                    payload: {
-                        step: 'buy-terms-modal',
-                        action: 'cancel',
-                        ...quoteAnalyticsData,
-                    },
-                });
+    const cancelConsent = useCallback(() => {
+        resolveConsent(false);
+
+        analytics.report({
+            type: EventType.TradingBuy,
+            payload: {
+                step: 'buy-terms-modal',
+                action: 'cancel',
+                ...quoteAnalyticsData,
             },
-            request: (_provider: string, _cryptoCurrency: string) => waitForConsent(),
-        }),
-        [quoteAnalyticsData, resolveConsent, waitForConsent],
-    );
+        });
+    }, [resolveConsent, quoteAnalyticsData]);
 
     const handleWebview = (formData: FormResponse['form'], returnUrl: string) => {
         const source = getSourceForForm(formData);
@@ -215,7 +210,7 @@ export const useBuyFlow = (form: BuyFormType) => {
                 timer,
                 returnUrl,
                 loginRequest: formResponse => handleWebview(formResponse, returnUrl),
-                userConsent: handleConsent.request,
+                userConsent: waitForConsent,
                 nextStep: () => {
                     confirmTrade(candidateQuote, addressText);
                 },
@@ -227,7 +222,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         canProceed,
         selectQuote,
         isConsentRequested,
-        giveConsent: handleConsent.give,
-        cancelConsent: handleConsent.cancel,
+        giveConsent,
+        cancelConsent,
     };
 };
