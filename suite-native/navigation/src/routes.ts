@@ -13,7 +13,6 @@ export enum RootStackRoutes {
     SendStack = 'SendStack',
     DeviceSettingsStack = 'DeviceSettingsStack',
     AddCoinAccountStack = 'AddCoinAccountStack',
-    CoinEnablingInit = 'CoinEnablingInit',
     ConnectPopup = 'ConnectPopup',
     ConnectPermissions = 'ConnectPermissions',
     WalletConnectSessionPopup = 'WalletConnectSessionPopup',
@@ -147,6 +146,7 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
     PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
+    CoinEnablingInit = 'CoinEnablingInit',
 }
 
 export enum DevUtilsStackRoutes {

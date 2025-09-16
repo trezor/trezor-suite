@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceThpRequired } from '@suite-common/wallet-core';
+import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
@@ -95,6 +96,10 @@ export const AuthorizeDeviceStackNavigator = () => {
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseConfirmFeatureUnlockOnTrezor}
                 component={PassphraseConfirmFeatureUnlockOnTrezorScreen}
+            />
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.CoinEnablingInit}
+                component={CoinEnablingInitScreen}
             />
         </AuthorizeDeviceStack.Navigator>
     );

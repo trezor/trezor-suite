@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { BootloaderModeScreen } from '@suite-native/device';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
@@ -136,10 +135,6 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.AddCoinAccountStack}
                     component={AddCoinAccountStackNavigator}
-                />
-                <RootStack.Screen
-                    name={RootStackRoutes.CoinEnablingInit}
-                    component={CoinEnablingInitScreen}
                 />
                 <RootStack.Screen
                     name={RootStackRoutes.ReceiveStack}
