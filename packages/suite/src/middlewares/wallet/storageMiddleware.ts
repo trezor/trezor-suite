@@ -332,10 +332,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 }
 
-                case deviceActions.setEntropyCheckFail.type:
-                    api.dispatch(storageActions.saveEntropyCheckFail());
-                    break;
-
                 case COINJOIN.ACCOUNT_DISCOVERY_RESET:
                 case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
                 case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:

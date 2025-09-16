@@ -25,7 +25,6 @@ export type DeviceReducerState = {
     persistentDeviceData: PersistentDeviceData[]; // is an array since there is not a single primary id, device can be matched by various criteria
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
-    devicesWithFailedEntropyCheck?: (string | null)[]; // protobuf allows null values and we want to store this even if a fake device has id set to null
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
     };
@@ -564,7 +563,10 @@ const requestDeviceReconnect = (draft: DeviceReducerState) => {
 };
 
 const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | TrezorDevice) => {
-    if (!device.features) return; // do not persist data for unacquired/unreadable devices
+    // do not persist data for unacquired/unreadable devices
+    if (!device.features) return;
+    // do not persist data for bootloader devices
+    if (device.features.device_id === null) return;
 
     const newPersistentData: PersistentDeviceData = {
         device_id: device.features.device_id,
@@ -580,7 +582,9 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
         firmwareVersion: getFirmwareVersionArray(device),
     };
 
-    const index = draft.persistentDeviceData.findIndex(d => d.device_id === device.id);
+    const index = draft.persistentDeviceData.findIndex(
+        persistentDeviceData => persistentDeviceData.device_id === device.id,
+    );
     if (index >= 0) {
         draft.persistentDeviceData[index] = {
             ...draft.persistentDeviceData[index],
@@ -660,12 +664,17 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 extra.reducers.setDeviceMetadataPasswordsReducer,
             )
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
-            .addCase(deviceActions.setEntropyCheckFail, (state, { payload }) => {
-                if (!state.devicesWithFailedEntropyCheck) {
-                    state.devicesWithFailedEntropyCheck = [];
-                }
-                state.devicesWithFailedEntropyCheck.push(payload);
-            })
+            .addCase(
+                deviceActions.setEntropyCheckResult,
+                (state, { payload: { deviceId, success } }) => {
+                    const data = state.persistentDeviceData.find(
+                        persistentDeviceData => persistentDeviceData.device_id === deviceId,
+                    );
+                    // expected to exist; device must have been connected or changed for this action to happen
+                    if (data === undefined) return;
+                    data.lastEntropyCheckResult = { success };
+                },
+            )
             .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
                 createInstance(state, payload.device);
             })

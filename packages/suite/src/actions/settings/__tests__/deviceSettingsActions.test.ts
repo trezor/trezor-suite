@@ -8,7 +8,7 @@ import { configureStore, filterThunkActionTypes } from 'src/support/tests/config
 import fixtures, {
     DeviceSettingsFixtureState,
     deviceReducer,
-} from '../__fixtures__/deviceSettings';
+} from '../__fixtures__/deviceSettingsActions';
 
 const { getSuiteDevice } = testMocks;
 

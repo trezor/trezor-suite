@@ -115,9 +115,9 @@ const dismissFirmwareAuthenticityCheck = createAction(
     (payload: string) => ({ payload }),
 );
 
-const setEntropyCheckFail = createAction(
-    `${DEVICE_MODULE_PREFIX}/setEntropyCheckFail`,
-    (payload: string | null) => ({ payload }),
+const setEntropyCheckResult = createAction(
+    `${DEVICE_MODULE_PREFIX}/setEntropyCheckResult`,
+    (payload: { deviceId: AcquiredDevice['id']; success: boolean }) => ({ payload }),
 );
 
 const setThpCredentials = createAction(
@@ -171,7 +171,7 @@ export const deviceActions = {
     selectDevice,
     updateSelectedDevice,
     removeButtonRequests,
-    setEntropyCheckFail,
+    setEntropyCheckResult,
     setThpCredentials,
     setLocalFirstStorageSecret,
     setLocalFirstStorageSecretRetrieving,

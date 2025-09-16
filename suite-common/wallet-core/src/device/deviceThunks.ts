@@ -558,7 +558,7 @@ export const failEntropyCheckThunk = createThunk(
             'device disconnected during action',
         ];
         if (!temporarilySkippedErrorsToBeInvestigated.includes(error.error)) {
-            dispatch(deviceActions.setEntropyCheckFail(device.id));
+            dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
         }
     },
 );
