@@ -182,7 +182,7 @@
   "TOAST_COPY_TO_CLIPBOARD": "コピーしました",
   "TOAST_DEVICE_WIPED": "デバイスが消去されました",
   "TOAST_DISCOVERY_ERROR": "アカウントを発見できませんでした: {error}",
-  "TOAST_ESTIMATED_FEE_ERROR": "ネットワークによる手数料の見積もりに失敗しました。バックアップ値を使用します。",
+  "TOAST_ESTIMATED_FEE_ERROR": "ネットワークによる手数料の見積が利用できません。代わりにバックアップ値を使用します。",
   "TOAST_GENERIC_ERROR": "エラー: {error}",
   "TOAST_PIN_CHANGED": "PINが正常に変更されました",
   "TOAST_QR_INCORRECT_ADDRESS": "QRコードに無効なアドレスが含まれています",
