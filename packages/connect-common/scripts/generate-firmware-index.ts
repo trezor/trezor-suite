@@ -3,7 +3,7 @@ import path from 'path';
 
 const firmwareDir = path.resolve(__dirname, '..', 'files/firmware');
 
-const outputFile = path.resolve(__dirname, '../files/firmware/index.ts');
+const outputFile = path.resolve(__dirname, '../src/map-releases.ts');
 
 const createIndexFromDir = (currentPath: string): Record<string, any> => {
     const entries = fs.readdirSync(currentPath, { withFileTypes: true });
@@ -18,12 +18,11 @@ const createIndexFromDir = (currentPath: string): Record<string, any> => {
             }
 
             if (entry.isFile() && entry.name.endsWith('.json')) {
-                const relativePath = path
-                    .relative(path.resolve(outputFile, '..'), entryPath)
-                    .replace(/\\/g, '/');
+                const outputDir = path.dirname(outputFile);
+                const relativePath = path.relative(outputDir, entryPath).replace(/\\/g, '/');
 
                 const fileNameWithoutExt = path.parse(entry.name).name;
-                const requireString = `require('./${relativePath}')`;
+                const requireString = `require('${relativePath}')`;
 
                 return { ...acc, [fileNameWithoutExt]: requireString };
             }
