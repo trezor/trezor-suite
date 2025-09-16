@@ -1,7 +1,5 @@
 import { CryptoId } from 'invity-api';
 
-import { Address } from '@trezor/blockchain-link-types';
-
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
 import {
     TradingExchangeState,
@@ -24,7 +22,7 @@ describe('exchangeSlice', () => {
 
     describe('setReceiveAddress', () => {
         it('should set buy receive address', () => {
-            const address = { address: 'bc1qxyz' } as Address;
+            const address = 'bc1qxyz';
             const state = exchangeReducer(undefined, exchangeActions.setReceiveAddress(address));
 
             expect(state.receiveAddress).toEqual(address);
@@ -41,7 +39,7 @@ describe('exchangeSlice', () => {
         it('should clear exchange state', () => {
             const prevState: TradingExchangeState = {
                 ...exchangeInitialState,
-                receiveAddress: { address: 'bc1qxyz' } as Address,
+                receiveAddress: 'bc1qxyz',
                 tradingAccountKey: 'account-key1',
                 receiveAccountKey: 'account-key2',
                 quotesRequest: {
@@ -122,7 +120,7 @@ describe('exchangeSlice', () => {
                     receive: 'ethereum' as CryptoId,
                 },
                 receiveAccountKey: 'account-key1',
-                receiveAddress: { address: 'bc1qxyz' } as Address,
+                receiveAddress: 'bc1qxyz',
             };
 
             const state = exchangeReducer(prevState, exchangeActions.receiveAssetChanged());

@@ -48,7 +48,7 @@ describe('TradingExchangePreviewScreen', () => {
             quotes: exchangeQuotes,
             tradingAccountKey: 'eth-account-1',
             receiveAccountKey: 'btc-account-1',
-            receiveAddress: getBtcAccount().addresses?.used[0],
+            receiveAddress: getBtcAccount().addresses?.used[0].address,
             selectedQuote: exchangeQuotes[0],
         };
 

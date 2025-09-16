@@ -32,7 +32,7 @@ const getTradingState = (selectedReceiveAccount: ReceiveAccount | undefined) => 
             ...initialState,
             buy: {
                 ...initialState.buy,
-                receiveAddress: selectedReceiveAccount?.address,
+                receiveAddress: selectedReceiveAccount?.address?.address,
                 tradingAccountKey: selectedReceiveAccount?.account.key,
             },
         },

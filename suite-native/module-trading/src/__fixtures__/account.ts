@@ -1,6 +1,6 @@
 import { Account } from '@suite-common/wallet-types';
 
-export const getBtcAccount = (key = 'btc-account-1') =>
+export const getBtcAccount = (key = 'btc-account-1', overrides: Partial<Account> = {}) =>
     ({
         key,
         symbol: 'btc',
@@ -24,6 +24,7 @@ export const getBtcAccount = (key = 'btc-account-1') =>
             change: [],
             unused: [],
         },
+        ...overrides,
     }) as unknown as Account;
 
 export const getEthAccount = (key = 'eth-account-1') =>

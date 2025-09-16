@@ -22,8 +22,9 @@ import {
     createMemoizedSelectorWithAccounts,
 } from '../reducers';
 import { BuyFormValues } from '../types/buy';
-import { FiatCurrencyItem, ReceiveAccount } from '../types/general';
+import { FiatCurrencyItem } from '../types/general';
 import { getCurrencyLabel } from '../utils/general/currencyUtils';
+import { getReceiveAccountFromAccountAndAddressString } from '../utils/general/receiveAccountUtils';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -35,7 +36,7 @@ export const selectTradingBuy = (state: TradingRootState) => state.wallet.tradin
 
 export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
     [state => state, selectTradingBuy],
-    (state, { receiveAddress: address, tradingAccountKey }) => {
+    (state, { receiveAddress, tradingAccountKey }) => {
         if (!tradingAccountKey) {
             return undefined;
         }
@@ -43,7 +44,7 @@ export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccount
         const account = selectAccountByKey(state, tradingAccountKey);
         invariant(account, `Unknown tradingAccountKey: [${tradingAccountKey}]`);
 
-        return { account, address } as ReceiveAccount;
+        return getReceiveAccountFromAccountAndAddressString(account, receiveAddress);
     },
 );
 

@@ -32,7 +32,7 @@ const getExchangeState = (selectedReceiveAccount: ReceiveAccount | undefined) =>
             ...initialState,
             exchange: {
                 ...initialState.exchange,
-                receiveAddress: selectedReceiveAccount?.address,
+                receiveAddress: selectedReceiveAccount?.address?.address,
                 receiveAccountKey: selectedReceiveAccount?.account.key,
             },
         },
