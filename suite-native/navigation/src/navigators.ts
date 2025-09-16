@@ -283,6 +283,7 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm]: undefined;
+    [AuthorizeDeviceStackRoutes.CoinEnablingInit]: undefined;
 };
 
 export type RootStackParamList = {
@@ -305,7 +306,6 @@ export type RootStackParamList = {
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
-    [RootStackRoutes.CoinEnablingInit]: undefined;
     [RootStackRoutes.ConnectPopup]: undefined;
     [RootStackRoutes.ConnectPermissions]: undefined;
     [RootStackRoutes.WalletConnectSessionPopup]: undefined;

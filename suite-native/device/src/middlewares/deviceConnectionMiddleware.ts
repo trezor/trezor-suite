@@ -107,7 +107,9 @@ const handleDeviceConnectNavigation = ({
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
         });
     } else {
-        navigationContainerRef.navigate(RootStackRoutes.CoinEnablingInit);
+        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
+        });
     }
 };
 

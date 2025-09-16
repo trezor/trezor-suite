@@ -11,6 +11,7 @@ import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
     AppTabsRoutes,
+    AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     HomeStackRoutes,
@@ -61,7 +62,9 @@ export const CreatePinScreen = () => {
                 },
             });
         } else {
-            navigation.popTo(RootStackRoutes.CoinEnablingInit);
+            navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
+            });
         }
         reportOnboardingSuccessAnalytics();
     }, [

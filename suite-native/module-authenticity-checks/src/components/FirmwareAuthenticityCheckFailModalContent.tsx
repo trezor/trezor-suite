@@ -10,6 +10,7 @@ import {
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -52,7 +53,9 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
             });
         } else if (!isCoinEnablingInitFinished) {
-            navigation.popTo(RootStackRoutes.CoinEnablingInit);
+            navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
+            });
         } else {
             navigateToInitialScreen();
         }
