@@ -24,7 +24,7 @@ import { isChanged } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     CRYPTO_INPUT,
     FIAT_INPUT,
@@ -107,8 +107,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, setValue, reset, clearErrors, getValues, setError } =
-        methods;
+    const { register, control, formState, setValue, reset, clearErrors, getValues } = methods;
 
     const values = useWatch<StakeFormState>({ control });
 
@@ -337,7 +336,6 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
         clearWithdrawalWarnings();
     }, [composeRequest, defaultValues, removeDraft, reset, clearWithdrawalWarnings]);
 
-    const { translationString } = useTranslation();
     useEffect(() => {
         if (!composedLevels) return;
         const values = getValues();
@@ -363,20 +361,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
 
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
-    }, [
-        clearErrors,
-        composedLevels,
-        dispatch,
-        getValues,
-        setError,
-        setValue,
-        selectedFee,
-        translationString,
-        baseCurrencyCode,
-        composedFee,
-        account.formattedBalance,
-        currentRate,
-    ]);
+    }, [clearErrors, composedLevels, getValues, setValue, selectedFee, currentRate]);
 
     const [isLoading, setIsLoading] = useState(false);
     // get response from TransactionReviewModal
