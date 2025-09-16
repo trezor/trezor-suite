@@ -45,7 +45,9 @@
         "@trezor/eslint": "workspace:*",
         "@types/react": "^19.0.0",
         "@types/zxcvbn": "4.4.5",
+        "babel-loader": "^10.0.0",
         "storybook": "^9.0.16",
-        "stylelint": "^16.14.1"
+        "stylelint": "^16.14.1",
+        "stylelint-config-standard": "^38.0.0"
     }
 }

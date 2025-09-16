@@ -1,4 +1,12 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["tsx", "src", "rimraf"]
+    "ignores": [
+        "tsx",
+        "rimraf",
+        "stylelint-config-standard",
+
+        "// Due to custom linking of packages with @trezor/suite, this needs to be in dependencies",
+        "src",
+        "@trezor/suite"
+    ]
 }

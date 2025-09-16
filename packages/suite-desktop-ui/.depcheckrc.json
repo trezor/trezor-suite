@@ -1,4 +1,4 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["src"]
+    "ignores": ["src", "stylelint-config-standard"]
 }
