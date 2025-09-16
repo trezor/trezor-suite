@@ -35,7 +35,7 @@ export const useTradingWatchTrade = <T extends TradingType>({
             setRefreshCount(prevValue => prevValue + 1);
         }
     };
-    const [cancelRefresh, resetRefresh] = useTimeoutFn(invokeRefresh, REFRESH_SECONDS * 1000);
+    const [, cancelRefresh, resetRefresh] = useTimeoutFn(invokeRefresh, REFRESH_SECONDS * 1000);
 
     useUnmount(() => {
         cancelRefresh();
