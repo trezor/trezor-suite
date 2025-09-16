@@ -44,30 +44,44 @@ const fetchCoinGecko = async (url: string, init?: RequestInit) => {
  * @returns
  */
 const buildCoinUrls = (ticker: TickerId) => {
-    const { coingeckoId, settlementLayer } = getNetwork(ticker.symbol);
+    const { coingeckoId, tradeCryptoId, settlementLayer, networkType } = getNetwork(ticker.symbol);
     if (!coingeckoId) {
-        console.error('buildCoinUrls: cannot find coingecko asset platform id for ', ticker);
+        console.error('buildCoinUrls: cannot find coingeckoId for ', ticker);
 
         return null;
     }
 
-    const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${coingeckoId}`;
+    let baseId = coingeckoId;
+    if (networkType === 'ethereum') {
+        if (ticker.tokenAddress) {
+            // token on network -> network coingecko id
+            baseId = coingeckoId;
+        } else if (settlementLayer) {
+            baseId = networks[settlementLayer]?.coingeckoId ?? coingeckoId;
+        } else {
+            // native token on network -> native token coingecko id
+            if (!tradeCryptoId) {
+                console.error('buildCoinUrls: cannot find tradeCryptoId for', ticker);
 
-    if (settlementLayer && !ticker.tokenAddress) {
-        return [`${COINGECKO_API_BASE_URL}/coins/${networks[settlementLayer].coingeckoId}`];
+                return null;
+            }
+            baseId = tradeCryptoId;
+        }
     }
+
+    const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${baseId}`;
 
     if (!ticker.tokenAddress) {
         return [baseUrl];
     }
 
-    if (ticker.symbol === 'ada') {
+    if (networkType === 'cardano') {
         const { policyId } = parseAsset(ticker.tokenAddress || '');
 
         return [`${baseUrl}/contract/${policyId}`, `${baseUrl}/contract/${ticker.tokenAddress}`];
     }
 
-    if (ticker.symbol === 'xlm') {
+    if (networkType === 'stellar') {
         const [code, issuer] = ticker.tokenAddress.split('-');
 
         // There are currently three formats on CoinGecko, we try them in order of frequency.
