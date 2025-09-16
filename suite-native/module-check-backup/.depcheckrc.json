@@ -3,6 +3,6 @@
     "ignores": [
         "// Todo: This need so be solved. See: https://github.com/trezor/trezor-suite/issues/21560",
         "@suite-native/device",
-        "@suite-native/module-device-settings",
+        "@suite-native/module-device-settings"
     ]
 }
