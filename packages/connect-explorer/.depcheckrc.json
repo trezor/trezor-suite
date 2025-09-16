@@ -1,0 +1,11 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": [
+        "rimraf",
+        "webpack-cli",
+        "babel-plugin-styled-components",
+        "// yarn depcheck does not support *.mdx files by default. It may solvable by custom-parser. But it is probably not worth the hassle",
+        "remark-gfm",
+        "swr"
+    ]
+}
