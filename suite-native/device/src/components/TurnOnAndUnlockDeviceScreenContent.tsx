@@ -30,7 +30,7 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
                 </Text>
                 {onConnectViaCable && (
                     <Button
-                        size="small"
+                        size="medium"
                         colorScheme="tertiaryElevation0"
                         viewLeft="cableUsbC"
                         onPress={onConnectViaCable}
