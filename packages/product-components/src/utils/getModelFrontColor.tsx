@@ -4,12 +4,16 @@ import { DeviceModelInternal, models } from '@trezor/device-utils';
 export const getModelFrontColor = (
     deviceModelInternal?: DeviceModelInternal,
     deviceUnitColor?: number,
-) => (deviceModelInternal && models[deviceModelInternal].frontColors?.[`${deviceUnitColor}`]) ?? 1;
+): number =>
+    Number(
+        (deviceModelInternal && models[deviceModelInternal].frontColors?.[`${deviceUnitColor}`]) ??
+            1,
+    );
 
 export const getLargeModelImagePath = (
     deviceModelInternal?: DeviceModelInternal,
     deviceUnitColor?: number,
-) => {
+): ImageKey => {
     const frontColor = getModelFrontColor(deviceModelInternal, deviceUnitColor);
     const deviceName =
         deviceModelInternal === DeviceModelInternal.T2B1 ? 'T3B1' : deviceModelInternal;
