@@ -1,4 +1,4 @@
-import { firmwareAssets } from '@trezor/connect-common/files/firmware';
+import { firmwareAssets } from '@trezor/connect-common';
 import {
     DeviceModelInternal,
     FirmwareRelease,
