@@ -2,9 +2,9 @@ import styled, { useTheme } from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import {
+    Box,
     Button,
     Column,
-    IconButton,
     PNG_IMAGES,
     PNG_PATH,
     Row,
@@ -15,30 +15,14 @@ import {
 import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
-import { AnimatedWrapper } from './AnimatedWrapper';
+import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
 import { Translation } from '../../../components/suite/Translation';
 import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
 
-const underlineImage = resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES.DASHBOARD_PROMO_UNDERLINE}`);
-const mainImage = resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TEX}`);
-
-const Container = styled.div`
-    height: 213px;
-    padding-left: ${spacingsPx.xl};
-    padding-right: ${spacingsPx.xl};
-    background-color: ${({ theme }) => theme.baseFillSurfaceBrandDark};
-`;
-
-const CloseButtonContainer = styled.div`
-    position: absolute;
-    top: ${spacingsPx.sm};
-    right: ${spacingsPx.sm};
-    opacity: 0.5;
-
-    &:hover {
-        opacity: 1;
-    }
-`;
+const underlineImage = resolveStaticPath(
+    `${SVG_PATH}/${SVG_IMAGES.DASHBOARD_PROMO_BANNER_UNDERLINE}`,
+);
+const mainImage = resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.DASHBOARD_PROMO_BANNER_TEX}`);
 
 const StyledImage = styled.img`
     flex: 1;
@@ -118,10 +102,15 @@ type TrezorExpertBannerProps = {
 
 export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExpertBannerProps) => {
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
+    const theme = useTheme();
 
     return (
         <AnimatedWrapper isVisible={isVisible} flagToHide="showTEXDashboardPromoBanner">
-            <Container>
+            <Box
+                height={213}
+                padding={{ left: 24, right: 24 }}
+                backgroundColor={theme.baseFillSurfaceBrandDark}
+            >
                 <Row
                     height="100%"
                     margin={{ right: isBelowDesktop ? undefined : spacings.xxxxl }}
@@ -141,10 +130,8 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExp
                     <StyledImage src={mainImage} alt="Trezor Expert" />
                 </Row>
 
-                <CloseButtonContainer>
-                    <IconButton size="small" icon="x" variant="tertiary" onClick={onClose} />
-                </CloseButtonContainer>
-            </Container>
+                <CloseButton onClose={onClose} />
+            </Box>
         </AnimatedWrapper>
     );
 };

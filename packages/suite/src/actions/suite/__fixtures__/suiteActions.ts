@@ -177,6 +177,7 @@ const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = 
                 securityStepsHidden: false,
                 dashboardAssetsGridMode: true,
                 showTEXDashboardPromoBanner: true,
+                showTS7DashboardPromoBanner: true,
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
                 stakeSolBannerClosed: false,
