@@ -1726,7 +1726,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH_FAILED',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_MAC: {
-        defaultMessage: 'verify your identity.',
+        defaultMessage: 'verify your identity',
         id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_WIN: {
@@ -3730,7 +3730,7 @@ export default defineMessages({
     },
     TR_WIPE_DEVICE_DESCRIPTION: {
         defaultMessage:
-            'Wiping the device will permanently erase all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
+            'Wiping the device permanently erases all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
         id: 'TR_WIPE_DEVICE_DESCRIPTION',
     },
     TR_WORDS: {
