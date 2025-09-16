@@ -59,4 +59,22 @@ describe('useFormDraft', () => {
             payload: { key: 'stake/eth' },
         });
     });
+
+    it('should allow to omit key', () => {
+        const { draft, saveDraft, removeDraft } = useFormDraft('stake');
+
+        expect(draft).toBeUndefined();
+        saveDraft({ key3: 'value3' });
+        removeDraft();
+
+        expect(mockDispatch).toHaveBeenCalledTimes(2);
+        expect(mockDispatch).toHaveBeenNthCalledWith(1, {
+            type: '@formDraft/storeDraft',
+            payload: { key: 'stake/', formDraft: { key3: 'value3' } },
+        });
+        expect(mockDispatch).toHaveBeenNthCalledWith(2, {
+            type: '@formDraft/removeDraft',
+            payload: { key: 'stake/' },
+        });
+    });
 });

@@ -1,17 +1,19 @@
-import { FieldValues } from 'react-hook-form';
-
 import { produce } from 'immer';
 
+import {
+    FormDraftAction,
+    FormDraftState,
+    formDraftReducer as commonFormDraftReducer,
+    formDraftInitialState,
+} from '@suite-common/wallet-core';
+
 import { STORAGE } from 'src/actions/suite/constants';
-import { FORM_DRAFT } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';
 
-export interface FormDraftState {
-    [key: string]: FieldValues;
-}
-export const initialState: FormDraftState = {};
-
-const formDraftReducer = (state: FormDraftState = initialState, action: Action): FormDraftState =>
+const formDraftReducer = (
+    state: FormDraftState = formDraftInitialState,
+    action: Action,
+): FormDraftState =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
@@ -19,13 +21,9 @@ const formDraftReducer = (state: FormDraftState = initialState, action: Action):
                     draft[d.key] = d.value;
                 });
                 break;
-            case FORM_DRAFT.STORE_DRAFT:
-                draft[action.key] = action.formDraft;
-                break;
-            case FORM_DRAFT.REMOVE_DRAFT:
-                delete draft[action.key];
-                break;
-            // no default
+
+            default:
+                commonFormDraftReducer(state, action as FormDraftAction);
         }
     });
 

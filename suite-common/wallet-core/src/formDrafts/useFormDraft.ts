@@ -8,12 +8,17 @@ import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftRootState, formDraftActions } from './formDraftSlice';
 import { selectFormDraft } from './selectors';
 
-export const useFormDraft = <T extends FieldValues>(keyPrefix: FormDraftKeyPrefix, key: string) => {
+export const useFormDraft = <T extends FieldValues>(
+    keyPrefix: FormDraftKeyPrefix,
+    key: string = '',
+) => {
     const dispatch = useDispatch();
 
     const formDraftKey = getFormDraftKey(keyPrefix, key);
 
-    const draft = useSelector((state: FormDraftRootState) => selectFormDraft(state, formDraftKey));
+    const draft = useSelector((state: FormDraftRootState) =>
+        selectFormDraft(state, formDraftKey),
+    ) as T | undefined;
 
     const saveDraft = useCallback(
         (formDraft: T) => {

@@ -10,6 +10,7 @@ import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
+    useFormDraft,
 } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import {
@@ -34,7 +35,6 @@ import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
-import { useFormDraft } from './useFormDraft';
 
 export const StakeFormContext = createContext<StakeContextValues | null>(null);
 StakeFormContext.displayName = 'StakeFormContext';
@@ -85,8 +85,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
         } as StakeFormState;
     }, [account]);
 
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<StakeFormState>('stake');
-    const draft = getDraft(account.key);
+    const { saveDraft, draft, removeDraft } = useFormDraft<StakeFormState>('stake', account.key);
     const isDraft = !!draft;
 
     const state = useMemo(() => {
@@ -115,9 +114,9 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
-            removeDraft(account.key);
+            removeDraft();
         }
-    }, [values, removeDraft, account.key, defaultValues]);
+    }, [values, removeDraft, defaultValues]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -164,13 +163,12 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing
             ) {
-                saveDraft(selectedAccount.account.key, values as StakeFormState);
+                saveDraft(values as StakeFormState);
             }
         },
         200,
         [
             saveDraft,
-            selectedAccount.account.key,
             values,
             formState.errors,
             formState.isDirty,
@@ -333,11 +331,11 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     }, [formState]);
 
     const clearForm = useCallback(async () => {
-        removeDraft(account.key);
+        removeDraft();
         reset(defaultValues);
         await composeRequest(CRYPTO_INPUT);
         clearWithdrawalWarnings();
-    }, [account.key, composeRequest, defaultValues, removeDraft, reset, clearWithdrawalWarnings]);
+    }, [composeRequest, defaultValues, removeDraft, reset, clearWithdrawalWarnings]);
 
     const { translationString } = useTranslation();
     useEffect(() => {

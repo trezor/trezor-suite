@@ -33,3 +33,5 @@ export const formDraftSlice = createSlice({
 
 export const formDraftReducer = formDraftSlice.reducer;
 export const formDraftActions = formDraftSlice.actions;
+
+export type FormDraftAction = ReturnType<(typeof formDraftActions)[keyof typeof formDraftActions]>;

@@ -21,6 +21,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
+import { useFormDraft } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -36,7 +37,6 @@ import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/us
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsTradingTermsDismissed } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch } from 'src/types/suite';
@@ -105,8 +105,10 @@ export const useTradingBuyForm = ({
     } = useTradingBuyFormDefaultValues(account.symbol, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const buyDraftKey = account.key;
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<TradingBuyFormProps>('trading-buy');
-    const draft = getDraft(buyDraftKey);
+    const { saveDraft, draft, removeDraft } = useFormDraft<TradingBuyFormProps>(
+        'trading-buy',
+        buyDraftKey,
+    );
     const draftUpdated: TradingBuyFormProps | null = draft
         ? {
               ...draft,
@@ -390,15 +392,15 @@ export const useTradingBuyForm = ({
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
-            removeDraft(buyDraftKey);
+            removeDraft();
 
             return;
         }
 
         if (values.cryptoSelect && !values.cryptoSelect?.value) {
-            removeDraft(buyDraftKey);
+            removeDraft();
         }
-    }, [defaultValues, values, removeDraft, buyDraftKey]);
+    }, [defaultValues, values, removeDraft]);
 
     useEffect(() => {
         if (!quotesRequest && isNotFormPage) {
@@ -422,7 +424,7 @@ export const useTradingBuyForm = ({
         () => {
             // saving draft after validation & buyInfo is available
             if (!formState.isValidating && Object.keys(formState.errors).length === 0 && buyInfo) {
-                saveDraft(buyDraftKey, {
+                saveDraft({
                     ...values,
                     fiatInput:
                         values.fiatInput !== ''
@@ -434,15 +436,7 @@ export const useTradingBuyForm = ({
             }
         },
         200,
-        [
-            formState.errors,
-            formState.isValidating,
-            saveDraft,
-            buyDraftKey,
-            values,
-            shouldSendInSats,
-            buyInfo,
-        ],
+        [formState.errors, formState.isValidating, saveDraft, values, shouldSendInSats, buyInfo],
     );
 
     return {
