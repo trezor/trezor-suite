@@ -96,6 +96,7 @@ export const useTradingFiatValues = ({
                     baseCurrencyCode: value,
                     rateType: 'current',
                     fetchAttemptTimestamp: Date.now() as Timestamp,
+                    forceFetchToken: true,
                     skipCache: true,
                 }),
             );
