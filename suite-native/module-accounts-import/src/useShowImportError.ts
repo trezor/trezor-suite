@@ -66,6 +66,11 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                 }
             }
 
+            const handleGoBack = () =>
+                navigation.popTo(AccountsImportStackRoutes.XpubScan, {
+                    networkSymbol: symbol,
+                });
+
             const { title, description, icon } = alertErrorMap[alertError];
 
             if (onRetry) {
@@ -77,7 +82,7 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                     primaryButtonTitle: 'Try Again',
                     onPressPrimaryButton: onRetry,
                     secondaryButtonTitle: 'Go back',
-                    onPressSecondaryButton: navigation.goBack,
+                    onPressSecondaryButton: handleGoBack,
                 });
             } else {
                 showAlert({
@@ -86,7 +91,7 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                     icon,
                     pictogramVariant: 'critical',
                     primaryButtonTitle: 'Go back',
-                    onPressPrimaryButton: navigation.goBack,
+                    onPressPrimaryButton: handleGoBack,
                     testID: `@alert-sheet/error/${alertError}`,
                 });
             }
