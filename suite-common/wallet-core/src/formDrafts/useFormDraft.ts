@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { FieldValues } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
@@ -17,8 +17,8 @@ export const useFormDraft = <T extends FieldValues>(
     const formDraftKey = getFormDraftKey(keyPrefix, key);
 
     const draft = useSelector((state: FormDraftRootState) =>
-        selectFormDraft(state, formDraftKey),
-    ) as T | undefined;
+        selectFormDraft<T>(state, formDraftKey),
+    );
 
     const saveDraft = useCallback(
         (formDraft: T) => {
