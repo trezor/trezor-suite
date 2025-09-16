@@ -11,12 +11,14 @@ import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenFooterGradient,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
     useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
@@ -24,7 +26,11 @@ import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 
-type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>;
+type NavigationProps = StackToStackCompositeNavigationProps<
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.CoinEnablingInit,
+    RootStackParamList
+>;
 
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
