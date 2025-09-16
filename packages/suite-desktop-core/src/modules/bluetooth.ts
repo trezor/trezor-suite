@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 
+import { isMacOs } from '@trezor/env-utils';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
@@ -85,13 +86,17 @@ export const init: ModuleInit = () => {
 
                     if (!api) throw apiError;
 
-                    if (method === 'connectDevice') {
+                    if (method === 'connectDevice' && isMacOs()) {
                         // special case for macos
-                        const result = await bluetoothProcess?.connectAndSubscribeInMainThread(
-                            params[0],
-                        );
-                        if (result && !result.success) {
-                            return result;
+                        const deviceId = params[0];
+                        const devices = await api.enumerateDevices();
+                        const isPaired = devices.find(d => d.id === deviceId)?.paired;
+                        if (!isPaired) {
+                            const result =
+                                await bluetoothProcess?.connectAndSubscribeInMainThread(deviceId);
+                            if (result && !result.success) {
+                                return result;
+                            }
                         }
                     }
 
