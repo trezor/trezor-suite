@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { ThpSuiteCredentials } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
 import { prepareThpReducer, thpActions } from '../src';
+import { createCredential } from '../src/support/mocks';
 import { ThpState } from '../src/thpReducer';
 
 const thpReduce = prepareThpReducer(extraDependenciesMock);
@@ -14,12 +14,9 @@ const initialState: ThpState = {
     credentials: [],
 };
 
-const createCredential = (credential: string): ThpSuiteCredentials => ({
-    credential,
-    connectionCounter: 0,
-    trezor_static_public_key: '',
-    autoconnect: false,
-});
+const credential1 = createCredential({ credential: '1' });
+const credential2 = createCredential({ credential: '2' });
+const credential3 = createCredential({ credential: '3' });
 
 describe('thpReducer', () => {
     it('sets the lastThpCode', () => {
@@ -41,17 +38,17 @@ describe('thpReducer', () => {
             preloadedState: {
                 thp: {
                     ...initialState,
-                    credentials: [createCredential('1'), createCredential('2')],
+                    credentials: [credential1, credential2],
                 },
             },
         });
 
         expect(store.getState().thp.credentials.map(it => it.credential)).toEqual(['1', '2']);
 
-        store.dispatch(thpActions.removeCredentials({ credentials: [createCredential('3')] }));
+        store.dispatch(thpActions.removeCredentials({ credentials: [credential3] }));
         expect(store.getState().thp.credentials.map(it => it.credential)).toEqual(['1', '2']);
 
-        store.dispatch(thpActions.removeCredentials({ credentials: [createCredential('1')] }));
+        store.dispatch(thpActions.removeCredentials({ credentials: [credential1] }));
         expect(store.getState().thp.credentials.map(it => it.credential)).toEqual(['2']);
     });
 });

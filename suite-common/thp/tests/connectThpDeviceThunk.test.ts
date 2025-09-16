@@ -1,29 +1,18 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
-import { ThpSuiteCredentials } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
 import { Device } from '@trezor/connect';
 
 import { connectThpDeviceThunk } from '../src/connectThpDeviceThunk';
+import { createCredential, createDeviceThp } from '../src/support/mocks';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
 
 const thpReduce = prepareThpReducer(extraDependenciesMock);
 const firmwareReduce = prepareFirmwareReducer(extraDependenciesMock);
 
-const thpCredential1: ThpSuiteCredentials = {
-    connectionCounter: 0,
-    credential: 'credential-1',
-    autoconnect: false,
-    trezor_static_public_key: 'pubkey-1',
-};
-
-const thpCredential2: ThpSuiteCredentials = {
-    connectionCounter: 0,
-    credential: 'credential-2',
-    autoconnect: false,
-    trezor_static_public_key: 'pubkey-2',
-};
+const thpCredential1 = createCredential({ credential: 'credential-1' });
+const thpCredential2 = createCredential({ credential: 'credential-2' });
 
 const initialThpState: ThpState = {
     step: null,
@@ -42,22 +31,7 @@ const initialFirmwareState: FirmwareUpdateState = {
 };
 
 const device: Pick<Device, 'thp' | 'features'> = {
-    thp: {
-        credentials: [thpCredential1],
-        properties: {
-            internal_model: 'T3W1',
-            model_variant: 0,
-            protocol_version_major: 10,
-            protocol_version_minor: 20,
-            pairing_methods: [],
-        },
-        channel: '',
-        sendBit: 0,
-        recvBit: 0,
-        sendNonce: 0,
-        recvNonce: 0,
-        expectedResponses: [],
-    },
+    thp: { ...createDeviceThp(), credentials: [thpCredential1] },
     features: testMocks.getDeviceFeatures(),
 };
 
