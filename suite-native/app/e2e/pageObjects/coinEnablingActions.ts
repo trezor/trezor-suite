@@ -1,4 +1,6 @@
 import { scrollUntilVisible } from '../utils';
+import { onDeviceConnecting } from './deviceConnectingActions';
+import { onHome } from './homeActions';
 
 class CoinEnablingActions {
     async waitForInitScreen() {
@@ -15,6 +17,16 @@ class CoinEnablingActions {
 
     async clickOnConfirmButton() {
         await element(by.id('@coin-enabling/button-save')).tap();
+    }
+
+    async handleCoinEnablingInit(coins = ['btc']) {
+        await this.waitForInitScreen();
+        for (const coin of coins) {
+            await this.toggleNetwork(coin);
+        }
+        await this.clickOnConfirmButton();
+        await onDeviceConnecting.waitForDeviceConnectingScreen();
+        await onHome.waitForScreen();
     }
 }
 
