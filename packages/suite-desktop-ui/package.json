@@ -35,6 +35,7 @@
     "devDependencies": {
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
+        "postcss-styled-syntax": "^0.7.1",
         "stylelint": "^16.14.1",
         "stylelint-config-standard": "^38.0.0"
     }

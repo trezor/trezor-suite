@@ -1,4 +1,4 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["src", "stylelint-config-standard"]
+    "ignores": ["src", "stylelint-config-standard", "postcss-styled-syntax"]
 }

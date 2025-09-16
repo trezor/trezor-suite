@@ -1,4 +1,4 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["invity-api", "src", "stylelint-config-standard"]
+    "ignores": ["invity-api", "src", "stylelint-config-standard", "postcss-styled-syntax"]
 }

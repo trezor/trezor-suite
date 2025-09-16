@@ -61,6 +61,7 @@
         "xvfb-maybe": "^0.2.1"
     },
     "peerDependencies": {
+        "postcss-styled-syntax": "^0.7.1",
         "react": "19.0.0",
         "styled-components": "^6.1.19",
         "stylelint": "^16.19.0",

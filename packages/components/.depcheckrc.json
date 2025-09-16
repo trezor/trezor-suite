@@ -1,4 +1,4 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["stylelint-config-standard", "@babel/preset-react"]
+    "ignores": ["stylelint-config-standard", "@babel/preset-react", "postcss-styled-syntax"]
 }
