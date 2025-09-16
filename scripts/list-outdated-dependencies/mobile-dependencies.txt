@@ -13,6 +13,7 @@
 @react-navigation/core
 @react-navigation/native
 @react-navigation/native-stack
+@react-navigation/routers
 @sentry/react-native
 @shopify/flash-list
 @shopify/react-native-skia
@@ -92,4 +93,5 @@ react-qr-code
 redux-devtools-expo-dev-plugin
 redux-persist
 ts-jest
+type-fest
 yup

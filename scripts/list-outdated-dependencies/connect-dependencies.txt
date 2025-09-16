@@ -29,11 +29,12 @@
 @vitejs/plugin-react
 @walletconnect/core
 @walletconnect/react-native-compat
+@walletconnect/types
 @walletconnect/utils
 base-x
 browserify-bignum
-cbor-js
 cbor
+cbor-js
 clsx
 codemirror-json-schema
 codemirror-json5
