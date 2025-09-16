@@ -36,8 +36,8 @@ export const ConnectAndUnlockDeviceScreenContent = ({
                 </Text>
                 {onConnectViaBluetooth && (
                     <Button
-                        size="small"
-                        colorScheme="tertiaryElevation0"
+                        size="medium"
+                        colorScheme="blueBold"
                         viewLeft="bluetooth"
                         onPress={onConnectViaBluetooth}
                     >
