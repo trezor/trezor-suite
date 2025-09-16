@@ -82,8 +82,6 @@ export const FirmwareInstallationScreenContent = ({
         translatedText,
         mayBeStucked,
         originalDevice,
-        setIsInitialFirmwareInstallationRunning,
-        isInitialFirmwareInstallationRunning,
         targetFirmwareType,
     } = useFirmware({ navigationLocation });
     const {
@@ -216,14 +214,10 @@ export const FirmwareInstallationScreenContent = ({
     }, [openLink]);
 
     useEffect(() => {
-        // Preventing from triggering the action again
-        setIsInitialFirmwareInstallationRunning(true);
-
         // Small delay to let initial screen animation finish
         const timeout = setTimeout(() => {
             handleAnalyticsReportStarted({ startType: 'normal' });
 
-            setIsInitialFirmwareInstallationRunning(false);
             startFirmwareUpdate();
         }, 2000);
 
@@ -231,7 +225,7 @@ export const FirmwareInstallationScreenContent = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const isError = status === 'error' && !isInitialFirmwareInstallationRunning;
+    const isError = status === 'error';
     const isDone = status === 'done' || operation === 'completed' || operation === 'thp';
 
     const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
@@ -263,17 +257,18 @@ export const FirmwareInstallationScreenContent = ({
         if (showConfirmOnDevice) revealConfirmOnTrezorSheet();
     }, [closeSheet, isSheetOpen, showConfirmOnDevice, revealConfirmOnTrezorSheet]);
 
+    const CancelButton = customHeader ?? (
+        <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
+    );
+
     return (
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
             closeAction={onCancelAction ?? handleCancel}
             closeActionType="close"
-            defaultHeader={
-                customHeader ?? (
-                    <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
-                )
-            }
+            defaultHeader={isError && CancelButton}
+            isCloseButtonDisabled
         >
             <VStack justifyContent="center" alignItems="center" flex={1}>
                 <UpdateProgressIndicator progress={progress} status={indicatorStatus} />

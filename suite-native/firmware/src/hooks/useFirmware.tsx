@@ -30,6 +30,7 @@ export const useFirmware = (
         status,
         error,
         progress,
+        setStatus,
         ...firmwareInstallation
     } = useFirmwareInstallation(params);
     const { translate } = useTranslate();
@@ -40,8 +41,6 @@ export const useFirmware = (
         targetFirmwareType: firmwareInstallation.targetFirmwareType,
         navigationLocation: params?.navigationLocation,
     });
-    const [isInitialFirmwareInstallationRunning, setIsInitialFirmwareInstallationRunning] =
-        useState<boolean>(false);
 
     // When the device is restarted after FW installation via Bluetooth, this flag changes to false
     // for a moment which triggers firmwareUpdate again. => Use ref to prevent this.
@@ -118,7 +117,7 @@ export const useFirmware = (
 
         const isInitialState = (status === 'started' && operation === null) || status === 'initial';
 
-        if (status === 'error' && !isInitialFirmwareInstallationRunning) {
+        if (status === 'error') {
             text = {
                 title: 'firmware.firmwareUpdateProgress.error.title',
             };
@@ -155,15 +154,7 @@ export const useFirmware = (
             title: translate(text.title),
             subtitle: text.subtitle ? translate(text.subtitle) : error,
         };
-    }, [
-        status,
-        operation,
-        isInitialFirmwareInstallationRunning,
-        confirmOnDevice,
-        translate,
-        error,
-        originalFirmwareVersion,
-    ]);
+    }, [status, operation, confirmOnDevice, translate, error, originalFirmwareVersion]);
 
     return {
         ...firmwareInstallation,
@@ -174,9 +165,8 @@ export const useFirmware = (
         operation,
         status,
         error,
-        isInitialFirmwareInstallationRunning,
-        setIsInitialFirmwareInstallationRunning,
         mayBeStucked,
         progress,
+        setStatus,
     };
 };

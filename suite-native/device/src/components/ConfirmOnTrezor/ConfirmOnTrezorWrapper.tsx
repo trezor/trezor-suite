@@ -22,6 +22,7 @@ export type ConfirmOnTrezorWrapperProps = PropsWithChildren<{
     controlRef?: React.Ref<BottomSheetControlProps>;
     isManualControlEnabled?: boolean;
     defaultHeader?: React.ReactNode;
+    isCloseButtonDisabled?: boolean;
 }> &
     ScreenHeaderProps;
 
