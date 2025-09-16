@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Card, Column, motionAnimation } from '@trezor/components';
+import { Box, Card, Column, Text, motionAnimation } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
@@ -21,6 +21,25 @@ type CardWithDeviceProps = {
     isDeviceStatusVisible?: boolean;
 };
 
+const possibleStates = [
+    'disconnected',
+    'unavailable',
+    'bootloader',
+    'initialize',
+    'seedless',
+    'firmware-required',
+    'used-in-other-window',
+    'was-used-in-other-window',
+    'firmware-recommended',
+    'connected',
+    'unacquired-thp-required',
+    'unacquired',
+    'unreadable',
+    'unknown',
+] as const;
+
+type PossibleStates = (typeof possibleStates)[number];
+
 export const CardWithDevice = ({
     children,
     actions,
@@ -30,7 +49,12 @@ export const CardWithDevice = ({
     isFindTrezorVisible,
     isDeviceStatusVisible,
 }: CardWithDeviceProps) => {
-    const deviceStatus = deviceUtils.getStatus(device);
+    const [deviceStatus, setDeviceStatus] = useState<PossibleStates>(deviceUtils.getStatus(device));
+
+    useEffect(() => {
+        setDeviceStatus(deviceUtils.getStatus(device));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [device.id]);
 
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -46,7 +70,13 @@ export const CardWithDevice = ({
                     isDeviceStatusVisible={isDeviceStatusVisible}
                     actions={actions}
                 />
-
+                <Box>
+                    {possibleStates.map(s => (
+                        <Box key={s} onClick={() => setDeviceStatus(s)}>
+                            <Text variant={deviceStatus === s ? 'primary' : 'tertiary'}>{s}</Text>
+                        </Box>
+                    ))}
+                </Box>
                 {needsAttention && (
                     <NeedsAttentionBanner
                         device={device}
