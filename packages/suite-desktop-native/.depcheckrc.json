@@ -1,0 +1,4 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": ["node-addon-api", "node-gyp"]
+}

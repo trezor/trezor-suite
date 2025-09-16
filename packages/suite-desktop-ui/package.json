@@ -19,6 +19,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/suite": "workspace:*",
         "@trezor/suite-analytics": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/suite-local-first-storage": "workspace:*",
