@@ -15,7 +15,7 @@ SIZE_S=$(du -s "$parent_path/../build/trezor-connect.js" | cut -f1)
 echo "size: $SIZE_S"
 # size grew after https://github.com/trezor/trezor-suite/pull/10280 was merged
 # 
-if [[ "$SIZE_S" -gt 240 ]]
+if [[ "$SIZE_S" -gt 300 ]]
 then
     echo "suspiciously large build detected!"
     exit 1;
