@@ -49,7 +49,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
             return;
         }
 
-        const draft = selectFormDraft(getState(), formDraftKey) as FormState | undefined;
+        const draft = selectFormDraft<FormState>(getState(), formDraftKey);
 
         if (draft) {
             const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
