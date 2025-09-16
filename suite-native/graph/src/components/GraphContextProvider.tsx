@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 
-import { IntlProvider } from '@suite-native/intl';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
@@ -19,10 +18,8 @@ export const GraphContextProvider = ({ children }: ProviderProps) => {
     const theme = prepareNativeTheme({ colorVariant });
 
     return (
-        <IntlProvider>
-            <StylesProvider theme={theme} renderer={renderer}>
-                {children}
-            </StylesProvider>
-        </IntlProvider>
+        <StylesProvider theme={theme} renderer={renderer}>
+            {children}
+        </StylesProvider>
     );
 };
