@@ -14,7 +14,6 @@
 @sinclair/typebox-codegen
 @types/bytebuffer
 @types/chrome
-@types/events
 @types/flexsearch
 @types/git-url-parse
 @types/json-stable-stringify
@@ -46,7 +45,6 @@ es6-promise
 esbuild
 escape-string-regexp
 eth-phishing-detect
-events
 flexsearch
 focus-visible
 git-url-parse

@@ -107,6 +107,7 @@
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/jws": "^3.2.10",
         "@types/karma": "^6.3.9",
+        "@types/node-fetch": "^2.6.12",
         "babel-loader": "^10.0.0",
         "jest": "29.7.0",
         "karma": "^6.4.4",

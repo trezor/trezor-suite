@@ -20,6 +20,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
+        "@types/node-fetch": "^2.6.12",
         "ts-node": "^10.9.2",
         "ws": "^8.18.0"
     }

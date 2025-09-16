@@ -16,6 +16,7 @@
         "version-bump-prompt",
         "uuid",
         "uint8array-tools",
-        "bitcore-lib"
+        "bitcore-lib",
+        "@types/node-fetch"
     ]
 }

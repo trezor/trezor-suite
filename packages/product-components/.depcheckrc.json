@@ -1,4 +1,12 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["stylelint-config-standard", "@babel/preset-react", "postcss-styled-syntax"]
+    "ignores": [
+        "stylelint-config-standard",
+        "@babel/preset-react",
+        "postcss-styled-syntax",
+        "typescript-styled-plugin",
+        "@storybook/react-webpack5",
+        "@storybook/addon-links",
+        "@storybook/addon-docs"
+    ]
 }
