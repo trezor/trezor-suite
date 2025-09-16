@@ -7,6 +7,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import {
+    FormDraftAction,
     WalletSettingsAction,
     accountsActions,
     blockchainActions,
@@ -20,7 +21,6 @@ import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
-import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
