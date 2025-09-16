@@ -36,11 +36,11 @@ export const BluetoothDeviceComponent = ({ device }: BluetoothDeviceProps) => {
                 />
             </Column>
             <Column justifyContent="start" alignItems="start" flex="1">
-                <Text typographyStyle="body">{modelName}</Text>
+                <Text typographyStyle="body">{device.name}</Text>
                 {showBluetoothDebugInfo && <BluetoothDebugInfo device={device} />}
                 <InfoSegments typographyStyle="hint" variant="tertiary">
+                    <Text>{modelName}</Text>
                     {colorName && <Text>{colorName}</Text>}
-                    <Text>{device.name}</Text>
                 </InfoSegments>
             </Column>
         </Row>
