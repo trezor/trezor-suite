@@ -6,6 +6,7 @@ import {
     NavigationContainer,
     createNavigationContainerRef,
 } from '@react-navigation/native';
+import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
@@ -25,6 +26,9 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
         utils: { colors, isDarkColor },
     } = useNativeStyles();
     const reportSendFlowExitToAnalytics = useReportSendFlowExitToAnalytics();
+
+    // Enable React Navigation DevTools in development
+    useReactNavigationDevTools({ ref: navigationContainerRef });
 
     const themeColors = useMemo(() => {
         // setting theme colors to match the background color of the screen to prevent white flash on screen change in dark mode

@@ -21,6 +21,7 @@
 @rozenite/network-activity-plugin
 @rozenite/performance-monitor-plugin
 @rozenite/redux-devtools-plugin
+@rozenite/react-navigation-plugin
 @sentry/react-native
 @shopify/flash-list
 @shopify/react-native-skia
