@@ -1,6 +1,3 @@
-// `expect` keyword is already used by jest.
-import { expect as detoxExpect } from 'detox';
-
 import { conditionalDescribe } from '@suite-common/test-utils';
 
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
@@ -29,14 +26,7 @@ conditionalDescribe(
                 .toBeVisible()
                 .withTimeout(10000);
 
-            await onCoinEnabling.waitForInitScreen();
-
-            await onCoinEnabling.toggleNetwork('btc');
-            await onCoinEnabling.toggleNetwork('eth');
-
-            await onCoinEnabling.clickOnConfirmButton();
-
-            await detoxExpect(element(by.id('@home/portfolio/header')));
+            await onCoinEnabling.handleCoinEnablingInit(['btc', 'eth']);
         });
     },
 );

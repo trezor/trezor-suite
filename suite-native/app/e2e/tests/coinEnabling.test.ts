@@ -2,6 +2,8 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
+import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
+import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
@@ -21,6 +23,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling', () => {
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
         await onCoinEnabling.clickOnConfirmButton();
+
+        await onDeviceConnecting.waitForDeviceConnectingScreen();
+        await onHome.waitForScreen();
 
         const bitcoinTextElement = element(by.text('Bitcoin'));
 
