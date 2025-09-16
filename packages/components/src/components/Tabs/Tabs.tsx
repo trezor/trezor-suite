@@ -15,6 +15,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
 
 export const allowedTabsFrameProps = ['margin'] as const satisfies FramePropsKeys[];

@@ -29,6 +29,16 @@ import type {
 
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
+import {
+    InvityServerEnvironment,
+    InvityServers,
+    TradingOTC,
+    TradingPaymentMethodType,
+    TradingTradeType,
+    TradingType,
+    TradingWatchTradeResponsePropsMap,
+} from './types';
+
 type BodyType =
     | BuyTrade
     | ExchangeTradeQuoteRequest
