@@ -37,7 +37,7 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
                     />
                 </>
             );
-        } else if (network?.networkType === 'solana') {
+        } else if (network?.networkType === 'solana' || network?.networkType === 'stellar') {
             return (
                 <>
                     <IOGroup
