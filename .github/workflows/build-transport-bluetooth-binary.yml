@@ -25,6 +25,8 @@ jobs:
         working-directory: packages/transport-bluetooth
         run: |
           BUILD_VERSION_TAG="${{ github.ref_name }}:${{ github.sha }}"
+          mkdir build
+          touch build/index.html
           docker build . -f ./scripts/Dockerfile -t trezor-bluetooth-image --build-arg BUILD_VERSION_TAG=$BUILD_VERSION_TAG
           docker create --name trezor-bluetooth-container trezor-bluetooth-image
           docker cp trezor-bluetooth-container:/output/. ../suite-data/files/bin/bluetooth
