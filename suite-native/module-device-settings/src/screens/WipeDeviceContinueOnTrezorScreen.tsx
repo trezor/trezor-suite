@@ -10,8 +10,12 @@ import {
 import { Screen, ScreenHeader, useHandleHardwareBackNavigation } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
+import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
+
 export const WipeDeviceContinueOnTrezorScreen = () => {
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
+
+    useDeviceConnectionGuard();
 
     useHandleHardwareBackNavigation(() => TrezorConnect.cancel());
 
