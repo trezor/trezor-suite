@@ -35,6 +35,7 @@ import {
     fetchAndUpdateAccountThunk,
     selectAccountByKey,
     updateFeeInfoThunk,
+    useFormDraft,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
@@ -71,7 +72,6 @@ import {
     getTradingNetworkDecimals,
 } from 'src/utils/wallet/trading/tradingUtils';
 
-import { useFormDraft } from '../../useFormDraft';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingPreviousRoute } from './common/useTradingPreviousRoute';
 
@@ -160,10 +160,8 @@ export const useTradingExchangeForm = ({
 
     const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(account);
 
-    const exchangeDraftKey = 'trading-exchange';
-    const { getDraft, saveDraft, removeDraft } =
-        useFormDraft<TradingExchangeFormProps>(exchangeDraftKey);
-    const draft = getDraft(exchangeDraftKey);
+    const { draft, saveDraft, removeDraft } =
+        useFormDraft<TradingExchangeFormProps>('trading-exchange');
     const isDraft = !!draft;
 
     const getDraftUpdated = (): TradingExchangeFormProps | null => {
@@ -787,7 +785,7 @@ export const useTradingExchangeForm = ({
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing
             ) {
-                saveDraft(exchangeDraftKey, values as TradingExchangeFormProps);
+                saveDraft(values as TradingExchangeFormProps);
             }
         },
         200,
@@ -803,7 +801,7 @@ export const useTradingExchangeForm = ({
 
     useEffect(() => {
         if (!isPreviousRouteFromTradeSection) {
-            removeDraft(exchangeDraftKey);
+            removeDraft();
         }
     }, [isPreviousRouteFromTradeSection, removeDraft]);
 

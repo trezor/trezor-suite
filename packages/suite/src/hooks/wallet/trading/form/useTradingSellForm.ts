@@ -27,7 +27,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 
@@ -46,7 +46,6 @@ import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import {
     selectIsDebugModeActive,
@@ -131,9 +130,7 @@ export const useTradingSellForm = ({
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
         useTradingSellFormDefaultValues(account, sellInfo);
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
-    const sellDraftKey = 'trading-sell';
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<TradingSellFormProps>(sellDraftKey);
-    const draft = getDraft(sellDraftKey);
+    const { saveDraft, draft, removeDraft } = useFormDraft<TradingSellFormProps>('trading-sell');
     const getDraftUpdated = (): TradingSellFormProps | null => {
         if (!draft) return null;
         if (isPreviousRouteFromTradeSection) {
@@ -507,13 +504,13 @@ export const useTradingSellForm = ({
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
-            removeDraft(sellDraftKey);
+            removeDraft();
 
             return;
         }
 
         if (!values.outputs?.[0]?.currency?.value) {
-            removeDraft(sellDraftKey);
+            removeDraft();
         }
     }, [defaultValues, values, removeDraft]);
 
@@ -541,13 +538,12 @@ export const useTradingSellForm = ({
                 !isComposing &&
                 sellInfo
             ) {
-                saveDraft(sellDraftKey, values as TradingSellFormProps);
+                saveDraft(values as TradingSellFormProps);
             }
         },
         200,
         [
             saveDraft,
-            sellDraftKey,
             values,
             formState.errors,
             formState.isDirty,

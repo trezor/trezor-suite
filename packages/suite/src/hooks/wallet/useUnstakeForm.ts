@@ -14,6 +14,7 @@ import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
+    useFormDraft,
 } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
@@ -33,12 +34,10 @@ import {
     OUTPUT_AMOUNT,
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
-import {} from 'src/utils/suite/staking';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
-import { useFormDraft } from './useFormDraft';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitProps;
@@ -94,8 +93,10 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
         } as UnstakeFormState;
     }, [account, autocompoundBalance]);
 
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<UnstakeFormState>('unstake');
-    const draft = getDraft(account.key);
+    const { saveDraft, draft, removeDraft } = useFormDraft<UnstakeFormState>(
+        'unstake',
+        account.key,
+    );
     const isDraft = !!draft;
 
     const state = useMemo(
@@ -144,9 +145,9 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
-            removeDraft(account.key);
+            removeDraft();
         }
-    }, [values, removeDraft, account.key, defaultValues]);
+    }, [values, removeDraft, defaultValues]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -187,13 +188,12 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing
             ) {
-                saveDraft(selectedAccount.account.key, values as UnstakeFormState);
+                saveDraft(values as UnstakeFormState);
             }
         },
         200,
         [
             saveDraft,
-            selectedAccount.account.key,
             values,
             formState.errors,
             formState.isDirty,
@@ -258,10 +258,10 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
     );
 
     const clearForm = useCallback(async () => {
-        removeDraft(account.key);
+        removeDraft();
         reset(defaultValues);
         await composeRequest(CRYPTO_INPUT);
-    }, [account.key, composeRequest, defaultValues, removeDraft, reset]);
+    }, [composeRequest, defaultValues, removeDraft, reset]);
 
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
