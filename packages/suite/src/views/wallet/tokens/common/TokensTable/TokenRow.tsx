@@ -258,17 +258,19 @@ export const TokenRow = ({
                         content={
                             <Card paddingType="small">
                                 <Column maxWidth={200} gap={spacings.md}>
-                                    <TokenAddressItem
-                                        label={
-                                            <Translation
-                                                id={getTokenAddressTranslationId(
-                                                    network.networkType,
-                                                )}
-                                            />
-                                        }
-                                        address={token.contract}
-                                        type="contract"
-                                    />
+                                    {!token.policyId && (
+                                        <TokenAddressItem
+                                            label={
+                                                <Translation
+                                                    id={getTokenAddressTranslationId(
+                                                        network.networkType,
+                                                    )}
+                                                />
+                                            }
+                                            address={token.contract}
+                                            type="contract"
+                                        />
+                                    )}
                                     {token.fingerprint && (
                                         <TokenAddressItem
                                             label={<Translation id="TR_FINGERPRINT_ADDRESS" />}
