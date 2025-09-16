@@ -80,6 +80,8 @@ export const selectPrerequisite = (
 
 export const selectIsTEXDashboardPromoBannerShown = (state: SuiteRootState) =>
     state.suite.flags.showTEXDashboardPromoBanner;
+export const selectIsTS7DashboardPromoBannerShown = (state: SuiteRootState) =>
+    state.suite.flags.showTS7DashboardPromoBanner;
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState) =>
     state.suite.flags.showSettingsDesktopAppPromoBanner;
 export const selectIsUnhideTokenModalShown = (state: SuiteRootState) =>

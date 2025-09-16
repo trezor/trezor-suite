@@ -9068,6 +9068,18 @@ export default defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON',
         defaultMessage: 'Learn more',
     },
+    TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
+        defaultMessage: 'Introducing Trezor Safe 7',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TS7_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TS7_DESCRIPTION',
+        defaultMessage: 'Radically transparent, fully wireless, and quantum‑ready.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON',
+        defaultMessage: 'Learn more',
+    },
     TR_CANDIDATE_TRANSACTION_HEADER: {
         id: 'TR_CANDIDATE_TRANSACTION_HEADER',
         defaultMessage: 'Candidate transactions',
