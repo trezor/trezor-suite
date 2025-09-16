@@ -137,7 +137,7 @@ describe('Stellar', () => {
 
         const expectedCursor = txRawResp.records[txRawResp.records.length - 1].paging_token;
         const expectedTxs = txRawResp.records.map(record =>
-            utils.transformTransaction(record, descriptor),
+            utils.transformTransaction(record, descriptor, {}),
         );
 
         const result = await blockchain.getAccountInfo({

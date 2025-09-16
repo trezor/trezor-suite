@@ -10,12 +10,7 @@ import {
     extractBaseAddress,
 } from '@stellar/stellar-sdk';
 
-import type {
-    Target,
-    TokenDetailByMint,
-    Transaction,
-    TransactionDetail,
-} from '@trezor/blockchain-link-types';
+import type { TokenDetailByMint, Transaction } from '@trezor/blockchain-link-types';
 import { isCodesignBuild } from '@trezor/env-utils';
 import type { StellarAsset } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -54,12 +49,13 @@ const convertMemo = (memo: Memo): string | undefined => {
 
 export const transformTransaction = (
     rawTx: Horizon.ServerApi.TransactionRecord,
-    descriptor?: string,
+    descriptor: string,
+    tokenDetailByMint: TokenDetailByMint,
 ): Transaction => {
     // In Stellar, there are many types of operations; currently, we only include limited support and will consider adding more support later.
     const parsedTx = new StellarTransaction(rawTx.envelope_xdr, Networks.PUBLIC);
 
-    const tx: Transaction = {
+    const baseTx: Transaction = {
         type: 'unknown', // default type
         txid: rawTx.hash,
         amount: '0',
@@ -85,84 +81,126 @@ export const transformTransaction = (
 
     if (!rawTx.successful) {
         // If the transaction is not successful, we can set the type to 'failed' and return early
-        return { ...tx, type: 'failed' };
+        return { ...baseTx, type: 'failed' };
     }
 
     if (parsedTx.operations.length !== 1) {
         // If the transaction has more than one operation, we consider it as a unknown type
-        return tx;
+        return baseTx;
     }
 
     const rawOp = parsedTx.operations[0];
     const opSource = rawOp.source || rawTx.source_account;
+    const fromAddress = extractBaseAddress(opSource);
 
-    const params = {
-        fromAddress: extractBaseAddress(opSource),
-        toAddress: '',
-        amount: '',
-    };
+    let toAddress: string | undefined;
+    let nativeAmount: string | undefined;
+    let isTokenTransfer = false;
+    let tokenInfo: { assetCode: string; assetIssuer: string; amount: string } | undefined;
 
     switch (rawOp.type) {
-        case 'createAccount': {
-            params.toAddress = extractBaseAddress(rawOp.destination);
-            params.amount = toStroops(rawOp.startingBalance).toString();
+        case 'createAccount':
+            toAddress = extractBaseAddress(rawOp.destination);
+            nativeAmount = toStroops(rawOp.startingBalance).toString();
             break;
-        }
-        case 'payment': {
-            if (!rawOp.asset.isNative()) {
-                // If the asset is not native (XLM), we consider it as a unknown type
-                return tx;
+        case 'payment':
+            toAddress = extractBaseAddress(rawOp.destination);
+            if (rawOp.asset.isNative()) {
+                nativeAmount = toStroops(rawOp.amount).toString();
+            } else {
+                isTokenTransfer = true;
+                tokenInfo = {
+                    assetCode: rawOp.asset.getCode(),
+                    assetIssuer: rawOp.asset.getIssuer(),
+                    amount: toStroops(rawOp.amount).toString(),
+                };
+                // For token transfers, the native amount is 0
+                nativeAmount = '0';
             }
-
-            params.toAddress = extractBaseAddress(rawOp.destination);
-            params.amount = toStroops(rawOp.amount).toString();
             break;
-        }
-        default: {
+        default:
             // We only support createAccount and payment operations for now, so we consider it as a unknown type
-            return tx;
-        }
+            return baseTx;
     }
 
-    if (descriptor !== params.fromAddress && descriptor !== params.toAddress) {
-        // If the send and receive addresses do not match the descriptor, we consider it as a unknown type
-        return tx;
+    if (!toAddress) {
+        // Should not happen if operation is supported, but as a safeguard.
+        return baseTx;
     }
 
-    const targets: Target[] = [
-        {
-            n: 0,
-            addresses: [params.toAddress],
-            isAddress: true,
-            amount: params.amount,
-        },
-    ];
+    const isFrom = descriptor === fromAddress;
+    const isTo = descriptor === toAddress;
 
-    const details: TransactionDetail = {
-        vin: [
-            {
-                n: 0,
-                addresses: [params.fromAddress],
-                isAddress: true,
-                value: params.amount,
+    if (!descriptor || (!isFrom && !isTo)) {
+        // Transaction does not involve the user's address
+        return baseTx;
+    }
+
+    const type = isFrom ? 'sent' : 'recv';
+
+    if (isTokenTransfer && tokenInfo) {
+        const { assetCode, assetIssuer, amount: tokenAmount } = tokenInfo;
+        const contract = `${assetCode}-${assetIssuer}`;
+
+        return {
+            ...baseTx,
+            type,
+            amount: '0', // No native amount for token transfers
+            tokens: [
+                {
+                    type,
+                    standard: 'STELLAR-CLASSIC',
+                    from: fromAddress,
+                    to: toAddress,
+                    contract,
+                    name: tokenDetailByMint[contract]?.name || assetCode,
+                    symbol: assetCode,
+                    decimals: STELLAR_DECIMALS,
+                    amount: tokenAmount,
+                },
+            ],
+        };
+    }
+
+    if (nativeAmount) {
+        // Native asset transfer
+        return {
+            ...baseTx,
+            type,
+            amount: nativeAmount,
+            targets: [
+                {
+                    n: 0,
+                    addresses: [toAddress],
+                    isAddress: true,
+                    amount: nativeAmount,
+                },
+            ],
+            details: {
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [fromAddress],
+                        isAddress: true,
+                        value: nativeAmount,
+                    },
+                ],
+                vout: [
+                    {
+                        n: 0,
+                        addresses: [toAddress],
+                        isAddress: true,
+                        value: nativeAmount,
+                    },
+                ],
+                size: 0,
+                totalInput: nativeAmount,
+                totalOutput: nativeAmount,
             },
-        ],
-        vout: [
-            {
-                n: 0,
-                addresses: [params.toAddress],
-                isAddress: true,
-                value: params.amount,
-            },
-        ],
-        size: 0,
-        totalInput: params.amount,
-        totalOutput: params.amount,
-    };
+        };
+    }
 
-    const type = descriptor === params.fromAddress ? 'sent' : 'recv';
-
-    return { ...tx, amount: params.amount, details, targets, type };
+    return baseTx;
 };
 
 export const buildSendTransaction = (

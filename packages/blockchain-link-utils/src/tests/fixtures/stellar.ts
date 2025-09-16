@@ -983,7 +983,8 @@ export const fixtures = {
             },
         },
         {
-            description: 'transaction contains a payment operation, but the asset is not native',
+            description:
+                'transaction contains a payment operation, but the asset is not native, the descriptor is the sender',
             input: {
                 descriptor: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 tx: {
@@ -1063,9 +1064,120 @@ export const fixtures = {
                     feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [],
-                tokens: [],
+                tokens: [
+                    {
+                        amount: '100000',
+                        contract: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                        decimals: 7,
+                        from: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
+                        name: 'USDC',
+                        standard: 'STELLAR-CLASSIC',
+                        symbol: 'USDC',
+                        to: 'GCSXD3NLEYB72P2AXPHM2ED3MD7FUSFWTBLKMYKVGJ7P4NAFRMIRA74Z',
+                        type: 'sent',
+                    },
+                ],
                 txid: '29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265',
-                type: 'unknown',
+                type: 'sent',
+            },
+        },
+        {
+            description:
+                'transaction contains a payment operation, but the asset is not native, the descriptor is the receiver',
+            input: {
+                descriptor: 'GCSXD3NLEYB72P2AXPHM2ED3MD7FUSFWTBLKMYKVGJ7P4NAFRMIRA74Z',
+                tx: {
+                    _links: {
+                        self: {
+                            href: 'https://horizon.stellar.org/transactions/29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265',
+                        },
+                        account: {
+                            href: 'https://horizon.stellar.org/accounts/GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
+                        },
+                        ledger: {
+                            href: 'https://horizon.stellar.org/ledgers/56802308',
+                        },
+                        operations: {
+                            href: 'https://horizon.stellar.org/transactions/29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265/operations{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        effects: {
+                            href: 'https://horizon.stellar.org/transactions/29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265/effects{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        precedes: {
+                            href: 'https://horizon.stellar.org/transactions?order=asc\u0026cursor=243964055197659136',
+                        },
+                        succeeds: {
+                            href: 'https://horizon.stellar.org/transactions?order=desc\u0026cursor=243964055197659136',
+                        },
+                        transaction: {
+                            href: 'https://horizon.stellar.org/transactions/29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265',
+                        },
+                    },
+                    id: '29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265',
+                    paging_token: '243964055197659136',
+                    successful: true,
+                    hash: '29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265',
+                    ledger_attr: 56802308,
+                    created_at: '2025-04-27T02:26:45Z',
+                    source_account: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
+                    source_account_sequence: '243959279193686019',
+                    fee_account: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
+                    fee_charged: '100',
+                    max_fee: '100',
+                    operation_count: 1,
+                    envelope_xdr:
+                        'AAAAAgAAAAB9voIijl1f4z1QtBigJYncIKek313/H3WgGJf+g53KcwAAAGQDYresAAAAAwAAAAEAAAAAAAAAAAAAAABoDZcMAAAAAAAAAAEAAAAAAAAAAQAAAAClce2rJgP9P0C7zs0Qe2D+Wki2mFamYVUyfv40BYsREAAAAAFVU0RDAAAAADuZETgO/piLoKiQDrHP5E82b32+lGvtB3JA9/Yk3xXFAAAAAAABhqAAAAAAAAAAAYOdynMAAABAlHIFUVI4zaeOWaxlSnbl1pucEZ32DsAvUssdqeSEB1eb2mlHlfy2xKx9DKQ4RD8/JgjgRAsW/Xp5bRzIWBrRDg==',
+                    result_xdr: 'AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAA=',
+                    fee_meta_xdr:
+                        'AAAAAgAAAAMDYrv2AAAAAAAAAAB9voIijl1f4z1QtBigJYncIKek313/H3WgGJf+g53KcwAAAAABxS4QA2K3rAAAAAIAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAADAAAAAANiu/YAAAAAaA2VlgAAAAAAAAABA2K8BAAAAAAAAAAAfb6CIo5dX+M9ULQYoCWJ3CCnpN9d/x91oBiX/oOdynMAAAAAAcUtrANit6wAAAACAAAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAwAAAAADYrv2AAAAAGgNlZYAAAAA',
+                    memo_type: 'none',
+                    signatures: [
+                        'lHIFUVI4zaeOWaxlSnbl1pucEZ32DsAvUssdqeSEB1eb2mlHlfy2xKx9DKQ4RD8/JgjgRAsW/Xp5bRzIWBrRDg==',
+                    ],
+                    preconditions: {
+                        timebounds: {
+                            min_time: '0',
+                            max_time: '1745721100',
+                        },
+                    },
+                },
+            },
+            expectedOutput: {
+                amount: '0',
+                blockHeight: 56802308,
+                blockTime: 1745720805,
+                details: {
+                    size: 0,
+                    totalInput: '0',
+                    totalOutput: '0',
+                    vin: [],
+                    vout: [],
+                },
+                fee: '100',
+                feeRate: undefined,
+                internalTransfers: [],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
+                },
+                targets: [],
+                tokens: [
+                    {
+                        amount: '100000',
+                        contract: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                        decimals: 7,
+                        from: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
+                        name: 'USDC',
+                        standard: 'STELLAR-CLASSIC',
+                        symbol: 'USDC',
+                        to: 'GCSXD3NLEYB72P2AXPHM2ED3MD7FUSFWTBLKMYKVGJ7P4NAFRMIRA74Z',
+                        type: 'recv',
+                    },
+                ],
+                txid: '29854b425e62081bbf845c2b10e8bdb525e3a3765d8ca53bc1a0bd0c88a0f265',
+                type: 'recv',
             },
         },
         {

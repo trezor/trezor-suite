@@ -14,6 +14,7 @@ describe('stellar/utils', () => {
                     // @ts-expect-error Fixtures don't fully implement this interface.
                     input.tx as Horizon.ServerApi.TransactionRecord,
                     input.descriptor,
+                    {},
                 );
                 expect(result).toEqual(expectedOutput);
             });

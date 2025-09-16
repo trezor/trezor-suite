@@ -164,7 +164,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const cursor = transactions.records[transactions.records.length - 1]?.paging_token;
     account.history.transactions = transactions.records.map(record =>
-        utils.transformTransaction(record, payload.descriptor),
+        utils.transformTransaction(record, payload.descriptor, tokenMetadata),
     );
 
     return {
