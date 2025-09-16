@@ -12,6 +12,24 @@ import { SellFormType } from '../../../types/sell';
 import { useSellFlow } from '../useSellFlow';
 import { useSellForm } from '../useSellForm';
 
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
+    sellThunks: {
+        selectQuoteThunk: (payload: unknown) => ({
+            type: 'selectQuoteThunkMock',
+            payload,
+        }),
+        handleTradeThunk: (payload: unknown) => ({
+            type: 'handleTradeThunkMock',
+            payload,
+        }),
+        confirmTradeThunk: (payload: unknown) => ({
+            type: 'confirmTradeThunkMock',
+            payload,
+        }),
+    },
+}));
+
 describe('useSellFlow', () => {
     let store: TestStore;
     let sellForm: SellFormType;
@@ -49,6 +67,7 @@ describe('useSellFlow', () => {
         it('should be true when quote is selected', async () => {
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
             });
 
             const { result } = await renderUseSellFlow();
@@ -69,14 +88,31 @@ describe('useSellFlow', () => {
         });
 
         it('should request consent', async () => {
-            // TODO this is a temporary solution (will be changed with proper flow implementation)
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
+                store.dispatch(
+                    tradingSellActions.saveQuoteRequest({
+                        cryptoCurrency: sellQuotes[0].cryptoCurrency!,
+                        amountInCrypto: sellQuotes[0].amountInCrypto!,
+                        fiatCurrency: sellQuotes[0].fiatCurrency!,
+                    }),
+                );
             });
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseSellFlow();
 
             act(() => {
                 result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { userConsent } = dispatchCall.payload;
+
+            act(() => {
+                userConsent({
+                    provider: 'Banxa',
+                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
+                });
             });
 
             expect(result.current.isConsentRequested).toEqual(true);
@@ -87,14 +123,35 @@ describe('useSellFlow', () => {
         beforeEach(() => {
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
+                store.dispatch(
+                    tradingSellActions.saveQuoteRequest({
+                        cryptoCurrency: sellQuotes[0].cryptoCurrency!,
+                        amountInCrypto: sellQuotes[0].amountInCrypto!,
+                        fiatCurrency: sellQuotes[0].fiatCurrency!,
+                    }),
+                );
             });
         });
 
         it('should resolve consent', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseSellFlow();
+
             act(() => {
                 result.current.selectQuote();
             });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { userConsent } = dispatchCall.payload;
+
+            act(() => {
+                userConsent({
+                    provider: 'Banxa',
+                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
+                });
+            });
+
+            expect(result.current.isConsentRequested).toEqual(true);
 
             act(() => {
                 result.current.giveConsent();
@@ -108,14 +165,35 @@ describe('useSellFlow', () => {
         beforeEach(() => {
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
+                store.dispatch(
+                    tradingSellActions.saveQuoteRequest({
+                        cryptoCurrency: sellQuotes[0].cryptoCurrency!,
+                        amountInCrypto: sellQuotes[0].amountInCrypto!,
+                        fiatCurrency: sellQuotes[0].fiatCurrency!,
+                    }),
+                );
             });
         });
 
         it('should resolve consent (with false value)', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseSellFlow();
+
             act(() => {
                 result.current.selectQuote();
             });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { userConsent } = dispatchCall.payload;
+
+            act(() => {
+                userConsent({
+                    provider: 'Banxa',
+                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
+                });
+            });
+
+            expect(result.current.isConsentRequested).toEqual(true);
 
             act(() => {
                 result.current.cancelConsent();
@@ -125,13 +203,28 @@ describe('useSellFlow', () => {
         });
 
         it('should reset consent when quote provider changes', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result, rerender } = await renderUseSellFlow();
+
             act(() => {
                 result.current.selectQuote();
             });
 
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { userConsent } = dispatchCall.payload;
+
             act(() => {
-                sellForm.setValue('quote', { ...sellQuotes, exchange: 'invity-sell' });
+                userConsent({
+                    provider: 'Banxa',
+                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
+                });
+            });
+
+            expect(result.current.isConsentRequested).toEqual(true);
+
+            // Change quote to one with different provider
+            act(() => {
+                sellForm.setValue('quote', { ...sellQuotes[0], exchange: 'invity-sell' });
             });
             rerender({});
 
