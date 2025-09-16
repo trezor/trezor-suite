@@ -6,23 +6,16 @@ import { acquireDevice, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { Device } from '@trezor/connect';
 
 import { autoInitThpAfterDeviceConnectionThunk } from '../src/autoInitThpAfterDeviceConnectionThunk';
+import { createDeviceThp } from '../src/support/mocks';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
 
 const thpReduce = prepareThpReducer(extraDependenciesMock);
 const firmwareReduce = prepareFirmwareReducer(extraDependenciesMock);
 const deviceReduce = prepareDeviceReducer(extraDependenciesMock);
 
-const device = testMocks.getSuiteDevice({
-    thp: {
-        credentials: [],
-        channel: '',
-        sendBit: 0,
-        recvBit: 0,
-        sendNonce: 0,
-        recvNonce: 0,
-        expectedResponses: [],
-    },
-}) as Device;
+const device = testMocks.getConnectDevice({
+    thp: createDeviceThp(),
+});
 const initialThpState: ThpState = { step: null, lastThpCode: undefined, credentials: [] };
 const initialFirmwareState: FirmwareUpdateState = {
     error: '',
