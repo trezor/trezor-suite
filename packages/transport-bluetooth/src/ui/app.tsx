@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { TrezorBluetooth } from '../client/trezor-bluetooth';
-import { BluetoothDevice } from '../client/types';
+import { BluetoothDevice, NotificationEvent } from '../client/types';
 
 // Inline CSS (simplified, readable)
 const INLINE_CSS = `
@@ -68,13 +68,15 @@ export const App: React.FC = () => {
         apiRef.current = api;
 
         const onDisconnected = () => writeOutput('Api disconnected');
-        const onAdapterState = (e: any) => {
+        const onAdapterState = (e: NotificationEvent['adapter_state_changed']) => {
             setDevices([]);
             writeOutput(`adapter_state_changed: ${e.state}`);
         };
-        const onDevices = (e: any) => setDevices(e.devices || []);
-        const onDeviceConnectionStatus = (e: any) => {
-            setDevices(prev => prev.map(d => (d.id === e.id ? e : d)));
+        const onDevices = (e: NotificationEvent['device_updated']) => setDevices(e.devices || []);
+        const onDeviceConnectionStatus = ({
+            device,
+        }: NotificationEvent['device_connection_status']) => {
+            setDevices(prev => prev.map(d => (d.id === device.id ? device : d)));
         };
 
         api.on('disconnected', onDisconnected);
@@ -84,7 +86,6 @@ export const App: React.FC = () => {
         api.on('device_connected', onDevices);
         api.on('device_disconnected', onDevices);
         api.on('device_connection_status', onDeviceConnectionStatus);
-
         (async () => {
             try {
                 await api.connect();
@@ -97,13 +98,13 @@ export const App: React.FC = () => {
 
         return () => {
             api.disconnect();
-            api.removeListener?.('disconnected', onDisconnected as any);
-            api.removeListener?.('adapter_state_changed', onAdapterState as any);
-            api.removeListener?.('device_discovered', onDevices as any);
-            api.removeListener?.('device_updated', onDevices as any);
-            api.removeListener?.('device_connected', onDevices as any);
-            api.removeListener?.('device_disconnected', onDevices as any);
-            api.removeListener?.('device_connection_status', onDeviceConnectionStatus as any);
+            api.removeListener?.('disconnected', onDisconnected);
+            api.removeListener?.('adapter_state_changed', onAdapterState);
+            api.removeListener?.('device_discovered', onDevices);
+            api.removeListener?.('device_updated', onDevices);
+            api.removeListener?.('device_connected', onDevices);
+            api.removeListener?.('device_disconnected', onDevices);
+            api.removeListener?.('device_connection_status', onDeviceConnectionStatus);
         };
     }, []);
 
@@ -195,7 +196,9 @@ export const App: React.FC = () => {
 
     const write = async () => {
         try {
-            const r = await api().send('write', { id: deviceId, data: [63, 35, 35, 0, 55] });
+            const MSG = [63, 35, 35, 0, 55];
+            const data = MSG.concat(new Array(244 - MSG.length).fill(0));
+            const r = await api().send('write', { id: deviceId, data });
             writeOutput(r);
         } catch (e: any) {
             writeOutput({ error: e.message });
