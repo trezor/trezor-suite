@@ -49,6 +49,7 @@ pub struct ForgetDeviceParams {
 pub enum NotificationCharacteristic {
     Read,
     PushNotification,
+    BatteryLevel,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]

@@ -387,12 +387,11 @@ export const App: React.FC = () => {
                                         </button>
                                         <select ref={selectRef}>
                                             <option value="">Select characteristic</option>
-                                            <option value="read" selected>
-                                                READ
-                                            </option>
+                                            <option value="read">READ</option>
                                             <option value="push-notification">
                                                 PUSH_NOTIFICATION
                                             </option>
+                                            <option value="battery-level">BATTERY_LEVEL</option>
                                         </select>
                                         <button
                                             id="open_device"
