@@ -5,5 +5,17 @@ export const requestInit: RequestInit = {
     },
 };
 
-export const fetchUrl = (url: string, init?: RequestInit) =>
-    fetch(url, { ...requestInit, ...init });
+export const fetchUrl = (url: string, init?: RequestInit) => {
+    const combinedHeaders = {
+        ...(requestInit.headers ?? {}),
+        ...(init?.headers ?? {}),
+    };
+
+    const newInit: RequestInit = {
+        ...requestInit,
+        ...init,
+        headers: combinedHeaders,
+    };
+
+    return fetch(url, newInit);
+};
