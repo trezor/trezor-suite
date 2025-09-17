@@ -55,7 +55,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
                   };
         } else if (result.payload.error === 'CA_PUBKEY_BLACKLISTED') {
             toastPayload = {
-                type: 'error',
+                type: 'device-authenticity-error',
                 error: `Device is not authentic: ${result.payload.error}`,
             };
             storedResult = {

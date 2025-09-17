@@ -39,7 +39,7 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     },
     T3W1: {
         rootPubKeys: [
-            '0465e88f9b2cea67e8364f0cfcfacd500af24e9040b357beee629ccc4fce1704d1a7ef7284f387708f92ef14600e2caad6894016fee819d623b95d66210c3e7519',
+            '040dde0d3e0d4da593fac6fd02a461d0e7eef238aca55c7c50b4e9ec37f3873303b6429ef1c9b78b4411a7dcbbc5dde5225979c1c2da3b073e82b1ed3f5f9825bb',
         ],
         debug: {
             rootPubKeys: [

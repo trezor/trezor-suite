@@ -83,7 +83,7 @@ describe('TrezorConnect.authenticateDevice', () => {
 
     conditionalTest(
         ['!T2T1', '!T1B1'],
-        'sanity check unsuccessful (caPubkey not found)',
+        'sanity check unsuccessful (caPubkey is on blacklist)',
         async () => {
             const result = await TrezorConnect.authenticateDevice({
                 config: {
@@ -99,16 +99,24 @@ describe('TrezorConnect.authenticateDevice', () => {
                                 key,
                                 {
                                     ...value,
-                                    caPubKeys: [],
                                 },
                             ]),
                     ),
+                },
+                blacklistConfig: {
+                    version: 1,
+                    blacklistedCaPubKeys: [
+                        '04829e8965018feb542e9236c9b2ce08f864a55ed9183d0259564f0e05345b04676a0bef36c59d21d3c24868b5601f0b1193a6bfcf6d814e1cfb79c2256a05e953',
+                        '0410a6bc4f9eb52fd450be2c365189ea6a523fdddd62e44566dc349a8c7f813144cde81c8c106b74bfceae9c8ca5202af635ce1a5330c41c708ebbf505e025c339',
+                        '04e979dab5fc3ed274f7a217850af3d483ed7e221f9a9845e1462ad8dd63e51c084682d736675df6273a114289f26e0150bd1cda97834c537f11e3506761352159',
+                        '04f7c60026bfbb9bc75bcdf57bc3357457a16cfe25293f996bc32ee73597c9864f5ed8d2359f58b6797d69ef03b50fc3e99ac02a893b945f67b460fa84a6b2b35c',
+                    ],
                 },
             });
 
             expect(result).toMatchObject({
                 success: true,
-                payload: { valid: false, error: 'CA_PUBKEY_NOT_FOUND' },
+                payload: { valid: false, error: 'CA_PUBKEY_BLACKLISTED' },
             });
         },
     );

@@ -46,16 +46,6 @@ const fixtures = [
         expectedResult: { valid: true },
     },
     {
-        description: 'Success - despite expired config',
-        device: deviceWithLockedBootloader,
-        connectResponse: {
-            success: true,
-            payload: { valid: false, error: 'CA_PUBKEY_NOT_FOUND', configExpired: true },
-        },
-        expectedToastType: 'device-authenticity-success',
-        expectedResult: { valid: true, error: 'CA_PUBKEY_NOT_FOUND', configExpired: true },
-    },
-    {
         description: 'Exception - missing device',
         device: undefined,
     },
@@ -65,6 +55,16 @@ const fixtures = [
         connectResponse: failResponse,
         expectedToastType: 'error',
         expectedResult: undefined,
+    },
+    {
+        description: 'Fail - caPubKey is blacklisted',
+        device: deviceWithLockedBootloader,
+        connectResponse: {
+            success: true,
+            payload: { valid: false, error: 'CA_PUBKEY_BLACKLISTED' },
+        },
+        expectedToastType: 'device-authenticity-error',
+        expectedResult: { valid: false, error: 'CA_PUBKEY_BLACKLISTED' },
     },
     {
         description: 'Fail - bootloader unlocked',
