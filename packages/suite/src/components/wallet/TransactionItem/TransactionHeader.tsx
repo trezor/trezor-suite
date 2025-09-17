@@ -85,7 +85,7 @@ const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
 
-    if (isPending && transaction.ethereumSpecific) {
+    if (isPending && (transaction.ethereumSpecific || transaction.cardanoSpecific)) {
         return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
     }
 

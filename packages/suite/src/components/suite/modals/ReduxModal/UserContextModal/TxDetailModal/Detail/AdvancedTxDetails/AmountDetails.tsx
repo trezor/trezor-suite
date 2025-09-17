@@ -44,8 +44,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
 
     const historicFiatRates = useSelector(selectHistoricFiatRates);
 
-    const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
+    const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
+    const displayAmount = tx.blockHash ? amount : amount.minus(fee);
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -53,6 +54,18 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
     const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeOperation?.type; // ethereum or solana staking tx
     const isStakeTypeTxNoAmount = isStakeType && amount.eq(0);
+
+    const getAmountSignValue = () => {
+        const txOp = getTxOperation(tx.type, true);
+
+        if (txOp) return txOp;
+
+        if (amount.isZero()) {
+            return undefined;
+        }
+
+        return amount.isNegative() ? 'negative' : 'positive';
+    };
 
     return (
         <Table hasBorders={false} isRowHighlightedOnHover={false} typographyStyle="hint">
@@ -89,45 +102,45 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
             )}
             {/* AMOUNT */}
             <Table.Body>
-                {!isStakeTypeTxNoAmount && (tx.targets.length || tx.type === 'joint') && (
-                    <Table.Row>
-                        <Table.Cell>
-                            <Text variant="tertiary">
-                                <Translation id="AMOUNT" />
-                            </Text>
-                        </Table.Cell>
-                        <Table.Cell>
-                            <Text variant="default">
-                                <FormattedCryptoAmount
-                                    value={amount.abs().toString()}
-                                    symbol={tx.symbol}
-                                    signValue={
-                                        getTxOperation(tx.type, true) ||
-                                        (amount.isLessThan(0) ? 'negative' : 'positive')
-                                    }
-                                />
-                            </Text>
-                        </Table.Cell>
-                        <Table.Cell align="end">
-                            <Text variant="default">
-                                <BaseCurrencyValue
-                                    amount={amount.abs().toString()}
-                                    symbol={tx.symbol}
-                                    historicRate={historicRate}
-                                    useHistoricRate
-                                />
-                            </Text>
-                        </Table.Cell>
-                        <Table.Cell align="end">
-                            <Text variant="default">
-                                <BaseCurrencyValue
-                                    amount={amount.abs().toString()}
-                                    symbol={tx.symbol}
-                                />
-                            </Text>
-                        </Table.Cell>
-                    </Table.Row>
-                )}
+                {!isStakeTypeTxNoAmount &&
+                    tx.type !== 'self' &&
+                    !amount.isZero() &&
+                    (tx.targets.length || tx.type === 'joint') && (
+                        <Table.Row>
+                            <Table.Cell>
+                                <Text variant="tertiary">
+                                    <Translation id="AMOUNT" />
+                                </Text>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Text variant="default">
+                                    <FormattedCryptoAmount
+                                        value={displayAmount.abs().toString()}
+                                        symbol={tx.symbol}
+                                        signValue={getAmountSignValue()}
+                                    />
+                                </Text>
+                            </Table.Cell>
+                            <Table.Cell align="end">
+                                <Text variant="default">
+                                    <BaseCurrencyValue
+                                        amount={displayAmount.abs().toString()}
+                                        symbol={tx.symbol}
+                                        historicRate={historicRate}
+                                        useHistoricRate
+                                    />
+                                </Text>
+                            </Table.Cell>
+                            <Table.Cell align="end">
+                                <Text variant="default">
+                                    <BaseCurrencyValue
+                                        amount={displayAmount.abs().toString()}
+                                        symbol={tx.symbol}
+                                    />
+                                </Text>
+                            </Table.Cell>
+                        </Table.Row>
+                    )}
                 {tx.internalTransfers.map((transfer, i) => (
                     <Table.Row key={i}>
                         <Table.Cell>
@@ -166,71 +179,74 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                     </Table.Row>
                 ))}
-                {tx.tokens.map((transfer, i) => {
-                    const tokenFiatRateKey = getFiatRateKey(
-                        tx.symbol,
-                        baseCurrencyCode,
-                        transfer.contract as TokenAddress,
-                    );
-                    const roundedTimestamp = roundTimestampToNearestPastHour(
-                        tx.blockTime as Timestamp,
-                    );
-                    const historicTokenRate =
-                        historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+                {tx.type !== 'self' &&
+                    tx.tokens.map((transfer, i) => {
+                        const tokenFiatRateKey = getFiatRateKey(
+                            tx.symbol,
+                            baseCurrencyCode,
+                            transfer.contract as TokenAddress,
+                        );
+                        const roundedTimestamp = roundTimestampToNearestPastHour(
+                            tx.blockTime as Timestamp,
+                        );
+                        const historicTokenRate =
+                            historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
 
-                    return (
-                        <Table.Row key={i}>
-                            <Table.Cell>
-                                {i === 0 && !tx.targets.length && !tx.internalTransfers.length ? (
-                                    <Text variant="tertiary">
-                                        <Translation id="AMOUNT" />
-                                    </Text>
-                                ) : undefined}
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Text variant="default">
-                                    <AmountComponent
-                                        transfer={transfer}
-                                        withLink={true}
-                                        withSign={true}
-                                        alignMultitoken="flex-start"
-                                        linkTypographyStyle="hint"
-                                    />
-                                </Text>
-                            </Table.Cell>
-                            <Table.Cell align="end">
-                                {selectedAccount.account && (
+                        return (
+                            <Table.Row key={i}>
+                                <Table.Cell>
+                                    {i === 0 &&
+                                    !tx.targets.length &&
+                                    !tx.internalTransfers.length ? (
+                                        <Text variant="tertiary">
+                                            <Translation id="AMOUNT" />
+                                        </Text>
+                                    ) : undefined}
+                                </Table.Cell>
+                                <Table.Cell>
                                     <Text variant="default">
-                                        <BaseCurrencyValue
-                                            amount={convertAmountSubunitsToUnits(
-                                                transfer.amount,
-                                                transfer.decimals,
-                                            )}
-                                            symbol={selectedAccount.account?.symbol}
-                                            tokenAddress={transfer.contract as TokenAddress}
-                                            historicRate={historicTokenRate}
-                                            useHistoricRate
+                                        <AmountComponent
+                                            transfer={transfer}
+                                            withLink={true}
+                                            withSign={true}
+                                            alignMultitoken="flex-start"
+                                            linkTypographyStyle="hint"
                                         />
                                     </Text>
-                                )}
-                            </Table.Cell>
-                            <Table.Cell align="end">
-                                {selectedAccount.account && (
-                                    <Text variant="default">
-                                        <BaseCurrencyValue
-                                            amount={convertAmountSubunitsToUnits(
-                                                transfer.amount,
-                                                transfer.decimals,
-                                            )}
-                                            symbol={selectedAccount.account.symbol}
-                                            tokenAddress={transfer.contract as TokenAddress}
-                                        />
-                                    </Text>
-                                )}
-                            </Table.Cell>
-                        </Table.Row>
-                    );
-                })}
+                                </Table.Cell>
+                                <Table.Cell align="end">
+                                    {selectedAccount.account && (
+                                        <Text variant="default">
+                                            <BaseCurrencyValue
+                                                amount={convertAmountSubunitsToUnits(
+                                                    transfer.amount,
+                                                    transfer.decimals,
+                                                )}
+                                                symbol={selectedAccount.account?.symbol}
+                                                tokenAddress={transfer.contract as TokenAddress}
+                                                historicRate={historicTokenRate}
+                                                useHistoricRate
+                                            />
+                                        </Text>
+                                    )}
+                                </Table.Cell>
+                                <Table.Cell align="end">
+                                    {selectedAccount.account && (
+                                        <Text variant="default">
+                                            <BaseCurrencyValue
+                                                amount={convertAmountSubunitsToUnits(
+                                                    transfer.amount,
+                                                    transfer.decimals,
+                                                )}
+                                                symbol={selectedAccount.account.symbol}
+                                                tokenAddress={transfer.contract as TokenAddress}
+                                            />
+                                        </Text>
+                                    )}
+                                </Table.Cell>
+                            </Table.Row>
+                        );
+                    })}
                 {cardanoWithdrawal && (
                     <Table.Row>
                         <Table.Cell>
