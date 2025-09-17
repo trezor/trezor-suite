@@ -1,11 +1,10 @@
 import { BluetoothState, prepareInitialState } from '@suite-common/bluetooth';
 import { createBluetoothDevice } from '@suite-common/bluetooth/src/support/mocks';
 import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
-import { PersistentDeviceData } from '@suite-common/suite-types';
 import { ThpState, initialThpState } from '@suite-common/thp';
 import { createCredential, createDeviceThp } from '@suite-common/thp/src/support/mocks';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { defaultDevicePersistentData } from '../../support/deviceMocks';
 import { DeviceReducerState, deviceInitialState } from '../deviceReducer';
 
 type ForgetPersistentDataPreloadedState = {
@@ -23,17 +22,6 @@ const credential1B = createCredential({ credential: '1B' });
 const credential1C = createCredential({ credential: '1C' });
 const credential2 = createCredential({ credential: '2' });
 const orphanedCredential = createCredential({ credential: '4' });
-
-const defaultDevicePersistentData: PersistentDeviceData = {
-    device_id: 'device-id',
-    internal_model: DeviceModelInternal.UNKNOWN,
-    fw_vendor: null,
-    revision: null,
-    label: null,
-    initialized: null,
-    firmwareVersion: null,
-    lastConnectedBy: null,
-};
 
 export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPreloadedState = {
     device: {
