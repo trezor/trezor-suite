@@ -867,7 +867,9 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         const api = {
             clusterUrl,
             rpc: throttledRpc,
-            rpcSubscriptions: createSolanaRpcSubscriptions(mainnet(url.replace('http', 'ws'))),
+            rpcSubscriptions: createSolanaRpcSubscriptions(mainnet(url.replace('http', 'ws')), {
+                intervalMs: 60 * 60 * 1000,
+            }),
         };
 
         // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
