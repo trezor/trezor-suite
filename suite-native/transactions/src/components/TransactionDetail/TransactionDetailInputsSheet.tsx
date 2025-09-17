@@ -96,14 +96,18 @@ export const TransactionDetailInputsSheet = ({
 
                 <TransactionDetailInputsSheetSection
                     header={
-                        <Translation id="transactions.TransactionDetailScreen.inputsSheet.internalTransfers" />
+                        <Text variant="hint" color="textSubdued">
+                            <Translation id="transactions.TransactionDetailScreen.inputsSheet.internalTransfers" />
+                        </Text>
                     }
                     transfers={internalTransfers}
                 />
 
                 <TransactionDetailInputsSheetSection
                     header={
-                        <Translation id="transactions.TransactionDetailScreen.inputsSheet.tokenTransfers" />
+                        <Text variant="hint" color="textSubdued">
+                            <Translation id="transactions.TransactionDetailScreen.inputsSheet.tokenTransfers" />
+                        </Text>
                     }
                     transfers={tokenTransfers}
                 />
