@@ -62,7 +62,7 @@ const runTests = async () => {
         };
 
         const pingPong = async () => {
-            await api.openDevice(path, true);
+            await api.openDevice(path, { reset: true });
             const writeResponse = await api.write(path, buildMessage('PING'));
             debug('writeResponse', writeResponse);
             assertSuccess(writeResponse);
@@ -102,7 +102,7 @@ const runTests = async () => {
 
         await sharedTest('read-abort-write', async () => {
             debug('open device');
-            await api.openDevice(path, true);
+            await api.openDevice(path, { reset: true });
 
             const abortController = new AbortController();
             debug('read with abort signal');

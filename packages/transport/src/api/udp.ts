@@ -191,7 +191,7 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public openDevice(_path: string, _first: boolean, _signal?: AbortSignal) {
+    public openDevice(_path: string) {
         // todo: maybe ping?
         return Promise.resolve(this.success(undefined));
     }
