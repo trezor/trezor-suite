@@ -18,18 +18,50 @@ const excluded = [
     URLS.IMAGE_PROXY_API_URL, // returns 'unauthorized'
 ];
 
+// Sometimes we run test too much, I guess....
+const clientErrorCodeWhitelist = [429];
+
+const permanentRedirectCodes = [301, 308];
+
+const isAcceptableHttpCode = (code: number): boolean => {
+    // server error, not our fault
+    if (code >= 500) return true;
+
+    // permanent redirect means URL should be updated!
+    if (permanentRedirectCodes.includes(code)) return false;
+
+    // success or temporary redirect
+    if (code >= 200 && code < 400) return true;
+
+    // 4xx client error means that the link is broken
+    return clientErrorCodeWhitelist.includes(code);
+};
+
 describe('Test that all external links are alive', () => {
     beforeEach(() => {
         jest.setTimeout(30000);
     });
 
+    it(`internal test util ${isAcceptableHttpCode.name}`, () => {
+        expect(isAcceptableHttpCode(200)).toBe(true);
+        expect(isAcceptableHttpCode(204)).toBe(true);
+        expect(isAcceptableHttpCode(300)).toBe(true);
+        expect(isAcceptableHttpCode(301)).toBe(false);
+        expect(isAcceptableHttpCode(302)).toBe(true);
+        expect(isAcceptableHttpCode(308)).toBe(false);
+        expect(isAcceptableHttpCode(400)).toBe(false);
+        expect(isAcceptableHttpCode(429)).toBe(true);
+        expect(isAcceptableHttpCode(500)).toBe(true);
+    });
+
     Object.values(URLS)
         .filter(url => !excluded.includes(url))
         .forEach(url => {
-            it(`HTTP GET request to ${url} should respond with range >= 200 && < 400`, async () => {
-                const response = await fetch(url);
-                expect(response.status).toBeGreaterThanOrEqual(200);
-                expect(response.status).toBeLessThan(400);
+            // Todo: temp fix. this shall run in the Nightly not on every PR
+            //       there shall be probably a test group to run some tests only nightly
+            it(`HTTP GET request to ${url} should respond with an acceptable http code`, async () => {
+                const { status } = await fetch(url);
+                expect(isAcceptableHttpCode(status)).toBe(true);
             });
         });
 });
