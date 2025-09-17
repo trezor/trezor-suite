@@ -32,6 +32,7 @@ describe('readWithExpectedHeaders', () => {
         const abortController = new AbortController();
         const read = readWithExpectedHeaders(apiRead, {
             signal: abortController.signal,
+            graceful: true,
         });
 
         const resultPromise = read([Buffer.alloc(3)]);
