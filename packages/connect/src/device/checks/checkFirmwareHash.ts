@@ -2,9 +2,9 @@ import { randomBytes } from 'crypto';
 
 import { serializeError } from '@trezor/utils';
 
-import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { DataManager } from '../../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
+import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../firmware';
 import { FirmwareHashCheckError, FirmwareHashCheckResult } from '../../types';
 import { Log } from '../../utils/debug';
 import { getFirmwareType } from '../../utils/firmwareUtils';

@@ -8,7 +8,6 @@ import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/
 import { ERRORS } from '../constants';
 import { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
-import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { DataManager } from '../data/DataManager';
 import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
@@ -34,6 +33,7 @@ import {
     createTransportMessage,
     createUiMessage,
 } from '../events';
+import { onCallFirmwareUpdate } from '../firmware/onCallFirmwareUpdate';
 import type { ConnectSettings, DeviceIdentity, Device as DeviceTyped } from '../types';
 import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { InteractionTimeout } from '../utils/interactionTimeout';

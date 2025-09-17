@@ -2,11 +2,11 @@
 
 import { TRANSPORT } from '@trezor/transport';
 
-import { ERRORS, PROTO } from '../../constants';
-import type { Device } from '../../device/Device';
-import type { TypedCall } from '../../device/DeviceCommands';
-import { CoreEventMessage, DEVICE, UI, createUiMessage } from '../../events';
-import { FirmwareUpdateFlowType } from '../../types';
+import { ERRORS, PROTO } from '../constants';
+import type { Device } from '../device/Device';
+import type { TypedCall } from '../device/DeviceCommands';
+import { CoreEventMessage, DEVICE, UI, createUiMessage } from '../events';
+import { FirmwareUpdateFlowType } from '../types';
 
 // Each FW update flow starts with confirmation to restart into bootloader, and in some cases a confirmation for the FW
 // update itself. But device sends no ButtonRequest at that point, so create a synthethic ButtonRequest.

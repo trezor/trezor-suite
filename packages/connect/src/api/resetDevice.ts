@@ -2,11 +2,11 @@
 import { Assert } from '@trezor/schema-utils';
 import { getRandomInt } from '@trezor/utils';
 
-import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import { ERRORS, PROTO } from '../constants';
 import { TransportError } from '../constants/errors';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
+import { generateEntropy, verifyEntropy } from '../firmware/verifyEntropy';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 

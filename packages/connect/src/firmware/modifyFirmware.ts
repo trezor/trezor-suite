@@ -1,6 +1,6 @@
 import { versionUtils } from '@trezor/utils';
 
-import type { Features } from '../../types';
+import type { Features } from '../types';
 
 /**
  * Returns whether TRZR header should be stripped from the firmware binary

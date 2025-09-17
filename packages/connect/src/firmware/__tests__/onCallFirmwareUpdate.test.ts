@@ -4,11 +4,11 @@ import { v1 as protocolV1 } from '@trezor/protocol';
 import { buildMessage } from '@trezor/transport/src/utils/send';
 import { Log } from '@trezor/utils';
 
-import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
 import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
 import { getBundledRelease } from '../../data/firmwareInfo';
 import { DeviceList } from '../../device/DeviceList';
+import * as mockFwHash from '../../firmware/calculateFirmwareHash';
 // mocks
 import * as mockAssets from '../../utils/assets';
 import { onCallFirmwareUpdate } from '../onCallFirmwareUpdate';

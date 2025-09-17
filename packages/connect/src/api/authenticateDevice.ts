@@ -4,7 +4,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { deviceAuthenticityConfig } from '../data/deviceAuthenticityConfig';
-import { getRandomChallenge, verifyAuthenticityProof } from './firmware/verifyAuthenticityProof';
+import { getRandomChallenge, verifyAuthenticityProof } from '../firmware/verifyAuthenticityProof';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
 
 export default class AuthenticateDevice extends AbstractMethod<

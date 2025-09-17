@@ -1,4 +1,4 @@
-import { DeviceAuthenticityConfig } from '../../../data/deviceAuthenticityConfigTypes';
+import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfigTypes';
 import { verifyAuthenticityProof } from '../verifyAuthenticityProof';
 import { fixSignature, parseCertificate } from '../x509certificate';
 

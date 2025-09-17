@@ -1,13 +1,6 @@
 import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
-import {
-    getBinary,
-    parseFirmwareHeaders,
-    shouldStripFwHeaders,
-    stripFwHeaders,
-    uploadFirmware,
-} from '../api/firmware';
 import { ERRORS, PROTO } from '../constants';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
@@ -20,6 +13,10 @@ import {
     FirmwareType,
     FirmwareUpdateFlowType,
 } from '../types';
+import { getBinary } from './getBinary';
+import { shouldStripFwHeaders, stripFwHeaders } from './modifyFirmware';
+import { parseFirmwareHeaders } from './parseFirmwareHeaders';
+import { uploadFirmware } from './uploadFirmware';
 import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
 

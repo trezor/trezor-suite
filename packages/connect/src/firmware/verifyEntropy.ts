@@ -7,7 +7,7 @@ import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 import { bip39 } from '@trezor/crypto-utils';
 import { bip32 } from '@trezor/utxo-lib';
 
-import { PROTO } from '../../constants';
+import { PROTO } from '../constants';
 
 export const generateEntropy = (len: number) => {
     try {
