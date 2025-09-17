@@ -6651,41 +6651,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.52.0":
-  version: 1.52.0
-  resolution: "@playwright/browser-chromium@npm:1.52.0"
+"@playwright/browser-chromium@npm:^1.55.0":
+  version: 1.55.0
+  resolution: "@playwright/browser-chromium@npm:1.55.0"
   dependencies:
-    playwright-core: "npm:1.52.0"
-  checksum: 10/4f4b1cc129745756e37d425ec09e819f8c4b727e2fa3ff7feb6e8fdd4d314120b54115e106f9f57b4ae84922f1e5516839eb57f312152ddd2b5bcb53a44fa5ac
+    playwright-core: "npm:1.55.0"
+  checksum: 10/f3ac956c97aff1592752dd764f86046617f0e00dbbf1aa401984acab7624fd4317a23f52739e6d50dc0e65e8f55a8fc9c5226701ede004020daa806dfe028c6b
   languageName: node
   linkType: hard
 
-"@playwright/browser-firefox@npm:^1.52.0":
-  version: 1.52.0
-  resolution: "@playwright/browser-firefox@npm:1.52.0"
+"@playwright/browser-firefox@npm:^1.55.0":
+  version: 1.55.0
+  resolution: "@playwright/browser-firefox@npm:1.55.0"
   dependencies:
-    playwright-core: "npm:1.52.0"
-  checksum: 10/12b3c22806430001bddb31377247028e825c0856a2d8a746f23c0cb11b227bad971616ca4b1ab4b97d11303f85296f10ca20911cad3ad5334a6a7215f5564d5e
+    playwright-core: "npm:1.55.0"
+  checksum: 10/19243c3510984574831c9a1247b645d647b0bf2dd17c01410607631c3b6c7fe590c223ead4e6fa399bfd2a2c188d1897cae50ffcd1114cf6f149cc111d87e3e1
   languageName: node
   linkType: hard
 
-"@playwright/browser-webkit@npm:^1.52.0":
-  version: 1.52.0
-  resolution: "@playwright/browser-webkit@npm:1.52.0"
+"@playwright/browser-webkit@npm:^1.55.0":
+  version: 1.55.0
+  resolution: "@playwright/browser-webkit@npm:1.55.0"
   dependencies:
-    playwright-core: "npm:1.52.0"
-  checksum: 10/c783a8672a2fdf8ff4f20fce6ee091f3ccb6dd87b5d53eb2ef8cebf0066eae8eab97d5916d5512843d2bfa9f1484f461ff780aa311e6699254e5faf627496f81
+    playwright-core: "npm:1.55.0"
+  checksum: 10/53f874cc46b5e22a92c02806738f374dd7133c3740251be09b9b9d3a858c2aaa5015b68b0ca0c6430213c63c77679e87f257434e77fc9deefb408a9c5930b2c6
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.52.0":
-  version: 1.52.0
-  resolution: "@playwright/test@npm:1.52.0"
+"@playwright/test@npm:^1.55.0":
+  version: 1.55.0
+  resolution: "@playwright/test@npm:1.55.0"
   dependencies:
-    playwright: "npm:1.52.0"
+    playwright: "npm:1.55.0"
   bin:
     playwright: cli.js
-  checksum: 10/e18a4eb626c7bc6cba212ff2e197cf9ae2e4da1c91bfdf08a744d62e27222751173e4b220fa27da72286a89a3b4dea7c09daf384d23708f284b64f98e9a63a88
+  checksum: 10/bfaede669b0583ee6ec48bfe9ff531cac58da1b83031907d5d0fd71c33bab6766669a23359e401066d97c8e8fa76566900f71be7b290d12213ebb3530a82afbb
   languageName: node
   linkType: hard
 
@@ -12191,10 +12191,10 @@ __metadata:
   dependencies:
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
-    "@playwright/browser-chromium": "npm:^1.52.0"
-    "@playwright/browser-firefox": "npm:^1.52.0"
-    "@playwright/browser-webkit": "npm:^1.52.0"
-    "@playwright/test": "npm:^1.52.0"
+    "@playwright/browser-chromium": "npm:^1.55.0"
+    "@playwright/browser-firefox": "npm:^1.55.0"
+    "@playwright/browser-webkit": "npm:^1.55.0"
+    "@playwright/test": "npm:^1.55.0"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
@@ -12268,10 +12268,10 @@ __metadata:
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
     "@babel/preset-typescript": "npm:^7.27.1"
-    "@playwright/browser-chromium": "npm:^1.52.0"
-    "@playwright/browser-firefox": "npm:^1.52.0"
-    "@playwright/browser-webkit": "npm:^1.52.0"
-    "@playwright/test": "npm:^1.52.0"
+    "@playwright/browser-chromium": "npm:^1.55.0"
+    "@playwright/browser-firefox": "npm:^1.55.0"
+    "@playwright/browser-webkit": "npm:^1.55.0"
+    "@playwright/test": "npm:^1.55.0"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -12721,10 +12721,10 @@ __metadata:
     "@electron/fuses": "npm:^2.0.0"
     "@electron/notarize": "npm:3.1.0"
     "@octokit/rest": "npm:^21.1.1"
-    "@playwright/browser-chromium": "npm:^1.52.0"
-    "@playwright/browser-firefox": "npm:^1.52.0"
-    "@playwright/browser-webkit": "npm:^1.52.0"
-    "@playwright/test": "npm:^1.52.0"
+    "@playwright/browser-chromium": "npm:^1.55.0"
+    "@playwright/browser-firefox": "npm:^1.55.0"
+    "@playwright/browser-webkit": "npm:^1.55.0"
+    "@playwright/test": "npm:^1.55.0"
     "@sentry/electron": "npm:^5.12.0"
     "@sentry/webpack-plugin": "npm:^2.22.7"
     "@suite-common/message-system": "workspace:*"
@@ -33905,27 +33905,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.52.0":
-  version: 1.52.0
-  resolution: "playwright-core@npm:1.52.0"
+"playwright-core@npm:1.55.0":
+  version: 1.55.0
+  resolution: "playwright-core@npm:1.55.0"
   bin:
     playwright-core: cli.js
-  checksum: 10/42e13f5f98dc25ebc95525fb338a215b9097b2ba39d41e99972a190bf75d79979f163f5bc07b1ca06847ee07acb2c9b487d070fab67e9cd55e33310fc05aca3c
+  checksum: 10/843376a8e2c1100d3f0625b2c85a69dc4418a0b268bdc7da6cf28252f6dc50c299c734f090a67c7f36cfa9140dacf5b95e817664e69642bcbaf06eea4d216c35
   languageName: node
   linkType: hard
 
-"playwright@npm:1.52.0":
-  version: 1.52.0
-  resolution: "playwright@npm:1.52.0"
+"playwright@npm:1.55.0":
+  version: 1.55.0
+  resolution: "playwright@npm:1.55.0"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.52.0"
+    playwright-core: "npm:1.55.0"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/214175446089000c2ac997b925063b95f7d86d129c5d7c74caa5ddcb05bcad598dfd569d2133a10dc82d288bf67e7858877dcd099274b0b928b9c63db7d6ecec
+  checksum: 10/df02529693923b9b671822dac8a2ac8a8471c9142a05e14a24f8d0038a7dcf705712363991a070fc927466bbbe70e485145cf7a77882613822f56960afc4b892
   languageName: node
   linkType: hard
 
