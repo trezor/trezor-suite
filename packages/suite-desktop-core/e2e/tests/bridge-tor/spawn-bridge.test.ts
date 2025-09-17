@@ -1,16 +1,19 @@
 import {
     BRIDGE_URL,
+    BRIDGE_VERSION,
     expectBridgeToBeRunning,
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../../support/bridge';
 import { skipFixture } from '../../support/common';
-import { LEGACY_BRIDGE_VERSION, launchSuite } from '../../support/electron';
+import { launchSuite } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
 import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
 import { enhancePage } from '../../support/testExtends/enhancePage';
+
+const NODE_BRIDGE_VERSION = '3.1.0';
 
 test.use({ exceptionLogger: skipFixture });
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
@@ -20,11 +23,9 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await trezorUserEnvLink.stopBridge();
     });
 
-    // #15646 This test is failing and has no values since the launchSuite starts legacy bridge in emulator anyway
-    test.skip('App spawns bundled bridge and stops it after app quit', async ({
-        request,
-    }, testInfo) => {
+    test('App spawns bundled bridge and stops it after app quit', async ({ request }, testInfo) => {
         const suite = await launchSuite({
+            bridgeDaemon: true,
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
@@ -41,7 +42,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             },
         });
         const json = await response.json();
-        expect(json.version).toEqual(LEGACY_BRIDGE_VERSION);
+        expect(json.version).toEqual(NODE_BRIDGE_VERSION);
 
         await test.step('Check bridge is running after renderer window is refreshed', async () => {
             await suite.window.reload();
@@ -58,7 +59,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
     }, testInfo) => {
         await trezorUserEnvLink.startEmu({ wipe: true, model: 'T2T1' });
         await trezorUserEnvLink.setupEmu({});
-        await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
+        await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
         const suite = await launchSuite({
             artefactFolder: testInfo.outputDir,
@@ -81,7 +82,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await trezorUserEnvLink.stopBridge();
         await devicePrompt.connectDevicePromptIsShown();
 
-        await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
+        await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
         await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();
     });
 });

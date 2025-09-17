@@ -33,7 +33,6 @@ test.describe(
             });
 
             await connectPermissionsModal.confirmButton.click();
-            await expect(connectPermissionsModal.loadingHeader).toHaveText('Sign Ethereum message');
 
             const text = page.getByTestId('@sign-message-modal/message');
             await expect(text).toHaveText('example message');

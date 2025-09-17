@@ -1,6 +1,8 @@
 import { APIRequestContext, expect } from '@playwright/test';
 
-export const BRIDGE_URL = 'http://127.0.0.1:21325';
+export const BRIDGE_VERSION = 'node-bridge';
+
+export const BRIDGE_URL = 'http://127.0.0.1:21328';
 const BRIDGE_STATUS_URL = `${BRIDGE_URL}/status/`;
 
 export const expectBridgeToBeRunning = async (request: APIRequestContext) => {

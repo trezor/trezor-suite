@@ -25,6 +25,7 @@ export class TrezorInput {
     async inputMnemonicT1B1(mnemonic: string) {
         const arrayMnemonic = mnemonic.split(' ');
         for (let i = 0; i < 24; i++) {
+            await this.page.waitForTimeout(500); // try to prevent race condition, that happens with t1b1 with node bridge
             const state = await TrezorUserEnvLinkProxy.getDebugState();
             const position = state.recovery_word_pos - 1;
             const isGivenFakeWord = position === -1;
@@ -51,6 +52,7 @@ export class TrezorInput {
     @step()
     async enterPinOnBlindMatrix(pinEntryNumber: string) {
         await test.step('Find number on blind matrix and click it', async () => {
+            await this.page.waitForTimeout(500); // try to prevent race condition, that happens with t1b1 with node bridge
             const state = await TrezorUserEnvLinkProxy.getDebugState();
             const index = state.matrix.indexOf(pinEntryNumber) + 1;
             await this.pinInput(index).click();

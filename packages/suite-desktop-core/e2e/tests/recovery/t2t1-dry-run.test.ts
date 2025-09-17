@@ -1,6 +1,7 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
+import { BRIDGE_VERSION } from '../../support/bridge';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -89,7 +90,7 @@ test.describe(
                 });
 
                 await test.step('Simulate reconnect and check recovery dry run is reinitialized', async () => {
-                    await trezorUserEnvLink.startBridge();
+                    await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
                     await recoveryModal.verifyDryCheckPrompt();
                 });
 
