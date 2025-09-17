@@ -61,7 +61,7 @@ pub async fn handle_message(
             return Some(Message::text(json_error.to_string()));
         }
     };
-    info!("Method: {:?}", request.method);
+    info!("Method: {:?}", request.method.as_string());
 
     let payload = match request.method.clone() {
         WsRequestMethod::GetInfo => methods::get_info(manager).await,
