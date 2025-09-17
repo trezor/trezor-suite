@@ -5,7 +5,7 @@ use tokio::time::{sleep, Duration};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
-    device::{CHARACTERISTIC_PUSH_NOTIFICATION, CHARACTERISTIC_TX},
+    device::{CHARACTERISTIC_BATTERY_LEVEL, CHARACTERISTIC_PUSH_NOTIFICATION, CHARACTERISTIC_TX},
     types::{
         AbortProcess, ChannelMessage, MethodError, MethodResult, NotificationCharacteristic,
         NotificationEvent, OpenDeviceParams, WsResponsePayload,
@@ -33,6 +33,7 @@ pub async fn open_device(
     let characteristic_uuid = match characteristic {
         NotificationCharacteristic::Read => CHARACTERISTIC_TX,
         NotificationCharacteristic::PushNotification => CHARACTERISTIC_PUSH_NOTIFICATION,
+        NotificationCharacteristic::BatteryLevel => CHARACTERISTIC_BATTERY_LEVEL,
     };
 
     // try to terminate/abort previous read (if any)

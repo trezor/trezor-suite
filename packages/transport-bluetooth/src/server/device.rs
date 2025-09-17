@@ -117,6 +117,7 @@ pub const SERVICE_UUID: Uuid = uuid!("8c000001-a59b-4d58-a9ad-073df69fa1b1"); //
 pub const CHARACTERISTIC_RX: Uuid = uuid!("8c000002-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_TX_VAL
 pub const CHARACTERISTIC_TX: Uuid = uuid!("8c000003-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_RX_VAL
 pub const CHARACTERISTIC_PUSH_NOTIFICATION: Uuid = uuid!("8c000004-a59b-4d58-a9ad-073df69fa1b1"); // trezor-firmware BT_UUID_TRZ_NOTIFY_VAL
+pub const CHARACTERISTIC_BATTERY_LEVEL: Uuid = uuid!("00002a19-0000-1000-8000-00805f9b34fb"); // characteristic of battery service 0000180f-0000-1000-8000-00805f9b34fb
 
 impl TrezorDevice {
     pub async fn new(peripheral: Peripheral, is_known: bool) -> Result<Self, Box<dyn Error>> {
