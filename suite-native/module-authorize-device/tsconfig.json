@@ -13,6 +13,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../bluetooth" },
+        { "path": "../coin-enabling" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },

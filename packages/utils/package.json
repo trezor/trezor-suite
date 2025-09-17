@@ -30,7 +30,8 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/replace-imports.sh ./libESM libESM",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublish": "yarn tsx ../../scripts/prepublish.js",
+        "depcheck": "yarn g:depcheck"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

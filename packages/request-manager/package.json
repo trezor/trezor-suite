@@ -10,7 +10,8 @@
         "test:unit": "yarn g:jest --testPathIgnorePatterns e2e -c jest.config.js",
         "test:e2e": "yarn g:jest --runInBand --testPathIgnorePatterns tests -c jest.config..js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "test:stress": "ts-node  -O '{\"module\": \"commonjs\"}' ./e2e/identities-stress.ts"
+        "test:stress": "ts-node  -O '{\"module\": \"commonjs\"}' ./e2e/identities-stress.ts",
+        "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
         "@trezor/node-utils": "workspace:^",

@@ -36,10 +36,12 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js",
-        "validate-releases.json": "./scripts/check-all-firmware-revisions.sh"
+        "validate-releases.json": "./scripts/check-all-firmware-revisions.sh",
+        "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
         "@trezor/env-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {

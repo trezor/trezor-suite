@@ -11,7 +11,8 @@
     "description": "trezor suite storage",
     "scripts": {
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "type-check:watch": "yarn type-check -- --watch"
+        "type-check:watch": "yarn type-check -- --watch",
+        "depcheck": "yarn g:depcheck"
     },
     "main": "./src/web/index.ts",
     "react-native": "./src/native/index.ts",

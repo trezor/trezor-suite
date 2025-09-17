@@ -67,7 +67,6 @@
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:^",
-        "@trezor/device-utils": "workspace:*",
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/suite-analytics": "workspace:*",

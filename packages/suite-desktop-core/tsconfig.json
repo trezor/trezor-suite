@@ -46,7 +46,6 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../blockchain-link-types" },
-        { "path": "../device-utils" },
         { "path": "../e2e-utils" },
         { "path": "../protobuf" },
         { "path": "../suite-analytics" },
