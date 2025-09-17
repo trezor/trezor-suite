@@ -67,6 +67,8 @@ export const useTradingWatchTrade = <T extends TradingType>({
             }
 
             resetRefresh();
+        } else {
+            removeDraft();
         }
     }, [account, refreshCount, trade, cancelRefresh, dispatch, removeDraft, resetRefresh]);
 
