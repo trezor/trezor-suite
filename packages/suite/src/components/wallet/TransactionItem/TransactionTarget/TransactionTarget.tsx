@@ -123,7 +123,7 @@ export const TransactionTarget = ({
 
     const fiatAmountComponent = useMemo(
         () =>
-            shallDisplayBaseCurrency && amount ? (
+            shallDisplayBaseCurrency && amount && transaction.type !== 'self' ? (
                 <BaseCurrencyValue
                     amount={amount}
                     symbol={transaction.symbol}
@@ -131,7 +131,7 @@ export const TransactionTarget = ({
                     useHistoricRate
                 />
             ) : undefined,
-        [amount, historicRate, transaction.symbol, shallDisplayBaseCurrency],
+        [shallDisplayBaseCurrency, amount, transaction.type, transaction.symbol, historicRate],
     );
 
     const metadataId = useMemo(() => {
