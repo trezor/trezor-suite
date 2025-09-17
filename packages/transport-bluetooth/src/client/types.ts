@@ -77,9 +77,9 @@ export type DeviceConnectionStatus =
           error: string;
       };
 
-type Success<P> = P extends unknown ? { success: true } : { success: true; payload: P };
+type Success<P> = P extends undefined ? { success: true } : { success: true; payload: P };
 type Failure = { success: false; error: string };
-export type IpcResponse<P = unknown> = Success<P> | Failure;
+export type IpcResponse<P = undefined> = Success<P> | Failure;
 
 export interface BluetoothIpcEvents {
     'adapter-event': BluetoothAdapterState;
@@ -95,6 +95,7 @@ export interface BluetoothIpcState {
 
 export interface BluetoothIpcApi {
     init(state?: BluetoothIpcState): Promise<IpcResponse>;
+    getInfo(): Promise<IpcResponse<BluetoothInfo>>;
     dispose(): Promise<IpcResponse>;
     startScan(): Promise<IpcResponse>;
     stopScan(): Promise<IpcResponse>;

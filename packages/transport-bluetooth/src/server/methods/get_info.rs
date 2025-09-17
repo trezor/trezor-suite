@@ -3,23 +3,27 @@ use crate::server::{
     types::{MethodResult, WsResponsePayload},
     utils,
 };
+use std::process::Command;
 
 #[cfg(target_os = "linux")]
 async fn get_adapter_info() -> Result<String, Box<dyn std::error::Error>> {
-    // TODO: look for LMP version 10+
-    // TODO: https://askubuntu.com/a/591813, hciconfig deprecated
-    let result = std::process::Command::new("hciconfig").arg("-a").output();
+    // look for LMP version 10+
+    let result1 = Command::new("bluetoothctl").arg("show").output();
+    // hciconfig is deprecated
+    let result2 = Command::new("hciconfig").arg("-a").output();
 
-    match result {
-        Ok(info) => Ok(String::from_utf8_lossy(&info.stdout).to_string()),
-        Err(error) => Err(error.into()),
+    match (result1, result2) {
+        (Ok(info1), Ok(info2)) => Ok(String::from_utf8_lossy(&info1.stdout).to_string()),
+        (Ok(info1), Err(_)) => Ok(String::from_utf8_lossy(&info1.stdout).to_string()),
+        (Err(_), Ok(info2)) => Ok(String::from_utf8_lossy(&info2.stdout).to_string()),
+        (Err(error), Err(_)) => Err(error.into()),
     }
 }
 
 #[cfg(target_os = "macos")]
 async fn get_adapter_info() -> Result<String, Box<dyn std::error::Error>> {
     // system_profiler -detailLevel full SPBluetoothDataType
-    let result = std::process::Command::new("system_profiler")
+    let result = Command::new("system_profiler")
         .arg("-detailLevel")
         .arg("full")
         .arg("SPBluetoothDataType")
@@ -36,7 +40,7 @@ async fn get_adapter_info() -> Result<String, Box<dyn std::error::Error>> {
     Ok("Missing info".to_string())
 
     // This takes too long
-    // let result = std::process::Command::new("powershell")
+    // let result = Command::new("powershell")
     //     .arg("-Command")
     //     .arg("Get-PnpDevice -Class Bluetooth | Format-List")
     //     .output();

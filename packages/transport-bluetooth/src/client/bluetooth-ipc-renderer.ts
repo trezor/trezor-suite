@@ -10,6 +10,7 @@ const noop = () => {
  */
 export const bluetoothIpc: BluetoothIpcApi = {
     init: noop,
+    getInfo: noop,
     dispose: noop,
     startScan: noop,
     stopScan: noop,
