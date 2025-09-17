@@ -21,7 +21,10 @@ import {
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
-import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
+import {
+    selectHasTransportOfType,
+    selectTransportOfType,
+} from 'src/selectors/suite/suiteSelectors';
 
 type DontSeeYourTrezorModalProps = {
     isBluetoothMode: boolean;
@@ -47,6 +50,7 @@ export const CantSeeTrezorModal = ({
     const nearbyDevices = useSelector(selectNearbyDevices);
     const knownDevices = useSelector(selectKnownDevices);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
 
     const bridgeDesktopApi = useBridgeDesktopApi();
 
@@ -66,14 +70,14 @@ export const CantSeeTrezorModal = ({
                   TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
               ];
 
-        if (bridgeDesktopApi?.bridgeProcess?.process) {
+        if (bridgeDesktopApi?.bridgeProcess?.process && bridge) {
             items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE);
         } else {
             // TODO: here we are going to put instruction to uninstall standalone bridge
         }
 
         return items;
-    }, [isWebUsbTransport, bridgeDesktopApi]);
+    }, [isWebUsbTransport, bridgeDesktopApi, bridge]);
 
     const tipItems = useMemo(() => {
         if (isBluetoothMode && isDesktop()) {
