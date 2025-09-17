@@ -1,7 +1,8 @@
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { isMacOs, isWindows } from '@trezor/env-utils';
+import { isWindows } from '@trezor/env-utils';
+import { BluetoothNapiBindings } from '@trezor/transport-bluetooth';
 
 import { BaseProcess, Status } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
@@ -80,26 +81,12 @@ export class BluetoothProcess extends BaseProcess {
         return super.start();
     }
 
-    // workaround for macos pairing issue
-    async connectAndSubscribeInMainThread(
-        id: string,
-    ): Promise<{ success: true } | { success: false; error: string }> {
-        if (!isMacOs()) {
-            return Promise.resolve({ success: true });
-        }
+    async getNapiBindings() {
+        const processPath = path.join(super.getProcessDir(), `index.js`);
+        this.logger.info(this.logTopic, `Loading bluetooth native module from ${processPath}`);
 
-        try {
-            const processPath = path.join(super.getProcessDir(), `index.js`);
-            this.logger.info(this.logTopic, `Loading bluetooth native module from ${processPath}`);
+        const bindings: BluetoothNapiBindings = await import(/*webpackIgnore: true */ processPath);
 
-            const { connectDevice } = await import(/*webpackIgnore: true */ processPath);
-            await connectDevice(id, 30000, (...args: any[]) => {
-                console.warn('callback', args);
-            });
-
-            return { success: true } as const;
-        } catch (error) {
-            return { success: false, error: error.message } as const;
-        }
+        return bindings;
     }
 }

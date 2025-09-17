@@ -57,6 +57,7 @@ export const init: ModuleInit = () => {
         return new BluetoothIpc({
             url: btProcess.getUrl(),
             logger: desktopLogger,
+            napiBindings: isMacOs() ? () => btProcess.getNapiBindings() : undefined,
         });
     };
 
@@ -85,20 +86,6 @@ export const init: ModuleInit = () => {
                     }
 
                     if (!api) throw apiError;
-
-                    if (method === 'connectDevice' && isMacOs()) {
-                        // special case for macos
-                        const deviceId = params[0];
-                        const devices = await api.enumerateDevices();
-                        const isPaired = devices.find(d => d.id === deviceId)?.paired;
-                        if (!isPaired) {
-                            const result =
-                                await bluetoothProcess?.connectAndSubscribeInMainThread(deviceId);
-                            if (result && !result.success) {
-                                return result;
-                            }
-                        }
-                    }
 
                     if (method === 'dispose') {
                         killBluetoothProcess();
