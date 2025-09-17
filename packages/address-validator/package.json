@@ -6,7 +6,8 @@
     "private": true,
     "main": "src/index",
     "scripts": {
-        "test:unit": "yarn g:jest -c ./jest.config.js"
+        "test:unit": "yarn g:jest -c ./jest.config.js",
+        "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
         "base-x": "^5.0.1",
