@@ -43,66 +43,6 @@ const getBrowserContext = async (pathToExtension: string) => {
     return browserContext;
 };
 
-test('Basic web extension MV2', async () => {
-    const pathToExtension = path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'connect-examples',
-        'webextension-mv2',
-        'build',
-    );
-    const browserContext = await getBrowserContext(pathToExtension);
-    const page = await browserContext.newPage();
-
-    // https://github.com/microsoft/playwright/issues/5593#issuecomment-949813218
-    await page.goto('chrome://inspect/#extensions');
-
-    await page.screenshot({ path: `${dir}/web-extension-mv2-1.png` });
-
-    const url = await page.evaluate(
-        () =>
-            (document.querySelector('#extensions-list div[class="url"]') as HTMLElement).innerText,
-    );
-    const [, , extensionId] = url.split('/');
-
-    expect(extensionId).toBeTruthy();
-
-    await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
-
-    // Wait for connect to be ready.
-    await expect(page.getByTestId('connect-loaded')).toBeVisible();
-
-    await expect(page.getByTestId('get-address')).toBeVisible();
-    await page.click("button[data-testid='get-address']");
-
-    const popup = await browserContext.waitForEvent('page');
-    await popup.waitForLoadState('load');
-    await expect(popup.getByTestId('@analytics/continue-button')).toBeVisible({
-        timeout: 40000,
-    });
-    await popup.click("button[data-testid='@analytics/continue-button']");
-
-    await popup
-        .getByRole('button', { name: 'Allow once for this session' })
-        .click({ timeout: 40000 });
-
-    await expect(
-        popup.getByTestId('@info-panel').getByRole('heading', { name: 'Export Bitcoin address' }),
-    ).toBeVisible();
-    await popup.getByRole('button', { name: 'Export' }).click();
-
-    await expect(popup.getByText('3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX')).toBeVisible();
-
-    await Promise.all([popup.waitForEvent('close'), TrezorUserEnvLink.pressYes()]);
-
-    // Popup closes and the following assert fails
-    // await expect(popup.getByText('3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX')).toBeVisible();
-
-    await browserContext.close();
-});
-
 test('Basic web extension MV3', async () => {
     const pathToExtension = path.join(
         __dirname,
