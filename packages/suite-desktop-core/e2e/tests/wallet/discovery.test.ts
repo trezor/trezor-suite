@@ -46,11 +46,14 @@ test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
         // end up in some de-synced state. if this test becomes flaky, this reload might be the reason.
         await page.reload();
 
-        await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible({ timeout: 10000 });
-        await expect(dashboardPage.loading).toBeVisible({ timeout: 10000 });
-        await dashboardPage.loading.waitFor({ state: 'detached', timeout: DISCOVERY_LIMIT });
-        for (const symbol of ['btc', ...coinsToActivate] as NetworkSymbol[]) {
-            await expect(walletPage.balanceOfAccount(symbol).first()).toBeVisible();
+        await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible({ timeout: 10_000 });
+        // Discovery bar does not have to be shown at all if discovery finished before reload, so we build verification on accounts' visibility
+        await expect(dashboardPage.loading).toBeHidden({ timeout: DISCOVERY_LIMIT });
+        const expectedAccounts = ['btc', ...coinsToActivate] as NetworkSymbol[];
+        for (const symbol of expectedAccounts) {
+            await expect.soft(walletPage.balanceOfAccount(symbol).first()).toBeVisible({
+                timeout: DISCOVERY_LIMIT,
+            });
         }
     });
 });
