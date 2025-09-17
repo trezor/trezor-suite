@@ -11,6 +11,7 @@ type Options = {
     attempts?: number;
     timeout?: number;
     logger?: Logger;
+    graceful?: boolean;
 };
 
 const ATTEMPT_ERROR = 'Unexpected chunk';
@@ -72,7 +73,7 @@ export function readWithExpectedHeaders<T extends Receiver>(receiver: T, options
                 readAndAssert(receiver, expectedHeaders, { ...options, signal: attemptSignal }),
             {
                 signal: options?.signal,
-                graceful: true,
+                graceful: options?.graceful,
                 attempts: options?.attempts || Infinity,
                 timeout: options?.timeout,
                 attemptFailureHandler: error => {
