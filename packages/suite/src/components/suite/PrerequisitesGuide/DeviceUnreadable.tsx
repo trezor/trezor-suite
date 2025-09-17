@@ -13,6 +13,8 @@ import {
     TROUBLESHOOTING_TIP_UNREADABLE_HID,
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
+import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
+import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 /**
  * Device was detected but @trezor/connect was not able to communicate with it. Reasons could be:
@@ -22,7 +24,8 @@ import { useSelector } from 'src/hooks/suite';
  */
 export const DeviceUnreadable = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
-
+    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
+    const bridgeDesktopApi = useBridgeDesktopApi();
     // generic troubleshooting tips
     const items = [];
 
@@ -42,7 +45,9 @@ export const DeviceUnreadable = () => {
         items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP);
         // you might have a very old device which is no longer supported current bridge
         // if on desktop - try toggling between the 2 bridges we have available
-        items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE);
+        if (bridgeDesktopApi?.bridgeProcess?.process && bridge) {
+            items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE);
+        }
     } else {
         // it might also be unreadable because device was acquired on transport layer by another app and never released.
         // this should be rather exceptional case that happens only when sessions synchronization is broken or other app
