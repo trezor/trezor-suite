@@ -215,7 +215,7 @@ const sessionsSharedWorkerPlugin = () => {
 const workerPlugin = (): Plugin => ({
     name: 'worker-loader',
     transform(_code, id) {
-        if (/\/workers\/[^/]+\/index\.ts$/.test(id)) {
+        if (/\/workers\/[^/]+\/index\.ts$/.test(id) || /pinger\/pingWorker.ts$/.test(id)) {
             // Return a virtual module that creates a web worker
 
             return {
