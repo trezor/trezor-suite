@@ -62,3 +62,5 @@ export const createUiPromiseManager = (interactionTimeout: () => void) => {
 
     return { exists, create, resolve, rejectAll, disconnected, get, clear };
 };
+
+export type UiPromiseManager = ReturnType<typeof createUiPromiseManager>;
