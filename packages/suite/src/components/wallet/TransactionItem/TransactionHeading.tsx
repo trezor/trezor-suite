@@ -188,7 +188,7 @@ export const TransactionHeading = ({
                 </ChevronIconWrapper>
             </Wrapper>
 
-            {transaction.type !== 'failed' && amount}
+            {transaction.type !== 'failed' && transaction.type !== 'self' && amount}
         </>
     );
 };
