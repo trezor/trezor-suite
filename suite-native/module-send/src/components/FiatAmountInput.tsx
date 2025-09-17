@@ -5,7 +5,9 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
     TransactionsRootState,
+    WalletSettingsRootState,
     selectBaseCurrency,
+    selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
@@ -33,12 +35,17 @@ export const FiatAmountInput = ({
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
+    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
+        selectIsAmountInSats(state, symbol),
+    );
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
     const { decimals } = getNetwork(symbol);
     const tokenDecimals = useSelector(
         (state: DeviceRootState & TokenDefinitionsRootState & TransactionsRootState) =>
             selectAccountTokenDecimals(state, accountKey, tokenContract),
     );
+    // Use 0 decimals if amount is in sats, otherwise use token decimals or network decimals
+    const cryptoDecimals = isAmountInSats ? 0 : (tokenDecimals ?? decimals);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
@@ -62,7 +69,6 @@ export const FiatAmountInput = ({
             asBaseCurrencyAmount(new BigNumber(transformedValue)),
         );
         if (cryptoValue) {
-            const cryptoDecimals = tokenDecimals ?? decimals;
             setValue(cryptoFieldName, cryptoValue.toFixed(cryptoDecimals), {
                 shouldValidate: true,
             });
