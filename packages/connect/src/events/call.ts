@@ -1,6 +1,6 @@
 import type { IFRAME } from './iframe';
 import { serializeError } from '../constants/errors';
-import { Device } from '../device/Device';
+import type { Device } from '../device/Device';
 import type { TrezorConnect } from '../types/api';
 import type { CommonParams, DeviceIdentity } from '../types/params';
 

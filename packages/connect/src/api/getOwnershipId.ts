@@ -5,7 +5,7 @@ import { getFirmwareRange } from './common/paramsValidator';
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
-import { Bundle } from '../exports';
+import { Bundle } from '../types';
 import { GetOwnershipId as GetOwnershipIdSchema } from '../types/api/getOwnershipId';
 import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 

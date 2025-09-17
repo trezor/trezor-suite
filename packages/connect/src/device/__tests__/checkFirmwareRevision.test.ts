@@ -2,7 +2,7 @@ import { FetchError } from 'node-fetch';
 
 import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 
-import { FirmwareRevisionCheckResult } from '../../exports';
+import { FirmwareRevisionCheckResult } from '../../types/device';
 import * as utilsAssets from '../../utils/assets';
 import { CheckFirmwareRevisionParams, checkFirmwareRevision } from '../checkFirmwareRevision';
 
