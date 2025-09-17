@@ -6,7 +6,7 @@ import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 
 import { FormDraftRootState, formDraftActions } from './formDraftSlice';
-import { selectFormDraft } from './selectors';
+import { selectDeepCopyOfFormDraft } from './selectors';
 
 export const useFormDraft = <T extends FieldValues>(
     keyPrefix: FormDraftKeyPrefix,
@@ -16,8 +16,9 @@ export const useFormDraft = <T extends FieldValues>(
 
     const formDraftKey = getFormDraftKey(keyPrefix, key);
 
-    const draft = useSelector((state: FormDraftRootState) =>
-        selectFormDraft<T>(state, formDraftKey),
+    const draft = useSelector(
+        (state: FormDraftRootState) =>
+            selectDeepCopyOfFormDraft(state, formDraftKey) as T | undefined,
     );
 
     const saveDraft = useCallback(
