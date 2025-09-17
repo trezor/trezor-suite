@@ -12,25 +12,27 @@ const CHALLENGE = '29d0be0f3cb191c80d108359c64d22984a77ad8b99433814be31db0b6e9e7
 const CONFIG = {
     version: 1,
     timestamp: '2023-09-07T14:00:00+00:00',
+    T3B1: {
+        rootPubKeys: [
+            '045b5c3fdd01f3602092834209b86df0ca86a9faf25cac35c73bf6237d66eb21eafcec3706f1ccd5eb4cc7f2fa1751213eccb1c78389afba89a5788ff31ee46a5d',
+        ],
+        blacklistedCaPubKeys: [],
+    },
     T2B1: {
         rootPubKeys: [
             '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
         ],
-        caPubKeys: [
-            '041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4',
-        ],
+        blacklistedCaPubKeys: [],
     },
     T3T1: {
         rootPubKeys: [
             '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
         ],
-        caPubKeys: [
-            '041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4',
-        ],
+        blacklistedCaPubKeys: [],
     },
     T3W1: {
         rootPubKeys: ['you shall not pass'], // TODO T3W1
-        caPubKeys: ['you shall not pass'], // TODO T3W1
+        blacklistedCaPubKeys: ['you shall not pass'], // TODO T3W1
     },
 } as DeviceAuthenticityConfig;
 
@@ -59,10 +61,10 @@ describe('firmware/verifyAuthenticityProof', () => {
                 ...CONFIG,
                 T2B1: {
                     rootPubKeys: [],
-                    caPubKeys: [],
+                    blacklistedCaPubKeys: [],
                     debug: {
                         rootPubKeys: CONFIG.T2B1.rootPubKeys,
-                        caPubKeys: CONFIG.T2B1.caPubKeys,
+                        blacklistedCaPubKeys: CONFIG.T2B1.blacklistedCaPubKeys,
                     },
                 },
             },
@@ -153,7 +155,7 @@ describe('firmware/verifyAuthenticityProof', () => {
         expect(verify.error).toBe('INVALID_DEVICE_MODEL');
     });
 
-    it('verify failed (missing caPubKey)', async () => {
+    it('verify failed (caPubKey on blacklist)', async () => {
         const verify = await verifyAuthenticityProof({
             certificates: [DEVICE_CERT, CA_CERT],
             signature: SIGNATURE,
@@ -163,36 +165,15 @@ describe('firmware/verifyAuthenticityProof', () => {
                 ...CONFIG,
                 T2B1: {
                     ...CONFIG.T2B1,
-                    caPubKeys: [],
+                    blacklistedCaPubKeys: [
+                        '041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4',
+                    ],
                 },
             },
         });
 
         expect(verify.valid).toBe(false);
-        expect(verify.configExpired).toBe(false);
-        expect(verify.error).toBe('CA_PUBKEY_NOT_FOUND');
-    });
-
-    it('verify failed (outdated config, missing caPubKey)', async () => {
-        const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT, CA_CERT],
-            signature: SIGNATURE,
-            challenge: Buffer.from(CHALLENGE, 'hex'),
-            deviceModel: 'T2B1',
-            config: {
-                ...CONFIG,
-                // old timestamp
-                timestamp: '2000-09-07T14:00:00+00:00',
-                T2B1: {
-                    ...CONFIG.T2B1,
-                    caPubKeys: [],
-                },
-            },
-        });
-
-        expect(verify.valid).toBe(false);
-        expect(verify.configExpired).toBe(true);
-        expect(verify.error).toBe('CA_PUBKEY_NOT_FOUND');
+        expect(verify.error).toBe('CA_PUBKEY_BLACKLISTED');
     });
 });
 
