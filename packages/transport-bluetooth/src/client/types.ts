@@ -46,7 +46,7 @@ export interface BluetoothDevice {
 
 export type BluetoothAdapterState = 'enabled' | 'disabled' | 'permission-denied';
 
-export type NotificationCharacteristic = 'read' | 'push-notification';
+export type NotificationCharacteristic = 'read' | 'push-notification' | 'battery-level';
 
 export interface NotificationEvent {
     adapter_state_changed: { state: BluetoothAdapterState };
