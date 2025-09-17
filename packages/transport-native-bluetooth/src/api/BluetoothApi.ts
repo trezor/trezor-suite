@@ -108,7 +108,7 @@ export class BluetoothApi extends AbstractApi {
         }
     }
 
-    public async openDevice(path: string, _first: boolean) {
+    public async openDevice(path: string) {
         this.logger?.debug('openDevice', path);
 
         // BT does not need to be opened, it is opened when connected

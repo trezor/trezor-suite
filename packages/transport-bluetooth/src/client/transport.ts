@@ -20,6 +20,12 @@ export class BluetoothTransport extends AbstractApiTransport {
         api.on('transport-interface-error', ({ error }) => {
             this.emit('transport-error', error);
         });
+        api.on('trezor-push-notification', event => {
+            this.emit('trezor-push-notification', event);
+        });
+        api.on('battery-level', event => {
+            this.emit('battery-level', event);
+        });
 
         super({
             api,
