@@ -4,6 +4,7 @@ import { bufferUtils } from '@trezor/utils';
 
 import { fixSignature, parseCertificate } from './x509certificate';
 import { PROTO } from '../../constants';
+import { DeviceAuthenticityBlacklistConfig } from '../../data/deviceAuthenticityBlacklistConfig';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfigTypes';
 import { AuthenticateDeviceResult } from '../../types/api/authenticateDevice';
 
@@ -46,6 +47,7 @@ const verifySignature = async (rawKey: Buffer, data: Uint8Array, signature: Uint
 interface AuthenticityProofData extends PROTO.AuthenticityProof {
     challenge: Buffer;
     config: DeviceAuthenticityConfig;
+    blacklistConfig: DeviceAuthenticityBlacklistConfig;
     allowDebugKeys?: boolean;
     deviceModel: keyof typeof PROTO.DeviceModelInternal; // Device.features.internal_model
 }
@@ -93,6 +95,7 @@ export const verifyAuthenticityProof = async ({
     signature,
     challenge,
     config,
+    blacklistConfig,
     allowDebugKeys,
     deviceModel,
 }: AuthenticityProofData): Promise<AuthenticateDeviceResult> => {
@@ -100,7 +103,8 @@ export const verifyAuthenticityProof = async ({
     if (!modelConfig) {
         throw new Error(`Pubkeys for ${deviceModel} not found in config`);
     }
-    const { caPubKeys, debug } = modelConfig;
+    const { debug } = modelConfig;
+    const { blacklistedCaPubKeys, debug: debugBlacklist } = blacklistConfig;
 
     // 1. parse all x509 certificates received from AuthenticityProof
     const [deviceCert, caCert] = certificates.map((c, i) => {
@@ -142,11 +146,8 @@ export const verifyAuthenticityProof = async ({
     }
 
     if (!rootPubKey) {
-        const configExpired = new Date(config.timestamp).getTime() < caCertValidityFrom;
-
         return {
             valid: false,
-            configExpired,
             caPubKey,
             error: 'ROOT_PUBKEY_NOT_FOUND',
         };
@@ -175,7 +176,7 @@ export const verifyAuthenticityProof = async ({
         deviceCert.signatureValue.bits.bytes,
     );
 
-    // 5. validate that the signature from AuthenticityProof was created using prefixed challenge **and** DEVICE certificate pubKey
+    // 5. validate that the signature from AuthenticityProof was created using prefixed challenge **and** if DEVICES pubKey is not on blacklist
     const challengePrefix = Buffer.from('AuthenticateDevice:');
     const prefixedChallenge = Buffer.concat([
         bufferUtils.getChunkSize(challengePrefix.length),
@@ -191,16 +192,13 @@ export const verifyAuthenticityProof = async ({
 
     if (rootPubKey && isDeviceCertValid && isSignatureValid) {
         if (
-            (!isDebugRootPubKey && !caPubKeys.includes(caPubKey)) ||
-            (isDebugRootPubKey && !debug?.caPubKeys.includes(caPubKey))
+            (!isDebugRootPubKey && blacklistedCaPubKeys.includes(caPubKey)) ||
+            (isDebugRootPubKey && debugBlacklist?.blacklistedCaPubKeys.includes(caPubKey))
         ) {
-            const configExpired = new Date(config.timestamp).getTime() < caCertValidityFrom;
-
             return {
                 valid: false,
-                configExpired,
                 caPubKey,
-                error: 'CA_PUBKEY_NOT_FOUND',
+                error: 'CA_PUBKEY_BLACKLISTED',
             };
         }
 

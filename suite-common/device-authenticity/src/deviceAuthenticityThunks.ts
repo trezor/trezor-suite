@@ -53,11 +53,14 @@ export const checkDeviceAuthenticityThunk = createThunk<
                       valid: false,
                       error: result.payload.error,
                   };
-        } else if (result.payload.error === 'CA_PUBKEY_NOT_FOUND' && result.payload.configExpired) {
-            // CA_PUBKEY_NOT_FOUND with configExpired is temporarily allowed and just logged to Sentry
+        } else if (result.payload.error === 'CA_PUBKEY_BLACKLISTED') {
+            toastPayload = {
+                type: 'error',
+                error: `Device is not authentic: ${result.payload.error}`,
+            };
             storedResult = {
-                ...result.payload,
-                valid: true,
+                error: result.payload.error,
+                valid: false,
             };
         } else if (!result.payload.valid) {
             toastPayload = {

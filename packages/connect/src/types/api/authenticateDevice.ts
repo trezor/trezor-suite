@@ -1,11 +1,13 @@
 import { Static, Type } from '@trezor/schema-utils';
 
+import { DeviceAuthenticityBlacklistConfig } from '../../data/deviceAuthenticityBlacklistConfig';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfigTypes';
 import type { Params, Response } from '../params';
 
 export type AuthenticateDeviceParams = Static<typeof AuthenticateDeviceParams>;
 export const AuthenticateDeviceParams = Type.Object({
     config: Type.Optional(DeviceAuthenticityConfig),
+    blacklistConfig: Type.Optional(DeviceAuthenticityBlacklistConfig),
     allowDebugKeys: Type.Optional(Type.Boolean()),
 });
 
@@ -24,7 +26,7 @@ export type AuthenticateDeviceResult =
           configExpired?: boolean;
           error:
               | 'ROOT_PUBKEY_NOT_FOUND'
-              | 'CA_PUBKEY_NOT_FOUND'
+              | 'CA_PUBKEY_BLACKLISTED'
               | 'INVALID_DEVICE_MODEL'
               | 'INVALID_DEVICE_CERTIFICATE'
               | 'INVALID_DEVICE_SIGNATURE';
