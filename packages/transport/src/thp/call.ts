@@ -7,6 +7,7 @@ export const callThpMessage = async ({
     apiWrite,
     apiRead,
     signal,
+    graceful,
     logger,
 }: SendThpMessageProps) => {
     // send and wait for ThpAck
@@ -16,6 +17,7 @@ export const callThpMessage = async ({
         apiWrite,
         apiRead,
         signal,
+        graceful,
         logger,
     });
     if (!sendResult.success) {
@@ -28,6 +30,7 @@ export const callThpMessage = async ({
         apiWrite,
         apiRead,
         signal,
+        graceful,
         logger,
     });
 
