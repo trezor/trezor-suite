@@ -20,6 +20,7 @@ export const sendThpMessage = async ({
     apiWrite,
     apiRead,
     signal,
+    graceful,
     logger,
 }: SendThpMessageProps) => {
     if (!thpState) {
@@ -45,7 +46,7 @@ export const sendThpMessage = async ({
 
     let attempt = 0;
 
-    const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, { signal });
+    const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, { signal, graceful });
 
     // create sequence of scheduled actions controlled by one AbortSignal (from Transport call/send)
     // 1. send message

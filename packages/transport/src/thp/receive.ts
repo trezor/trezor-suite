@@ -15,6 +15,7 @@ export type ReceiveThpMessageProps = {
     thpState?: protocolThp.ThpState;
     skipAck?: boolean;
     signal?: AbortSignal;
+    graceful?: boolean;
     logger?: Logger;
 };
 
@@ -24,6 +25,7 @@ export const receiveThpMessage = async ({
     apiRead,
     apiWrite,
     signal,
+    graceful,
     logger,
 }: ReceiveThpMessageProps) => {
     if (!thpState) {
@@ -33,7 +35,11 @@ export const receiveThpMessage = async ({
     logger?.debug(`receiveThpMessage start ${thpState.expectedResponses}`);
 
     try {
-        const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, { signal, logger });
+        const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, {
+            signal,
+            graceful,
+            logger,
+        });
         const expectedHeaders = protocolThp.getExpectedHeaders(thpState);
         const message = await receive(
             () => apiReadWithExpectedHeaders(expectedHeaders),
