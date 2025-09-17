@@ -10,11 +10,11 @@ import { selectDeepCopyOfFormDraft } from './selectors';
 
 export const useFormDraft = <T extends FieldValues>(
     keyPrefix: FormDraftKeyPrefix,
-    key: string = '',
+    key?: string,
 ) => {
     const dispatch = useDispatch();
 
-    const formDraftKey = getFormDraftKey(keyPrefix, key);
+    const formDraftKey = getFormDraftKey(keyPrefix, key ?? keyPrefix);
 
     const draft = useSelector(
         (state: FormDraftRootState) =>
