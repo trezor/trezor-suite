@@ -9,6 +9,9 @@
             "path": "../../suite-common/connect-init"
         },
         {
+            "path": "../../suite-common/firmware-authenticity"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -19,6 +22,9 @@
         },
         {
             "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -37,12 +43,15 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
+        { "path": "../bluetooth" },
         { "path": "../coin-enabling" },
         { "path": "../config" },
         { "path": "../connection-status" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },
+        { "path": "../feature-flags" },
+        { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../local-first-storage" },
@@ -75,13 +84,18 @@
         { "path": "../settings" },
         { "path": "../state" },
         { "path": "../storage" },
+        { "path": "../test-utils" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../transactions" },
         {
+            "path": "../../packages/blockchain-link-types"
+        },
+        {
             "path": "../../packages/bundler-security"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/e2e-utils" },
         {
             "path": "../../packages/react-native-usb"
         },

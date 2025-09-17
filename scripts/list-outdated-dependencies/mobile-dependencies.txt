@@ -3,6 +3,7 @@
 @evolu/react-native
 @expo/config-plugins
 @gorhom/bottom-sheet
+@jest/reporters
 @mobily/ts-belt
 @react-native-async-storage/async-storage
 @react-native-community/cli
