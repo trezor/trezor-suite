@@ -4,8 +4,7 @@ import path from 'path';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-// specific version of legacy bridge is requested & expected
-export const LEGACY_BRIDGE_VERSION = '2.0.33';
+import { BRIDGE_VERSION } from './bridge';
 
 const appDir = path.join(__dirname, '../../../suite-desktop');
 const disableHashChecksPatch = '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
@@ -60,7 +59,7 @@ const buildArgs = (params: LaunchSuiteParams) => {
     ];
 
     if (params.bridgeDaemon) {
-        args.push('--bridge-daemon');
+        args.push('--bridge-daemon-show-ui');
     } else {
         args.push('--bridge-legacy', '--bridge-test');
     }
@@ -97,8 +96,7 @@ const setupLoggingToFile = (electronApp: ElectronApplication, params: LaunchSuit
 
 export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     if (!params.bridgeDaemon) {
-        // TODO: #15646 Find out why currently pw fails to see node-bridge so we default to legacy bridge.
-        await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
+        await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     }
 
     const electronApp = await electron.launch({

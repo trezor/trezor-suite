@@ -1,6 +1,7 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { EventType } from '@trezor/suite-analytics';
 
+import { BRIDGE_VERSION } from '../../support/bridge';
 import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
@@ -128,7 +129,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
                 passphrase_protection: true,
             });
 
-            await trezorUserEnvLink.startBridge();
+            await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
         });
 
         await test.step('Change settings before enabling analytics', async () => {

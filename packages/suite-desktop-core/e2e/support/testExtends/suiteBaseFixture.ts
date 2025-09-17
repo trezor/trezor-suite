@@ -19,6 +19,7 @@ import {
 } from '../common';
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { enhancePage } from './enhancePage';
+import { BRIDGE_VERSION } from '../bridge';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
@@ -88,7 +89,7 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo, electronConf: 
 };
 
 const webSetup = async (browserContext: BrowserContext) => {
-    await TrezorUserEnvLinkProxy.startBridge();
+    await TrezorUserEnvLinkProxy.startBridge(BRIDGE_VERSION);
     const page = await browserContext.newPage();
     // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
     // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck

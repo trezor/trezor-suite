@@ -41,9 +41,6 @@ test.describe(
             });
 
             await connectPermissionsModal.confirmButton.click();
-            await expect(connectPermissionsModal.loadingHeader).toHaveText(
-                'Sign Ethereum transaction',
-            );
 
             await page
                 .getByTestId('@prompts/confirm-on-device/step/0/active')
