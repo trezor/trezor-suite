@@ -142,8 +142,11 @@ export const init: ModuleInit = () => {
         validateIpcMessage(ipcEvent);
 
         try {
-            const url = bluetoothProcess?.getUrl();
-            const status = await bluetoothProcess?.status();
+            await getBluetoothProcess();
+            if (!bluetoothProcess)
+                return { success: false, error: 'unable to load bluetooth process' };
+            const url = bluetoothProcess.getUrl();
+            const status = await bluetoothProcess.status();
 
             return { success: true, payload: { url, ...status } };
         } catch (error) {

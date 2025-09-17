@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 
-import { DotIndicator } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Url } from '@trezor/urls';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { SectionItem, TextColumn } from 'src/components/suite';
 
 export const BluetoothServerStatus = () => {
     const [status, setStatus] = useState<
         | { type: 'unknown' }
         | {
               type: 'success';
-              // process and service not used now
               process: boolean;
               service: boolean;
               url: string;
@@ -30,11 +28,12 @@ export const BluetoothServerStatus = () => {
         });
     }, []);
 
-    if (status.type === 'unknown' || status.type === 'error') {
+    if (status.type === 'unknown' || status.type === 'error' || !status.process) {
+        // loading, or failed to load, or process reported as false - there might be case when
+        // server is not owned by suite-desktop, running on another port, possibly the default one (21327)
+        // this case is not handled and we display nothing
         return null;
     }
-
-    console.log(status);
 
     return (
         <SectionItem>
@@ -44,18 +43,6 @@ export const BluetoothServerStatus = () => {
                 buttonTitle="Status page"
                 buttonLink={status.url as Url}
             />
-            <ActionColumn>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <DotIndicator isActive={status.process} />
-                        <span>Process</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <DotIndicator isActive={status.service} />
-                        <span>Service</span>
-                    </div>
-                </div>
-            </ActionColumn>
         </SectionItem>
     );
 };
