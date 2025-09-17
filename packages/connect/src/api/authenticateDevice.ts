@@ -1,6 +1,7 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
+import { deviceAuthenticityBlacklist } from '../data/deviceAuthenticityBlacklist';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { deviceAuthenticityConfig } from '../data/deviceAuthenticityConfig';
@@ -25,6 +26,7 @@ export default class AuthenticateDevice extends AbstractMethod<
 
         this.params = {
             config: payload.config,
+            blacklistConfig: payload.blacklistConfig,
             allowDebugKeys: payload.allowDebugKeys,
         };
     }
@@ -39,10 +41,12 @@ export default class AuthenticateDevice extends AbstractMethod<
             });
 
         const config = this.params.config || deviceAuthenticityConfig;
+        const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklist;
         const valid = await verifyAuthenticityProof({
             ...message,
             challenge,
             config,
+            blacklistConfig,
             allowDebugKeys: this.params.allowDebugKeys,
             deviceModel: this.device.features.internal_model,
         });
