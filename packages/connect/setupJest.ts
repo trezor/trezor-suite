@@ -17,6 +17,7 @@ const createTransportApi = (override = {}) =>
         enumerate: () => Promise.resolve({ success: true, payload: [{ path: '1' }] }),
         on: () => {},
         off: () => {},
+        once: () => {},
         openDevice: (path: string) => Promise.resolve({ success: true, payload: [{ path }] }),
         closeDevice: () => Promise.resolve({ success: true }),
         write: () => Promise.resolve({ success: true }),

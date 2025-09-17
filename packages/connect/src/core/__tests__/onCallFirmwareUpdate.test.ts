@@ -53,6 +53,13 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
                 };
             }
         },
+        once: (evt: string, listener: any) => {
+            if (evt === 'transport-interface-change') {
+                eventChangeListener = (...args: any[]) => {
+                    setTimeout(() => listener(...args), 1);
+                };
+            }
+        },
         emitInterfaceChange: (...args: any[]) => {
             eventChangeListener(...args);
         },
