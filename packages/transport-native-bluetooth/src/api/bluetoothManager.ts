@@ -32,6 +32,8 @@ const eventNames = {
 
 // UUID of the Bluetooth service used to identify a BLE device as Trezor.
 const SERVICE_UUID = '8c000001-a59b-4d58-a9ad-073df69fa1b1';
+const WRITE_CHARACTERISTIC_UUID = '8c000002-a59b-4d58-a9ad-073df69fa1b1';
+const NOTIFY_CHARACTERISTIC_UUID = '8c000003-a59b-4d58-a9ad-073df69fa1b1';
 
 const DEBUG_LOGS = false;
 
@@ -310,10 +312,10 @@ class BluetoothManager {
         let writeCharacteristic: Characteristic | undefined;
         let notifyCharacteristic: Characteristic | undefined;
         for (const characteristic of characteristics) {
-            if (characteristic.isWritableWithoutResponse) {
+            if (characteristic.uuid === WRITE_CHARACTERISTIC_UUID) {
                 debugLog('Found write characteristic: ', characteristic.uuid);
                 writeCharacteristic = characteristic;
-            } else if (characteristic.isNotifiable) {
+            } else if (characteristic.uuid === NOTIFY_CHARACTERISTIC_UUID) {
                 debugLog('Found notify characteristic: ', characteristic.uuid);
                 notifyCharacteristic = characteristic;
             } else {
