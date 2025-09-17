@@ -3,7 +3,7 @@
 import { Assert, Static, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../constants';
-import { DerivationPath } from '../../exports';
+import { DerivationPath } from '../../types';
 import { validatePath } from '../../utils/pathUtils';
 
 export type Path = number[];

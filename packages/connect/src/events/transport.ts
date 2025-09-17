@@ -4,7 +4,7 @@ import { TRANSPORT } from '@trezor/transport/src/constants';
 import { serializeError } from '../constants/errors';
 import { suggestBridgeInstaller } from '../data/transportInfo';
 import { suggestUdevInstaller } from '../data/udevInfo';
-import { ConnectSettings } from '../exports';
+import { ConnectSettings } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export { TRANSPORT } from '@trezor/transport/src/constants';
