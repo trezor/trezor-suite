@@ -53,6 +53,7 @@ describe('thp', () => {
                 apiRead,
                 apiWrite,
                 signal: abortController.signal,
+                graceful: true,
             });
 
             expect(apiRead).toHaveBeenCalledTimes(5);
