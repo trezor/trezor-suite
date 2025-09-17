@@ -154,6 +154,14 @@ To open last HTML report run:
 
 ## Results
 
+Results contains traces, metadata, logs, screenshots, videos and various useful information for debugging.
+Traces contain electron logs of our desktop suit app. Both in CI, currents and local env (`packages/suite-desktop-core/e2e/test-results`).
+CI runs have artifact with logs from `trezor-user-env`. They exist per group. Log are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
+
+- electrum-regtest.txt
+- trezor-user-env-debugging.log
+- tenv-emulator-bridge-debugging.log
+
 ### Currents.dev
 
 Test reports are uploaded to [currents.dev](https://app.currents.dev/)
