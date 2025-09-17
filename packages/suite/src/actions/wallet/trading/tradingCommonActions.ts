@@ -1,4 +1,4 @@
-import { formDraftActions, selectFormDraft } from '@suite-common/wallet-core';
+import { formDraftActions, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
 import { Output } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
@@ -49,7 +49,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
             return;
         }
 
-        const draft = selectFormDraft<FormState>(getState(), formDraftKey);
+        const draft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as FormState | undefined;
 
         if (draft) {
             const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
