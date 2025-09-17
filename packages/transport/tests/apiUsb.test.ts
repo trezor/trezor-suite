@@ -123,7 +123,7 @@ describe('api/usb', () => {
 
         const abortController = new AbortController();
         await api.enumerate(abortController.signal);
-        const promise = api.openDevice('123', true, abortController.signal);
+        const promise = api.openDevice('123', { reset: true, signal: abortController.signal });
         abortController.abort();
 
         const result = await promise;

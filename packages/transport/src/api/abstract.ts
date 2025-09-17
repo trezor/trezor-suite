@@ -1,5 +1,6 @@
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
 
+import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import type {
     AnyError,
@@ -26,6 +27,8 @@ export enum DEVICE_TYPE {
     TypeBluetooth = 6,
 }
 
+export type OpenDeviceChannel = 'read' | 'push-notification' | 'battery-level';
+
 type AccessLock = {
     read: boolean;
     write: boolean;
@@ -40,6 +43,8 @@ type AccessLock = {
 export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
     'transport-interface-error': { error: typeof ERRORS.API_DISCONNECTED };
+    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
+    [TRANSPORT.BATTERY_LEVEL]: { id: string; data: number[] };
 }> {
     protected logger?: Logger;
     protected listening: boolean = false;
@@ -106,8 +111,11 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     abstract openDevice(
         path: PathInternal,
-        reset: boolean,
-        signal?: AbortSignal,
+        options?: {
+            reset: boolean;
+            signal?: AbortSignal;
+            channel?: OpenDeviceChannel;
+        },
     ): AsyncResultWithTypedError<
         undefined,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -123,6 +131,9 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     abstract closeDevice(
         path: PathInternal,
+        options?: {
+            channel?: OpenDeviceChannel;
+        },
     ): AsyncResultWithTypedError<
         undefined,
         | typeof ERRORS.DEVICE_NOT_FOUND

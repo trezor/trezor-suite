@@ -119,8 +119,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const reset = !!input.previous;
                 const openDeviceResult = await this.api.openDevice(
                     acquireIntentResponse.payload.path,
-                    reset,
-                    signal,
+                    {
+                        reset,
+                        signal,
+                        channel: 'read',
+                    },
                 );
 
                 if (!openDeviceResult.success) {
@@ -147,7 +150,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return this.error({ error: releaseIntentResponse.error });
                 }
 
-                await this.api.closeDevice(releaseIntentResponse.payload.path);
+                await this.api.closeDevice(releaseIntentResponse.payload.path, { channel: 'read' });
 
                 await this.sessionsClient.releaseDone({
                     path: releaseIntentResponse.payload.path,
@@ -162,7 +165,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     public releaseSync(session: Session) {
         // Obviously not sync as was advertised. Also looks a bit weird but should be the same as before.
         this.sessionsClient.releaseIntent({ session }).then(res => {
-            if (res.success) this.api.closeDevice(res.payload.path);
+            if (res.success) this.api.closeDevice(res.payload.path, { channel: 'read' });
         });
     }
 
@@ -405,7 +408,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             })
             .then(response => {
                 if (response.success) {
-                    return this.api.closeDevice(response.payload.path);
+                    return this.api.closeDevice(response.payload.path, { channel: 'read' });
                 }
 
                 return this.success(undefined);

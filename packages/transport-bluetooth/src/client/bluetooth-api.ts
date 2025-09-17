@@ -2,6 +2,7 @@ import {
     AbstractApi,
     AbstractApiConstructorParams,
     DEVICE_TYPE,
+    OpenDeviceChannel,
 } from '@trezor/transport/src/api/abstract';
 import * as ERRORS from '@trezor/transport/src/errors';
 import { PathInternal } from '@trezor/transport/src/types';
@@ -64,8 +65,14 @@ export class BluetoothApi extends AbstractApi {
             this.readBuffer.cancelRead(event.id);
             transportApiEvent(event);
         });
-        api.on('device_read', ({ id, data }) => {
-            this.readBuffer.onMessage(id, Buffer.from(data));
+        api.on('device_read', ({ id, data, characteristic }) => {
+            if (characteristic === 'push-notification') {
+                this.emit('trezor-push-notification', { id, data });
+            } else if (characteristic === 'battery-level') {
+                this.emit('battery-level', { id, data });
+            } else {
+                this.readBuffer.onMessage(id, Buffer.from(data));
+            }
         });
         api.on('adapter_state_changed', ({ state }) => {
             if (state !== 'enabled') {
@@ -97,20 +104,20 @@ export class BluetoothApi extends AbstractApi {
             .catch(e => this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
     }
 
-    openDevice(path: string) {
+    openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
         return this.api
-            .send('open_device', { id: path })
+            .send('open_device', { id: path, characteristic: options?.channel })
             .then(() => this.success(undefined))
             .catch(e =>
                 this.error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
             );
     }
 
-    closeDevice(path: string) {
+    closeDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
         this.readBuffer.cancelRead(path);
 
         return this.api
-            .send('close_device', { id: path })
+            .send('close_device', { id: path, characteristic: options?.channel })
             .then(() => this.success(undefined))
             .catch(e =>
                 this.error({ error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),
