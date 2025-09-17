@@ -15,9 +15,9 @@ import { DeviceCommands } from './DeviceCommands';
 import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { IStateStorage } from './StateStorage';
-import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { checkFirmwareHashWithRetries } from './checks/checkFirmwareHashWithRetries';
+import { checkFirmwareRevision } from './checks/checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
-import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
 import {
     getFirmwareReleaseConfigInfo,

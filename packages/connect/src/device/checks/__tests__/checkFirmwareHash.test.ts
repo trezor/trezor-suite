@@ -3,12 +3,12 @@ import type { FirmwareHash } from '@trezor/protobuf/src/messages';
 import type { Descriptor } from '@trezor/transport';
 import { Log } from '@trezor/utils';
 
-import { DataManager } from '../../data/DataManager';
-import { getReleaseByVersion } from '../../data/firmwareInfo';
-import type { ConnectSettings, DeviceUniquePath } from '../../types';
-import { Device } from '../Device';
-import type { TypedCallProvider } from '../DeviceCurrentSession';
-import { checkFirmwareHash } from '../workflow/checkFirmwareHash';
+import { checkFirmwareHash } from '..//checkFirmwareHash';
+import { DataManager } from '../../../data/DataManager';
+import { getReleaseByVersion } from '../../../data/firmwareInfo';
+import type { ConnectSettings, DeviceUniquePath } from '../../../types';
+import { Device } from '../../Device';
+import type { TypedCallProvider } from '../../DeviceCurrentSession';
 
 const { createTestTransport } = global.JestMocks;
 

@@ -3,9 +3,9 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { serializeError, versionUtils } from '@trezor/utils';
 
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
-import { getOnlineReleaseByVersion } from '../data/firmwareInfo';
-import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
-import { HttpRequestError } from '../utils/assets-browser';
+import { getOnlineReleaseByVersion } from '../../data/firmwareInfo';
+import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../../types/device';
+import { HttpRequestError } from '../../utils/assets-browser';
 
 const isNotFoundError = (e: unknown): boolean =>
     e instanceof HttpRequestError && e.response.status === 404;
