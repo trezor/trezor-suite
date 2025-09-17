@@ -104,10 +104,9 @@ export const useTradingBuyForm = ({
         suggestedFiatCurrency,
     } = useTradingBuyFormDefaultValues(account.symbol, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
-    const buyDraftKey = account.key;
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingBuyFormProps>(
         'trading-buy',
-        buyDraftKey,
+        account.key,
     );
     const draftUpdated: TradingBuyFormProps | null = draft
         ? {
@@ -123,7 +122,7 @@ export const useTradingBuyForm = ({
           }
         : null;
 
-    const isDraft = !!draftUpdated || !!isNotFormPage;
+    const isDraft = !!draftUpdated || isNotFormPage;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
         defaultValues: redirectValues || (isDraft && draftUpdated ? draftUpdated : defaultValues),

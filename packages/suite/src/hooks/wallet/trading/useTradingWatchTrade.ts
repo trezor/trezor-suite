@@ -67,12 +67,6 @@ export const useTradingWatchTrade = <T extends TradingType>({
             }
 
             resetRefresh();
-        } else {
-            // This logic was originally introduced in commit 0a0e8612dba7f9061b097502384e998ec11fe94f
-            // and I honestly have no idea what was the intention.
-            if (trade?.tradeType !== 'buy') {
-                removeDraft();
-            }
         }
     }, [account, refreshCount, trade, cancelRefresh, dispatch, removeDraft, resetRefresh]);
 
