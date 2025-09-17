@@ -170,11 +170,14 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
 export const isTxFeePaid = (tx: WalletAccountTransaction) => {
     const showFeeRowForSolClaim = tx?.solanaSpecific?.stakeOperation?.type === 'claim';
     const showFeeRowForStellar = tx?.stellarSpecific?.feeSource === tx.descriptor;
+    const isCardano = !!tx?.cardanoSpecific;
+    const showFeeRowForCardano = isCardano && tx.type !== 'recv';
 
     return (
         (!!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned) && tx.type !== 'joint') ||
         showFeeRowForSolClaim ||
-        showFeeRowForStellar
+        showFeeRowForStellar ||
+        showFeeRowForCardano
     );
 };
 
