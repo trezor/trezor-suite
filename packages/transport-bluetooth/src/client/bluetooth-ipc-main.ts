@@ -110,6 +110,17 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return this.result();
     }
 
+    async getInfo() {
+        try {
+            await this.connectApi();
+            const info = await this.api.send('get_info');
+
+            return { success: true as const, payload: info };
+        } catch (error) {
+            return { success: false as const, error };
+        }
+    }
+
     dispose() {
         return Promise.resolve(this.result());
     }

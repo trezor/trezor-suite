@@ -46,6 +46,13 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             return;
         }
 
+        // NOTE: getInfo when adapter is disabled adapter may return different result in adapter_info field
+        const apiInfo = await bluetoothIpc.getInfo();
+        if (apiInfo.success) {
+            // TODO: validate apiInfo.payload.adapter_info string
+            // and store data in redux
+        }
+
         // If we already have some paired devices, we assume user will have a BT device,
         // and therefore we start looking for it.
         if (knownDevices.length > 0) {
@@ -71,6 +78,8 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         };
 
         bluetoothIpc.on('adapter-event', status => {
+            // TODO: check if redux.status != status && status == enabled
+            // and fetch bluetoothIpc.getInfo() again
             dispatch(bluetoothActions.adapterEventAction({ status }));
         });
 
