@@ -5,7 +5,7 @@ import {
     AbstractTransportMethodParams,
     AbstractTransportParams,
 } from './abstract';
-import { AbstractApi } from '../api/abstract';
+import { AbstractApi, OpenDeviceChannel } from '../api/abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import { SessionsBackground } from '../sessions/background';
@@ -137,6 +137,37 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             { signal },
             [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
         );
+    }
+
+    subscribe({
+        path,
+        channels,
+        signal,
+    }: {
+        path: any;
+        channels: OpenDeviceChannel[];
+        signal?: AbortSignal;
+    }): Promise<Record<OpenDeviceChannel, boolean>> {
+        // todo: schedule action?
+        // todo: abort propagation?
+        return Promise.all(
+            channels.map(channel =>
+                this.api
+                    .openDevice(path, {
+                        reset: false,
+                        signal,
+                        channel,
+                    })
+                    .then(res => res.success)
+                    .catch(() => false),
+            ),
+        ).then(results => {
+            const map: Record<string, boolean> = {};
+            channels.forEach((ch, i) => {
+                map[ch] = results[i];
+            });
+            return map as Record<OpenDeviceChannel, boolean>;
+        });
     }
 
     public release({ path: _, session, signal }: AbstractTransportMethodParams<'release'>) {

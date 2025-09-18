@@ -302,6 +302,36 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.acquirePromise;
     }
 
+    subscribe() {
+        // todo: at the moment, subscribe is only available for bluetooth devices - thats why this diff. But in the future, we will want to extend it also to usb so different check will be needed
+        if (this.bluetoothProps?.id) {
+            this.transport
+                .subscribe({
+                    path: this.bluetoothProps.id,
+                    channels: ['push-notification', 'battery-level'],
+                })
+                .then(result => {
+                    // todo: imho it should be assigned to other field then bluetoothProps because we might want to include this feature for other mediums (usb) too?
+                    // todo: if yes, maybe we should call these channels some more generic names? :thinking:
+                    this.bluetoothProps.channels = result;
+                    this.lifecycle.emit(DEVICE.CHANGED);
+
+                    if (result['battery-level']) {
+                        this.transport.on('battery-level', event => {
+                            this.batteryLevel = event.data[0];
+                            this.lifecycle.emit(DEVICE.CHANGED);
+                        });
+                    }
+
+                    if (result['push-notification']) {
+                        this.transport.on('push-notification', event => {
+                            // todo: info about device switching from bootloader to normal mode and the other way round.
+                        });
+                    }
+                });
+        }
+    }
+
     release() {
         if (!this.sessionAcquired || this.keepTransportSession || this.releasePromise) {
             return;
@@ -437,6 +467,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.lifecycle.emit(DEVICE.CONNECT);
+
+                    this.subscribe();
                 }
             });
 
@@ -1065,6 +1097,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             authenticityChecks: this.authenticityChecks,
             bluetoothProps: this.bluetoothProps,
             thp: this.thp?.serialize(),
+            batteryLevel: this.batteryLevel,
         };
     }
 }

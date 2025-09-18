@@ -54,22 +54,6 @@ export class BluetoothApi extends AbstractApi {
             .catch(() => this.success([]));
     }
 
-    subscribe(id: string) {
-        this.api
-            .send('open_device', { id, characteristic: 'push-notification' })
-            .then(() => {})
-            .catch(e =>
-                console.warn({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }),
-            );
-
-        this.api
-            .send('open_device', { id, characteristic: 'battery-level' })
-            .then(() => {})
-            .catch(e =>
-                console.warn({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }),
-            );
-    }
-
     listen() {
         const { api } = this;
 
@@ -77,10 +61,6 @@ export class BluetoothApi extends AbstractApi {
             this.emit('transport-interface-change', this.devicesToDescriptors(devices));
         };
         api.on('device_connected', event => {
-            const [dev] = this.devicesToDescriptors(event.devices.filter(d => (d.id = event.id)));
-            if (dev) {
-                this.subscribe(dev.id);
-            }
             transportApiEvent(event);
         });
         api.on('device_disconnected', event => {
@@ -129,7 +109,9 @@ export class BluetoothApi extends AbstractApi {
     openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
         return this.api
             .send('open_device', { id: path, characteristic: options?.channel })
-            .then(() => this.success(undefined))
+            .then(() => {
+                return this.success(undefined);
+            })
             .catch(e =>
                 this.error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
             );
