@@ -11,17 +11,15 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.6.3-beta.2
-
-- feat(connect): trezor bridge pinging now runs in a worker to prevent spamming developer console
-- chore(connect): stellar code is now wrapped in a worker in the same way other coins are wrapped
-
-# 9.6.3-beta.1
+# 9.6.3
 
 We’ve added support for Cardano message signing based on the CIP-8 standard, available through the new cardanoSignMessage method.
 
     - feat(connect-explorer): Add cardanoSignMessage (bc88818)
     - feat(connect): Cardano message signing (01c4a0f)
+
+- feat(connect): trezor bridge pinging now runs in a worker to prevent spamming developer console
+- chore(connect): stellar code is now wrapped in a worker in the same way other coins are wrapped
 
 Other than that only bug fixing, refactorings and chores are present.
 
