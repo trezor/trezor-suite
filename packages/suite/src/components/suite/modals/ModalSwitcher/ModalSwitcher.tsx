@@ -1,4 +1,5 @@
-import { ConnectionGlobalModal } from 'src/components/connection/ConnectionGlobalModal';
+import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModal';
+import { ThpGlobalManager } from 'src/components/connection/thp/ThpGlobalManager';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ForegroundAppModal } from './ForegroundAppModal';
@@ -30,7 +31,8 @@ export const ModalSwitcher = () => {
     return (
         <>
             <UnpairedBluetoothDeviceNeedsManualOsRemovalModal />
-            <ConnectionGlobalModal />
+            <ThpGlobalManager />
+            <ConnectionGlobalModalManager />
             <Inner modal={modal} />
         </>
     );
