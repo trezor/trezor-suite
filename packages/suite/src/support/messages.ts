@@ -4692,6 +4692,30 @@ export default defineMessages({
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
         defaultMessage: 'Removes all device-related data from Trezor Suite',
     },
+    TR_DEVICE_CONNECTION: {
+        id: 'TR_DEVICE_CONNECTION',
+        defaultMessage: 'Device connection',
+    },
+    TR_FORGET_DEVICE_MODAL_HEADING: {
+        id: 'TR_FORGET_DEVICE_MODAL_HEADING',
+        defaultMessage: 'Are you sure you want to forget this Trezor?',
+    },
+    TR_FORGET_DEVICE_MODAL_BULLET_FORGET: {
+        id: 'TR_FORGET_DEVICE_MODAL_BULLET_FORGET',
+        defaultMessage: 'Suite will forget any existence of this device',
+    },
+    TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED: {
+        id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED',
+        defaultMessage: 'Bluetooth pairing will be removed and Trezor will be disconnected',
+    },
+    TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED: {
+        id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED',
+        defaultMessage: 'Bluetooth pairing will be removed',
+    },
+    TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE: {
+        id: 'TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE',
+        defaultMessage: 'This does not wipe your seed, nor your funds',
+    },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {networkDisplaySymbol}',

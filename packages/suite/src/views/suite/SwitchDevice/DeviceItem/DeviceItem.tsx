@@ -32,7 +32,6 @@ import { AddWalletButton } from './AddWalletButton';
 import { WalletInstance } from './WalletInstance';
 import { CardWithDevice } from '../CardWithDevice';
 import { EjectAllConfirmation } from './EjectAllConfirmation';
-import { TemporaryForgetDeviceButton } from './TemporaryForgetDeviceButton';
 
 type DeviceItemProps = {
     device: TrezorDevice;
@@ -107,7 +106,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                             />
                         </Tooltip>
                     ) : null}
-                    <TemporaryForgetDeviceButton device={device} instances={instances} />
                 </>
             }
         >
