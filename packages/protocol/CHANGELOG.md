@@ -1,3 +1,17 @@
+# 1.2.9
+
+- npm-prerelease: @trezor/protocol 1.2.9-beta.1 (0c08a0b9de)
+- fix(protocol): do not reset ThpState.properties (d84fe7ae25)
+- fix(protocol): ignore unexpected chunks in ThpAck after send (30e20f7096)
+- feat(connect): implement THP passphrase flow (dd0312cf0b)
+- feat(connect): cancel `THP` workflow (de01a0302e)
+- feat(connect): implement `THP` pairing (1a7e054e21)
+- feat(protocol): add `THP` pairing messages and state (2d26b5c928)
+- feat(protocol): add `THP` pairing cryptography (f16730bebb)
+- chore(protobuf): update ThpPairingRequest message (0c16c5f1fc)
+- chore(protobuf): update THP protobuf messages (94267f36aa)
+- chore(protobuf): update `THP` MessageType enum (3270d50505)
+
 # 1.2.8
 
 - npm-prerelease: @trezor/protocol 1.2.8-beta.1 (45c2211e42)
