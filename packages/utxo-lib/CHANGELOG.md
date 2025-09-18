@@ -1,3 +1,10 @@
+# 2.4.3
+
+- fix: remove all dependenices that are unused (found by added depcheck script to package.json) (ecae55a2ea)
+- fix: missing deptchecks in packages (0d4633e159)
+- npm-prerelease: @trezor/utxo-lib 2.4.3-beta.1 (68a86332a5)
+- chore(utxo-lib): remove deprecated bchaddr dependency, add own implementation (adcf5db457)
+
 # 2.4.2
 
 - npm-prerelease: @trezor/utxo-lib 2.4.2-beta.2 (c89f7a536a)
