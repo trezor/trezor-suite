@@ -25,6 +25,7 @@
         { "path": "../atoms" },
         { "path": "../device-authorization" },
         { "path": "../device-mutex" },
+        { "path": "../device-onboarding" },
         { "path": "../feature-flags" },
         { "path": "../firmware" },
         { "path": "../icons" },

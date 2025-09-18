@@ -10451,6 +10451,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/device-onboarding": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"
     "@suite-native/icons": "workspace:*"
