@@ -82,7 +82,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 );
             }
 
-            if (action.type === UI_REQUEST.FIRMWARE_DOWNLOADED && !isDesktop()) {
+            if (action.type === UI_REQUEST.FIRMWARE_DOWNLOADED) {
                 // We are in web therefore we ignore `FIRMWARE_DOWNLOADED` action.
                 return;
             }
