@@ -1,0 +1,43 @@
+name: "[Bot] Sync develop branch"
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  sync-develop:
+    if: github.repository == 'trezor/trezor-suite-private'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+          token: ${{ steps.trezor-bot-token.outputs.token }}
+
+      - name: Configure git user
+        run: |
+          git config user.name "trezor-ci"
+          git config user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+
+      - name: Fetch develop from public repository
+        run: git fetch https://github.com/trezor/trezor-suite.git develop
+
+      - name: Sync develop branch
+        run: |
+          git checkout develop
+          git reset --hard FETCH_HEAD
+          git push origin develop --force-with-lease
+        env:
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
