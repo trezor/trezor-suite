@@ -22,11 +22,11 @@ import { isNative } from '@trezor/env-utils';
 import * as walletSettingsActions from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
 
-export type State = WalletSettings;
+export type WalletSettingsState = WalletSettings;
 
 export type WalletSettingsRootState = {
     wallet: {
-        settings: State;
+        settings: WalletSettingsState;
     };
 };
 
@@ -34,7 +34,7 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<
     WalletSettingsRootState & MessageSystemRootState
 >();
 
-const initialState: State = {
+const initialState: WalletSettingsState = {
     localCurrency: 'usd',
     discreetMode: false,
     // Suite Lite did not have BTC enabled by default
@@ -44,9 +44,9 @@ const initialState: State = {
     mevProtection: true,
     autoForgetDeviceData: false,
 };
-export const initialWalletSettingsState: State = initialState;
+export const initialWalletSettingsState: WalletSettingsState = initialState;
 
-export const walletSettingsPersistedWhitelist: Array<keyof State> = [
+export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> = [
     'localCurrency',
     'discreetMode',
     'enabledNetworks',

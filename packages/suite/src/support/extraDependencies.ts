@@ -17,7 +17,9 @@ import {
     DeviceReducerState,
     ExplorerConfig,
     FiatRatesState,
+    SendState,
     TransactionsState,
+    WalletSettingsState,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
@@ -157,7 +159,7 @@ export const extraDependencies: ExtraDependencies = {
                 acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
             ),
         setDeviceMetadataReducer: (
-            state,
+            state: DeviceReducerState,
             {
                 payload,
             }: PayloadAction<{ deviceState: StaticSessionId; metadata: TrezorDevice['metadata'] }>,
@@ -171,7 +173,7 @@ export const extraDependencies: ExtraDependencies = {
             device.metadata = metadata;
         },
         setDeviceMetadataPasswordsReducer: (
-            state,
+            state: DeviceReducerState,
             {
                 payload,
             }: PayloadAction<{
@@ -192,12 +194,12 @@ export const extraDependencies: ExtraDependencies = {
             state.devices = payload.devices;
             state.persistentDeviceData = payload.persistentDeviceData ?? [];
         },
-        storageLoadFormDrafts: (state, { payload }: StorageLoadAction) => {
+        storageLoadFormDrafts: (state: SendState, { payload }: StorageLoadAction) => {
             payload.sendFormDrafts.forEach(d => {
                 state.drafts[d.key] = d.value;
             });
         },
-        storageLoadWalletSettings: (state, { payload }: StorageLoadAction) =>
+        storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
             payload.walletSettings || state,
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
