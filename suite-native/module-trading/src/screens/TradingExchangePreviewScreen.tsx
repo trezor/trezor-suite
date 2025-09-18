@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
@@ -11,21 +11,22 @@ import { useToast } from '@suite-native/toasts';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 
 import { ExchangeTradePreviewCard } from '../components/exchange/ExchangeTradePreviewCard';
+import { FeePickerCard } from '../components/fees/FeePickerCard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { useChangeStringsExtractor } from '../hooks/history/useChangeStringsExtractor';
+import { exchangeActions } from '../reducers';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '../selectors/exchangeSelectors';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
-type FlowStep = 'confirm' | 'composeFeesTxn' | 'signTxn' | 'sendTxn' | 'finished';
+type FlowStep = 'confirm' | 'signTxn' | 'sendTxn' | 'finished';
 
 // TODO: this is very WIP just to be able to test the flow
 // it wont be implemented in this component this way in the end
 const flowStepToButtonText: Record<FlowStep, string> = {
     confirm: 'Continue',
-    composeFeesTxn: 'Prepare Transaction',
     signTxn: 'Sign and Send Transaction',
     sendTxn: 'Send txn',
     finished: 'Txn was sent',
@@ -33,6 +34,7 @@ const flowStepToButtonText: Record<FlowStep, string> = {
 
 export const TradingExchangePreviewScreen = () => {
     const { showToast } = useToast();
+    const dispatch = useDispatch();
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
@@ -43,7 +45,15 @@ export const TradingExchangePreviewScreen = () => {
 
     const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
 
+    useEffect(
+        () => () => {
+            dispatch(exchangeActions.clearState());
+        },
+        [dispatch],
+    );
+
     useSubscribeForSolanaBlockUpdates(fromAccount);
+
     const {
         confirmTrade,
         fetchFeesAndCompose,
@@ -63,13 +73,16 @@ export const TradingExchangePreviewScreen = () => {
             return;
         }
 
-        await confirmTrade({
+        const success = await confirmTrade({
             sendAccount: fromAccount,
             receiveAddress: addressText,
             trade: quote,
             approvalFlow: false,
         });
-        setFlowStep('composeFeesTxn');
+
+        if (success) {
+            await fetchFeesAndCompose();
+        }
     };
 
     const handleSignTransaction = async () => {
@@ -93,7 +106,6 @@ export const TradingExchangePreviewScreen = () => {
     const handleTapContinue = async () => {
         if (flowStep === 'confirm') {
             handleConfirmTrade();
-        } else if (flowStep === 'composeFeesTxn') {
             await fetchFeesAndCompose();
             setFlowStep('signTxn');
         } else if (flowStep === 'signTxn') {
@@ -141,6 +153,13 @@ export const TradingExchangePreviewScreen = () => {
                             <Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />
                         }
                     />
+                    {(flowStep === 'signTxn' || flowStep === 'sendTxn') && (
+                        <FeePickerCard
+                            trade={quote}
+                            symbol={fromAccount.symbol}
+                            accountKey={fromAccount.key}
+                        />
+                    )}
                 </VStack>
             </ScrollView>
 

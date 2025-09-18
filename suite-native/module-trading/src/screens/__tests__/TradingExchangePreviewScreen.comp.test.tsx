@@ -74,6 +74,6 @@ describe('TradingExchangePreviewScreen', () => {
             approvalFlow: false,
         });
         expect(queryByText('Continue')).not.toBeOnTheScreen();
-        expect(getByText('Prepare Transaction')).toBeOnTheScreen();
+        expect(getByText('Sign and Send Transaction')).toBeOnTheScreen();
     });
 });

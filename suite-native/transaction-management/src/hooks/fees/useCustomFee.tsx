@@ -5,38 +5,35 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
-import {
-    AccountKey,
-    TokenAddress,
-    isFinalPrecomposedTransaction,
-} from '@suite-common/wallet-types';
+import { AccountKey, FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import {
-    FeesFormValues,
-    NativeSendRootState,
-    selectCustomFeeLevel,
-    selectFeeLevelTransactionBytes,
-} from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { calculateCustomFeeLevelThunk } from '../sendFormThunks';
+import { FeesFormValues } from '../../feesFormSchema';
+import { selectCustomFeeLevel, selectFeeLevelTransactionBytes } from '../../selectors';
+import { NativeSendRootState } from '../../sendFormSlice';
+import { calculateCustomFeeLevelThunk } from '../../thunks';
 
 type UseCustomFeeProps = {
     accountKey: AccountKey;
-    tokenContract?: TokenAddress;
+    formState: FormState | null | undefined;
 };
 
-export const useCustomFee = ({ accountKey, tokenContract }: UseCustomFeeProps) => {
-    const dispatch = useDispatch();
+const FEE_PER_UNIT_FIELD_NAME = 'customFeePerUnit';
+const FEE_LIMIT_FIELD_NAME = 'customFeeLimit';
+
+export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     const debounce = useDebounce();
     const { translate } = useTranslate();
+    const dispatch = useDispatch();
 
     const [isErrorBoxVisible, setIsErrorBoxVisible] = useState(false);
     const [isFeeLoading, setIsFeeLoading] = useState(false);
 
     const customFeeLevel = useSelector(selectCustomFeeLevel);
+
     const networkType = useSelector((state: AccountsRootState) =>
         selectAccountNetworkType(state, accountKey),
     );
@@ -49,21 +46,18 @@ export const useCustomFee = ({ accountKey, tokenContract }: UseCustomFeeProps) =
         watch,
     } = useFormContext<FeesFormValues>();
 
-    const feePerUnitFieldName = 'customFeePerUnit';
-    const feeLimitFieldName = 'customFeeLimit';
+    const { customFeePerUnit, customFeeLimit } = getValues();
 
-    const watchedFeePerUnit = watch(feePerUnitFieldName, '0');
-    const watchedFeeLimit = watch(feeLimitFieldName, '1') as string;
+    const watchedFeePerUnit = watch(FEE_PER_UNIT_FIELD_NAME, '0');
+    const watchedFeeLimit = watch(FEE_LIMIT_FIELD_NAME, '1') as string;
 
     const normalLevelTransactionBytes = useSelector((state: NativeSendRootState) =>
         selectFeeLevelTransactionBytes(state, 'normal'),
     );
 
     const handleValuesChange = useCallback(async () => {
-        const { customFeePerUnit, customFeeLimit } = getValues();
-
         trigger();
-        if (!customFeePerUnit) {
+        if (!customFeePerUnit || !formState) {
             setIsFeeLoading(false);
 
             return;
@@ -71,12 +65,14 @@ export const useCustomFee = ({ accountKey, tokenContract }: UseCustomFeeProps) =
 
         setIsFeeLoading(true);
         setIsErrorBoxVisible(false);
+
         const response = await dispatch(
             calculateCustomFeeLevelThunk({
                 accountKey,
-                tokenContract,
-                feePerUnit: customFeePerUnit,
-                feeLimit: customFeeLimit,
+                formState,
+                selectedFeeLevel: 'custom',
+                customFeePerUnit,
+                customFeeLimit,
             }),
         );
 
@@ -84,14 +80,24 @@ export const useCustomFee = ({ accountKey, tokenContract }: UseCustomFeeProps) =
             if (networkType === 'ethereum') {
                 setIsErrorBoxVisible(true);
             } else {
-                setError(feePerUnitFieldName, {
+                setError(FEE_PER_UNIT_FIELD_NAME, {
                     message: translate('moduleSend.fees.error'),
                 });
             }
         }
 
         setIsFeeLoading(false);
-    }, [accountKey, dispatch, networkType, setError, tokenContract, translate, trigger, getValues]);
+    }, [
+        trigger,
+        customFeePerUnit,
+        formState,
+        customFeeLimit,
+        dispatch,
+        accountKey,
+        networkType,
+        setError,
+        translate,
+    ]);
 
     useEffect(() => {
         setIsFeeLoading(true);
@@ -113,7 +119,7 @@ export const useCustomFee = ({ accountKey, tokenContract }: UseCustomFeeProps) =
         ? customFeeLevel.fee
         : feeEstimate;
 
-    const hasFeePerByteError = G.isNotNullable(errors[feePerUnitFieldName]);
+    const hasFeePerByteError = G.isNotNullable(errors[FEE_PER_UNIT_FIELD_NAME]);
     const isSubmittable =
         G.isNotNullable(customFeeLevel) && !hasFeePerByteError && !isErrorBoxVisible;
 

@@ -11,7 +11,7 @@ import {
 
 import { FeesFormType } from '../../../..';
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { useFeesForm } from '../../../../hooks/useFeesForm';
+import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
 import { CustomFeeInputs, CustomFeeInputsProps } from '../CustomFeeInputs';
 
 // Mock the selectors

@@ -14,7 +14,6 @@ export const SendFeesScreen = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    if (!account) return;
 
     return (
         <Screen
@@ -22,7 +21,7 @@ export const SendFeesScreen = ({
                 <AccountBalanceScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
             }
         >
-            <SendFeesForm accountKey={accountKey} tokenContract={tokenContract} />
+            {account && <SendFeesForm accountKey={accountKey} tokenContract={tokenContract} />}
         </Screen>
     );
 };

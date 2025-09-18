@@ -9,6 +9,7 @@ import {
 import { TradingExchangeApprovalScreen } from '../screens/TradingExchangeApprovalScreen';
 import { TradingExchangePreviewScreen } from '../screens/TradingExchangePreviewScreen';
 import { TradingExchangeRevokeScreen } from '../screens/TradingExchangeRevokeScreen';
+import { TradingFeesScreen } from '../screens/TradingFeesScreen';
 import { TradingHistoryScreen } from '../screens/TradingHistoryScreen';
 import { TradingReceiveAccountsPickerScreen } from '../screens/TradingReceiveAccountsPickerScreen';
 import { TradingScreen } from '../screens/TradingScreen';
@@ -49,6 +50,11 @@ export const TradingStackNavigator = () => (
             options={{ title: TradingStackRoutes.TradingExchangeRevoke }}
             name={TradingStackRoutes.TradingExchangeRevoke}
             component={TradingExchangeRevokeScreen}
+        />
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingFees }}
+            name={TradingStackRoutes.TradingFees}
+            component={TradingFeesScreen}
         />
     </TradingStack.Navigator>
 );

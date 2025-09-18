@@ -1,4 +1,5 @@
 import { PropsWithChildren } from 'react';
+import { Pressable } from 'react-native';
 
 import { HStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -14,10 +15,16 @@ const infoRowStyle = prepareNativeStyle<{ noBorder?: boolean }>((utils, { noBord
 
 type TradeInfoRowProps = PropsWithChildren<{
     noBorder?: boolean;
+    onPress?: () => void;
+    testID?: string;
 }>;
 
-export const TradeInfoRow = ({ children, noBorder }: TradeInfoRowProps) => {
+export const TradeInfoRow = ({ children, noBorder, onPress, testID }: TradeInfoRowProps) => {
     const { applyStyle } = useNativeStyles();
 
-    return <HStack style={applyStyle(infoRowStyle, { noBorder })}>{children}</HStack>;
+    return (
+        <Pressable onPress={onPress} testID={testID}>
+            <HStack style={applyStyle(infoRowStyle, { noBorder })}>{children}</HStack>
+        </Pressable>
+    );
 };
