@@ -1,3 +1,8 @@
+# 1.1.9
+
+- npm-prerelease: @trezor/type-utils 1.1.9-beta.1 (00a0110ac7)
+- feat(wallet-core): implement persistentDeviceData and related thunks (209d0d938c)
+
 # 1.1.8
 
 - npm-prerelease: @trezor/type-utils 1.1.8-beta.2 (1f6de86240)
