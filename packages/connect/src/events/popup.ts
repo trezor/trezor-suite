@@ -1,6 +1,6 @@
 import type { TransportInfo } from './transport';
 import { UI_EVENT } from './ui-request';
-import type { ConnectSettings, SystemInfo } from '../types';
+import type { ConnectSettings, SystemInfo } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {

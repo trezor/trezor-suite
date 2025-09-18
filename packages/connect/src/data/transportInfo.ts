@@ -1,6 +1,14 @@
-// origin: https://github.com/trezor/connect/blob/develop/src/js/data/TransportInfo.js
-
-import type { BridgeInfo } from '../events/transport';
+export interface BridgeInfo {
+    version: number[];
+    packages: {
+        name: string;
+        platform: string[];
+        url: string;
+        signature?: string;
+        preferred?: boolean;
+    }[];
+    changelog: string;
+}
 
 const info: BridgeInfo = {
     version: [2, 0, 27],

@@ -16,13 +16,10 @@ import {
     UiRequestConfirmation,
     createDeviceMessage,
 } from '../events';
-import type {
-    ConnectSettings,
-    DeviceState,
-    FirmwareRange,
-    PrecomposeResultFinal,
-    StaticSessionId,
-} from '../types';
+import type { PrecomposeResultFinal } from '../types/api/composeTransaction';
+import type { DeviceState, StaticSessionId } from '../types/device';
+import type { FirmwareRange } from '../types/firmware';
+import type { ConnectSettings } from '../types/settings';
 import { getHost } from '../utils/urlUtils';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };

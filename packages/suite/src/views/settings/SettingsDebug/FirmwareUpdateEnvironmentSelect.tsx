@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { firmwareActions, selectFirmwareUpdateSource } from '@suite-common/firmware';
-import { FirmwareUpdateSource } from '@trezor/connect/src/data/firmwareInfo';
+import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';

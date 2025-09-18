@@ -2,20 +2,20 @@
  * messages to UI emitted as UI_EVENT
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    FirmwareRelease,
+    FirmwareType,
+    VersionArray,
+} from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type {
-    BitcoinNetworkInfo,
-    CoinInfo,
-    Device,
-    FirmwareType,
-    SelectFeeLevel,
-    VersionArray,
-} from '../types';
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
-import { MethodPermission } from '../core/AbstractMethod';
+import type { MethodPermission } from '../core/AbstractMethod';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
+import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
+import type { Device } from '../types/device';
+import type { SelectFeeLevel } from '../types/fees';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const UI_EVENT = 'UI_EVENT';

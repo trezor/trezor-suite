@@ -47,3 +47,10 @@ export type FirmwareUpdateFlowType =
     | 'reboot_and_upgrade'
     | 'manual'
     | 'unknown_flow';
+
+export type FirmwareUpdateSource =
+    | 'production'
+    | 'test-unsigned'
+    | 'test-signed'
+    | 'localhost-unsigned'
+    | 'localhost-signed';

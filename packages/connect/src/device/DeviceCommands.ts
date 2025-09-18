@@ -6,8 +6,8 @@ import { ERRORS, PROTO } from '../constants';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
 import type { TypedCallProvider } from '../device/DeviceCurrentSession';
 import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
-import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
+import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types/coinInfo';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 

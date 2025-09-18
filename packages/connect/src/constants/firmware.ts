@@ -1,4 +1,4 @@
-import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '../types';
+import type { FirmwareHashCheckError, FirmwareRevisionCheckError } from '../types/device';
 
 export const HASH_CHECK_MAX_ATTEMPTS = 3;
 

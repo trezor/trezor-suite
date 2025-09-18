@@ -2,12 +2,8 @@
 import { cloneObject } from '@trezor/utils';
 
 import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
-import type {
-    BitcoinNetworkInfo,
-    DerivationPath,
-    EthereumNetworkInfo,
-    MiscNetworkInfo,
-} from '../types';
+import type { BitcoinNetworkInfo, EthereumNetworkInfo, MiscNetworkInfo } from '../types/coinInfo';
+import type { DerivationPath } from '../types/params';
 import { fromHardened, toHardened } from '../utils/pathUtils';
 
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];
