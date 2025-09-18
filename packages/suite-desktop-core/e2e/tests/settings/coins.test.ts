@@ -39,7 +39,6 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                 'thol',
                 'txrp',
                 // 'txlm', add when removed from experimental features
-                'tada',
                 'dsol',
             ];
 
