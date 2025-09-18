@@ -1,3 +1,15 @@
+# 1.4.3
+
+- npm-prerelease: @trezor/protobuf 1.4.3-beta.1 (789d9d2d29)
+- chore(protobuf): add battery SoC to Features (dac0254a25)
+- feat: add evoluGetKeys method (a371a88940)
+- chore(protobuf): update, reorder (d054ce6435)
+- fix(protobuf): patch CoinPurchaseMemo.amount (740f93ce7d)
+- chore(protobuf): update THP protobuf messages (94267f36aa)
+- fix(trading): receive display amount (d27646a3d3)
+- chore(protobuf): update `THP` MessageType enum (3270d50505)
+- chore(protobuf): rename proto TxAckPaymentRequest > PaymentRequest (cd0f551fb8)
+
 # 1.4.2
 
 - npm-prerelease: @trezor/protobuf 1.4.2-beta.1 (6a61f26191)
