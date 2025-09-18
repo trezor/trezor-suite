@@ -1,3 +1,10 @@
+# 9.2.3
+
+- fix: add depcheck scripts for all the package.json-s (a4f8b09e38)
+- npm-prerelease: @trezor/connect-plugin-stellar 9.2.3-beta.1 (dde77a277f)
+- fix(connect-plugin-ethereum): put export under publishConfig in package.json (16f0b4f3fa)
+- npm-prerelease: @trezor/connect-plugin-stellar 9.2.2-beta.1 (b590564772)
+
 # 9.2.1
 
 - npm-prerelease: @trezor/connect-plugin-stellar 9.2.1-beta.1 (84f5e592e5)
