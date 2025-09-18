@@ -167,8 +167,15 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                 const isPaired = devices.find(d => d.id === id)?.paired;
                 if (!isPaired) {
                     const bindings = await this.getNapiBindings();
-                    await bindings.connectDevice(id, timeout, (_err, _resp) => {
-                        // TODO: emit events from NAPI
+                    await bindings.connectDevice(id, timeout, (_err, data) => {
+                        try {
+                            const json = JSON.parse(data);
+                            if (json.event == 'device_connection_status') {
+                                this.emit('device-update', json.payload.device);
+                            }
+                        } catch {
+                            // silent
+                        }
                     });
                 }
             } catch (error) {
