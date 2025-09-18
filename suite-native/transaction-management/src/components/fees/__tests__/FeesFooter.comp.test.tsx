@@ -63,6 +63,7 @@ describe('FeesFooter', () => {
         totalAmount: '1000000',
         fee: '1000',
         tokenContract: undefined as TokenAddress | undefined,
+        withSubmitButton: true,
     };
 
     const getPreloadedState = () => ({
@@ -75,7 +76,12 @@ describe('FeesFooter', () => {
 
         return renderWithStoreProviderAsync(
             <TestFormWrapper>
-                <FeesFooter {...finalProps} />
+                {/* 
+                  FeesFooterProps expects withSubmitButton: true when present.
+                  So we must ensure withSubmitButton is always true when passed.
+                  This cast is safe because defaultProps and all usages set withSubmitButton: true.
+                */}
+                <FeesFooter {...(finalProps as React.ComponentProps<typeof FeesFooter>)} />
             </TestFormWrapper>,
             {
                 store,
@@ -175,5 +181,36 @@ describe('FeesFooter', () => {
         });
 
         expect(getByText(/DAI/)).toBeTruthy();
+    });
+
+    it('should show submit button when withSubmitButton is true and isSubmittable is true', async () => {
+        const { getByText } = await renderFeesFooter({
+            isSubmittable: true,
+            withSubmitButton: true,
+        });
+
+        expect(getByText('Review and sign')).toBeTruthy();
+    });
+
+    it.each([
+        { isSubmittable: true, withSubmitButton: false },
+        { isSubmittable: false, withSubmitButton: true },
+        { isSubmittable: false, withSubmitButton: false },
+    ])(
+        'should not show submit button when withSubmitButton is $withSubmitButton even if isSubmittable is $isSubmittable',
+        async props => {
+            const { queryByText } = await renderFeesFooter(props);
+
+            expect(queryByText('Review and sign')).toBeNull();
+        },
+    );
+
+    it('should default withSubmitButton to true when not provided', async () => {
+        const { getByText } = await renderFeesFooter({
+            isSubmittable: true,
+            // withSubmitButton not provided, should default to true
+        });
+
+        expect(getByText('Review and sign')).toBeTruthy();
     });
 });

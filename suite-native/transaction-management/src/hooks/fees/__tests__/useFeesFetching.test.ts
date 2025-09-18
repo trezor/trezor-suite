@@ -6,7 +6,7 @@ import {
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { getBtcAccount, getWalletState } from '../../__fixtures__/walletState';
+import { getBtcAccount, getWalletState } from '../../../__fixtures__/walletState';
 import { useFeesFetching } from '../useFeesFetching';
 
 // Mock the fee hooks since they have side effects and we want to test the hook's logic

@@ -334,4 +334,7 @@ export type TradingStackParamList = {
     [TradingStackRoutes.TradingExchangePreview]: undefined;
     [TradingStackRoutes.TradingExchangeApproval]: undefined;
     [TradingStackRoutes.TradingExchangeRevoke]: undefined;
+    [TradingStackRoutes.TradingFees]: {
+        accountKey: AccountKey;
+    };
 };

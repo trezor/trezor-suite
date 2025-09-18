@@ -120,6 +120,12 @@ export const selectIsAmountInputActive = (state: TradingRootState) =>
 export const selectActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType;
 
+export const selectTradingSendFormDraft = (state: TradingRootState) =>
+    state.wallet.trading.sendFormDraft;
+
+export const selectTradingDestinationTagFromDraft = (state: TradingRootState) =>
+    state.wallet.trading.sendFormDraft?.destinationTag;
+
 export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
     [
         selectCurrentFiatRates,

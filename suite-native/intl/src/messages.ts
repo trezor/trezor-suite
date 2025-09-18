@@ -2264,6 +2264,10 @@ export const messages = {
             title: 'Swap',
             fromAccount: 'From',
             toAccount: 'To',
+            details: 'Transaction details',
+            feeLabel: 'Fee',
+            providerNamePlaceholder: 'Provider',
+            providerReceiveAddressLabel: "{providerName}'s receive address",
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
@@ -2289,6 +2293,13 @@ export const messages = {
             currentLimit: 'Current limit',
             newLimit: 'New limit',
             unlimited: 'Unlimited',
+        },
+        tradingFeesScreen: {
+            title: 'Fee picker',
+            description: {
+                title: 'Transaction fee',
+                body: 'Fees are paid directly to network miners for processing your transactions.',
+            },
         },
         exchangeApprovalLimitSheet: {
             title: 'Set limit',

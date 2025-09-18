@@ -10,6 +10,7 @@ import {
     prepareTradingReducer,
 } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
+import { FormState } from '@suite-common/wallet-types';
 
 import { TRADING_BUY, TradingBuyState, buyActions, buyInitialState, buyReducer } from './buySlice';
 import {
@@ -36,6 +37,7 @@ export interface TradingState extends CommonTradingState {
     tradeOrderIdToBeOpened: string | undefined;
     isAmountInputActive: boolean;
     activeTradingType: TradingType | undefined;
+    sendFormDraft: FormState | undefined;
 }
 
 export type TradingRootState = {
@@ -54,6 +56,7 @@ export const initialState: TradingState = {
     tradeOrderIdToBeOpened: undefined,
     isAmountInputActive: false,
     activeTradingType: undefined,
+    sendFormDraft: undefined,
 };
 
 export const tradingSlice = createSliceWithExtraDeps({
@@ -72,6 +75,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             buyReducer(state.buy, buyActions.clearState());
             exchangeReducer(state.exchange, exchangeActions.clearState());
             sellReducer(state.sell, sellActions.clearState());
+            state.sendFormDraft = undefined;
         },
         setTradeOrderIdToBeOpened: (state, { payload }: PayloadAction<string>) => {
             state.tradeOrderIdToBeOpened = payload;
@@ -88,6 +92,12 @@ export const tradingSlice = createSliceWithExtraDeps({
         clearActiveTradingType: state => {
             state.activeTradingType = undefined;
         },
+        setTradingSendFormDraft: (state, { payload }: PayloadAction<FormState>) => {
+            state.sendFormDraft = payload;
+        },
+        clearTradingSendFormDraft: state => {
+            state.sendFormDraft = undefined;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
@@ -99,11 +109,13 @@ export const tradingSlice = createSliceWithExtraDeps({
                 state.exchange.receiveAccountKey = undefined;
                 state.exchange.receiveAddress = undefined;
                 state.sell.tradingAccountKey = undefined;
+                state.sendFormDraft = undefined;
             })
             .addMatcher(
                 isAnyOf(buyActions.clearState, exchangeActions.clearState, sellActions.clearState),
                 state => {
                     state.tradeOrderIdToBeOpened = undefined;
+                    state.sendFormDraft = undefined;
                 },
             )
             .addMatcher(

@@ -1,18 +1,15 @@
-import { D, G, pipe } from '@mobily/ts-belt';
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { G } from '@mobily/ts-belt';
+import { isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     PushTransactionError,
     SignTransactionError,
     SignTransactionTimeoutError,
-    composeSendFormTransactionFeeLevelsThunk,
     deviceActions,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
-    selectConvertedNetworkFeeInfo,
     selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
@@ -22,20 +19,14 @@ import {
 import {
     Account,
     AccountKey,
-    FormState,
     GeneralPrecomposedTransactionFinal,
     TokenAddress,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
-import {
-    FeeLevelsMaxAmount,
-    NativeSupportedFeeLevel,
-    storeFeeLevels,
-} from '@suite-native/transaction-management';
+import { UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { Success } from '@trezor/connect';
 
@@ -142,58 +133,6 @@ export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk(
     },
 );
 
-export const calculateFeeLevelsMaxAmountThunk = createThunk<
-    FeeLevelsMaxAmount,
-    { formState: FormState; accountKey: AccountKey }
->(
-    `${SEND_MODULE_PREFIX}/calculateMaxAmountThunk`,
-    async ({ formState, accountKey }, { dispatch, getState }) => {
-        const account = selectAccountByKey(getState(), accountKey);
-        if (!account) throw new Error('Account not found.');
-
-        const networkFeeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        const network = getNetwork(account.symbol);
-
-        if (!networkFeeInfo) throw new Error('Network fees not found.');
-
-        const response = await dispatch(
-            composeSendFormTransactionFeeLevelsThunk({
-                formState: {
-                    ...formState,
-                    setMaxOutputId: 0, // Marks first outputs as the one that should be maximized.
-                },
-                composeContext: {
-                    account,
-                    network,
-                    feeInfo: networkFeeInfo,
-                },
-            }),
-        );
-
-        if (isFulfilled(response)) {
-            return pipe(
-                response.payload,
-                D.filter(x => 'max' in x),
-                D.map(y => (y as GeneralPrecomposedTransactionFinal).max),
-            ) as FeeLevelsMaxAmount;
-        }
-
-        throw new Error('Unable to get the max amounts.');
-    },
-);
-
-export type UpdateSelectedFeeLevelThunkParams = {
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
-} & (
-    | {
-          feeLevelLabel: Exclude<NativeSupportedFeeLevel, 'custom'>;
-          feePerUnit?: never;
-          feeLimit?: never;
-      }
-    | { feeLevelLabel: 'custom'; feePerUnit: string; feeLimit?: string }
-);
-
 export const updateSelectedFeeLevelThunk = createThunk(
     `${SEND_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
     (
@@ -220,63 +159,6 @@ export const updateSelectedFeeLevelThunk = createThunk(
         }
 
         dispatch(sendFormActions.storeDraft({ accountKey, tokenContract, formState: draftCopy }));
-    },
-);
-
-export const calculateCustomFeeLevelThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/calculateCustomFeeLevelThunk`,
-    async (
-        {
-            accountKey,
-            tokenContract,
-            feePerUnit,
-            feeLimit,
-        }: {
-            accountKey: AccountKey;
-            feePerUnit: string;
-            feeLimit?: string;
-            tokenContract?: TokenAddress;
-        },
-        { dispatch, getState },
-    ) => {
-        const account = selectAccountByKey(getState(), accountKey);
-        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account?.symbol);
-
-        const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
-
-        if (!draft || !account || !feeInfo) throw Error('Draft not found.');
-
-        const network = getNetwork(account.symbol);
-
-        const draftCopy = { ...draft };
-
-        draftCopy.selectedFee = 'custom';
-        draftCopy.feePerUnit = feePerUnit;
-        if (feeLimit) {
-            draftCopy.feeLimit = feeLimit;
-        }
-
-        const response = await dispatch(
-            composeSendFormTransactionFeeLevelsThunk({
-                formState: draftCopy,
-                composeContext: {
-                    account,
-                    feeInfo,
-                    network,
-                },
-            }),
-        );
-
-        if (isRejected(response)) {
-            throw Error(response.payload?.message ?? 'Unable to compose fresh fee levels.');
-        }
-
-        const feeLevels = response.payload;
-        dispatch(storeFeeLevels({ feeLevels }));
-
-        if (!isFinalPrecomposedTransaction(feeLevels.custom)) {
-            throw Error('Unable to compose custom fee level.');
-        }
     },
 );
 

@@ -10,7 +10,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
-    tradingActions,
+    tradingActions as tradingCommonActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -25,9 +25,15 @@ import {
 import { Account, FeeInfo, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { NativeSupportedFeeLevel, storeFeeLevels } from '@suite-native/transaction-management';
+import {
+    NativeSupportedFeeLevel,
+    UpdateSelectedFeeLevelThunkParams,
+    storeFeeLevels,
+} from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
+import { tradingActions } from './reducers';
+import { selectTradingSendFormDraft } from './selectors/commonSelectors';
 import { createFormStateForSendForm } from './utils';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
@@ -40,10 +46,13 @@ export const clearTradingStateThunk = createThunk(
         dispatch(tradingSellActions.saveSelectedQuote(undefined));
 
         // Clear composed transaction info
-        dispatch(tradingActions.saveComposedTransactionInfo({}));
+        dispatch(tradingCommonActions.saveComposedTransactionInfo({}));
 
-        // Clear send form transaction state (precomposed, signed, serialized)
-        dispatch(sendFormActions.discardTransaction());
+        // Clear send form transaction state (precomposed, signed, serialized, ...)
+        dispatch(sendFormActions.dispose());
+
+        // Clear form draft with selected fees
+        dispatch(tradingActions.clearTradingSendFormDraft());
     },
 );
 
@@ -88,6 +97,8 @@ export const composeTradingTransactionThunk = createThunk(
             network,
             feeInfo,
             selectedFeeLevel = 'normal',
+            feeLimit,
+            feePerUnit,
             isSlip24Active,
         }: {
             tradeType: TradingSellType | TradingExchangeType;
@@ -95,6 +106,8 @@ export const composeTradingTransactionThunk = createThunk(
             network: Network;
             feeInfo: FeeInfo | null;
             selectedFeeLevel?: NativeSupportedFeeLevel;
+            feeLimit?: string;
+            feePerUnit?: string;
             isSlip24Active?: boolean;
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
@@ -125,7 +138,11 @@ export const composeTradingTransactionThunk = createThunk(
             const formState = createFormStateForSendForm({
                 quote: selectedQuote,
                 providers,
-                feeLevel: { label: selectedFeeLevel, feePerUnit: '' },
+                feeLevel: {
+                    label: selectedFeeLevel,
+                    feePerUnit: feePerUnit ?? '',
+                    feeLimit: feeLimit ?? '',
+                },
                 isSlip24Active,
                 sendAccountKey: account.key,
                 receiveAccountKey,
@@ -158,7 +175,7 @@ export const composeTradingTransactionThunk = createThunk(
 
                 if (composed && composed.type === 'final') {
                     dispatch(
-                        tradingActions.saveComposedTransactionInfo({
+                        tradingCommonActions.saveComposedTransactionInfo({
                             selectedFee: selectedFeeLevel,
                             composed: {
                                 fee: composed.fee,
@@ -169,6 +186,16 @@ export const composeTradingTransactionThunk = createThunk(
                                 maxPriorityFeePerGas: composed.maxPriorityFeePerGas,
                                 token: composed.token,
                             },
+                        }),
+                    );
+
+                    // Store the form state in trading draft so it's available for TradingFeesForm
+                    dispatch(
+                        tradingActions.setTradingSendFormDraft({
+                            ...formState,
+                            selectedFee: selectedFeeLevel,
+                            feePerUnit: composed.feePerByte,
+                            feeLimit: composed.feeLimit ?? '',
                         }),
                     );
                 }
@@ -274,5 +301,28 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             success: true,
             payload: pushResult.payload,
         });
+    },
+);
+
+export const updateTradingSelectedFeeLevelThunk = createThunk(
+    `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/updateSelectedFeeLevelThunk`,
+    (
+        { feeLevelLabel, feePerUnit, feeLimit }: UpdateSelectedFeeLevelThunkParams,
+        { dispatch, getState },
+    ) => {
+        const draft = selectTradingSendFormDraft(getState());
+
+        if (!draft) throw Error('Draft not found.');
+        const draftCopy = { ...draft };
+
+        draftCopy.selectedFee = feeLevelLabel;
+        if (feePerUnit) {
+            draftCopy.feePerUnit = feePerUnit;
+        }
+        if (feeLimit) {
+            draftCopy.feeLimit = feeLimit;
+        }
+
+        dispatch(tradingActions.setTradingSendFormDraft(draftCopy));
     },
 );

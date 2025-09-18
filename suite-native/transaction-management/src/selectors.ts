@@ -1,10 +1,5 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import {
-    AccountKey,
-    GeneralPrecomposedTransaction,
-    TokenAddress,
-} from '@suite-common/wallet-types';
-import { getSendFormDraftKey } from '@suite-common/wallet-utils';
+import { GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { NativeSendRootState } from './sendFormSlice';
@@ -40,13 +35,3 @@ export const selectFeeLevelTransactionBytes = createMemoizedSelector(
         return 0;
     },
 );
-
-export const selectDestinationTagFromDraft = (
-    state: NativeSendRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-) => {
-    const draftKey = getSendFormDraftKey(accountKey, tokenContract);
-
-    return state.wallet.send.drafts[draftKey]?.destinationTag;
-};

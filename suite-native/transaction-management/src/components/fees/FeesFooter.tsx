@@ -25,15 +25,18 @@ import {
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-type FeesFooterProps = {
+type BaseProps = {
     accountKey: AccountKey;
     isSubmittable: boolean;
-    onSubmit: () => void;
     symbol: NetworkSymbol;
     totalAmount: string;
     fee: string;
     tokenContract?: TokenAddress;
 };
+
+type FeesFooterProps =
+    | (BaseProps & { withSubmitButton: false; onSubmit?: never })
+    | (BaseProps & { withSubmitButton: true; onSubmit: () => void });
 
 const CARD_BOTTOM_PADDING = 40;
 
@@ -145,6 +148,7 @@ export const FeesFooter = ({
     fee,
     symbol,
     tokenContract,
+    withSubmitButton,
 }: FeesFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -158,11 +162,13 @@ export const FeesFooter = ({
         selectAreFeesLoading(state, symbol),
     );
 
+    const isSubmitButtonVisible = isSubmittable && withSubmitButton;
+
     const animatedFooterStyle = useAnimatedStyle(
         () => ({
-            paddingBottom: withTiming(isSubmittable ? CARD_BOTTOM_PADDING : 0),
+            paddingBottom: withTiming(isSubmitButtonVisible ? CARD_BOTTOM_PADDING : 0),
         }),
-        [isSubmittable],
+        [isSubmitButtonVisible],
     );
 
     return (
@@ -187,7 +193,7 @@ export const FeesFooter = ({
                     )}
                 </Animated.View>
             </Card>
-            {isSubmittable && (
+            {isSubmitButtonVisible && (
                 <Animated.View
                     style={applyStyle(buttonWrapperStyle)}
                     entering={FadeInDown}

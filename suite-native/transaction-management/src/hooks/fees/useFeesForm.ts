@@ -9,10 +9,10 @@ import {
 import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { useForm } from '@suite-native/forms';
 
-import { FeesFormValues, feesFormValidationSchema } from '../feesFormSchema';
-import { selectFeeLevels } from '../selectors';
-import { NativeSupportedFeeLevel } from '../types/fees';
-import { getFeeValue } from '../utils';
+import { FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
+import { selectFeeLevels } from '../../selectors';
+import { NativeSupportedFeeLevel } from '../../types/fees';
+import { getFeeValue } from '../../utils';
 
 export type UseFeesFormProps = {
     accountKey: AccountKey;

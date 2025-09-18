@@ -1,8 +1,7 @@
-import { FormState, GeneralPrecomposedLevels, TokenAddress } from '@suite-common/wallet-types';
+import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 import {
     selectCustomFeeLevel,
-    selectDestinationTagFromDraft,
     selectFeeLevelTransactionBytes,
     selectFeeLevels,
 } from '../selectors';
@@ -154,60 +153,6 @@ describe('send selectors', () => {
             const result = selectFeeLevelTransactionBytes(state, 'normal');
 
             expect(result).toBe(0);
-        });
-    });
-
-    describe('selectDestinationTagFromDraft', () => {
-        it('should return destination tag when it exists in draft', () => {
-            const mockDrafts = {
-                'btc-0': {
-                    destinationTag: '12345',
-                    outputs: [],
-                    selectedFee: 'normal',
-                },
-            };
-
-            // Cast mockDrafts to the correct type to satisfy FormState requirements
-            const mockDraftsTyped: Record<string, FormState> = mockDrafts as unknown as Record<
-                string,
-                FormState
-            >;
-
-            const state = createMockState({ drafts: mockDraftsTyped });
-            const result = selectDestinationTagFromDraft(state, 'btc-0');
-
-            expect(result).toBe('12345');
-        });
-
-        it('should return undefined when draft does not exist', () => {
-            const state = createMockState();
-            const result = selectDestinationTagFromDraft(state, 'btc-0');
-
-            expect(result).toBeUndefined();
-        });
-
-        it('should handle token contract parameter', () => {
-            const mockDrafts = {
-                'eth-0-0x1234567890123456789012345678901234567890': {
-                    destinationTag: '67890',
-                    outputs: [],
-                    selectedFee: 'normal',
-                },
-            };
-
-            const mockDraftsTyped: Record<string, FormState> = mockDrafts as unknown as Record<
-                string,
-                FormState
-            >;
-
-            const state = createMockState({ drafts: mockDraftsTyped });
-            const result = selectDestinationTagFromDraft(
-                state,
-                'eth-0',
-                '0x1234567890123456789012345678901234567890' as TokenAddress,
-            );
-
-            expect(result).toBe('67890');
         });
     });
 });

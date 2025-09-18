@@ -36,6 +36,7 @@ import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/token
 import { NativeSupportedFeeLevel } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
+import { selectTradingSendFormDraft } from '../../selectors/commonSelectors';
 import { selectExchangeSelectedSendAccount } from '../../selectors/exchangeSelectors';
 import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } from '../../thunks';
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
@@ -59,6 +60,12 @@ export const useExchangeFlow = () => {
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+
+    const {
+        selectedFee,
+        feePerUnit: feePerUnitDraft,
+        feeLimit: feeLimitDraft,
+    } = useSelector(selectTradingSendFormDraft) ?? {};
 
     const { contractAddress } = cryptoIdToNetworkAndContractAddress(selectedQuote?.send);
 
@@ -109,32 +116,45 @@ export const useExchangeFlow = () => {
     );
 
     // this is called when we want to compose a transaction
-    const composeRequest = async (selectedFeeLevel?: NativeSupportedFeeLevel) => {
-        if (!network || !networkFeeInfo) {
-            console.error('Network and networkFeeInfo are required for composing transaction');
+    const composeRequest = useCallback(
+        async ({
+            selectedFeeLevel,
+            feePerUnit,
+            feeLimit,
+        }: {
+            selectedFeeLevel?: NativeSupportedFeeLevel;
+            feePerUnit?: string;
+            feeLimit?: string;
+        }) => {
+            if (!network || !networkFeeInfo) {
+                console.error('Network and networkFeeInfo are required for composing transaction');
 
-            return;
-        }
+                return;
+            }
 
-        try {
-            const levels = await dispatch(
-                composeTradingTransactionThunk({
-                    tradeType: 'exchange',
-                    account: sendAccount,
-                    network,
-                    feeInfo: networkFeeInfo,
-                    selectedFeeLevel,
-                }),
-            ).unwrap();
+            try {
+                const levels = await dispatch(
+                    composeTradingTransactionThunk({
+                        tradeType: 'exchange',
+                        account: sendAccount,
+                        network,
+                        feeInfo: networkFeeInfo,
+                        selectedFeeLevel,
+                        feePerUnit,
+                        feeLimit,
+                    }),
+                ).unwrap();
 
-            return levels;
-        } catch (error) {
-            console.error('Failed to compose trading transaction:', error);
-        }
-    };
+                return levels;
+            } catch (error) {
+                console.error('Failed to compose trading transaction:', error);
+            }
+        },
+        [dispatch, network, networkFeeInfo, sendAccount],
+    );
 
     // this is called when we want to fetch fees and compose a transaction
-    const fetchFeesAndCompose = async () => {
+    const fetchFeesAndCompose = useCallback(async () => {
         if (!sendAccount) {
             console.error('Send account is required');
 
@@ -142,8 +162,12 @@ export const useExchangeFlow = () => {
         }
 
         await dispatch(updateFeeInfoThunk({ networkSymbol: sendAccount.symbol }));
-        await composeRequest('normal');
-    };
+        await composeRequest({
+            selectedFeeLevel: selectedFee as NativeSupportedFeeLevel,
+            feePerUnit: feePerUnitDraft,
+            feeLimit: feeLimitDraft,
+        });
+    }, [dispatch, sendAccount, composeRequest, selectedFee, feePerUnitDraft, feeLimitDraft]);
 
     const getCommonFunctions = useCallback(
         (trade?: ExchangeTrade) => {
@@ -178,38 +202,38 @@ export const useExchangeFlow = () => {
     );
 
     // changing trade state and initial confirmation
-    const confirmTrade = async ({
-        receiveAddress,
-        extraField,
-        trade,
-        approvalFlow,
-    }: TradingExchangeConfirmTradeProps & { sendAccount: any }): Promise<boolean> => {
-        const commonFunctions = getCommonFunctions(trade);
-        if (!commonFunctions) {
-            return false;
-        }
+    const confirmTrade = useCallback(
+        async ({
+            receiveAddress,
+            extraField,
+            trade,
+            approvalFlow,
+        }: TradingExchangeConfirmTradeProps & { sendAccount: any }): Promise<boolean> => {
+            const commonFunctions = getCommonFunctions(trade);
 
-        const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
-            commonFunctions;
+            if (!trade || !sendAccount || !commonFunctions) {
+                return false;
+            }
 
-        if (!trade || !sendAccount) {
-            return false;
-        }
+            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
+                commonFunctions;
 
-        return await dispatch(
-            exchangeThunks.confirmTradeThunk({
-                returnUrl,
-                receiveAddress,
-                account: sendAccount,
-                extraField,
-                trade,
-                approvalFlow,
-                triggerAnalyticsTradeConfirmation,
-                processResponseData,
-                nextStep,
-            }),
-        ).unwrap();
-    };
+            return await dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account: sendAccount,
+                    extraField,
+                    trade,
+                    approvalFlow,
+                    triggerAnalyticsTradeConfirmation,
+                    processResponseData,
+                    nextStep,
+                }),
+            ).unwrap();
+        },
+        [getCommonFunctions, sendAccount, dispatch],
+    );
 
     // this is called when we want to sign and send a transaction
     // waitForPushApproval is used so that we can wait for the user to approve the transaction before sending it
@@ -283,6 +307,16 @@ export const useExchangeFlow = () => {
             return false;
         }
     };
+
+    useEffect(() => {
+        if (selectedFee) {
+            composeRequest({
+                selectedFeeLevel: selectedFee as NativeSupportedFeeLevel,
+                feePerUnit: feePerUnitDraft,
+                feeLimit: feeLimitDraft,
+            });
+        }
+    }, [selectedFee, composeRequest, feePerUnitDraft, feeLimitDraft]);
 
     return {
         confirmTrade,
