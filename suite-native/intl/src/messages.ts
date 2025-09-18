@@ -175,6 +175,12 @@ export const messages = {
                     'Bluetooth is currently turned off on this phone. Go to phone settings and turn on Bluetooth.',
                 primaryButton: 'Open system settings',
             },
+            locationServicesDisabled: {
+                title: 'Enable Location Services',
+                description:
+                    'Location Services are currently disabled on this phone. Go to phone settings and enable them.',
+                primaryButton: 'Open system settings',
+            },
             pairingFailed: {
                 title: 'Bluetooth pairing failed',
                 description:
