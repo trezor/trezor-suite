@@ -10,7 +10,14 @@ export const useBluetoothSettings = () => {
         }
     }, []);
 
+    const openLocationServicesSettings = useCallback(() => {
+        if (Platform.OS === 'android') {
+            Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
+        }
+    }, []);
+
     return {
         openBluetoothSettings,
+        openLocationServicesSettings,
     };
 };

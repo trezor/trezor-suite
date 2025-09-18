@@ -115,7 +115,7 @@ class BluetoothManager {
         this.emitNearbyDevicesChange();
     };
 
-    public startDeviceScan = () => {
+    public startDeviceScan = (errorHandler?: (error: BleError) => void) => {
         const options: ScanOptions = {
             allowDuplicates: true, // ensures we get frequent scan updates even on iOS
         };
@@ -123,6 +123,7 @@ class BluetoothManager {
             if (error) {
                 errorLog('Scan error', error);
                 this.stopStaleNearbyDevicesRemoval();
+                errorHandler?.(error);
             }
             if (scannedDevice) {
                 debugLog(`Scanned device ${scannedDevice}`);

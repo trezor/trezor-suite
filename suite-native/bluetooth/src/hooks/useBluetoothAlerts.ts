@@ -19,7 +19,7 @@ export const useBluetoothAlerts = () => {
     const dispatch = useDispatch();
 
     const { requestBluetoothPermission } = useBluetoothPermissions();
-    const { openBluetoothSettings } = useBluetoothSettings();
+    const { openBluetoothSettings, openLocationServicesSettings } = useBluetoothSettings();
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
@@ -75,6 +75,19 @@ export const useBluetoothAlerts = () => {
         hideAlert,
     ]);
 
+    const showLocationServicesDisabledAlert = useCallback(() => {
+        showAlert({
+            title: translate('bluetooth.alerts.locationServicesDisabled.title'),
+            description: translate('bluetooth.alerts.locationServicesDisabled.description'),
+            primaryButtonTitle: translate(
+                'bluetooth.alerts.locationServicesDisabled.primaryButton',
+            ),
+            onPressPrimaryButton: openLocationServicesSettings,
+            secondaryButtonTitle: translate('generic.buttons.cancel'),
+            onPressSecondaryButton: navigation.goBack,
+        });
+    }, [showAlert, openLocationServicesSettings, translate, navigation]);
+
     const showPairingFailedAlert = useCallback(() => {
         showAlert({
             title: translate('bluetooth.alerts.pairingFailed.title'),
@@ -103,6 +116,7 @@ export const useBluetoothAlerts = () => {
 
     return {
         showOrHideBluetoothAlert,
+        showLocationServicesDisabledAlert,
         showPairingFailedAlert,
         showSystemUnpairingAlert,
     };

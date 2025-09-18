@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { bluetoothManager } from '@trezor/transport-native-bluetooth';
+import { BleError, BleErrorCode, bluetoothManager } from '@trezor/transport-native-bluetooth';
 
 import { selectBluetoothAdapterStatus, selectBluetoothPermissionStatus } from '../selectors';
 import { useBluetoothAlerts } from './useBluetoothAlerts';
@@ -10,12 +10,21 @@ import { useBluetoothPermissions } from './useBluetoothPermissions';
 
 export const useBluetoothManager = () => {
     const { requestBluetoothPermission } = useBluetoothPermissions();
-    const { showOrHideBluetoothAlert } = useBluetoothAlerts();
+    const { showOrHideBluetoothAlert, showLocationServicesDisabledAlert } = useBluetoothAlerts();
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
 
     const [hasPermissionBeenRequested, setHasPermissionBeenRequested] = useState(false);
+
+    const scanErrorHandler = useCallback(
+        (error: BleError) => {
+            if (error.errorCode === BleErrorCode.LocationServicesDisabled) {
+                showLocationServicesDisabledAlert();
+            }
+        },
+        [showLocationServicesDisabledAlert],
+    );
 
     useEffect(() => {
         // Auto-request the permission only once when the screen is shown.
@@ -47,11 +56,11 @@ export const useBluetoothManager = () => {
 
     useEffect(() => {
         if (bluetoothAdapterStatus === 'enabled') {
-            bluetoothManager.startDeviceScan();
+            bluetoothManager.startDeviceScan(scanErrorHandler);
 
             return () => {
                 bluetoothManager.stopDeviceScan();
             };
         }
-    }, [bluetoothAdapterStatus]);
+    }, [bluetoothAdapterStatus, scanErrorHandler]);
 };
