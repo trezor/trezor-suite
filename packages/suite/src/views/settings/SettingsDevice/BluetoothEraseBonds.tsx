@@ -1,9 +1,14 @@
 import { useState } from 'react';
 
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
 
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
+import {
+    ActionButton,
+    ActionColumn,
+    SectionItem,
+    TextColumn,
+    Translation,
+} from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { bluetoothEraseBondsThunk } from '../../../actions/bluetooth/bluetoothEraseBondsThunk';
@@ -41,13 +46,14 @@ export const BluetoothEraseBonds = ({ isDeviceLocked }: BluetoothEraseBondsProps
                 }
             />
             <ActionColumn>
-                <Button
+                <ActionButton
                     onClick={onEraseClick}
                     isLoading={inProgress}
                     isDisabled={inProgress || isDeviceLocked}
+                    variant="tertiary"
                 >
                     <Translation id="TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR" />
-                </Button>
+                </ActionButton>
             </ActionColumn>
         </SectionItem>
     );

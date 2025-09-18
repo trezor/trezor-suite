@@ -29,6 +29,7 @@ import { DisplayRotation } from './DisplayRotation';
 import { FirmwareAuthenticityChecks } from './FirmwareAuthenticityChecks';
 import { FirmwareTypeChange } from './FirmwareTypeChange';
 import { FirmwareVersion } from './FirmwareVersion';
+import { ForgetDevice } from './ForgetDevice';
 import { HapticFeedback } from './HapticFeedback';
 import { Homescreen } from './Homescreen';
 import { MultiShareBackup } from './MultiShareBackup';
@@ -162,7 +163,6 @@ export const SettingsDevice = () => {
                     >
                         <PinProtection isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
-                        {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
                         <Passphrase isDeviceLocked={isDeviceLocked} />
                         {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
                         {supportsDeviceAuthentication && (
@@ -183,6 +183,14 @@ export const SettingsDevice = () => {
                 </>
             )}
 
+            <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
+                {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
+                {flags.isBluetoothEnabled && isDeviceConnectedViaBluetooth && (
+                    <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
+                )}
+                <ForgetDevice />
+            </SettingsSection>
+
             <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="ghost">
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
@@ -190,12 +198,6 @@ export const SettingsDevice = () => {
                 {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
                 <FirmwareAuthenticityChecks />
             </SettingsSection>
-
-            {flags.isBluetoothEnabled && isDeviceConnectedViaBluetooth && (
-                <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
-                    <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
-                </SettingsSection>
-            )}
         </SettingsLayout>
     );
 };
