@@ -1,3 +1,13 @@
+# 9.4.3
+
+- fix: add depcheck scripts for all the package.json-s (a4f8b09e38)
+- npm-prerelease: @trezor/utils 9.4.3-beta.1 (19a2181345)
+- chore(blockchain-link): set max CU limit for sol priority fee simulation (071523a391)
+- fix(utils): `scheduleAction` reject with error (39737985f7)
+- feat(utils): `scheduleAction` reject action gracefully when aborted (55ba457ac4)
+- feat(utils): export tryParse from verion utils (cd4f3c04a9)
+- chore: bump bignumber.js (ab98977fab)
+
 # 9.4.2
 
 - chore: add typed helpers for Object.xxxx utils (0ed58e7cc3)
