@@ -1,5 +1,9 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { StakeState, stakeInitialState } from '@suite-common/wallet-core';
+import {
+    StakeState,
+    initialWalletSettingsState,
+    stakeInitialState,
+} from '@suite-common/wallet-core';
 import { Account, Timestamp } from '@suite-common/wallet-types';
 
 import {
@@ -121,6 +125,7 @@ const getTestState = ({
         accounts,
         stake: { ...stakeInitialState, data: { sol: withSolStakeData ? solStakeData : {} } },
         transactions: { transactions: {}, fetchStatusDetail: {} },
+        settings: initialWalletSettingsState,
     },
     device: {
         devices: [
@@ -137,7 +142,6 @@ const getTestState = ({
                 staticSessionId: staticStateString,
             },
         } as TrezorDevice,
-        isDeviceAutoEjectEnabled: false,
         persistentDeviceData: [],
     },
 });

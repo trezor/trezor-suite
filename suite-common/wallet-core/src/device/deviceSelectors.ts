@@ -35,8 +35,6 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
-export const selectIsDeviceAutoEjectEnabled = (state: DeviceRootState) =>
-    state.device.isDeviceAutoEjectEnabled;
 
 /**
  * @deprecated This is a HACK, and it shall be refactored. See: https://github.com/trezor/trezor-suite/issues/22022

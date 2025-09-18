@@ -233,7 +233,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2, dev2Instance1],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
@@ -327,7 +326,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
@@ -373,7 +371,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1Connected],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
@@ -413,7 +410,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',

@@ -1,6 +1,10 @@
 import { useState } from 'react';
 
-import { selectDevices, selectIsAutoForgetDeviceDataEnabled } from '@suite-common/wallet-core';
+import {
+    selectDevices,
+    selectIsAutoForgetDeviceDataEnabled,
+    selectIsDeviceAutoEjectEnabled,
+} from '@suite-common/wallet-core';
 import { Modal, Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -10,7 +14,6 @@ import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsAutoEjectEnabled } from 'src/selectors/suite/suiteSelectors';
 
 const AutoEjectConfirmationModal = ({
     onCancel,
@@ -46,7 +49,7 @@ const AutoEjectConfirmationModal = ({
 };
 
 export const AutoEject = () => {
-    const isAutoEjectEnabled = useSelector(selectIsAutoEjectEnabled);
+    const isAutoEjectEnabled = useSelector(selectIsDeviceAutoEjectEnabled);
     const isAutoForgetDeviceDataEnabled = useSelector(selectIsAutoForgetDeviceDataEnabled);
     const dispatch = useDispatch();
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -56,17 +59,16 @@ export const AutoEject = () => {
     const hasAnyDisconnectedWallet = devices.some(device => !device.connected && device.state);
 
     const toggleAutoEject = () => {
-        const nextIsAutoEjectedEnabled = !isAutoEjectEnabled;
         dispatch(
             setAutoEjectEnabledThunk({
-                enabled: nextIsAutoEjectedEnabled,
+                shouldEnable: !isAutoEjectEnabled,
             }),
         );
 
         analytics.report({
             type: EventType.SettingsGeneralAutoEject,
             payload: {
-                value: nextIsAutoEjectedEnabled,
+                value: !isAutoEjectEnabled,
             },
         });
     };

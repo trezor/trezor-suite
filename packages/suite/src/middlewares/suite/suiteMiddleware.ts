@@ -8,6 +8,7 @@ import {
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
+    selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
@@ -53,14 +54,15 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
         // otherwise device will not be accessible and related data will not be removed (accounts, txs...)
         if (action.type === DEVICE.DISCONNECT) {
             const state = getState();
+            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(state);
             dispatch(
                 forgetDisconnectedDevices({
                     device: action.payload,
-                    forceForget: state.suite.settings.autoEject,
+                    forceForget: isAutoEjectEnabled,
                 }),
             );
 
-            if (!state.suite.settings.autoEject) {
+            if (!isAutoEjectEnabled) {
                 if (action.payload.id) {
                     dispatch(setRecentlyDisconnectedDevice(action.payload.id));
                 }

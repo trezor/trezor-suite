@@ -223,7 +223,7 @@ export const extraDependencies: ExtraDependencies = {
             });
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
-            payload.walletSettings || state,
+            payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
 
