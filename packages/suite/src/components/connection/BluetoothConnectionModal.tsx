@@ -1,9 +1,11 @@
 import { Modal } from '@trezor/components';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
+import { useSelector } from 'src/hooks/suite';
 
 import { Translation } from '../suite';
 import { BluetoothDeviceList } from '../suite/bluetooth/BluetoothDeviceList';
@@ -34,6 +36,8 @@ export const BluetoothConnectionModal = ({
     onCancel,
     onClose,
 }: BluetoothConnectionModalProps) => {
+    const connectingDevices = useSelector(selectConnectingDevices);
+
     if (
         selectedDevice !== undefined &&
         selectedDevice !== null &&
@@ -56,7 +60,8 @@ export const BluetoothConnectionModal = ({
 
     if (
         selectedDevice !== undefined &&
-        selectedDeviceConnectionTypes.includes(selectedDevice.connectionStatus.type)
+        (selectedDeviceConnectionTypes.includes(selectedDevice.connectionStatus.type) ||
+            connectingDevices.includes(selectedDevice.id))
     ) {
         return (
             <Modal
