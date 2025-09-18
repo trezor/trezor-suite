@@ -25,6 +25,7 @@ export const initialAppState: AppState = {
         scanStatus: 'error',
         nearbyDevices: null,
         knownDevices: [],
+        ignoredDeviceIds: [],
     },
     thp: {
         step: null,
