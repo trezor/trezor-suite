@@ -1,5 +1,6 @@
-import { getDeviceColorVariant, getDeviceInternalModel } from '@suite-common/suite-utils';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Card, Modal } from '@trezor/components';
+import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
 import { Fingerprint } from 'src/components/firmware';

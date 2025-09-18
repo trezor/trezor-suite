@@ -1,9 +1,8 @@
 import { MouseEventHandler } from 'react';
 
-import { getDeviceColorVariant } from '@suite-common/suite-utils';
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
 import { Row, Tooltip } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

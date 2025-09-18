@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
-import { getDeviceColorVariant, getDeviceInternalModel } from '@suite-common/suite-utils';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
@@ -21,6 +21,7 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
+import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';

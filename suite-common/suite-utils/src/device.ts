@@ -456,10 +456,6 @@ export const getDeviceInternalModel = (
     (device?.thp?.properties?.internal_model as DeviceModelInternal) ??
     DeviceModelInternal.UNKNOWN;
 
-export const getDeviceColorVariant = (
-    device: Pick<Device, 'features' | 'thp'>,
-): number | undefined => device.features?.unit_color ?? device.thp?.properties?.model_variant ?? 1;
-
 export const isThpDevice = <T extends Device | TrezorDevice>(
     device: T,
 ): device is T & { thp: ThpStateSerialized } => device.thp !== undefined;
