@@ -10,8 +10,8 @@ import {
     BluetoothManufacturerData,
     bluetoothActions,
     prepareBluetoothReducerCreator,
+    prepareInitialState,
 } from '../src';
-import { BluetoothState } from '../src/bluetoothReducer';
 import { BluetoothDeviceCommon } from '../src/types';
 
 const manufacturerData: BluetoothManufacturerData = {
@@ -23,12 +23,7 @@ const manufacturerData: BluetoothManufacturerData = {
 const bluetoothReducer =
     prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(extraDependenciesMock);
 
-const initialState: BluetoothState<BluetoothDeviceCommon> = {
-    adapterStatus: 'unknown',
-    scanStatus: 'idle',
-    nearbyDevices: [] as BluetoothDeviceCommon[],
-    knownDevices: [] as BluetoothDeviceCommon[],
-};
+const initialState = prepareInitialState();
 
 const pairingDeviceA: BluetoothDeviceCommon = {
     id: 'A',

@@ -1,7 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { BluetoothManufacturerData, prepareSelectAllDevices } from '../src';
-import { BluetoothState } from '../src/bluetoothReducer';
+import { BluetoothManufacturerData, prepareInitialState, prepareSelectAllDevices } from '../src';
 import { WithBluetoothState } from '../src/bluetoothSelectors';
 import { BluetoothDeviceCommon } from '../src/types';
 
@@ -9,13 +8,6 @@ const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,
     deviceColor: 0,
     filterPolicy: undefined,
-};
-
-const initialState: BluetoothState<BluetoothDeviceCommon> = {
-    adapterStatus: 'unknown',
-    scanStatus: 'idle',
-    nearbyDevices: [],
-    knownDevices: [],
 };
 
 const pairingDeviceStateA: BluetoothDeviceCommon = {
@@ -48,7 +40,7 @@ describe('bluetoothSelectors', () => {
 
         const state: WithBluetoothState<BluetoothDeviceCommon> = {
             bluetooth: {
-                ...initialState,
+                ...prepareInitialState(),
                 knownDevices: [pairingDeviceStateA, disconnectedDeviceB],
                 nearbyDevices: [
                     {
