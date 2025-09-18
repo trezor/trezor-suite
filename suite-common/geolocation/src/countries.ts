@@ -292,6 +292,34 @@ export const EEACountryCodes = [
 
 export type EEACountryCodeType = (typeof EEACountryCodes)[number];
 
+// Sanctioned countries according to https://orpa.princeton.edu/export-controls/sanctioned-countries
+export const ComprehensivelySanctionedCountries: Readonly<string[]> = [
+    'CU', // Cuba
+    'IR', // Iran
+    'KP', // North Korea
+    'RU', // Russia
+];
+
+export const OfacSanctionedCountries: Readonly<string[]> = [
+    'AF', // Afghanistan
+    'BY', // Belarus
+    'MM', // Burma (Myanmar)
+    'CF', // Central African Republic
+    'CD', // Congo (Kinshasa)
+    'ET', // Ethiopia
+    'HK', // Hong Kong
+    'IQ', // Iraq
+    'LB', // Lebanon
+    'LY', // Libya
+    'ML', // Mali
+    'NI', // Nicaragua
+    'SO', // Somalia
+    'SS', // South Sudan
+    'SD', // Sudan
+    'VE', // Venezuela
+    'YE', // Yemen
+];
+
 // Add Cloudflare-specific codes "XX" (no country data) and "T1" (Tor network).
 // See: https://developers.cloudflare.com/fundamentals/reference/http-headers/#cf-ipcountry
 export type CountryCode = keyof typeof countries | 'XX' | 'T1';

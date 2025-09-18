@@ -85,12 +85,16 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         const country = buyInfo.buyInfo.country as TradingCountryCode;
 
         const fiatCurrency = suggestedFiatCurrency || DEFAULT_FIAT_CURRENCY_FALLBACK;
-        const countryDefaultValue = regional.countriesMap.has(country)
-            ? {
-                  value: country,
-                  label: regional.countriesMap.get(country),
-              }
-            : undefined;
+        const countryDefaultValue =
+            regional.countriesMap.has(country) && !regional.isSanctionedCountry(country)
+                ? {
+                      value: country,
+                      label: regional.countriesMap.get(country)!,
+                  }
+                : {
+                      value: regional.UNKNOWN_COUNTRY,
+                      label: regional.countriesMap.get(regional.UNKNOWN_COUNTRY)!,
+                  };
 
         return {
             fiatCurrency: fiatCurrency.toLowerCase(),

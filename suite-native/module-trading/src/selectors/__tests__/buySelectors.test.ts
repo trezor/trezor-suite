@@ -160,7 +160,23 @@ describe('buySelectors', () => {
 
             expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
-                    country: undefined,
+                    country: {
+                        label: '🌍 Worldwide',
+                        value: 'unknown',
+                    },
+                }),
+            );
+        });
+
+        it('should not specify country if country is sanctioned', () => {
+            state.wallet.trading.buy.buyInfo!.buyInfo.country = 'KP';
+
+            expect(selectBuyFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    country: {
+                        label: '🌍 Worldwide',
+                        value: 'unknown',
+                    },
                 }),
             );
         });

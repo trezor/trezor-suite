@@ -18,6 +18,16 @@ describe('useCountryFilteredData', () => {
         );
     });
 
+    it('should not contain sanctioned countries', () => {
+        const { result } = renderUseCountryFilteredData();
+
+        expect(result.current.filteredData).toEqual(
+            expect.not.arrayContaining([
+                expect.objectContaining({ value: 'KP' }), // North Korea
+            ]),
+        );
+    });
+
     it('should filter by label case-insensitive', () => {
         const { result } = renderUseCountryFilteredData();
 
