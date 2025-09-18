@@ -13,7 +13,7 @@ const receiveAddress =
 
 test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding();
+        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
         await settingsPage.navigateTo('coins');
     });
 
