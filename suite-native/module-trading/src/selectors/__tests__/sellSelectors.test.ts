@@ -188,7 +188,23 @@ describe('sellSelectors', () => {
 
             expect(selectSellFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
-                    country: undefined,
+                    country: {
+                        label: '🌍 Worldwide',
+                        value: 'unknown',
+                    },
+                }),
+            );
+        });
+
+        it('should not specify country if country is sanctioned', () => {
+            state.wallet.trading.sell.sellInfo!.country = 'KP';
+
+            expect(selectSellFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    country: {
+                        label: '🌍 Worldwide',
+                        value: 'unknown',
+                    },
                 }),
             );
         });
