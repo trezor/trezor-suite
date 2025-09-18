@@ -1,3 +1,21 @@
+# 0.4.3
+
+- fix: add depcheck scripts for all the package.json-s (a4f8b09e38)
+- feat(connect-common): move releases JSON map to src/ (b9da62ac19)
+- npm-prerelease: @trezor/connect-common 0.4.3-beta.2 (c88d7c157c)
+- chore(connect-common): remove unused releases 2.9.0 (4c2d615abb)
+- feat(connect-common): fw release config bundled in json (a73cdd76c5)
+- npm-prerelease: @trezor/connect-common 0.4.3-beta.1 (058b4efd4b)
+- chore(connect): cleanup leftovers releases.json (2c1dda8762)
+- chore(connect-common): releases JSON to new format (cabe59dd62)
+- chore(connect-common): update firmware-release-config (6cf5e66336)
+- fix(connect-common): remove deprecated turkish translation on t3t1 (6fe5310f5c)
+- feat(suite): lower BTC min fee per unit from 1 sat/vb to 0.1 sat/vb (1f8703eba7)
+- chore(connect-common): firmware index for releases JSONs (7b14e451d9)
+- feat(connect-common): update revision scripts to new format (1da49c38a2)
+- feat(connect-common): add new releases JSON format (b6596968ba)
+- Revert feat(suite-common): add 2.9.0 fw binaries (8196cdb60f)
+
 # 0.4.2
 
 - npm-prerelease: @trezor/connect-common 0.4.2-beta.3 (8f288023b1)
