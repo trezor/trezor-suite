@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, normalizeDeviceColorVariant } from '@trezor/device-utils';
 
 import { DeviceAnimation } from '../DeviceAnimation/DeviceAnimation';
 
@@ -31,7 +31,7 @@ export const RotateDeviceImage = ({
             className={className}
             type="ROTATE"
             deviceModelInternal={deviceModel}
-            deviceUnitColor={deviceColor}
+            deviceUnitColor={normalizeDeviceColorVariant(deviceColor)}
             height={animationHeight}
             width={animationWidth}
         />

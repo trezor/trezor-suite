@@ -2,11 +2,12 @@ import { ReactNode, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
-import { getDeviceColorVariant, getDeviceInternalModel } from '@suite-common/suite-utils';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectThpStep } from '@suite-common/thp';
 import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 

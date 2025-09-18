@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { getDeviceColorVariant, getDeviceInternalModel } from '@suite-common/suite-utils';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Column, H2, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
