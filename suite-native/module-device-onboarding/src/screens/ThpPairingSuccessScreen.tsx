@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { nativeFirmwareActions } from '@suite-native/firmware';
@@ -12,15 +11,14 @@ export const ThpPairingSuccessScreen = () => {
     const { navigateToNextScreenAfterFirmwareInstallation } =
         useNavigateToNextScreenAfterFirmwareInstallation();
 
-    useEffect(() => {
+    const onContinue = () => {
         dispatch(nativeFirmwareActions.setIsFirmwareInstallationRunning(false));
-    }, [dispatch]);
+        navigateToNextScreenAfterFirmwareInstallation();
+    };
 
     return (
         <DeviceOnboardingScreenWithExitButton>
-            <ThpPairingSuccessScreenContent
-                onContinue={navigateToNextScreenAfterFirmwareInstallation}
-            />
+            <ThpPairingSuccessScreenContent onContinue={onContinue} />
         </DeviceOnboardingScreenWithExitButton>
     );
 };
