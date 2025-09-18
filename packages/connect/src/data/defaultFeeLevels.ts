@@ -10,7 +10,7 @@ const BLOCKS_FOR_FEE_LEVEL: Record<string, Record<string, number>> = {
         // blocktime ~ 600sec.
         high: 1,
         normal: 3,
-        economy: 12,
+        economy: 6,
         // low fee is offerred by Connect, though Suite only uses the first three levels (see feesThunks.ts)
         low: 36,
     },
