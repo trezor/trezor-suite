@@ -19,6 +19,7 @@
         "@shopify/flash-list": "1.7.6",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
+        "@suite-common/local-first-storage": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",

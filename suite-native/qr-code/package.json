@@ -18,6 +18,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "expo-camera": "16.1.11",

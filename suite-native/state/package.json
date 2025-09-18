@@ -15,6 +15,7 @@
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
+        "@suite-common/local-first-storage": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

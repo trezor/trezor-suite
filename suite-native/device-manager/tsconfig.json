@@ -16,6 +16,7 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../device" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },

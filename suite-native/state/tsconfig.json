@@ -12,6 +12,9 @@
         {
             "path": "../../suite-common/geolocation"
         },
+        {
+            "path": "../../suite-common/local-first-storage"
+        },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"

@@ -10,9 +10,11 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@gorhom/bottom-sheet": "5.1.5",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/local-first-storage": "workspace:*",
         "@suite-common/validators": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",

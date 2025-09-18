@@ -5,8 +5,7 @@
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "license": "MIT",
     "scripts": {
-        "start": "tsx  ./src/index.ts",
-        "depcheck": "yarn g:depcheck"
+        "start": "tsx  ./src/index.ts"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",

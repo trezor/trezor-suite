@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "depcheck": "yarn g:depcheck",
         "start": "expo start",
         "android": "expo start --android",
         "ios": "expo start --ios",

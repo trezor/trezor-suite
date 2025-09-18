@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/firmware" },
         {
+            "path": "../../suite-common/local-first-storage"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -22,6 +25,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../local-first-storage" },
         { "path": "../module-trading" },
         { "path": "../navigation" },
         { "path": "../sentry" },
