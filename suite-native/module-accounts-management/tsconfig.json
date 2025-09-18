@@ -34,6 +34,7 @@
         { "path": "../graph" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
