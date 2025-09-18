@@ -34,6 +34,10 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
         dispatch(toggleConnectionModal());
     };
 
+    if (!wasBluetoothDeviceWiped) {
+        return null;
+    }
+
     if (isUnpairingDevice) {
         return (
             <Modal>
@@ -47,15 +51,10 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
         );
     }
 
-    if (!wasBluetoothDeviceWiped) {
-        return null;
-    }
-
     return (
         <Modal
             onCancel={onCancel}
-            variant="info"
-            iconName="info"
+            variant="primary"
             bottomContent={
                 <>
                     <Modal.Button
