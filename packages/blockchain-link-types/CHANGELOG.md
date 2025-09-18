@@ -1,3 +1,15 @@
+# 1.4.3
+
+- fix: add TON of missing dependecies in package.json (7027213e3f)
+- npm-prerelease: @trezor/blockchain-link-types 1.4.3-beta.1 (cc1c9d95c6)
+- fix: Show 0 decimal places for Fiat BaseCurrency in the Account List (1d667e500e)
+- feat(suite): MEV protection (0396c08bb0)
+- feat(blockchain-link): add Stellar token metadata handling. (56e7e07e08)
+- feat: better Select UX for BaseCurrencies (1b86346a99)
+- feat: add BTC as Base Currency (52ecfdbca4)
+- chore: improve test for prepareBaseCurrencyAmountFormatter (1767888aa5)
+- feat: use BaseCurrencyAmount for fiat rates as much as possible, also utilize it for displaying Significcatnt Digits (25babe8b7d)
+
 # 1.4.2
 
 - npm-prerelease: @trezor/blockchain-link-types 1.4.2-beta.3 (2e111bc027)
