@@ -1,3 +1,25 @@
+# 2.5.3
+
+- fix: add TON of missing dependecies in package.json (7027213e3f)
+- fix: remove all dependenices that are unused (found by added depcheck script to package.json) (ecae55a2ea)
+- fix: missing deptchecks in packages (0d4633e159)
+- fix(blockchain-link): increase Solana ping interval to 1 hour (3b3500ca43)
+- npm-prerelease: @trezor/blockchain-link 2.5.3-beta.1 (51e7c81ca3)
+- fix(suite): swap heading symbol case (b678d3c854)
+- chore(blockchain-link): set max CU limit for sol priority fee simulation (071523a391)
+- feat(suite): MEV protection (0396c08bb0)
+- fix(blockchain-link-utils): do not use pending EVM balance (07f9a2a5a8)
+- test(blockchain-utils): update Stellar integration tests to reflect new expected balances and token data (eaed10ed51)
+- feat(blockchain-link): add Stellar token metadata handling. (56e7e07e08)
+- chore(suite): bump trends deps (4eb03b8e23)
+- feat(blockchain-link): solana - limit history fetch and filter subscriptions (9ccd77c8ee)
+- fix(blockchain-link): improve ping reliability and disconnect cleanup (3c3e29b2f3)
+- refactor(suite): replace send max switch with a button in send form (a9b2a4c275)
+- fix(blockchain-link): disable fullHistory loading for Solana accounts to prevent infinite loading (7b840fec5d)
+- feat(blockchain-link): add throttled RPC transport for Solana requests (da2ee9564c)
+- chore(suite): bump webpack (654184f9a9)
+- chore: update @solana/kit (d681087f42)
+
 # 2.5.2
 
 - npm-prerelease: @trezor/blockchain-link 2.5.2-beta.2 (070f16af4a)
