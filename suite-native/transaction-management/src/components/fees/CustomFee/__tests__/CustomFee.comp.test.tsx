@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
@@ -11,16 +11,13 @@ import {
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks/useFeesForm';
+import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
 import { CustomFee } from '../CustomFee';
 
 type CustomFeeProps = {
     accountKey: AccountKey;
     symbol: NetworkSymbol;
-    feeValue: string;
-    isFeeLoading: boolean;
-    isSubmittable: boolean;
-    isErrorBoxVisible: boolean;
+    formDraft: FormState | null | undefined;
     onCustomFeeSet: (feePerUnit: string, feeLimit?: string) => void;
 };
 
@@ -28,10 +25,7 @@ describe('CustomFee', () => {
     const defaultProps: CustomFeeProps = {
         accountKey: 'eth-account-1' as AccountKey,
         symbol: 'eth' as NetworkSymbol,
-        feeValue: '1',
-        isFeeLoading: false,
-        isSubmittable: true,
-        isErrorBoxVisible: false,
+        formDraft: null,
         onCustomFeeSet: jest.fn(),
     };
 
@@ -67,7 +61,23 @@ describe('CustomFee', () => {
         preloadedState?: PreloadedState;
         props?: Partial<CustomFeeProps>;
     }) => {
-        const finalProps = { ...defaultProps, ...props };
+        // Create a mock FormState that matches the expected structure
+        const mockFormDraft: FormState = {
+            outputs: [],
+            feePerUnit: '1',
+            feeLimit: '21000',
+            selectedUtxos: [],
+            utxoSorting: 'newestFirst',
+            options: [],
+            isCoinControlEnabled: false,
+            hasCoinControlBeenOpened: false,
+        };
+
+        const finalProps = {
+            ...defaultProps,
+            ...props,
+            formDraft: mockFormDraft,
+        };
 
         return renderWithStoreProviderAsync(<CustomFee {...finalProps} />, {
             preloadedState: preloadedState || defaultState,
@@ -158,42 +168,6 @@ describe('CustomFee', () => {
 
         // Verify the confirm button is present
         expect(getByText('Confirm custom fee')).toBeTruthy();
-    });
-
-    it('should handle different fee values', async () => {
-        const form = await renderUseFeesForm();
-        const { getByTestId } = await renderCustomFee({
-            form,
-            props: {
-                feeValue: '50',
-            },
-        });
-
-        expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
-    });
-
-    it('should handle loading state', async () => {
-        const form = await renderUseFeesForm();
-        const { getByTestId } = await renderCustomFee({
-            form,
-            props: {
-                isFeeLoading: true,
-            },
-        });
-
-        expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
-    });
-
-    it('should handle error state', async () => {
-        const form = await renderUseFeesForm();
-        const { getByTestId } = await renderCustomFee({
-            form,
-            props: {
-                isErrorBoxVisible: true,
-            },
-        });
-
-        expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
     });
 
     it('should handle different account keys', async () => {

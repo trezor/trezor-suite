@@ -118,6 +118,7 @@ describe('useExchangeFlow', () => {
                 });
             });
 
+            // Should call confirmTradeThunk
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: 'confirmTradeThunkMock',
                 payload: {
@@ -136,6 +137,47 @@ describe('useExchangeFlow', () => {
                 },
                 unwrap: expect.any(Function),
             });
+        });
+
+        it('should return false when confirmTradeThunk returns false', async () => {
+            const store = await getInitializedStore();
+
+            // Mock confirmTradeThunk to return false
+            const originalConfirmTradeThunk =
+                require('@suite-common/trading').exchangeThunks.confirmTradeThunk;
+            require('@suite-common/trading').exchangeThunks.confirmTradeThunk = () => ({
+                type: 'confirmTradeThunkMock',
+                unwrap: () => Promise.resolve(false),
+            });
+
+            const { result } = await renderUseExchangeFlow({ store });
+
+            const mockTrade = {
+                exchange: 'test-exchange',
+                orderId: 'test-order',
+            };
+
+            const mockAccount = {
+                key: 'btc1',
+                symbol: 'btc',
+            };
+
+            const confirmResult = await act(
+                async () =>
+                    await result.current.confirmTrade({
+                        receiveAddress: 'test-address',
+                        trade: mockTrade,
+                        approvalFlow: false,
+                        sendAccount: mockAccount,
+                    }),
+            );
+
+            // Should return false
+            expect(confirmResult).toBe(false);
+
+            // Restore the original mock
+            require('@suite-common/trading').exchangeThunks.confirmTradeThunk =
+                originalConfirmTradeThunk;
         });
     });
 
@@ -160,7 +202,11 @@ describe('useExchangeFlow', () => {
             const { result } = await renderUseExchangeFlow({ store });
 
             await act(async () => {
-                await result.current.composeRequest('high');
+                await result.current.composeRequest({
+                    selectedFeeLevel: 'high',
+                    feePerUnit: '2000',
+                    feeLimit: '25000',
+                });
             });
 
             expect(dispatchSpy).toHaveBeenCalledWith({
@@ -173,14 +219,14 @@ describe('useExchangeFlow', () => {
                     network: expect.any(Object),
                     feeInfo: mockNetworkFeeInfo,
                     selectedFeeLevel: 'high',
+                    feePerUnit: '2000',
+                    feeLimit: '25000',
                 },
                 unwrap: expect.any(Function),
             });
         });
-    });
 
-    describe('fetchFeesAndCompose', () => {
-        it('should call updateFeeInfoThunk and then composeRequest', async () => {
+        it('should call composeTradingTransactionThunk with minimal parameters', async () => {
             const store = await getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
@@ -199,6 +245,57 @@ describe('useExchangeFlow', () => {
             const { result } = await renderUseExchangeFlow({ store });
 
             await act(async () => {
+                await result.current.composeRequest({});
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'composeTradingTransactionThunkMock',
+                payload: {
+                    tradeType: 'exchange',
+                    account: expect.objectContaining({
+                        key: 'btc1',
+                    }),
+                    network: expect.any(Object),
+                    feeInfo: mockNetworkFeeInfo,
+                    selectedFeeLevel: undefined,
+                    feePerUnit: undefined,
+                    feeLimit: undefined,
+                },
+                unwrap: expect.any(Function),
+            });
+        });
+    });
+
+    describe('fetchFeesAndCompose', () => {
+        it('should call updateFeeInfoThunk and then composeRequest with draft fee values', async () => {
+            const store = await getInitializedStore();
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            // Mock the networkFeeInfo selector to return proper data
+            const mockNetworkFeeInfo = {
+                feePerUnit: '1000',
+                feeLimit: '21000',
+                estimatedFee: '21000000',
+            };
+
+            jest.spyOn(
+                require('@suite-common/wallet-core'),
+                'selectConvertedNetworkFeeInfo',
+            ).mockReturnValue(mockNetworkFeeInfo);
+
+            // Mock the selectTradingSendFormDraft selector to return draft fee values
+            jest.spyOn(
+                require('../../../selectors/commonSelectors'),
+                'selectTradingSendFormDraft',
+            ).mockReturnValue({
+                selectedFee: 'high',
+                feePerUnit: '5000',
+                feeLimit: '30000',
+            });
+
+            const { result } = await renderUseExchangeFlow({ store });
+
+            await act(async () => {
                 await result.current.fetchFeesAndCompose();
             });
 
@@ -211,7 +308,7 @@ describe('useExchangeFlow', () => {
                 unwrap: expect.any(Function),
             });
 
-            // Then should call composeRequest
+            // Then should call composeRequest with draft fee values
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: 'composeTradingTransactionThunkMock',
                 payload: {
@@ -221,7 +318,64 @@ describe('useExchangeFlow', () => {
                     }),
                     network: expect.any(Object),
                     feeInfo: mockNetworkFeeInfo,
-                    selectedFeeLevel: 'normal',
+                    selectedFeeLevel: 'high',
+                    feePerUnit: '5000',
+                    feeLimit: '30000',
+                },
+                unwrap: expect.any(Function),
+            });
+        });
+
+        it('should handle undefined draft values', async () => {
+            const store = await getInitializedStore();
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            // Mock the networkFeeInfo selector to return proper data
+            const mockNetworkFeeInfo = {
+                feePerUnit: '1000',
+                feeLimit: '21000',
+                estimatedFee: '21000000',
+            };
+
+            jest.spyOn(
+                require('@suite-common/wallet-core'),
+                'selectConvertedNetworkFeeInfo',
+            ).mockReturnValue(mockNetworkFeeInfo);
+
+            // Mock the selectTradingSendFormDraft selector to return undefined
+            jest.spyOn(
+                require('../../../selectors/commonSelectors'),
+                'selectTradingSendFormDraft',
+            ).mockReturnValue(undefined);
+
+            const { result } = await renderUseExchangeFlow({ store });
+
+            await act(async () => {
+                await result.current.fetchFeesAndCompose();
+            });
+
+            // Should call updateFeeInfoThunk first
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'updateFeeInfoThunkMock',
+                payload: {
+                    networkSymbol: 'btc',
+                },
+                unwrap: expect.any(Function),
+            });
+
+            // Then should call composeRequest with undefined values
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'composeTradingTransactionThunkMock',
+                payload: {
+                    tradeType: 'exchange',
+                    account: expect.objectContaining({
+                        key: 'btc1',
+                    }),
+                    network: expect.any(Object),
+                    feeInfo: mockNetworkFeeInfo,
+                    selectedFeeLevel: undefined,
+                    feePerUnit: undefined,
+                    feeLimit: undefined,
                 },
                 unwrap: expect.any(Function),
             });

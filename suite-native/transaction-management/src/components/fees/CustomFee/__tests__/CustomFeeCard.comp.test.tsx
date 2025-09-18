@@ -9,7 +9,7 @@ import {
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks/useFeesForm';
+import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
 import { CustomFeeCard, CustomFeeCardProps } from '../CustomFeeCard';
 
 describe('CustomFeeCard', () => {

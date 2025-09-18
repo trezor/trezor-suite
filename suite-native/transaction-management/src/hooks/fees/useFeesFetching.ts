@@ -39,5 +39,3 @@ export const useFeesFetching = ({ accountKey, isRefetchDisabled }: UseFeesFetchi
         areFeesLoading,
     };
 };
-
-export type FeesFetchingReturn = ReturnType<typeof useFeesFetching>;

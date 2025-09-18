@@ -23,6 +23,7 @@ import {
     selectIsTradingSellEnabled,
     selectTradeToBeOpened,
     selectTradingEnvironment,
+    selectTradingSendFormDraft,
 } from '../commonSelectors';
 
 const actionId = 'ActionId_1';
@@ -226,6 +227,42 @@ describe('commonSelectors', () => {
                     wallet: { trading: { activeTradingType: 'exchange' } as any },
                 }),
             ).toBe('exchange');
+        });
+    });
+
+    describe('selectSendFormDraft', () => {
+        const mockFormState = {
+            outputs: [],
+            feePerUnit: '10',
+            feeLimit: '21000',
+            options: [],
+            isCoinControlEnabled: false,
+            hasCoinControlBeenOpened: false,
+            selectedUtxos: [],
+        };
+
+        it('should correctly select trading.sendFormDraft state when defined', () => {
+            expect(
+                selectTradingSendFormDraft({
+                    wallet: { trading: { sendFormDraft: mockFormState } as any },
+                }),
+            ).toEqual(mockFormState);
+        });
+
+        it('should return undefined when trading.sendFormDraft is undefined', () => {
+            expect(
+                selectTradingSendFormDraft({
+                    wallet: { trading: { sendFormDraft: undefined } as any },
+                }),
+            ).toBe(undefined);
+        });
+
+        it('should return undefined when trading.sendFormDraft is not set', () => {
+            expect(
+                selectTradingSendFormDraft({
+                    wallet: { trading: {} as any },
+                }),
+            ).toBe(undefined);
         });
     });
 

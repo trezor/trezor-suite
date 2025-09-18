@@ -16,9 +16,11 @@ import { AccountKey, ReviewOutputState, TokenAddress } from '@suite-common/walle
 import {
     constructTransactionReviewOutputs,
     getIsUpdatedSendFlow,
+    getSendFormDraftKey,
     getTransactionReviewOutputState,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
+import type { NativeSendRootState } from '@suite-native/transaction-management';
 
 import { StatefulReviewOutput } from './types';
 
@@ -202,3 +204,13 @@ export const selectTransactionReviewActiveStepIndex = createSendMemoizedSelector
         return activeIndex === -1 ? reviewOutputs.length : activeIndex;
     },
 );
+
+export const selectDestinationTagFromDraft = (
+    state: NativeSendRootState,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const draftKey = getSendFormDraftKey(accountKey, tokenContract);
+
+    return state.wallet.send.drafts[draftKey]?.destinationTag;
+};

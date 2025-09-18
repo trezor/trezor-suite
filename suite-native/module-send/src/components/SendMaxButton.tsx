@@ -19,11 +19,11 @@ import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import { calculateFeeLevelsMaxAmountThunk } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
-import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { constructFormDraft, getOutputFieldName } from '../utils';
 

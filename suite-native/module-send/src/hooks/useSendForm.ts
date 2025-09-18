@@ -33,13 +33,13 @@ import {
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
     FeeLevelsMaxAmount,
+    calculateFeeLevelsMaxAmountThunk,
     storeFeeLevels,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
 import { useUtxoSelection } from './useUtxoSelection';
-import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
 

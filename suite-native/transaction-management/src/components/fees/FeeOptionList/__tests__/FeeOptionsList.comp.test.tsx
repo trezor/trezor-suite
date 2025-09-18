@@ -11,7 +11,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { useFeesForm } from '../../../../hooks/useFeesForm';
+import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
 import { FeeOptionsList, FeeOptionsListProps } from '../FeeOptionsList';
 
 // Mock the fee-related selectors
