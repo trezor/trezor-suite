@@ -8,11 +8,13 @@ import { BigNumber } from '@trezor/utils';
 
 const NETWORK_FEE_OVERRIDES: Record<
     string,
-    { minFeePerUnit: string; overrideLevels: FeeLevel['label'][] }
+    { minFeePerUnit: Partial<Record<FeeLevel['label'], string>> }
 > = {
     bitcoin: {
-        minFeePerUnit: '1',
-        overrideLevels: ['normal', 'high'],
+        minFeePerUnit: {
+            normal: '1',
+            high: '2',
+        },
     },
 } as const;
 
@@ -91,10 +93,9 @@ export const getNewFeeInfo = async ({
     if (network.symbol === 'btc') {
         const feeOverride = NETWORK_FEE_OVERRIDES.bitcoin;
         result.payload.levels.forEach(level => {
-            if (feeOverride.overrideLevels.includes(level.label)) {
-                level.feePerUnit = new BigNumber(level.feePerUnit).lte(feeOverride.minFeePerUnit)
-                    ? feeOverride.minFeePerUnit
-                    : level.feePerUnit;
+            const minFee = feeOverride.minFeePerUnit[level.label];
+            if (minFee !== undefined && new BigNumber(level.feePerUnit).lte(minFee)) {
+                level.feePerUnit = minFee;
             }
         });
     }
