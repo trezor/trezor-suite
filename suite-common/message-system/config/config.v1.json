@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-09-15T00:00:00+00:00",
-    "sequence": 112,
+    "timestamp": "2025-09-19T00:00:00+00:00",
+    "sequence": 113,
     "actions": [
         {
             "conditions": [
@@ -868,6 +868,37 @@
                     "tr": "Yeni Trezor yazılımı mevcut! Lütfen cihazınızı güncelleyin.",
                     "pt": "Está disponível um novo firmware Trezor! Por favor, atualize o seu dispositivo.",
                     "uk": "Доступна нова прошивка Trezor! Будь ласка, оновіть ваш пристрій."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "countryCodes": ["GB"]
+                }
+            ],
+            "message": {
+                "id": "fae0be7c-3138-463f-b325-a79dc104a18b",
+                "priority": 94,
+                "dismissible": false,
+                "variant": "warning",
+                "category": "context",
+                "content": {
+                    "en": "There are currently no buy options available in the United Kingdom.",
+                    "es": "Actualmente no hay opciones de compra disponibles en el Reino Unido.",
+                    "cs": "V současné době nejsou ve Spojeném království k dispozici žádné možnosti nákupu.",
+                    "ru": "В настоящее время в Великобритании нет доступных вариантов покупки.",
+                    "ja": "現在、イギリスでは購入オプションは利用できません。",
+                    "hu": "Jelenleg nincs elérhető vásárlási lehetőség az Egyesült Királyságban.",
+                    "it": "Attualmente non ci sono opzioni di acquisto disponibili nel Regno Unito.",
+                    "fr": "Il n'existe actuellement aucune option d'achat disponible au Royaume-Uni.",
+                    "de": "Derzeit sind im Vereinigten Königreich keine Kaufoptionen verfügbar.",
+                    "tr": "Birleşik Krallık'ta şu anda herhangi bir satın alma seçeneği mevcut değildir.",
+                    "pt": "Atualmente não há opções de compra disponíveis no Reino Unido.",
+                    "uk": "Наразі у Великій Британії немає доступних варіантів покупки."
+                },
+                "context": {
+                    "domain": "trading.buy"
                 }
             }
         },
