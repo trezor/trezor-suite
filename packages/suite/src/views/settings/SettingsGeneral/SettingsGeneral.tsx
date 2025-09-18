@@ -96,13 +96,18 @@ export const SettingsGeneral = () => {
                     ))}
             </SettingsSection>
 
-            {(isDesktop() || (isWeb() && isTorEnabled)) && (
-                <SettingsSection title={<Translation id="TR_TOR" />} icon="torBrowser">
-                    {isDesktop() && <Tor />}
-                    {(isTorEnabled || torStatus === TorStatus.Enabling) && <TorOnionLinks />}
-                    {torExternalExperimentalFeature && <TorExternal />}
-                </SettingsSection>
-            )}
+            <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="lock">
+                <AutoEject />
+                <StoreDeviceData />
+                {isDesktop() && !isLinux() && <BioAuthSettings />}
+                {(isDesktop() || (isWeb() && isTorEnabled)) && (
+                    <>
+                        {isDesktop() && <Tor />}
+                        {(isTorEnabled || torStatus === TorStatus.Enabling) && <TorOnionLinks />}
+                        {torExternalExperimentalFeature && <TorExternal />}
+                    </>
+                )}
+            </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="appWindow">
                 <Theme />
@@ -112,12 +117,6 @@ export const SettingsGeneral = () => {
                 <ClearStorage />
                 <AutomaticUpdate />
                 <VersionWithUpdate />
-            </SettingsSection>
-
-            <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="lock">
-                <AutoEject />
-                <StoreDeviceData />
-                {isDesktop() && !isLinux() && <BioAuthSettings />}
             </SettingsSection>
 
             {isMevProtectionSettingsVisible && (
