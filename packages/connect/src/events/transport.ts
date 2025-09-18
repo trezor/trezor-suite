@@ -2,36 +2,14 @@ import type { Transport } from '@trezor/transport';
 import { TRANSPORT } from '@trezor/transport/src/constants';
 
 import { serializeError } from '../constants/errors';
-import { suggestBridgeInstaller } from '../data/transportInfo';
-import { suggestUdevInstaller } from '../data/udevInfo';
+import { BridgeInfo, suggestBridgeInstaller } from '../data/transportInfo';
+import { UdevInfo, suggestUdevInstaller } from '../data/udevInfo';
 import { ConnectSettings } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export { TRANSPORT } from '@trezor/transport/src/constants';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
-
-export interface BridgeInfo {
-    version: number[];
-    packages: {
-        name: string;
-        platform: string[];
-        url: string;
-        signature?: string;
-        preferred?: boolean;
-    }[];
-    changelog: string;
-}
-
-export interface UdevInfo {
-    packages: {
-        name: string;
-        platform: string[];
-        url: string;
-        signature?: string;
-        preferred?: boolean;
-    }[];
-}
 
 export interface TransportInfo {
     apiType: Transport['apiType'];

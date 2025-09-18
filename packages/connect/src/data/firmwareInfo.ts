@@ -5,13 +5,15 @@ import {
     DeviceModelInternal,
     FirmwareRelease,
     FirmwareReleaseConfig,
+    FirmwareType,
     IntermediaryReleaseConfig,
     VersionArray,
 } from '@trezor/device-utils';
 import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from '@trezor/utils';
 
-import { Features, FirmwareReleaseConfigInfo, FirmwareType } from '../types';
 import { DataManager } from './DataManager';
+import { Features } from '../types/device';
+import { FirmwareReleaseConfigInfo, FirmwareUpdateSource } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import {
@@ -22,12 +24,6 @@ import {
     isStrictFeatures,
 } from '../utils/firmwareUtils';
 
-export type FirmwareUpdateSource =
-    | 'production'
-    | 'test-unsigned'
-    | 'test-signed'
-    | 'localhost-unsigned'
-    | 'localhost-signed';
 interface RemoteBaseInfo {
     BASE_URL: string;
     MIDDLE_PATH: string;

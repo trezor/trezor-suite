@@ -1,6 +1,12 @@
-// origin: https://github.com/trezor/connect/blob/develop/src/js/data/UdevInfo.js
-
-import type { UdevInfo } from '../events/transport';
+export interface UdevInfo {
+    packages: {
+        name: string;
+        platform: string[];
+        url: string;
+        signature?: string;
+        preferred?: boolean;
+    }[];
+}
 
 const info: UdevInfo = {
     packages: [
