@@ -107,8 +107,7 @@ export type SuiteAction =
     | {
           type: typeof SUITE.SET_IS_COINS_FILTER_VISIBLE;
           payload: { isCoinsFilterVisible: boolean };
-      }
-    | { type: typeof SUITE.SET_AUTO_EJECT; payload: boolean };
+      };
 
 export const appChanged = createAction(SUITE.APP_CHANGED, (payload: AppState['router']['app']) => ({
     payload,
@@ -394,10 +393,5 @@ export const lockDevice = createAction(SUITE.LOCK_DEVICE, (payload: boolean) => 
  */
 export const lockRouter = (payload: boolean): SuiteAction => ({
     type: SUITE.LOCK_ROUTER,
-    payload,
-});
-
-export const setAutoEject = (payload: boolean): SuiteAction => ({
-    type: SUITE.SET_AUTO_EJECT,
     payload,
 });

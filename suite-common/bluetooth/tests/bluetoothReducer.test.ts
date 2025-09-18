@@ -142,6 +142,7 @@ describe('bluetoothReducer', () => {
         store.dispatch(
             deviceActions.connectDevice({
                 device: trezorDevice as Device,
+                isAutoEjectEnabled: false,
             }),
         );
         expect(store.getState().bluetooth.knownDevices).toEqual([nearbyDevice]);

@@ -47,7 +47,8 @@ const initialState: WalletSettingsState = {
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,
-    autoForgetDeviceData: false,
+    isAutoForgetDeviceDataEnabled: false,
+    isAutoEjectEnabled: false,
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -58,7 +59,8 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'hideSuspiciousTransactions',
     'bitcoinAmountUnit',
     'mevProtection',
-    'autoForgetDeviceData',
+    'isAutoForgetDeviceDataEnabled',
+    'isAutoEjectEnabled',
 ];
 
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
@@ -105,7 +107,13 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
         builder.addCase(
             WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA,
             (state, action: ReturnType<typeof walletSettingsActions.setAutoForgetDeviceData>) => {
-                state.autoForgetDeviceData = action.payload;
+                state.isAutoForgetDeviceDataEnabled = action.payload;
+            },
+        );
+        builder.addCase(
+            WALLET_SETTINGS.SET_AUTO_EJECT,
+            (state, action: ReturnType<typeof walletSettingsActions.setAutoEjectEnabled>) => {
+                state.isAutoEjectEnabled = action.payload;
             },
         );
     },
@@ -122,7 +130,9 @@ export const selectIsHideSuspiciousTransactions = (state: WalletSettingsRootStat
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
 export const selectIsAutoForgetDeviceDataEnabled = (state: WalletSettingsRootState) =>
-    state.wallet.settings.autoForgetDeviceData;
+    state.wallet.settings.isAutoForgetDeviceDataEnabled;
+export const selectIsDeviceAutoEjectEnabled = (state: WalletSettingsRootState) =>
+    state.wallet.settings.isAutoEjectEnabled;
 
 export const selectIsAnyNetworkEnabled = (state: WalletSettingsRootState) =>
     A.isNotEmpty(selectEnabledNetworks(state));

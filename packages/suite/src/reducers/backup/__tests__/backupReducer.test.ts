@@ -1,9 +1,13 @@
+import { testMocks } from '@suite-common/test-utils';
 import { BackupAvailability } from '@trezor/protobuf/src/messages';
 
-import type { DesktopDeviceRootState } from 'src/actions/device/deviceSlice';
+import { AppState } from 'src/reducers/store';
+import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 
+import type { BackupState } from '../backupReducer';
 import { selectBackupStatus } from '../backupReducer';
-import type { BackupRootState, BackupState } from '../backupReducer';
+
+const { getSuiteDevice } = testMocks;
 
 describe('selectBackupStatus', () => {
     const baseBackup: BackupState = {
@@ -24,20 +28,15 @@ describe('selectBackupStatus', () => {
         error: undefined,
     };
 
-    const getState = (
-        backup: BackupState,
-        backup_availability: BackupAvailability,
-    ): BackupRootState & DesktopDeviceRootState => ({
+    const getState = (backup: BackupState, backup_availability: BackupAvailability): AppState => ({
+        ...initialAppState,
         backup: { ...baseBackup, ...backup },
         device: {
             devices: [],
-            isDeviceAutoEjectEnabled: false,
             persistentDeviceData: [],
             isConnectionModalOpen: true,
             defaultConnectionMode: 'cable',
-            selectedDevice: {
-                features: { backup_availability },
-            } as any,
+            selectedDevice: getSuiteDevice({}, { backup_availability }),
         },
     });
 

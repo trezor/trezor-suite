@@ -24,6 +24,7 @@ import {
     selectDevices,
     selectHistoricFiatRates,
     selectIsAutoForgetDeviceDataEnabled,
+    selectIsDeviceAutoEjectEnabled,
     selectSelectedDevice,
     setBaseCurrency,
     transactionsActions,
@@ -37,7 +38,6 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
-import { selectIsAutoEjectEnabled } from 'src/selectors/suite/suiteSelectors';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
@@ -179,7 +179,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (deviceActions.setRememberDevice.match(action)) {
-                const isAutoEjectEnabled = selectIsAutoEjectEnabled(api.getState());
+                const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
 
                 if (action.payload.remember && !isAutoEjectEnabled) {
                     api.dispatch(storageActions.rememberDevice(action.payload.device));
@@ -210,7 +210,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (deviceActions.updateSelectedDevice.match(action)) {
-                const isAutoEjectEnabled = selectIsAutoEjectEnabled(api.getState());
+                const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
 
                 if (
                     isDeviceRemembered(action.payload) &&
@@ -278,6 +278,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_MEV_PROTECTION:
                 case WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA:
+                case WALLET_SETTINGS.SET_AUTO_EJECT:
                     api.dispatch(storageActions.saveWalletSettings());
 
                     break;
@@ -298,7 +299,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
                 case SUITE.SET_IS_COINS_FILTER_VISIBLE:
                 case SUITE.DISMISSED_TRADING_TERMS:
-                case SUITE.SET_AUTO_EJECT:
                 case SUITE.SET_LOCAL_FIRST_STORAGE_RELAY:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
