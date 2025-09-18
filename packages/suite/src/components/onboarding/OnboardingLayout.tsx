@@ -21,7 +21,7 @@ import {
     useOnboardingCancelButtonContext,
 } from './OnboardingCancelButtonContext';
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
-import { ConnectionGlobalModal } from '../connection/ConnectionGlobalModal';
+import { ConnectionGlobalModalManager } from '../connection/ConnectionGlobalModal';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '../suite/TrafficLightOffset';
 import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 
@@ -181,7 +181,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
 
     return (
         <>
-            <ConnectionGlobalModal showThpModals={false} />
+            <ConnectionGlobalModalManager showThpModals={false} />
             {allowedModal !== null ? <ReduxModal {...allowedModal} /> : null}
 
             <Wrapper>
