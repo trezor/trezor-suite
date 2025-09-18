@@ -1,3 +1,22 @@
+# 1.5.3
+
+- fix: re-add removed packages, that are used, but not direcly imported (067db47640)
+- fix: add TON of missing dependecies in package.json (7027213e3f)
+- fix: remove all dependenices that are unused (found by added depcheck script to package.json) (ecae55a2ea)
+- fix: missing deptchecks in packages (0d4633e159)
+- feat(transport): open/close with params (channel) (7a17f4b93a)
+- test(transport): unit tests adjusted (30f1d4f445)
+- fix(transport): readWithExpectedHeaders not graceful in node-bridge (144131c45a)
+- npm-prerelease: @trezor/transport 1.5.3-beta.2 (7be47ea7df)
+- feat(transport): bridge pinging in worker (31a0ca702b)
+- npm-prerelease: @trezor/transport 1.5.3-beta.1 (ecf8e2ab29)
+- fix(transport): call/send/receive use `graceful` param (bd9a178e5a)
+- feat(transport): bridge client to prioritize 21328 (e30b50c7b1)
+- fix(protocol): ignore unexpected chunks in ThpAck after send (30e20f7096)
+- fix(connect): THP cancel and update sync bit (0789c96862)
+- feat(connect): cancel `THP` workflow (de01a0302e)
+- chore(suite): bump @babel/\* (baa2ef81b5)
+
 # 1.5.2
 
 - npm-prerelease: @trezor/transport 1.5.2-beta.2 (9cd10b17a9)
