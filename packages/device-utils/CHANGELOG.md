@@ -1,3 +1,13 @@
+# 1.1.3
+
+- npm-prerelease: @trezor/device-utils 1.1.3-beta.2 (8657afd6ce)
+- fix: circular import from index (wtf) -> DeviceModelInternal (757166c1cd)
+- feat(suite): Update images (28789fd3ea)
+- npm-prerelease: @trezor/device-utils 1.1.3-beta.1 (02503aa637)
+- feat(device-utils): add min_suite_native_version env condition (6349b6d499)
+- feat(device-utils): update types to new releases JSON (d1d2f3f104)
+- fix(device-utils): change firmware release config types (b116410297)
+
 # 1.1.2
 
 - refactor: from regular to universal firmware-type (9e0c95d36b)
