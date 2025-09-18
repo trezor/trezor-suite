@@ -1,3 +1,10 @@
+# 1.4.3
+
+- npm-prerelease: @trezor/env-utils 1.4.3-beta.1 (472a410f42)
+- fix(env-utils): separate getFirmwareReleaseJwsPublicKey (352f5c2c7e)
+- feat(env-utils): add useCodeSignKey to getJWSPublicKey (7c6d506fdb)
+- chore(env-utils): add public key for signed and production release config (22c406be66)
+
 # 1.4.2
 
 - npm-prerelease: @trezor/env-utils 1.4.2-beta.1 (e76b75189d)
