@@ -67,12 +67,12 @@ async function readAndAssert<T extends Receiver>(
 // returns function: (expectedHeaders: Buffer[]) => ReturnType<AbstractApi['read']>
 // read until received chunk contains expected header and ignore other chunks
 export function readWithExpectedHeaders<T extends Receiver>(receiver: T, options: Options = {}) {
-    return (expectedHeaders?: Buffer[]) =>
+    return (expectedHeaders?: Buffer[], signal?: AbortSignal) =>
         scheduleAction(
             attemptSignal =>
                 readAndAssert(receiver, expectedHeaders, { ...options, signal: attemptSignal }),
             {
-                signal: options?.signal,
+                signal: signal ?? options?.signal,
                 graceful: options?.graceful,
                 attempts: options?.attempts || Infinity,
                 timeout: options?.timeout,
