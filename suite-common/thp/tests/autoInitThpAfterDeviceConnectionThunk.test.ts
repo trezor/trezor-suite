@@ -67,7 +67,7 @@ const createStore = ({ isFirmwareInstallation, isDeviceSelected }: CreateStorePa
         preloadedState: {
             thp: initialThpState,
             firmware: isFirmwareInstallation
-                ? { ...initialFirmwareState, status: 'installing' }
+                ? { ...initialFirmwareState, status: 'started' }
                 : initialFirmwareState,
             device: {
                 devices: [device],

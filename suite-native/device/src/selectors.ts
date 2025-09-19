@@ -61,7 +61,7 @@ import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { isDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
+import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
 export type NativeDeviceRootState = DeviceRootState &
     AccountsRootState &
@@ -237,7 +237,7 @@ export const selectIsDeviceAuthenticityCheckFailed = createMemoizedSelector(
 
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [selectDeviceModel],
-    model => G.isNotNullable(model) && isDeviceSetupSupported(model),
+    model => G.isNotNullable(model) && getIsDeviceSetupSupported(model),
 );
 
 export const selectShouldFactoryResetBeVisible = createMemoizedSelector(
