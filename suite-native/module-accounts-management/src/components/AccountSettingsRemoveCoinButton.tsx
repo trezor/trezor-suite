@@ -1,10 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    forgetAccountsThunk,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';
@@ -29,7 +25,7 @@ export const AccountSettingsRemoveCoinButton = ({
     if (!account) return null;
 
     const handleRemoveAccount = () => {
-        dispatch(forgetAccountsThunk({ accountsToRemove: [account] }));
+        dispatch(accountsActions.removeAccount([account]));
         navigateToInitialScreen();
     };
 

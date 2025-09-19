@@ -173,14 +173,3 @@ export const fetchAndUpdateAccountThunk = createThunk(
         }
     },
 );
-
-type ForgetAccountsThunkParams = {
-    accountsToRemove: Account[];
-};
-
-export const forgetAccountsThunk = createThunk<void, ForgetAccountsThunkParams, void>(
-    `${ACCOUNTS_MODULE_PREFIX}/forgetAccountThunk`,
-    ({ accountsToRemove }, { dispatch }) => {
-        dispatch(accountsActions.removeAccount(accountsToRemove));
-    },
-);
