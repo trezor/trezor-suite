@@ -26,12 +26,14 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
-import { UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
+import {
+    UpdateSelectedFeeLevelThunkParams,
+    addTransactionLabelingThunk,
+} from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { Success } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './constants';
-import { sendFormAddLabelingThunk } from './sendFormAddLabelingThunk';
 
 export const signTransactionNativeThunk = createThunk<
     BlockbookTransaction | undefined,
@@ -195,7 +197,7 @@ export const sendTransactionThunk = createThunk<
 
         if (formValues !== null) {
             await dispatch(
-                sendFormAddLabelingThunk({
+                addTransactionLabelingThunk({
                     txId: sendResponse.payload.payload.txid,
                     selectedAccount,
                 }),

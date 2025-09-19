@@ -18,7 +18,6 @@
         "@reduxjs/toolkit": "2.8.2",
         "@shopify/flash-list": "1.7.6",
         "@suite-common/formatters": "workspace:*",
-        "@suite-common/local-first-storage": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/validators": "workspace:*",

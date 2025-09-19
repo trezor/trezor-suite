@@ -4,9 +4,9 @@ import { selectPrecomposedSendForm, selectSendPrecomposedTx } from '@suite-commo
 import { Account } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 
-import { SEND_MODULE_PREFIX } from './constants';
+const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 
-type SendFormAddLabelingThunkParams = {
+type AddTransactionLabelingThunkParams = {
     selectedAccount: Account;
     txId: string;
 };
@@ -14,8 +14,12 @@ type SendFormAddLabelingThunkParams = {
 // Todo: This code below is kinda copy-paste from `applySendFormMetadataLabelsThunk` in Desktop.
 //       However, desktop code is polluted by Legacy Labeling (Metadata) so it cannot be easily reused.
 //       After we get rid of old Labeling, this shall be unified and move to the wallet-core.
-export const sendFormAddLabelingThunk = createThunk<void, SendFormAddLabelingThunkParams, void>(
-    `${SEND_MODULE_PREFIX}/sendTransactionThunk`,
+export const addTransactionLabelingThunk = createThunk<
+    void,
+    AddTransactionLabelingThunkParams,
+    void
+>(
+    `${TRANSACTION_MANAGEMENT_PREFIX}/sendTransactionThunk`,
     async ({ selectedAccount, txId }, { getState, dispatch }) => {
         const precomposedTransaction = selectSendPrecomposedTx(getState());
 
