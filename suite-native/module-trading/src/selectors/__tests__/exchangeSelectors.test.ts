@@ -2,6 +2,7 @@ import { CryptoId } from 'invity-api';
 
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
 
 import { getBtcAccount } from '../../__fixtures__/account';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
@@ -18,11 +19,14 @@ import {
 } from '../exchangeSelectors';
 
 describe('exchangeSelectors', () => {
-    let state: TradingRootState & AccountsRootState;
+    let state: TradingRootState & AccountsRootState & FeatureFlagsRootState;
 
     beforeEach(() => {
         state = {
             wallet: getWalletState({ tradeType: 'exchange' }),
+            featureFlags: {
+                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+            } as FeatureFlagsRootState['featureFlags'],
         };
     });
 
@@ -160,7 +164,7 @@ describe('exchangeSelectors', () => {
             });
         });
 
-        it('should group quotes by fixed/float/dex', () => {
+        it('should group quotes by fixed/float/dex when DEX feature flag is enabled', () => {
             state.wallet.trading.exchange.quotes = exchangeQuotes;
 
             const groupedQuotes = selectGroupedExchangeQuotes(state);
@@ -188,6 +192,29 @@ describe('exchangeSelectors', () => {
                     }),
                 ],
             });
+        });
+
+        it('should exclude DEX quotes when DEX feature flag is disabled', () => {
+            state.wallet.trading.exchange.quotes = exchangeQuotes;
+            state.featureFlags[FeatureFlag.AreTradingExchangeDexesEnabled] = false;
+
+            const groupedQuotes = selectGroupedExchangeQuotes(state);
+
+            expect(groupedQuotes.dex).toEqual([]);
+        });
+
+        it('should sort quotes by rate within each group (highest rate first)', () => {
+            state.wallet.trading.exchange.quotes = exchangeQuotes;
+
+            const groupedQuotes = selectGroupedExchangeQuotes(state);
+
+            // Fixed quotes should be sorted by rate (highest first)
+            expect(groupedQuotes.fixed[0].rate ?? 0).toBeGreaterThan(
+                groupedQuotes.fixed[1].rate ?? 0,
+            );
+
+            // DEX quotes should be sorted by rate (highest first)
+            expect(groupedQuotes.dex[0].rate ?? 0).toBeGreaterThan(groupedQuotes.dex[1].rate ?? 0);
         });
 
         it('should be stable', () => {

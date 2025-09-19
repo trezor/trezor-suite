@@ -1,10 +1,16 @@
 import { ExchangeTrade } from 'invity-api';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    FeatureFlag,
+    FeatureFlagsRootState,
+    selectIsFeatureFlagEnabled,
+} from '@suite-native/feature-flags';
 
 import {
     TradingRootState,
@@ -16,6 +22,11 @@ import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
 } from '../utils/general/tradeableAssetUtils';
+
+export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRootState;
+
+const createTradingWithFeatureFlagsMemoizedSelector =
+    createWeakMapSelector.withTypes<TradingWithFeatureFlagsRootState>();
 
 export const selectTradingExchange = (state: TradingRootState) => state.wallet.trading.exchange;
 
@@ -61,14 +72,16 @@ const ratingSortingComparator = (
     b: { rate?: number | undefined },
 ) => (b.rate ?? 0) - (a.rate ?? 0);
 
-export const selectGroupedExchangeQuotes = createMemoizedSelector(
+export const selectGroupedExchangeQuotes = createTradingWithFeatureFlagsMemoizedSelector(
     [
         selectExchangeQuotes,
         selectTradingExchangeProviders as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingExchangeProviders>,
+        (state: TradingWithFeatureFlagsRootState) =>
+            selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
     ],
-    (quotes, providers = {}) => {
+    (quotes, providers = {}, areTradingExchangeDexesEnabled) => {
         const groups = {
             fixed: [] as ExchangeTrade[],
             float: [] as ExchangeTrade[],
@@ -80,6 +93,9 @@ export const selectGroupedExchangeQuotes = createMemoizedSelector(
             const { isFixedRate } = providers[exchange] || {};
 
             if (isDex) {
+                if (!areTradingExchangeDexesEnabled) {
+                    return;
+                }
                 groups.dex.push(quote);
             } else if (isFixedRate) {
                 groups.fixed.push(quote);

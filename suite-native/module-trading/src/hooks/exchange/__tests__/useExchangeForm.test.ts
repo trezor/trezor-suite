@@ -2,6 +2,7 @@ import { ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
+import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
     PreloadedState,
     TestStore,
@@ -31,6 +32,9 @@ describe('useExchangeForm', () => {
                 tradeType: 'exchange',
                 bitcoinAmountUnit,
             }),
+            featureFlags: {
+                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+            } as FeatureFlagsRootState['featureFlags'],
         };
 
         return await initStore(preloadedState);
