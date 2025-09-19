@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/react-native';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { MessageSystem } from '@suite-common/suite-types';
 import { PollingController, decodeJws, verifyJws } from '@suite-common/suite-utils';
@@ -80,47 +82,49 @@ export const fetchConfigThunk = createThunk(
 
         if (shouldFetchConfig(useLocalConfig, timestamp)) {
             try {
-                const { configJws, isRemote } = await getConfigJws(useLocalConfig);
+                await Sentry.startSpan({ name: 'getConfigJws' }, async () => {
+                    const { configJws, isRemote } = await getConfigJws(useLocalConfig);
 
-                const decodedJws = decodeJws(configJws);
+                    const decodedJws = decodeJws(configJws);
 
-                if (!decodedJws) {
-                    throw Error('Decoding of config failed');
-                }
+                    if (!decodedJws) {
+                        throw Error('Decoding of config failed');
+                    }
 
-                const algorithmInHeader = decodedJws?.header.alg;
-                if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-                    throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-                }
+                    const algorithmInHeader = decodedJws?.header.alg;
+                    if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
+                        throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
+                    }
 
-                const isAuthenticityValid = await verifyJws(configJws, JWS_SIGN_ALGORITHM);
+                    const isAuthenticityValid = await verifyJws(configJws, JWS_SIGN_ALGORITHM);
 
-                if (!isAuthenticityValid) {
-                    throw Error('Config authenticity is invalid');
-                }
+                    if (!isAuthenticityValid) {
+                        throw Error('Config authenticity is invalid');
+                    }
 
-                const config: MessageSystem = JSON.parse(decodedJws.payload);
+                    const config: MessageSystem = JSON.parse(decodedJws.payload);
 
-                if (VERSION !== config.version) {
-                    throw Error('Config version is not supported');
-                }
+                    if (VERSION !== config.version) {
+                        throw Error('Config version is not supported');
+                    }
 
-                const timestampNew = isRemote ? Date.now() : 0;
+                    const timestampNew = isRemote ? Date.now() : 0;
 
-                if (currentSequence < config.sequence || useLocalConfig) {
-                    dispatch(
-                        messageSystemActions.fetchSuccessUpdate({
-                            config,
-                            timestamp: timestampNew,
-                        }),
-                    );
-                } else if (currentSequence === config.sequence) {
-                    dispatch(messageSystemActions.fetchSuccess({ timestamp: timestampNew }));
-                } else {
-                    throw Error(
-                        `Sequence of config (${config.sequence}) is older than the current one (${currentSequence}).`,
-                    );
-                }
+                    if (currentSequence < config.sequence || useLocalConfig) {
+                        dispatch(
+                            messageSystemActions.fetchSuccessUpdate({
+                                config,
+                                timestamp: timestampNew,
+                            }),
+                        );
+                    } else if (currentSequence === config.sequence) {
+                        dispatch(messageSystemActions.fetchSuccess({ timestamp: timestampNew }));
+                    } else {
+                        throw Error(
+                            `Sequence of config (${config.sequence}) is older than the current one (${currentSequence}).`,
+                        );
+                    }
+                });
             } catch (error) {
                 console.error(error);
                 await dispatch(messageSystemActions.fetchError());

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/react-native';
+
 import { decodeJws, verifyJws } from '@suite-common/suite-utils';
 import { NetworkSymbol, getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -120,34 +122,36 @@ export const fetchTokenDefinitions = async (
 
     const env = isCodesignBuild() ? 'stable' : 'develop';
 
-    const response = await fetch(
-        `${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.${structure}.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
-    );
+    return Sentry.startSpan({ name: 'fetchTokenDefinitions' }, async () => {
+        const response = await fetch(
+            `${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.${structure}.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
+        );
 
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
 
-    const jws = await response.text();
+        const jws = await response.text();
 
-    const decodedJws = decodeJws(jws);
+        const decodedJws = decodeJws(jws);
 
-    if (!decodedJws) {
-        throw Error('Decoding of config failed');
-    }
+        if (!decodedJws) {
+            throw Error('Decoding of config failed');
+        }
 
-    const algorithmInHeader = decodedJws?.header.alg;
-    if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-        throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-    }
+        const algorithmInHeader = decodedJws?.header.alg;
+        if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
+            throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
+        }
 
-    const isAuthenticityValid = await verifyJws(jws, JWS_SIGN_ALGORITHM);
+        const isAuthenticityValid = await verifyJws(jws, JWS_SIGN_ALGORITHM);
 
-    if (!isAuthenticityValid) {
-        throw Error('Config authenticity is invalid');
-    }
+        if (!isAuthenticityValid) {
+            throw Error('Config authenticity is invalid');
+        }
 
-    const data = JSON.parse(decodedJws.payload);
+        const data = JSON.parse(decodedJws.payload);
 
-    return data;
+        return data;
+    });
 };

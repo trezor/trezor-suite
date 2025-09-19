@@ -1,4 +1,5 @@
 import { D } from '@mobily/ts-belt';
+import * as Sentry from '@sentry/react-native';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -35,39 +36,41 @@ export const getTokenDefinitionThunk = createThunk(
 
 export const initTokenDefinitionsThunk = createThunk(
     `${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`,
-    (_, { getState, dispatch, extra }) => {
-        const enabledNetworks = extra.selectors.selectTokenDefinitionsEnabledNetworks(getState());
+    (_, { getState, dispatch, extra }) =>
+        Sentry.startSpan({ name: 'initTokenDefinitionsThunk' }, () => {
+            const enabledNetworks =
+                extra.selectors.selectTokenDefinitionsEnabledNetworks(getState());
 
-        const promises = enabledNetworks
-            .map(symbol => {
-                let definitionTypes = getSupportedDefinitionTypes(symbol);
+            const promises = enabledNetworks
+                .map(symbol => {
+                    let definitionTypes = getSupportedDefinitionTypes(symbol);
 
-                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
+                    const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
-                if (tokenDefinitions) {
-                    // Filter out definition types that have data or are in a loading state
-                    definitionTypes = definitionTypes.filter(type => {
-                        const definition = tokenDefinitions[type];
+                    if (tokenDefinitions) {
+                        // Filter out definition types that have data or are in a loading state
+                        definitionTypes = definitionTypes.filter(type => {
+                            const definition = tokenDefinitions[type];
 
-                        return !(definition && (definition.data || definition.isLoading));
-                    });
-                }
+                            return !(definition && (definition.data || definition.isLoading));
+                        });
+                    }
 
-                if (D.isEmpty(definitionTypes)) return [];
+                    if (D.isEmpty(definitionTypes)) return [];
 
-                return definitionTypes.map(type =>
-                    dispatch(
-                        getTokenDefinitionThunk({
-                            symbol,
-                            type,
-                        }),
-                    ),
-                );
-            })
-            .flat();
+                    return definitionTypes.map(type =>
+                        dispatch(
+                            getTokenDefinitionThunk({
+                                symbol,
+                                type,
+                            }),
+                        ),
+                    );
+                })
+                .flat();
 
-        return Promise.all(promises);
-    },
+            return Promise.all(promises);
+        }),
 );
 
 let tokenDefinitionsTimeout: TimerId | null = null;

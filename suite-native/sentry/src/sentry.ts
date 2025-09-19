@@ -55,5 +55,9 @@ export const initSentry = () => {
         // You can put EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true to `.env.development.local` to debug Sentry locally.
         enabled:
             !isDebugEnv() || process.env.EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED === 'true',
+        tracesSampleRate:
+            process.env.EXPO_PUBLIC_IS_SENTRY_TRACES_SAMPLE_RATE_ENABLED === 'true' ? 1 : 0,
+        profilesSampleRate:
+            process.env.EXPO_PUBLIC_IS_SENTRY_PROFILES_SAMPLE_RATE_ENABLED === 'true' ? 1 : 0,
     });
 };
