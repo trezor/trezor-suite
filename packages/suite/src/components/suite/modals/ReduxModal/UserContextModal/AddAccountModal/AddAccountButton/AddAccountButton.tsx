@@ -18,7 +18,7 @@ const verifyAvailability = ({
     unavailableCapability,
 }: {
     emptyAccounts: Account[];
-    account?: Account;
+    account: Account;
     unavailableCapability?: UnavailableCapability;
 }) => {
     if (unavailableCapability === 'no-support') {
@@ -37,78 +37,66 @@ const verifyAvailability = ({
         // discovery failed?
         return 'MODAL_ADD_ACCOUNT_NO_ACCOUNT';
     }
-
-    if (account.networkType !== 'ethereum') {
-        if (emptyAccounts.length === 0) {
-            return 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT';
-        }
-        if (emptyAccounts.length > 1) {
-            // prev account is empty, do not add another
-            return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
-        }
-        if (account.index === 0 && account.empty && account.accountType === 'normal') {
-            // current (first normal) account is empty, do not add another
-            return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
-        }
+    if (emptyAccounts.length === 0) {
+        return 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT';
+    }
+    if (emptyAccounts.length > 1) {
+        // prev account is empty, do not add another
+        return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
+    }
+    if (account.index === 0 && account.empty && account.accountType === 'normal') {
+        // current (first normal) account is empty, do not add another
+        return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
+    }
+    if (account.index >= 10) {
+        return 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED';
     }
 };
 
 interface AddAccountButtonProps {
     network: Network;
     selectedAccount?: NetworkAccount;
-    scopedAccounts: Account[];
+    emptyAccounts: Account[];
     onEnableAccount: (account: Account) => void;
-    onAddNewAccount: () => void;
 }
 
 const AddDefaultAccountButton = ({
-    scopedAccounts,
+    emptyAccounts,
     onEnableAccount,
-    onAddNewAccount,
     network,
     selectedAccount,
 }: AddAccountButtonProps) => {
-    const defaultAccount = scopedAccounts.at(-1);
+    const defaultAccount = emptyAccounts[emptyAccounts.length - 1];
     const device = useSelector(selectSelectedDevice);
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
     const handleClick = useCallback(() => {
-        if (defaultAccount) {
-            onEnableAccount(defaultAccount);
-            // reset search string in account search box
-            setSearchString(undefined);
-            if (coinFilter && coinFilter !== defaultAccount.symbol) {
-                // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
-                setCoinFilter(undefined);
-            }
-
-            analytics.report({
-                type: EventType.AccountsNewAccount,
-                payload: {
-                    type: defaultAccount.accountType,
-                    path: defaultAccount.path,
-                    symbol: defaultAccount.symbol,
-                },
-            });
-        } else {
-            onAddNewAccount();
+        const { accountType: type, path, symbol } = defaultAccount;
+        onEnableAccount(defaultAccount);
+        // reset search string in account search box
+        setSearchString(undefined);
+        if (coinFilter && coinFilter !== symbol) {
+            // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
+            setCoinFilter(undefined);
         }
-    }, [
-        defaultAccount,
-        onEnableAccount,
-        setSearchString,
-        coinFilter,
-        onAddNewAccount,
-        setCoinFilter,
-    ]);
+        // just to log that account was added manually.
+        analytics.report({
+            type: EventType.AccountsNewAccount,
+            payload: {
+                type,
+                path,
+                symbol,
+            },
+        });
+    }, [defaultAccount, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
 
     const unavailableCapability = selectedAccount?.accountType
         ? device?.unavailableCapabilities?.[selectedAccount?.accountType]
         : undefined;
 
     const disabledMessage = verifyAvailability({
-        emptyAccounts: scopedAccounts.filter(account => account.empty),
+        emptyAccounts,
         account: defaultAccount,
         unavailableCapability,
     });
@@ -125,9 +113,8 @@ const AddDefaultAccountButton = ({
 export const AddAccountButton = ({
     network,
     selectedAccount,
-    scopedAccounts,
+    emptyAccounts,
     onEnableAccount,
-    onAddNewAccount,
 }: AddAccountButtonProps) => {
     switch (selectedAccount?.accountType) {
         case 'coinjoin':
@@ -137,9 +124,8 @@ export const AddAccountButton = ({
                 <AddDefaultAccountButton
                     network={network}
                     selectedAccount={selectedAccount}
-                    scopedAccounts={scopedAccounts}
+                    emptyAccounts={emptyAccounts}
                     onEnableAccount={onEnableAccount}
-                    onAddNewAccount={onAddNewAccount}
                 />
             );
     }
