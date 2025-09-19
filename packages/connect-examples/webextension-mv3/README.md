@@ -6,7 +6,7 @@ Tested in Chrome
 
 ## Install
 
-Run the commands below in order to get the MV2 and MV3 webextension ready to be loaded in the browser.
+Run the commands below in order to get the MV3 webextension ready to be loaded in the browser.
 
 - `yarn`
 - `yarn build:libs`

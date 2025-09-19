@@ -6,7 +6,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const path = require('path');
 
-const rootPaths = ['webextension-mv2', 'webextension-mv3'];
+const rootPaths = ['webextension-mv3'];
 
 const trezorConnectSrcIndex = process.argv.indexOf('--trezor-connect-src');
 const buildFolderIndex = process.argv.indexOf('--build-folder');
