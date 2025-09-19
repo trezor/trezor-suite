@@ -3,6 +3,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { selectPrecomposedSendForm, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 
 import { SEND_MODULE_PREFIX } from './constants';
 
@@ -17,6 +18,15 @@ type SendFormAddLabelingThunkParams = {
 export const sendFormAddLabelingThunk = createThunk<void, SendFormAddLabelingThunkParams, void>(
     `${SEND_MODULE_PREFIX}/sendTransactionThunk`,
     async ({ selectedAccount, txId }, { getState, dispatch }) => {
+        const isFeatureFlagOn = selectIsFeatureFlagEnabled(
+            getState(),
+            FeatureFlag.IsLocalFirstStorageEnabled,
+        );
+
+        if (!isFeatureFlagOn) {
+            return;
+        }
+
         const precomposedTransaction = selectSendPrecomposedTx(getState());
 
         if (precomposedTransaction) {
