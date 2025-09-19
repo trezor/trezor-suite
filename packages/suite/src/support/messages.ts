@@ -2850,10 +2850,6 @@ export default defineMessages({
         defaultMessage:
             'Securely stores minimal device information locally to enable advanced security features like anti-counterfeit checks and secure pairing.',
     },
-    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_BUTTON: {
-        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_BUTTON',
-        defaultMessage: 'Change',
-    },
     TR_STORE_DEVICE_DATA_MODAL_TITLE: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_TITLE',
         defaultMessage: 'Store device-related data',
@@ -4715,6 +4711,14 @@ export default defineMessages({
     TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE: {
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE',
         defaultMessage: 'This does not wipe your seed, nor your funds',
+    },
+    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_ENABLE: {
+        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_ENABLE',
+        defaultMessage: 'Enable',
+    },
+    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DISABLE: {
+        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DISABLE',
+        defaultMessage: 'Disable',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
