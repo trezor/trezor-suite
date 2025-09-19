@@ -790,7 +790,9 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
             return (
                 freshInfo.misc!.stellarSequence !== account.misc.stellarSequence ||
                 freshInfo.balance !== account.balance ||
-                freshInfo.misc!.reserve !== account.misc.reserve
+                freshInfo.misc!.reserve !== account.misc.reserve ||
+                // compare token balances (detect token balance changes)
+                JSON.stringify(freshInfo.tokens) !== JSON.stringify(account.tokens)
             );
         case 'ethereum':
             return (
