@@ -169,8 +169,6 @@ export const useTradingBuyForm = ({
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
         methods,
-        quoteCryptoAmount: quotesByPaymentMethod?.[0]?.receiveStringAmount,
-        quoteFiatAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
         network,
         inputNames: {
             cryptoInput: TRADING_FORM_CRYPTO_INPUT,

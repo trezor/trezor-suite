@@ -101,9 +101,19 @@ export const useTradingFiatValues = ({
                 }),
             );
 
-            if (updateFiatRatesResult.meta.requestStatus !== 'fulfilled') return null;
+            if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
+                const fiatRates =
+                    updateFiatRatesResult.payload as PromiseSettledResult<FiatRatesResult>[];
 
-            return updateFiatRatesResult.payload as FiatRatesResult;
+                const successfulResult = fiatRates.find(
+                    (result): result is PromiseFulfilledResult<FiatRatesResult> =>
+                        result.status === 'fulfilled',
+                );
+
+                return successfulResult?.value ?? null;
+            }
+
+            return null;
         },
         [contractAddress, dispatch, symbol, isNativeToken],
     );

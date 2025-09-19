@@ -7,7 +7,7 @@ import {
     TRADING_FORM_OUTPUT_CURRENCY,
     TradingFiatCurrencyOption,
 } from '@suite-common/trading';
-import { buildCurrencyOptions } from '@suite-common/wallet-utils';
+import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -72,7 +72,10 @@ export const TradingFormInputCurrency = ({
             control={control as Control<TradingAllFormProps>}
             render={({ field: { onChange, value } }) => (
                 <Select
-                    value={value}
+                    value={buildCurrencyShortOption({
+                        currency: value.value,
+                        areSatsDisplayed: false,
+                    })}
                     onChange={(selected: TradingFiatCurrencyOption) => {
                         onChange(selected);
                         setAmountLimits(undefined);
