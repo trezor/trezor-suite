@@ -146,7 +146,6 @@ runs:
       with:
         name: connect-example-webextension-${{ inputs.serverHostname }}
         path: |
-          packages/connect-examples/webextension-mv2/build
           packages/connect-examples/webextension-mv3/build
           packages/connect-examples/webextension-mv3-sw/build
 
