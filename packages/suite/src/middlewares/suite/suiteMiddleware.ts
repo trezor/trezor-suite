@@ -1,7 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { MiddlewareAPI } from 'redux';
 
-import { AnyAction } from '@suite-common/redux-utils';
+import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -17,7 +16,6 @@ import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { appChanged, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
-import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -43,20 +41,19 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 
     return false;
 };
-const suite =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
-        const prevApp = api.getState().router.app;
+
+export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
+    (action, { dispatch, next, getState, extra }) => {
+        const prevApp = getState().router.app;
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
-            api.dispatch(appChanged(action.payload.app));
+            dispatch(appChanged(action.payload.app));
         }
 
         // this action needs to be processed before propagation to deviceReducer
         // otherwise device will not be accessible and related data will not be removed (accounts, txs...)
         if (action.type === DEVICE.DISCONNECT) {
-            const state = api.getState();
-            api.dispatch(
+            const state = getState();
+            dispatch(
                 forgetDisconnectedDevices({
                     device: action.payload,
                     forceForget: state.suite.settings.autoEject,
@@ -65,7 +62,7 @@ const suite =
 
             if (!state.suite.settings.autoEject) {
                 if (action.payload.id) {
-                    api.dispatch(setRecentlyDisconnectedDevice(action.payload.id));
+                    dispatch(setRecentlyDisconnectedDevice(action.payload.id));
                 }
 
                 setTimeout(() => {
@@ -79,7 +76,7 @@ const suite =
                         state.wallet.accounts.length > 0 &&
                         !isModalActive
                     ) {
-                        api.dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+                        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
                     }
                 }, 1000);
             }
@@ -89,16 +86,19 @@ const suite =
         next(action);
 
         if (deviceActions.forgetDevice.match(action)) {
-            api.dispatch(handleDeviceDisconnect(action.payload.device));
+            const { device } = action.payload;
+
+            dispatch(handleDeviceDisconnect(device));
+            dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));
         }
 
         switch (action.type) {
             case SUITE.DESKTOP_HANDSHAKE:
                 if (action.payload.protocol) {
-                    api.dispatch(handleProtocolRequest(action.payload.protocol));
+                    dispatch(handleProtocolRequest(action.payload.protocol));
                 }
                 if (action.payload.desktopUpdate?.firstRun) {
-                    api.dispatch(
+                    dispatch(
                         notificationsActions.addToast({
                             type: 'auto-updater-new-version-first-run',
                             version: action.payload.desktopUpdate.firstRun,
@@ -107,12 +107,12 @@ const suite =
                 }
                 break;
             case DEVICE.DISCONNECT:
-                api.dispatch(handleDeviceDisconnect(action.payload));
+                dispatch(handleDeviceDisconnect(action.payload));
                 break;
             case SUITE.ONLINE_STATUS:
                 // Restart discovery to reconnect to backends when user goes offline -> online.
                 if (action.payload === true) {
-                    api.dispatch(startOrRestartDiscoveryThunk());
+                    dispatch(startOrRestartDiscoveryThunk());
                 }
                 break;
 
@@ -121,10 +121,9 @@ const suite =
         }
         if (isActionDeviceRelated(action)) {
             // keep suite reducer synchronized with other reducers (selected device)
-            api.dispatch(observeSelectedDevice());
+            dispatch(observeSelectedDevice());
         }
 
         return action;
-    };
-
-export default suite;
+    },
+);

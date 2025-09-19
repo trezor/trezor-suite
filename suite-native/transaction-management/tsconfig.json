@@ -25,6 +25,7 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },

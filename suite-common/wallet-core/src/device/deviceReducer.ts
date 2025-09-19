@@ -689,7 +689,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     if (!state.devices[index]) return;
                     state.devices[index].localFirstStorageSecret = {
                         isRetrieving,
-                        evoluKeys: undefined,
+                        evoluKeys: state.devices[index].localFirstStorageSecret?.evoluKeys,
                     };
                 },
             )

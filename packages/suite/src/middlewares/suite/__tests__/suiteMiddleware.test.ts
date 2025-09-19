@@ -1,9 +1,10 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import { extraDependenciesMock } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import { appChanged } from 'src/actions/suite/suiteActions';
-import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -47,7 +48,9 @@ const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, Action>([suiteMiddleware]);
+    const mockStore = configureStore<State, Action>([
+        prepareSuiteMiddleware(extraDependenciesMock),
+    ]);
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();

@@ -1,23 +1,23 @@
-/* eslint-disable import/order */
 import { logsMiddleware } from '@suite-common/logger';
 
-import log from './logsMiddleware';
-import suite from './suiteMiddleware';
-import redirect from './redirectMiddleware';
 import analytics from './analyticsMiddleware';
 import buttonRequest from './buttonRequestMiddleware';
 import events from './eventsMiddleware';
-import metadata from './metadataMiddleware';
+import log from './logsMiddleware';
 import messageSystem from './messageSystemMiddleware';
+import metadata from './metadataMiddleware';
 import protocol from './protocolMiddleware';
+import redirect from './redirectMiddleware';
 import router from './routerMiddleware';
 import sentry from './sentryMiddleware';
+import { prepareSuiteMiddleware } from './suiteMiddleware';
+import { extraDependencies } from '../../support/extraDependencies';
 
-export default [
+export const suiteMiddlewares = [
     log,
     logsMiddleware, // Common logs shared between desktop and mobile app
     redirect,
-    suite,
+    prepareSuiteMiddleware(extraDependencies),
     analytics,
     buttonRequest,
     events,
