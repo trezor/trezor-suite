@@ -3,12 +3,10 @@ import {
     type AccountType,
     type Bip43Path,
     type Bip43PathTemplate,
-    type NetworkAccount,
     type NetworkFeature,
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
-    type TrezorConnectBackendType,
     getNetwork,
     getNetworkDisplaySymbol,
     networkSymbolCollection,
@@ -28,7 +26,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
-import TrezorConnect, {
+import {
     AccountAddress,
     AccountAddresses,
     AccountInfo,
@@ -1230,48 +1228,5 @@ export const parseAccountKey = (accountKey: AccountKey) => {
         accountDescriptor: accountDescriptor as AccountDescriptor,
         networkSymbol: networkSymbol as NetworkSymbol,
         deviceStaticSessionId: deviceStaticSessionId as StaticSessionId,
-    };
-};
-
-export const prepareNewAccountPayload = async ({
-    accountType,
-    networkSymbol,
-    index,
-    backendType,
-    selectedAccount,
-    accountTypes,
-    deviceState,
-}: {
-    accountType: AccountType;
-    networkSymbol: NetworkSymbol;
-    index: number;
-    backendType?: TrezorConnectBackendType;
-    selectedAccount?: NetworkAccount;
-    accountTypes?: NetworkAccount[];
-    deviceState?: StaticSessionId;
-}) => {
-    const networkAccount =
-        selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
-
-    const newPath = networkAccount?.bip43Path.replace('i', String(index));
-
-    if (!newPath || !deviceState) return new Error('Missing path');
-
-    const res = await TrezorConnect.getAccountInfo({
-        path: newPath,
-        coin: networkSymbol,
-    });
-
-    if (!res.success) return new Error(res.payload.error);
-
-    return {
-        accountInfo: res.payload,
-        visible: true,
-        deviceState,
-        symbol: networkSymbol,
-        index,
-        accountType,
-        path: newPath as Bip43Path,
-        backendType,
     };
 };
