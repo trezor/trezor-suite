@@ -7,3 +7,4 @@ export * from './feesFormSchema';
 export * from './selectors';
 export * from './sendFormSlice';
 export * from './thunks';
+export * from './addTransactionLabelingThunk';

@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/local-first-storage"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {

@@ -6,9 +6,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/local-first-storage"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {

@@ -30,6 +30,7 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
     NativeSupportedFeeLevel,
     UpdateSelectedFeeLevelThunkParams,
+    addTransactionLabelingThunk,
     storeFeeLevels,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
@@ -301,7 +302,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             return rejectWithValue(pushResult.error);
         }
 
-        // Return the expected TradingFulfillValue format
+        dispatch(
+            addTransactionLabelingThunk({
+                txId: pushResult.payload.payload.txid,
+                selectedAccount,
+            }),
+        );
+
         return fulfillWithValue({
             success: true,
             payload: pushResult.payload,
