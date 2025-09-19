@@ -1,6 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     ComposeActionContext,
+    addFakePendingCardanoTxThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
     selectIsMevProtectionFeatureEnabled,
@@ -8,11 +9,17 @@ import {
     stakeActions,
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, StakeFormState, StakeType } from '@suite-common/wallet-types';
+import {
+    PrecomposedTransactionFinal,
+    StakeFormState,
+    StakeType,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getMevProtectedTxData,
     isRbfBumpFeeTransaction,
+    isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
@@ -22,8 +29,10 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Dispatch, GetState } from 'src/types/suite';
 
+import { setPendingStakeTx } from './cardanoStakingActions';
 import * as modalActions from '../suite/modalActions';
 import { openModal } from '../suite/modalActions';
+import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
@@ -37,6 +46,10 @@ export const composeTransaction =
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
             return dispatch(stakeFormSolanaActions.composeTransaction(formValues, formState));
+        }
+
+        if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
+            return dispatch(stakeFormCardanoActions.composeTransaction(formValues, formState));
         }
 
         return Promise.resolve(undefined);
@@ -143,6 +156,24 @@ const pushTransaction =
                 );
             }
 
+            if (account.networkType === 'cardano') {
+                const base = { withdrawal: undefined, deposit: undefined };
+                const cardanoSpecific: WalletAccountTransaction['cardanoSpecific'] =
+                    stakeType === 'stake'
+                        ? { ...base, subtype: 'stake_delegation' }
+                        : { ...base, subtype: 'stake_deregistration' };
+
+                dispatch(
+                    addFakePendingCardanoTxThunk({
+                        precomposedTransaction: precomposedTx,
+                        txid,
+                        account,
+                        cardanoSpecific,
+                    }),
+                );
+                dispatch(setPendingStakeTx(account, txid));
+            }
+
             // notification from the backend may be delayed.
             // modify affected account balance.
             // TODO: make it work with ETH accounts
@@ -201,6 +232,12 @@ export const signTransaction =
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
                 stakeFormSolanaActions.signTransaction(formValues, enhancedTxInfo),
+            );
+        }
+
+        if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
+            serializedTx = await dispatch(
+                stakeFormCardanoActions.signTransaction(formValues, enhancedTxInfo),
             );
         }
 

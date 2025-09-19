@@ -1,5 +1,6 @@
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
+    CARDANO_EPOCH_DAYS,
     MAX_CARDANO_AMOUNT_FOR_STAKING,
     MAX_ETH_AMOUNT_FOR_STAKING,
     MAX_SOL_AMOUNT_FOR_STAKING,
@@ -18,6 +19,9 @@ import {
 import { Account, PrecomposedLevels, StakingPoolExtended } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
+import { asAmountSubunit } from './AmountTypes';
+import { subunitsToUnits } from './amountUtils';
+import { isSupportedAdaStakingNetworkSymbol } from './cardanoStakingUtils';
 import {
     getAccountEverstakeStakingPool,
     getEthAccountTotalStakingBalance,
@@ -43,7 +47,9 @@ export const getAccountTotalStakingBalance = (account: Account) => {
 };
 
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
-    isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
+    isSupportedEthStakingNetworkSymbol(symbol) ||
+    isSupportedSolStakingNetworkSymbol(symbol) ||
+    isSupportedAdaStakingNetworkSymbol(symbol);
 
 export type StakingLimits = {
     MIN_AMOUNT_FOR_STAKING: BigNumber;
@@ -118,6 +124,31 @@ export const getStakingDataForNetwork = (
                 canClaim: canClaimSol,
             };
         }
+
+        case 'cardano': {
+            const { isActive, rewards } = account.misc.staking;
+            const totalStakedBalance = isActive ? account.formattedBalance : '';
+
+            const formattedRewards = subunitsToUnits({
+                value: asAmountSubunit(new BigNumber(rewards)),
+                symbol: account.symbol,
+            }).toString();
+
+            const hasRewards = new BigNumber(rewards).isGreaterThan(0);
+            const totalPendingStakeBalance = !hasRewards ? account.formattedBalance : '';
+
+            return {
+                autocompoundBalance: totalStakedBalance,
+                claimableAmount: '',
+                depositedBalance: hasRewards ? totalStakedBalance : '',
+                pendingBalance: '',
+                pendingDepositedBalance: '',
+                totalPendingStakeBalance,
+                restakedReward: formattedRewards,
+                withdrawTotalAmount: '',
+                canClaim: false,
+            };
+        }
         default:
             return;
     }
@@ -136,6 +167,10 @@ export const getUnstakingPeriodInDays = ({
 }: GetUnstakingPeriodInDays) => {
     if (networkType === 'solana') {
         return SOLANA_EPOCH_DAYS;
+    }
+
+    if (networkType === 'cardano') {
+        return CARDANO_EPOCH_DAYS;
     }
 
     if (validatorWithdrawTime === undefined || validatorExitTime === undefined) {

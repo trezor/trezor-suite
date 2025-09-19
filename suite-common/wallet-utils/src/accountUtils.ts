@@ -45,7 +45,7 @@ import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
-import { AmountSubunit, AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
+import { getAccountDecimals } from './amountUtils';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
@@ -301,8 +301,6 @@ export const getAccountTypeUrl = (path: string) => {
     }
 };
 
-export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
-
 /**
  * Sats -> BTC, etc...
  *
@@ -368,34 +366,6 @@ export const networkAmountToSmallestUnit = (amount: string | null, symbol: Netwo
     if (!decimals) return amount;
 
     return convertAmountUnitsToSubunits(amount, decimals);
-};
-
-type SymbolOrDecimals = { symbol: NetworkSymbol } | { decimals: number };
-
-type UnitsToSubunitsParams = { value: AmountUnit } & SymbolOrDecimals;
-
-/**
- * Converts Bitcoins to Sats (and similarly for other coins)
- */
-export const unitsToSubunits = (params: UnitsToSubunitsParams): AmountSubunit => {
-    const decimals = 'decimals' in params ? params.decimals : getAccountDecimals(params.symbol);
-
-    const factor = new BigNumber(10).exponentiatedBy(decimals);
-
-    return asAmountSubunit(params.value.multipliedBy(factor));
-};
-
-type SubunitsToUnitsParams = { value: AmountSubunit } & SymbolOrDecimals;
-
-/**
- * Converts Sats to Bitcoin (and similarly for other coins)
- */
-export const subunitsToUnits = (params: SubunitsToUnitsParams): AmountUnit => {
-    const decimals = 'decimals' in params ? params.decimals : getAccountDecimals(params.symbol);
-
-    const factor = new BigNumber(10).exponentiatedBy(decimals);
-
-    return asAmountUnit(params.value.div(factor));
 };
 
 /**

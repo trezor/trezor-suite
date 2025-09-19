@@ -279,6 +279,7 @@ const constructNewFlow = ({
     const isStellar = account.networkType === 'stellar';
     const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
+    const stakeType = getStakeType(precomposedForm, outputs);
 
     const { networkType, symbol } = account;
 
@@ -361,7 +362,7 @@ const constructNewFlow = ({
                         value: tokenBundle.balance ?? '0',
                         token: tokenBundle,
                     });
-                } else {
+                } else if (!stakeType) {
                     outputs.push({
                         type: 'amount',
                         label: o.address,

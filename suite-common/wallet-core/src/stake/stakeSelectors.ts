@@ -6,7 +6,7 @@ import {
     BACKUP_SOL_APY,
 } from '@suite-common/wallet-constants';
 import {
-    isSupportedCardanoStakingNetworkSymbol,
+    isSupportedAdaStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 
@@ -29,7 +29,7 @@ export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSy
         return data?.[symbol]?.stakingInfo?.data?.apy || BACKUP_SOL_APY;
     }
 
-    if (isSupportedCardanoStakingNetworkSymbol(symbol)) {
+    if (isSupportedAdaStakingNetworkSymbol(symbol)) {
         return BACKUP_CARDANO_APY;
     }
 

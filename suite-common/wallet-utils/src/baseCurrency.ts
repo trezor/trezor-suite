@@ -4,7 +4,7 @@ import { Branded } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { AMOUNT_UNIT_ZERO, AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
-import { subunitsToUnits, unitsToSubunits } from './accountUtils';
+import { subunitsToUnits, unitsToSubunits } from './amountUtils';
 import { fromBaseCurrencyToCryptoUnit, toFiatCurrency } from './fiatConverterUtils';
 
 /**

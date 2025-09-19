@@ -48,6 +48,11 @@ export const getStakingTotalRewards = (
                 totalRewards: solRewardsFormatted,
                 isTotalRewardsLoading,
             };
+        case 'cardano':
+            return {
+                totalRewards: restakedReward,
+                isTotalRewardsLoading: false,
+            };
         default:
             return {};
     }

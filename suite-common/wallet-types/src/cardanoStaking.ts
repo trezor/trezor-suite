@@ -25,7 +25,12 @@ export interface DRepResponse {
     [key: string]: DRep;
 }
 
-export type CardanoAction = 'delegate' | 'withdrawal' | 'voteDelegate' | 'voteAbstain';
+export type CardanoAction =
+    | 'delegate'
+    | 'withdrawal'
+    | 'voteDelegate'
+    | 'voteAbstain'
+    | 'deregister';
 
 export type ActionAvailability =
     | { status: true; reason?: undefined }
@@ -33,7 +38,7 @@ export type ActionAvailability =
     | { status: false; reason?: string };
 
 export type CardanoStaking = {
-    address: string;
+    address?: string;
     pendingStakeTx: PendingStakeTx | undefined;
     deviceAvailable: {
         status: boolean;
@@ -44,22 +49,23 @@ export type CardanoStaking = {
     loading: boolean;
     fee?: string;
     deposit?: string;
-    registeredPoolId: string | null;
+    registeredPoolId?: string | null;
     isStakingOnTrezorPool: boolean | null;
     isFetchError: boolean;
     isCurrentPoolOversaturated: boolean;
     trezorPools: PoolsResponse | undefined;
     trezorDRep?: DRepResponse;
     accountDRepHex?: string;
-    isActive: boolean;
+    isActive?: boolean;
     alreadyVoted: boolean;
-    rewards: string;
+    rewards?: string;
     delegate: () => void;
     withdrawal: () => void;
     voteDelegate: () => void;
     voteAbstain: () => void;
     calculateFeeAndDeposit: (action: CardanoAction) => Promise<void>;
     error?: string;
+    isStakingDisabled: boolean;
 };
 
 export const supportedCardanoNetworkSymbols = ['ada', 'tada'] as const;
