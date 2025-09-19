@@ -67,9 +67,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             if (device.state !== undefined) {
                 const accountsToRemove = selectAccountsByDeviceState(getState(), device.state);
                 dispatch(accountsActions.removeAccount(accountsToRemove));
-                if (action.payload.device !== undefined) {
-                    dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));
-                }
+                dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));
             }
         }
 

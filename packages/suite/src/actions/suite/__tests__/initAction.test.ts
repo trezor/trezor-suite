@@ -7,6 +7,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
+import { extraDependenciesMock } from '@suite-common/test-utils';
 import {
     initTokenDefinitionsThunk,
     periodicCheckTokenDefinitionsThunk,
@@ -29,7 +30,7 @@ import { initialBreakpointFlags } from '@trezor/theme';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { init } from 'src/actions/suite/initAction';
-import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
@@ -250,7 +251,7 @@ const fixtures: Fixture[] = [
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, any>([suiteMiddleware]);
+    const mockStore = configureStore<State, any>([prepareSuiteMiddleware(extraDependenciesMock)]);
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().slice(-1)[0];

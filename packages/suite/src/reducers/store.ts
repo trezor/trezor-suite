@@ -19,7 +19,7 @@ import { prepareThpReducer } from '@suite-common/thp';
 import { prepareLabelingReducer } from '@suite-common/local-first-storage';
 import { accountsActions } from '@suite-common/wallet-core';
 
-import suiteMiddlewares from 'src/middlewares/suite';
+import { suiteMiddlewares } from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import backupMiddlewares from 'src/middlewares/backup';
