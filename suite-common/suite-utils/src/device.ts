@@ -1,6 +1,14 @@
 import { AnyAction } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
-import { DEVICE, Device, DeviceEvent, KnownDevice, UnavailableCapability } from '@trezor/connect';
+import {
+    DEVICE,
+    Device,
+    DeviceEvent,
+    DeviceMode,
+    KnownDevice,
+    PROTO,
+    UnavailableCapability,
+} from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { ThpStateSerialized } from '@trezor/protocol';
 import { exhaustive } from '@trezor/type-utils';
@@ -459,3 +467,19 @@ export const getDeviceInternalModel = (
 export const isThpDevice = <T extends Device | TrezorDevice>(
     device: T,
 ): device is T & { thp: ThpStateSerialized } => device.thp !== undefined;
+
+export const getIsDeviceInitialized = ({
+    deviceMode,
+    deviceFeatures,
+}: {
+    deviceMode?: DeviceMode | null;
+    deviceFeatures?: PROTO.Features;
+}) => deviceMode !== 'initialize' && deviceMode !== 'seedless' && !!deviceFeatures?.initialized;
+
+export const getIsDeviceConnectedAndAuthorized = ({
+    deviceState,
+    deviceFeatures,
+}: {
+    deviceState: TrezorDevice['state'];
+    deviceFeatures?: PROTO.Features;
+}) => !!deviceState && !!deviceFeatures;

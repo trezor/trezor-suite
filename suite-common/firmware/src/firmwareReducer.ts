@@ -115,3 +115,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
 export const selectFirmware = (state: RootState) => state.firmware;
 export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
 export const selectFirmwareUpdateSource = (state: RootState) => state.firmware.firmwareUpdateSource;
+
+export const selectIsFirmwareInstallationRunning = (state: RootState) =>
+    state.firmware.status === 'started';

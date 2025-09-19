@@ -5,13 +5,16 @@ import {
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
-import { isThpDevice } from '@suite-common/suite-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
+import {
+    getDeviceInternalModel,
+    getIsDeviceConnectedAndAuthorized,
+    getIsDeviceInitialized,
+    isThpDevice,
+} from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
 import {
     deviceActions,
-    deviceConnectThunks,
-    selectIsDeviceConnectedAndAuthorized,
-    selectIsDeviceInitialized,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
@@ -36,10 +39,9 @@ import {
 import {
     NativeDeviceRootState,
     selectIsDeviceCompromised,
-    selectIsDeviceSetupSupported,
     selectIsEntropyCheckEnabledAndFailed,
 } from '../selectors';
-import { isDeviceConnectAction } from '../utils';
+import { getIsDeviceSetupSupported } from '../utils';
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
 
@@ -114,11 +116,19 @@ const handleDeviceConnectNavigation = ({
 };
 
 deviceConnectionMiddleware.startListening({
-    predicate: action => isDeviceConnectAction(action),
+    predicate: action => deviceActions.connectDevice.match(action),
     effect: (
         action: UnknownAction,
         { getState }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
     ) => {
+        if (!deviceActions.connectDevice.match(action)) {
+            throw new Error('This listener only handles connectDevice action');
+        }
+
+        // FYI: This is the only device you should access from this middleware. At this point, selectedDevice is previously connected device.
+        // Your decision logic should be derived from device passed from TrezorConnect in the action payload (not selectedDevice from the state).
+        const { device } = action.payload;
+
         const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
 
         if (checkIsActiveRouteAnyOf(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
@@ -134,25 +144,31 @@ deviceConnectionMiddleware.startListening({
             return;
         }
 
-        // If device is authorized already (usually in case of remembered device which has already been authorized)
-        const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(getState());
         // Passphrase protected devices are only connected through passphrase form
         // The passphrase flow handles connection differently and redirect to connecting screen is not wanted.
         const isDeviceUsingPassphrase = selectIsDeviceUsingPassphrase(getState());
 
         if (isDeviceUsingPassphrase) return;
 
+        // If device is authorized already (usually in case of remembered device which has already been authorized)
+        const isDeviceConnectedAndAuthorized = getIsDeviceConnectedAndAuthorized({
+            deviceState: device.state as TrezorDevice['state'],
+            deviceFeatures: device.features,
+        });
         const isNonThpRememberedDeviceConnectAction =
             isDeviceConnectedAndAuthorized &&
-            deviceConnectThunks.fulfilled.match(action) &&
-            !isThpDevice(action.meta.arg.device);
+            deviceActions.connectDevice.match(action) &&
+            !isThpDevice(action.payload.device);
 
         if (isNonThpRememberedDeviceConnectAction) return;
 
         handleDeviceConnectNavigation({
             isCoinEnablingInitFinished: selectIsCoinEnablingInitFinished(getState()),
-            isDeviceInitialized: selectIsDeviceInitialized(getState()),
-            isDeviceSetupSupported: selectIsDeviceSetupSupported(getState()),
+            isDeviceInitialized: getIsDeviceInitialized({
+                deviceMode: device.mode,
+                deviceFeatures: device.features,
+            }),
+            isDeviceSetupSupported: getIsDeviceSetupSupported(getDeviceInternalModel(device)),
             wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
         });
     },
