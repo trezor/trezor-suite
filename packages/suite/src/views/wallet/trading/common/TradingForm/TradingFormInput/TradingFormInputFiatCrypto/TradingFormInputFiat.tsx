@@ -1,18 +1,27 @@
-import { FieldErrors, UseControllerProps } from 'react-hook-form';
+import { FieldErrors, UseControllerProps, UseFormReturn } from 'react-hook-form';
 
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TradingBuyFormProps,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getInputState } from '@suite-common/wallet-utils';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
+import {
+    buildCurrencyShortOption,
+    getFiatRateKey,
+    getInputState,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
     TradingAllFormProps,
@@ -24,6 +33,7 @@ import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
+import { tradingGetRoundedFiatAmount } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
 export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
@@ -37,16 +47,26 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
     const locale = useSelector(selectLanguage);
 
     const context = useTradingFormContext();
-    const { amountLimits } = context;
+    const { account, amountLimits, network } = context;
     const {
         control,
         formState: { errors },
         trigger,
         clearErrors,
-    } = methods;
+        getValues,
+    } = methods as unknown as UseFormReturn<TradingAllFormProps>;
+
+    const tokenAddress = getValues('sendCryptoSelect')?.contractAddress as TokenAddress | undefined;
+
+    const { areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
+
+    const rates = useSelector(selectCurrentFiatRates);
+    const currencySelect = getValues(TRADING_FORM_OUTPUT_CURRENCY);
+
+    const cryptoAmount = getValues(cryptoInputName) as string;
 
     const fiatInputError =
-        cryptoInputName === TRADING_FORM_OUTPUT_FIAT
+        fiatInputName === TRADING_FORM_OUTPUT_FIAT
             ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.fiat
             : (errors as FieldErrors<TradingBuyFormProps>).fiatInput;
     const cryptoInputError =
@@ -60,6 +80,42 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
                   validate: {
                       min: validateMin(translationString),
                       decimals: validateDecimals(translationString, { decimals: 2 }),
+                      minFiat: () => {
+                          if (
+                              cryptoAmount &&
+                              context.amountLimits?.minCrypto &&
+                              new BigNumber(cryptoAmount).isLessThan(
+                                  new BigNumber(context.amountLimits.minCrypto),
+                              )
+                          ) {
+                              const fiatRateKey = getFiatRateKey(
+                                  account.symbol,
+                                  currencySelect?.value ? currencySelect.value : 'usd',
+                                  tokenAddress,
+                              );
+                              const rate =
+                                  rates && rates[fiatRateKey] ? rates[fiatRateKey].rate : undefined;
+                              const minFiat = toFiatCurrency({
+                                  amount: context.amountLimits.minCrypto,
+                                  rate,
+                              })?.toString();
+
+                              if (minFiat) {
+                                  return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT', {
+                                      minimum: tradingGetRoundedFiatAmount(minFiat),
+                                      currency: buildCurrencyShortOption({
+                                          currency: currencySelect.value,
+                                          areSatsDisplayed,
+                                      }).label,
+                                  });
+                              } else {
+                                  return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT', {
+                                      minimum: context.amountLimits.minCrypto,
+                                      currency: context.amountLimits.currency,
+                                  });
+                              }
+                          }
+                      },
                   },
               }
             : {

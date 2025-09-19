@@ -42,7 +42,6 @@ import {
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { openDeferredModal } from 'src/actions/suite/modalActions';
@@ -194,12 +193,6 @@ export const useTradingExchangeForm = ({
     const output = values.outputs?.[0];
     const outputAddress = output?.address;
 
-    const fiatValues = useTradingFiatValues({
-        cryptoId: sendCryptoSelect?.value,
-        amount: sendCryptoSelect?.balance,
-        fiatCurrency: output?.currency?.value as FiatCurrencyCode,
-    });
-
     const receiveCryptoId = receiveCryptoSelect?.value;
 
     const tradingReceiveAddress = useTradingReceiveAddress({
@@ -218,13 +211,6 @@ export const useTradingExchangeForm = ({
         amount: receiveCryptoSelect?.balance,
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
-
-    const fiatOfBestScoredQuote = quotes?.[0]?.sendStringAmount
-        ? (toFiatCurrency({
-              amount: quotes?.[0]?.sendStringAmount,
-              rate: fiatValues?.fiatRate?.rate,
-          })?.toFixed(2) ?? null)
-        : null;
 
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = !!output?.amount && !!values.receiveCryptoSelect;
@@ -266,8 +252,6 @@ export const useTradingExchangeForm = ({
         account,
         methods,
         network,
-        quoteCryptoAmount: quotes?.[0]?.sendStringAmount,
-        quoteFiatAmount: fiatOfBestScoredQuote ?? '',
         inputNames: {
             cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
             fiatInput: TRADING_FORM_OUTPUT_FIAT,

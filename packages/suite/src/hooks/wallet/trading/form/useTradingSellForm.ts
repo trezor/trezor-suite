@@ -204,8 +204,6 @@ export const useTradingSellForm = ({
         account,
         methods,
         network,
-        quoteCryptoAmount: quotesByPaymentMethod?.[0]?.cryptoStringAmount,
-        quoteFiatAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
         inputNames: {
             cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
             fiatInput: TRADING_FORM_OUTPUT_FIAT,
