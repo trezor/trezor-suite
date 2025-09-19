@@ -115,6 +115,8 @@ export const StoreDeviceDataModal = ({ onCancel }: ModalProps) => {
 
 export const StoreDeviceData = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const isAutoForgetDeviceDataEnabled = useSelector(selectIsAutoForgetDeviceDataEnabled);
+    const isStoreDeviceDataEnabled = !isAutoForgetDeviceDataEnabled;
 
     const handleClick = () => setIsModalOpen(true);
     const handleModalCancel = () => setIsModalOpen(false);
@@ -134,7 +136,13 @@ export const StoreDeviceData = () => {
                         onClick={handleClick}
                         data-testid="@settings/device/store-device-data-button"
                     >
-                        <Translation id="TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_BUTTON" />
+                        <Translation
+                            id={
+                                isStoreDeviceDataEnabled
+                                    ? 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DISABLE'
+                                    : 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_ENABLE'
+                            }
+                        />
                     </ActionButton>
                 </ActionColumn>
             </SettingsSectionItem>
