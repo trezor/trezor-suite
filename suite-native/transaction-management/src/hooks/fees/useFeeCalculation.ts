@@ -10,7 +10,6 @@ import {
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
-    FormState,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
@@ -23,10 +22,17 @@ import { NativeSupportedFeeLevel } from '../../types';
 
 type UseFeeCalculationParams = {
     accountKey: AccountKey;
-    formDraft: FormState | undefined | null;
+    selectedFee?: NativeSupportedFeeLevel;
+    selectedFeePerUnit?: string;
+    selectedSetMaxOutputId?: number;
 };
 
-export const useFeeCalculation = ({ accountKey, formDraft }: UseFeeCalculationParams) => {
+export const useFeeCalculation = ({
+    accountKey,
+    selectedFee,
+    selectedFeePerUnit,
+    selectedSetMaxOutputId,
+}: UseFeeCalculationParams) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -35,8 +41,8 @@ export const useFeeCalculation = ({ accountKey, formDraft }: UseFeeCalculationPa
 
     const form = useFeesForm({
         accountKey,
-        defaultFeeLevel: formDraft?.selectedFee as NativeSupportedFeeLevel,
-        defaultFeePerUnit: formDraft?.feePerUnit,
+        defaultFeeLevel: selectedFee,
+        defaultFeePerUnit: selectedFeePerUnit,
     });
 
     const selectedFeeLevel = useWatch({ control: form.control, name: 'feeLevel' });
@@ -52,7 +58,7 @@ export const useFeeCalculation = ({ accountKey, formDraft }: UseFeeCalculationPa
 
     const { areFeesLoading } = useFeesFetching({
         accountKey,
-        isRefetchDisabled: selectedFeeLevel === 'custom' || formDraft?.setMaxOutputId !== undefined,
+        isRefetchDisabled: selectedFeeLevel === 'custom' || selectedSetMaxOutputId !== undefined,
     });
 
     const transactionBytes = normalFee.bytes as number;

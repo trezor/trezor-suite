@@ -2,19 +2,23 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
+import { AccountKey, FormDraftKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import {
     CustomFee,
     FeeOptionsList,
     FeesFooter,
+    NativeSupportedFeeLevel,
     useFeesManagement,
 } from '@suite-native/transaction-management';
 
-import { selectTradingSendFormDraft } from '../../selectors/commonSelectors';
 import { updateTradingSelectedFeeLevelThunk } from '../../thunks';
 
 type TradingFeesFormProps = {
@@ -23,7 +27,15 @@ type TradingFeesFormProps = {
 };
 
 export const TradingFeesForm = ({ accountKey, tokenContract }: TradingFeesFormProps) => {
-    const formDraft = useSelector(selectTradingSendFormDraft);
+    const { tradingType = 'buy' } =
+        useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.TradingFees>>().params;
+
+    const formDraftPrefix = `trading-${tradingType}` as FormDraftKeyPrefix;
+    const formDraftKey = getFormDraftKey(formDraftPrefix, '');
+
+    const formDraft = useSelector((state: FormDraftRootState) =>
+        selectDeepCopyOfFormDraft(state, formDraftKey),
+    );
 
     const {
         form,
@@ -39,9 +51,12 @@ export const TradingFeesForm = ({ accountKey, tokenContract }: TradingFeesFormPr
         handleCustomFeeSet,
     } = useFeesManagement({
         accountKey,
-        formDraft,
         tokenContract,
         updateThunk: updateTradingSelectedFeeLevelThunk,
+        selectedFee: formDraft?.selectedFee as NativeSupportedFeeLevel,
+        selectedFeePerUnit: formDraft?.feePerUnit,
+        selectedSetMaxOutputId: formDraft?.setMaxOutputId,
+        formDraftKey,
     });
 
     if (!account || !symbol) return null;

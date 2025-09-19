@@ -336,5 +336,6 @@ export type TradingStackParamList = {
     [TradingStackRoutes.TradingExchangeRevoke]: undefined;
     [TradingStackRoutes.TradingFees]: {
         accountKey: AccountKey;
+        tradingType: TradingType;
     };
 };

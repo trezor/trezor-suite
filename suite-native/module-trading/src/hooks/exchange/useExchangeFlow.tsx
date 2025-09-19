@@ -18,13 +18,16 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     FeesRootState,
+    FormDraftRootState,
     WalletSettingsRootState,
     selectConvertedNetworkFeeInfo,
+    selectDeepCopyOfFormDraft,
     selectIsAmountInSats,
     selectSendSerializedTx,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
@@ -36,7 +39,6 @@ import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/token
 import { NativeSupportedFeeLevel } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
-import { selectTradingSendFormDraft } from '../../selectors/commonSelectors';
 import { selectExchangeSelectedSendAccount } from '../../selectors/exchangeSelectors';
 import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } from '../../thunks';
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
@@ -61,11 +63,11 @@ export const useExchangeFlow = () => {
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
-    const {
-        selectedFee,
-        feePerUnit: feePerUnitDraft,
-        feeLimit: feeLimitDraft,
-    } = useSelector(selectTradingSendFormDraft) ?? {};
+    const draft = useSelector((state: FormDraftRootState) =>
+        selectDeepCopyOfFormDraft(state, getFormDraftKey('trading-exchange', '')),
+    );
+
+    const { selectedFee, feePerUnit: feePerUnitDraft, feeLimit: feeLimitDraft } = draft ?? {};
 
     const { contractAddress } = cryptoIdToNetworkAndContractAddress(selectedQuote?.send);
 

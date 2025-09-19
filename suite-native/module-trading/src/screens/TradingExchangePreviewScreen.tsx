@@ -158,6 +158,7 @@ export const TradingExchangePreviewScreen = () => {
                             trade={quote}
                             symbol={fromAccount.symbol}
                             accountKey={fromAccount.key}
+                            tradingType="exchange"
                         />
                     )}
                 </VStack>

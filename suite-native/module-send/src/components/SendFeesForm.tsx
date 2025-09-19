@@ -22,6 +22,7 @@ import {
     FeeOptionsList,
     FeesFooter,
     NativeSendRootState,
+    NativeSupportedFeeLevel,
     useFeesManagement,
 } from '@suite-native/transaction-management';
 
@@ -68,9 +69,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         handleCustomFeeSet,
     } = useFeesManagement({
         accountKey,
-        formDraft,
         tokenContract,
         updateThunk: updateSelectedFeeLevelThunk,
+        selectedFee: formDraft?.selectedFee as NativeSupportedFeeLevel,
+        selectedFeePerUnit: formDraft?.feePerUnit,
+        selectedSetMaxOutputId: formDraft?.setMaxOutputId,
     });
 
     const { networkType } = account ?? {};
