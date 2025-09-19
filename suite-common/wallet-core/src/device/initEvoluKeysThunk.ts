@@ -39,39 +39,41 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: true }),
         );
 
-        const result = await TrezorConnect.evoluGetNode({
-            device: {
-                path: device.path,
-                state: device.state,
-                instance: device.instance,
-            },
-            useEmptyPassphrase: device.useEmptyPassphrase,
-        });
+        try {
+            const result = await TrezorConnect.evoluGetNode({
+                device: {
+                    path: device.path,
+                    state: device.state,
+                    instance: device.instance,
+                },
+                useEmptyPassphrase: device.useEmptyPassphrase,
+            });
 
-        if (result.success) {
-            const { deriveSlip21Node, bytesToHex, hexToBytes } = await loadEvoluCommon();
+            if (result.success) {
+                const { deriveSlip21Node, bytesToHex, hexToBytes } = await loadEvoluCommon();
 
-            // Slip21 path from Trezor Device: ["TREZOR", "Evolu"]
-            const evoluNode = hexToBytes(result.payload.data);
+                // Slip21 path from Trezor Device: ["TREZOR", "Evolu"]
+                const evoluNode = hexToBytes(result.payload.data);
 
-            const evoluKeys: EvoluKeys = {
-                ownerId: asDeviceEvoluOwnerId(
-                    bytesToHex(deriveSlip21Node('Owner Id', evoluNode).slice(32, 64)),
-                ),
-                writeKey: bytesToHex(deriveSlip21Node('Write Key', evoluNode).slice(32, 64)),
-                encryptionKey: bytesToHex(
-                    deriveSlip21Node('Encryption Key', evoluNode).slice(32, 64),
-                ),
-            };
+                const evoluKeys: EvoluKeys = {
+                    ownerId: asDeviceEvoluOwnerId(
+                        bytesToHex(deriveSlip21Node('Owner Id', evoluNode).slice(32, 64)),
+                    ),
+                    writeKey: bytesToHex(deriveSlip21Node('Write Key', evoluNode).slice(32, 64)),
+                    encryptionKey: bytesToHex(
+                        deriveSlip21Node('Encryption Key', evoluNode).slice(32, 64),
+                    ),
+                };
 
-            // This also sets the `isRetrieving` flag to `false`
-            dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys }));
-        } else {
+                // This also sets the `isRetrieving` flag to `false`
+                dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys }));
+            } else {
+                return rejectWithValue(result.payload);
+            }
+        } finally {
             dispatch(
                 deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: false }),
             );
-
-            return rejectWithValue(result.payload);
         }
     },
 );
