@@ -192,8 +192,7 @@ export const AddAccountModal = ({
                 backendType: account.backendType != 'coinjoin' ? account.backendType : undefined,
                 selectedAccount,
                 accountTypes,
-                deviceState: device.state?.staticSessionId,
-                useEmptyPassphrase: device.useEmptyPassphrase,
+                device,
             });
 
             if (newAccount instanceof Error) {
@@ -240,8 +239,7 @@ export const AddAccountModal = ({
                         account.backendType != 'coinjoin' ? account.backendType : undefined,
                     selectedAccount,
                     accountTypes,
-                    deviceState: device.state?.staticSessionId,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
+                    device,
                 });
 
                 if (newAccount instanceof Error) {

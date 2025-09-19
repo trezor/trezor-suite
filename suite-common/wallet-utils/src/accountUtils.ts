@@ -1242,8 +1242,7 @@ export const prepareNewAccountPayload = async ({
     backendType,
     selectedAccount,
     accountTypes,
-    deviceState,
-    useEmptyPassphrase = true,
+    device,
 }: {
     accountType: AccountType;
     networkSymbol: NetworkSymbol;
@@ -1251,20 +1250,24 @@ export const prepareNewAccountPayload = async ({
     backendType?: TrezorConnectBackendType;
     selectedAccount?: NetworkAccount;
     accountTypes?: NetworkAccount[];
-    deviceState?: StaticSessionId;
-    useEmptyPassphrase?: boolean;
+    device: TrezorDevice;
 }) => {
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
 
     const newPath = networkAccount?.bip43Path.replace('i', String(index));
 
-    if (!newPath || !deviceState) return new Error('Missing path');
+    if (!newPath || !device.state?.staticSessionId) return new Error('Missing path');
 
     const res = await TrezorConnect.getAccountInfo({
         path: newPath,
         coin: networkSymbol,
-        useEmptyPassphrase,
+        useEmptyPassphrase: device.useEmptyPassphrase,
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
     });
 
     if (!res.success) return new Error(res.payload.error);
@@ -1272,7 +1275,7 @@ export const prepareNewAccountPayload = async ({
     return {
         accountInfo: res.payload,
         visible: true,
-        deviceState,
+        deviceState: device.state.staticSessionId,
         symbol: networkSymbol,
         index,
         accountType,
