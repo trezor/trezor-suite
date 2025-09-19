@@ -1,0 +1,17 @@
+{
+    "fileExtensions": [
+        "ts",
+        "tsx"
+    ],
+    "excludeRegExp": [
+        "node_modules|lib|libDev"
+    ],
+    "detectiveOptions": {
+        "ts": {
+            "skipTypeImports": true
+        },
+        "tsx": {
+            "skipTypeImports": true
+        }
+    }
+}
