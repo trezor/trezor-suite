@@ -8,7 +8,7 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 import {
     DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
     selectDevices,
-    selectIsBluetoothDevice,
+    selectIsDeviceConnectedViaBluetooth,
 } from '@suite-common/wallet-core';
 import { Column, Note, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -28,9 +28,9 @@ import {
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-import { FirmwareLowBatteryModal } from './FirmwareLowBatteryModal';
 import { PrerequisitesGuide, Translation } from '../suite';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
+import { FirmwareLowBatteryModal } from './FirmwareLowBatteryModal';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 
 const Description = styled.div`
@@ -134,7 +134,7 @@ export const FirmwareInitial = ({
     const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
     const isDebug = useSelector(selectIsDebugModeActive);
-    const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
+    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
 
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -167,7 +167,7 @@ export const FirmwareInitial = ({
 
     const installFirmware = (firmwareType: FirmwareType) => {
         if (
-            isBluetoothDevice &&
+            isDeviceConnectedViaBluetooth &&
             device.features.soc &&
             device?.features.soc <= DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
         ) {

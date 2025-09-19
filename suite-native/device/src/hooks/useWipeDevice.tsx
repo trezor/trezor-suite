@@ -5,7 +5,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
-    selectIsBluetoothDevice,
+    selectIsDeviceConnectedViaBluetooth,
     selectSelectedDevice,
     wipeDeviceThunk,
 } from '@suite-common/wallet-core';
@@ -34,7 +34,7 @@ export const useWipeDevice = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);
-    const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
+    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
 
     const wipeDevice = async () => {
         if (!device) return;
@@ -55,7 +55,7 @@ export const useWipeDevice = () => {
         });
 
         if (response.success && isFulfilled(response.payload)) {
-            if (isBluetoothDevice) {
+            if (isDeviceConnectedViaBluetooth) {
                 dispatch(setShouldShowSystemUnpairingAlert(true));
             }
             navigation.navigate(RootStackRoutes.DeviceSettingsStack, {

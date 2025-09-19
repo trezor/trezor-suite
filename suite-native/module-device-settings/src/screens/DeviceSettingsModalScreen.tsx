@@ -5,8 +5,8 @@ import {
     selectDeviceLabel,
     selectDeviceModel,
     selectDeviceName,
-    selectIsBluetoothDevice,
     selectIsDeviceBackupUnfinished,
+    selectIsDeviceConnectedViaBluetooth,
     selectIsDeviceInitialized,
 } from '@suite-common/wallet-core';
 import { TitledSection, VStack } from '@suite-native/atoms';
@@ -30,7 +30,7 @@ export const DeviceSettingsModalScreen = () => {
     const deviceName = useSelector(selectDeviceName);
     const deviceLabel = useSelector(selectDeviceLabel);
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
+    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isCheckBackupAvailable = isDeviceInitialized && !isDeviceBackupUnfinished;
@@ -50,8 +50,8 @@ export const DeviceSettingsModalScreen = () => {
                 >
                     {isDeviceInitialized && <DevicePinProtectionCard />}
                     <DeviceFirmwareCard />
-                    {isBluetoothDevice && <DeviceBluetoothCard />}
-                    {isBluetoothDevice && <DeviceAutoConnectCard />}
+                    {isDeviceConnectedViaBluetooth && <DeviceBluetoothCard />}
+                    {isDeviceConnectedViaBluetooth && <DeviceAutoConnectCard />}
                 </TitledSection>
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
