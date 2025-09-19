@@ -1241,7 +1241,6 @@ export const prepareNewAccountPayload = async ({
     selectedAccount,
     accountTypes,
     deviceState,
-    useEmptyPassphrase = true,
 }: {
     accountType: AccountType;
     networkSymbol: NetworkSymbol;
@@ -1250,7 +1249,6 @@ export const prepareNewAccountPayload = async ({
     selectedAccount?: NetworkAccount;
     accountTypes?: NetworkAccount[];
     deviceState?: StaticSessionId;
-    useEmptyPassphrase?: boolean;
 }) => {
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
@@ -1262,7 +1260,6 @@ export const prepareNewAccountPayload = async ({
     const res = await TrezorConnect.getAccountInfo({
         path: newPath,
         coin: networkSymbol,
-        useEmptyPassphrase,
     });
 
     if (!res.success) return new Error(res.payload.error);
