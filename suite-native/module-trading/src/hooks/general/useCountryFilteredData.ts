@@ -1,4 +1,4 @@
-import { TradingCountryOption, regional } from '@suite-common/trading';
+import { TradingCountryOption, nonSanctionedRegional } from '@suite-common/trading';
 
 import { useListDataFilter } from './useListDataFilter';
 
@@ -7,4 +7,4 @@ const filterCallback = ({ label, value }: TradingCountryOption, filterValue: str
     value.toLowerCase().includes(filterValue.toLowerCase());
 
 export const useCountryFilteredData = () =>
-    useListDataFilter(regional.nonSanctionedCountries, filterCallback);
+    useListDataFilter(nonSanctionedRegional.countriesOptions, filterCallback);

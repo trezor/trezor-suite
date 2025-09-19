@@ -293,14 +293,14 @@ export const EEACountryCodes = [
 export type EEACountryCodeType = (typeof EEACountryCodes)[number];
 
 // Sanctioned countries according to https://orpa.princeton.edu/export-controls/sanctioned-countries
-export const ComprehensivelySanctionedCountries: Readonly<string[]> = [
+export const ComprehensivelySanctionedCountryCodes: Readonly<string[]> = [
     'CU', // Cuba
     'IR', // Iran
     'KP', // North Korea
     'RU', // Russia
 ];
 
-export const OfacSanctionedCountries: Readonly<string[]> = [
+export const OfacSanctionedCountryCodes: Readonly<string[]> = [
     'AF', // Afghanistan
     'BY', // Belarus
     'MM', // Burma (Myanmar)
