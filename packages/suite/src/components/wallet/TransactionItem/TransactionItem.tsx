@@ -135,9 +135,9 @@ export const TransactionItem = memo(
             | { type: 'internal'; payload: (typeof filteredInternalTransfers)[number] }
             | { type: 'target'; payload: WalletAccountTransaction['targets'][number] }
         )[] = [
+            ...tokens.map(t => ({ type: 'token' as const, payload: t })),
             ...targets.map(t => ({ type: 'target' as const, payload: t })),
             ...filteredInternalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
-            ...tokens.map(t => ({ type: 'token' as const, payload: t })),
         ];
 
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
