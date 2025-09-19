@@ -7,7 +7,7 @@ import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-gr
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
-import { Device } from './Device';
+import type { Device } from './Device';
 import { DEVICE } from '../events';
 import { initLog } from '../utils/debug';
 

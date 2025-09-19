@@ -36,7 +36,6 @@ packages/connect-explorer-theme/src/contexts/index.ts > packages/connect-explore
 packages/connect-explorer-theme/src/contexts/index.ts > packages/connect-explorer-theme/src/contexts/active-anchor.tsx > packages/connect-explorer-theme/src/constants.tsx > packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/theme-switch.tsx
 packages/connect-explorer-theme/src/contexts/index.ts > packages/connect-explorer-theme/src/contexts/active-anchor.tsx > packages/connect-explorer-theme/src/constants.tsx > packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/toc.tsx
 packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/DeviceCurrentSession.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/StateStorage.ts
 packages/ipc-proxy/src/proxy-handler.ts > packages/ipc-proxy/src/validateIpcMessage.ts
 packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
