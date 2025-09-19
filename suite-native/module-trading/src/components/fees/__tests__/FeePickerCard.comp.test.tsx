@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
 import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
@@ -27,6 +28,7 @@ describe('FeePickerCard', () => {
         trade: undefined,
         accountKey: 'btc1' as AccountKey,
         symbol: 'btc' as NetworkSymbol,
+        tradingType: 'buy' as TradingType,
     };
 
     const createPreloadedState = (fee: string) => ({
@@ -100,6 +102,7 @@ describe('FeePickerCard', () => {
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingFees', {
             accountKey: 'btc1',
+            tradingType: 'buy',
         });
     });
 });

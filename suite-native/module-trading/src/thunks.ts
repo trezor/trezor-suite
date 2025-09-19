@@ -18,12 +18,14 @@ import { Network } from '@suite-common/wallet-config';
 import {
     composeSendFormTransactionFeeLevelsThunk,
     enhancePrecomposedTransactionThunk,
+    formDraftActions,
     pushSendFormTransactionThunk,
+    selectDeepCopyOfFormDraft,
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import { Account, FeeInfo, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { getFormDraftKey, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
     NativeSupportedFeeLevel,
@@ -32,8 +34,6 @@ import {
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
-import { tradingActions } from './reducers';
-import { selectTradingSendFormDraft } from './selectors/commonSelectors';
 import { createFormStateForSendForm } from './utils';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
@@ -52,7 +52,8 @@ export const clearTradingStateThunk = createThunk(
         dispatch(sendFormActions.dispose());
 
         // Clear form draft with selected fees
-        dispatch(tradingActions.clearTradingSendFormDraft());
+        dispatch(formDraftActions.removeDraft({ key: 'trading-sell' }));
+        dispatch(formDraftActions.removeDraft({ key: 'trading-exchange' }));
     },
 );
 
@@ -189,13 +190,17 @@ export const composeTradingTransactionThunk = createThunk(
                         }),
                     );
 
+                    const formDraftKey = getFormDraftKey('trading-exchange', '');
                     // Store the form state in trading draft so it's available for TradingFeesForm
                     dispatch(
-                        tradingActions.setTradingSendFormDraft({
-                            ...formState,
-                            selectedFee: selectedFeeLevel,
-                            feePerUnit: composed.feePerByte,
-                            feeLimit: composed.feeLimit ?? '',
+                        formDraftActions.storeDraft({
+                            key: formDraftKey,
+                            formDraft: {
+                                ...formState,
+                                selectedFee: selectedFeeLevel,
+                                feePerUnit: composed.feePerByte,
+                                feeLimit: composed.feeLimit ?? '',
+                            },
                         }),
                     );
                 }
@@ -307,22 +312,21 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 export const updateTradingSelectedFeeLevelThunk = createThunk(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/updateSelectedFeeLevelThunk`,
     (
-        { feeLevelLabel, feePerUnit, feeLimit }: UpdateSelectedFeeLevelThunkParams,
+        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey }: UpdateSelectedFeeLevelThunkParams,
         { dispatch, getState },
     ) => {
-        const draft = selectTradingSendFormDraft(getState());
+        const key = formDraftKey ?? '';
+        const formDraft = selectDeepCopyOfFormDraft(getState(), key);
+        if (!formDraft) throw Error('Draft not found.');
 
-        if (!draft) throw Error('Draft not found.');
-        const draftCopy = { ...draft };
-
-        draftCopy.selectedFee = feeLevelLabel;
+        formDraft.selectedFee = feeLevelLabel;
         if (feePerUnit) {
-            draftCopy.feePerUnit = feePerUnit;
+            formDraft.feePerUnit = feePerUnit;
         }
         if (feeLimit) {
-            draftCopy.feeLimit = feeLimit;
+            formDraft.feeLimit = feeLimit;
         }
 
-        dispatch(tradingActions.setTradingSendFormDraft(draftCopy));
+        dispatch(formDraftActions.storeDraft({ key, formDraft }));
     },
 );

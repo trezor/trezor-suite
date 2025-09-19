@@ -14,12 +14,17 @@ import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { TradingFeesForm } from '../TradingFeesForm';
 
-jest.mock('@suite-native/module-trading/src/selectors/commonSelectors', () => ({
-    selectTradingSendFormDraft: jest.fn(() => ({})),
-}));
-
 jest.mock('@suite-native/module-trading/src/thunks', () => ({
     updateTradingSelectedFeeLevelThunk: jest.fn(),
+}));
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({
+        params: {
+            tradingType: 'buy',
+        },
+    }),
 }));
 
 describe('TradingFeesForm', () => {
@@ -28,9 +33,9 @@ describe('TradingFeesForm', () => {
     const mockEthAccount = getEthAccount('eth1');
 
     const defaultState = {
-        trading: getInitializedTradingState(),
         wallet: {
             ...getWalletState(),
+            trading: getInitializedTradingState(),
             accounts: [mockAccount, mockEthAccount],
         },
     };
@@ -59,16 +64,9 @@ describe('TradingFeesForm', () => {
         tokenContract?: TokenAddress;
     }) => {
         const form = await renderUseFeesForm(props.accountKey);
-        const preloadedState = {
-            ...defaultState,
-            wallet: {
-                ...defaultState.wallet,
-                accounts: [mockAccount, mockEthAccount],
-            },
-        };
 
         return await renderWithStoreProviderAsync(<TradingFeesForm {...props} />, {
-            preloadedState,
+            preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

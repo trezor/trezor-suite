@@ -283,10 +283,10 @@ describe('useExchangeFlow', () => {
                 'selectConvertedNetworkFeeInfo',
             ).mockReturnValue(mockNetworkFeeInfo);
 
-            // Mock the selectTradingSendFormDraft selector to return draft fee values
+            // Mock the selectDeepCopyOfFormDraft selector to return draft fee values
             jest.spyOn(
-                require('../../../selectors/commonSelectors'),
-                'selectTradingSendFormDraft',
+                require('@suite-common/wallet-core'),
+                'selectDeepCopyOfFormDraft',
             ).mockReturnValue({
                 selectedFee: 'high',
                 feePerUnit: '5000',
@@ -342,10 +342,10 @@ describe('useExchangeFlow', () => {
                 'selectConvertedNetworkFeeInfo',
             ).mockReturnValue(mockNetworkFeeInfo);
 
-            // Mock the selectTradingSendFormDraft selector to return undefined
+            // Mock the selectDeepCopyOfFormDraft selector to return undefined
             jest.spyOn(
-                require('../../../selectors/commonSelectors'),
-                'selectTradingSendFormDraft',
+                require('@suite-common/wallet-core'),
+                'selectDeepCopyOfFormDraft',
             ).mockReturnValue(undefined);
 
             const { result } = await renderUseExchangeFlow({ store });

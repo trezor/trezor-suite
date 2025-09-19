@@ -10,12 +10,14 @@ type UseFeeSelectionParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     updateThunk: (params: UpdateSelectedFeeLevelThunkParams) => any;
+    formDraftKey?: string;
 };
 
 export const useFeeSelection = ({
     accountKey,
     tokenContract,
     updateThunk,
+    formDraftKey,
 }: UseFeeSelectionParams) => {
     const dispatch = useDispatch();
 
@@ -31,17 +33,20 @@ export const useFeeSelection = ({
                     feeLevelLabel: 'custom',
                     feePerUnit: customFeePerUnit!,
                     feeLimit: customFeeLimit,
+                    formDraftKey,
                 };
             } else {
                 thunkParams = {
                     accountKey,
                     tokenContract,
                     feeLevelLabel: feeLevel,
+                    formDraftKey,
                 };
             }
+
             dispatch(updateThunk(thunkParams));
         },
-        [accountKey, tokenContract, updateThunk, dispatch],
+        [dispatch, updateThunk, formDraftKey, accountKey, tokenContract],
     );
 
     const handleCustomFeeSet = useCallback(

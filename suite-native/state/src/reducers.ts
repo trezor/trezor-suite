@@ -16,6 +16,7 @@ import { notificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import {
     feesReducer,
+    formDraftReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDeviceReducer,
@@ -152,6 +153,7 @@ export const prepareRootReducers = async () => {
         stake: stakeReducer,
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
+        formDrafts: formDraftReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({
