@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
-import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Device } from '@trezor/connect';
 
 import { connectThpDeviceThunk } from '../src/connectThpDeviceThunk';
@@ -30,9 +30,8 @@ const initialFirmwareState: FirmwareUpdateState = {
     firmwareUpdateSource: 'production',
 };
 
-const device: Pick<Device, 'thp' | 'features'> = {
+const device: Pick<Device, 'thp'> = {
     thp: { ...createDeviceThp(), credentials: [thpCredential1] },
-    features: testMocks.getDeviceFeatures(),
 };
 
 describe(connectThpDeviceThunk.name, () => {
@@ -75,24 +74,6 @@ describe(connectThpDeviceThunk.name, () => {
         });
 
         store.dispatch(connectThpDeviceThunk({ device }));
-        expect(store.getState().thp.credentials[0].connectionCounter).toEqual(0);
-        expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
-        expect(store.getState().thp.step).toEqual(null);
-    });
-
-    it("won't update the connection counter for credential when not initialized", () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({ thp: thpReduce, firmware: firmwareReduce }),
-            preloadedState: { thp: initialThpState, firmware: initialFirmwareState },
-        });
-
-        const nonInitializedDevice = {
-            ...device,
-            features: { ...testMocks.getDeviceFeatures(), initialized: false },
-        };
-
-        store.dispatch(connectThpDeviceThunk({ device: nonInitializedDevice }));
         expect(store.getState().thp.credentials[0].connectionCounter).toEqual(0);
         expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
         expect(store.getState().thp.step).toEqual(null);
