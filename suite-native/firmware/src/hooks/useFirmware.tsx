@@ -6,7 +6,7 @@ import {
     UseFirmwareInstallationParams,
     useFirmwareInstallation,
 } from '@suite-common/firmware';
-import { selectIsBluetoothDevice } from '@suite-common/wallet-core';
+import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { setPriorityMode } from '@trezor/react-native-usb';
@@ -44,7 +44,9 @@ export const useFirmware = (
 
     // When the device is restarted after FW installation via Bluetooth, this flag changes to false
     // for a moment which triggers firmwareUpdate again. => Use ref to prevent this.
-    const isBluetoothDeviceRef = useRef(useSelector(selectIsBluetoothDevice));
+    const isDeviceConnectedViaBluetoothRef = useRef(
+        useSelector(selectIsDeviceConnectedViaBluetooth),
+    );
 
     const setIsFirmwareInstallationRunning = useCallback(
         (isRunning: boolean) => {
@@ -79,7 +81,7 @@ export const useFirmware = (
     }, [progress, status, setMayBeStuckedTimeout, resetMayBeStuckedTimeout]);
 
     const firmwareUpdate = useCallback(async () => {
-        if (!isBluetoothDeviceRef.current) {
+        if (!isDeviceConnectedViaBluetoothRef.current) {
             setPriorityMode(true);
         }
         const result = await firmwareUpdateCommon({ ignoreBaseUrl: true })
@@ -93,7 +95,7 @@ export const useFirmware = (
             })
             .then(({ connectResponse }) => connectResponse)
             .finally(() => {
-                if (!isBluetoothDeviceRef.current) {
+                if (!isDeviceConnectedViaBluetoothRef.current) {
                     setPriorityMode(false);
                 }
                 resetMayBeStuckedTimeout();

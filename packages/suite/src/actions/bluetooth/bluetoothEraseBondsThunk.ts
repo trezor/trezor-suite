@@ -1,7 +1,11 @@
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectDeviceBluetoothId,
+    selectIsDeviceConnectedViaBluetooth,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
@@ -56,14 +60,10 @@ const unpairCurrentBondThunk = createThunk<void, UnpairCurrentBondThunkParams, v
 export const bluetoothEraseBondsThunk = createThunk(
     `${BLUETOOTH_PREFIX}/bluetoothEraseBondsThunk`,
     async (_, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device || !device.features?.capabilities.includes('Capability_BLE')) {
-            return;
-        }
+        const isDeviceConnectedViaBluetooth = selectIsDeviceConnectedViaBluetooth(getState());
+        const bluetoothId = selectDeviceBluetoothId(getState());
 
-        const bluetoothId = device.bluetoothProps?.id;
-
-        if (bluetoothId !== undefined) {
+        if (isDeviceConnectedViaBluetooth && bluetoothId) {
             await dispatch(unpairCurrentBondThunk({ bluetoothId }));
         }
     },

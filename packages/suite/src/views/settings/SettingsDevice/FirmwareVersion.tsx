@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import {
     DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
-    selectIsBluetoothDevice,
+    selectIsDeviceConnectedViaBluetooth,
 } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -64,7 +64,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const [lowBatteryWarning, setLowBatteryWarning] = useState(false);
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
+    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
 
     if (!device?.features) {
         return null;
@@ -77,7 +77,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
 
     const handleUpdate = () => {
         if (
-            isBluetoothDevice &&
+            isDeviceConnectedViaBluetooth &&
             device.features?.soc &&
             device.features?.soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
         ) {

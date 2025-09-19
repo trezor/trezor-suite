@@ -1,6 +1,7 @@
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-utils';
+import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
@@ -57,6 +58,7 @@ export const SettingsDevice = () => {
     const initializeMode = device?.mode === 'initialize';
     const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
+    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const isPassphraseProtectionOn = Boolean(device?.features?.passphrase_protection);
     const flags = useSelector(selectSuiteFlags);
@@ -93,9 +95,6 @@ export const SettingsDevice = () => {
     const deviceModelInternal = device.features.internal_model;
 
     const supportsDeviceAuthentication = SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModelInternal];
-
-    const isBluetoothDevice = device.features?.capabilities.includes('Capability_BLE');
-    const isBluetoothConnectedDevice = device?.bluetoothProps?.id !== undefined;
 
     const isThpDevice = device?.thp !== undefined;
 
@@ -192,7 +191,7 @@ export const SettingsDevice = () => {
                 <FirmwareAuthenticityChecks />
             </SettingsSection>
 
-            {flags.isBluetoothEnabled && isBluetoothDevice && isBluetoothConnectedDevice && (
+            {flags.isBluetoothEnabled && isDeviceConnectedViaBluetooth && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
                     <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
                 </SettingsSection>

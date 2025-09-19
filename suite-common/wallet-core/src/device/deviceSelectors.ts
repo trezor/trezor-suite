@@ -65,6 +65,16 @@ export const selectDeviceFeatures = createMemoizedSelector(
     device => device?.features,
 );
 
+export const selectDeviceCapabilities = createMemoizedSelector(
+    [selectDeviceFeatures],
+    features => features?.capabilities,
+);
+
+export const selectIsBluetoothDevice = createMemoizedSelector(
+    [selectDeviceCapabilities],
+    capabilities => !!capabilities?.includes('Capability_BLE'),
+);
+
 export const selectIsDeviceProtectedByPin = createMemoizedSelector(
     [selectDeviceFeatures],
     features => !!features?.pin_protection,
@@ -138,7 +148,7 @@ export const selectIsDeviceConnected = createMemoizedSelector(
     device => !!device?.connected,
 );
 
-export const selectIsBluetoothDevice = createMemoizedSelector(
+export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device?.bluetoothProps,
 );
@@ -193,11 +203,6 @@ export const selectDeviceByBaseStaticSessionId = createMemoizedSelector(
 export const selectDeviceUnavailableCapabilities = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.unavailableCapabilities,
-);
-
-export const selectDeviceCapabilities = createMemoizedSelector(
-    [selectDeviceFeatures],
-    features => features?.capabilities,
 );
 
 export const selectHasDevicePassphraseEntryCapability = createMemoizedSelector(
