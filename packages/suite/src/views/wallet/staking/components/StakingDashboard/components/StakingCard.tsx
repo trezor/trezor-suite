@@ -2,7 +2,7 @@ import { getStakingTotalRewards } from '@suite-common/staking';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     StakeRootState,
-    selectAccountStakeTransactions,
+    selectAccountStakeTypeTransactions,
     selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
 import {
@@ -102,6 +102,9 @@ export const StakingCard = ({
     const selectedAccount = useSelector(selectSelectedAccount);
     const { isBelowLaptop } = useLayoutSize();
 
+    const isEthereumNetwork = selectedAccount?.networkType === 'ethereum';
+    const isCardanoNetwork = selectedAccount?.networkType === 'cardano';
+
     const selectedStakingTotalRewards = useSelector((state: StakeRootState) =>
         selectStakingTotalRewards(state, selectedAccount?.symbol, selectedAccount?.descriptor),
     );
@@ -128,6 +131,7 @@ export const StakingCard = ({
 
     const canUnstake = new BigNumber(autocompoundBalance).gt(0);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
+
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
 
     const { isTxStatusShown } = useIsTxStatusShown(
@@ -141,9 +145,10 @@ export const StakingCard = ({
     const isDaysToUnstakeShown = daysToUnstake !== undefined && !isValidatorsQueueLoading;
 
     const stakeTxs = useSelector(state =>
-        selectAccountStakeTransactions(state, selectedAccount?.key || ''),
+        selectAccountStakeTypeTransactions(state, selectedAccount?.key || ''),
     );
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
+    const hasCardanoPendingTx = isCardanoNetwork && isStakeConfirming;
 
     const solStakingAccountStatus = getStakingAccountCurrentStatus(selectedAccount);
 
@@ -192,8 +197,6 @@ export const StakingCard = ({
         return null;
     }
 
-    const isEthereumNetwork = selectedAccount.networkType === 'ethereum';
-
     return (
         <Card data-testid="@wallet/staking/card">
             <Column flex="1" gap={spacings.xxl}>
@@ -212,14 +215,24 @@ export const StakingCard = ({
                             data-testid="@account/staking/pending"
                         />
                     )}
-                    <Item
-                        label={<Translation id="TR_STAKE_STAKE" />}
-                        iconName="lock"
-                        symbol={selectedAccount?.symbol}
-                        cryptoAmount={depositedBalance}
-                        fiatAmount={depositedBalance}
-                        data-testid="@account/staking/staked"
-                    />
+                    {depositedBalance && (
+                        <Item
+                            label={
+                                <Translation
+                                    id={
+                                        isCardanoNetwork
+                                            ? 'TR_STAKE_ACTIVE_STAKE'
+                                            : 'TR_STAKE_STAKE'
+                                    }
+                                />
+                            }
+                            iconName="lock"
+                            symbol={selectedAccount?.symbol}
+                            cryptoAmount={depositedBalance}
+                            fiatAmount={depositedBalance}
+                            data-testid="@account/staking/staked"
+                        />
+                    )}
 
                     <Item
                         label={
@@ -238,12 +251,14 @@ export const StakingCard = ({
                                         />
                                     }
                                 >
-                                    <Badge variant="primary" size="small">
-                                        <Row gap={spacings.xxs} alignItems="center">
-                                            <Translation id="TR_STAKE_RESTAKED_BADGE" />
-                                            <Icon name="info" size="small" variant="primary" />
-                                        </Row>
-                                    </Badge>
+                                    {!isCardanoNetwork && (
+                                        <Badge variant="primary" size="small">
+                                            <Row gap={spacings.xxs} alignItems="center">
+                                                <Translation id="TR_STAKE_RESTAKED_BADGE" />
+                                                <Icon name="info" size="small" variant="primary" />
+                                            </Row>
+                                        </Badge>
+                                    )}
                                 </Tooltip>
                             </Row>
                         }
@@ -286,26 +301,34 @@ export const StakingCard = ({
                 </Grid>
 
                 <Row margin={{ top: 'auto' }} gap={spacings.xs}>
-                    <Tooltip content={stakingMessageContent}>
-                        <Button
-                            onClick={openStakeModal}
-                            isDisabled={isStakingDisabled}
-                            icon={isStakingDisabled ? 'info' : undefined}
-                            variant="tertiary"
-                            data-testid="@account/staking/stake-more-button"
-                        >
-                            <Translation id="TR_STAKE_STAKE_MORE" />
-                        </Button>
-                    </Tooltip>
+                    {!isCardanoNetwork && (
+                        <Tooltip content={stakingMessageContent}>
+                            <Button
+                                onClick={openStakeModal}
+                                isDisabled={isStakingDisabled}
+                                icon={isStakingDisabled ? 'info' : undefined}
+                                variant="tertiary"
+                                data-testid="@account/staking/stake-more-button"
+                            >
+                                <Translation id="TR_STAKE_STAKE_MORE" />
+                            </Button>
+                        </Tooltip>
+                    )}
                     <Tooltip content={unstakingMessageContent}>
                         <Button
-                            isDisabled={!canUnstake || isUnstakingDisabled}
+                            isDisabled={!canUnstake || isUnstakingDisabled || hasCardanoPendingTx}
                             onClick={openUnstakeModal}
                             icon={isUnstakingDisabled ? 'info' : undefined}
                             variant="tertiary"
                             data-testid="@account/staking/unstake-button"
                         >
-                            <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
+                            <Translation
+                                id={
+                                    isCardanoNetwork
+                                        ? 'TR_STAKE_UNSTAKE'
+                                        : 'TR_STAKE_UNSTAKE_TO_CLAIM'
+                                }
+                            />
                         </Button>
                     </Tooltip>
                 </Row>

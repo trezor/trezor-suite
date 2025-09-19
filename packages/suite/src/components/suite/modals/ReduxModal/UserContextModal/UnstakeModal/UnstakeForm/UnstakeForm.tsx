@@ -35,6 +35,10 @@ export const UnstakeForm = () => {
         trigger,
     } = useUnstakeFormContext();
 
+    const { symbol, networkType } = account;
+
+    const isCardanoNetwork = networkType === 'cardano';
+
     const {
         autocompoundBalance = '0',
         canClaim = false,
@@ -68,16 +72,21 @@ export const UnstakeForm = () => {
                         type="unstake"
                     />
                 </Column>
+                {!isCardanoNetwork && (
+                    <>
+                        <StakeAvailableBalance
+                            formattedBalance={autocompoundBalance}
+                            symbol={symbol}
+                        />
 
-                <StakeAvailableBalance
-                    formattedBalance={autocompoundBalance}
-                    symbol={account.symbol}
-                />
-
-                <Column gap={spacings.lg}>
-                    <UnstakeInputs />
-                    {showError && <Banner variant="destructive">{inputError?.message}</Banner>}
-                </Column>
+                        <Column gap={spacings.lg}>
+                            <UnstakeInputs />
+                            {showError && (
+                                <Banner variant="destructive">{inputError?.message}</Banner>
+                            )}
+                        </Column>
+                    </>
+                )}
 
                 <Fees
                     control={control}

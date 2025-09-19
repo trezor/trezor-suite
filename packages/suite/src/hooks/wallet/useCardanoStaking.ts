@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import { addFakePendingCardanoTxThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { CardanoAction } from '@suite-common/wallet-types';
 import {
@@ -10,7 +11,6 @@ import {
     getNetworkId,
     getNetworkName,
     getProtocolMagic,
-    getStakePoolForDelegation,
     getStakingPath,
     getUnusedChangeAddress,
     getVotingCertificates,
@@ -50,7 +50,7 @@ export const getReasonForDisabledAction = (reason: ActionAvailability['reason'])
         case 'POOL_ID_FETCH_FAIL':
             return 'TR_STAKING_TREZOR_POOL_FAIL';
         case 'UTXO_BALANCE_INSUFFICIENT':
-            return 'TR_STAKING_NOT_ENOUGH_FUNDS';
+            return 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING';
         default:
             return null;
     }
@@ -58,13 +58,12 @@ export const getReasonForDisabledAction = (reason: ActionAvailability['reason'])
 
 export const useCardanoStaking = (): CardanoStaking => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
-    if (!account || account.networkType !== 'cardano') {
-        throw Error('useCardanoStaking used for other network');
-    }
 
-    const alreadyVoted = account.misc?.staking?.drep !== null;
+    const isCardano = account?.networkType === 'cardano';
+
+    const alreadyVoted = isCardano && account.misc?.staking?.drep !== null;
     const device = useSelector(selectSelectedDevice);
-    const cardanoNetwork = getNetworkName(account.symbol);
+    const cardanoNetwork = getNetworkName(account?.symbol ?? 'ada');
     const { trezorDRep } = useSelector(state => state.wallet.cardanoStaking[cardanoNetwork]);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
@@ -85,8 +84,8 @@ export const useCardanoStaking = (): CardanoStaking => {
     });
 
     const [error, setError] = useState<string | undefined>(undefined);
-    const stakingPath = getStakingPath(account);
-    const pendingStakeTx = cardanoStaking.pendingTx.find(tx => tx.accountKey === account.key);
+
+    const pendingStakeTx = cardanoStaking.pendingTx.find(tx => tx.accountKey === account?.key);
 
     const {
         rewards: rewardsAmount,
@@ -94,7 +93,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         poolId: registeredPoolId,
         isActive: isStakingActive,
         drep: accountDRep,
-    } = account.misc.staking;
+    } = isCardano ? account.misc.staking : {};
 
     const { trezorPools, isFetchLoading, isFetchError } = cardanoStaking[cardanoNetwork];
     const currentPool =
@@ -104,16 +103,31 @@ export const useCardanoStaking = (): CardanoStaking => {
     const isStakingOnTrezorPool = !isFetchLoading && !isFetchError ? !!currentPool : true; // fallback to true to prevent flickering in UI while we fetch the data
     const isCurrentPoolOversaturated = currentPool ? isPoolOverSaturated(currentPool) : false;
 
+    const deviceAvailable = getDeviceAvailability(isDeviceLocked, device);
+
+    const isStakingDisabled =
+        (account?.availableBalance === '0' || !delegatingAvailable.status || !!pendingStakeTx) &&
+        !loading;
+
     const prepareTxPlan = useCallback(
         async (action: CardanoAction) => {
+            if (!account) return;
+
             const changeAddress = getUnusedChangeAddress(account);
-            if (!changeAddress || !account.utxo || !account.addresses) return null;
+            const stakingPath = getStakingPath(account);
+
+            if (
+                !changeAddress ||
+                !account.utxo ||
+                !account.addresses ||
+                !rewardsAmount ||
+                !stakeAddress
+            )
+                return null;
 
             const addressParameters = getAddressParameters(account, changeAddress.path);
 
-            const pool = trezorPools
-                ? getStakePoolForDelegation(trezorPools, account.balance).hex
-                : '';
+            const pool = CARDANO_EVERSTAKE_STAKING_POOL.hex;
 
             let certificates =
                 action === 'delegate'
@@ -162,15 +176,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             return { txPlan: response.payload[0], certificates, withdrawals };
         },
-        [
-            trezorDRep,
-            account,
-            trezorPools,
-            stakingPath,
-            isStakingActive,
-            rewardsAmount,
-            stakeAddress,
-        ],
+        [trezorDRep, account, isStakingActive, rewardsAmount, stakeAddress],
     );
 
     const calculateFeeAndDeposit = useCallback(
@@ -217,7 +223,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         async (action: CardanoAction) => {
             const composeRes = await prepareTxPlan(action);
 
-            if (!composeRes) return;
+            if (!composeRes || !account) return;
 
             const { txPlan, certificates, withdrawals } = composeRes;
 
@@ -337,12 +343,44 @@ export const useCardanoStaking = (): CardanoStaking => {
     const voteAbstain = useCallback(() => action('voteAbstain'), [action]);
     const voteDelegate = useCallback(() => action('voteDelegate'), [action]);
 
+    // TODO: improve this hook for non-cardano accounts
+    if (!account || account.networkType !== 'cardano') {
+        return {
+            isStakingDisabled: true,
+            deposit: undefined,
+            fee: undefined,
+            loading: false,
+            pendingStakeTx: undefined,
+            deviceAvailable: { status: false, reason: undefined },
+            delegatingAvailable: { status: false },
+            alreadyVoted: false,
+            withdrawingAvailable: { status: false },
+            registeredPoolId: null,
+            isActive: false,
+            isFetchError: false,
+            rewards: '0',
+            address: '',
+            isStakingOnTrezorPool: false,
+            isCurrentPoolOversaturated: false,
+            delegate: () => Promise.resolve(),
+            withdrawal: () => Promise.resolve(),
+            voteAbstain: () => Promise.resolve(),
+            voteDelegate: () => Promise.resolve(),
+            trezorDRep: undefined,
+            accountDRepHex: undefined,
+            calculateFeeAndDeposit: () => Promise.resolve(),
+            trezorPools: undefined,
+            error: undefined,
+        };
+    }
+
     return {
+        isStakingDisabled,
         deposit,
         fee,
         loading,
         pendingStakeTx,
-        deviceAvailable: getDeviceAvailability(isDeviceLocked, device),
+        deviceAvailable,
         delegatingAvailable,
         alreadyVoted,
         withdrawingAvailable,

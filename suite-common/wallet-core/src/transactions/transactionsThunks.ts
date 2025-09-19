@@ -386,10 +386,12 @@ export const addFakePendingCardanoTxThunk = createThunk(
             precomposedTransaction,
             txid,
             account,
+            cardanoSpecific,
         }: {
             precomposedTransaction: Pick<PrecomposedTransactionCardanoFinal, 'totalSpent' | 'fee'>;
             txid: string;
             account: Account;
+            cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
         },
         { dispatch, getState },
     ) => {
@@ -410,7 +412,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
             targets: [],
             tokens: [],
             internalTransfers: [],
-            cardanoSpecific: {},
+            cardanoSpecific: cardanoSpecific || {},
             details: {
                 vin: [],
                 vout: [],

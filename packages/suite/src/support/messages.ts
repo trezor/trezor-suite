@@ -8150,6 +8150,11 @@ export default defineMessages({
         defaultMessage:
             'Your {networkDisplaySymbol} stays in your account while staked—you can send, swap, or spend it anytime.',
     },
+    TR_STAKE_NOT_ENOUGH_FUNDS_WARNING: {
+        id: 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING',
+        defaultMessage:
+            'You don’t have enough {networkDisplaySymbol} to cover registration deposit and network fee.',
+    },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',
         defaultMessage: "Amount isn't enough",
@@ -9413,6 +9418,10 @@ export default defineMessages({
         id: 'TR_STAKE_ENTER_ACTIVATION_PERIOD',
         defaultMessage: 'Enter activation period',
     },
+    TR_STAKE_ACTIVATION_PERIOD: {
+        id: 'TR_STAKE_ACTIVATION_PERIOD',
+        defaultMessage: 'Activation period',
+    },
     TR_STAKE_INSTANTLY: {
         id: 'TR_STAKE_INSTANTLY',
         defaultMessage: 'Instantly',
@@ -9597,6 +9606,10 @@ export default defineMessages({
         id: 'TR_STAKE_STAKE',
         defaultMessage: 'Stake',
     },
+    TR_STAKE_ACTIVE_STAKE: {
+        id: 'TR_STAKE_ACTIVE_STAKE',
+        defaultMessage: 'Active stake',
+    },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
         defaultMessage: 'Unstake',
@@ -9673,6 +9686,10 @@ export default defineMessages({
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
+    },
+    TR_STAKE_EXPECTED_REWARDS: {
+        id: 'TR_STAKE_EXPECTED_REWARDS',
+        defaultMessage: 'Next estimated reward in ~{count, plural, one {# day} other {# days}}',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',

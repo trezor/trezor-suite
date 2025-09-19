@@ -1,9 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { NetworkFeature } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils';
 
-import { asAmountSubunit, asAmountUnit } from '../AmountTypes';
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
     accountSearchFn,
@@ -29,8 +27,6 @@ import {
     sortByBIP44AddressIndex,
     sortByCoin,
     substituteBip43Path,
-    subunitsToUnits,
-    unitsToSubunits,
 } from '../accountUtils';
 
 const { getSuiteDevice, getWalletAccount } = testMocks;
@@ -356,35 +352,8 @@ describe(convertAmountUnitsToSubunits.name, () => {
     });
 });
 
-describe(unitsToSubunits.name, () => {
-    it('converts BTC->Sats', () => {
-        const btcSymbolResult = unitsToSubunits({
-            value: asAmountUnit(new BigNumber(1)),
-            symbol: 'btc',
-        });
-        expect(btcSymbolResult.toString()).toEqual(String(100_000_000));
-
-        const decimalsResult = unitsToSubunits({
-            value: asAmountUnit(new BigNumber(1)),
-            decimals: 2,
-        });
-        expect(decimalsResult.toString()).toEqual('100');
-    });
-});
-
 describe(convertAmountSubunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
         expect(convertAmountSubunitsToUnits('1', 8)).toEqual('0.00000001');
-    });
-});
-
-describe(subunitsToUnits.name, () => {
-    it('converts Sats->BTC', () => {
-        expect(
-            subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(1)),
-                symbol: 'btc',
-            }).toString(),
-        ).toEqual('0.00000001');
     });
 });

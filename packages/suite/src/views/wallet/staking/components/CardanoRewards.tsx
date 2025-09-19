@@ -90,7 +90,7 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
                             </Title>
                             <HiddenPlaceholder>
                                 <Value>
-                                    {formatNetworkAmount(rewards, account.symbol)}{' '}
+                                    {formatNetworkAmount(rewards ?? '0', account.symbol)}{' '}
                                     {getNetworkDisplaySymbol(account.symbol)}
                                 </Value>
                             </HiddenPlaceholder>
