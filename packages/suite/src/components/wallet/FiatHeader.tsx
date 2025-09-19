@@ -35,7 +35,7 @@ const useFiatAmount = ({ amount, symbol }: UseFiatAmountProps) => {
 /**
  * If `symbol` is not provided, `amount` is returned as is, otherwise it is converted to fiat currency.
  */
-export const FiatHeader = ({
+const FiatHeaderContent = ({
     amount,
     symbol,
     size,
@@ -53,12 +53,16 @@ export const FiatHeader = ({
     const formattedFiatAmount = formattedAmount?.props.children;
 
     return (
-        <HiddenPlaceholder enforceIntensity={10}>
-            <BigAmountValue
-                formattedStringAmount={formattedFiatAmount}
-                data-testid={dataTestId}
-                size={size}
-            />
-        </HiddenPlaceholder>
+        <BigAmountValue
+            formattedStringAmount={formattedFiatAmount}
+            data-testid={dataTestId}
+            size={size}
+        />
     );
 };
+
+export const FiatHeader = (props: FiatHeaderProps) => (
+    <HiddenPlaceholder enforceIntensity={10}>
+        <FiatHeaderContent {...props} />
+    </HiddenPlaceholder>
+);
