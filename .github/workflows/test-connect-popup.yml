@@ -19,7 +19,6 @@ on:
       - "packages/connect-webextension/**"
       - "packages/connect-web/**"
       - "packages/connect-popup/**"
-      - "packages/connect-examples/webextension-mv2/**"
       - "packages/connect-examples/webextension-mv3/**"
       - "packages/connect-explorer-theme/**"
       - "packages/trezor-user-env-link/**"
