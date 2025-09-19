@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
-import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress } from '@suite-common/thp';
+import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
 import {
@@ -116,6 +116,7 @@ export const useFirmwareInstallation = (
     const firmware = useSelector(selectFirmware);
     const device = useSelector(selectSelectedDevice);
     const isThpInProgress = useSelector(selectIsThpInProgress);
+    const thpStep = useSelector(selectThpStep);
 
     const [reconnectEvent, buttonEvent, progressEvent] = useMemo(() => {
         if (firmware.uiEvent) {
@@ -153,11 +154,7 @@ export const useFirmwareInstallation = (
         !!shouldSwitchFirmwareType,
     );
 
-    const isThpConfirmationRequested = [
-        'thp_pairing_request',
-        'thp_connection_request',
-        'thp_autoconnect_credential_request',
-    ].includes(firmware.status);
+    const isThpConfirmationRequested = thpStep === 'ConfirmOnlyConnection';
 
     const confirmOnDevice =
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
