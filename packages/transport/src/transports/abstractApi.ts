@@ -139,7 +139,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
-    subscribe({
+    public subscribe({
         path,
         channels,
         signal,

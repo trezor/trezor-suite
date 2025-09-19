@@ -116,7 +116,11 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly transportPath;
-    public readonly bluetoothProps;
+    public readonly bluetoothProps: {
+        // TODO: type it properly.
+        channels: any;
+        id: string;
+    } | undefined;
     private thp: protocolThp.ThpState | undefined;
     private readonly possibleHIDdevice;
     private sessionAcquired: Session | null;
@@ -158,6 +162,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private _features: Features;
     public get features() {
         return this._features;
+    }
+
+    private _batteryLevel?: number;
+    public get batteryLevel() {
+        return this._batteryLevel;
     }
 
     private wasUsedElsewhere = false;
@@ -216,7 +225,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.transport = transport;
         this.transportPath = descriptor.path;
         this.possibleHIDdevice = [0, 2].includes(descriptor.type);
-        this.bluetoothProps = descriptor.id ? { id: descriptor.id } : undefined;
+        if (descriptor.id) {
+            this.bluetoothProps = {
+                id: descriptor.id,
+                channels: undefined,
+            };
+        }
 
         this.sessionAcquired = null;
 
@@ -313,18 +327,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 .then(result => {
                     // todo: imho it should be assigned to other field then bluetoothProps because we might want to include this feature for other mediums (usb) too?
                     // todo: if yes, maybe we should call these channels some more generic names? :thinking:
-                    this.bluetoothProps.channels = result;
-                    this.lifecycle.emit(DEVICE.CHANGED);
+                    if (this.bluetoothProps) {
+                        this.bluetoothProps.channels = result;
+                        this.lifecycle.emit(DEVICE.CHANGED);
+                    }
 
                     if (result['battery-level']) {
                         this.transport.on('battery-level', event => {
-                            this.batteryLevel = event.data[0];
+                            this._batteryLevel = event.data[0];
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
 
                     if (result['push-notification']) {
-                        this.transport.on('push-notification', event => {
+                        this.transport.on('push-notification', _event => {
                             // todo: info about device switching from bootloader to normal mode and the other way round.
                         });
                     }
@@ -467,7 +483,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.lifecycle.emit(DEVICE.CONNECT);
-
+                    // TODO: maybe there could be a `capabilities` like `"Capability_PUSH"` so we subscribe only when necessary.
                     this.subscribe();
                 }
             });
@@ -893,6 +909,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 getFirmwareType(feat),
             );
             this.availableTranslations = this._currentRelease?.translations ?? {};
+        }
+
+        if (feat.soc && feat.soc !== this._batteryLevel) {
+            // We update _batteryLevel from features.soc and from push notifications in subscription.
+            this._batteryLevel = feat.soc;
         }
 
         this._features = feat;

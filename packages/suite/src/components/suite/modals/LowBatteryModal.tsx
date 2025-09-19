@@ -30,12 +30,14 @@ const LowBatteryModalHeading = ({ batteryLevel }: LowBatteryModalHeadingProps) =
 );
 
 export const LowBatteryModal = ({ onClose, children }: LowBatteryModalProps) => {
-    const device = useDevice();
-    if (!device?.device) return null;
+    const { device } = useDevice();
+    if (!device) return null;
+
+    const bateryLevel = typeof device?.batteryLevel === 'number' ? device?.batteryLevel : 0;
 
     return (
         <Modal
-            heading={<LowBatteryModalHeading batteryLevel={device?.device.features?.soc || 0} />}
+            heading={<LowBatteryModalHeading batteryLevel={bateryLevel} />}
             onCancel={onClose}
             bottomContent={
                 <Button variant="destructive" onClick={onClose}>

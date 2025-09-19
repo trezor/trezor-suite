@@ -78,8 +78,8 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const handleUpdate = () => {
         if (
             isDeviceConnectedViaBluetooth &&
-            device.features?.soc &&
-            device.features?.soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
+            typeof device?.batteryLevel === 'number' &&
+            device.batteryLevel < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
         ) {
             setLowBatteryWarning(true);
 
