@@ -5,7 +5,8 @@ export type BluetoothAdapterStatus =
     | 'enabled'
     | 'disabled'
     | 'permission-denied'
-    | 'not-compatible';
+    | 'not-compatible'
+    | 'power-suspending';
 
 export type BluetoothScanStatus = 'idle' | 'running' | 'error';
 

@@ -82,7 +82,7 @@ export interface RendererChannels {
 
     'app/auto-start/popup-request': void;
 
-    'power-monitor/screen-locked': void;
+    'power-monitor/suspend': void;
 }
 
 // Invocation from renderer process

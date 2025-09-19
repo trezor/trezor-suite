@@ -2,6 +2,7 @@ import {
     BLUETOOTH_PREFIX,
     bluetoothActions,
     filterOutOldDuplicatesByName,
+    selectAdapterStatus,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
@@ -61,7 +62,14 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
         const attemptDeviceConnect = async ({ device }: { device: DesktopBluetoothDevice }) => {
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
-            const autoConnectingDevices = selectConnectingDevices(getState());
+            const connectingDevices = selectConnectingDevices(getState());
+            const adapterStatus = selectAdapterStatus(getState());
+
+            if (adapterStatus === 'power-suspending') {
+                // system is going to sleep
+                return;
+            }
+
             // do not hijack BT connection
             const isConnectable =
                 device.connectionStatus.type === 'disconnected' &&
@@ -71,7 +79,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             if (
                 isConnectable &&
                 knownDevices.find(d => d.id === device.id) !== undefined &&
-                !autoConnectingDevices.includes(device.id)
+                !connectingDevices.includes(device.id)
             ) {
                 await dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
             }

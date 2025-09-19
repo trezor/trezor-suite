@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { selectKnownDevices } from '@suite-common/bluetooth';
+import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
+import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
@@ -14,15 +15,19 @@ export const PowerMonitorManager = () => {
     useEffect(() => {
         if (!isDesktopApiAvailable) return;
 
+        // This is only useful for macOS
+        if (!isMacOs()) return;
+
         const disconnectAllDevices = () => {
+            dispatch(bluetoothActions.adapterEventAction({ status: 'power-suspending' }));
             knownDevices.forEach(device => {
                 if (device.connected) dispatch(bluetoothDisconnectDeviceThunk({ id: device.id }));
             });
         };
-        desktopApi.on('power-monitor/screen-locked', disconnectAllDevices);
+        desktopApi.on('power-monitor/suspend', disconnectAllDevices);
 
         return () => {
-            desktopApi.removeAllListeners('power-monitor/screen-locked');
+            desktopApi.removeAllListeners('power-monitor/suspend');
         };
     }, [dispatch, knownDevices, isDesktopApiAvailable]);
 
