@@ -84,6 +84,7 @@ export type StakeContextValues = UseFormReturn<StakeFormState> &
         isLoading: boolean;
         currency?: 'crypto' | 'fiat';
         setCurrency: (currency: 'crypto' | 'fiat') => void;
+        isStakingDisabled: boolean;
     };
 
 export type UnstakeFormState = Omit<StakeFormState, 'setMaxOutputId'>;

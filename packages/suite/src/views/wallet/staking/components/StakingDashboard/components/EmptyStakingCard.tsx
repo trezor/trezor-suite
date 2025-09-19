@@ -59,7 +59,7 @@ export const EmptyStakingCard = () => {
         stakingLimits && new BigNumber(accountBalance).gte(stakingLimits.MIN_AMOUNT_FOR_STAKING);
 
     const potentialRewards = useMemo(() => {
-        const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
+        const totalBalance = new BigNumber(stakingBalance || '0').plus(accountBalance).toString();
         const amount = new BigNumber(totalBalance).multipliedBy(apy / 100);
 
         return CryptoAmountFormatter.format(amount.toString(), {
@@ -118,20 +118,8 @@ export const EmptyStakingCard = () => {
             {
                 id: 2,
                 icon: isCardano ? ('handCoins' as const) : ('everstakeLogo' as const),
-                title: (
-                    <Translation
-                        id={isCardano ? 'TR_STAKE_GET_MORE' : 'TR_STAKING_CARD_RESTAKE_TITLE'}
-                    />
-                ),
-                text: (
-                    <Translation
-                        id={
-                            isCardano
-                                ? 'TR_STAKE_CLAIM_REWARDS_TO_GROW'
-                                : 'TR_STAKING_CARD_RESTAKE_TEXT'
-                        }
-                    />
-                ),
+                title: <Translation id="TR_STAKING_CARD_RESTAKE_TITLE" />,
+                text: <Translation id="TR_STAKING_CARD_RESTAKE_TEXT" />,
             },
         ],
         [isCardano, displaySymbol],
@@ -171,12 +159,20 @@ export const EmptyStakingCard = () => {
                         <Paragraph variant="tertiary" maxWidth={700}>
                             {!hasEnoughBalanceForStaking ? (
                                 <Translation
-                                    id="TR_STAKING_CARD_TEXT_EMPTY"
+                                    id={
+                                        isCardano
+                                            ? 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY'
+                                            : 'TR_STAKING_CARD_TEXT_EMPTY'
+                                    }
                                     values={{ displaySymbol }}
                                 />
                             ) : (
                                 <Translation
-                                    id="TR_STAKING_CARD_TEXT"
+                                    id={
+                                        isCardano
+                                            ? 'TR_STAKING_CARD_TEXT_FUNDS_STAY'
+                                            : 'TR_STAKING_CARD_TEXT_EMPTY'
+                                    }
                                     values={{ potentialRewards, displaySymbol }}
                                 />
                             )}

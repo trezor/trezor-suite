@@ -21,7 +21,9 @@ export const StakeButton = () => {
         isComposing,
         watch,
         currency,
+        isStakingDisabled: isCardanoStakingDisabled,
     } = useStakeFormContext();
+
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
@@ -30,11 +32,14 @@ export const StakeButton = () => {
         selectAreFeesLoading(state, selectedAccount.network.symbol),
     );
 
+    const isCardano = selectedAccount.account.networkType === 'cardano';
+
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-    const isDisabled =
-        !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
+    // there is no input for cardano. Form validation should always pass
+    const isFormInputsValid = !isCardano ? formIsValid && hasValues : !isCardanoStakingDisabled;
+    const isDisabled = !isFormInputsValid || isSubmitting || isLocked() || !device?.available;
 
     const onStakeClick = () => {
         handleSubmit(onSubmit)();

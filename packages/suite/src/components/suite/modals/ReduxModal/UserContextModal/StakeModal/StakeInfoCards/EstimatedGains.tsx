@@ -15,7 +15,8 @@ import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 export const EstimatedGains = () => {
     const { account, getValues, formState } = useStakeFormContext();
 
-    const value = getValues(CRYPTO_INPUT);
+    const cardanoAmount = account.networkType === 'cardano' ? account.formattedBalance : undefined;
+    const value = getValues(CRYPTO_INPUT) || cardanoAmount;
     const hasInvalidFormState =
         Object.keys(formState.errors).length > 0 &&
         formState.errors[CRYPTO_INPUT]?.type !== 'reserveOrBalance'; // provide gains calculation even if the user has not enough balance

@@ -4,6 +4,7 @@ import { spacings } from '@trezor/theme';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 
+import { CardanoStakeWarningBanner } from './CardanoStakeWarningBanner';
 import { ConfirmStakeModal } from './ConfirmStakeModal';
 import { StakeAvailableBalance } from './StakeAvailableBalance';
 import { StakeInputs } from './StakeInputs';
@@ -25,6 +26,7 @@ export const StakeForm = () => {
         feeInfo,
         composedLevels,
         trigger,
+        isStakingDisabled,
     } = useStakeFormContext();
 
     const { formattedBalance, symbol, networkType } = account;
@@ -68,6 +70,13 @@ export const StakeForm = () => {
                     composedLevels={composedLevels}
                     changeFeeLevel={changeFeeLevel}
                 />
+
+                {isCardanoNetwork && (
+                    <CardanoStakeWarningBanner
+                        account={account}
+                        isCardanoStakingDisabled={isStakingDisabled}
+                    />
+                )}
             </Column>
         </>
     );

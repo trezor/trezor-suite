@@ -34,6 +34,7 @@ import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
+import { useCardanoStaking } from './useCardanoStaking';
 
 export const StakeFormContext = createContext<StakeContextValues | null>(null);
 StakeFormContext.displayName = 'StakeFormContext';
@@ -401,6 +402,12 @@ export const useStakeForm = ({
         setIsConfirmModalOpen(true);
     };
 
+    const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking();
+
+    useEffect(() => {
+        calculateFeeAndDeposit('delegate');
+    }, [calculateFeeAndDeposit]);
+
     return {
         ...methods,
         onSubmit,
@@ -432,6 +439,7 @@ export const useStakeForm = ({
         isLoading,
         currency,
         setCurrency,
+        isStakingDisabled,
     };
 };
 

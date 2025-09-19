@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Column, Row } from '@trezor/components';
+import { BaseCurrencyAmount, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
+import { Column, Icon, Row } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { AccountLabel, CoinBalance } from 'src/components/suite';
@@ -46,7 +46,14 @@ export const AccountItemContent = ({
 }: AccountItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const isSidebarCollapsed = useIsSidebarCollapsed();
+    const isCardanoStaking = account.networkType === 'cardano' && type === 'staking';
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
+
+    const cardanoStakingIcon = isCardanoStakedWithEverstake(account) ? (
+        <Icon name="check" variant="primary" size={16} />
+    ) : (
+        <Icon name="warning" variant="warning" size={16} />
+    );
 
     if (isSidebarCollapsed) {
         return (
@@ -64,12 +71,16 @@ export const AccountItemContent = ({
                         />
                     </AccountLabelContainer>
 
-                    <BaseCurrency
-                        isLoading={isFiatLoading}
-                        customFiatValue={customFiatValue}
-                        symbol={account.symbol}
-                        formattedBalance={formattedBalance}
-                    />
+                    {!isCardanoStaking ? (
+                        <BaseCurrency
+                            isLoading={isFiatLoading}
+                            customFiatValue={customFiatValue}
+                            symbol={account.symbol}
+                            formattedBalance={formattedBalance}
+                        />
+                    ) : (
+                        cardanoStakingIcon
+                    )}
                 </Row>
 
                 <Column gap={spacings.xs}>
@@ -78,7 +89,7 @@ export const AccountItemContent = ({
                         {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                     </AccountLabelContainer>
 
-                    {isBalanceShown && type !== 'tokens' && (
+                    {isBalanceShown && type !== 'tokens' && !isCardanoStaking && (
                         <CoinBalance
                             data-testid="@wallet"
                             value={formattedBalance}
@@ -103,21 +114,29 @@ export const AccountItemContent = ({
                     {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                 </AccountLabelContainer>
 
-                <BaseCurrency
-                    isLoading={isFiatLoading}
-                    customFiatValue={customFiatValue}
-                    symbol={account.symbol}
-                    formattedBalance={formattedBalance}
-                />
+                {!isCardanoStaking ? (
+                    <BaseCurrency
+                        isLoading={isFiatLoading}
+                        customFiatValue={customFiatValue}
+                        symbol={account.symbol}
+                        formattedBalance={formattedBalance}
+                    />
+                ) : (
+                    cardanoStakingIcon
+                )}
             </Row>
-            {isBalanceShown && type !== 'tokens' && (
-                <CoinBalance
-                    data-testid="@wallet"
-                    value={formattedBalance}
-                    symbol={account.symbol}
-                />
+            {!isCardanoStaking && (
+                <>
+                    {isBalanceShown && type !== 'tokens' && (
+                        <CoinBalance
+                            data-testid="@wallet"
+                            value={formattedBalance}
+                            symbol={account.symbol}
+                        />
+                    )}
+                    {!isBalanceShown && <BalancePlaceholder networkSymbol={account.symbol} />}
+                </>
             )}
-            {!isBalanceShown && <BalancePlaceholder networkSymbol={account.symbol} />}
         </Column>
     );
 };

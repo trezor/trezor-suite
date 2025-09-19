@@ -14,6 +14,12 @@ export const isAccountStakingActive = (
 
     if (!isSupportedStakingNetworkSymbol(account.symbol)) return false;
 
+    if (account.networkType === 'cardano') {
+        const { isActive } = account.misc.staking;
+
+        return isActive;
+    }
+
     const {
         totalPendingStakeBalance = '0',
         withdrawTotalAmount = '0',

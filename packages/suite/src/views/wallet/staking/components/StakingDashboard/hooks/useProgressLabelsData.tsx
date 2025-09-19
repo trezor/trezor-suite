@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import {
+    CARDANO_ACTIVATION_PERIOD_DAYS,
+    CARDANO_EPOCH_DAYS,
+    SOLANA_EPOCH_DAYS,
+} from '@suite-common/wallet-constants';
 import { Account } from '@suite-common/wallet-types';
 import { Column, Paragraph } from '@trezor/components';
 
@@ -148,11 +152,78 @@ export const useProgressLabelsData = ({
         [solStakingAccountStatus, isStakeConfirming],
     );
 
+    const cardanoProgressLabelsData: ProgressLabelData[] = useMemo(
+        () => [
+            {
+                id: 0,
+                progressState: (() => {
+                    if (isStakeConfirming) return 'active';
+
+                    return 'done';
+                })(),
+                children: isStakeConfirming ? (
+                    <Translation id="TR_TX_CONFIRMING" />
+                ) : (
+                    <Translation id="TR_TX_CONFIRMED" />
+                ),
+            },
+            {
+                id: 1,
+                progressState: (() => {
+                    if (isStakePending && !isStakeConfirming) return 'active';
+
+                    return 'stale';
+                })(),
+                children: (
+                    <Column>
+                        <Translation id="TR_STAKE_ACTIVATION_PERIOD" />
+
+                        <Paragraph typographyStyle="label" variant="tertiary">
+                            <Translation
+                                id="TR_UP_TO_DAYS"
+                                values={{
+                                    count: CARDANO_ACTIVATION_PERIOD_DAYS,
+                                }}
+                            />
+                        </Paragraph>
+                    </Column>
+                ),
+            },
+            {
+                id: 2,
+                progressState: (() => {
+                    if (!isStakePending && !isStakeConfirming) {
+                        return 'active';
+                    }
+
+                    return 'stale';
+                })(),
+                children: (
+                    <Column>
+                        <Translation id="TR_STAKE_STAKED_AND_EARNING" />
+
+                        <Paragraph typographyStyle="label" variant="tertiary">
+                            <Translation
+                                id="TR_UP_TO_DAYS"
+                                values={{
+                                    count: CARDANO_EPOCH_DAYS,
+                                }}
+                            />
+                        </Paragraph>
+                    </Column>
+                ),
+            },
+        ],
+        [isStakeConfirming, isStakePending],
+    );
+
     switch (selectedAccount?.networkType) {
         case 'ethereum':
             return ethereumProgressLabelsData;
         case 'solana':
             return solanaProgressLabelsData;
+        case 'cardano':
+            return cardanoProgressLabelsData;
         default:
             return [];
     }

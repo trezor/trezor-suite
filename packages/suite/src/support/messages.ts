@@ -8175,6 +8175,11 @@ export default defineMessages({
         defaultMessage:
             'Your {networkDisplaySymbol} stays in your account while staked—you can send, swap, or spend it anytime.',
     },
+    TR_STAKE_NOT_ENOUGH_FUNDS_WARNING: {
+        id: 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING',
+        defaultMessage:
+            'You don’t have enough {networkDisplaySymbol} to cover registration deposit and network fee.',
+    },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',
         defaultMessage: "Amount isn't enough",
@@ -9350,10 +9355,20 @@ export default defineMessages({
         defaultMessage:
             'Stake your full balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
     },
+    TR_STAKING_CARD_TEXT_FUNDS_STAY: {
+        id: 'TR_STAKING_CARD_TEXT_FUNDS_STAY',
+        defaultMessage:
+            'Stake your full balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY. Your {displaySymbol} stay in your account, ready to use anytime—while helping secure the network.',
+    },
     TR_STAKING_CARD_TEXT_EMPTY: {
         id: 'TR_STAKING_CARD_TEXT_EMPTY',
         defaultMessage:
             'Stake your full balance and start earning rewards. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
+    },
+    TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY: {
+        id: 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY',
+        defaultMessage:
+            'Stake your full balance and start earning rewards. Your {displaySymbol} stay in your account, ready to use anytime—while helping secure the network.',
     },
     TR_STAKING_CARD_START_STAKING: {
         id: 'TR_STAKING_CARD_START_STAKING',
@@ -9413,14 +9428,6 @@ export default defineMessages({
         id: 'TR_STAKE_SEND_SWAP_SPEND_ANYTIME',
         defaultMessage: 'Send, swap, or spend your {symbol} whenever you want—even while staking.',
     },
-    TR_STAKE_GET_MORE: {
-        id: 'TR_STAKE_GET_MORE',
-        defaultMessage: 'Get more',
-    },
-    TR_STAKE_CLAIM_REWARDS_TO_GROW: {
-        id: 'TR_STAKE_CLAIM_REWARDS_TO_GROW',
-        defaultMessage: 'Claim rewards to grow your stake and earn even more.',
-    },
     TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE: {
         id: 'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',
         defaultMessage: 'Your {networkDisplaySymbol} stays accessible to you at all times.',
@@ -9437,6 +9444,10 @@ export default defineMessages({
     TR_STAKE_ENTER_ACTIVATION_PERIOD: {
         id: 'TR_STAKE_ENTER_ACTIVATION_PERIOD',
         defaultMessage: 'Enter activation period',
+    },
+    TR_STAKE_ACTIVATION_PERIOD: {
+        id: 'TR_STAKE_ACTIVATION_PERIOD',
+        defaultMessage: 'Activation period',
     },
     TR_STAKE_INSTANTLY: {
         id: 'TR_STAKE_INSTANTLY',
@@ -9622,6 +9633,10 @@ export default defineMessages({
         id: 'TR_STAKE_STAKE',
         defaultMessage: 'Stake',
     },
+    TR_STAKE_ACTIVE_STAKE: {
+        id: 'TR_STAKE_ACTIVE_STAKE',
+        defaultMessage: 'Active stake',
+    },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
         defaultMessage: 'Unstake',
@@ -9698,6 +9713,10 @@ export default defineMessages({
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
+    },
+    TR_STAKE_EXPECTED_REWARDS: {
+        id: 'TR_STAKE_EXPECTED_REWARDS',
+        defaultMessage: 'Next estimated reward in ~{count, plural, one {# day} other {# days}}',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
