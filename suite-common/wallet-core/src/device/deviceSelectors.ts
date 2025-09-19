@@ -70,7 +70,7 @@ export const selectDeviceCapabilities = createMemoizedSelector(
     features => features?.capabilities,
 );
 
-export const selectIsBluetoothDevice = createMemoizedSelector(
+export const selectIsBluetoothSupportedByDevice = createMemoizedSelector(
     [selectDeviceCapabilities],
     capabilities => !!capabilities?.includes('Capability_BLE'),
 );
