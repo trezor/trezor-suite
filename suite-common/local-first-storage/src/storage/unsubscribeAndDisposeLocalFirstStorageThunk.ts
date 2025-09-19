@@ -19,9 +19,7 @@ export const unsubscribeAndDisposeLocalFirstStorageThunk = createThunk<
     `${LOCAL_FIRST_STORAGE_PREFIX}/unsubscribeLocalFirstStorageThunk`,
     ({ device }, { rejectWithValue }) => {
         if (localFirstStorageProvider === null) {
-            throw new Error(
-                "throw Error('initLocalFirstStorageThunk() must be called before this!');",
-            );
+            throw new Error("initLocalFirstStorageThunk() must be called before this!'");
         }
 
         const deviceStaticSessionId = device.state?.staticSessionId;

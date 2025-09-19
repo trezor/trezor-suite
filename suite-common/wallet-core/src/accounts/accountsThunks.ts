@@ -180,15 +180,7 @@ type ForgetAccountsThunkParams = {
 
 export const forgetAccountsThunk = createThunk<void, ForgetAccountsThunkParams, void>(
     `${ACCOUNTS_MODULE_PREFIX}/forgetAccountThunk`,
-    ({ accountsToRemove }, { dispatch, extra, getState }) => {
-        for (const accountToRemove of accountsToRemove) {
-            const device = selectDevices(getState())?.find(
-                it => it.state?.staticSessionId === accountToRemove.deviceState,
-            );
-            if (device !== undefined) {
-                dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));
-            }
-        }
+    ({ accountsToRemove }, { dispatch }) => {
         dispatch(accountsActions.removeAccount(accountsToRemove));
     },
 );

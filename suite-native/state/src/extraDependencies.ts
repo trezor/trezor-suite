@@ -2,7 +2,10 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
-import { subscribeLocalFirstStorageThunk } from '@suite-common/local-first-storage';
+import {
+    subscribeLocalFirstStorageThunk,
+    unsubscribeAndDisposeLocalFirstStorageThunk,
+} from '@suite-common/local-first-storage';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -60,6 +63,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {
         subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
+        unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
     } as Partial<ExtraDependencies['thunks']>,
     actions: {} as Partial<ExtraDependencies['actions']>,
     actionTypes: {} as Partial<ExtraDependencies['actionTypes']>,
