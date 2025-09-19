@@ -110,12 +110,12 @@ export const findLatestVersionForModel = (model: Model): string => {
 };
 
 export const getCountryLabel = (country: TradingCountryCode) => {
-    const labelWithFlag = regional.countriesMap.get(country);
-    if (!labelWithFlag) {
+    const countryOption = regional.countriesOptionsMap.get(country);
+    if (!countryOption) {
         throw new Error(`Country ${country} not found in the countries map`);
     }
 
-    return labelWithFlag.substring(labelWithFlag.indexOf(' ') + 1);
+    return countryOption.label.substring(countryOption.label.indexOf(' ') + 1);
 };
 
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {

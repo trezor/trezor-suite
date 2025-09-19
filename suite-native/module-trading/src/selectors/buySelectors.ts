@@ -9,7 +9,7 @@ import {
     TradingPaymentMethodProps,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
-    regional,
+    nonSanctionedRegional,
     selectTradingBuyInfo,
     selectTradingBuySupportedCryptoIds,
     selectValidTradingBuyQuotes,
@@ -86,15 +86,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
 
         const fiatCurrency = suggestedFiatCurrency || DEFAULT_FIAT_CURRENCY_FALLBACK;
         const countryDefaultValue =
-            regional.countriesMap.has(country) && !regional.isSanctionedCountry(country)
-                ? {
-                      value: country,
-                      label: regional.countriesMap.get(country)!,
-                  }
-                : {
-                      value: regional.UNKNOWN_COUNTRY,
-                      label: regional.countriesMap.get(regional.UNKNOWN_COUNTRY)!,
-                  };
+            nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
         return {
             fiatCurrency: fiatCurrency.toLowerCase(),

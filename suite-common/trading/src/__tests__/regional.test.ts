@@ -1,4 +1,4 @@
-import { regional } from '../regional';
+import { nonSanctionedRegional, regional } from '../regional';
 
 describe('Regional', () => {
     describe('isInEEA', () => {
@@ -15,33 +15,49 @@ describe('Regional', () => {
         });
     });
 
-    describe('isSanctionedCountry', () => {
+    describe('isSanctioned', () => {
         it('should be true for Comprehensively Sanctioned Countries', () => {
-            const isSanctioned = regional.isSanctionedCountry('KP');
+            const isSanctioned = regional.isSanctioned('KP');
 
             expect(isSanctioned).toBe(true);
         });
 
         it('should be true for Other Countries Subject to OFAC Sanctions', () => {
-            const isSanctioned = regional.isSanctionedCountry('SD');
+            const isSanctioned = regional.isSanctioned('SD');
 
             expect(isSanctioned).toBe(true);
         });
 
         it('should be false for non-sanctioned country', () => {
-            const isSanctioned = regional.isSanctionedCountry('DE');
+            const isSanctioned = regional.isSanctioned('DE');
 
             expect(isSanctioned).toBe(false);
         });
     });
 
-    describe('nonSanctionedCountries', () => {
+    describe('getCountryOptionWithWorldwideFallback', () => {
+        it('should return country option for existing country', () => {
+            expect(regional.getCountryOptionWithWorldwideFallback('DE')).toEqual({
+                label: '🇩🇪 Germany',
+                value: 'DE',
+            });
+        });
+
+        it('should fallback to worldwide for non-existing country', () => {
+            expect(regional.getCountryOptionWithWorldwideFallback('test')).toEqual({
+                label: '🌍 Worldwide',
+                value: 'unknown',
+            });
+        });
+    });
+
+    describe('nonSanctionedRegional', () => {
         it('should not contain sanctioned countries', () => {
-            const hasSanctionedCountries = regional.nonSanctionedCountries.some(country =>
-                regional.isSanctionedCountry(country.value),
+            const hasSanctionedCountries = nonSanctionedRegional.countriesOptions.some(
+                ({ value }) => regional.isSanctioned(value),
             );
 
-            expect(regional.nonSanctionedCountries.length).toBeGreaterThan(0);
+            expect(nonSanctionedRegional.countriesOptions.length).toBeGreaterThan(0);
             expect(hasSanctionedCountries).toBe(false);
         });
     });

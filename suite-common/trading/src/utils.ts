@@ -162,20 +162,8 @@ export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
 export const tradingGetSuccessQuotes = <T extends TradingType>(quotes: TradingTradeMapProps[T][]) =>
     quotes.filter(quote => quote.error === undefined);
 
-export const getDefaultCountry = (country: TradingCountryCode = regional.UNKNOWN_COUNTRY) => {
-    const label = regional.countriesMap.get(country);
-
-    if (!label)
-        return {
-            label: regional.countriesMap.get(regional.UNKNOWN_COUNTRY)!,
-            value: regional.UNKNOWN_COUNTRY,
-        };
-
-    return {
-        label,
-        value: country,
-    };
-};
+export const getDefaultCountry = (country: TradingCountryCode = regional.UNKNOWN_COUNTRY) =>
+    regional.getCountryOptionWithWorldwideFallback(country);
 
 export const filterQuotesAccordingTags = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeBuySellMapProps[T][],

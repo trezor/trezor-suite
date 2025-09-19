@@ -6,7 +6,7 @@ import {
     TradingPaymentMethodProps,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
-    regional,
+    nonSanctionedRegional,
     selectTradingSellInfo,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
@@ -58,15 +58,7 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
 
         const fiatCurrency = DEFAULT_FIAT_CURRENCY_FALLBACK;
         const countryDefaultValue =
-            regional.countriesMap.has(country) && !regional.isSanctionedCountry(country)
-                ? {
-                      value: country,
-                      label: regional.countriesMap.get(country)!,
-                  }
-                : {
-                      value: regional.UNKNOWN_COUNTRY,
-                      label: regional.countriesMap.get(regional.UNKNOWN_COUNTRY)!,
-                  };
+            nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
         return {
             fiatCurrency: fiatCurrency.toLowerCase(),
