@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsBluetoothDevice } from '@suite-common/wallet-core';
+import { selectIsBluetoothSupportedByDevice } from '@suite-common/wallet-core';
 import { Box, Image } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -18,9 +18,9 @@ export type ConnectorImageProps = {
 export const ConnectorImage = ({ maxHeight }: ConnectorImageProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const isBluetoothDevice = useSelector(selectIsBluetoothDevice);
+    const isBluetoothSupportedByDevice = useSelector(selectIsBluetoothSupportedByDevice);
 
-    if (!isBluetoothDevice) {
+    if (!isBluetoothSupportedByDevice) {
         return (
             <Image
                 source={require('../assets/connector.webp')}
