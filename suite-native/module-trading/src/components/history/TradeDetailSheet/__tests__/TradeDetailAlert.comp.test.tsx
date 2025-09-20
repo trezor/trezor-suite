@@ -1,0 +1,409 @@
+import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+
+import { TradingTransaction } from '@suite-common/trading';
+import {
+    PreloadedState,
+    act,
+    fireEvent,
+    renderWithStoreProviderAsync,
+} from '@suite-native/test-utils';
+
+import { buyMercuryo } from '../../../../__fixtures__/buyProviders';
+import { exchangeMercuryo } from '../../../../__fixtures__/exchangeProviders';
+import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../../__fixtures__/trades';
+import { getInitializedTradingStateWithQuotes } from '../../../../__fixtures__/tradingState';
+import { getTradeStatusStep } from '../../../../utils/general/utils';
+import { TradeDetailAlert } from '../TradeDetailAlert';
+
+const TEST_PROVIDER = 'mercuryo';
+const TEST_SUPPORT_URL = 'https://mercuryo.io/#support';
+const TEST_SELL_SUPPORT_URL = 'https://mercuryo.io/sell-crypto/#support';
+
+const mockOpenLink = jest.fn();
+const mockOnOpenedWebview = jest.fn();
+const mockNavigation = {
+    navigate: jest.fn(),
+};
+
+jest.mock('@suite-native/link', () => ({
+    useOpenLink: () => mockOpenLink,
+}));
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => mockNavigation,
+}));
+
+const createPreloadedState = (
+    trades: TradingTransaction[],
+    supportUrl?: string,
+): PreloadedState => {
+    const tradingState = getInitializedTradingStateWithQuotes();
+    tradingState.trades = trades;
+
+    // Only add provider info if supportUrl is provided
+    if (supportUrl !== undefined) {
+        const buyProviderInfo = {
+            ...buyMercuryo,
+            supportUrl,
+        };
+
+        const exchangeProviderInfo = {
+            ...exchangeMercuryo,
+            supportUrl,
+        };
+
+        if (tradingState.buy.buyInfo?.providerInfos) {
+            tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER] = buyProviderInfo;
+        }
+        if (tradingState.exchange.exchangeInfo?.providerInfos) {
+            tradingState.exchange.exchangeInfo.providerInfos[TEST_PROVIDER] = exchangeProviderInfo;
+        }
+    }
+
+    return {
+        wallet: {
+            trading: tradingState,
+        },
+    };
+};
+
+describe('TradeDetailAlert', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    const renderAlert = (
+        tradeStatus: BuyTradeStatus | ExchangeTradeStatus | SellTradeStatus,
+        tradeType: 'buy' | 'exchange' | 'sell' = 'buy',
+        supportUrl?: string,
+        orderId?: string,
+    ) => {
+        let trade;
+        if (tradeType === 'exchange') {
+            trade = getExchangeTrade({ status: tradeStatus as ExchangeTradeStatus });
+        } else if (tradeType === 'sell') {
+            trade = getSellTrade({ status: tradeStatus as SellTradeStatus });
+        } else {
+            trade = getBuyTrade({ status: tradeStatus as BuyTradeStatus });
+        }
+
+        const alertType = getTradeStatusStep(trade);
+
+        return renderWithStoreProviderAsync(
+            <TradeDetailAlert
+                alertType={alertType}
+                provider={TEST_PROVIDER}
+                tradeType={tradeType}
+                orderId={orderId || trade.data.orderId}
+                onOpenedWebview={mockOnOpenedWebview}
+            />,
+            { preloadedState: createPreloadedState([trade], supportUrl) },
+        );
+    };
+
+    describe('Error Alert', () => {
+        it('should render error alert with support button for buy trades', async () => {
+            const { getByText } = await renderAlert('ERROR', 'buy', TEST_SUPPORT_URL);
+
+            expect(getByText('Transaction failed')).toBeTruthy();
+            expect(getByText('Go to provider support')).toBeTruthy();
+        });
+
+        it('should render error alert with support button for sell trades', async () => {
+            const { getByText } = await renderAlert('ERROR', 'sell', TEST_SELL_SUPPORT_URL);
+
+            expect(getByText('Transaction failed')).toBeTruthy();
+            expect(getByText('Go to provider support')).toBeTruthy();
+        });
+    });
+
+    describe('Waiting Alert', () => {
+        it('should render waiting alert with payment button when orderId is provided', async () => {
+            const { getByText } = await renderAlert('SUBMITTED', 'buy', undefined, 'test-order-id');
+
+            expect(getByText('Waiting for your payment ...')).toBeTruthy();
+            expect(getByText('Proceed to pay')).toBeTruthy();
+        });
+
+        it('should render button but not navigate when trade is not found in store', async () => {
+            const { getByText } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="waiting"
+                    provider={TEST_PROVIDER}
+                    tradeType="buy"
+                    orderId="nonexistent-order-id"
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([], undefined) }, // No trades in store
+            );
+
+            expect(getByText('Proceed to pay')).toBeTruthy();
+
+            act(() => {
+                fireEvent.press(getByText('Proceed to pay'));
+            });
+
+            // Should not call onOpenedWebview when trade is not found
+            expect(mockOnOpenedWebview).not.toHaveBeenCalled();
+            expect(mockNavigation.navigate).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('KYC Alert', () => {
+        it('should render kyc alert with support button when orderId is provided', async () => {
+            const { getByText } = await renderAlert('KYC', 'exchange', undefined, 'test-order-id');
+
+            expect(getByText('Identity verification required')).toBeTruthy();
+            expect(getByText('Go to provider support')).toBeTruthy();
+        });
+    });
+
+    describe('Converting Alert', () => {
+        it('should render converting alert with support button', async () => {
+            const { getByText } = await renderAlert('CONVERTING', 'exchange', TEST_SUPPORT_URL);
+
+            expect(getByText('Converting your crypto...')).toBeTruthy();
+            expect(getByText('Go to provider support')).toBeTruthy();
+        });
+    });
+
+    describe('Sending Alert', () => {
+        it('should render sending alert with support button', async () => {
+            const { getByText } = await renderAlert('SENDING', 'exchange', TEST_SUPPORT_URL);
+
+            expect(getByText('Sending your crypto...')).toBeTruthy();
+            expect(getByText('Go to provider support')).toBeTruthy();
+        });
+    });
+
+    describe('Sell Trade Alerts', () => {
+        it('should not render alert for sell trades with SUCCESS status', async () => {
+            const { toJSON } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="success"
+                    provider={TEST_PROVIDER}
+                    tradeType="sell"
+                    orderId="test-order-id"
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([]) },
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
+        it('should not render alert for sell trades with SEND_CRYPTO status (pending)', async () => {
+            const { toJSON } = await renderAlert('SEND_CRYPTO', 'sell');
+
+            expect(toJSON()).toBeNull();
+        });
+    });
+
+    describe('Support Button Functionality', () => {
+        it.each([
+            ['ERROR', 'buy', TEST_SUPPORT_URL],
+            ['ERROR', 'exchange', TEST_SUPPORT_URL],
+            ['ERROR', 'sell', TEST_SELL_SUPPORT_URL],
+            ['KYC', 'exchange', TEST_SUPPORT_URL],
+            ['CONVERTING', 'exchange', TEST_SUPPORT_URL],
+            ['SENDING', 'exchange', TEST_SUPPORT_URL],
+        ])(
+            'should call openLink with support URL when support button is pressed for %s %s trades',
+            async (status, tradeType, expectedUrl) => {
+                const { getByText } = await renderAlert(
+                    status as any,
+                    tradeType as any,
+                    expectedUrl,
+                );
+
+                act(() => {
+                    fireEvent.press(getByText('Go to provider support'));
+                });
+
+                expect(mockOpenLink).toHaveBeenCalledWith(expectedUrl);
+            },
+        );
+    });
+
+    describe('Edge Cases', () => {
+        it('should not render when alertType is undefined', async () => {
+            const { toJSON } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType={undefined as any}
+                    provider={TEST_PROVIDER}
+                    tradeType="buy"
+                    orderId="test-order-id"
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([]) },
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
+        it('should not render when alertType is success for non-exchange trades', async () => {
+            const { toJSON } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="success"
+                    provider={TEST_PROVIDER}
+                    tradeType="buy"
+                    orderId="test-order-id"
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([]) },
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
+        it('should render error alert without button when provider info is missing', async () => {
+            const tradingState = getInitializedTradingStateWithQuotes();
+            tradingState.trades = [];
+            if (tradingState.buy.buyInfo?.providerInfos) {
+                delete tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER];
+            }
+
+            const { getByText, queryByText } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="error"
+                    provider={TEST_PROVIDER}
+                    tradeType="buy"
+                    orderId="test-order-id"
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: { wallet: { trading: tradingState } } },
+            );
+
+            expect(getByText('Transaction failed')).toBeTruthy();
+            expect(queryByText('Go to provider support')).toBeNull();
+        });
+
+        it('should render waiting alert with support fallback when orderId is missing', async () => {
+            const { getByText } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="waiting"
+                    provider={TEST_PROVIDER}
+                    tradeType="buy"
+                    orderId={undefined}
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([], TEST_SUPPORT_URL) },
+            );
+
+            act(() => {
+                fireEvent.press(getByText('Proceed to pay'));
+            });
+
+            expect(mockOpenLink).toHaveBeenCalledWith(TEST_SUPPORT_URL);
+        });
+
+        it('should render button but not navigate when partnerData is missing for buy trades', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            // Remove partnerData to test missing webview data
+            delete buyTrade.data.partnerData;
+
+            const { getByText } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="waiting"
+                    provider={TEST_PROVIDER}
+                    tradeType="buy"
+                    orderId={buyTrade.data.orderId!}
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([buyTrade], undefined) }, // No support URL
+            );
+
+            act(() => {
+                fireEvent.press(getByText('Proceed to pay'));
+            });
+
+            // Should not navigate when partnerData is missing
+            expect(mockNavigation.navigate).not.toHaveBeenCalled();
+            expect(mockOnOpenedWebview).not.toHaveBeenCalled();
+        });
+
+        it('should fall back to support URL when partnerData is missing for exchange trades', async () => {
+            const exchangeTrade = getExchangeTrade({ status: 'KYC' });
+            // Exchange trades don't have partnerData, so they always fall back to support URL
+
+            const { getByText } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="kyc"
+                    provider={TEST_PROVIDER}
+                    tradeType="exchange"
+                    orderId={exchangeTrade.data.orderId!}
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([exchangeTrade], TEST_SUPPORT_URL) },
+            );
+
+            act(() => {
+                fireEvent.press(getByText('Go to provider support'));
+            });
+
+            // Should fall back to support URL for exchange trades
+            expect(mockOpenLink).toHaveBeenCalledWith(TEST_SUPPORT_URL);
+            expect(mockNavigation.navigate).not.toHaveBeenCalled();
+        });
+
+        it('should render button but not navigate when neither webview nor support URL is available', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            // Remove partnerData to test missing webview data
+            delete buyTrade.data.partnerData;
+
+            // Create state without provider info to test no support URL case
+            const tradingState = getInitializedTradingStateWithQuotes();
+            tradingState.trades = [buyTrade];
+            // Remove provider info to ensure no support URL
+            if (tradingState.buy.buyInfo?.providerInfos) {
+                delete tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER];
+            }
+
+            const { getByText } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="waiting"
+                    provider={TEST_PROVIDER}
+                    tradeType="buy"
+                    orderId={buyTrade.data.orderId!}
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: { wallet: { trading: tradingState } } },
+            );
+
+            act(() => {
+                fireEvent.press(getByText('Proceed to pay'));
+            });
+
+            // Should not navigate when neither webview nor support URL is available
+            expect(mockNavigation.navigate).not.toHaveBeenCalled();
+            expect(mockOnOpenedWebview).not.toHaveBeenCalled();
+            expect(mockOpenLink).not.toHaveBeenCalled();
+        });
+
+        it('should handle sell trades with webview navigation when partnerData is available', async () => {
+            const sellTrade = getSellTrade({ status: 'ERROR' });
+            // Ensure partnerData is present for webview navigation
+            sellTrade.data.partnerData = 'https://sell.mercuryo.io/test';
+
+            const { getByText } = await renderWithStoreProviderAsync(
+                <TradeDetailAlert
+                    alertType="error"
+                    provider={TEST_PROVIDER}
+                    tradeType="sell"
+                    orderId={sellTrade.data.orderId!}
+                    onOpenedWebview={mockOnOpenedWebview}
+                />,
+                { preloadedState: createPreloadedState([sellTrade], TEST_SELL_SUPPORT_URL) },
+            );
+
+            act(() => {
+                fireEvent.press(getByText('Go to provider support'));
+            });
+
+            // Should call support URL for sell trades (not webview navigation)
+            expect(mockOpenLink).toHaveBeenCalledWith(TEST_SELL_SUPPORT_URL);
+            expect(mockNavigation.navigate).not.toHaveBeenCalled();
+        });
+    });
+});

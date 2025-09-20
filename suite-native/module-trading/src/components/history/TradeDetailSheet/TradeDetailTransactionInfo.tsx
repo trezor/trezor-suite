@@ -48,13 +48,16 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
-    const account = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectAccountByKey(
-            state,
-            trade && 'selectedAccountKey' in trade
-                ? trade.selectedAccountKey
-                : trade?.sendAccountKey,
-        ),
+    const tradeType = trade?.tradeType;
+    const isSell = tradeType === 'sell';
+    const isBuy = tradeType === 'buy';
+
+    const fromAccount = useSelector((state: AccountsRootState & DeviceRootState) =>
+        isBuy ? undefined : selectAccountByKey(state, trade?.sendAccountKey),
+    );
+
+    const toAccount = useSelector((state: AccountsRootState & DeviceRootState) =>
+        isSell ? undefined : selectAccountByKey(state, trade?.receiveAccountKey),
     );
 
     const { fromStringValue, toStringValue, fromCurrency, toCurrency, isFromCrypto, isToCrypto } =
@@ -77,10 +80,10 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                     </HStack>
                 }
             />
-            {trade.tradeType === 'sell' && (
+            {!isBuy && (
                 <TradeDetailInfoRow
                     title={<Translation id="moduleTrading.tradeHistory.detail.fromAccount" />}
-                    content={account?.accountLabel}
+                    content={fromAccount?.accountLabel}
                 />
             )}
             <TradeDetailInfoRow
@@ -92,10 +95,10 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                     </HStack>
                 }
             />
-            {trade.tradeType !== 'sell' && (
+            {!isSell && (
                 <TradeDetailInfoRow
                     title={<Translation id="moduleTrading.tradeHistory.detail.toAccount" />}
-                    content={account?.accountLabel}
+                    content={toAccount?.accountLabel}
                     contentTestID={TRADE_DETAIL_TEST_ID + '/receive-account'}
                 />
             )}

@@ -2378,6 +2378,29 @@ export const messages = {
                     description: 'Click to complete your details on the provider’s site.',
                     button: 'Proceed to pay',
                 },
+                convertingAlert: {
+                    title: 'Converting your crypto...',
+                    description: 'Your swap is being processed. This may take a few minutes.',
+                    button: 'Go to provider support',
+                },
+                kycAlert: {
+                    title: 'Identity verification required',
+                    description:
+                        'Please complete the identity verification process to continue with your transaction.',
+                    button: 'Go to provider support',
+                },
+                sendingAlert: {
+                    title: 'Sending your crypto...',
+                    description:
+                        'Your transaction is being processed. Please wait for confirmation.',
+                    button: 'Go to provider support',
+                },
+                pendingAlert: {
+                    title: 'Transaction pending...',
+                    description:
+                        'Your sell transaction is being processed. Please wait for confirmation.',
+                    button: 'Go to provider support',
+                },
                 buy: 'Buy',
                 exchange: 'Swap',
                 sell: 'Sell',

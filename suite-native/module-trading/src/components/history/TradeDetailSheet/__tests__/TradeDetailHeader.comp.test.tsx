@@ -1,85 +1,88 @@
 import { TradingTransaction } from '@suite-common/trading';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { getBuyTrade, getSellTrade } from '../../../../__fixtures__/trades';
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
+import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../../__fixtures__/trades';
+import { getInitializedTradingStateWithQuotes } from '../../../../__fixtures__/tradingState';
 import { TradeDetailHeader } from '../TradeDetailHeader';
 
-const getPreloadedState = (trades: TradingTransaction[]) => ({
+const createPreloadedState = (trades: TradingTransaction[]) => ({
     wallet: {
         trading: {
-            ...getInitializedTradingState(),
+            ...getInitializedTradingStateWithQuotes(),
             trades,
         },
     },
 });
 
-const mockNavigation = {
-    navigate: jest.fn(),
-};
-
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => mockNavigation,
-}));
-
 describe('TradeDetailHeader', () => {
-    it('should not render when trade is not found', async () => {
-        const preloadedState = getPreloadedState([]);
-
-        const { toJSON } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId="nonexistent_order_id" onOpenedWebview={jest.fn()} />,
-            { preloadedState },
-        );
-
-        expect(toJSON()).toBeNull();
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
-    it('should render header with spinner for in-progress trade', async () => {
-        const buyTrade = getBuyTrade({ status: 'APPROVAL_PENDING' });
-        const preloadedState = getPreloadedState([buyTrade]);
-
-        const { getByTestId } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId={buyTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
-            { preloadedState },
+    const renderHeader = (orderId: string, trades: TradingTransaction[] = []) =>
+        renderWithStoreProviderAsync(
+            <TradeDetailHeader orderId={orderId} onOpenedWebview={jest.fn()} />,
+            { preloadedState: createPreloadedState(trades) },
         );
 
-        expect(getByTestId('@circular-spinner')).toBeTruthy();
+    describe('Trade Not Found', () => {
+        it('should not render when trade is not found', async () => {
+            const { toJSON } = await renderHeader('nonexistent_order_id');
+
+            expect(toJSON()).toBeNull();
+        });
     });
 
-    it('should render header without spinner for final status', async () => {
-        const sellTrade = getSellTrade({ status: 'SUCCESS' });
-        const preloadedState = getPreloadedState([sellTrade]);
+    describe('Success Status', () => {
+        it('should render header with spinner for in-progress pending trade', async () => {
+            const sellTrade = getSellTrade({ status: 'PENDING' });
+            const { getByTestId } = await renderHeader(sellTrade.data.orderId!, [sellTrade]);
 
-        const { queryByTestId } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId={sellTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
-            { preloadedState },
-        );
+            expect(getByTestId('@circular-spinner')).toBeTruthy();
+        });
 
-        expect(queryByTestId('@circular-spinner')).toBeNull();
+        it('should render header without spinner for final success status', async () => {
+            const sellTrade = getSellTrade({ status: 'SUCCESS' });
+            const { queryByTestId } = await renderHeader(sellTrade.data.orderId!, [sellTrade]);
+
+            expect(queryByTestId('@circular-spinner')).toBeNull();
+        });
     });
 
-    it('should render error message for error status', async () => {
-        const buyTrade = getBuyTrade({ status: 'ERROR' });
-        const preloadedState = getPreloadedState([buyTrade]);
+    describe('Alert Rendering', () => {
+        it('should render error alert for buy trade error status', async () => {
+            const buyTrade = getBuyTrade({ status: 'ERROR' });
+            const { getByText } = await renderHeader(buyTrade.data.orderId!, [buyTrade]);
 
-        const { getByText } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId={buyTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
-            { preloadedState },
-        );
+            expect(getByText('Transaction failed')).toBeTruthy();
+        });
 
-        expect(getByText('Transaction failed')).toBeTruthy();
-    });
+        it('should render waiting alert for buy trade submitted status', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const { getByText } = await renderHeader(buyTrade.data.orderId!, [buyTrade]);
 
-    it('should render waiting message for waiting status', async () => {
-        const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        const preloadedState = getPreloadedState([buyTrade]);
+            expect(getByText('Waiting for your payment ...')).toBeTruthy();
+        });
 
-        const { getByText } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId={buyTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
-            { preloadedState },
-        );
+        it('should render converting alert for exchange converting status', async () => {
+            const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
+            const { getByText } = await renderHeader(exchangeTrade.data.orderId!, [exchangeTrade]);
 
-        expect(getByText('Waiting for your payment ...')).toBeTruthy();
+            expect(getByText('Converting your crypto...')).toBeTruthy();
+        });
+
+        it('should render kyc alert for exchange kyc status', async () => {
+            const exchangeTrade = getExchangeTrade({ status: 'KYC' });
+            const { getByText } = await renderHeader(exchangeTrade.data.orderId!, [exchangeTrade]);
+
+            expect(getByText('Identity verification required')).toBeTruthy();
+        });
+
+        it('should render sending alert for exchange sending status', async () => {
+            const exchangeTrade = getExchangeTrade({ status: 'SENDING' });
+            const { getByText } = await renderHeader(exchangeTrade.data.orderId!, [exchangeTrade]);
+
+            expect(getByText('Sending your crypto...')).toBeTruthy();
+        });
     });
 });

@@ -137,6 +137,7 @@ const getExchangeTradeStatusStep = (tradeStatus: ExchangeTradeStatus | undefined
             return 'error';
         case 'SUCCESS':
             return 'success';
+
         default: {
             if (!tradeFinalStatuses['exchange'].includes(tradeStatus)) {
                 return 'sending';
@@ -178,6 +179,8 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
             return exhaustive(tradeType);
     }
 };
+
+export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
 
 export const doesUrlContainCloseCallbackUrl = (url: string, closeCallbackUrl: string) =>
     url.includes(closeCallbackUrl) ||

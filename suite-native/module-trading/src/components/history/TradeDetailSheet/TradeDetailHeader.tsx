@@ -9,9 +9,8 @@ import { Box, CircularSpinner, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TradeDetailErrorAlert } from './TradeDetailErrorAlert';
-import { TradeDetailWaitingAlert } from './TradeDetailWaitingAlert';
-import { getTradeStatusStep } from '../../../utils/general/utils';
+import { TradeDetailAlert } from './TradeDetailAlert';
+import { TradeStatusStep, getTradeStatusStep } from '../../../utils/general/utils';
 import { TradeStatusBadge } from '../TradeStatusBadge';
 
 type TradeDetailHeaderProps = {
@@ -40,27 +39,31 @@ export const TradeDetailHeader = ({ orderId, onOpenedWebview }: TradeDetailHeade
 
     const statusStep = getTradeStatusStep(trade);
 
-    if (statusStep === 'error') {
-        return <TradeDetailErrorAlert provider={trade.data.exchange} tradeType={trade.tradeType} />;
-    }
-
-    if (statusStep === 'waiting') {
-        return <TradeDetailWaitingAlert orderId={orderId} onOpenedWebview={onOpenedWebview} />;
+    if ((['success', 'pending'] as TradeStatusStep[]).includes(statusStep)) {
+        return (
+            <VStack spacing="sp16" alignItems="center" justifyContent="center">
+                <Box style={applyStyle(iconWrapperStyle)}>
+                    <Icon name="arrowsLeftRight" size="extraLarge" />
+                    {isInProgress && (
+                        <CircularSpinner
+                            size={utils.spacings.sp56}
+                            color="backgroundAlertYellowBold"
+                            width={3}
+                        />
+                    )}
+                </Box>
+                <TradeStatusBadge status={trade.data.status} />
+            </VStack>
+        );
     }
 
     return (
-        <VStack spacing="sp16" alignItems="center" justifyContent="center">
-            <Box style={applyStyle(iconWrapperStyle)}>
-                <Icon name="arrowsLeftRight" size="extraLarge" />
-                {isInProgress && (
-                    <CircularSpinner
-                        size={utils.spacings.sp56}
-                        color="backgroundAlertYellowBold"
-                        width={3}
-                    />
-                )}
-            </Box>
-            <TradeStatusBadge status={trade.data.status} />
-        </VStack>
+        <TradeDetailAlert
+            alertType={statusStep}
+            provider={trade.data.exchange}
+            tradeType={trade.tradeType}
+            orderId={orderId}
+            onOpenedWebview={onOpenedWebview}
+        />
     );
 };

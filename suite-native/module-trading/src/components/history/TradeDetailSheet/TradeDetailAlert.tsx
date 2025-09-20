@@ -1,0 +1,170 @@
+import { useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+
+import {
+    TradingRootState,
+    TradingTransaction,
+    TradingTransactionBuy,
+    TradingTransactionSell,
+    TradingType,
+    selectTradingProviderByNameAndTradeType,
+    selectTradingTradeByOrderId,
+} from '@suite-common/trading';
+import { FullAlertBox } from '@suite-native/atoms';
+import { IconName } from '@suite-native/icons';
+import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
+import { exhaustive } from '@trezor/type-utils';
+
+import { buildTradingUrl } from '../../../utils/general/formUtils';
+import { TradeStatusStep } from '../../../utils/general/utils';
+
+type AlertConfig = {
+    iconName: IconName;
+    variant: 'critical' | 'neutral' | 'success';
+    titleKey: TxKeyPath;
+    descriptionKey: TxKeyPath;
+    buttonKey: TxKeyPath;
+};
+
+type TradeDetailAlertProps = {
+    alertType: TradeStatusStep;
+    provider?: string;
+    tradeType: TradingType;
+    orderId?: string;
+    onOpenedWebview?: () => void;
+};
+
+const isBuyOrSell = (
+    trade?: TradingTransaction,
+): trade is TradingTransactionBuy | TradingTransactionSell =>
+    !!trade && ['buy', 'sell'].includes(trade.tradeType);
+
+const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => {
+    switch (alertType) {
+        case 'error':
+            return {
+                iconName: 'warningCircle',
+                variant: 'critical',
+                titleKey: 'moduleTrading.tradeHistory.detail.errorAlert.title',
+                descriptionKey: 'moduleTrading.tradeHistory.detail.errorAlert.description',
+                buttonKey: 'moduleTrading.tradeHistory.detail.errorAlert.button',
+            };
+        case 'waiting':
+            return {
+                iconName: 'hourglass',
+                variant: 'neutral',
+                titleKey: 'moduleTrading.tradeHistory.detail.waitingAlert.title',
+                descriptionKey: 'moduleTrading.tradeHistory.detail.waitingAlert.description',
+                buttonKey: 'moduleTrading.tradeHistory.detail.waitingAlert.button',
+            };
+        case 'converting':
+            return {
+                iconName: 'hourglass',
+                variant: 'neutral',
+                titleKey: 'moduleTrading.tradeHistory.detail.convertingAlert.title',
+                descriptionKey: 'moduleTrading.tradeHistory.detail.convertingAlert.description',
+                buttonKey: 'moduleTrading.tradeHistory.detail.convertingAlert.button',
+            };
+        case 'kyc':
+            return {
+                iconName: 'magnifyingGlass',
+                variant: 'neutral',
+                titleKey: 'moduleTrading.tradeHistory.detail.kycAlert.title',
+                descriptionKey: 'moduleTrading.tradeHistory.detail.kycAlert.description',
+                buttonKey: 'moduleTrading.tradeHistory.detail.kycAlert.button',
+            };
+        case 'sending':
+            return {
+                iconName: 'hourglass',
+                variant: 'neutral',
+                titleKey: 'moduleTrading.tradeHistory.detail.sendingAlert.title',
+                descriptionKey: 'moduleTrading.tradeHistory.detail.sendingAlert.description',
+                buttonKey: 'moduleTrading.tradeHistory.detail.sendingAlert.button',
+            };
+        // Success, pending, processing will be handled outside of this component
+        case 'success':
+        case 'pending':
+        case 'processing':
+        case undefined:
+            return undefined;
+
+        default:
+            return exhaustive(alertType);
+    }
+};
+
+export const TradeDetailAlert = ({
+    alertType,
+    provider,
+    tradeType,
+    orderId,
+    onOpenedWebview,
+}: TradeDetailAlertProps) => {
+    const openLink = useOpenLink();
+    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+
+    const providerInfo = useSelector((state: TradingRootState) =>
+        selectTradingProviderByNameAndTradeType(state, provider, tradeType),
+    );
+    const trade = useSelector((state: TradingRootState) =>
+        orderId ? selectTradingTradeByOrderId(state, orderId) : undefined,
+    );
+    const { translate } = useTranslate();
+
+    const alertConfig = getAlertConfig(alertType);
+
+    // If no config found for this alert type, return null
+    if (!alertConfig) {
+        return null;
+    }
+
+    const { iconName, variant, titleKey, descriptionKey, buttonKey } = alertConfig;
+    const supportUrl = providerInfo?.supportUrl;
+
+    const navigateToWebView = () => {
+        if (trade && isBuyOrSell(trade) && trade.data.partnerData) {
+            onOpenedWebview?.();
+            navigation.navigate(RootStackRoutes.TradingWebView, {
+                closeCallbackUrl: buildTradingUrl({
+                    actionType: 'trade',
+                    tradeType: trade.tradeType,
+                    orderId,
+                    exchange: trade.data.partnerData,
+                }),
+                source: { uri: trade.data.partnerData },
+            });
+        }
+    };
+
+    // Special handling for different alert types
+    let handleButtonPress: (() => void) | undefined;
+
+    if ((['waiting', 'kyc'] as TradeStatusStep[]).includes(alertType) && orderId) {
+        handleButtonPress = () => navigateToWebView();
+    }
+
+    if (supportUrl) {
+        handleButtonPress = () => openLink(supportUrl);
+    }
+
+    const buttonLabel = handleButtonPress ? translate(buttonKey) : undefined;
+
+    return (
+        <FullAlertBox
+            title={translate(titleKey)}
+            description={translate(descriptionKey)}
+            iconName={iconName}
+            primaryButtonLabel={buttonLabel}
+            primaryButtonProps={{ viewLeft: 'arrowSquareOut' }}
+            onPressPrimaryButton={handleButtonPress}
+            variant={variant}
+        />
+    );
+};

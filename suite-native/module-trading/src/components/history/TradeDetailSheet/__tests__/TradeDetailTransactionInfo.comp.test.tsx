@@ -64,14 +64,15 @@ describe('TradeDetailTransactionInfo', () => {
     it('should render exchange trade transaction info correctly', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
-        const { getByText } = await renderComponent(
+        const { getByText, getAllByText } = await renderComponent(
             exchangeTrade.data.orderId!,
             getPreloadedState([exchangeTrade]),
         );
 
         expect(getByText('10.1232 JTO')).toBeTruthy();
         expect(getByText('0.462586 SOL')).toBeTruthy();
-        expect(getByText('SOL Account #1')).toBeTruthy();
+        // For exchange trades, both from and to accounts are displayed and they are the same account
+        expect(getAllByText('SOL Account #1')).toHaveLength(2);
     });
 
     it('should render sell trade transaction info correctly', async () => {
