@@ -5,11 +5,13 @@ import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-util
 
 import { FEE_PICKER_TEST_ID, FeePicker } from '../FeePicker';
 
+const rateObject = { rate: 50000, error: null };
+
 // Mock the selectors used by CryptoToFiatAmountFormatter
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectBaseCurrency: jest.fn(() => 'usd'),
-    selectFiatRatesByFiatRateKey: jest.fn(() => ({ rate: 50000, error: null })),
+    selectFiatRatesByFiatRateKey: jest.fn(() => rateObject),
 }));
 
 describe('FeePicker', () => {
