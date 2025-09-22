@@ -21,6 +21,7 @@ import {
     buildLocalFirmwareFileName,
     buildLocalReleaseName,
     findBestCompatibleRelease,
+    isFirmwareCacheUsedForSelectedSource,
     isStrictFeatures,
 } from '../utils/firmwareUtils';
 
@@ -222,11 +223,8 @@ export const getReleaseByVersion = async (
 
     const releaseName = buildLocalReleaseName(firmwareType, deviceModel, firmwareVersion);
 
-    const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
-    const isCacheUsed = firmwareUpdateSource === 'production';
-
     const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
-    if (isCacheUsed && firmwareList.includes(releaseName)) {
+    if (isFirmwareCacheUsedForSelectedSource() && firmwareList.includes(releaseName)) {
         const localReleasePath = `${firmwareDir}${releaseName}`;
         const localReleaseBuffer = await httpRequest(localReleasePath, 'json');
 
@@ -662,11 +660,8 @@ export const getFirmwareLocation = ({
         };
     }
 
-    const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
-    const isCacheUsed = firmwareUpdateSource === 'production';
-
     const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
-    if (isCacheUsed && firmwareList.includes(firmwareName)) {
+    if (isFirmwareCacheUsedForSelectedSource() && firmwareList.includes(firmwareName)) {
         return {
             baseUrl: firmwareDir,
             path: firmwareName,

@@ -2,6 +2,7 @@ import { FirmwareType } from '@trezor/device-utils';
 import type { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
+import { DataManager } from '../data/DataManager';
 import type { CurrentVersion } from '../data/firmwareInfo';
 import type { Features, StrictFeatures } from '../types/device';
 
@@ -133,3 +134,6 @@ export const getFirmwareType = (features: Features) => {
 
     return type;
 };
+
+export const isFirmwareCacheUsedForSelectedSource = () =>
+    DataManager.getSettings('firmwareUpdateSource') === 'production';
