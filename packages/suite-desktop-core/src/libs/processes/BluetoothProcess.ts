@@ -1,8 +1,5 @@
-import path from 'path';
-
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isWindows } from '@trezor/env-utils';
-import { BluetoothNapiBindings } from '@trezor/transport-bluetooth';
 
 import { BaseProcess, Status } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
@@ -79,14 +76,5 @@ export class BluetoothProcess extends BaseProcess {
         }
 
         return super.start();
-    }
-
-    async getNapiBindings() {
-        const processPath = path.join(super.getProcessDir(), `index.js`);
-        this.logger.info(this.logTopic, `Loading bluetooth native module from ${processPath}`);
-
-        const bindings: BluetoothNapiBindings = await import(/*webpackIgnore: true */ processPath);
-
-        return bindings;
     }
 }

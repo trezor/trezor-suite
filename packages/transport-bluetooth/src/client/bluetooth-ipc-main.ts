@@ -7,7 +7,6 @@ import type {
     BluetoothIpcApi,
     BluetoothIpcEvents,
     BluetoothIpcState,
-    BluetoothNapiBindings,
     IpcResponse,
     TrezorBluetoothSettings,
 } from './types';
@@ -20,15 +19,10 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     private api: TrezorBluetooth;
     private state: BluetoothIpcState = { knownDevices: [] };
     private isScanning = false;
-    private readonly getNapiBindings: (() => Promise<BluetoothNapiBindings>) | undefined;
 
-    constructor({
-        napiBindings,
-        ...settings
-    }: TrezorBluetoothSettings & { napiBindings: BluetoothIpc['getNapiBindings'] }) {
+    constructor(settings: TrezorBluetoothSettings) {
         super();
         this.api = new TrezorBluetooth(settings);
-        this.getNapiBindings = napiBindings;
     }
 
     // 1. suite knows the device but system may not. device could be removed manually from the system UI
@@ -159,29 +153,6 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
     async connectDevice(id: string) {
         const timeout = 30000;
-
-        // macos: pair in the main thread then disconnect and pickup connection again in the background
-        if (this.getNapiBindings) {
-            try {
-                const devices = await this.enumerateDevices();
-                const isPaired = devices.find(d => d.id === id)?.paired;
-                if (!isPaired) {
-                    const bindings = await this.getNapiBindings();
-                    await bindings.connectDevice(id, timeout, (_err, data) => {
-                        try {
-                            const json = JSON.parse(data);
-                            if (json.event == 'device_connection_status') {
-                                this.emit('device-update', json.payload.device);
-                            }
-                        } catch {
-                            // silent
-                        }
-                    });
-                }
-            } catch (error) {
-                return this.result(error.message);
-            }
-        }
 
         try {
             await this.connectApi();

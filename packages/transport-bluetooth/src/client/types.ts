@@ -109,11 +109,3 @@ export interface BluetoothIpcApi {
     off: TypedManagerEvents['off'];
     removeAllListeners: TypedManagerEvents['removeAllListeners'];
 }
-
-export type BluetoothNapiBindings = {
-    connectDevice: (
-        id: string,
-        timeout: number,
-        callback: (err: Error | null, json: string) => any,
-    ) => Promise<void>;
-};

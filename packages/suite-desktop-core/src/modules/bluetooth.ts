@@ -1,6 +1,5 @@
 import { ipcMain } from 'electron';
 
-import { isMacOs } from '@trezor/env-utils';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
@@ -57,7 +56,6 @@ export const init: ModuleInit = () => {
         return new BluetoothIpc({
             url: btProcess.getUrl(),
             logger: desktopLogger,
-            napiBindings: isMacOs() ? () => btProcess.getNapiBindings() : undefined,
         });
     };
 
