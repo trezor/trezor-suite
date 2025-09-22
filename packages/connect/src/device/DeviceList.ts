@@ -284,8 +284,17 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.devices.length;
     }
 
+    getPrioritizedDevices() {
+        return [...this.devices].sort(
+            (a, b) =>
+                // USB transport is prioritized over Bluetooth
+                (a.descriptor.apiType === 'bluetooth' ? 1 : 0) -
+                (b.descriptor.apiType === 'bluetooth' ? 1 : 0),
+        );
+    }
+
     getAllDevices() {
-        return this.devices as readonly Device[];
+        return this.getPrioritizedDevices() as readonly Device[];
     }
 
     getOnlyDevice(): Device | undefined {
@@ -293,13 +302,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     getDeviceByPath(path: DeviceUniquePath): Device | undefined {
-        return this.devices.find(d => d.getUniquePath() === path);
+        return this.getPrioritizedDevices().find(d => d.getUniquePath() === path);
     }
 
     getDeviceByStaticState(state: StaticSessionId): Device | undefined {
         const deviceId = state.split('@')[1].split(':')[0];
 
-        return this.devices.find(d => d.features?.device_id === deviceId);
+        return this.getPrioritizedDevices().find(d => d.features?.device_id === deviceId);
     }
 
     async dispose() {
