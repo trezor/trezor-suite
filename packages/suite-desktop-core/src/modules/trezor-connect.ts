@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 
 import TrezorConnect, { ConnectSettings, LocalFirmwares, UI, UI_EVENT } from '@trezor/connect';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -45,10 +46,14 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
 
 // override TrezorConnect.init and TrezorConnect.setTransports params
 // add BluetoothTransport if bluetooth module is enabled
-const getTransportsParam = (
-    transports?: ConnectSettings['transports'],
-): ConnectSettings['transports'] => {
-    const bluetooth = bluetoothModuleState.getTransport();
+const getTransportsParam = ({
+    transports,
+    manifest,
+}: {
+    transports: ConnectSettings['transports'];
+    manifest?: ConnectSettings['manifest'];
+}): ConnectSettings['transports'] => {
+    const bluetooth = bluetoothModuleState.getTransport(manifest);
     if (!bluetooth) return transports;
 
     if (transports && transports.length > 0) {
@@ -77,6 +82,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
         onCreateInstance: () => ({
             onRequest: async (method, params) => {
                 logger.debug(SERVICE_NAME, `call ${method}`);
+                let settingsCache: InitFullSettings<Record<string, any>> | undefined;
                 if (method === 'init') {
                     logger.info(SERVICE_NAME, `Retrieving stored firmwares`);
                     const [settings] = params;
@@ -89,10 +95,15 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     if (localFirmwares.success) {
                         settings.localFirmwares = localFirmwares.payload;
                     }
-                    settings.transports = getTransportsParam(settings.transports);
+                    settings.transports = getTransportsParam({
+                        transports: settings.transports,
+                        manifest: settings.manifest,
+                    });
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
+
+                    settingsCache = settings;
 
                     return response;
                 }
@@ -111,7 +122,10 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 }
 
                 if (method === 'setTransports') {
-                    params[0].transports = getTransportsParam(params[0].transports);
+                    params[0].transports = getTransportsParam({
+                        transports: params[0].transports,
+                        manifest: settingsCache?.manifest,
+                    });
                 }
 
                 return (TrezorConnect[method] as any)(...params);

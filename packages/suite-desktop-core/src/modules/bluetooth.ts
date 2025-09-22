@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 
+import { Manifest } from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
@@ -14,7 +15,7 @@ export const SERVICE_NAME = '@trezor/transport-bluetooth';
 // Export module state and use it trezor-connect module to override init + setTransports params
 // getTransport function is reassigned in onLoad, onQuit
 type BluetoothModuleState = {
-    getTransport: () => BluetoothTransport | undefined;
+    getTransport: (manifest?: Manifest) => BluetoothTransport | undefined;
 };
 
 export const bluetoothModuleState: BluetoothModuleState = {
@@ -61,10 +62,10 @@ export const init: ModuleInit = () => {
         });
     };
 
-    const getBluetoothTransport = () =>
+    const getBluetoothTransport = (manifest?: Manifest) =>
         bluetoothProcess
             ? new BluetoothTransport({
-                  id: 'BluetoothTransport',
+                  id: manifest?.appName || manifest?.appUrl || 'unknown app',
                   url: bluetoothProcess.getUrl(),
                   logger: desktopLogger,
                   messages: {}, // will be added by @trezor/connect transport initialization
