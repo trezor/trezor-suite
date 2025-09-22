@@ -8,15 +8,11 @@ import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite';
 
 import { setBluetoothDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothReducer';
-import {
-    selectIsUnpairingDevice,
-    selectUnpairedDeviceNeedsManualOsRemoval,
-} from '../../../actions/bluetooth/desktopBluetoothSelectors';
+import { selectIsUnpairingDevice } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
-export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
+export const UnpairBluetoothDeviceFromOsModal = () => {
     const dispatch = useDispatch();
-    const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
@@ -33,10 +29,6 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
         dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: false }));
         dispatch(toggleConnectionModal());
     };
-
-    if (!wasBluetoothDeviceWiped) {
-        return null;
-    }
 
     if (isUnpairingDevice) {
         return (
