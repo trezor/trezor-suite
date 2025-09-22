@@ -1,15 +1,12 @@
-import { PropsWithChildren } from 'react';
-
 import styled from 'styled-components';
 
 import { Locale } from '@suite-common/suite-types';
-import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from '../../hooks/suite';
-import { RedactNumericalValue } from '../suite';
 
 const ValueWrapper = styled.div`
     display: flex;
@@ -31,10 +28,6 @@ const DecimalValue = styled.div<{ $size: 'large' | 'medium' }>`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-// redacted value placeholder doesn't have to be displayed twice, display it only for whole value
-const HideRedactedValue = ({ children }: PropsWithChildren) =>
-    useShouldRedactNumbers() ? null : children;
-
 type BigAmountValueProps = {
     formattedStringAmount: string;
     'data-testid'?: string;
@@ -54,17 +47,19 @@ export const BigAmountValue = ({
         ? formattedStringAmount.split(/(\.)/)
         : formattedStringAmount.split(/(,)/);
 
+    const shouldRedactNumbers = useShouldRedactNumbers();
+
     return (
         <ValueWrapper data-testid={dataTestId}>
             <WholeValue $size={size}>
-                <RedactNumericalValue value={whole} />
+                {shouldRedactNumbers ? redactNumericalSubstring(whole) : whole}
             </WholeValue>
-            <HideRedactedValue>
+            {!shouldRedactNumbers && (
                 <DecimalValue $size={size}>
                     {separator}
                     {fractional}
                 </DecimalValue>
-            </HideRedactedValue>
+            )}
         </ValueWrapper>
     );
 };

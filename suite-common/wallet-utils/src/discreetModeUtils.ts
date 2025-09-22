@@ -19,21 +19,31 @@ type RedactNumbersContextData = { shouldRedactNumbers: boolean };
  */
 export const RedactNumbersContext = createContext<RedactNumbersContextData | null>(null);
 
+export interface UseShouldRedactNumbersProps {
+    /**
+     * If true, throw an error if the context is not set.
+     * The hook is used in formatters which are also used in suite-native where isn't used this context. So it's not always possible to be in the strict mode.
+     */
+    strict?: boolean;
+}
+
 /**
  * Determine whether we are under a component that currently requests to redact the numbers for discreet mode.
  * It may only return true if the component is wrapped in HiddenPlaceholder upstream.
  * See also a helper RedactNumericalValue
  * @returns shouldRedactNumbers whether numbers should be redacted in displayed output
  */
-export const useShouldRedactNumbers = () => {
+export const useShouldRedactNumbers = ({ strict = true }: UseShouldRedactNumbersProps = {}) => {
     const ctx = useContext(RedactNumbersContext);
 
-    // Always check the context has been set before using it. Never silently fallback to false, that would produce a bug and promote incorrect usage of the hook, i.e. outside of `HiddenPlaceholder`)
-    if (!ctx) {
+    /**
+     * Check the context has been set before using it. Prevent silently failling, producing a bug or promoting incorrect usage of the hook, i.e. outside of `HiddenPlaceholder`.
+     */
+    if (!ctx && strict) {
         throw new Error(
             'useShouldRedactNumbers must be used within a `HiddenPlaceholder` component',
         );
     }
 
-    return ctx.shouldRedactNumbers;
+    return ctx?.shouldRedactNumbers ?? false;
 };
