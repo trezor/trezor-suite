@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useIsFocused } from '@react-navigation/native';
 
-import { selectIsDeviceAuthorized, selectIsDeviceConnected } from '@suite-common/wallet-core';
+import {
+    selectIsBluetoothSupportedByDevice,
+    selectIsDeviceAuthorized,
+    selectIsDeviceConnected,
+} from '@suite-common/wallet-core';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
@@ -24,11 +28,15 @@ export const ConnectAndUnlockDeviceScreen = ({
     AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
     RootStackParamList
 >) => {
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
-
-    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-    const isFocused = useIsFocused();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+
+    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
+    const isBluetoothSupportedByDevice = useSelector(selectIsBluetoothSupportedByDevice);
+    const isBluetoothButtonVisible =
+        isBluetoothEnabled && (!isDeviceConnected || isBluetoothSupportedByDevice);
+
+    const isFocused = useIsFocused();
 
     const navigateBack = useCallback(() => {
         if (navigation.canGoBack()) {
@@ -69,7 +77,7 @@ export const ConnectAndUnlockDeviceScreen = ({
         >
             <ConnectAndUnlockDeviceScreenContent
                 onConnectViaBluetooth={
-                    isBluetoothEnabled ? navigateToTurnOnAndUnlockDeviceScreen : undefined
+                    isBluetoothButtonVisible ? navigateToTurnOnAndUnlockDeviceScreen : undefined
                 }
             />
         </Screen>

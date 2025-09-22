@@ -21,7 +21,7 @@ const animationStyle = prepareNativeStyle(() => ({
 }));
 
 type ConnectAndUnlockDeviceScreenContentProps = {
-    onConnectViaBluetooth?: () => void; // TODO: Can we make mandatory?
+    onConnectViaBluetooth?: () => void;
 };
 
 export const ConnectAndUnlockDeviceScreenContent = ({
