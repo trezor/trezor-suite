@@ -14,6 +14,7 @@ export type BluetoothFilterPolicy = {
     pairing: boolean; // accepts connections from all devices
     connected: boolean; // currently connected here or elsewhere
     bond_memory_full: boolean; // new connections cannot be established
+    user_disconnected: boolean; // manual disconnection do the device
 };
 
 export type BluetoothManufacturerData = {

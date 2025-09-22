@@ -48,6 +48,7 @@ export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
             ({ id, manufacturerData, connectionStatus }) =>
                 knownBluetoothDevices.some(knownDevice => knownDevice.id === id) &&
                 manufacturerData.filterPolicy?.pairing !== true &&
+                manufacturerData.filterPolicy?.user_disconnected !== true &&
                 connectionStatus.type === 'disconnected',
         ),
 );

@@ -61,11 +61,13 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         }
 
         const attemptDeviceConnect = async ({ device }: { device: DesktopBluetoothDevice }) => {
-            const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
+            const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
+                d => d.id === device.id,
+            );
             const connectingDevices = selectConnectingDevices(getState());
             const adapterStatus = selectAdapterStatus(getState());
 
-            if (adapterStatus === 'power-suspending') {
+            if (!knownDevice || adapterStatus === 'power-suspending') {
                 // system is going to sleep
                 return;
             }
@@ -73,14 +75,10 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             // do not hijack BT connection
             const isConnectable =
                 device.connectionStatus.type === 'disconnected' &&
-                (!device.manufacturerData.filterPolicy?.connected ||
-                    device.manufacturerData.filterPolicy.pairing);
+                !device.manufacturerData.filterPolicy?.user_disconnected &&
+                !device.manufacturerData.filterPolicy?.pairing;
 
-            if (
-                isConnectable &&
-                knownDevices.find(d => d.id === device.id) !== undefined &&
-                !connectingDevices.includes(device.id)
-            ) {
+            if (isConnectable && !connectingDevices.includes(device.id)) {
                 await dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
             }
         };

@@ -39,6 +39,7 @@ const knownDevice: BluetoothDevice = {
             pairing: false,
             connected: false,
             bond_memory_full: false,
+            user_disconnected: false,
         },
     },
 };
@@ -54,6 +55,7 @@ const knownPairableDevice: BluetoothDevice = {
             pairing: true,
             connected: false,
             bond_memory_full: false,
+            user_disconnected: false,
         },
     },
 };
@@ -70,6 +72,7 @@ const pairableDevice: BluetoothDevice = {
             pairing: true,
             connected: false,
             bond_memory_full: false,
+            user_disconnected: false,
         },
     },
 };
