@@ -13,6 +13,7 @@ const MODEL_BLE_CODE: Record<number, DeviceModelInternal> = {
 const ADV_FLAG_PAIRING = 0x01;
 const ADV_FLAG_BOND_MEM_FULL = 0x02;
 const ADV_FLAG_DEV_CONNECTED = 0x04;
+const ADV_FLAG_USER_DISCONNECT = 0x08;
 
 const parseDeviceModel = (bytes: number): DeviceModelInternal =>
     MODEL_BLE_CODE[bytes] ?? DeviceModelInternal.UNKNOWN;
@@ -21,6 +22,7 @@ const parseFilterPolicy = (value: number): BluetoothFilterPolicy => ({
     pairing: !!(value & ADV_FLAG_PAIRING),
     bond_memory_full: !!(value & ADV_FLAG_BOND_MEM_FULL),
     connected: !!(value & ADV_FLAG_DEV_CONNECTED),
+    user_disconnected: !!(value & ADV_FLAG_USER_DISCONNECT),
 });
 
 const serializeFilterPolicy = (policy?: BluetoothFilterPolicy) => {

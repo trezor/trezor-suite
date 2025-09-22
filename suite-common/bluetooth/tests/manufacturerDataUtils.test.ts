@@ -6,6 +6,7 @@ const filterPolicy = {
     pairing: false,
     connected: false,
     bond_memory_full: false,
+    user_disconnected: false,
 };
 
 describe(parseManufacturerData.name, () => {
@@ -28,6 +29,7 @@ describe(parseManufacturerData.name, () => {
                 pairing: true,
                 connected: true,
                 bond_memory_full: true,
+                user_disconnected: true,
             },
         });
     });
@@ -45,21 +47,30 @@ describe(parseManufacturerData.name, () => {
             pairing: true,
             connected: false,
             bond_memory_full: true,
+            user_disconnected: false,
         });
         expect(parseManufacturerData([5, 0, 6]).filterPolicy).toEqual({
             pairing: true,
             connected: true,
             bond_memory_full: false,
+            user_disconnected: false,
         });
         expect(parseManufacturerData([6, 0, 6]).filterPolicy).toEqual({
             pairing: false,
             connected: true,
             bond_memory_full: true,
+            user_disconnected: false,
         });
-        expect(parseManufacturerData([7, 0, 6]).filterPolicy).toEqual({
+        expect(parseManufacturerData([15, 0, 6]).filterPolicy).toEqual({
             pairing: true,
             connected: true,
             bond_memory_full: true,
+            user_disconnected: true,
+        });
+
+        expect(parseManufacturerData([8, 0, 6]).filterPolicy).toEqual({
+            ...filterPolicy,
+            user_disconnected: true,
         });
     });
 });
