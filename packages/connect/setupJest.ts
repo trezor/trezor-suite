@@ -18,6 +18,7 @@ const createTransportApi = (override = {}) =>
         on: () => {},
         off: () => {},
         once: () => {},
+        removeAllListeners: (_: string) => {},
         openDevice: (path: string) => Promise.resolve({ success: true, payload: [{ path }] }),
         closeDevice: () => Promise.resolve({ success: true }),
         write: () => Promise.resolve({ success: true }),

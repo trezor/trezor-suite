@@ -45,8 +45,11 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
         throw new Error('Missing latest bundled release.');
     }
 
+    let allListenersRemoved = false;
+
     return {
         on: (evt: string, listener: any) => {
+            if (allListenersRemoved) return;
             if (evt === 'transport-interface-change') {
                 eventChangeListener = (...args: any[]) => {
                     setTimeout(() => listener(...args), 1);
@@ -54,11 +57,15 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
             }
         },
         once: (evt: string, listener: any) => {
+            if (allListenersRemoved) return;
             if (evt === 'transport-interface-change') {
                 eventChangeListener = (...args: any[]) => {
                     setTimeout(() => listener(...args), 1);
                 };
             }
+        },
+        removeAllListeners: (_: string) => {
+            allListenersRemoved = true;
         },
         emitInterfaceChange: (...args: any[]) => {
             eventChangeListener(...args);
