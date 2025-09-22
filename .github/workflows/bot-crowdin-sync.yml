@@ -96,7 +96,6 @@ jobs:
             PR_TITLE="Crowdin translations update [MOBILE]"
             PR_BODY="Automatically generated PR for updating MOBILE crowdin translations from ${{ env.SOURCE_BRANCH }} branch."
             COMMIT_SCOPE="suite-native"
-          else
           fi
 
           COMMIT_MSG="chore(${COMMIT_SCOPE}): crowdin translation update${SUFFIX}"
