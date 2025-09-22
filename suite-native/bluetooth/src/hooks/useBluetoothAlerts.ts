@@ -1,29 +1,29 @@
 import { useCallback, useState } from 'react';
 import { openSettings } from 'react-native-permissions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
-import { setShouldShowSystemUnpairingAlert } from '../bluetoothSlice';
 import { selectBluetoothAdapterStatus, selectBluetoothPermissionStatus } from '../selectors';
 import { useBluetoothPermissions } from './useBluetoothPermissions';
+import { useBluetoothPlatformSpecificAlerts } from './useBluetoothPlatformSpecificAlerts';
 import { useBluetoothSettings } from './useBluetoothSettings';
 
 export const useBluetoothAlerts = () => {
     const { showAlert, hideAlert } = useAlert();
     const { translate } = useTranslate();
     const navigation = useNavigation();
-    const dispatch = useDispatch();
 
     const { requestBluetoothPermission } = useBluetoothPermissions();
-    const { openBluetoothSettings, openLocationServicesSettings } = useBluetoothSettings();
+    const { openLocationServicesSettings } = useBluetoothSettings();
+    const { showBluetoothAdapterDisabledAlert, showPairingFailedAlert, showSystemUnpairingAlert } =
+        useBluetoothPlatformSpecificAlerts();
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
-
     const [isBluetoothAlertShown, setIsBluetoothAlertShown] = useState(false);
 
     const showOrHideBluetoothAlert = useCallback(() => {
@@ -48,14 +48,7 @@ export const useBluetoothAlerts = () => {
             });
             setIsBluetoothAlertShown(true);
         } else if (bluetoothAdapterStatus === 'disabled') {
-            showAlert({
-                title: translate('bluetooth.alerts.adapterDisabled.title'),
-                description: translate('bluetooth.alerts.adapterDisabled.description'),
-                primaryButtonTitle: translate('bluetooth.alerts.adapterDisabled.primaryButton'),
-                onPressPrimaryButton: openBluetoothSettings,
-                secondaryButtonTitle: translate('generic.buttons.cancel'),
-                onPressSecondaryButton: navigation.goBack,
-            });
+            showBluetoothAdapterDisabledAlert();
             setIsBluetoothAlertShown(true);
         } else if (bluetoothAdapterStatus === 'enabled') {
             if (isBluetoothAlertShown) {
@@ -68,10 +61,10 @@ export const useBluetoothAlerts = () => {
         requestBluetoothPermission,
         bluetoothAdapterStatus,
         isBluetoothAlertShown,
-        openBluetoothSettings,
         navigation,
         translate,
         showAlert,
+        showBluetoothAdapterDisabledAlert,
         hideAlert,
     ]);
 
@@ -87,32 +80,6 @@ export const useBluetoothAlerts = () => {
             onPressSecondaryButton: navigation.goBack,
         });
     }, [showAlert, openLocationServicesSettings, translate, navigation]);
-
-    const showPairingFailedAlert = useCallback(() => {
-        showAlert({
-            title: translate('bluetooth.alerts.pairingFailed.title'),
-            description: translate('bluetooth.alerts.pairingFailed.description'),
-            primaryButtonTitle: translate('bluetooth.alerts.pairingFailed.primaryButton'),
-            onPressPrimaryButton: openBluetoothSettings,
-            secondaryButtonTitle: translate('bluetooth.alerts.pairingFailed.secondaryButton'),
-        });
-    }, [showAlert, openBluetoothSettings, translate]);
-
-    const showSystemUnpairingAlert = useCallback(() => {
-        showAlert({
-            title: translate('bluetooth.alerts.systemUnpairing.title'),
-            description: translate('bluetooth.alerts.systemUnpairing.description'),
-            primaryButtonTitle: translate('bluetooth.alerts.systemUnpairing.primaryButton'),
-            onPressPrimaryButton: () => {
-                dispatch(setShouldShowSystemUnpairingAlert(false));
-                openBluetoothSettings();
-            },
-            secondaryButtonTitle: translate('bluetooth.alerts.systemUnpairing.secondaryButton'),
-            onPressSecondaryButton: () => {
-                dispatch(setShouldShowSystemUnpairingAlert(false));
-            },
-        });
-    }, [showAlert, dispatch, openBluetoothSettings, translate]);
 
     return {
         showOrHideBluetoothAlert,

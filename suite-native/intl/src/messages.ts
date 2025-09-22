@@ -174,8 +174,11 @@ export const messages = {
             },
             adapterDisabled: {
                 title: 'Turn on Bluetooth',
-                description:
-                    'Bluetooth is currently turned off on this phone. Go to phone settings and turn on Bluetooth.',
+                description: {
+                    android:
+                        'Bluetooth is currently turned off on this phone. Go to phone settings and turn on Bluetooth.',
+                    ios: 'Bluetooth is currently turned off on this phone. Go to Control Center and turn on Bluetooth.',
+                },
                 primaryButton: 'Open system settings',
             },
             locationServicesDisabled: {
@@ -192,11 +195,23 @@ export const messages = {
                 secondaryButton: 'Device removed',
             },
             systemUnpairing: {
-                title: 'Remove Trezor from system settings',
-                description:
-                    'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
+                title: {
+                    android: 'Remove Trezor from system settings',
+                    ios: 'Remove Trezor from Bluetooth settings',
+                },
+                description: {
+                    android:
+                        'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
+                    ios: 'If not, you might have trouble pairing it again in the future.',
+                },
+
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
+            },
+            pairingInstructions: {
+                step1: 'Go to Settings > Bluetooth',
+                step2: 'Find {deviceName} and tap on ⓘ',
+                step3: 'Tap “Forget this device”',
             },
         },
         deviceList: {
