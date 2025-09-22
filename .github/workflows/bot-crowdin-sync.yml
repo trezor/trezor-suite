@@ -96,16 +96,16 @@ jobs:
             COMMIT_SCOPE="suite-native"
           fi
 
-          COMMIT_MSG="chore(${COMMIT_SCOPE}): crowdin translation update${SUFFIX}"
-
           if [[ "${{ env.SOURCE_BRANCH }}" == release/* ]] || [[ "${{ env.SOURCE_BRANCH }}" == release-native/* ]]; then
             SUFFIX=" [RELEASE ONLY]"
           else
             SUFFIX=""
           fi
 
+          COMMIT_MSG="chore(${COMMIT_SCOPE}): crowdin translation update${SUFFIX}"
+
           git add .
-          git commit -m "$${COMMIT_MSG}${SUFFIX}"
+          git commit -m "${COMMIT_MSG}"
           git push origin ${{ env.BRANCH_NAME }} -f
 
           gh config set prompt disabled
