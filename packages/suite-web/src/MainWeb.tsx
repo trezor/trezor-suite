@@ -1,4 +1,3 @@
- 
 import 'core-js/actual';
 
 /* eslint-disable import/order */
