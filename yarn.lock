@@ -14014,6 +14014,7 @@ __metadata:
     "@trezor/suite-local-first-storage": "workspace:*"
     "@types/react": "npm:^19.0.0"
     "@types/react-dom": "npm:^19.0.0"
+    core-js: "npm:^3.45.1"
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
