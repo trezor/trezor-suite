@@ -35,7 +35,7 @@ export const FirmwareInstallationScreen = () => {
     }, [thpStep, initiateThpConnection, navigateToInitialScreen]);
 
     const handleFirmwareInstallationFailure = useCallback(() => {
-        navigation.navigate(FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate);
+        navigation.popTo(FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate);
     }, [navigation]);
 
     return (
