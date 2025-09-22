@@ -1,4 +1,4 @@
-import { JSX, useMemo } from 'react';
+import { JSX, useMemo, useState } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -9,7 +9,7 @@ import {
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column, motionEasing } from '@trezor/components';
+import { Button, Column, Row, Select, motionEasing } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -46,7 +46,9 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const connectedDevicesCount = devices.filter(d => d.connected === true).length;
-    const prerequisite = useSelector(selectPrerequisite);
+    const [prerequisite, setPrerequisite] = useState<ReturnType<typeof selectPrerequisite>>(
+        useSelector(selectPrerequisite),
+    );
 
     const TipComponent = useMemo(
         () => (): JSX.Element => {
@@ -91,7 +93,12 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
     const handleSwitchDeviceClick = () =>
         dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
 
-    const deviceStatus = (device && getStatus(device)) ?? null;
+    const [deviceStatus, setDeviceStatus] = useState<ReturnType<typeof getStatus> | null>(
+        (device && getStatus(device)) ?? null,
+    );
+
+    console.log('current deviceStatus', deviceStatus);
+    console.log('current prerequisite', prerequisite);
 
     return (
         <Column alignItems="center" gap={spacings.xxxl} margin={{ vertical: 40 }}>
@@ -100,6 +107,73 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     <Translation id="TR_SWITCH_DEVICE" />
                 </Button>
             )}
+            <Row>
+                DeviceStatus select:
+                <Select
+                    value={{ value: deviceStatus, label: deviceStatus }}
+                    onChange={option => {
+                        setDeviceStatus(option.value);
+                        console.log('set deviceStatus', option.value);
+                    }}
+                    options={[
+                        { value: null, label: 'None' },
+                        { value: 'bootloader', label: 'Bootloader' },
+                        { value: 'initialize', label: 'Initialize' },
+                        { value: 'recovery', label: 'Recovery' },
+                        { value: 'seedless', label: 'Seedless' },
+                        { value: 'unknown', label: 'Unknown' },
+                        { value: 'unreadable', label: 'Unreadable' },
+                        { value: 'unacquired', label: 'Unacquired' },
+                        { value: 'unacquired-requires-thp', label: 'Unacquired requires THP' },
+                        { value: 'disconnected', label: 'Disconnected' },
+                        { value: 'disconnect-required', label: 'Disconnect required' },
+                        { value: 'firmware-missing', label: 'Firmware missing' },
+                        { value: 'firmware-required', label: 'Firmware required' },
+                        {
+                            value: 'multi-share-backup-in-progress',
+                            label: 'Multi-share backup in progress',
+                        },
+                    ]}
+                />
+            </Row>
+            <Row>
+                Prerequisite select:
+                <Select
+                    value={{ value: prerequisite, label: prerequisite }}
+                    onChange={option => {
+                        setPrerequisite(option.value);
+                        console.log('set prerequisite', option.value);
+                    }}
+                    options={[
+                        { value: null, label: 'None' },
+                        { value: 'no-transport', label: 'No transport' },
+                        {
+                            value: 'device-disconnect-required',
+                            label: 'Device disconnect required',
+                        },
+                        { value: 'device-disconnected', label: 'Device disconnected' },
+                        { value: 'device-unacquired', label: 'Device unacquired' },
+                        {
+                            value: 'device-unacquired-requires-thp',
+                            label: 'Device unacquired requires THP',
+                        },
+                        { value: 'device-used-elsewhere', label: 'Device used elsewhere' },
+                        { value: 'device-unreadable', label: 'Device unreadable' },
+                        { value: 'device-unknown', label: 'Device unknown' },
+                        { value: 'device-seedless', label: 'Device seedless' },
+                        { value: 'device-recovery-mode', label: 'Device recovery mode' },
+                        { value: 'device-initialize', label: 'Device initialize' },
+                        { value: 'device-bootloader', label: 'Device bootloader' },
+                        { value: 'firmware-missing', label: 'Firmware missing' },
+                        { value: 'firmware-required', label: 'Firmware required' },
+                        {
+                            value: 'multi-share-backup-in-progress',
+                            label: 'Multi-share backup in progress',
+                        },
+                    ]}
+                />
+            </Row>
+
             <ConnectDevicePrompt
                 connected={!!device}
                 deviceStatus={deviceStatus}
