@@ -149,3 +149,41 @@ export const getCardanoAccount = (key = 'ada-account-1') =>
         visible: true,
         deviceState: 'test-device',
     }) as unknown as Account;
+
+export const getSolAccount = (key = 'sol-account-1', overrides: Partial<Account> = {}) =>
+    ({
+        key,
+        deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
+        accountLabel: 'Solana #1',
+        index: 0,
+        path: "m/44'/501'/0'/0'",
+        descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+        accountType: 'normal',
+        symbol: 'sol',
+        empty: false,
+        visible: true,
+        balance: '10000000000', // 10 SOL
+        availableBalance: '10000000000', // 10 SOL
+        formattedBalance: '10.000000000',
+        tokens: [],
+        addresses: undefined,
+        utxo: [],
+        history: {
+            total: 25,
+            unconfirmed: 0,
+        },
+        metadata: {
+            key: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+        },
+        ts: 1750315199039,
+        networkType: 'solana',
+        misc: {
+            rent: 10,
+        },
+        page: {
+            index: 1,
+            size: 25,
+            total: 3,
+        },
+        ...overrides,
+    }) as Account;

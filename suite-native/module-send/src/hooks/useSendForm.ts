@@ -34,7 +34,7 @@ import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
     FeeLevelsMaxAmount,
     calculateFeeLevelsMaxAmountThunk,
-    storeFeeLevels,
+    transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
@@ -267,7 +267,7 @@ export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) =>
         );
 
         if (isFulfilled(response)) {
-            dispatch(storeFeeLevels({ feeLevels: response.payload }));
+            dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }));
             navigation.navigate(SendStackRoutes.SendFees, {
                 accountKey,
                 tokenContract,

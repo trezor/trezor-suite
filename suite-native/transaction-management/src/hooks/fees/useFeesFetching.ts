@@ -11,7 +11,7 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 
 export type UseFeesFetchingProps = {
-    accountKey: AccountKey;
+    accountKey: AccountKey | undefined;
     isRefetchDisabled?: boolean;
 };
 

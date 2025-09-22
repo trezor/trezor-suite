@@ -31,7 +31,7 @@ import {
     NativeSupportedFeeLevel,
     UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
-    storeFeeLevels,
+    transactionManagementActions,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
@@ -51,6 +51,7 @@ export const clearTradingStateThunk = createThunk(
 
         // Clear send form transaction state (precomposed, signed, serialized, ...)
         dispatch(sendFormActions.dispose());
+        dispatch(transactionManagementActions.clearFeeLevels());
 
         // Clear form draft with selected fees
         dispatch(formDraftActions.removeDraft({ key: 'trading-sell' }));
@@ -163,19 +164,18 @@ export const composeTradingTransactionThunk = createThunk(
 
             if (isFulfilled(response)) {
                 const feeLevels = response.payload;
-                dispatch(storeFeeLevels({ feeLevels }));
+                dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
 
-                const composed = (await dispatch(
-                    enhancePrecomposedTransactionThunk({
-                        transactionFormValues: formState,
-                        precomposedTransaction: feeLevels[
-                            selectedFeeLevel
-                        ] as PrecomposedTransactionFinal,
-                        selectedAccount: account,
-                    }),
-                ).unwrap()) as PrecomposedTransactionFinal;
+                const selectedLevel = feeLevels[selectedFeeLevel];
+                if (selectedLevel && selectedLevel.type === 'final') {
+                    const composed = (await dispatch(
+                        enhancePrecomposedTransactionThunk({
+                            transactionFormValues: formState,
+                            precomposedTransaction: selectedLevel as PrecomposedTransactionFinal,
+                            selectedAccount: account,
+                        }),
+                    ).unwrap()) as PrecomposedTransactionFinal;
 
-                if (composed && composed.type === 'final') {
                     dispatch(
                         tradingCommonActions.saveComposedTransactionInfo({
                             selectedFee: selectedFeeLevel,
@@ -209,7 +209,14 @@ export const composeTradingTransactionThunk = createThunk(
                 return fulfillWithValue(response.payload);
             }
 
-            return rejectWithValue(`Failed to compose transaction: ${response.error}`);
+            const errStr =
+                (response as any)?.error?.message ??
+                (typeof (response as any)?.error === 'string'
+                    ? (response as any).error
+                    : 'Unknown error');
+            console.error('Failed to compose transaction:', errStr);
+
+            return rejectWithValue(`Failed to compose transaction: ${errStr}`);
         } catch (error) {
             console.error('Compose trading transaction error:', error);
 

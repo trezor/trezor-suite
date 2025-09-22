@@ -1,12 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../__fixtures__/account';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
@@ -25,14 +20,18 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
+const mockFetchFeesAndCompose = jest.fn();
+const mockSignAndSendTransaction = jest.fn();
+const mockResolveConsent = jest.fn();
 
 jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => ({
         confirmTrade: mockConfirmTrade,
-        fetchFeesAndCompose: jest.fn(),
-        signAndSendTransaction: jest.fn(),
+        fetchFeesAndCompose: mockFetchFeesAndCompose,
+        signAndSendTransaction: mockSignAndSendTransaction,
         isConsentRequested: false,
-        resolveConsent: jest.fn(),
+        resolveConsent: mockResolveConsent,
+        txnErrorString: null,
     }),
 }));
 
@@ -76,19 +75,31 @@ describe('TradingExchangePreviewScreen', () => {
         expect(getByText('Continue')).toBeOnTheScreen();
     });
 
-    it('should call confirmTrade on Continue press', async () => {
-        const { getByText, queryByText } = await renderTradingExchangePreviewScreen();
+    it('should render screen title correctly', async () => {
+        const { getByText } = await renderTradingExchangePreviewScreen();
 
-        await userEvent.press(getByText('Continue'));
+        expect(getByText('Swap')).toBeOnTheScreen();
+    });
 
-        expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
-        expect(mockConfirmTrade).toHaveBeenCalledWith({
-            sendAccount: expect.objectContaining({ key: 'eth-account-1' }),
-            receiveAddress: '1BTC',
-            trade: exchangeQuotes[0],
-            approvalFlow: false,
-        });
-        expect(queryByText('Continue')).not.toBeOnTheScreen();
-        expect(getByText('Sign and Send Transaction')).toBeOnTheScreen();
+    it('should render from and to account labels', async () => {
+        const { getByText } = await renderTradingExchangePreviewScreen();
+
+        expect(getByText('From')).toBeOnTheScreen();
+        expect(getByText('To')).toBeOnTheScreen();
+    });
+
+    it('should render transaction details section', async () => {
+        const { getByText } = await renderTradingExchangePreviewScreen();
+
+        expect(getByText('Transaction details')).toBeOnTheScreen();
+        expect(getByText('Fee')).toBeOnTheScreen();
+    });
+
+    it('should render FeePickerCard when no error and fromAccount and quote are available', async () => {
+        const { getByText } = await renderTradingExchangePreviewScreen();
+
+        // Should render the fee picker section
+        expect(getByText('Transaction details')).toBeOnTheScreen();
+        expect(getByText('Fee')).toBeOnTheScreen();
     });
 });

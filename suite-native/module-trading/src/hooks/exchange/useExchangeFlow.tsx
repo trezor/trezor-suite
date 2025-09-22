@@ -5,14 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade, FormResponse } from 'invity-api';
 
-import { invariant } from '@suite-common/suite-utils';
 import {
     TradingFulfillValue,
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
     cryptoIdToNetworkAndContractAddress,
     exchangeThunks,
-    selectTradingExchangeFormStep,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -36,7 +34,12 @@ import {
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
-import { NativeSupportedFeeLevel } from '@suite-native/transaction-management';
+import {
+    NativeSupportedFeeLevel,
+    selectFeeLevels,
+    useFeesFetching,
+    usePrecomposedTransactionError,
+} from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
 import { selectExchangeSelectedSendAccount } from '../../selectors/exchangeSelectors';
@@ -79,21 +82,31 @@ export const useExchangeFlow = () => {
         selectIsAmountInSats(state, sendAccount?.symbol),
     );
 
-    const formStep = useSelector(selectTradingExchangeFormStep);
-
     const networkFeeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, sendAccount?.symbol),
     );
 
     const serializedTx = useSelector(selectSendSerializedTx);
 
+    const feeLevels = useSelector(selectFeeLevels);
+
+    const selectedLevel = feeLevels[(selectedFee as NativeSupportedFeeLevel) ?? 'normal'];
+    const feeError = selectedLevel?.type === 'error' ? selectedLevel.error : null;
+
+    const txnErrorString = usePrecomposedTransactionError({
+        error: feeError,
+        context: {
+            networkSymbol: sendAccount?.symbol,
+        },
+    });
+
     const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
 
-    invariant(sendAccount, 'Send account is required');
-    invariant(selectedQuote?.send, 'Send cryptoId is required');
+    useFeesFetching({
+        accountKey: sendAccount?.key,
+        isRefetchDisabled: selectedFee === 'custom',
+    });
 
-    const network = getNetwork(sendAccount.symbol);
-    const decimals = tokenDecimals ?? network.decimals;
     // TODO: slip24 - not implemented in mobile
     const isSlip24Active = false;
 
@@ -128,8 +141,10 @@ export const useExchangeFlow = () => {
             feePerUnit?: string;
             feeLimit?: string;
         }) => {
-            if (!network || !networkFeeInfo) {
-                console.error('Network and networkFeeInfo are required for composing transaction');
+            if (!sendAccount || !networkFeeInfo) {
+                console.error(
+                    'Send account and networkFeeInfo are required for composing transaction',
+                );
 
                 return;
             }
@@ -139,7 +154,7 @@ export const useExchangeFlow = () => {
                     composeTradingTransactionThunk({
                         tradeType: 'exchange',
                         account: sendAccount,
-                        network,
+                        network: getNetwork(sendAccount.symbol),
                         feeInfo: networkFeeInfo,
                         selectedFeeLevel,
                         feePerUnit,
@@ -152,13 +167,13 @@ export const useExchangeFlow = () => {
                 console.error('Failed to compose trading transaction:', error);
             }
         },
-        [dispatch, network, networkFeeInfo, sendAccount],
+        [dispatch, networkFeeInfo, sendAccount],
     );
 
     // this is called when we want to fetch fees and compose a transaction
     const fetchFeesAndCompose = useCallback(async () => {
         if (!sendAccount) {
-            console.error('Send account is required');
+            console.error('Send account is required to fetch fees and compose transaction');
 
             return;
         }
@@ -174,6 +189,12 @@ export const useExchangeFlow = () => {
     const getCommonFunctions = useCallback(
         (trade?: ExchangeTrade) => {
             const tradeToUse = trade ?? selectedQuote;
+
+            if (!tradeToUse) {
+                console.error('Trade or selectedQuote is required to getCommonFunctions');
+
+                return null;
+            }
 
             const returnUrl = buildTradingUrl({
                 actionType: 'trade',
@@ -214,6 +235,10 @@ export const useExchangeFlow = () => {
             const commonFunctions = getCommonFunctions(trade);
 
             if (!trade || !sendAccount || !commonFunctions) {
+                console.error(
+                    'Trade, send account and common functions are required to confirm trade',
+                );
+
                 return false;
             }
 
@@ -243,8 +268,15 @@ export const useExchangeFlow = () => {
         const commonFunctions = getCommonFunctions(selectedQuote);
 
         if (!commonFunctions || !sendAccount) {
+            console.error(
+                'Common functions and send account are required to sign and send transaction',
+            );
+
             return false;
         }
+
+        const network = getNetwork(sendAccount.symbol);
+        const decimals = tokenDecimals ?? network.decimals;
 
         const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
             commonFunctions;
@@ -309,32 +341,32 @@ export const useExchangeFlow = () => {
             return false;
         }
     }, [
-        resolveConsent,
-        waitForConsent,
         dispatch,
         getCommonFunctions,
+        isSlip24Active,
+        resolveConsent,
         selectedQuote,
         sendAccount,
-        decimals,
         shouldSendInSats,
-        isSlip24Active,
         showToast,
+        tokenDecimals,
+        waitForConsent,
     ]);
 
     useEffect(() => {
-        if (selectedFee) {
+        if (selectedFee && networkFeeInfo) {
             composeRequest({
                 selectedFeeLevel: selectedFee as NativeSupportedFeeLevel,
                 feePerUnit: feePerUnitDraft,
                 feeLimit: feeLimitDraft,
             });
         }
-    }, [selectedFee, composeRequest, feePerUnitDraft, feeLimitDraft]);
+    }, [selectedFee, composeRequest, feePerUnitDraft, feeLimitDraft, networkFeeInfo]);
 
     return {
+        txnErrorString,
         confirmTrade,
         composeRequest,
-        formStep,
         fetchFeesAndCompose,
         signAndSendTransaction,
         serializedTx,
