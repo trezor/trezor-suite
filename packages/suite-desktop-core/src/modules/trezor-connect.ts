@@ -104,6 +104,10 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 if (method === 'firmwareUpdate') {
                     const powerSaveBlocker = new PowerSaveBlocker();
                     powerSaveBlocker.startBlockingPowerSave();
+                    // todo: should or should not firmware update also block bioAuth from locking screen?
+                    // - when installing over bluetooth, it easily blocks the screen because it takes long
+                    // - on the other hand, it only visually locks screen and thats all, there is no cryptography or anything interesting happening
+                    //   so maybe it is actually good to have it locked
                     const response = await TrezorConnect.firmwareUpdate(params[0]);
                     powerSaveBlocker.stopBlockingPowerSave();
 
