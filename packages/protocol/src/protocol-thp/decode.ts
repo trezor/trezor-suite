@@ -142,8 +142,6 @@ const decodeThpError = (payload: Buffer): ThpMessageResponse => {
                 return 'ThpUnallocatedChannel';
             case 0x03:
                 return 'ThpDecryptionFailed';
-            case 0x04:
-                return 'ThpInvalidData';
             case 0x05:
                 return 'ThpDeviceLocked';
             default:
