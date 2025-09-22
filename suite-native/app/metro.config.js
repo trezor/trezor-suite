@@ -120,7 +120,10 @@ const config = {
 
 const mergedConfig = mergeConfig(jsonExpoConfig, config);
 
-if (!process.env.EXPO_PUBLIC_ENVIRONMENT || process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug') {
+if (
+    process.env.EXPO_PUBLIC_IS_DETOX_BUILD !== 'true' &&
+    process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug'
+) {
     // enable Rozenite plugins only in debug build
     module.exports = withRozenite(mergedConfig, {
         enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),

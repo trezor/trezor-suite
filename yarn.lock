@@ -8630,18 +8630,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rozenite/redux-devtools-plugin@npm:1.0.0-alpha.12":
-  version: 1.0.0-alpha.12
-  resolution: "@rozenite/redux-devtools-plugin@npm:1.0.0-alpha.12"
+"@rozenite/redux-devtools-plugin@npm:1.0.0-alpha.14":
+  version: 1.0.0-alpha.14
+  resolution: "@rozenite/redux-devtools-plugin@npm:1.0.0-alpha.14"
   dependencies:
     "@redux-devtools/cli": "npm:^4.0.3"
     "@redux-devtools/remote": "npm:^0.9.5"
-    "@rozenite/plugin-bridge": "npm:1.0.0-alpha.12"
+    "@rozenite/plugin-bridge": "npm:1.0.0-alpha.14"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-get-random-values: "*"
-  checksum: 10/7908d07ce60a7c273d1c24985c3198a91c451e87486374e32215d9218c345c15df7aa2025a8da762fa573921cec98c6ce9f22e0ccdbb0b7beba093867bca8825
+  checksum: 10/dea0273aa81b8480147a87aa8c29cb9a5d97f69307fc280d762b8854b895327c4b3b5783ae5bf3c1e5c766d384dbe7dedc113c06a2bd9740f28b3081279a7c42
   languageName: node
   linkType: hard
 
@@ -10921,7 +10921,7 @@ __metadata:
     "@rozenite/mmkv-plugin": "npm:1.0.0-alpha.12"
     "@rozenite/network-activity-plugin": "npm:1.0.0-alpha.12"
     "@rozenite/performance-monitor-plugin": "npm:^1.0.0-alpha.12"
-    "@rozenite/redux-devtools-plugin": "npm:1.0.0-alpha.12"
+    "@rozenite/redux-devtools-plugin": "npm:1.0.0-alpha.14"
     "@sentry/react-native": "npm:6.20.0"
     "@shopify/flash-list": "npm:1.7.6"
     "@shopify/react-native-skia": "npm:2.2.3"
