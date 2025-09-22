@@ -659,8 +659,11 @@ export const getFirmwareLocation = ({
         };
     }
 
+    const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
+    const isCacheUsed = firmwareUpdateSource === 'production';
+
     const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
-    if (firmwareList.includes(firmwareName)) {
+    if (isCacheUsed && firmwareList.includes(firmwareName)) {
         return {
             baseUrl: firmwareDir,
             path: firmwareName,

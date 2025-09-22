@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { firmwareActions, selectFirmwareUpdateSource } from '@suite-common/firmware';
+import { Column, Text } from '@trezor/components';
 import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
@@ -32,7 +33,18 @@ export const FirmwareUpdateEnvironmentSelect = () => {
         <SectionItem>
             <TextColumn
                 title="Firmware Update Source"
-                description="Set firmware update source for testing unsigned and signed. Remember you have to reload the web app or desktop in order for it to be fully applied."
+                description={
+                    <Column gap={4}>
+                        <Text>
+                            Set firmware update source for testing unsigned and signed. Remember you
+                            have to reload the web app or desktop in order for it to be fully
+                            applied.
+                        </Text>
+                        <Text variant="info">
+                            If you select production, the binaries will be cached.
+                        </Text>
+                    </Column>
+                }
             />
             <ActionColumn>
                 <StyledActionSelect
