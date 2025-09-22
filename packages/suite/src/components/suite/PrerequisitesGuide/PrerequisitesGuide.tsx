@@ -1,4 +1,7 @@
+import { useState } from 'react';
+
 import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import {
@@ -8,7 +11,7 @@ import {
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Box, Column, Text, motionEasing } from '@trezor/components';
+import { Box, Column, Row, Select, Text, motionEasing } from '@trezor/components';
 import { DeviceWithScene } from '@trezor/product-components';
 
 import { getMessageId } from 'src/components/suite';
@@ -24,9 +27,12 @@ type PrerequisitesGuideProps = {
 
 export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuideProps) => {
     const device = useSelector(selectSelectedDevice);
-    const prerequisite = useSelector(selectPrerequisite);
-
-    const deviceStatus = (device && getStatus(device)) ?? null;
+    const [prerequisite, setPrerequisite] = useState<ReturnType<typeof selectPrerequisite>>(
+        useSelector(selectPrerequisite),
+    );
+    const [deviceStatus, setDeviceStatus] = useState<ReturnType<typeof getStatus> | null>(
+        (device && getStatus(device)) ?? null,
+    );
     const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceModelInternal = selectedDevice
         ? getDeviceInternalModel(selectedDevice)
@@ -95,6 +101,88 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
         </motion.div>
     );
 
+    const TestContainer = styled.div`
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 10000;
+        background: #fff;
+    `;
+    const Test = () => (
+        <TestContainer>
+            <Column gap={20}>
+                <Row>
+                    DeviceStatus select:
+                    <Select
+                        value={{ value: deviceStatus, label: deviceStatus }}
+                        onChange={option => {
+                            setDeviceStatus(option.value);
+                            console.log('set deviceStatus', option.value);
+                        }}
+                        options={[
+                            { value: null, label: 'None' },
+                            { value: 'bootloader', label: 'Bootloader' },
+                            { value: 'initialize', label: 'Initialize' },
+                            { value: 'recovery', label: 'Recovery' },
+                            { value: 'seedless', label: 'Seedless' },
+                            { value: 'unknown', label: 'Unknown' },
+                            { value: 'unreadable', label: 'Unreadable' },
+                            { value: 'unacquired', label: 'Unacquired' },
+                            { value: 'unacquired-requires-thp', label: 'Unacquired requires THP' },
+                            { value: 'disconnected', label: 'Disconnected' },
+                            { value: 'disconnect-required', label: 'Disconnect required' },
+                            { value: 'firmware-missing', label: 'Firmware missing' },
+                            { value: 'firmware-required', label: 'Firmware required' },
+                            {
+                                value: 'multi-share-backup-in-progress',
+                                label: 'Multi-share backup in progress',
+                            },
+                        ]}
+                    />
+                </Row>
+                <Row>
+                    Prerequisite select:
+                    <Select
+                        value={{ value: prerequisite, label: prerequisite }}
+                        onChange={option => {
+                            setPrerequisite(option.value);
+                            console.log('set prerequisite', option.value);
+                        }}
+                        options={[
+                            { value: null, label: 'None' },
+                            { value: 'no-transport', label: 'No transport' },
+                            {
+                                value: 'device-disconnect-required',
+                                label: 'Device disconnect required',
+                            },
+                            { value: 'device-disconnected', label: 'Device disconnected' },
+                            { value: 'device-unacquired', label: 'Device unacquired' },
+                            {
+                                value: 'device-unacquired-requires-thp',
+                                label: 'Device unacquired requires THP',
+                            },
+                            { value: 'device-used-elsewhere', label: 'Device used elsewhere' },
+                            { value: 'device-unreadable', label: 'Device unreadable' },
+                            { value: 'device-unknown', label: 'Device unknown' },
+                            { value: 'device-seedless', label: 'Device seedless' },
+                            { value: 'device-recovery-mode', label: 'Device recovery mode' },
+                            { value: 'device-initialize', label: 'Device initialize' },
+                            { value: 'device-bootloader', label: 'Device bootloader' },
+                            { value: 'firmware-missing', label: 'Firmware missing' },
+                            { value: 'firmware-required', label: 'Firmware required' },
+                            {
+                                value: 'multi-share-backup-in-progress',
+                                label: 'Multi-share backup in progress',
+                            },
+                        ]}
+                    />
+                </Row>
+            </Column>
+        </TestContainer>
+    );
+
     return (
         <>
             <TopAnimation>
@@ -107,6 +195,7 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
             <BottomAnimation>
                 <BannerAndTroubleshooting prerequisite={prerequisite} />
             </BottomAnimation>
+            <Test />
         </>
     );
 };
