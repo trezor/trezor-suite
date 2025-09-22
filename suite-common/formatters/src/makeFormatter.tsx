@@ -48,7 +48,7 @@ export const makeFormatter = <TInput, TOutput, TDataContext extends DataContext 
     displayName = 'Formatter',
 ): Formatter<TInput, TOutput, TDataContext> => {
     const FormatterComponent: Formatter<TInput, TOutput, TDataContext> = props => (
-        <>{format(props.value, props, useShouldRedactNumbers())}</>
+        <>{format(props.value, props, useShouldRedactNumbers({ strict: false }))}</>
     );
     FormatterComponent.displayName = displayName;
 
