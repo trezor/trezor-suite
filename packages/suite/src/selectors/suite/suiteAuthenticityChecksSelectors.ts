@@ -13,15 +13,18 @@ import {
 
 import { AppState } from 'src/types/suite';
 
-import { selectIsEntropyCheckEnabled } from './suiteSelectors';
+import {
+    selectIsEntropyCheckEnabled,
+    selectIsFirmwareHashCheckEnabled,
+    selectIsFirmwareRevisionCheckEnabled,
+} from './suiteSelectors';
 
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
     const revisionCheckError = selectFirmwareRevisionCheckError(state);
     if (revisionCheckError === null) return null;
     if (isSkippedRevisionCheckError(revisionCheckError)) return null;
 
-    const isFirmwareRevisionCheckDisabled =
-        !state.suite.settings.enabledSecurityChecks.firmwareRevision;
+    const isFirmwareRevisionCheckDisabled = !selectIsFirmwareRevisionCheckEnabled(state);
     if (isFirmwareRevisionCheckDisabled) return null;
 
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
@@ -35,7 +38,7 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
     if (hashCheckError === null) return null;
     if (isSkippedHashCheckError(hashCheckError)) return null;
 
-    const isFirmwareHashCheckDisabled = !state.suite.settings.enabledSecurityChecks.firmwareHash;
+    const isFirmwareHashCheckDisabled = !selectIsFirmwareHashCheckEnabled(state);
     if (isFirmwareHashCheckDisabled) return null;
 
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
@@ -57,6 +60,13 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
 
     return hashCheckError;
 };
+
+export function selectIsDeviceCompromised(state: AppState): boolean {
+    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
+    const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
+
+    return revisionError !== null || hashError !== null;
+}
 
 /**
  * Determine hard failure of either of firmware authenticity checks to block access to device.
