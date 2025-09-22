@@ -9,7 +9,6 @@ import {
     uploadFirmware,
 } from '../api/firmware';
 import { ERRORS, PROTO } from '../constants';
-import { DataManager } from '../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
@@ -23,6 +22,7 @@ import {
 } from '../types';
 import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
+import { isFirmwareCacheUsedForSelectedSource } from '../utils/firmwareUtils';
 
 type PostMessage = (message: CoreEventMessage) => void;
 
@@ -468,11 +468,9 @@ export const onCallFirmwareUpdate = async ({
 
     const finalBinaryRelase = device?.firmwareReleaseConfigInfo?.release;
 
-    // We have completed binary download and we should notify sending an event,
+    // We have completed binary download, and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
-    const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
-    const isCacheUsed = firmwareUpdateSource === 'production';
-    if (isCacheUsed) {
+    if (isFirmwareCacheUsedForSelectedSource()) {
         const message = createUiMessage(UI.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,
