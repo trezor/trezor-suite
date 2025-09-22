@@ -4,7 +4,6 @@ import { WebsocketClient } from '@trezor/websocket-client';
 import {
     BluetoothDevice,
     BluetoothInfo,
-    Logger,
     NotificationCharacteristic,
     NotificationEvent,
     TrezorBluetoothSettings,
@@ -55,7 +54,6 @@ type Success = { success: boolean };
 // Client for trezor-bluetooth rust websocket server
 export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
     readonly settings: TrezorBluetoothSettings;
-    readonly logger: Logger;
 
     constructor(settings: TrezorBluetoothSettings) {
         super({
@@ -63,13 +61,6 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
             keepAlive: true,
         });
         this.settings = Object.freeze(settings);
-        this.logger = settings.logger || {
-            info: () => {},
-            debug: () => {},
-            log: () => {},
-            warn: () => {},
-            error: () => {},
-        };
     }
 
     onMessageTimeout(promiseId: number) {
