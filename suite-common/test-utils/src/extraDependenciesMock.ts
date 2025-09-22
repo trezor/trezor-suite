@@ -61,10 +61,10 @@ export const extraDependenciesMock: ExtraDependencies = {
         cardanoFetchTrezorData: mockThunk('fetchTrezorData'),
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
         initMetadata: mockThunk('initMetadata'),
-        subscribeLocalFirstStorage: mockThunk('subscribeLocalFirstStorage'),
-        unsubscribeAndDisposeLocalFirstStorage: mockThunk('unsubscribeLocalFirstStorage'),
         addAccountMetadata: mockThunk('addAccountMetadata'),
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
+        subscribeLocalFirstStorage: mockThunk('subscribeLocalFirstStorage'),
+        unsubscribeAndDisposeLocalFirstStorage: mockThunk('unsubscribeLocalFirstStorage'),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(

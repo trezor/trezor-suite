@@ -61,11 +61,14 @@ export const extraDependencies: ExtraDependencies = {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorData: cardanoStakingActions.fetchTrezorData,
         initMetadata: metadataLabelingActions.init,
-        subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
-        unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
+
+        // This needs to be over `extra` to prevent circular dependency,
+        // `@suite-common/local-first-storage` depends on `wallet-core`
+        subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
+        unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>

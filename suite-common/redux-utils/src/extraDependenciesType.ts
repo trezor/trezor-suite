@@ -39,12 +39,14 @@ export type ExtraDependencies = {
         cardanoFetchTrezorData: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
-        subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
-        unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
         forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: string }>;
+
+        // This needs to be over `extra` to prevent circular dependency
+        subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
+        unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras
