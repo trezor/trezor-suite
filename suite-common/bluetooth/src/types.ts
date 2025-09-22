@@ -53,6 +53,7 @@ export type BluetoothDeviceCommon = {
     manufacturerData: BluetoothManufacturerData;
     lastUpdatedTimestamp: number;
     connectionStatus: DeviceBluetoothConnectionStatus;
+    deviceId?: string;
 };
 
 export type DeviceBluetoothConnectionStatusType = DeviceBluetoothConnectionStatus['type'];
