@@ -163,7 +163,7 @@
         "@rozenite/mmkv-plugin": "1.0.0-alpha.12",
         "@rozenite/network-activity-plugin": "1.0.0-alpha.12",
         "@rozenite/performance-monitor-plugin": "^1.0.0-alpha.12",
-        "@rozenite/redux-devtools-plugin": "1.0.0-alpha.12",
+        "@rozenite/redux-devtools-plugin": "1.0.0-alpha.14",
         "@suite-common/test-utils": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@types/fast-text-encoding": "^1",
