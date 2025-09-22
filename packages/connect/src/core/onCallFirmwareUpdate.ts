@@ -9,6 +9,7 @@ import {
     uploadFirmware,
 } from '../api/firmware';
 import { ERRORS, PROTO } from '../constants';
+import { DataManager } from '../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
@@ -469,16 +470,19 @@ export const onCallFirmwareUpdate = async ({
 
     // We have completed binary download and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
-    postMessage(
-        createUiMessage(UI.FIRMWARE_DOWNLOADED, {
+    const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
+    const isCacheUsed = firmwareUpdateSource === 'production';
+    if (isCacheUsed) {
+        const message = createUiMessage(UI.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,
             releaseVersion: finalBinaryInfo.releaseVersion,
             firmwareType: device.firmwareType,
             internalModel: device.features.internal_model,
             release: finalBinaryRelase,
-        }),
-    );
+        });
+        postMessage(message);
+    }
 
     const deviceInitiallyConnectedInBootloader = device.features.bootloader_mode;
 
