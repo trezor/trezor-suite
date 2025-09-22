@@ -61,6 +61,7 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         env:
           EMULATOR_MODEL: T3W1
+          CANARY_FIRMWARE: "true"
         with:
           project: "desktop"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"

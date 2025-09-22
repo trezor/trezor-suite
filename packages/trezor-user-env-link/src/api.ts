@@ -314,6 +314,12 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
 
+    async getScreenContent() {
+        const { response } = await this.client.send({ type: 'emulator-get-screen-content' });
+
+        return response;
+    }
+
     async getDebugState() {
         const { response } = await this.client.send({ type: 'emulator-get-debug-state' });
 
