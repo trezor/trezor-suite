@@ -13,6 +13,8 @@ import { MarkdownWithComponents, Translation, TrezorLink } from 'src/components/
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
+import { selectIsDebugModeActive } from '../../selectors/suite/suiteSelectors';
+
 type FirmwareOfferProps = {
     isCustomFirmware?: boolean;
     targetFirmwareType?: FirmwareType;
@@ -20,6 +22,7 @@ type FirmwareOfferProps = {
 
 export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: FirmwareOfferProps) => {
     const useDevkit = useSelector(state => state.firmware.useDevkit);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { originalDevice } = useFirmwareInstallation();
     const { translationString } = useTranslation();
 
@@ -32,13 +35,28 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
         ? translationString('TR_CUSTOM_FIRMWARE_VERSION')
         : getFwUpdateVersion(originalDevice);
 
-    const parsedChangelog = isCustomFirmware
-        ? null
-        : parseFirmwareChangelog({ release: originalDevice.firmwareReleaseConfigInfo.release });
+    const { release } = originalDevice.firmwareReleaseConfigInfo;
+
+    const parsedChangelog = isCustomFirmware ? null : parseFirmwareChangelog({ release });
     const changelogUrl = getChangelogUrl(originalDevice);
 
     const currentFirmwareType = getSuiteFirmwareTypeString(originalDevice.firmwareType);
     const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType);
+
+    const CurrentVersion = () => (
+        <>
+            <Column alignItems="center" gap={spacings.xxs}>
+                <Text typographyStyle="label" variant="tertiary">
+                    <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
+                </Text>
+                <Text typographyStyle="hint">
+                    {currentFirmwareType ? translationString(currentFirmwareType) : ''}
+                    {currentVersion ? ` ${currentVersion}` : ''}
+                </Text>
+            </Column>
+            <Icon name="arrowRight" size={16} />
+        </>
+    );
 
     return (
         <Row
@@ -47,20 +65,14 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
             width="100%"
             margin={{ vertical: spacings.md, horizontal: 'auto' }}
         >
-            {currentVersion && (
-                <>
-                    <Column alignItems="center" gap={spacings.xxs}>
-                        <Text typographyStyle="label" variant="tertiary">
-                            <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
-                        </Text>
-                        <Text typographyStyle="hint">
-                            {currentFirmwareType ? translationString(currentFirmwareType) : ''}
-                            {currentVersion ? ` ${currentVersion}` : ''}
-                        </Text>
-                    </Column>
-                    <Icon name="arrowRight" size={16} />
-                </>
-            )}
+            {currentVersion &&
+                (isDebugModeActive ? (
+                    <Tooltip content={<Text variant="warning">{release.firmware_revision}</Text>}>
+                        <CurrentVersion />
+                    </Tooltip>
+                ) : (
+                    <CurrentVersion />
+                ))}
             <Column alignItems="center" gap={spacings.xxs}>
                 <Text typographyStyle="label" variant="tertiary">
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />
@@ -87,11 +99,16 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                         ) : undefined
                     }
                     content={
-                        parsedChangelog ? (
-                            <MarkdownWithComponents>
-                                {parsedChangelog.changelog}
-                            </MarkdownWithComponents>
-                        ) : undefined
+                        <Column>
+                            {parsedChangelog ? (
+                                <MarkdownWithComponents>
+                                    {parsedChangelog.changelog}
+                                </MarkdownWithComponents>
+                            ) : undefined}
+                            {isDebugModeActive && (
+                                <Text variant="warning">{release.firmware_revision}</Text>
+                            )}
+                        </Column>
                     }
                     isActive={!!parsedChangelog}
                 >
