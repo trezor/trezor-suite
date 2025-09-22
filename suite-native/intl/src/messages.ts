@@ -800,11 +800,11 @@ export const messages = {
         bluetooth: {
             title: 'Unpair Trezor',
             content: 'Unpair your Trezor from this device',
-            unpairTrezorButton: 'Unpair',
+            unpairTrezorButton: 'Unpair Trezor',
             info: {
                 title: 'Unpair Trezor',
                 description:
-                    'This removes your Trezor from the list of paired devices in Trezor Suite.',
+                    'This will remove your Trezor from the list of paired devices in Trezor Suite. You should also remove your Trezor from your phone’s Bluetooth devices.',
             },
             successMessage: 'Trezor has been unpaired.',
         },
@@ -2632,10 +2632,10 @@ export const messages = {
     },
     navigation: {
         tabs: {
-            home: 'Home',
+            home: 'XXX HOME XXX',
             accounts: 'My assets',
             trade: 'Trade',
-            settings: 'Settings',
+            settings: 'TEST ROZHLASU',
         },
     },
 };
