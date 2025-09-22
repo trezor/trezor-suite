@@ -4309,8 +4309,8 @@ export default defineMessages({
         id: 'TR_TOR_ERROR',
         defaultMessage: 'Error',
     },
-    TR_TOR_MISBEHAVING: {
-        id: 'TR_TOR_MISBEHAVING',
+    TR_TOR_SLOW: {
+        id: 'TR_TOR_SLOW',
         defaultMessage: 'Running slow',
     },
     TR_TOR_TITLE: {

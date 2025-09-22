@@ -52,7 +52,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
             case 'NETWORK_MISBEHAVING':
                 logger.debug(SERVICE_NAME, 'networks is misbehaving');
                 mainWindowProxy.getInstance()?.webContents.send('tor/status', {
-                    type: TorStatus.Misbehaving,
+                    type: TorStatus.Slow,
                 });
 
                 return;
