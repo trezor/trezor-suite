@@ -62,6 +62,8 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         }),
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {
+        // This needs to be over `extra` to prevent circular dependency,
+        // `@suite-common/local-first-storage` depends on `wallet-core`
         subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
         unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
     } as Partial<ExtraDependencies['thunks']>,
