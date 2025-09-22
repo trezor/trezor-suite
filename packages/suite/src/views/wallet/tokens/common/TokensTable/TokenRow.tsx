@@ -57,6 +57,7 @@ import {
     useLayoutSize,
     useSelector,
 } from 'src/hooks/suite';
+import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
@@ -96,6 +97,8 @@ export const TokenRow = ({
     );
     const { coins } = useSelector(selectTradingInfo);
     const isDeviceLocked = isLocked(true);
+    const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
+
     const networkContractAddress = getContractAddressForNetworkSymbol(
         account.symbol,
         token.contract,
@@ -158,8 +161,6 @@ export const TokenRow = ({
         </InfoItem>
     );
 
-    const isReceiveButtonDisabled = isDeviceLocked;
-
     const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
     const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
@@ -168,6 +169,7 @@ export const TokenRow = ({
     const canSwapToken =
         (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
+    const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
 
     const onTradeButtonClick = (type: TradingType, ...[routeName]: Parameters<typeof goto>) => {
         dispatch(
@@ -332,7 +334,7 @@ export const TokenRow = ({
                                 'data-testid': '@trading/tokens/receive-button',
                                 icon: 'arrowDown',
                                 onClick: onReceive,
-                                isDisabled: isReceiveButtonDisabled,
+                                isDisabled: !canReceiveToken,
                                 isHidden:
                                     tokenStatusType === TokenManagementAction.HIDE
                                         ? !isBelowTablet
@@ -462,11 +464,19 @@ export const TokenRow = ({
                                     }}
                                 />
                                 <IconButton
-                                    label={<Translation id="TR_NAV_RECEIVE" />}
+                                    label={
+                                        <Translation
+                                            id={
+                                                isDeviceCompromised
+                                                    ? 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED'
+                                                    : 'TR_NAV_RECEIVE'
+                                            }
+                                        />
+                                    }
                                     key="token-receive"
                                     variant="tertiary"
                                     icon="arrowDown"
-                                    isDisabled={isReceiveButtonDisabled}
+                                    isDisabled={!canReceiveToken}
                                     onClick={onReceive}
                                 />
                             </ButtonGroup>
