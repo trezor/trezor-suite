@@ -166,6 +166,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             channels.forEach((ch, i) => {
                 map[ch] = results[i];
             });
+
             return map as Record<OpenDeviceChannel, boolean>;
         });
     }

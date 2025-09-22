@@ -68,7 +68,7 @@ export class BluetoothApi extends AbstractApi {
             transportApiEvent(event);
         });
         api.on('device_read', ({ id, data, characteristic }) => {
-            if (characteristic === 'push-notification') {
+            if (characteristic === 'trezor-push-notification') {
                 this.emit('trezor-push-notification', { id, data });
             } else if (characteristic === 'battery-level') {
                 this.emit('battery-level', { id, data });
@@ -109,9 +109,7 @@ export class BluetoothApi extends AbstractApi {
     openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
         return this.api
             .send('open_device', { id: path, characteristic: options?.channel })
-            .then(() => {
-                return this.success(undefined);
-            })
+            .then(() => this.success(undefined))
             .catch(e =>
                 this.error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
             );

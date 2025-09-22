@@ -116,11 +116,13 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly transportPath;
-    public readonly bluetoothProps: {
-        // TODO: type it properly.
-        channels: any;
-        id: string;
-    } | undefined;
+    public readonly bluetoothProps:
+        | {
+              // TODO: type it properly.
+              channels: any;
+              id: string;
+          }
+        | undefined;
     private thp: protocolThp.ThpState | undefined;
     private readonly possibleHIDdevice;
     private sessionAcquired: Session | null;
@@ -162,11 +164,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private _features: Features;
     public get features() {
         return this._features;
-    }
-
-    private _batteryLevel?: number;
-    public get batteryLevel() {
-        return this._batteryLevel;
     }
 
     private wasUsedElsewhere = false;
@@ -322,7 +319,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.transport
                 .subscribe({
                     path: this.bluetoothProps.id,
-                    channels: ['push-notification', 'battery-level'],
+                    channels: ['trezor-push-notification', 'battery-level'],
                 })
                 .then(result => {
                     // todo: imho it should be assigned to other field then bluetoothProps because we might want to include this feature for other mediums (usb) too?
@@ -334,13 +331,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     if (result['battery-level']) {
                         this.transport.on('battery-level', event => {
-                            this._batteryLevel = event.data[0];
+                            this._updateSocFeature(event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
 
-                    if (result['push-notification']) {
-                        this.transport.on('push-notification', _event => {
+                    if (result['trezor-push-notification']) {
+                        this.transport.on('trezor-push-notification', _event => {
                             // todo: info about device switching from bootloader to normal mode and the other way round.
                         });
                     }
@@ -483,8 +480,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.lifecycle.emit(DEVICE.CONNECT);
-                    // TODO: maybe there could be a `capabilities` like `"Capability_PUSH"` so we subscribe only when necessary.
-                    this.subscribe();
+                    // If device has `Capability_BLE` we assume it can do PUSH notifications so we subscribe.
+                    if (this.features.capabilities.includes('Capability_BLE')) {
+                        this.subscribe();
+                    }
                 }
             });
 
@@ -911,11 +910,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.availableTranslations = this._currentRelease?.translations ?? {};
         }
 
-        if (feat.soc && feat.soc !== this._batteryLevel) {
-            // We update _batteryLevel from features.soc and from push notifications in subscription.
-            this._batteryLevel = feat.soc;
-        }
-
         this._features = feat;
 
         this._firmwareType = getFirmwareType(feat);
@@ -935,6 +929,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
             }
         }
+    }
+
+    private _updateSocFeature(soc: number) {
+        this._features = {
+            ...this.features,
+            soc,
+        };
     }
 
     prompt<
@@ -1118,7 +1119,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             authenticityChecks: this.authenticityChecks,
             bluetoothProps: this.bluetoothProps,
             thp: this.thp?.serialize(),
-            batteryLevel: this.batteryLevel,
         };
     }
 }

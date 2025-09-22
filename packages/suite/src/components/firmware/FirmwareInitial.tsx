@@ -168,15 +168,14 @@ export const FirmwareInitial = ({
     const installFirmware = (firmwareType: FirmwareType) => {
         if (
             isDeviceConnectedViaBluetooth &&
-            device.batteryLevel &&
-            device.batteryLevel <= DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
+            typeof device?.features.soc === 'number' &&
+            device.features.soc <= DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
         ) {
             setShowLowBatteryWarning(true);
 
             return;
         }
 
-        console.log('installFirmware');
         firmwareUpdate({ firmwareType });
         updateAnalytics({ firmware: 'install' });
     };

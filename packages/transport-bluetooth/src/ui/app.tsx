@@ -388,7 +388,7 @@ export const App: React.FC = () => {
                                         <select ref={selectRef}>
                                             <option value="">Select characteristic</option>
                                             <option value="read">READ</option>
-                                            <option value="push-notification">
+                                            <option value="trezor-push-notification">
                                                 PUSH_NOTIFICATION
                                             </option>
                                             <option value="battery-level">BATTERY_LEVEL</option>

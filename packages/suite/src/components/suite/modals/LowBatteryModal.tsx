@@ -33,7 +33,7 @@ export const LowBatteryModal = ({ onClose, children }: LowBatteryModalProps) => 
     const { device } = useDevice();
     if (!device) return null;
 
-    const bateryLevel = typeof device?.batteryLevel === 'number' ? device?.batteryLevel : 0;
+    const bateryLevel = typeof device?.features?.soc === 'number' ? device?.features.soc : 0;
 
     return (
         <Modal

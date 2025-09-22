@@ -115,7 +115,6 @@ export type KnownDevice = BaseDevice & {
     transportSessionOwner?: undefined;
     hid?: undefined;
     bluetoothProps?: BluetoothDeviceProps;
-    batteryLevel?: number;
 };
 
 export type UnknownDevice = BaseDevice & {
