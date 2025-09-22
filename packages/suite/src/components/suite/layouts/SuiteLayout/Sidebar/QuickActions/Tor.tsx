@@ -27,7 +27,7 @@ const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Disabling]: 'TR_TOR_DISABLING',
     [TorStatus.Enabling]: 'TR_TOR_ENABLING',
     [TorStatus.Error]: 'TR_TOR_ERROR',
-    [TorStatus.Misbehaving]: 'TR_TOR_MISBEHAVING',
+    [TorStatus.Slow]: 'TR_TOR_SLOW',
 };
 
 const torIconMap: Record<TorStatus, IconName> = {
@@ -36,7 +36,7 @@ const torIconMap: Record<TorStatus, IconName> = {
     [TorStatus.Disabling]: 'arrowsClockwise',
     [TorStatus.Enabling]: 'arrowsClockwise',
     [TorStatus.Error]: 'warning',
-    [TorStatus.Misbehaving]: 'warning',
+    [TorStatus.Slow]: 'info',
 };
 
 const torIconVariantMap: Record<TorStatus, IconVariant> = {
@@ -45,7 +45,7 @@ const torIconVariantMap: Record<TorStatus, IconVariant> = {
     [TorStatus.Disabling]: 'destructive',
     [TorStatus.Enabling]: 'info',
     [TorStatus.Error]: 'warning',
-    [TorStatus.Misbehaving]: 'warning',
+    [TorStatus.Slow]: 'info',
 };
 
 type TorTooltipProps = {

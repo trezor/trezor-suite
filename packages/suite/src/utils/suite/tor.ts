@@ -19,8 +19,7 @@ export const isOnionUrl = (url: string) => {
 export const getIsTorEnabled = (torStatus: TorStatus) => {
     switch (torStatus) {
         case TorStatus.Enabled:
-        case TorStatus.Misbehaving:
-            // When Tor is in status Misbehaving means network is not behaving properly but still enabled.
+        case TorStatus.Slow:
             return true;
 
         case TorStatus.Enabling:
