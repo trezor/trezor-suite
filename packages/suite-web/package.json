@@ -19,6 +19,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/suite": "workspace:*",
+        "core-js": "^3.45.1",
         "react": "19.0.0",
         "react-dom": "19.0.0",
         "react-helmet-async": "^2.0.5",
