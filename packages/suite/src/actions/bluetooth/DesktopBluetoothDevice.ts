@@ -9,6 +9,7 @@ import { BluetoothDevice } from '@trezor/transport-bluetooth';
 export type DesktopBluetoothDevice = Omit<BluetoothDevice, 'data' | 'id'> & {
     manufacturerData: BluetoothManufacturerData;
     id: BluetoothDeviceId;
+    deviceId?: string; // Trezor device id (not known for unacquired devices)
 };
 
 export const toBluetoothDevice = (device: DesktopBluetoothDevice): BluetoothDevice => ({

@@ -146,6 +146,7 @@ export const saveKnownDevices = () => (_dispatch: Dispatch, getState: GetState) 
                     lastUpdatedTimestamp: it.lastUpdatedTimestamp,
                     paired: it.paired,
                     rssi: it.rssi,
+                    deviceId: it.deviceId,
 
                     // Those fields are reset to prevent some state-inconsistency and UI flickering
                     connected: false,

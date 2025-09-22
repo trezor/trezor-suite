@@ -89,7 +89,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 }
 
                 state.knownDevices = state.knownDevices.map(it =>
-                    it.id === device.id ? device : it,
+                    it.id === device.id ? { deviceId: it.deviceId, ...device } : it,
                 ) as Draft<T>[];
             })
             .addCase(
@@ -127,7 +127,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     state,
                     {
                         payload: {
-                            device: { bluetoothProps },
+                            device: { bluetoothProps, id: deviceId },
                         },
                     }: { payload: DeviceConnectActionPayload },
                 ) => {
@@ -144,9 +144,13 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                             it => it.id === bluetoothProps.id,
                         );
                         if (foundKnownDevice === undefined) {
-                            state.knownDevices.push(device);
+                            state.knownDevices.push({ ...device, deviceId });
                         } else {
                             delete state.autoConnectPolicy[bluetoothProps.id];
+                            // update deviceId in case it was missing
+                            if (deviceId && foundKnownDevice.deviceId !== deviceId) {
+                                foundKnownDevice.deviceId = deviceId;
+                            }
                         }
                     }
                 },

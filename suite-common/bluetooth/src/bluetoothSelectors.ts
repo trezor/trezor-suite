@@ -50,3 +50,13 @@ export const selectScanStatus = <T extends BluetoothDeviceCommon>(state: WithBlu
 export const selectAutoConnectPolicy = <T extends BluetoothDeviceCommon>(
     state: WithBluetoothState<T>,
 ) => state.bluetooth.autoConnectPolicy;
+
+export const selectKnownDeviceByDeviceId = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+    deviceId?: string,
+) => {
+    if (!deviceId) return undefined;
+    const knownDevices = selectKnownDevices(state);
+
+    return knownDevices.find(device => device.deviceId === deviceId);
+};

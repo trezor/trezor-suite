@@ -13,4 +13,5 @@ export type BluetoothPermissionStatus =
 export type BluetoothDevice = Omit<TransportBluetoothDevice, 'manufacturerData' | 'id'> & {
     id: BluetoothDeviceId;
     manufacturerData: BluetoothManufacturerData;
+    deviceId?: string; // Trezor device id (not known for unacquired devices)
 };
