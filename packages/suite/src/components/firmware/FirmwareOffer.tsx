@@ -67,7 +67,11 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
         >
             {currentVersion &&
                 (isDebugModeActive ? (
-                    <Tooltip content={<Text variant="warning">{release.firmware_revision}</Text>}>
+                    <Tooltip
+                        content={
+                            <Text variant="warning">DEV: {originalDevice.features.revision}</Text>
+                        }
+                    >
                         <CurrentVersion />
                     </Tooltip>
                 ) : (
@@ -106,7 +110,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                                 </MarkdownWithComponents>
                             ) : undefined}
                             {isDebugModeActive && (
-                                <Text variant="warning">{release.firmware_revision}</Text>
+                                <Text variant="warning">DEV: {release.firmware_revision}</Text>
                             )}
                         </Column>
                     }
