@@ -107,4 +107,12 @@ describe('FeePickerCard', () => {
             tradingType: 'buy',
         });
     });
+
+    it('should not navigate when actualFee is undefined', async () => {
+        const { getByText } = await renderFeePickerCard({}, {});
+
+        await userEvent.press(getByText('Fee'));
+
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
 });

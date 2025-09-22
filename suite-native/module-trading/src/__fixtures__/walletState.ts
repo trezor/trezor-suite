@@ -3,7 +3,7 @@ import { FiatRatesState } from '@suite-common/wallet-core';
 import { Account, RatesByKey, type WalletSettings } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
-import { getBaseAccount, getBtcAccount, getEthAccount } from './account';
+import { getBaseAccount, getBtcAccount, getEthAccount, getSolAccount } from './account';
 import { getInitializedTradingState } from './tradingState';
 
 type GetWalletStateParams = {
@@ -41,5 +41,6 @@ export const getWalletState = ({
         { ...getBtcAccount('btc-account-2'), ...(deviceState && { deviceState }) },
         { ...getEthAccount(), ...(deviceState && { deviceState }) },
         { ...getBaseAccount(), ...(deviceState && { deviceState }) },
+        { ...getSolAccount(), ...(deviceState && { deviceState }) },
     ] as Account[],
 });

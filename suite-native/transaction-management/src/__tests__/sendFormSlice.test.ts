@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
-import { initialState, sendFormSlice, storeFeeLevels } from '../sendFormSlice';
+import { sendFormSlice, transactionManagementActions } from '../sendFormSlice';
 
 describe('sendFormSlice', () => {
     // Create a test store with the prepared reducer
@@ -46,7 +46,7 @@ describe('sendFormSlice', () => {
                 } as any,
             };
 
-            store.dispatch(storeFeeLevels({ feeLevels }));
+            store.dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
 
             expect(store.getState().send.feeLevels).toEqual(feeLevels);
         });
@@ -67,7 +67,9 @@ describe('sendFormSlice', () => {
             };
 
             // Set initial fee levels
-            store.dispatch(storeFeeLevels({ feeLevels: initialFeeLevels }));
+            store.dispatch(
+                transactionManagementActions.storeFeeLevels({ feeLevels: initialFeeLevels }),
+            );
 
             const newFeeLevels: GeneralPrecomposedLevels = {
                 custom: {
@@ -82,7 +84,9 @@ describe('sendFormSlice', () => {
                 } as any,
             };
 
-            store.dispatch(storeFeeLevels({ feeLevels: newFeeLevels }));
+            store.dispatch(
+                transactionManagementActions.storeFeeLevels({ feeLevels: newFeeLevels }),
+            );
 
             expect(store.getState().send.feeLevels).toEqual(newFeeLevels);
             expect(store.getState().send.feeLevels).not.toEqual(initialFeeLevels);
@@ -92,45 +96,17 @@ describe('sendFormSlice', () => {
             const store = createTestStore();
             const emptyFeeLevels: GeneralPrecomposedLevels = {};
 
-            store.dispatch(storeFeeLevels({ feeLevels: emptyFeeLevels }));
+            store.dispatch(
+                transactionManagementActions.storeFeeLevels({ feeLevels: emptyFeeLevels }),
+            );
 
             expect(store.getState().send.feeLevels).toEqual(emptyFeeLevels);
         });
     });
 
-    it('should return initial state when store is created', () => {
-        const store = createTestStore();
-        const state = store.getState().send;
-
-        expect(state).toEqual(initialState);
-    });
-
-    describe('action creators', () => {
-        it('should create storeFeeLevels action with correct payload', () => {
-            const feeLevels: GeneralPrecomposedLevels = {
-                normal: {
-                    type: 'final',
-                    totalSpent: '1000433210428000',
-                    fee: '433210428000',
-                    feePerByte: '1',
-                    feeLimit: '11000',
-                    bytes: 250,
-                    inputs: [],
-                    estimatedFeeLimit: '11000',
-                } as any,
-            };
-
-            const action = storeFeeLevels({ feeLevels });
-
-            expect(action.type).toBe('send/storeFeeLevels');
-            expect(action.payload).toEqual({ feeLevels });
-        });
-    });
-
-    describe('state immutability', () => {
-        it('should not mutate the original state', () => {
+    describe('clearFeeLevels', () => {
+        it('should clear fee levels when they exist', () => {
             const store = createTestStore();
-            const originalState = store.getState().send;
             const feeLevels: GeneralPrecomposedLevels = {
                 normal: {
                     type: 'final',
@@ -142,12 +118,36 @@ describe('sendFormSlice', () => {
                     inputs: [],
                     estimatedFeeLimit: '11000',
                 } as any,
+                high: {
+                    type: 'final',
+                    totalSpent: '1000433210428000',
+                    fee: '733210428000',
+                    feePerByte: '4',
+                    feeLimit: '21000',
+                    bytes: 250,
+                    inputs: [],
+                    estimatedFeeLimit: '21000',
+                } as any,
             };
 
-            store.dispatch(storeFeeLevels({ feeLevels }));
+            // First store fee levels
+            store.dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
+            expect(store.getState().send.feeLevels).toEqual(feeLevels);
 
-            // The original state object should not be mutated
-            expect(originalState).not.toBe(store.getState().send);
+            // Then clear them
+            store.dispatch(transactionManagementActions.clearFeeLevels());
+            expect(store.getState().send.feeLevels).toEqual({});
+        });
+
+        it('should clear fee levels when they are already empty', () => {
+            const store = createTestStore();
+
+            // Verify initial state is empty
+            expect(store.getState().send.feeLevels).toEqual({});
+
+            // Clear fee levels (should remain empty)
+            store.dispatch(transactionManagementActions.clearFeeLevels());
+            expect(store.getState().send.feeLevels).toEqual({});
         });
     });
 });

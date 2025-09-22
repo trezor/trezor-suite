@@ -6,8 +6,11 @@ import { ExchangeTrade, SellFiatTrade } from 'invity-api';
 import {
     TradingRootState,
     isExchangeTrade,
+    selectTradingExchangeAccountKey,
     selectTradingProviderByNameAndTradeType,
+    selectTradingSellAccountKey,
 } from '@suite-common/trading';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -19,6 +22,15 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
     const tradeType = isExchangeTrade(trade) ? 'exchange' : 'sell';
     const providerInfo = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, trade.exchange, tradeType),
+    );
+    const sendAccountKey = useSelector((state: TradingRootState) =>
+        isExchangeTrade(trade)
+            ? selectTradingExchangeAccountKey(state)
+            : selectTradingSellAccountKey(state),
+    );
+
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        sendAccountKey ? selectAccountNetworkSymbol(state, sendAccountKey) : null,
     );
 
     const providerName =
@@ -34,6 +46,11 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
         return null;
     }
 
+    const addressText =
+        networkSymbol === 'sol'
+            ? receiveAddress
+            : splitAddressToChunks(receiveAddress ?? '').join(' ');
+
     return (
         <Animated.View entering={FadeIn}>
             <TradeInfoRow>
@@ -45,7 +62,7 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
                         />
                     </Text>
                     <Text variant="hint" color="textSubdued">
-                        {splitAddressToChunks(receiveAddress ?? '').join(' ')}
+                        {addressText}
                     </Text>
                 </VStack>
             </TradeInfoRow>

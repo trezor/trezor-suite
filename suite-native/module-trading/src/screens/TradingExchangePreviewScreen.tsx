@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { invariant } from '@suite-common/suite-utils';
 import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { Button, Text, VStack } from '@suite-native/atoms';
+import { Button, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -20,11 +20,11 @@ import { ExchangeTradePreviewCard } from '../components/exchange/ExchangeTradePr
 import { FeePickerCard } from '../components/fees/FeePickerCard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { useChangeStringsExtractor } from '../hooks/history/useChangeStringsExtractor';
-import { exchangeActions } from '../reducers';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '../selectors/exchangeSelectors';
+import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
 export type TradingExchangePreviewScreenProps = StackProps<
@@ -46,27 +46,25 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
-
-    invariant(quote, 'quote must be defined');
-    invariant(fromAccount, 'fromAccount must be defined');
-    invariant(toAccount, 'toAccount must be defined');
+    const hasRequestedTradeConfirmation = useRef(false);
 
     const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
 
+    useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
+
+    const { txnErrorString, confirmTrade, fetchFeesAndCompose } = useExchangeFlow();
+
+    const [flowStep, setFlowStep] = useState<FlowStep>('confirm');
+
+    // clear trading state on unmount
     useEffect(
         () => () => {
-            dispatch(exchangeActions.clearState());
+            dispatch(clearTradingStateThunk());
         },
         [dispatch],
     );
 
-    useSubscribeForSolanaBlockUpdates(fromAccount);
-
-    const { confirmTrade, fetchFeesAndCompose } = useExchangeFlow();
-
-    const [flowStep, setFlowStep] = useState<FlowStep>('confirm');
-
-    const handleConfirmTrade = async () => {
+    const handleConfirmTrade = useCallback(async () => {
         const addressText = getReceiveAccountAddressText(toAccount);
 
         if (!addressText) {
@@ -74,20 +72,41 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
 
             return;
         }
+        try {
+            const success = await confirmTrade({
+                sendAccount: fromAccount,
+                receiveAddress: addressText,
+                trade: quote,
+                approvalFlow: false,
+            });
 
-        const success = await confirmTrade({
-            sendAccount: fromAccount,
-            receiveAddress: addressText,
-            trade: quote,
-            approvalFlow: false,
-        });
-
-        if (success) {
-            await fetchFeesAndCompose();
+            if (success) {
+                await fetchFeesAndCompose();
+                setFlowStep('signTxn');
+            }
+        } catch (e) {
+            // TODO: show warning https://github.com/trezor/trezor-suite/issues/21882
+            console.error('Failed to confirm trade', e);
         }
-    };
+    }, [confirmTrade, fetchFeesAndCompose, fromAccount, quote, toAccount]);
+
+    useEffect(() => {
+        if (!hasRequestedTradeConfirmation.current) {
+            hasRequestedTradeConfirmation.current = true;
+
+            handleConfirmTrade();
+        }
+        // only run on mount
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleSignTransaction = () => {
+        if (!quote || !fromAccount) {
+            console.warn('quote or fromAccount is not defined', quote, fromAccount);
+
+            return;
+        }
+
         const tokenContract = quote.send
             ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
             : undefined;
@@ -102,11 +121,8 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
         });
     };
 
-    const handleTapContinue = async () => {
-        if (flowStep === 'confirm') {
-            await handleConfirmTrade();
-            setFlowStep('signTxn');
-        } else if (flowStep === 'signTxn') {
+    const handleTapContinue = () => {
+        if (flowStep === 'signTxn') {
             handleSignTransaction();
         } else {
             console.warn('Unknown flow step', flowStep);
@@ -124,31 +140,40 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
         >
             <ScrollView>
                 <VStack spacing="sp20" paddingVertical="sp20">
-                    <ExchangeTradePreviewCard
-                        account={fromAccount}
-                        cryptoId={quote.send}
-                        amount={
-                            <Text variant="hint" color="textAlertRed">
-                                -{fromStringValue}
-                            </Text>
-                        }
-                        title={
-                            <Translation id="moduleTrading.tradingExchangePreviewScreen.fromAccount" />
-                        }
-                    />
-                    <ExchangeTradePreviewCard
-                        account={toAccount.account}
-                        cryptoId={quote.receive}
-                        amount={
-                            <Text variant="hint" color="textSecondaryHighlight">
-                                +{toStringValue}
-                            </Text>
-                        }
-                        title={
-                            <Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />
-                        }
-                    />
-                    {flowStep === 'signTxn' && (
+                    {txnErrorString && (
+                        <Animated.View>
+                            <InlineAlertBox variant="critical" title={txnErrorString} />
+                        </Animated.View>
+                    )}
+                    {fromAccount && quote?.send && (
+                        <ExchangeTradePreviewCard
+                            account={fromAccount}
+                            cryptoId={quote.send}
+                            amount={
+                                <Text variant="hint" color="textAlertRed">
+                                    -{fromStringValue}
+                                </Text>
+                            }
+                            title={
+                                <Translation id="moduleTrading.tradingExchangePreviewScreen.fromAccount" />
+                            }
+                        />
+                    )}
+                    {toAccount?.account && quote?.receive && (
+                        <ExchangeTradePreviewCard
+                            account={toAccount.account}
+                            cryptoId={quote.receive}
+                            amount={
+                                <Text variant="hint" color="textSecondaryHighlight">
+                                    +{toStringValue}
+                                </Text>
+                            }
+                            title={
+                                <Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />
+                            }
+                        />
+                    )}
+                    {fromAccount && quote?.send && !txnErrorString && (
                         <FeePickerCard
                             trade={quote}
                             symbol={fromAccount.symbol}
@@ -159,7 +184,12 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
                 </VStack>
             </ScrollView>
 
-            <Button onPress={handleTapContinue}>{flowStepToButtonText[flowStep]}</Button>
+            <Button
+                onPress={handleTapContinue}
+                isDisabled={flowStep === 'confirm' || !!txnErrorString}
+            >
+                {flowStepToButtonText[flowStep]}
+            </Button>
         </Screen>
     );
 };

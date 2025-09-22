@@ -585,6 +585,9 @@ export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
 export const selectTradingExchangeReceiveAccountKey = (state: TradingRootState) =>
     state.wallet.trading.exchange.receiveAccountKey;
 
+export const selectTradingSellAccountKey = (state: TradingRootState) =>
+    state.wallet.trading.sell.tradingAccountKey;
+
 export const selectTradingModalAccountKey = (state: TradingRootState) =>
     state.wallet.trading.modalAccountKey;
 

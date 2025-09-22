@@ -17,7 +17,7 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 
-import { storeFeeLevels } from './sendFormSlice';
+import { transactionManagementActions } from './sendFormSlice';
 import { FeeLevelsMaxAmount } from './types/fees';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
@@ -125,7 +125,7 @@ export const calculateCustomFeeLevelThunk = createThunk<
         }
 
         const feeLevels = response.payload;
-        dispatch(storeFeeLevels({ feeLevels }));
+        dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
 
         if (!isFinalPrecomposedTransaction(feeLevels.custom)) {
             return rejectWithValue('Unable to compose custom fee level.');

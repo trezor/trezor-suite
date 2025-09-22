@@ -4,3 +4,4 @@ export * from './useShowReviewCancellationAlert';
 export * from './useOutputsReviewBackInterceptor';
 export * from './useWaitForButtonRequest';
 export * from './fees';
+export * from './usePrecomposedTransactionError';

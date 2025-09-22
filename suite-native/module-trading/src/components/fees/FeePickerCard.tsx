@@ -32,16 +32,18 @@ export const FeePickerCard = ({ trade, accountKey, symbol, tradingType }: FeePic
         >();
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
+    const actualFee = composedTransactionInfo?.composed?.fee;
+    const fee = actualFee ?? '0';
+
     const handleFeesPressed = () => {
+        if (actualFee === undefined) {
+            return;
+        }
         navigation.navigate(TradingStackRoutes.TradingFees, {
             accountKey,
             tradingType,
         });
     };
-
-    const actualFee = composedTransactionInfo?.composed?.fee;
-    const fee = actualFee ?? '0';
-    const isLoading = actualFee === undefined;
 
     return (
         <AnimatedCard noPadding>
@@ -53,7 +55,7 @@ export const FeePickerCard = ({ trade, accountKey, symbol, tradingType }: FeePic
                 fee={fee}
                 symbol={symbol}
                 onPress={handleFeesPressed}
-                isLoading={isLoading}
+                isLoading={actualFee === undefined}
             />
         </AnimatedCard>
     );

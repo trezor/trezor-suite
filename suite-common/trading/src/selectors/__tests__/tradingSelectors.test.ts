@@ -61,6 +61,7 @@ import {
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
+    selectTradingSellAccountKey,
     selectTradingSellFormStep,
     selectTradingSellInfo,
     selectTradingSellLoadingTimestampAndStatus,
@@ -989,6 +990,22 @@ describe('tradingSelectors', () => {
 
     it('selectTradingModalAccountKey should return stable modalAccountKey', () => {
         expect(selectTradingModalAccountKey(state)).toEqual('modalAccountKey');
+    });
+    it('selectTradingSellAccountKey should return undefined when tradingAccountKey is not set', () => {
+        state.wallet.trading.sell.tradingAccountKey = undefined;
+
+        expect(selectTradingSellAccountKey(state)).toBeUndefined();
+    });
+
+    it('selectTradingSellAccountKey should return the correct account key when set', () => {
+        const testAccountKey = 'test-account-key-123';
+        state.wallet.trading.sell.tradingAccountKey = testAccountKey;
+
+        expect(selectTradingSellAccountKey(state)).toBe(testAccountKey);
+    });
+
+    it('selectTradingSellAccountKey should be stable', () => {
+        expect(selectTradingSellAccountKey(state)).toBe(selectTradingSellAccountKey(state));
     });
 
     it('selectTradingPrefilledFromAccount should return stable prefilledFromAccount ', () => {
