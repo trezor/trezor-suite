@@ -238,6 +238,19 @@ export const FirmwareInstallationScreenContent = ({
         return 'starting';
     }, [status, operation, isError]);
 
+    const indicatorProgress = useMemo(() => {
+        switch (indicatorStatus) {
+            case 'error':
+            case 'starting':
+                return 0;
+            case 'success':
+                return 100;
+            case 'inProgress':
+            default:
+                return progress;
+        }
+    }, [progress, indicatorStatus]);
+
     const showConfirmOnDevice = confirmOnDevice && !isError && !isDone;
 
     const buttonStyle = applyStyle(bottomButtonsContainerStyle);
@@ -267,7 +280,10 @@ export const FirmwareInstallationScreenContent = ({
         >
             <Box flex={1}>
                 <VStack justifyContent="center" alignItems="center" flex={1}>
-                    <UpdateProgressIndicator progress={progress} status={indicatorStatus} />
+                    <UpdateProgressIndicator
+                        status={indicatorStatus}
+                        progress={indicatorProgress}
+                    />
                     <Animated.View
                         entering={FadeInUp}
                         exiting={FadeOutDown}
