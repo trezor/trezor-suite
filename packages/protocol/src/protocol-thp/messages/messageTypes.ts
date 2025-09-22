@@ -13,7 +13,6 @@ export type ThpError = {
         | 'ThpTransportBusy'
         | 'ThpUnallocatedChannel'
         | 'ThpDecryptionFailed'
-        | 'ThpInvalidData'
         | 'ThpDeviceLocked'
         | 'ThpUnknownError';
     message: string;
