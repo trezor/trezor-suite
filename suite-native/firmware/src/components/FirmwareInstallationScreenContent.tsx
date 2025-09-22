@@ -135,10 +135,8 @@ export const FirmwareInstallationScreenContent = ({
     }, [operation, onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
 
     const handleCancel = useCallback(() => {
-        setIsFirmwareInstallationRunning(false);
-        TrezorConnect.cancel();
         navigation.goBack();
-    }, [navigation, setIsFirmwareInstallationRunning]);
+    }, [navigation]);
 
     const startFirmwareUpdate = useCallback(async () => {
         setIsFirmwareInstallationRunning(true);
