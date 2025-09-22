@@ -7,6 +7,7 @@ import {
 } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectDevices } from '@suite-common/wallet-core';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
@@ -68,6 +69,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             );
             const connectingDevices = selectConnectingDevices(getState());
             const adapterStatus = selectAdapterStatus(getState());
+            const suiteDevices = selectDevices(getState());
 
             if (adapterStatus === 'power-suspending') {
                 // system is going to sleep
@@ -75,6 +77,21 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             }
 
             if (!knownDevice || connectingDevices.includes(knownDevice.id)) {
+                return;
+            }
+
+            // wait to acquire existing devices before connecting to the new one
+            const hasUnacquiredDevice = suiteDevices.some(d => d.type === 'unacquired');
+            // prioritize USB if already connected
+            const hasSameUsbDevice = suiteDevices.find(
+                d =>
+                    knownDevice?.deviceId &&
+                    d.id === knownDevice.deviceId &&
+                    !d.bluetoothProps &&
+                    d.connected,
+            );
+
+            if (hasUnacquiredDevice || hasSameUsbDevice) {
                 return;
             }
 
