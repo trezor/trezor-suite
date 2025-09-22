@@ -213,6 +213,7 @@ export const messages = {
         deviceCard: {
             connect: {
                 actionButton: 'Connect',
+                pairingHint: 'Confirm the Bluetooth pairing request on your Trezor as well.',
             },
             remove: {
                 actionButton: 'Pair again',
