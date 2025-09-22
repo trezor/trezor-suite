@@ -15,7 +15,6 @@ const cryptoAmount = buyQuotesSolanaToken[0].receiveStringAmount;
 const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0].exchange);
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
 const formattedFiatAmount = `CZK ${fiatAmount}`;
-const { receiveAddress } = buyTradeSolanaToken.trade;
 
 test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
@@ -41,8 +40,9 @@ test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, (
                 amount: cryptoAmount,
                 cryptoCurrency: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
                 wantCrypto: isCryptoInput,
-                receiveAccount: 'Solana #1',
-                receiveAddress,
+                selectReceiveAddress: async () => {
+                    await tradingPage.selectSuiteReceiveAccount(0);
+                },
             });
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(provider);

@@ -12,6 +12,8 @@ import { TradingFormInputs } from 'src/views/wallet/trading/common/TradingForm/T
 import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
+import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+
 const TradingFormLayoutWrapper = styled.form`
     ${TradingWrapper}
 `;
@@ -24,14 +26,12 @@ export const TradingFormLayout = () => {
             {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
             <TradingFormLayoutWrapper>
-                <Card>
-                    <Column gap={spacings.lg}>
-                        <TradingFormInputs />
-                    </Column>
-                </Card>
-                <Card>
-                    <TradingFormOffer />
-                </Card>
+                <ReceiveAddressModalControlsProvider>
+                    <TradingFormInputs />
+                    <Card>
+                        <TradingFormOffer />
+                    </Card>
+                </ReceiveAddressModalControlsProvider>
             </TradingFormLayoutWrapper>
             <ContextMessage context={Context.getLegal('gateway')} />
             <TradingFeaturedOffers />

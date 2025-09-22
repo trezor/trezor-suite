@@ -10,30 +10,6 @@ import {
 } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
-const allAvailableAddressesBTC = [
-    'bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q',
-    'bc1q9lh9k4hgzjwas3kjx9sefvm4yn9vwwsd4hacdv',
-    'bc1qa3hyq2jgzhrkpwtxxv952ztgw4wxr28hywwkg0',
-    'bc1qdn5q78hpnze7xs9jcsgy25lemdlytenn25w6pq',
-    'bc1qrvyuflny4sxdagera05a6tfr6njn0pfjuz5qnl',
-    'bc1qm9pah7pwen43hwyk8kren9v2fez27glkdzxsqu',
-    'bc1qr50uk25pt5z6shwjf2nz4s76xdhprr32lswqqv',
-    'bc1qmt38u3kugzxd82rjkhquurxrasdx9k7xngnpa8',
-    'bc1qz330fmkt8lgauer800tdnlukjhef7ym9f2yua3',
-    'bc1qnpluf6s3rjrwacnp4r0zzq087mhwxdnnu6lx4z',
-    'bc1qz2fgkzkfk6xk7j3t0wpx3vspjzvvhehhpddm6j',
-    'bc1qf46r8hf3u2jx6qgy70aavd6rcx4a5md87lj22c',
-    'bc1qdzsae7zgxta6244yvasxxepnksy0cmhy98445q',
-    'bc1qy2qatc2m04ctqqvqa820kgcf556ynyh3v7x0mm',
-    'bc1qzklur7l2djnttxscves2drw2qenfr9jnquqyft',
-    'bc1qfage3v4dwzz5qs7h9luxh6zprcm3cd8pud4gjt',
-    'bc1q7gmxgs4ph2pw39w0w2l5m4jz059gc88mhujfv9',
-    'bc1qhwmlg7tjlmel647jjm2cjf2gh6fga3jnpxwwd8',
-    'bc1q3y062n3fzjzekxlrc52fsrvh9uu7xca4cdk56y',
-    'bc1qhl3g568gwgndwwepe7dycs37l3snm0uww4k4uv',
-    'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa',
-    'bc1qpszctuml70ulzf7f0zy5r4sg9nm65qfpgcw0uy',
-];
 // Expected values based on our mocked responses
 const fiatAmount = buyQuotesBTC[0].fiatStringAmount;
 const bestBuyProvider = capitalizeFirstLetter(buyQuotesBTC[0].exchange);
@@ -61,8 +37,9 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         await test.step('Fill input amount and opens offer comparison', async () => {
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
-                receiveAccount: 'Bitcoin #1',
-                receiveAddress,
+                selectReceiveAddress: async () => {
+                    await tradingPage.selectSuiteReceiveAccount(0, 'btc');
+                },
             });
             await expect(tradingPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
             await expect(tradingPage.quoteProvider).toHaveText(bestBuyProvider);
@@ -111,8 +88,9 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         await test.step('Request a trade', async () => {
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
-                receiveAccount: 'Bitcoin #1',
-                receiveAddress,
+                selectReceiveAddress: async () => {
+                    await tradingPage.selectSuiteReceiveAccount(0, 'btc');
+                },
             });
         });
 
@@ -152,39 +130,6 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         await test.step('Return to account buy form', async () => {
             await tradingPage.backToAccountButton('Buy').click();
             await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/btc\/0\/normal$/);
-        });
-    });
-
-    test('Choose different Bitcoin receive address', async ({ page, tradingPage }) => {
-        const differentAddress = allAvailableAddressesBTC[5];
-
-        await test.step('Request a trade', async () => {
-            await tradingPage.fillBuyForm({
-                amount: fiatAmount,
-                receiveAccount: 'Bitcoin #1',
-                receiveAddress,
-            });
-        });
-
-        await test.step('Change the receive address', async () => {
-            await expect(tradingPage.confirmationAddress).toBeEnabled();
-            // Adding retry because of the dropdown animation
-            await expect(async () => {
-                await tradingPage.confirmationAddress.click();
-
-                const allAddressesFromDropdown = await page
-                    .getByRole('option')
-                    .getByTestId('@trading/form/verify/address')
-                    .allTextContents();
-
-                expect(allAddressesFromDropdown).toEqual(allAvailableAddressesBTC);
-            }).toPass({ timeout: 3_000 });
-            await page.getByRole('option', { name: differentAddress }).click();
-        });
-
-        await test.step('Confirm the receive address', async () => {
-            await tradingPage.buyBestOfferButton.click();
-            await tradingPage.termsConfirmButton.click();
         });
     });
 });

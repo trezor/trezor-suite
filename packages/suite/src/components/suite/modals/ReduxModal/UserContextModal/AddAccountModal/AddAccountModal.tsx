@@ -38,6 +38,7 @@ const NetworksWrapper = styled.div`
 interface AddAccountProps {
     device: TrezorDevice;
     onCancel: () => void;
+    onConfirm?: () => void;
     symbol?: NetworkSymbol;
     noRedirect?: boolean;
     isCoinjoinDisabled?: boolean;
@@ -48,6 +49,7 @@ interface AddAccountProps {
 export const AddAccountModal = ({
     device,
     onCancel,
+    onConfirm,
     symbol,
     noRedirect,
     onAddAccount,
@@ -167,6 +169,8 @@ export const AddAccountModal = ({
             dispatch(
                 changeCoinVisibility({ symbol: selectedNetwork.symbol, shouldBeVisible: true }),
             );
+            onConfirm?.();
+
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 dispatch(
@@ -211,6 +215,8 @@ export const AddAccountModal = ({
             dispatch(accountsActions.changeAccountVisibility(account));
         }
 
+        onConfirm?.();
+
         onAddAccount?.(account);
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
@@ -254,6 +260,7 @@ export const AddAccountModal = ({
                 }
 
                 dispatch(accountsActions.createAccount(newAccount));
+                onConfirm?.();
             }
         }
     };
@@ -380,7 +387,7 @@ export const AddAccountModal = ({
                         onAddNewAccount={addNewAccount}
                     />
                 ) : (
-                    <Modal.Button onClick={enableNetwork}>
+                    <Modal.Button data-testid="@find-account" onClick={enableNetwork}>
                         <Translation
                             id="TR_ENABLE_NETWORK_BUTTON"
                             values={{ networkName: selectedNetwork.name }}

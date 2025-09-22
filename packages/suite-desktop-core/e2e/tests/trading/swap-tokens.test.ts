@@ -15,7 +15,7 @@ const receiveAmount = localizeNumber(swapQuotesSolanaTokens[0].receiveStringAmou
 const provider = getCompanyNameFromList(swapQuotesSolanaTokens[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${receiveAmount} USDC`;
-const { sendAddress, receiveAddress, send: tetherMint, receive: usdcMint } = swapTradeSolanaTokens;
+const { sendAddress, send: tetherMint, receive: usdcMint, receiveAddress } = swapTradeSolanaTokens;
 const formattedSendAddress = formatAddress(sendAddress);
 
 test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, () => {
@@ -46,8 +46,10 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
                 receiveCurrency: 'USDC',
                 receiveSymbol: 'sol',
                 receiveNetwork: usdcMint,
-                receiveAccount: 'Solana #1',
                 receiveAddress,
+                selectReceiveAddress: async () => {
+                    await tradingPage.selectSuiteReceiveAccount(0);
+                },
             });
         });
 

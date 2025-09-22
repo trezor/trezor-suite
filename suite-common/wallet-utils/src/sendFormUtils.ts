@@ -141,6 +141,16 @@ export const getEthereumEstimateFeeParams = (
     data?: string,
 ) => {
     if (token) {
+        // use the data if provided
+        if (data) {
+            return {
+                to,
+                value: '0x0',
+                data,
+            };
+        }
+
+        // otherwise compose basic ERC-20 token transfer data
         return {
             to: token.contract,
             value: '0x0',

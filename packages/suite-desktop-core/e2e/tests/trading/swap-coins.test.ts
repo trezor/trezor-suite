@@ -62,8 +62,10 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 receiveCurrency: 'Bitcoin',
                 receiveSymbol: 'btc',
                 receiveNetwork: 'bitcoin',
-                receiveAccount: 'Bitcoin #1',
                 receiveAddress,
+                selectReceiveAddress: async () => {
+                    await tradingPage.selectSuiteReceiveAccount(0, 'btc');
+                },
             });
         });
 

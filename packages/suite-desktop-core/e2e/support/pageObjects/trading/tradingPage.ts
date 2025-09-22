@@ -121,6 +121,29 @@ export class TradingPage {
     // Sell
     readonly sellBestOfferButton: Locator;
 
+    // receive account & receive address
+    readonly receiveAddressPicker: Locator;
+    readonly selectedReceiveAccount: Locator;
+
+    readonly receiveAccountModal: Locator;
+    readonly receiveAccountModalSuiteOption: Locator;
+    readonly receiveAccountModalAddSuiteOption: Locator;
+    readonly receiveAccountModalNonSuiteOption: Locator;
+
+    readonly receiveAddressModal: Locator;
+    readonly receiveAddressModalConfirmButton: Locator;
+    readonly receiveAddressInput: Locator;
+
+    readonly extraFieldModal: Locator;
+    readonly extraFieldModalConfirmButton: Locator;
+    readonly extraFieldSwitch: Locator;
+    readonly extraFieldInput: Locator;
+
+    readonly bitcoinReceiveAddressModal: Locator;
+    readonly bitcoinReceiveAddressModalOption: Locator;
+
+    readonly findAccountButton: Locator;
+
     constructor(
         private page: Page,
         private readonly devicePrompt: DevicePrompt,
@@ -208,6 +231,43 @@ export class TradingPage {
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
         // Sell
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
+
+        // receive account & receive address
+        this.receiveAddressPicker = this.page.getByTestId('@trading/receive-address-picker');
+        this.selectedReceiveAccount = this.page.getByTestId('@trading/selected-receive-account');
+
+        this.receiveAccountModal = this.page.getByTestId('@trading/receive-account-modal');
+        this.receiveAccountModalSuiteOption = this.page.getByTestId(
+            '@trading/receive-account-modal/option/suite',
+        );
+        this.receiveAccountModalAddSuiteOption = this.page.getByTestId(
+            '@trading/receive-account-modal/option/add-suite',
+        );
+        this.receiveAccountModalNonSuiteOption = this.page.getByTestId(
+            '@trading/receive-account-modal/option/non-suite',
+        );
+
+        this.receiveAddressModal = this.page.getByTestId('@trading/receive-address-modal');
+        this.receiveAddressModalConfirmButton = this.page.getByTestId(
+            '@trading/receive-address-modal/confirm-button',
+        );
+        this.receiveAddressInput = this.page.getByTestId('@trading/receive-address-input');
+
+        this.extraFieldModal = this.page.getByTestId('@trading/extra-field-modal');
+        this.extraFieldModalConfirmButton = this.page.getByTestId(
+            '@trading/extra-field-modal/confirm-button',
+        );
+        this.extraFieldSwitch = this.page.getByTestId('@trading/extra-field-switch');
+        this.extraFieldInput = this.page.getByTestId('@trading/extra-field-input');
+
+        this.bitcoinReceiveAddressModal = this.page.getByTestId(
+            '@trading/bitcoin-receive-address-modal',
+        );
+        this.bitcoinReceiveAddressModalOption = this.page.getByTestId(
+            '@trading/bitcoin-receive-address-modal/option',
+        );
+
+        this.findAccountButton = this.page.getByTestId('@find-account');
     }
 
     @step()
@@ -260,23 +320,67 @@ export class TradingPage {
     }
 
     @step()
+    async selectSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
+        await this.receiveAddressPicker.click();
+        await expect(this.receiveAccountModal).toBeVisible();
+
+        await this.receiveAccountModalSuiteOption.nth(index).click();
+
+        if (symbol === 'btc') {
+            await expect(this.bitcoinReceiveAddressModal).toBeVisible();
+            await this.bitcoinReceiveAddressModalOption.nth(0).click();
+            await expect(this.bitcoinReceiveAddressModal).toBeHidden();
+        }
+
+        await expect(this.receiveAccountModal).toBeHidden();
+    }
+
+    @step()
+    async selectNonSuiteReceiveAccount(receiveAddress: string, extraField?: string) {
+        await this.receiveAddressPicker.click();
+        await expect(this.receiveAccountModal).toBeVisible();
+
+        await this.receiveAccountModalNonSuiteOption.nth(0).click();
+        await this.receiveAddressInput.fill(receiveAddress);
+
+        if (extraField) {
+            await expect(this.extraFieldSwitch).not.toBeChecked();
+            await this.extraFieldSwitch.check();
+            await this.extraFieldInput.fill(extraField);
+        }
+
+        await this.receiveAddressModalConfirmButton.click();
+    }
+
+    @step()
+    async selectAddSuiteReceiveAccount(index: number) {
+        await this.receiveAddressPicker.click();
+        await expect(this.receiveAccountModal).toBeVisible();
+
+        await this.receiveAccountModalAddSuiteOption.nth(0).click();
+        await this.findAccountButton.click();
+
+        await this.page.discoveryShouldFinish();
+
+        await expect(this.receiveAccountModal).toBeVisible();
+        await this.receiveAccountModalSuiteOption.nth(index).click();
+    }
+
+    @step()
     async fillBuyForm({
         amount,
         cryptoCurrency = 'bitcoin',
         wantCrypto = false,
         fiatCurrencyCode = 'czk',
         country = 'CZ',
-        receiveAccount,
-        receiveAddress,
+        selectReceiveAddress,
     }: {
         amount: string;
         cryptoCurrency?: string;
         wantCrypto?: boolean;
         fiatCurrencyCode?: BaseCurrencyCode;
         country?: TradingCountryCode;
-
-        receiveAccount?: string;
-        receiveAddress?: string;
+        selectReceiveAddress?: () => Promise<void>;
     }) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
         await expect(inputField).not.toHaveValue('');
@@ -288,14 +392,8 @@ export class TradingPage {
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(fiatCurrencyCode);
 
-        if (receiveAccount && receiveAddress) {
-            await expect(this.confirmationAccountDropdown).toContainText(receiveAccount);
-
-            if (cryptoCurrency === 'bitcoin') {
-                await expect(this.confirmationAddress).toContainText(receiveAddress);
-            } else {
-                await expect(this.confirmationAddress).toHaveValue(receiveAddress);
-            }
+        if (selectReceiveAddress) {
+            await selectReceiveAddress();
         }
 
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.buyQuotes);
@@ -364,9 +462,9 @@ export class TradingPage {
         receiveCurrency: string;
         receiveSymbol: NetworkSymbol;
         receiveNetwork: string;
-
-        receiveAccount?: string;
         receiveAddress?: string;
+        fromAddress?: string;
+        selectReceiveAddress?: () => Promise<void>;
     }) {
         await this.page.selectDropdownOptionWithRetry(
             this.swapFromAccountInput,
@@ -376,14 +474,8 @@ export class TradingPage {
         // We should not fill in amount until account change takes effect = correct ticker is displayed
         await expect(this.swapAmountInputCurrencyTicker).toHaveText(params.sendTicker);
 
-        if (params.receiveAccount && params.receiveAddress) {
-            await expect(this.confirmationAccountDropdown).toContainText(params.receiveAccount);
-
-            if (params.receiveSymbol === 'btc') {
-                await expect(this.confirmationAddress).toContainText(params.receiveAddress);
-            } else {
-                await expect(this.confirmationAddress).toHaveValue(params.receiveAddress);
-            }
+        if (params.selectReceiveAddress) {
+            await params.selectReceiveAddress();
         }
 
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.swapQuotes);

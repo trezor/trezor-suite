@@ -54,6 +54,8 @@ import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingFor
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferOTC';
 import { TradingFormOffersSwitcher } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcher';
 
+import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+
 const getSelectedQuote = (
     context: TradingFormContextValues<TradingType>,
     bestScoredQuote: TradingTradeType | undefined,
@@ -84,6 +86,8 @@ export const TradingFormOffer = () => {
         getValues,
         form: { state },
     } = context;
+
+    const modalControls = useReceiveAddressModalControls();
 
     const tradingReceiveAddress =
         isTradingExchangeContext(context) || isTradingBuyContext(context)
@@ -201,6 +205,10 @@ export const TradingFormOffer = () => {
         selectQuote(quote);
     };
 
+    const onContinueClick = () => {
+        modalControls.open('accountModal');
+    };
+
     const onCompareAllOffersClick = async () => {
         setIsCompareLoading(true);
         await goToOffers();
@@ -293,6 +301,10 @@ export const TradingFormOffer = () => {
             ? receiveCurrency
             : (selectedCrypto?.value as CryptoId | undefined);
 
+    const isReceiveAddressSelected =
+        (isTradingExchangeContext(context) || isTradingBuyContext(context)) &&
+        !!context.tradingReceiveAddress.receiveAddress;
+
     return (
         <Column gap={spacings.lg}>
             <Column
@@ -381,7 +393,14 @@ export const TradingFormOffer = () => {
                         <TextButton
                             onClick={onCompareAllOffersClick}
                             size="small"
-                            isDisabled={state.isLoadingOrInvalid || isLoading || isQuoteOutdated}
+                            isDisabled={
+                                state.isLoadingOrInvalid ||
+                                isLoading ||
+                                isQuoteOutdated ||
+                                (!isTradingSellContext(context) &&
+                                    !isReceiveAddressSelected &&
+                                    !!quote)
+                            }
                             isLoading={isCompareLoading}
                             data-testid="@trading/form/compare-button"
                             type="button"
@@ -407,18 +426,9 @@ export const TradingFormOffer = () => {
                 )}
             </Column>
 
-            {requiresTokenApproval && bestScoredQuote && !isLoading ? (
-                <TradingFormApproval
-                    openApproveModal={onOpenApproveModal}
-                    openRevokeModal={onOpenRevokeModal}
-                    approvalType={approvalType}
-                    setApprovalType={setApprovalType}
-                    isManuallyApproved={isManuallyApproved}
-                    setIsManuallyApproved={setIsManuallyApproved}
-                />
-            ) : (
+            {!isTradingSellContext(context) && !isReceiveAddressSelected && quote ? (
                 <Button
-                    onClick={onSelectQuote}
+                    onClick={onContinueClick}
                     variant="primary"
                     margin={{
                         top: spacings.md,
@@ -426,10 +436,36 @@ export const TradingFormOffer = () => {
                     isFullWidth
                     isDisabled={isButtonDisabled || isLoading}
                     isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
-                    data-testid={`@trading/form/${type}-button`}
                 >
-                    <Translation id={tradingGetSectionActionLabel(type)} />
+                    <Translation id="TR_CONTINUE" />
                 </Button>
+            ) : (
+                <>
+                    {requiresTokenApproval && bestScoredQuote && !isLoading ? (
+                        <TradingFormApproval
+                            openApproveModal={onOpenApproveModal}
+                            openRevokeModal={onOpenRevokeModal}
+                            approvalType={approvalType}
+                            setApprovalType={setApprovalType}
+                            isManuallyApproved={isManuallyApproved}
+                            setIsManuallyApproved={setIsManuallyApproved}
+                        />
+                    ) : (
+                        <Button
+                            onClick={onSelectQuote}
+                            variant="primary"
+                            margin={{
+                                top: spacings.md,
+                            }}
+                            isFullWidth
+                            isDisabled={isButtonDisabled || isLoading}
+                            isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
+                            data-testid={`@trading/form/${type}-button`}
+                        >
+                            <Translation id={tradingGetSectionActionLabel(type)} />
+                        </Button>
+                    )}
+                </>
             )}
 
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}

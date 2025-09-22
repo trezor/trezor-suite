@@ -44,7 +44,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
+import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import {
@@ -374,12 +374,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                     account.networkType,
                                                 )}
                                             />
-                                            <TokenAddressRow
+                                            <AddressRow
                                                 typographyStyle="hint"
                                                 variant="tertiary"
-                                                tokenContractAddress={networkTokenContractAddress}
+                                                address={networkTokenContractAddress}
                                                 shouldAllowCopy={true}
-                                                tokenExplorerUrl={getTokenExplorerUrl(
+                                                explorerUrl={getTokenExplorerUrl(
                                                     explorer,
                                                     getNetwork(account.symbol).networkType,
                                                     selectedToken,

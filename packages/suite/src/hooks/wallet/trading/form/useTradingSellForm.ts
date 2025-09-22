@@ -193,6 +193,7 @@ export const useTradingSellForm = ({
         setComposedLevels,
         composeRequest,
     } = useTradingComposeTransaction<TradingSellFormProps>({
+        type: 'sell',
         account,
         network,
         values: values as TradingSellFormProps,

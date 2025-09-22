@@ -245,6 +245,7 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_EXCHANGE_FORM]: TradingExchangeFormType;
     [constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]: TradingExchangeKycFilter;
     [constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]: TradingExchangeRateFilter;
+    [constants.TRADING_EXCHANGE_FROM_ADDRESS]?: string | undefined;
     [constants.TRADING_EXCHANGE_RECEIVE_ADDRESS]?: string | undefined;
     [constants.TRADING_EXCHANGE_EXTRA_FIELD]?: string | undefined;
 }
@@ -254,7 +255,8 @@ export type MinimalExchangeFormProps = {
     receiveCryptoSelect?: { value: CryptoId } | null;
     sendCryptoSelect?: { value: CryptoId } | null;
     setMaxOutputId?: number;
-    receiveAddress?: string | undefined;
+    receiveAddress?: string;
+    fromAddress?: string;
 };
 
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';

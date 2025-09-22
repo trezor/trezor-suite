@@ -55,12 +55,14 @@ const TextOverflowContainer = styled.div<{ $shouldAllowCopy?: boolean }>`
 `;
 
 interface TokenAddressRowProps {
-    tokenExplorerUrl?: string;
-    tokenContractAddress: string | null;
+    explorerUrl?: string;
+    address: string | null;
     shouldAllowCopy?: boolean;
     typographyStyle?: TextProps['typographyStyle'];
     variant?: TextProps['variant'];
-    onCopy: () => void;
+    onCopy?: () => void;
+    showStart?: number;
+    showEnd?: number;
 }
 
 // This is needed because icon interferes with pointer events of Select
@@ -70,33 +72,35 @@ const IconWithNoPointer = styled(Icon)`
 `;
 
 // TODO: this component is little bit copy/paste of IOAddress component, please check it
-export const TokenAddressRow = ({
-    tokenContractAddress,
-    tokenExplorerUrl,
+export const AddressRow = ({
+    address,
+    explorerUrl,
     shouldAllowCopy = true,
     typographyStyle = 'label',
     variant = 'default',
+    showStart = 6,
+    showEnd = 4,
     onCopy,
 }: TokenAddressRowProps) => {
     const [isClicked, setIsClicked] = useState(false);
     const theme = useTheme();
 
-    if (!tokenContractAddress) return null;
+    if (!address) return null;
 
     const copy = (event: MouseEvent) => {
         setIsClicked(true);
         event.stopPropagation();
-        onCopy();
+        onCopy?.();
     };
 
-    const shortenedTokenAddress = `${tokenContractAddress.slice(0, 6)}...${tokenContractAddress.slice(-4)}`;
+    const shortenedTokenAddress = `${address.slice(0, showStart)}...${address.slice(address.length - showEnd, address.length)}`;
 
     return (
         <Text typographyStyle={typographyStyle} variant={variant}>
             <TextOverflowContainer
                 onMouseLeave={() => setIsClicked(false)}
                 data-testid="@tx-detail/txid-value"
-                id={tokenContractAddress}
+                id={address}
                 $shouldAllowCopy={shouldAllowCopy}
             >
                 <Text textWrap="nowrap">{shortenedTokenAddress}</Text>
@@ -109,12 +113,12 @@ export const TokenAddressRow = ({
                         />
                     </IconWrapper>
                 ) : null}
-                {tokenExplorerUrl ? (
+                {explorerUrl ? (
                     <IconWrapper>
                         <Link
                             typographyStyle="label"
                             variant="nostyle"
-                            href={tokenExplorerUrl}
+                            href={explorerUrl}
                             target="_blank"
                             onClick={e => e.stopPropagation()}
                         >

@@ -17,7 +17,7 @@ import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
 import { AccountLabel, BaseCurrencyValue } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Translation } from 'src/components/suite/Translation';
-import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
+import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useTranslation } from 'src/hooks/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
@@ -79,8 +79,8 @@ export const TradingInfoItem = ({
                         <Row>
                             {accountLabelPrefix}&nbsp;
                             {isExternalBuyOrExchange && (
-                                <TokenAddressRow
-                                    tokenContractAddress={receiveAddress}
+                                <AddressRow
+                                    address={receiveAddress}
                                     shouldAllowCopy={true}
                                     onCopy={() => copyAddressToClipboard(receiveAddress)}
                                 />

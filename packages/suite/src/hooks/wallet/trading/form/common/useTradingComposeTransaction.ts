@@ -31,6 +31,7 @@ import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUt
 
 // shareable sub-hook used in useTradingSellForm & useTradingExchangeForm
 export const useTradingComposeTransaction = <T extends TradingSellExchangeFormProps>({
+    type,
     account,
     network,
     values,
@@ -92,7 +93,9 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             );
 
             if (values?.outputs?.[0] && typeof address === 'string') {
-                setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
+                if (type !== 'exchange') {
+                    setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
+                }
                 setState(initState);
             }
         };
@@ -126,6 +129,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         initState.account.symbol,
         initState.feeInfo,
         outputAddress,
+        type,
     ]);
 
     useEffect(() => {

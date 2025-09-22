@@ -42,6 +42,7 @@ export const TRADING_FORM_COUNTRY_SELECT = 'countrySelect';
 export const TRADING_FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
 
+export const TRADING_EXCHANGE_FROM_ADDRESS = 'fromAddress';
 export const TRADING_EXCHANGE_RECEIVE_ADDRESS = 'receiveAddress';
 export const TRADING_EXCHANGE_EXTRA_FIELD = 'extraField';
 

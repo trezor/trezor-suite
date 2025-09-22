@@ -20,6 +20,7 @@ import {
     exchangeThunks,
     getUnusedAddressFromAccount,
     invityAPI,
+    isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
     selectTradingExchange,
     selectTradingExchangeAccountKey,
@@ -32,7 +33,7 @@ import {
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
     fetchAndUpdateAccountThunk,
     selectAccountByKey,
@@ -244,6 +245,7 @@ export const useTradingExchangeForm = ({
         composeRequest,
         isComposing,
     } = useTradingComposeTransaction<TradingExchangeFormProps>({
+        type: 'exchange',
         account,
         network,
         values: values as TradingExchangeFormProps,
@@ -756,31 +758,62 @@ export const useTradingExchangeForm = ({
         composeRequest();
     };
 
+    useEffect(() => {
+        if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
+            return setValue('fromAddress', undefined);
+        }
+
+        const networkType = getNetworkType(account.symbol);
+
+        switch (networkType) {
+            case 'ethereum':
+            case 'solana':
+            case 'ripple':
+            case 'stellar':
+                return setValue('fromAddress', account.descriptor);
+            default:
+                return setValue('fromAddress', undefined);
+        }
+    }, [account, setValue, exchangeType]);
+
     // set ethereumDataHex from DEX quote for correct fees fetching
     useEffect(() => {
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
-            setValue('ethereumDataHex', '');
+            return setValue('ethereumDataHex', '');
+        }
 
+        if (isFormLoading || isLoadingQuote) {
             return;
         }
 
-        const quote = isApproval ? selectedQuote : dexQuotes[0];
+        const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect?.value);
 
-        if (!quote) return;
+        const quote = isEvmNativeToken ? dexQuotes[0] : selectedQuote;
+
+        if (!quote || !quote.dexTx) {
+            return setValue('ethereumDataHex', '');
+        }
 
         const { dexTx } = quote;
-        if (!dexTx) return;
 
         setValue('ethereumDataHex', dexTx.data);
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quotes, selectedQuote, exchangeType, isApproval]);
+    }, [
+        dexQuotes,
+        selectedQuote,
+        exchangeType,
+        isApproval,
+        sendCryptoSelect,
+        isFormLoading,
+        isLoadingQuote,
+    ]);
 
     // fetch fees when ethereumDataHex changes
     useEffect(() => {
         fetchFeesAndCompose();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [values.ethereumDataHex]);
+    }, [values.ethereumDataHex, values.outputs?.[0]?.address]);
 
     useEffect(() => {
         setValue('receiveAddress', receiveAddress);
