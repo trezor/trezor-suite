@@ -1,4 +1,4 @@
-import { Box, Button, Card, Text } from '@suite-native/atoms';
+import { Box, Button, Card, InlineAlertBoxProps, Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { models } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -39,10 +39,19 @@ export const BluetoothDeviceCard = ({
     const { deviceModel, deviceColor } = device.manufacturerData;
     const modelConfig = models[deviceModel];
 
-    const isLoading = variant === 'connect' && device.connectionStatus.type !== 'disconnected';
+    const isConnecting = variant === 'connect' && device.connectionStatus.type !== 'disconnected';
+    const isPairingInProgress = variant === 'connect' && device.connectionStatus.type === 'pairing';
+    const pairingHintInlineAlert: InlineAlertBoxProps = {
+        title: <Translation id="bluetooth.deviceCard.connect.pairingHint" />,
+        variant: 'info',
+    };
 
     return (
-        <Card style={applyStyle(cardStyle)}>
+        <Card
+            style={applyStyle(cardStyle)}
+            alertProps={isPairingInProgress ? pairingHintInlineAlert : undefined}
+            alertPosition="bottom"
+        >
             <Box alignItems="center">
                 <DeviceColorImage color={deviceColor} />
             </Box>
@@ -57,8 +66,8 @@ export const BluetoothDeviceCard = ({
                 </Text>
             </Box>
             <Button
-                isLoading={isLoading}
-                isDisabled={isLoading}
+                isLoading={isConnecting}
+                isDisabled={isConnecting}
                 onPress={() => onButtonPress(device)}
                 style={applyStyle(buttonStyle)}
             >
