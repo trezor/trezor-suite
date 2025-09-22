@@ -34,8 +34,11 @@ export class OnboardingPage {
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
     readonly continueAtYourOwnRiskButton: Locator;
+    readonly pairingInputAtIndex = (index: number) =>
+        this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
 
     isModelWithSecureElement = () => ['T3B1', 'T3T1', 'T3W1'].includes(this.model);
+    isModelWithTHP = () => ['T3W1'].includes(this.model);
 
     constructor(
         public page: Page,
@@ -93,11 +96,33 @@ export class OnboardingPage {
     }
 
     @step()
+    async confirmTHPPairing() {
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+        const screenContent = await TrezorUserEnvLinkProxy.getScreenContent();
+        const screenContentBody = screenContent.body as string;
+        const digits =
+            screenContentBody
+                .match(/(\d\s*){6}$/)?.[0]
+                .replace(/\s+/g, '')
+                .split('') ?? [];
+
+        for (let i = 0; i < digits.length; i++) {
+            await this.pairingInputAtIndex(i).fill(digits[i]);
+        }
+    }
+
+    @step()
     async completeOnboarding(options?: { keepDebugModeEnabled?: boolean }) {
         await this.disableNecessaryFirmwareChecks();
         await this.disableDisconnectPrompt();
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
+
+        if (this.isModelWithTHP()) {
+            await this.confirmTHPPairing();
+        }
+
         await this.onboardingContinueButton.click();
         if (this.isModelWithSecureElement()) {
             await this.passThroughAuthenticityCheck();
