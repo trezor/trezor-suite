@@ -1,5 +1,5 @@
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
-import path from 'path';
+import path, { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -111,6 +111,15 @@ const config: webpack.Configuration = {
                                 },
                             ],
                             '@babel/preset-typescript',
+                            [
+                                '@babel/preset-env',
+                                {
+                                    corejs: 3,
+                                    configPath: resolve(__dirname, '../browserslist'),
+                                    shippedProposals: true,
+                                    useBuiltIns: 'usage',
+                                },
+                            ],
                         ],
                         plugins: [
                             [
