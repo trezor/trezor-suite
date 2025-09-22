@@ -416,7 +416,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }
 
     stop() {
-        if (!this.stopped) {
+        if (this.api.rawListeners('transport-interface-change').length === 0) {
             this.api.once('transport-interface-change', () => {
                 this.logger?.debug('device connected after transport stopped, goodbye...');
             });
