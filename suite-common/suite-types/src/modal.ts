@@ -41,6 +41,7 @@ export type UserContextPayload =
           isCoinjoinDisabled?: boolean;
           isBackClickDisabled?: boolean;
           onCancel?: () => void;
+          onConfirm?: () => void;
       }
     | {
           type: 'device-background-gallery';

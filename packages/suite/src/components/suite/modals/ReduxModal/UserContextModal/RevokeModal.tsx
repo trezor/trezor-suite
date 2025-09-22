@@ -89,9 +89,9 @@ export const RevokeModal = ({ onCancel }: RevokeModalProps) => {
         });
 
         setIsConfirmButtonLoading(true);
+        onCancel(true);
         await sendTransaction();
         setIsConfirmButtonLoading(false);
-        onCancel(true);
     };
 
     const onClose = (isSubmitting?: boolean) => {

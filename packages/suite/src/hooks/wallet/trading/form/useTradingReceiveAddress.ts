@@ -20,7 +20,6 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
@@ -159,24 +158,16 @@ export const useTradingReceiveAddress = ({
         [methods],
     );
 
-    const onChangeAccount = (account: TradingVerifyFormAccountOptionProps) => {
-        if (account.type === 'ADD_SUITE' && device) {
-            dispatch(
-                openModal({
-                    type: 'add-account',
-                    device,
-                    symbol,
-                    noRedirect: true,
-                    isCoinjoinDisabled: true,
-                    isBackClickDisabled: true,
-                }),
-            );
-
+    const onChangeAccount = (
+        account: TradingVerifyFormAccountOptionProps,
+        receiveAddress?: string,
+    ) => {
+        if (account.type === 'ADD_SUITE') {
             return;
         }
 
         setIsMenuOpen(undefined);
-        selectAccountOption(account);
+        selectAccountOption(account, receiveAddress);
     };
 
     useEffect(() => {
@@ -192,6 +183,30 @@ export const useTradingReceiveAddress = ({
         selectAccountOption(option);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol]);
+
+    // change receive account on send account change
+    useEffect(() => {
+        if (!sendAccountKey) return;
+
+        const sendAccount =
+            type === 'exchange'
+                ? accounts.find(account => account.key === sendAccountKey)
+                : undefined;
+
+        if (sendAccount?.symbol !== symbol) return;
+
+        const option = selectAccountOptions.find(
+            accountOption =>
+                (accountOption?.account?.key === sendAccountKey ||
+                    accountOption?.account?.symbol === symbol) &&
+                accountOption?.account?.index === sendAccount?.index,
+        );
+
+        if (!option) return;
+
+        selectAccountOption(option);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sendAccountKey, symbol]);
 
     // select initial option
     // if coming from exchange confirm page, load persisted receive account and address

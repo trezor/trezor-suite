@@ -333,6 +333,7 @@ export interface TradingUseFormActionsReturnProps {
 }
 
 export interface TradingUseComposeTransactionProps<T extends TradingSellExchangeFormProps> {
+    type: TradingTradeSellExchangeType;
     account: Account;
     network: Network;
     methods: UseFormReturn<T>;

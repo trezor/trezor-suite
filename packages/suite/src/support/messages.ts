@@ -209,6 +209,10 @@ export default defineMessages({
         defaultMessage: 'Rewards',
         id: 'TR_FRACTION_BUTTONS_REWARDS',
     },
+    TR_RECEIVE_ACCOUNT_NOT_SELECTED: {
+        id: 'TR_RECEIVE_ACCOUNT_NOT_SELECTED',
+        defaultMessage: 'Not selected',
+    },
     TR_EXCHANGE_FIXED_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',
         defaultMessage:
@@ -1532,6 +1536,34 @@ export default defineMessages({
     TR_TRADING_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_TRADING_PROVIDER',
+    },
+    TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE: {
+        defaultMessage: 'Account not found',
+        id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE',
+    },
+    TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT: {
+        defaultMessage: "It seems that you don't have any account matching selected asset.",
+        id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT',
+    },
+    TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE: {
+        defaultMessage: 'Address not found',
+        id: 'TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE',
+    },
+    TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT: {
+        defaultMessage: 'Check the spelling or browse the list to select an option.',
+        id: 'TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT',
+    },
+    TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT: {
+        defaultMessage: "Enter {networkName} address that isn't in Trezor Suite.",
+        id: 'TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT',
+    },
+    TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESSES: {
+        defaultMessage: 'New addresses',
+        id: 'TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESSES',
+    },
+    TR_TRADING_RECEIVE_ADDRESS_USED_ADDRESSES: {
+        defaultMessage: 'Used addresses',
+        id: 'TR_TRADING_RECEIVE_ADDRESS_USED_ADDRESSES',
     },
     TR_TRADING_EXCHANGE_TYPE: {
         defaultMessage: 'Exchange type',

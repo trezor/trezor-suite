@@ -9,24 +9,26 @@ import { Translation } from 'src/components/suite/Translation';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
-export interface TradingVerifyDestinationTagProps {
+interface TradingExtraFieldProps {
     inputComponent: ReactNode;
     onToggle?: (toggled: boolean) => void;
     required: boolean;
     extraFieldDescription?: ExchangeTrade['extraFieldDescription'];
     isDisabled?: boolean;
+    defaultChecked?: boolean;
 }
 
-export const TradingVerifyDestinationTag = ({
+export const TradingExtraField = ({
     inputComponent,
     onToggle,
     required,
     extraFieldDescription,
     isDisabled = false,
-}: TradingVerifyDestinationTagProps) => {
+    defaultChecked = false,
+}: TradingExtraFieldProps) => {
     const { openNodeById } = useGuideOpenNode();
 
-    const [enabled, setEnabled] = useState<boolean>(required);
+    const [enabled, setEnabled] = useState<boolean>(defaultChecked ?? required);
 
     const handleToggle = (isChecked: boolean) => {
         setEnabled(isChecked);
@@ -42,6 +44,7 @@ export const TradingVerifyDestinationTag = ({
         <Column gap={spacings.md}>
             <Row justifyContent="space-between">
                 <Switch
+                    data-testid="@trading/extra-field-switch"
                     isChecked={enabled}
                     onChange={handleToggle}
                     label={

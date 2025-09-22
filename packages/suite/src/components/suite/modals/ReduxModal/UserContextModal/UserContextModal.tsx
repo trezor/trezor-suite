@@ -75,6 +75,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
                     isBackClickDisabled={payload.isBackClickDisabled}
                     onCancel={payload.onCancel ?? onCancel}
+                    onConfirm={payload.onConfirm}
                 />
             );
         case 'unverified-address':
