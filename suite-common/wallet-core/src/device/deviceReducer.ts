@@ -203,6 +203,11 @@ const connectDevice = (draft: DeviceReducerState, device: Device) => {
     // update affected devices
     if (affectedDevices.length > 0) {
         const changedDevices = affectedDevices.map(d => {
+            // new connection is over bluetooth, existing one is usb. prioritize usb.
+            if (!d.bluetoothProps && d.connected && device.bluetoothProps) {
+                return merge(d, { connected: true, available: true });
+            }
+
             // change availability according to "passphrase_protection" field
             if (
                 d.useEmptyPassphrase !== true &&
@@ -293,6 +298,10 @@ const changeDevice = (
         const isDeviceUnlocked = isUnlocked(device.features);
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
+            // new connection is over bluetooth, existing one is usb. prioritize usb.
+            if (!d.bluetoothProps && d.connected && device.bluetoothProps) {
+                return d;
+            }
             if (d.state && isDeviceUnlocked) {
                 // if device is unlocked and authorized (with state) check availability.
                 // if it was created with passphrase (useEmptyPassphrase = false) then availability depends on current settings
