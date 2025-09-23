@@ -1,6 +1,7 @@
 /* eslint-disable require-await */
 
 const { mergeConfig } = require('@react-native/metro-config');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { withRozenite } = require('@rozenite/metro');
 const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/metro');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');

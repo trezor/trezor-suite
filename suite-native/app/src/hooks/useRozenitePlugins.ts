@@ -1,4 +1,4 @@
- 
+/* eslint-disable import/no-extraneous-dependencies */
 //This rule has to be disabled, because we are importing rozenite plugins that are present only in package devDependencies.
 
 import 'react-native-get-random-values';

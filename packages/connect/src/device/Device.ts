@@ -338,7 +338,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     if (this.bluetoothProps?.channels['push-notification']) {
                         this.transport.on('trezor-push-notification', ({ data }) => {
-                            console.log('push-notif event', data);
                             this._features.bootloader_mode = data[2] === 1;
                             this._features.firmware_present = data[2] === 1 ? true : null;
                             this.lifecycle.emit(DEVICE.CHANGED);

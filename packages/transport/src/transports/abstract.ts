@@ -82,7 +82,11 @@ type NotifyUnlock = 1;
 type NotifyLock = 2;
 type NormalMode = 0;
 type BootloaderMode = 1;
-type NotificationData = [1, NotifyBoot | NotifyUnlock | NotifyLock, NormalMode | BootloaderMode];
+export type NotificationData = [
+    1,
+    NotifyBoot | NotifyUnlock | NotifyLock,
+    NormalMode | BootloaderMode,
+];
 
 type TransportEvents = {
     [TRANSPORT.DEVICE_CONNECTED]: Descriptor;
@@ -305,7 +309,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         channels: OpenDeviceChannel[];
         signal?: AbortSignal;
     }): Promise<Record<OpenDeviceChannel, boolean>> {
-         // Return a rejected promise to indicate this feature is not supported by this transport by default.
+        // Return a rejected promise to indicate this feature is not supported by this transport by default.
         return Promise.reject(new Error(`${this.name} does not support the 'subscribe' method.`));
     }
 
