@@ -10845,4 +10845,8 @@ export default defineMessages({
         id: 'TR_PUBLIC_KEY_COSE',
         defaultMessage: 'COSE (CIP-30)',
     },
+    TR_CONFIRM_BLUETOOTH_PAIRING: {
+        id: 'TR_CONFIRM_BLUETOOTH_PAIRING',
+        defaultMessage: 'Confirm the Bluetooth pairing request on your Trezor as well.',
+    },
 } as const);
