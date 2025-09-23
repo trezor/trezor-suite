@@ -33,12 +33,12 @@ const InnerActions = styled.div`
     margin: ${spacingsPx.xxl} auto;
 `;
 
-const OuterActions = styled.div<{ $smallMargin?: boolean }>`
+const OuterActions = styled.div<{ $smallMargin?: boolean; $isBackDropVisible?: boolean }>`
     display: flex;
     margin-top: ${({ $smallMargin }) => ($smallMargin ? '0px' : spacingsPx.lg)};
     width: 100%;
     justify-content: center;
-    z-index: ${zIndices.onboardingForeground};
+    z-index: ${({ $isBackDropVisible }) => ($isBackDropVisible ? zIndices.base : zIndices.onboardingForeground)};
 `;
 
 const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVisible: boolean }>`
@@ -119,7 +119,7 @@ export const OnboardingStepBox = ({
                 )}
             </StyledCollapsibleCard>
 
-            {outerActions && <OuterActions $smallMargin={nested}>{outerActions}</OuterActions>}
+            {outerActions && <OuterActions $smallMargin={nested} $isBackDropVisible={isBackDropVisible}>{outerActions}</OuterActions>}
         </>
     );
 };
