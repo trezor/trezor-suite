@@ -50,15 +50,30 @@ export type BluetoothSelectedDeviceProps = {
     onReScanClick: () => void;
 };
 
-export const BluetoothSelectedDevice = ({ device, onReScanClick }: BluetoothSelectedDeviceProps) =>
-    device.connectionStatus.type === 'connection-error' ||
-    device.connectionStatus.type === 'pairing-error' ? (
-        <ErrorComponent onReScanClick={onReScanClick} device={device} />
-    ) : (
+export const BluetoothSelectedDevice = ({
+    device,
+    onReScanClick,
+}: BluetoothSelectedDeviceProps) => {
+    const isError =
+        device.connectionStatus.type === 'connection-error' ||
+        device.connectionStatus.type === 'pairing-error';
+
+    if (isError) {
+        return <ErrorComponent onReScanClick={onReScanClick} device={device} />;
+    }
+
+    const showHint = ['disconnected', 'connecting', 'pairing'].includes(
+        device.connectionStatus.type,
+    );
+
+    return (
         <Card>
             <OkComponent device={device} />
-            <Banner variant="info" icon="info" margin={{ top: 16 }}>
-                <Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />
-            </Banner>
+            {showHint && (
+                <Banner variant="info" icon="info" margin={{ top: 16 }}>
+                    <Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />
+                </Banner>
+            )}
         </Card>
     );
+};
