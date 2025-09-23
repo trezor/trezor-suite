@@ -81,9 +81,9 @@ export const messages = {
         addLabel: 'Add label',
     },
     moduleHome: {
-        graphIgnoredNetworks: {
-            sol: 'Solana and all related tokens are reflected in the balance, but not in the graph.',
-        },
+        graphIgnoredNetworks:
+            '{networksString} and all related tokens are reflected in the balance, but not in the graph.',
+
         emptyState: {
             emptyDevice: {
                 title: 'Your wallet is empty',

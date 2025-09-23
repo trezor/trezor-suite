@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
@@ -8,8 +9,8 @@ import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
     Graph,
     TimeSwitch,
+    selectDeviceHistoryIgnoredNetworkSymbols,
     selectHasDeviceHistoryEnabledAccounts,
-    selectHasDeviceHistoryIgnoredAccounts,
     useGraphAtoms,
     useGraphForAllDeviceAccounts,
 } from '@suite-native/graph';
@@ -23,16 +24,20 @@ export type PortfolioGraphRef = {
 };
 
 const IgnoredNetworksBanner = () => {
-    const hasDeviceHistoryIgnoredAccounts = useSelector(selectHasDeviceHistoryIgnoredAccounts);
+    const graphIgnoredNetworkSymbols = useSelector(selectDeviceHistoryIgnoredNetworkSymbols);
 
-    if (!hasDeviceHistoryIgnoredAccounts) {
+    if (!graphIgnoredNetworkSymbols.length) {
         return null;
     }
+
+    const networksString = graphIgnoredNetworkSymbols
+        .map(symbol => getNetwork(symbol).name)
+        .join(', ');
 
     return (
         <Box paddingHorizontal="sp16">
             <Text textAlign="center" variant="hint" color="textSubdued">
-                <Translation id="moduleHome.graphIgnoredNetworks.sol" />
+                <Translation id="moduleHome.graphIgnoredNetworks" values={{ networksString }} />
             </Text>
         </Box>
     );
