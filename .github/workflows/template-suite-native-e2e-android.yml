@@ -170,4 +170,4 @@ jobs:
     steps:
       - name: Notify scheduled job failure to Slack
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly Android E2E tests failed :pepe_flame: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' ${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly Android E2E tests failed :pepe_flame: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' "${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}"
