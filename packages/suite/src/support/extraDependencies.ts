@@ -1,5 +1,3 @@
-import { NavigateOptions, To } from 'react-router';
-
 import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
@@ -9,7 +7,7 @@ import {
     subscribeLocalFirstStorageThunk,
     unsubscribeAndDisposeLocalFirstStorageThunk,
 } from '@suite-common/local-first-storage';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { ExtraDependencies, LocationPushState, To } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -64,7 +62,7 @@ const connectInitSettings = {
 
 export const createRouterServices = (history: History) => ({
     history,
-    navigate: (to: To, state?: NavigateOptions['state']) => history.push(to, state),
+    navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
 
 export const extraDependencies: ExtraDependencies = {
