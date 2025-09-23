@@ -3,8 +3,6 @@ import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonGroup, Tooltip, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -17,7 +15,6 @@ import {
     Translation,
 } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import {
     ImageValidationError,
@@ -27,6 +24,8 @@ import {
     isHomescreenSupportedOnDevice,
     validateImage,
 } from 'src/utils/suite/homescreen';
+
+import { HomescreenSettingsTitle } from './Homescreen/HomescreenSettingsTitle';
 
 const HiddenInput = styled.input`
     display: none;
@@ -42,9 +41,9 @@ const ValidationMessage = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface HomescreenProps {
+type HomescreenProps = {
     isDeviceLocked: boolean;
-}
+};
 
 export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const [customHomescreen, setCustomHomescreen] = useState('');
@@ -97,39 +96,8 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     return (
         <>
             <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
-                {HAS_MONOCHROME_SCREEN[deviceModelInternal] && (
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
-                        description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64" />
-                        }
-                        buttonLink={HOMESCREEN_EDITOR_URL}
-                        buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
-                    />
-                )}
+                <HomescreenSettingsTitle deviceModelInternal={deviceModelInternal} />
 
-                {[
-                    DeviceModelInternal.T2T1,
-                    DeviceModelInternal.T3T1,
-                    DeviceModelInternal.T3W1,
-                ].includes(deviceModelInternal) && (
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
-                        description={
-                            <Translation
-                                id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR"
-                                values={{
-                                    width: deviceModelInformation[deviceModelInternal].width,
-                                    height: deviceModelInformation[deviceModelInternal].height,
-                                    maxSizeKb: Math.round(
-                                        deviceModelInformation[deviceModelInternal].maxImageSize /
-                                            1024,
-                                    ),
-                                }}
-                            />
-                        }
-                    />
-                )}
                 <ActionColumn>
                     <HiddenInput
                         ref={fileInputElement}

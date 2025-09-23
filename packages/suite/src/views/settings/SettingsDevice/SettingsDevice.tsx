@@ -2,7 +2,7 @@ import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-utils';
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
-import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -172,9 +172,7 @@ export const SettingsDevice = () => {
 
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="palette">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
-                        {deviceModelInternal !== DeviceModelInternal.T3W1 && (
-                            <Homescreen isDeviceLocked={isDeviceLocked} />
-                        )}
+                        <Homescreen isDeviceLocked={isDeviceLocked} />
                         <DisplayRotation isDeviceLocked={isDeviceLocked} />
                         <Brightness isDeviceLocked={isDeviceLocked} />
                         <HapticFeedback isDeviceLocked={isDeviceLocked} />
