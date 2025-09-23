@@ -361,6 +361,7 @@ export default defineConfig({
         preserveSymlinks: true,
     },
     define: {
+        'process.env.VITE': true,
         'process.browser': true,
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.COMMIT_HASH': JSON.stringify(commitId),
