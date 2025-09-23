@@ -16,7 +16,7 @@ import {
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
-import { Box, Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
+import { Icon, IconButton, Input, Link, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -452,9 +452,23 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     return (
         <Input
             inputState={getInputState()}
-            innerAddon={
-                metadataEnabled && broadcastEnabled ? (
-                    <Box maxWidth={200}>
+            innerAddon={<Icon name="qrCode" onClick={handleQrClick} />}
+            label={<Translation id="RECIPIENT_ADDRESS" />}
+            labelLeft={
+                <p>
+                    <Translation
+                        id={
+                            outputsCount > 1
+                                ? 'TR_SEND_RECIPIENT_ADDRESS'
+                                : 'TR_SEND_ADDRESS_SECTION'
+                        }
+                        values={{ index: recipientId }}
+                    />
+                </p>
+            }
+            labelRight={
+                <Row>
+                    {metadataEnabled && broadcastEnabled && (
                         <MetadataLabeling
                             variant="button"
                             deviceStaticSessionId={device.state.staticSessionId}
@@ -475,41 +489,22 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             }}
                             visible
                         />
-                    </Box>
-                ) : undefined
-            }
-            label={<Translation id="RECIPIENT_ADDRESS" />}
-            labelHoverRight={
-                <Button variant="tertiary" size="tiny" icon="qrCode" onClick={handleQrClick}>
-                    <Translation id="RECIPIENT_SCAN" />
-                </Button>
-            }
-            labelLeft={
-                <p>
-                    <Translation
-                        id={
-                            outputsCount > 1
-                                ? 'TR_SEND_RECIPIENT_ADDRESS'
-                                : 'TR_SEND_ADDRESS_SECTION'
-                        }
-                        values={{ index: recipientId }}
-                    />
-                </p>
-            }
-            labelRight={
-                outputsCount > 1 ? (
-                    <IconButton
-                        icon="x"
-                        size="tiny"
-                        variant="tertiary"
-                        data-testid={`outputs.${outputId}.remove`}
-                        onClick={() => {
-                            removeOutput(outputId);
-                            // compose by first Output
-                            composeTransaction();
-                        }}
-                    />
-                ) : undefined
+                    )}
+                    {outputsCount > 1 && (
+                        <IconButton
+                            margin={{ left: spacings.xxs }}
+                            icon="x"
+                            size="tiny"
+                            variant="tertiary"
+                            data-testid={`outputs.${outputId}.remove`}
+                            onClick={() => {
+                                removeOutput(outputId);
+                                // compose by first Output
+                                composeTransaction();
+                            }}
+                        />
+                    )}
+                </Row>
             }
             bottomText={getBottomText()}
             bottomTextIconComponent={getBottomTextIconComponent()}
