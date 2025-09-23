@@ -4,6 +4,7 @@ import { resolveConfig } from 'detox/internals';
 import { LaunchArguments } from '@suite-native/config';
 import { PreloadedState } from '@suite-native/state';
 import { MNEMONICS, MODELS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { mergeDeepObject } from '@trezor/utils';
 
 const platform = device.getPlatform();
 
@@ -108,6 +109,11 @@ export const restartApp = async ({ args = {} }: RestartAppProps = {}) => {
     });
 };
 
+export const wipeAppData = async () => {
+    await device.uninstallApp();
+    await device.installApp();
+};
+
 export const scrollUntilVisible = async (
     target: Detox.IndexableNativeElement,
     scrollViewTestId: string = '@screen/mainScrollView',
@@ -195,3 +201,13 @@ export const waitForElementByIdToBeVisible = (testId: string, timeout = 30000) =
     waitFor(element(by.id(testId)))
         .toBeVisible()
         .withTimeout(timeout);
+
+/**
+ * Merges multiple preloaded state fragments into a single preloaded state. Be mindful about the
+ * order of the fragments, as the later fragments will always override the earlier ones!
+ */
+export const mergePreloadedReduxState = (...stateFragments: PreloadedState[]): PreloadedState => {
+    const definedFragments = stateFragments.filter(fragment => fragment !== undefined);
+
+    return mergeDeepObject(...definedFragments);
+};

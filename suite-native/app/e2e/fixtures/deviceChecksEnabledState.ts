@@ -1,13 +1,12 @@
 import { PreloadedState } from '@suite-native/state';
 
-export const onboardingCompleted: PreloadedState = {
+/**
+ *  State fragment that ensures that the device security checks are enabled.
+ */
+export const deviceChecksEnabledState: PreloadedState = {
     appSettings: {
-        isOnboardingFinished: true,
-        isCoinEnablingInitFinished: false,
         isDeviceAuthenticityCheckEnabled: true,
         isFirmwareRevisionCheckEnabled: true,
         isFirmwareHashCheckEnabled: true,
-        areTestnetsEnabled: true,
-        hasAutoEjectAlertBeenDisplayed: true,
     },
 };
