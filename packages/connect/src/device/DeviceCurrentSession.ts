@@ -185,7 +185,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             // transport response is pending endlessly, calling any other message will end up with "device call in progress"
             // set the timeout for this call so whenever it happens "unacquired device" will be created instead
             // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
-            const timeout = name === 'GetFeatures' ? 3_000 : undefined;
+            const timeout = this.device.possibleT1 && name === 'GetFeatures' ? 3_000 : undefined;
 
             const callPromise = this.call(name, data, { timeout });
 

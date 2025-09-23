@@ -118,7 +118,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transportPath;
     public readonly bluetoothProps;
     private thp: protocolThp.ThpState | undefined;
-    private readonly possibleHIDdevice;
+    private readonly descriptorType;
     private sessionAcquired: Session | null;
 
     // protocol related
@@ -189,6 +189,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this._firmwareType;
     }
 
+    private get possibleHIDdevice() {
+        return this.descriptorType === 0 || this.descriptorType === 2;
+    }
+
+    public get possibleT1() {
+        return (this.descriptorType ?? 0) <= 2;
+    }
+
     private name = 'Trezor';
 
     private color?: string;
@@ -215,7 +223,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.uniquePath = id;
         this.transport = transport;
         this.transportPath = descriptor.path;
-        this.possibleHIDdevice = [0, 2].includes(descriptor.type);
+        this.descriptorType = descriptor.type;
         this.bluetoothProps = descriptor.id ? { id: descriptor.id } : undefined;
 
         this.sessionAcquired = null;
