@@ -1,4 +1,4 @@
-import { A, pipe } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { BackupType, TrezorDevice } from '@suite-common/suite-types';
@@ -565,3 +565,8 @@ export const selectFirmwareHashCheckError = (state: DeviceRootState) => {
 
     return checkResult.error;
 };
+
+export const selectIsThpDevice = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => G.isNotNullable(device) && deviceUtils.isThpDevice(device),
+);

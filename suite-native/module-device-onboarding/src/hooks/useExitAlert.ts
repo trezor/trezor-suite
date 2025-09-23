@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectIsThpDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
-import { useFirmware } from '@suite-native/firmware';
+import { selectIsFirmwareInstallationRunning, useFirmware } from '@suite-native/firmware';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -33,7 +33,10 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
     const { translate } = useTranslate();
 
     const selectedDevice = useSelector(selectSelectedDevice);
+    const isThpDevice = useSelector(selectIsThpDevice);
     const { setIsFirmwareInstallationRunning } = useFirmware();
+
+    const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
 
     const handleExitButtonPress = useCallback(() => {
         showAlert({
@@ -49,6 +52,12 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
             secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: () => {
                 if (selectedDevice) {
+                    TrezorConnect.cancel();
+
+                    if (isThpDevice && isFirmwareInstallationRunning) {
+                        dispatch(deviceActions.deviceDisconnect(selectedDevice));
+                    }
+
                     setIsFirmwareInstallationRunning(false);
                     dispatch(setWasDeviceOnboardingCancelled(true));
                     navigation.popTo(RootStackRoutes.AppTabs, {
@@ -57,7 +66,6 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
                             screen: HomeStackRoutes.Home,
                         },
                     });
-                    TrezorConnect.cancel();
                 }
             },
             onPressSecondaryButton: () => {
@@ -69,6 +77,8 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
     }, [
         dispatch,
         handleContinueButtonPress,
+        isFirmwareInstallationRunning,
+        isThpDevice,
         navigation,
         selectedDevice,
         setIsFirmwareInstallationRunning,
