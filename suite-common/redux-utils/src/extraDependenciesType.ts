@@ -1,11 +1,9 @@
-import type { NavigateOptions, To } from 'react-router';
-
 import {
     ActionCreatorWithPayload,
     ActionCreatorWithPreparedPayload,
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
-import type { History } from 'history';
+import type { History, Path } from 'history';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import {
@@ -38,6 +36,10 @@ type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload:
 type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
+
+export type To = string | Partial<Path>;
+
+export type LocationPushState = Record<string, unknown>;
 
 export type ExtraDependencies = {
     thunks: {
@@ -125,7 +127,7 @@ export type ExtraDependencies = {
     };
     routerServices: {
         history: History;
-        navigate: (to: To, state?: NavigateOptions['state']) => void;
+        navigate: (to: To, state?: LocationPushState) => void;
     };
 };
 

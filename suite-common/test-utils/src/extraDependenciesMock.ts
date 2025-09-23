@@ -1,9 +1,12 @@
-import type { NavigateOptions } from 'react-router';
-
 import { createAction } from '@reduxjs/toolkit';
-import { To, createMemoryHistory } from 'history';
+import { createMemoryHistory } from 'history';
 
-import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import {
+    type ExtraDependencies,
+    type LocationPushState,
+    type To,
+    createThunk,
+} from '@suite-common/redux-utils';
 import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 
@@ -152,7 +155,7 @@ export const extraDependenciesMock: ExtraDependencies = {
 
         return {
             history,
-            navigate: (to: To, options?: NavigateOptions) => history.push(to, options),
+            navigate: (to: To, state?: LocationPushState) => history.push(to, state),
         };
     })(),
 };
