@@ -74,7 +74,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         if (!files || !files.length) return;
         const file = files[0];
 
-        const validationResult = await validateImage(file, deviceModelInternal);
+        const validationResult = await validateImage({ file, deviceModelInternal });
         setValidationError(validationResult);
 
         const dataUrl = await fileToDataUrl(file);
