@@ -12,6 +12,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
+import { CardanoMinAmountInfo } from './CardanoMinAmountInfo';
 import { OpReturn } from './OpReturn';
 import { TokenSelect } from './TokenSelect/TokenSelect';
 import { DestinationTag } from '../Options/MiscNetworkOptions/DestinationTag';
@@ -32,7 +33,11 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     const {
         outputs,
         account: { symbol },
+        getValues,
     } = useSendFormContext();
+
+    const formOutputs = getValues().outputs;
+    const isSendingTokens = formOutputs?.some(output => !!output.token);
 
     const ref = useRef<HTMLDivElement>(null);
 
@@ -91,6 +96,9 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                                 outputsCount={outputs.length}
                                             />
                                             <Amount output={outputs[index]} outputId={index} />
+                                            {outputs.length === 1 && isSendingTokens && (
+                                                <CardanoMinAmountInfo />
+                                            )}
                                             <DestinationTag networkSymbol={symbol} />
                                         </Column>
                                     )}
@@ -99,6 +107,13 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                         </motion.div>
                     ))}
                 </Column>
+                {outputs.length > 1 && isSendingTokens && (
+                    <Card margin={{ vertical: spacings.md }}>
+                        <Column gap={spacings.md}>
+                            <CardanoMinAmountInfo />
+                        </Column>
+                    </Card>
+                )}
             </div>
         </Container>
     );

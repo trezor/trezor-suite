@@ -10799,4 +10799,17 @@ export default defineMessages({
         id: 'TR_THP_LOADING',
         defaultMessage: 'Securing connection...',
     },
+    TR_SEND_MIN_ADA_AMOUNT: {
+        id: 'TR_SEND_MIN_ADA_AMOUNT',
+        defaultMessage: 'Not enough {networkDisplaySymbol} for the transaction.',
+    },
+    TR_SEND_MIN_ADA_AMOUNT_TITLE: {
+        id: 'TR_SEND_MIN_ADA_AMOUNT_TITLE',
+        defaultMessage: 'Min {networkDisplaySymbol}',
+    },
+    TR_SEND_MIN_ADA_AMOUNT_TOOLTIP: {
+        id: 'TR_SEND_MIN_ADA_AMOUNT_TOOLTIP',
+        defaultMessage:
+            'Every transaction output with tokens must include a minimum amount of {networkDisplaySymbol}, based on the number of different tokens in the transaction output.',
+    },
 } as const);
