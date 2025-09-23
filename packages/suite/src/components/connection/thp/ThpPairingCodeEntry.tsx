@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { thpActions } from '@suite-common/thp';
 import { PinInput, Row, Spinner } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { SpacingValues } from '@trezor/theme';
 
 import { useDispatch } from '../../../hooks/suite';
 
@@ -34,17 +33,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
     };
 
     return (
-        <Row
-            gap={24}
-            margin={{
-                right: isLoading
-                    ? // This is a bit hack, but I think it is better to make it explicitly
-                      // bound to SPINNER_SIZE+gap so it is clear why it is shifted (to prevent jumping)
-                      // This is relevant only when parent component sets margin (e.g., centering)
-                      (-(SPINNER_SIZE + 24) as SpacingValues)
-                    : undefined,
-            }}
-        >
+        <Row gap={24}>
             <PinInput
                 length={6}
                 onComplete={onCodeEntry}
