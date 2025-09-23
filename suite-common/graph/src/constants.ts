@@ -22,6 +22,12 @@ export const isLocalBalanceHistoryCoin = (
 
 // Some networks might be ignored by graph
 // Solana is ignored because it takes a lot of time and network resources to get all needed history data
-export const IGNORED_BALANCE_HISTORY_COINS = ['sol'] satisfies Array<NetworkSymbol>;
+// Ada is ignored because it sends a lot of requests to the blockfrost API. Therefore we have temporarily disabled it.
+export const IGNORED_BALANCE_HISTORY_COINS = [
+    'sol',
+    'dsol',
+    'ada',
+    'tada',
+] satisfies Array<NetworkSymbol>;
 export const isIgnoredBalanceHistoryCoin = (symbol: NetworkSymbol) =>
     isArrayMember(symbol, IGNORED_BALANCE_HISTORY_COINS);
