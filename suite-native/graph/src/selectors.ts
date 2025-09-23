@@ -2,10 +2,12 @@ import { A } from '@mobily/ts-belt';
 
 import { AccountItem } from '@suite-common/graph';
 import { isIgnoredBalanceHistoryCoin } from '@suite-common/graph/src/constants';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -16,6 +18,8 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;
+
+export const createMemoizedSelector = createWeakMapSelector.withTypes<GraphCommonRootState>();
 
 export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): AccountItem[] => {
     const accounts = selectDeviceMainnetAccounts(state);
@@ -36,21 +40,17 @@ export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): A
     });
 };
 
-export const selectHasDeviceHistoryEnabledAccounts = (
-    state: DeviceRootState & AccountsRootState,
-): boolean => {
-    const accounts = selectDeviceMainnetAccounts(state);
+export const selectHasDeviceHistoryEnabledAccounts = createMemoizedSelector(
+    [selectDeviceMainnetAccounts],
+    (accounts): boolean =>
+        A.isNotEmpty(accounts.filter(a => !isIgnoredBalanceHistoryCoin(a.symbol))),
+);
 
-    return A.isNotEmpty(accounts.filter(a => !isIgnoredBalanceHistoryCoin(a.symbol)));
-};
-
-export const selectHasDeviceHistoryIgnoredAccounts = (
-    state: DeviceRootState & AccountsRootState,
-): boolean => {
-    const accounts = selectDeviceMainnetAccounts(state);
-
-    return A.isNotEmpty(accounts.filter(a => isIgnoredBalanceHistoryCoin(a.symbol)));
-};
+export const selectDeviceHistoryIgnoredNetworkSymbols = createMemoizedSelector(
+    [selectDeviceMainnetAccounts],
+    (accounts): readonly NetworkSymbol[] =>
+        A.uniq(accounts.filter(a => isIgnoredBalanceHistoryCoin(a.symbol)).map(a => a.symbol)),
+);
 
 export const selectIsHistoryEnabledAccountByAccountKey = (
     state: AccountsRootState,
