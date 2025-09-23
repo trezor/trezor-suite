@@ -56,11 +56,11 @@ export default defineMessages({
         id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
-        defaultMessage: 'All coins are disabled in Settings.',
+        defaultMessage: 'No assets are active',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
-        defaultMessage: 'All coins are currently disabled. Enable in Settings.',
+        defaultMessage: 'Go to Settings to activate assets.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR: {
@@ -72,7 +72,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION',
     },
     TR_ACCOUNT_EXCEPTION_NOT_ENABLED: {
-        defaultMessage: '{networkName} not enabled in Settings.',
+        defaultMessage: '{networkName} not activated in Settings.',
         id: 'TR_ACCOUNT_EXCEPTION_NOT_ENABLED',
     },
     TR_ACCOUNT_EXCEPTION_NOT_EXIST: {
@@ -1751,7 +1751,7 @@ export default defineMessages({
         id: 'TR_CHUNKED_ADDRESS',
     },
     TR_ASSETS: {
-        defaultMessage: 'Coin',
+        defaultMessage: 'Asset',
         id: 'TR_ASSETS',
     },
     TR_BACK: {
@@ -2463,11 +2463,11 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_DESC: {
-        defaultMessage: 'Enable brightness customization for display on device.',
+        defaultMessage: 'Adjust your Trezor’s screen brightness.',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_DESC',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE: {
-        defaultMessage: 'Display brightness',
+        defaultMessage: 'Screen brightness',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON: {
@@ -3343,7 +3343,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
-        defaultMessage: 'To access more coins, install <button>{regular}</button> firmware.',
+        defaultMessage: 'To access more assets, install <button>{regular}</button> firmware.',
         id: 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION',
     },
     TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION: {
@@ -4577,7 +4577,7 @@ export default defineMessages({
     },
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
-        defaultMessage: 'Coin settings',
+        defaultMessage: 'Activate assets',
     },
     TR_SELECT_COIN_FOR_SETTINGS: {
         id: 'TR_SELECT_COIN_FOR_SETTINGS',
@@ -5081,7 +5081,7 @@ export default defineMessages({
     },
     TR_I_HAVE_ENOUGH_TIME_TO_DO: {
         id: 'TR_I_HAVE_ENOUGH_TIME_TO_DO',
-        defaultMessage: 'You have enough time to back up your wallet',
+        defaultMessage: 'I have enough time to back up my wallet',
     },
     TR_ONCE_YOU_BEGIN_THIS_PROCESS: {
         id: 'TR_ONCE_YOU_BEGIN_THIS_PROCESS',
@@ -5090,7 +5090,7 @@ export default defineMessages({
     },
     TR_I_AM_IN_SAFE_PRIVATE_OR: {
         id: 'TR_I_AM_IN_SAFE_PRIVATE_OR',
-        defaultMessage: 'You are in a safe, private space or in a public space away from cameras',
+        defaultMessage: "I'm in a safe, private space",
     },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
@@ -5099,7 +5099,7 @@ export default defineMessages({
     },
     TR_I_UNDERSTAND_SEED_IS_IMPORTANT: {
         id: 'TR_I_UNDERSTAND_SEED_IS_IMPORTANT',
-        defaultMessage: 'You are responsible for keeping your backup safe',
+        defaultMessage: "I'm responsible for keeping my backup safe",
     },
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
@@ -6413,7 +6413,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Unable to connect to the backend. Reconnect your device and check your internet connection or custom backend URL. Also, make sure the selected network is enabled in Settings.',
+            'Unable to connect to the backend. Reconnect your device and check your internet connection or custom backend URL. Also, make sure the selected asset is activated in Settings.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -7744,7 +7744,7 @@ export default defineMessages({
     },
     TR_STILL_NOT_WORKING: {
         id: 'TR_STILL_NOT_WORKING',
-        defaultMessage: 'It’s still not working',
+        defaultMessage: 'Still not working',
     },
     TR_TROUBLE_SHOOTING_TIPS: {
         id: 'TR_TROUBLE_SHOOTING_TIPS',
@@ -8631,7 +8631,7 @@ export default defineMessages({
     TR_LOADING_FACT_3: {
         id: 'TR_LOADING_FACT_3',
         defaultMessage:
-            'Suite will not remember your coinjoin account in order to protect your privacy, unless you explicitly choose to remember the wallet.',
+            "Trezor Suite won't remember your coinjoin account in order to protect your privacy, unless you explicitly choose to remember the wallet.",
     },
     TR_LOADING_FACT_4: {
         id: 'TR_LOADING_FACT_4',
@@ -8790,12 +8790,12 @@ export default defineMessages({
     TR_BIO_AUTH_LOCKED_TEXT_MAC: {
         id: 'TR_BIO_AUTH_LOCKED_TEXT_MAC',
         description: 'Heading of the modal saying that bio auth is not available',
-        defaultMessage: 'Use Touch ID to unlock',
+        defaultMessage: 'Use Touch ID to unlock.',
     },
     TR_BIO_AUTH_LOCKED_TEXT_WIN: {
         id: 'TR_BIO_AUTH_LOCKED_TEXT_WIN',
         description: 'Text of the modal saying that bio auth is not available',
-        defaultMessage: 'Use Windows Hello to unlock',
+        defaultMessage: 'Use Windows Hello to unlock.',
     },
     TR_BIO_AUTH_UNLOCK: {
         id: 'TR_BIO_AUTH_UNLOCK',

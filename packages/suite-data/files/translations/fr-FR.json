@@ -407,7 +407,7 @@
   "TR_BIO_AUTH_LOCKED_TEXT_MAC": "Utilisez Touch ID pour déverrouiller",
   "TR_BIO_AUTH_LOCKED_TEXT_WIN": "Utilisez Windows Hello pour déverrouiller",
   "TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP": "Vérifie si l’authentification biométrique est disponible.",
-  "TR_BIO_AUTH_SYSTEM_MESSAGE_MAC": "vérifiez votre identité.",
+  "TR_BIO_AUTH_SYSTEM_MESSAGE_MAC": "vérifiez votre identité",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_WIN": "Utilisez votre empreinte digitale ou saisissez votre code PIN pour accéder à Trezor Suite.",
   "TR_BIO_AUTH_UNAVAILABLE_TOOLTIP": "L’authentification biométrique n’est pas disponible sur votre appareil.",
   "TR_BIO_AUTH_UNLOCK": "Déverrouiller",

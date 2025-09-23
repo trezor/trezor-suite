@@ -383,6 +383,7 @@
   "TR_BALANCE": "Bakiye",
   "TR_BASE_CURRENCY": "Para birimi",
   "TR_BASE_CURRENCY_FIAT": "İtibari Para",
+  "TR_BASE_CURRENCY_VALUABLES": "Emtialar",
   "TR_BASE_FEE": "Taban ücret",
   "TR_BASIC_RECOVERY": "Standart kurtarma",
   "TR_BASIC_RECOVERY_OPTION": "Kurtarma parolanızı bilgisayarınıza kelime kelime girin.",
