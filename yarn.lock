@@ -12741,6 +12741,7 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/banner-flags": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
@@ -14256,6 +14257,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
   dependencies:
+    "@suite-common/wallet-types": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     idb: "npm:^8.0.3"

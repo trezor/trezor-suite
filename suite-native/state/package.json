@@ -24,6 +24,7 @@
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@suite-common/walletconnect": "workspace:*",
         "@suite-native/banner-flags": "workspace:*",
         "@suite-native/blockchain": "workspace:*",

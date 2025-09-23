@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../eslint" },
         { "path": "../utils" }
     ]
