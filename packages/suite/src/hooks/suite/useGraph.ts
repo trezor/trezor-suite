@@ -16,12 +16,8 @@ export const useGraph = () => {
         () => ({
             setSelectedRange: (range: GraphRange) => dispatch(graphActions.setSelectedRange(range)),
             setSelectedView: (view: GraphScale) => dispatch(graphActions.setSelectedView(view)),
-            updateGraphData: (
-                accounts: Account[],
-                options?: {
-                    newAccountsOnly?: boolean;
-                },
-            ) => dispatch(graphActions.updateGraphData({ accounts, ...options })),
+            updateGraphData: (accounts: Account[]) =>
+                dispatch(graphActions.updateGraphData({ accounts })),
         }),
         [dispatch],
     );

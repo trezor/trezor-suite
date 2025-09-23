@@ -93,7 +93,6 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
         dispatch(
             updateGraphData({
                 accounts: [account],
-                newAccountsOnly: true,
             }),
         );
 
