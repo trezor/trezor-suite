@@ -1,3 +1,5 @@
+import '@suite-common/test-utils/src/globalOverrides';
+
 import { screen } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';

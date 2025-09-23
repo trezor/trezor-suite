@@ -1,3 +1,5 @@
+import '@suite-common/test-utils/src/globalOverrides';
+
 import { useEffect, useState } from 'react';
 import { DeepPartial } from 'react-hook-form';
 

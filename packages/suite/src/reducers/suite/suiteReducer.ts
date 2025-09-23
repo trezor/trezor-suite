@@ -45,7 +45,9 @@ export type SuiteLifecycle =
     | { status: 'error'; error: string }
     // blocked if the instance cannot upgrade due to older version running,
     // blocking in case instance is running older version thus blocking other instance
-    | { status: 'db-error'; error: 'blocking' | 'blocked' };
+    | { status: 'db-error'; error: 'blocking' | 'blocked' }
+    // inconsistent IDB state detected, need to reset storage
+    | { status: 'db-corrupted'; error: unknown };
 
 export interface Flags {
     initialRun: boolean; // true on very first launch of Suite, will switch to false after completing onboarding process
@@ -268,6 +270,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             case STORAGE.ERROR:
                 draft.lifecycle = { status: 'db-error', error: action.payload };
+                break;
+            case STORAGE.CORRUPTED:
+                draft.lifecycle = { status: 'db-corrupted', error: action.payload };
                 break;
             case SUITE.INIT:
                 draft.lifecycle = { status: 'loading' };

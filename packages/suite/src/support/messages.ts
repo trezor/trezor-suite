@@ -7260,6 +7260,10 @@ export default defineMessages({
         id: 'TR_THIS_INSTANCE_IS_BLOCKING',
         defaultMessage: 'This instance is blocking a database upgrade',
     },
+    TR_DATABASE_CORRUPTED: {
+        id: 'TR_DATABASE_CORRUPTED',
+        defaultMessage: 'Database is corrupted',
+    },
     TR_RUNNING_MULTIPLE_INSTANCES: {
         id: 'TR_RUNNING_MULTIPLE_INSTANCES',
         defaultMessage:

@@ -19,6 +19,7 @@ import { Onboarding } from 'src/views/onboarding';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 
+import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
 import { selectShouldDisplayDeviceCompromised } from './selectShouldDisplayDeviceCompromised';
@@ -83,6 +84,9 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     }
     if (lifecycle.status === 'db-error') {
         return <DatabaseUpgradeModal variant={lifecycle.error} />;
+    }
+    if (lifecycle.status === 'db-corrupted') {
+        return <DatabaseCorruptedModal />;
     }
 
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)

@@ -1,3 +1,5 @@
+import '@suite-common/test-utils/src/globalOverrides';
+
 import { fireEvent, screen } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics';
