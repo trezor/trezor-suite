@@ -1,12 +1,16 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck — Although some fields don't satisfy the expected types, this is the bare minimum required for the trading buy flow to render and display the address correctly.
+import { Account } from '@suite-common/wallet-types';
 import { PreloadedState } from '@suite-native/state';
 
-export const btcWalletPreloaded: PreloadedState = {
+export const PRELOADED_BTC_ACCOUNT_LABEL = 'BTC SegWit';
+
+/**
+ * State fragment that inserts BTC account to a portfolio tracker wallet.
+ */
+export const portfolioTrackerBtcAccountState: PreloadedState = {
     wallet: {
         accounts: [
             {
-                accountLabel: 'BTC SegWit',
+                accountLabel: PRELOADED_BTC_ACCOUNT_LABEL,
                 accountType: 'normal',
                 addresses: [],
                 availableBalance: '0',
@@ -29,7 +33,7 @@ export const btcWalletPreloaded: PreloadedState = {
                 ts: 1753692438941,
                 utxo: [],
                 visible: true,
-            },
+            } as unknown as Account, // to omit unnecessary fields,
         ],
     },
 };
