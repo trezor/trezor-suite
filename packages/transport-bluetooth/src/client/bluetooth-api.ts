@@ -68,7 +68,7 @@ export class BluetoothApi extends AbstractApi {
             transportApiEvent(event);
         });
         api.on('device_read', ({ id, data, characteristic }) => {
-            if (characteristic === 'trezor-push-notification') {
+            if (characteristic === 'push-notification') {
                 this.emit('trezor-push-notification', { id, data });
             } else if (characteristic === 'battery-level') {
                 this.emit('battery-level', { id, data });

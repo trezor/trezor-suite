@@ -27,7 +27,7 @@ export enum DEVICE_TYPE {
     TypeBluetooth = 6,
 }
 
-export type OpenDeviceChannel = 'read' | 'trezor-push-notification' | 'battery-level';
+export type OpenDeviceChannel = 'read' | 'push-notification' | 'battery-level';
 
 type AccessLock = {
     read: boolean;

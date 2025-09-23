@@ -314,12 +314,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     subscribe() {
-        // todo: at the moment, subscribe is only available for bluetooth devices - thats why this diff. But in the future, we will want to extend it also to usb so different check will be needed
+        // todo: at the moment, subscribe is only available for bluetooth devices - thats why this if. But in the future, we will want to extend it also to usb so different check will be needed
         if (this.bluetoothProps?.id) {
             this.transport
                 .subscribe({
                     path: this.bluetoothProps.id,
-                    channels: ['trezor-push-notification', 'battery-level'],
+                    channels: ['push-notification', 'battery-level'],
                 })
                 .then(result => {
                     // todo: imho it should be assigned to other field then bluetoothProps because we might want to include this feature for other mediums (usb) too?
@@ -329,14 +329,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         this.lifecycle.emit(DEVICE.CHANGED);
                     }
 
-                    if (result['battery-level']) {
+                    if (this.bluetoothProps?.channels['battery-level']) {
                         this.transport.on('battery-level', event => {
                             this._updateSocFeature(event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
 
-                    if (result['trezor-push-notification']) {
+                    if (this.bluetoothProps?.channels['push-notification']) {
                         this.transport.on('trezor-push-notification', _event => {
                             // todo: info about device switching from bootloader to normal mode and the other way round.
                         });
