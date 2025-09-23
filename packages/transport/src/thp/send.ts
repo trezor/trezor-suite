@@ -11,7 +11,7 @@ export type SendThpMessageProps = Omit<ReceiveThpMessageProps, 'apiChunkSize'> &
 };
 
 const ATTEMPTS_LIMIT = 10;
-const THP_ACK_DEADLINE = 3000;
+const THP_ACK_DEADLINE = 30_000;
 
 export const sendThpMessage = async ({
     thpState,
