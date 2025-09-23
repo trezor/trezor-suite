@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useScrollView } from '@suite-native/navigation';
-import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
 
 import sendArrowsLottie from '../../assets/send-arrows-lottie.json';
+import { selectIsTransactionAlreadySigned } from '../selectors';
 
 export const SignSuccessMessage = () => {
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
@@ -32,7 +32,7 @@ export const SignSuccessMessage = () => {
         >
             <LottieAnimation source={sendArrowsLottie} size="small" />
             <Text variant="highlight" textAlign="center">
-                <Translation id="moduleSend.review.outputs.successMessage" />
+                <Translation id="transactionManagement.review.outputs.signSuccessMessage" />
             </Text>
         </VStack>
     );

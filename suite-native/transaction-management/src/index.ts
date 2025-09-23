@@ -1,6 +1,7 @@
 export * from './types';
 export * from './components/ReviewOutputItemList/ReviewOutputItemList';
 export * from './components/SlidingFooterOverlay';
+export * from './components/SignSuccessMessage';
 export * from './components/fees';
 export * from './hooks';
 export * from './feesFormSchema';

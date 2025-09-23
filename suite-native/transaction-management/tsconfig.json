@@ -31,6 +31,7 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../navigation" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
@@ -41,5 +42,6 @@
             "path": "../../suite-common/test-utils"
         },
         { "path": "../test-utils" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }
