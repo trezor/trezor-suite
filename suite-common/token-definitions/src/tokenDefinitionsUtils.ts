@@ -1,11 +1,9 @@
-import { decodeJws, verifyJws } from '@suite-common/suite-utils';
 import { NetworkSymbol, getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import {
-    JWS_SIGN_ALGORITHM,
     TOKEN_DEFINITIONS_PREFIX_URL,
     TOKEN_DEFINITIONS_SUFFIX_URL,
 } from './tokenDefinitionsConstants';
@@ -103,10 +101,6 @@ export const buildTokenDefinitionsFromStorage = (
     return tokenDefinitions;
 };
 
-// Currently, due to some limitations on the node side, the project has not used jws
-// in some places but instead used json. We hope to have the opportunity to
-// use this function in the future.
-// https://github.com/trezor/trezor-suite/pull/20662#discussion_r2262890493
 export const fetchTokenDefinitions = async (
     symbol: NetworkSymbol,
     type: DefinitionType,
@@ -128,26 +122,7 @@ export const fetchTokenDefinitions = async (
         throw Error(response.statusText);
     }
 
-    const jws = await response.text();
-
-    const decodedJws = decodeJws(jws);
-
-    if (!decodedJws) {
-        throw Error('Decoding of config failed');
-    }
-
-    const algorithmInHeader = decodedJws?.header.alg;
-    if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-        throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-    }
-
-    const isAuthenticityValid = await verifyJws(jws, JWS_SIGN_ALGORITHM);
-
-    if (!isAuthenticityValid) {
-        throw Error('Config authenticity is invalid');
-    }
-
-    const data = JSON.parse(decodedJws.payload);
+    const data = await response.json();
 
     return data;
 };

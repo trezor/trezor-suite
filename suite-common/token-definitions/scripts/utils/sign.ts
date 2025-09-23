@@ -2,8 +2,9 @@
 
 import * as jws from 'jws';
 
-import { JWS_SIGN_ALGORITHM } from '../../src/tokenDefinitionsConstants';
 import { TokenStructure } from '../../src/tokenDefinitionsTypes';
+
+const JWS_SIGN_ALGORITHM = 'ES256';
 
 // There must be no extra spaces at the beginning of the line.
 const devPrivateKey = `-----BEGIN EC PRIVATE KEY-----
