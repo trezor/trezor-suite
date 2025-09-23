@@ -219,7 +219,7 @@ const actionCallback = (
 };
 
 const waitForOutputsRender = (timeout = 200) =>
-    waitFor(() => findByTestId(/outputs\.[0-9]+\.address/), { timeout });
+    waitFor(() => findByTestId(/^outputs\.[0-9]+\.address$/), { timeout });
 
 describe('useSendForm hook', () => {
     afterEach(() => {
@@ -250,7 +250,7 @@ describe('useSendForm hook', () => {
 
                 await actionSequence(f.actions, a => {
                     // check rendered HTML elements (Output.address input)
-                    expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(
+                    expect(findByTestId(/^outputs\.[0-9]+\.address$/).length).toBe(
                         a.result.formValues.outputs.length,
                     );
                     // validate action result
