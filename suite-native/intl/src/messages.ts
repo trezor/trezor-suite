@@ -452,7 +452,7 @@ export const messages = {
         },
         turnOnAndUnlockScreen: {
             title: 'Turn on & unlock\nyour Trezor',
-            connectViaCableButton: 'Connect via cable',
+            scanningLoader: 'Scanning for nearby Trezors',
         },
         pinScreen: {
             title: 'Enter PIN\non your Trezor',

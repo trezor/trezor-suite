@@ -14,6 +14,7 @@ export const useBluetoothManager = () => {
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
+    const isScanningInProgress = bluetoothAdapterStatus === 'enabled';
 
     const [hasPermissionBeenRequested, setHasPermissionBeenRequested] = useState(false);
 
@@ -55,12 +56,16 @@ export const useBluetoothManager = () => {
     }, [showOrHideBluetoothAlert]);
 
     useEffect(() => {
-        if (bluetoothAdapterStatus === 'enabled') {
+        if (isScanningInProgress) {
             bluetoothManager.startDeviceScan(scanErrorHandler);
 
             return () => {
                 bluetoothManager.stopDeviceScan();
             };
         }
-    }, [bluetoothAdapterStatus, scanErrorHandler]);
+    }, [isScanningInProgress, scanErrorHandler]);
+
+    return {
+        isScanningInProgress,
+    };
 };
