@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTheme } from 'styled-components';
 
 import {
+    SCAN_TIMEOUT,
+    UNPAIRED_DEVICES_LAST_UPDATED_LIMIT,
     bluetoothActions,
     prepareSelectAllDevices,
     selectAdapterStatus,
@@ -34,9 +36,6 @@ import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
 import { CantSeeTrezorModal } from './CantSeeTrezorModal';
 import { CableConnectionAnimation } from './DeviceConnectionAnimation';
-
-const SCAN_TIMEOUT = 30_000;
-const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT = 15_000;
 
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
 
@@ -119,6 +118,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     const lastUpdatedBoundaryTimestamp = Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
 
+    // TODO get back to this and refactor this so it makes more sense
     const devices = allDevices.filter(it => {
         const isDeviceUnresponsiveForTooLong =
             it.lastUpdatedTimestamp < lastUpdatedBoundaryTimestamp;
