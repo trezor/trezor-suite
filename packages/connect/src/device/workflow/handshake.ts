@@ -6,7 +6,7 @@ import { TypedError } from '../../constants/errors';
 import { WorkflowContext } from '../../types/workflow';
 import { Log } from '../../utils/debug';
 
-const CANCEL_TIMEOUT = 1_000;
+const CANCEL_TIMEOUT = 3_000;
 const ATTEMPTS_LIMIT = 10;
 
 type Context = {
