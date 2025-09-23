@@ -188,7 +188,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return (
             <BluetoothAdapterStatusModal
                 bluetoothAdapterStatus={bluetoothAdapterStatus}
-                onCancel={toggleBluetoothMode}
+                onCancel={onCancel}
             />
         );
     }
