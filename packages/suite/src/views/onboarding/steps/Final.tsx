@@ -6,7 +6,6 @@ import styled, { css } from 'styled-components';
 
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { Button, Menu, Popover, PopoverRef, Tooltip, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -185,45 +184,43 @@ export const FinalStep = () => {
                                 <Translation id="TR_ONBOARDING_DEVICE_EDIT_LABEL" />
                             </Button>
 
-                            {deviceModelInternal !== DeviceModelInternal.T3W1 && (
-                                <Tooltip
-                                    maxWidth={285}
+                            <Tooltip
+                                maxWidth={285}
+                                content={
+                                    !shouldOfferChangeHomescreen && (
+                                        <Translation id="TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP" />
+                                    )
+                                }
+                            >
+                                <Popover
+                                    ref={popoverRef}
+                                    placement={{ position: 'bottom', alignment: 'end' }}
                                     content={
-                                        !shouldOfferChangeHomescreen && (
-                                            <Translation id="TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP" />
-                                        )
+                                        <Menu
+                                            maxWidth={450}
+                                            content={
+                                                <HomescreenGallery
+                                                    onConfirm={() => {
+                                                        popoverRef.current?.close();
+                                                    }}
+                                                />
+                                            }
+                                        />
                                     }
                                 >
-                                    <Popover
-                                        ref={popoverRef}
-                                        placement={{ position: 'bottom', alignment: 'end' }}
-                                        content={
-                                            <Menu
-                                                maxWidth={450}
-                                                content={
-                                                    <HomescreenGallery
-                                                        onConfirm={() => {
-                                                            popoverRef.current?.close();
-                                                        }}
-                                                    />
-                                                }
-                                            />
+                                    <Button
+                                        variant="tertiary"
+                                        size="small"
+                                        onClick={() => setState(null)}
+                                        icon="chartBar"
+                                        isDisabled={
+                                            !shouldOfferChangeHomescreen || isWaitingForConfirm
                                         }
                                     >
-                                        <Button
-                                            variant="tertiary"
-                                            size="small"
-                                            onClick={() => setState(null)}
-                                            icon="chartBar"
-                                            isDisabled={
-                                                !shouldOfferChangeHomescreen || isWaitingForConfirm
-                                            }
-                                        >
-                                            <Translation id="TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN" />
-                                        </Button>
-                                    </Popover>
-                                </Tooltip>
-                            )}
+                                        <Translation id="TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN" />
+                                    </Button>
+                                </Popover>
+                            </Tooltip>
                         </SetupActions>
                     )}
                     {state === 'rename' && (
