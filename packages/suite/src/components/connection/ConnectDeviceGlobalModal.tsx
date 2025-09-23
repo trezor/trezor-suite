@@ -9,7 +9,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { Box, Button, Column, Modal } from '@trezor/components';
+import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { borders } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
@@ -38,6 +38,47 @@ const SCAN_TIMEOUT = 30_000;
 const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT = 15_000;
 
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
+
+type DontSeeTrezorPillProps = {
+    onClick: () => void;
+};
+
+const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => {
+    // A little hack so we can use the subtle variant of the button instead of creating a brand new variant for a single use case
+    const theme = useTheme();
+
+    return (
+        <Box backgroundColor={theme.backgroundSurfaceElevation1} borderRadius={borders.radii.full}>
+            <Button onClick={onClick} icon="question" variant="info" isSubtle>
+                <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
+            </Button>
+        </Box>
+    );
+};
+
+type ConnectModalContentProps = {
+    children?: React.ReactNode;
+    isBluetoothMode: boolean;
+};
+
+const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentProps) => (
+    <Column
+        alignItems="center"
+        gap={32}
+        maxHeight="calc(80vh - 86px)"
+        overflow="hidden"
+        margin={{ top: 12, bottom: 0 }}
+    >
+        <Text typographyStyle="titleMedium" align="center">
+            <Translation id="TR_CONNECT_UNLOCK_YOUR_DEVICE" />
+        </Text>
+        {children}
+
+        <Box margin={{ top: 8 }}>
+            <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
+        </Box>
+    </Column>
+);
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
     const dispatch = useDispatch();
@@ -210,48 +251,40 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         );
     }
 
+    if (isBluetoothMode) {
+        return (
+            <Modal.Backdrop onClick={onCancel}>
+                <DontSeeTrezorPill onClick={toggleShowHints} />
+                <Modal.ModalBase size="tiny" onCancel={onCancel} onBackClick={toggleBluetoothMode}>
+                    <ConnectModalContent isBluetoothMode={true}>
+                        <Row gap={8} alignItems="center" justifyContent="center" height={50}>
+                            <Spinner size={16} bodyColor={theme.iconAlertBlue} isGrey={false} />
+                            <Text variant="info">
+                                <Translation id="TR_SCAN_TREZORS_NEARBY" />
+                            </Text>
+                        </Row>
+                    </ConnectModalContent>
+                </Modal.ModalBase>
+            </Modal.Backdrop>
+        );
+    }
+
     return (
         <Modal.Backdrop onClick={onCancel}>
-            {/* A little hack so we can use the subtle variant of the button
-            instead of creating a brand new variant for a single use case */}
-            <Box
-                backgroundColor={theme.backgroundSurfaceElevation1}
-                borderRadius={borders.radii.full}
-            >
-                <Button onClick={toggleShowHints} icon="question" variant="info" isSubtle>
-                    <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
-                </Button>
-            </Box>
-            <Modal.ModalBase
-                size="tiny"
-                onCancel={onCancel}
-                heading={<Translation id="TR_CONNECT_UNLOCK_YOUR_DEVICE" />}
-            >
-                <Column
-                    alignItems="center"
-                    gap={32}
-                    maxHeight="calc(80vh - 86px)"
-                    overflow="hidden"
-                    margin={{ top: 12, bottom: 0 }}
-                >
+            <DontSeeTrezorPill onClick={toggleShowHints} />
+            <Modal.ModalBase size="tiny" onCancel={onCancel}>
+                <ConnectModalContent isBluetoothMode={false}>
                     {isBluetoothEnabled && (
                         <Button
-                            icon={isBluetoothMode ? 'cableUsbC' : 'bluetooth'}
+                            icon="bluetooth"
                             onClick={toggleBluetoothMode}
-                            variant="tertiary"
-                            size="small"
+                            variant="info"
+                            size="medium"
                         >
-                            <Translation
-                                id={
-                                    isBluetoothMode
-                                        ? 'TR_BLUETOOTH_TIP_CABLE_HEADER'
-                                        : 'TR_PAIR_NEW_BLUETOOTH_DEVICE'
-                                }
-                            />
+                            <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
                         </Button>
                     )}
-                    <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
-                </Column>
+                </ConnectModalContent>
             </Modal.ModalBase>
         </Modal.Backdrop>
     );

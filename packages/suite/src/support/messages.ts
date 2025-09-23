@@ -10340,9 +10340,9 @@ export default defineMessages({
         id: 'TR_PAIR_NEW_BLUETOOTH_DEVICE',
         defaultMessage: 'Connect via Bluetooth',
     },
-    TR_BLUETOOTH_TIP_CABLE_HEADER: {
-        id: 'TR_BLUETOOTH_TIP_CABLE_HEADER',
-        defaultMessage: 'Connect via cable',
+    TR_SCAN_TREZORS_NEARBY: {
+        id: 'TR_SCAN_TREZORS_NEARBY',
+        defaultMessage: 'Scanning for neaby Trezors',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE',
