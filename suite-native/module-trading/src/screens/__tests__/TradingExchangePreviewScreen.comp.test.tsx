@@ -11,7 +11,10 @@ import {
 import { getBtcAccount } from '../../__fixtures__/account';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
 import { getWalletState } from '../../__fixtures__/walletState';
-import { TradingExchangePreviewScreen } from '../TradingExchangePreviewScreen';
+import {
+    TradingExchangePreviewScreen,
+    TradingExchangePreviewScreenProps,
+} from '../TradingExchangePreviewScreen';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -37,7 +40,19 @@ describe('TradingExchangePreviewScreen', () => {
     let store: TestStore;
 
     const renderTradingExchangePreviewScreen = () =>
-        renderWithStoreProviderAsync(<TradingExchangePreviewScreen />, { store });
+        renderWithStoreProviderAsync(
+            <TradingExchangePreviewScreen
+                navigation={
+                    {
+                        navigate: jest.fn(),
+                    } as unknown as TradingExchangePreviewScreenProps['navigation']
+                }
+                route={{} as TradingExchangePreviewScreenProps['route']}
+            />,
+            {
+                store,
+            },
+        );
 
     beforeEach(async () => {
         jest.clearAllMocks();

@@ -239,7 +239,7 @@ export const useExchangeFlow = () => {
 
     // this is called when we want to sign and send a transaction
     // waitForPushApproval is used so that we can wait for the user to approve the transaction before sending it
-    const signAndSendTransaction = async () => {
+    const signAndSendTransaction = useCallback(async () => {
         const commonFunctions = getCommonFunctions(selectedQuote);
 
         if (!commonFunctions || !sendAccount) {
@@ -308,7 +308,18 @@ export const useExchangeFlow = () => {
 
             return false;
         }
-    };
+    }, [
+        resolveConsent,
+        waitForConsent,
+        dispatch,
+        getCommonFunctions,
+        selectedQuote,
+        sendAccount,
+        decimals,
+        shouldSendInSats,
+        isSlip24Active,
+        showToast,
+    ]);
 
     useEffect(() => {
         if (selectedFee) {

@@ -2325,6 +2325,10 @@ export const messages = {
                 body: 'Fees are paid directly to network miners for processing your transactions.',
             },
         },
+        tradingReviewOutputs: {
+            title: 'Review with Trezor',
+            submitButton: 'Send transaction',
+        },
         exchangeApprovalLimitSheet: {
             title: 'Set limit',
             unlimitedCard: {

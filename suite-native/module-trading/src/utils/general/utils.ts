@@ -3,12 +3,14 @@ import { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from '
 import {
     TradingTradeType,
     TradingTransaction,
+    TradingType,
     isBuyTrade,
     isExchangeTrade,
     isSellFiatTrade,
     tradeFinalStatuses,
 } from '@suite-common/trading';
-import { Translate } from '@suite-native/intl';
+import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import type { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
@@ -203,3 +205,6 @@ export const getTradeTitle = (trade: TradingTransaction, translate: Translate) =
             return exhaustive(tradeType);
     }
 };
+
+export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =>
+    `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;
