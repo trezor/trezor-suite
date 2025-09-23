@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 const safe3Homescreens = [
     'original_t3b1', // note - has to be first
@@ -11,14 +12,16 @@ const safe3Homescreens = [
     'valentine',
 ];
 
+type HomeScreensMap = Record<DeviceModelInternal, string[]>;
+
 // original trezor images has to be first as they are send to device as '0' and the default image from fw is used
-export const getHomescreens = (isBitcoinOnlyFirmware: boolean) => ({
+export const getHomescreens = (isBitcoinOnlyFirmware: boolean): HomeScreensMap => ({
     [DeviceModelInternal.UNKNOWN]: [
         isBitcoinOnlyFirmware ? 'orange' : 'green', // just to have something
         isBitcoinOnlyFirmware ? 'green' : 'orange',
     ],
     [DeviceModelInternal.T1B1]: [
-        'original_t1b1', // note - has to be first
+        'original_t1b1', // note - has to be first, this is the default
         'blank',
         'circleweb',
         'circuit',
@@ -63,7 +66,7 @@ export const getHomescreens = (isBitcoinOnlyFirmware: boolean) => ({
     [DeviceModelInternal.T2B1]: safe3Homescreens,
     [DeviceModelInternal.T3B1]: safe3Homescreens,
     [DeviceModelInternal.T2T1]: [
-        'original_t2t1', // note - has to be first
+        'original_t2t1', // note - has to be first, this is the default
         'trezor-3d',
         'pigeon',
         'smile-1',
@@ -73,14 +76,44 @@ export const getHomescreens = (isBitcoinOnlyFirmware: boolean) => ({
         'smile-2',
     ],
     [DeviceModelInternal.T3T1]: [
-        isBitcoinOnlyFirmware ? 'orange' : 'green',
+        isBitcoinOnlyFirmware ? 'orange' : 'green', // note - has to be first, this is the default
         'gradient',
         isBitcoinOnlyFirmware ? 'green' : 'orange',
         'solid',
         'smile-2',
     ],
     [DeviceModelInternal.T3W1]: [
-        isBitcoinOnlyFirmware ? 'orange_t3w1' : 'green_t3w1',
-        isBitcoinOnlyFirmware ? 'green_t3w1' : 'orange_t3w1',
-    ], // TODO - update to current images
+        // TODO - update to current images
+        // isBitcoinOnlyFirmware ? 'orange_t3w1' : 'green_t3w1',
+        // isBitcoinOnlyFirmware ? 'green_t3w1' : 'orange_t3w1',
+    ],
 });
+
+type GetDefaultHomeScreenImageParms = {
+    isBitcoinOnlyFirmware: boolean;
+    deviceModelInternal: DeviceModelInternal;
+};
+
+export const getDefaultHomeScreenImage = ({
+    deviceModelInternal,
+    isBitcoinOnlyFirmware,
+}: GetDefaultHomeScreenImageParms) => {
+    switch (deviceModelInternal) {
+        case DeviceModelInternal.T1B1:
+            return 'original_t1b1';
+        case DeviceModelInternal.T2T1:
+            return 'original_t2t1';
+        case DeviceModelInternal.T2B1:
+            return 'original_t3b1';
+        case DeviceModelInternal.T3B1:
+            return 'original_t3b1';
+        case DeviceModelInternal.T3T1:
+            return isBitcoinOnlyFirmware ? 'orange' : 'green'; // Todo: specify
+        case DeviceModelInternal.T3W1:
+            return isBitcoinOnlyFirmware ? 'orange' : 'green'; // Todo: specify
+        case DeviceModelInternal.UNKNOWN:
+            return isBitcoinOnlyFirmware ? 'orange' : 'green'; // just to have something
+        default:
+            return exhaustive(deviceModelInternal);
+    }
+};

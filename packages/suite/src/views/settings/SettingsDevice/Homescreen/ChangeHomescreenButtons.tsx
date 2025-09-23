@@ -1,9 +1,11 @@
 import { Button, ButtonGroup, Tooltip } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+
+import { getHomescreens } from '../../../../constants/suite/homescreens';
 
 type ChangeHomescreenButtonsParams = {
     deviceModelInternal: DeviceModelInternal;
@@ -19,6 +21,7 @@ export const ChangeHomescreenButtons = ({
     onImageUploadClick,
 }: ChangeHomescreenButtonsParams) => {
     const dispatch = useDispatch();
+    const { device } = useDevice();
     const openGallery = () => dispatch(openModal({ type: 'device-background-gallery' }));
 
     const UploadButton = () => (
@@ -55,9 +58,10 @@ export const ChangeHomescreenButtons = ({
         </Tooltip>
     );
 
-    const isHomescreenGallerySupportedOnDevice = deviceModelInternal !== DeviceModelInternal.T3W1;
+    const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
+    const hasGallery = getHomescreens(isBitcoinOnlyFirmware)[deviceModelInternal].length > 0;
 
-    if (isHomescreenGallerySupportedOnDevice) {
+    if (hasGallery) {
         return (
             <ButtonGroup size="small">
                 <UploadButton />
