@@ -74,12 +74,22 @@ export type ReadWriteError =
     | typeof ERRORS.INTERFACE_DATA_TRANSFER
     | typeof ERRORS.THP_STATE_MISSING;
 
+/** Device boot/startup notification */
+type NotifyBoot = 0;
+/** Device unlocked and ready to accept messages */
+type NotifyUnlock = 1;
+/** Device hard-locked and won't accept messages */
+type NotifyLock = 2;
+type NormalMode = 0;
+type BootloaderMode = 1;
+type NotificationData = [1, NotifyBoot | NotifyUnlock | NotifyLock, NormalMode | BootloaderMode];
+
 type TransportEvents = {
     [TRANSPORT.DEVICE_CONNECTED]: Descriptor;
     [TRANSPORT.ERROR]: BridgeCommonErrors | typeof ERRORS.API_DISCONNECTED; // BluetoothApi disconnected
     [TRANSPORT.STOPPED]: void;
     [TRANSPORT.SEND_MESSAGE_PROGRESS]: number;
-    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
+    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: NotificationData };
     [TRANSPORT.BATTERY_LEVEL]: { id: string; data: number[] };
 };
 
