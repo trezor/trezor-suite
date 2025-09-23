@@ -428,7 +428,7 @@ export const MetadataLabeling = ({
         dispatch(setEditing(payload.defaultValue));
     };
 
-    let dropdownItems: DropdownMenuItemProps[] = [
+    const defaultDropdownOptions: DropdownMenuItemProps[] = [
         {
             onClick: () => activateEdit(),
             label: l10nLabelling.edit,
@@ -437,7 +437,7 @@ export const MetadataLabeling = ({
     ];
 
     if (dropdownOptions) {
-        dropdownItems = [...dropdownItems, ...dropdownOptions];
+        dropdownOptions = [...defaultDropdownOptions, ...dropdownOptions];
     }
 
     const handleBlur = () => {
@@ -531,7 +531,7 @@ export const MetadataLabeling = ({
                     defaultEditableValue={defaultEditableValue}
                     defaultVisibleValue={defaultVisibleValue}
                     updateFlag={updateFlag}
-                    dropdownOptions={dropdownItems}
+                    dropdownOptions={dropdownOptions}
                     deviceStaticSessionId={deviceStaticSessionId}
                 />
                 {showActionButton && (showEdit || !payload.value || (payload.value && pending)) && (
