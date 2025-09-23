@@ -24,11 +24,11 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { SignSuccessMessage } from '@suite-native/transaction-management';
 
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
-import { cleanupSendFormThunk, sendTransactionThunk } from '../sendFormThunks';
-import { SignSuccessMessage } from './SignSuccessMessage';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
+import { cleanupSendFormThunk, sendTransactionThunk } from '../sendFormThunks';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,

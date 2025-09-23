@@ -2001,7 +2001,6 @@ export const messages = {
             },
             outputs: {
                 title: 'Review with Trezor',
-                successMessage: 'Everything is ready, you can send the transaction now.',
                 submitButton: 'Send transaction',
                 errorAlert: {
                     secondaryButtonTitle: 'I’ll do it later',
@@ -2642,6 +2641,7 @@ export const messages = {
                     maxFee: 'Maximum fee',
                 },
                 noAccount: 'Account not found.',
+                signSuccessMessage: 'Everything is ready, you can send the transaction now.',
             },
         },
     },
