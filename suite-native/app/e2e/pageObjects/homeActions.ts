@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 const graphHeaderDiscreetTextElement = element(
-    by.id('@home/portfolio/fiat-balance-header').withDescendant(by.id('discreet-text')),
+    by.id('@screen/Home').withDescendant(by.id('discreet-text')),
 );
 
 class HomeActions {

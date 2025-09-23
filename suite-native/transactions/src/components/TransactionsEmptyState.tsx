@@ -47,7 +47,12 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                 </VStack>
             </Box>
             {showReceiveButton && (
-                <Button viewLeft="arrowLineDown" onPress={handleReceive} size="large">
+                <Button
+                    viewLeft="arrowLineDown"
+                    onPress={handleReceive}
+                    size="large"
+                    testID="@account-detail/receive-button"
+                >
                     <Translation id="transactions.emptyState.button" />
                 </Button>
             )}
