@@ -2,15 +2,16 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
-import { selectIsThpInProgress } from '@suite-common/thp';
+import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DEVICE, FirmwareType, UI } from '@trezor/connect';
+import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { firmwareActions } from '../firmwareActions';
 import { selectFirmware } from '../firmwareReducer';
@@ -68,6 +69,44 @@ const expectedButtonRequestsForT2andT3: ButtonRequest[] = [
     'ButtonRequest_FirmwareUpdate',
 ];
 
+type ShouldShowReconnectPromptParams = {
+    buttonEvent: (DeviceButtonRequestPayload & { device: Device }) | undefined;
+    firmwareStatus: 'error' | FirmwareStatus;
+    originalDevice: TrezorDevice | undefined;
+};
+
+const shouldShowReconnectPrompt = ({
+    buttonEvent,
+    originalDevice,
+    firmwareStatus,
+}: ShouldShowReconnectPromptParams) => {
+    if (buttonEvent?.code === undefined) {
+        return false;
+    }
+
+    if (firmwareStatus === 'done') {
+        return false;
+    }
+
+    // For some magic reason, the `ButtonRequest_Other` is present in FW after THP pairing;
+    // This causes the UI to show the reconnect prompt, despite we are already done.
+    const isThpButtonEvent =
+        buttonEvent.code === 'ButtonRequest_Other' &&
+        buttonEvent?.name !== undefined &&
+        isArrayMember(buttonEvent?.name, THP_BUTTON_REQUESTS_NAMES);
+
+    if (isThpButtonEvent) {
+        return false;
+    }
+
+    const expectedButtonRequests =
+        originalDevice?.features?.major_version === 1
+            ? expectedButtonRequestsForT1
+            : expectedButtonRequestsForT2andT3;
+
+    return expectedButtonRequests.includes(buttonEvent.code);
+};
+
 export const useFirmwareInstallation = (
     { shouldSwitchFirmwareType }: UseFirmwareInstallationParams = {
         shouldSwitchFirmwareType: false,
@@ -102,17 +141,12 @@ export const useFirmwareInstallation = (
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
 
-    const expectedButtonRequests =
-        originalDevice?.features?.major_version === 1
-            ? expectedButtonRequestsForT1
-            : expectedButtonRequestsForT2andT3;
-
     const showReconnectPrompt =
-        // For some magic reason, the `ButtonRequest_Other` is present in FW after THP pairing;
-        // This causes the UI to show the reconnect prompt, despite we are already done.
-        firmware.status !== 'done' &&
-        ((buttonEvent?.code && expectedButtonRequests.includes(buttonEvent.code)) ||
-            showManualReconnectPrompt);
+        shouldShowReconnectPrompt({
+            buttonEvent,
+            firmwareStatus: firmware.status,
+            originalDevice,
+        }) || showManualReconnectPrompt;
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
         originalDevice,
