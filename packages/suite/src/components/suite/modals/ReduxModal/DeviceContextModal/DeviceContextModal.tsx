@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -24,8 +23,8 @@ import { SignMessageModal } from './SignMessageModal';
 export const DeviceContextModal = ({
     windowType,
     data,
+    device,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
-    const device = useSelector(selectSelectedDevice);
     const intl = useIntl();
     const selectedAccount = useSelector(selectSelectedAccount);
 
