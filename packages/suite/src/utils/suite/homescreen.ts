@@ -282,36 +282,44 @@ export const isValidImageSize = (file: File, deviceModelInternal: DeviceModelInt
 export const validateImageColors = (
     origImage: HTMLImageElement,
     deviceModelInternal: DeviceModelInternal,
-) => {
+): ImageValidationError | undefined => {
     const imageData = imageToImageData(origImage, deviceModelInternal);
 
     if (HAS_MONOCHROME_SCREEN[deviceModelInternal]) {
-        try {
-            range(imageData.height).forEach((j: number) => {
-                range(imageData.width).forEach(i => {
-                    const index = j * 4 * imageData.width + i * 4;
-                    const red = imageData.data[index];
-                    const green = imageData.data[index + 1];
-                    const blue = imageData.data[index + 2];
-                    const alpha = imageData.data[index + 3];
-                    if (alpha !== 255) {
-                        throw new Error(ImageValidationError.UnexpectedAlpha);
-                    }
-                    const isBlack = red === 0 && green === 0 && blue === 0;
-                    const isWhite = red === 255 && green === 255 && blue === 255;
+        for (const j of range(imageData.height)) {
+            for (const i of range(imageData.width)) {
+                const index = j * 4 * imageData.width + i * 4;
+                const red = imageData.data[index];
+                const green = imageData.data[index + 1];
+                const blue = imageData.data[index + 2];
+                const alpha = imageData.data[index + 3];
 
-                    if (!isBlack && !isWhite) {
-                        throw new Error(ImageValidationError.InvalidColorCombination);
-                    }
-                });
-            });
-        } catch (error) {
-            return error.message;
+                if (alpha !== 255) {
+                    return ImageValidationError.UnexpectedAlpha;
+                }
+
+                const isBlack = red === 0 && green === 0 && blue === 0;
+                const isWhite = red === 255 && green === 255 && blue === 255;
+
+                if (!isBlack && !isWhite) {
+                    return ImageValidationError.InvalidColorCombination;
+                }
+            }
         }
     }
+
+    return undefined;
 };
 
-export const validateImage = async (file: File, deviceModelInternal: DeviceModelInternal) => {
+type ValidateImageParam = {
+    file: File;
+    deviceModelInternal: DeviceModelInternal;
+};
+
+export const validateImage = async ({
+    file,
+    deviceModelInternal,
+}: ValidateImageParam): Promise<ImageValidationError | undefined> => {
     const dataUrl = await fileToDataUrl(file);
     const arrayBuffer = await fileToArrayBuffer(file);
     const image = await dataUrlToImage(dataUrl);
@@ -325,15 +333,18 @@ export const validateImage = async (file: File, deviceModelInternal: DeviceModel
 
         return ImageValidationError.InvalidFormatOnlyJpg;
     }
+
     if (
         !isValidImageWidth(image, deviceModelInternal) ||
         !isValidImageHeight(image, deviceModelInternal)
     ) {
         return ImageValidationError.InvalidDimensions;
     }
+
     if (isProgressiveJPG(arrayBuffer, deviceModelInternal)) {
         return ImageValidationError.ProgressiveJpgFormat;
     }
+
     if (!isValidImageSize(file, deviceModelInternal)) {
         return ImageValidationError.InvalidSize;
     }
