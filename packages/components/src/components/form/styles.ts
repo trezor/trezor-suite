@@ -54,6 +54,14 @@ export interface BaseInputProps {
     $elevation: Elevation;
 }
 
+export const baseInputDisabledStyle = css`
+    box-shadow: none;
+    background: ${({ theme }) => theme.backgroundNeutralDisabled};
+    color: ${({ theme }) => theme.textDisabled};
+    pointer-events: none;
+    cursor: default;
+`;
+
 export const baseInputStyle = css<BaseInputProps>`
     width: 100%;
     padding-top: ${({ $isWithLabel }) => $isWithLabel && INPUT_PADDING_TOP};
@@ -86,15 +94,7 @@ export const baseInputStyle = css<BaseInputProps>`
         color: ${({ theme }) => theme.textDisabled};
     }
 
-    ${({ disabled }) =>
-        disabled &&
-        css`
-            box-shadow: none;
-            background: ${({ theme }) => theme.backgroundNeutralDisabled};
-            color: ${({ theme }) => theme.textDisabled};
-            pointer-events: none;
-            cursor: default;
-        `}
+    ${({ disabled }) => disabled && baseInputDisabledStyle}
 `;
 
 export const InputWrapper = styled.div`
