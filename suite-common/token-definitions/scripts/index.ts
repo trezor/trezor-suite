@@ -15,7 +15,6 @@ const main = async () => {
     const type: string = argv[0];
     const structure: string = argv[1];
     const assetPlatformId: string = argv[2];
-    const fileType: string = argv[3];
 
     if (!type || !['nft', 'coin'].includes(type)) {
         throw new Error('Missing type, please specify "nft" or "coin"');
@@ -29,10 +28,6 @@ const main = async () => {
         throw new Error(
             'Missing platform id. Please enter "ethereum", "polygon-pos" or any other from https://pro-api.coingecko.com/api/v3/asset_platforms',
         );
-    }
-
-    if (!fileType || !['json', 'jws'].includes(fileType)) {
-        throw new Error('Missing file type, please specify "json" or "jws"');
     }
 
     let data: TokenStructure;
@@ -60,23 +55,15 @@ const main = async () => {
 
     validateStructure(data, structure);
 
-    const destinationFile = join(
-        FILES_PATH,
-        `${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}.${fileType}`,
-    );
+    const fileName = `${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}`;
 
     fs.mkdirSync(FILES_PATH, { recursive: true });
 
-    if (fileType === 'jws') {
-        const signedData = signData(data);
-        fs.writeFileSync(destinationFile, signedData);
+    const signedData = signData(data);
+    fs.writeFileSync(join(FILES_PATH, fileName, '.jws'), signedData);
+    fs.writeFileSync(join(FILES_PATH, fileName, '.json'), JSON.stringify(data));
 
-        console.log('JWS definitions saved to', destinationFile);
-    } else {
-        fs.writeFileSync(destinationFile, JSON.stringify(data));
-
-        console.log('JSON definitions saved to', destinationFile);
-    }
+    console.log('JSON definitions saved to ', join(FILES_PATH, fileName, '.[jws,json]'));
 };
 
 main();
