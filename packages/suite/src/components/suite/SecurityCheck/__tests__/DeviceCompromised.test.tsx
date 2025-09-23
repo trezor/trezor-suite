@@ -1,3 +1,5 @@
+import '@suite-common/test-utils/src/globalOverrides';
+
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
