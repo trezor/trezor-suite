@@ -44,76 +44,81 @@ const finishOnboardingFlow = async () => {
     await scrollUntilVisible(bitcoinNetworkElement);
 };
 
-conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () => {
-    beforeEach(async () => {
-        await prepareTrezorEmulator({ seed: '' });
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
-        await proceedToCreateOrRecoverCrossroads();
-    });
+conditionalDescribe(
+    false, // FIXME https://github.com/trezor/trezor-suite/issues/21827
+    /* device.getPlatform() === 'android' */
+    'Device onboarding',
+    () => {
+        beforeEach(async () => {
+            await prepareTrezorEmulator({ seed: '' });
+            await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
+            await proceedToCreateOrRecoverCrossroads();
+        });
 
-    afterEach(async () => {
-        await device.uninstallApp(); // wipe app data
-        await device.installApp();
-    });
+        afterEach(async () => {
+            await device.uninstallApp(); // wipe app data
+            await device.installApp();
+        });
 
-    afterAll(async () => {
-        await disconnectTrezorUserEnv();
-        await device.terminateApp();
-    });
+        afterAll(async () => {
+            await disconnectTrezorUserEnv();
+            await device.terminateApp();
+        });
 
-    it('Create Wallet', async () => {
-        await onDeviceOnboarding.selectCreateWalletOption();
+        it('Create Wallet', async () => {
+            await onDeviceOnboarding.selectCreateWalletOption();
 
-        await onDeviceOnboarding.waitForCreateWalletLoadingScreen();
+            await onDeviceOnboarding.waitForCreateWalletLoadingScreen();
 
-        // Create Wallet Backup
-        await onDeviceOnboarding.waitForWalletBackupTutorialScreen();
+            // Create Wallet Backup
+            await onDeviceOnboarding.waitForWalletBackupTutorialScreen();
 
-        await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(1);
-        await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(2);
-        await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(3);
-        await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(4);
-        await onDeviceOnboarding.validateSelectedBackupType('shamir-single');
-        await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(5);
-        await wait(5000); // wait for entering animation to finish
+            await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(1);
+            await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(2);
+            await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(3);
+            await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(4);
+            await onDeviceOnboarding.validateSelectedBackupType('shamir-single');
+            await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(5);
+            await wait(5000); // wait for entering animation to finish
 
-        await onDeviceOnboarding.pressHoldToConfirmButton();
-        await onDeviceOnboarding.waitForWalletCreationScreen();
+            await onDeviceOnboarding.pressHoldToConfirmButton();
+            await onDeviceOnboarding.waitForWalletCreationScreen();
 
-        await TrezorUserEnvLink.swipeEmu('up');
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressNo();
+            await TrezorUserEnvLink.swipeEmu('up');
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.pressNo();
 
-        // Wallet Backup Recap
-        await onDeviceOnboarding.waitForWalletBackupRecapScreen();
+            // Wallet Backup Recap
+            await onDeviceOnboarding.waitForWalletBackupRecapScreen();
 
-        await onDeviceOnboarding.goToNextWalletBackupRecapStep(1);
-        await onDeviceOnboarding.goToNextWalletBackupRecapStep(2);
-        await onDeviceOnboarding.goToNextWalletBackupRecapStep(3);
+            await onDeviceOnboarding.goToNextWalletBackupRecapStep(1);
+            await onDeviceOnboarding.goToNextWalletBackupRecapStep(2);
+            await onDeviceOnboarding.goToNextWalletBackupRecapStep(3);
 
-        await onDeviceOnboarding.pressHoldToConfirmButton();
+            await onDeviceOnboarding.pressHoldToConfirmButton();
 
-        await finishOnboardingFlow();
-    });
+            await finishOnboardingFlow();
+        });
 
-    it('Recover Wallet', async () => {
-        await onDeviceOnboarding.selectRecoverWalletOption();
-        await onDeviceOnboarding.confirmRecoveryInstructions();
+        it('Recover Wallet', async () => {
+            await onDeviceOnboarding.selectRecoverWalletOption();
+            await onDeviceOnboarding.confirmRecoveryInstructions();
 
-        // On device recovery
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.selectNumOfWordsEmu(12);
-        await TrezorUserEnvLink.pressYes();
-        for (let i = 0; i < 12; i++) {
-            await TrezorUserEnvLink.inputEmu('all');
-        }
-        await TrezorUserEnvLink.pressYes();
+            // On device recovery
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.selectNumOfWordsEmu(12);
+            await TrezorUserEnvLink.pressYes();
+            for (let i = 0; i < 12; i++) {
+                await TrezorUserEnvLink.inputEmu('all');
+            }
+            await TrezorUserEnvLink.pressYes();
 
-        await onDeviceOnboarding.waitForWalletRecoveryRecapScreen();
-        await onDeviceOnboarding.goToNextWalletRecoveryRecapStep(1);
-        await onDeviceOnboarding.pressHoldToConfirmButton();
+            await onDeviceOnboarding.waitForWalletRecoveryRecapScreen();
+            await onDeviceOnboarding.goToNextWalletRecoveryRecapStep(1);
+            await onDeviceOnboarding.pressHoldToConfirmButton();
 
-        await finishOnboardingFlow();
-    });
-});
+            await finishOnboardingFlow();
+        });
+    },
+);

@@ -64,7 +64,7 @@ const signTransactionAndSendIt = async () => {
 };
 
 conditionalDescribe(
-    false, // FIXME
+    false, // FIXME https://github.com/trezor/trezor-suite/issues/21827
     /* device.getPlatform() === 'android' */ 'Send transaction flow.',
     () => {
         beforeAll(async () => {
