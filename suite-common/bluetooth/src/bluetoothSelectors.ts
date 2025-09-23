@@ -1,5 +1,6 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
+import { UNPAIRED_DEVICES_LAST_UPDATED_LIMIT } from './bluetoothConstants';
 import { BluetoothState } from './bluetoothReducer';
 import { BluetoothDeviceCommon } from './types';
 
@@ -14,9 +15,19 @@ export const selectAdapterStatus = <T extends BluetoothDeviceCommon>(
 export const selectKnownDevices = <T extends BluetoothDeviceCommon>(state: WithBluetoothState<T>) =>
     state.bluetooth.knownDevices;
 
+// nearbyDevices should really be nearby, thus we filter out devices that are not active recently
 export const selectNearbyDevices = <T extends BluetoothDeviceCommon>(
     state: WithBluetoothState<T>,
-) => state.bluetooth.nearbyDevices;
+) => {
+    const isDeviceUnresponsiveForTooLongThreshold =
+        Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
+
+    return (
+        state.bluetooth.nearbyDevices?.filter(
+            it => it.lastUpdatedTimestamp >= isDeviceUnresponsiveForTooLongThreshold,
+        ) || []
+    );
+};
 
 /**
  * We need to have generic `createWeakMapSelector.withTypes` so we need to wrap it into Higher Order Function,
