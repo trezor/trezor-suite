@@ -158,7 +158,7 @@ export const App: React.FC = () => {
     const connectDevice = async (id?: string) => {
         const idToUse = id || deviceId;
         try {
-            const r = await api().send('connect_device', { id: idToUse, timeout: 30000 });
+            const r = await api().send('connect_device', { id: idToUse, timeout: 10000 });
             writeOutput(r);
             setDeviceId(idToUse);
         } catch (e: any) {
@@ -371,12 +371,14 @@ export const App: React.FC = () => {
                                         <button
                                             style={{ margin: '0 4px' }}
                                             onClick={() =>
-                                                d.connected
+                                                d.connectionStatus.type !== 'disconnected'
                                                     ? disconnectDevice(d.id)
                                                     : connectDevice(d.id)
                                             }
                                         >
-                                            {d.connected ? 'Disconnect' : 'Connect'}
+                                            {d.connectionStatus.type !== 'disconnected'
+                                                ? 'Disconnect'
+                                                : 'Connect'}
                                         </button>
                                         <button
                                             id="forget_device"
