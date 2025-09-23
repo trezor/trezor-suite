@@ -44,6 +44,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
                       (-(SPINNER_SIZE + 24) as SpacingValues)
                     : undefined,
             }}
+            width="fit-content" // This is important because of the above negative margin hack
         >
             <PinInput
                 length={6}
