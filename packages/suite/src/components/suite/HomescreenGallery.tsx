@@ -2,16 +2,12 @@ import styled from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Grid } from '@trezor/components';
-import {
-    DeviceModelInternal,
-    getNarrowedDeviceModelInternal,
-    hasBitcoinOnlyFirmware,
-} from '@trezor/device-utils';
+import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { getHomescreens } from 'src/constants/suite/homescreens';
+import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 
@@ -54,18 +50,13 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
 
     if (!deviceModelInternal) return null;
 
-    const isBitcoinOnlyFirmware =
-        deviceModelInternal === DeviceModelInternal.T3T1 && hasBitcoinOnlyFirmware(device);
+    const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 
-        const narrowedModel = getNarrowedDeviceModelInternal(deviceModelInternal).toLowerCase();
         // original image is the default image already available in device, set it by empty string
         const isOriginalImage =
-            image === `original_${narrowedModel}` ||
-            (isBitcoinOnlyFirmware
-                ? image === `orange_${narrowedModel}`
-                : image === `green_${narrowedModel}`);
+            getDefaultHomeScreenImage({ deviceModelInternal, isBitcoinOnlyFirmware }) === image;
 
         const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
 
