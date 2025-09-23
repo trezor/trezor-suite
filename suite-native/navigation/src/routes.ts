@@ -203,4 +203,5 @@ export enum TradingStackRoutes {
     TradingExchangeApproval = 'TradingExchangeApproval',
     TradingExchangeRevoke = 'TradingExchangeRevoke',
     TradingFees = 'TradingFees',
+    TradingOutputsReview = 'TradingOutputsReview',
 }

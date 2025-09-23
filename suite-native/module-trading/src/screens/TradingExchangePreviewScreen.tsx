@@ -6,8 +6,13 @@ import { invariant } from '@suite-common/suite-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
+import {
+    Screen,
+    ScreenHeader,
+    StackProps,
+    TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 
 import { ExchangeTradePreviewCard } from '../components/exchange/ExchangeTradePreviewCard';
@@ -21,19 +26,21 @@ import {
 } from '../selectors/exchangeSelectors';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
-type FlowStep = 'confirm' | 'signTxn' | 'sendTxn' | 'finished';
+export type TradingExchangePreviewScreenProps = StackProps<
+    TradingStackParamList,
+    TradingStackRoutes.TradingExchangePreview
+>;
+
+type FlowStep = 'confirm' | 'signTxn';
 
 // TODO: this is very WIP just to be able to test the flow
 // it wont be implemented in this component this way in the end
 const flowStepToButtonText: Record<FlowStep, string> = {
     confirm: 'Continue',
     signTxn: 'Sign and Send Transaction',
-    sendTxn: 'Send txn',
-    finished: 'Txn was sent',
 };
 
-export const TradingExchangePreviewScreen = () => {
-    const { showToast } = useToast();
+export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePreviewScreenProps) => {
     const dispatch = useDispatch();
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
@@ -54,13 +61,7 @@ export const TradingExchangePreviewScreen = () => {
 
     useSubscribeForSolanaBlockUpdates(fromAccount);
 
-    const {
-        confirmTrade,
-        fetchFeesAndCompose,
-        signAndSendTransaction,
-        isConsentRequested,
-        resolveConsent,
-    } = useExchangeFlow();
+    const { confirmTrade, fetchFeesAndCompose } = useExchangeFlow();
 
     const [flowStep, setFlowStep] = useState<FlowStep>('confirm');
 
@@ -85,34 +86,22 @@ export const TradingExchangePreviewScreen = () => {
         }
     };
 
-    const handleSignTransaction = async () => {
-        setFlowStep('sendTxn');
-
-        const result = await signAndSendTransaction();
-
-        showToast({
-            icon: result ? 'check' : 'warningCircle',
-            variant: result ? 'success' : 'error',
-            message: undefined,
+    const handleSignTransaction = () => {
+        navigation.navigate({
+            name: TradingStackRoutes.TradingOutputsReview,
+            params: {
+                tradingType: 'exchange',
+                accountKey: fromAccount.key,
+            },
         });
     };
 
-    useEffect(() => {
-        if (isConsentRequested) {
-            setFlowStep('sendTxn');
-        }
-    }, [isConsentRequested]);
-
     const handleTapContinue = async () => {
         if (flowStep === 'confirm') {
-            handleConfirmTrade();
-            await fetchFeesAndCompose();
+            await handleConfirmTrade();
             setFlowStep('signTxn');
         } else if (flowStep === 'signTxn') {
             handleSignTransaction();
-        } else if (flowStep === 'sendTxn') {
-            setFlowStep('finished');
-            resolveConsent(true);
         } else {
             console.warn('Unknown flow step', flowStep);
         }
@@ -153,7 +142,7 @@ export const TradingExchangePreviewScreen = () => {
                             <Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />
                         }
                     />
-                    {(flowStep === 'signTxn' || flowStep === 'sendTxn') && (
+                    {flowStep === 'signTxn' && (
                         <FeePickerCard
                             trade={quote}
                             symbol={fromAccount.symbol}
@@ -164,9 +153,7 @@ export const TradingExchangePreviewScreen = () => {
                 </VStack>
             </ScrollView>
 
-            <Button onPress={handleTapContinue} isDisabled={flowStep === 'finished'}>
-                {flowStepToButtonText[flowStep]}
-            </Button>
+            <Button onPress={handleTapContinue}>{flowStepToButtonText[flowStep]}</Button>
         </Screen>
     );
 };

@@ -1,5 +1,21 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
+import type { TradingTransaction, TradingType } from '@suite-common/trading';
+import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { useTranslate } from '@suite-native/intl';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+
+import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures__/trades';
+import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from '../formUtils';
+import {
+    doesUrlContainCloseCallbackUrl,
+    getFormDraftKeyPrefixFromTradingType,
+    getRandomAccountDescriptor,
+    getTradeOperationData,
+    getTradeStatusStep,
+    getTradeTitle,
+} from '../utils';
+
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
 
@@ -9,19 +25,6 @@ jest.mock('@suite-common/trading', () => {
         isCryptoIdForNativeToken: jest.fn(),
     };
 });
-import type { TradingTransaction, TradingType } from '@suite-common/trading';
-import { useTranslate } from '@suite-native/intl';
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
-
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures__/trades';
-import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from '../formUtils';
-import {
-    doesUrlContainCloseCallbackUrl,
-    getRandomAccountDescriptor,
-    getTradeOperationData,
-    getTradeStatusStep,
-    getTradeTitle,
-} from '../utils';
 
 describe('utils', () => {
     describe('getTradeOperationData', () => {
@@ -176,6 +179,16 @@ describe('utils', () => {
             const { result } = renderHookWithBasicProvider(() => useTranslate());
 
             expect(getTradeTitle(trade, result.current.translate)).toBe(expectedTitle);
+        });
+    });
+
+    describe('getFormDraftKeyPrefixFromTradingType', () => {
+        it.each<[TradingType, FormDraftKeyPrefix]>([
+            ['buy', 'trading-buy'],
+            ['sell', 'trading-sell'],
+            ['exchange', 'trading-exchange'],
+        ])('should return correct prefix for %s', (tradingType, expectedPrefix) => {
+            expect(getFormDraftKeyPrefixFromTradingType(tradingType)).toBe(expectedPrefix);
         });
     });
 });
