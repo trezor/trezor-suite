@@ -2,10 +2,9 @@ import { useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, ButtonGroup, Tooltip, variables } from '@trezor/components';
+import { Tooltip, variables } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
@@ -25,6 +24,7 @@ import {
     validateImage,
 } from 'src/utils/suite/homescreen';
 
+import { ChangeHomescreenButtons } from './Homescreen/ChangeHomescreenButtons';
 import { HomescreenSettingsTitle } from './Homescreen/HomescreenSettingsTitle';
 
 const HiddenInput = styled.input`
@@ -88,11 +88,8 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         resetUpload();
     };
 
-    const openGallery = () => dispatch(openModal({ type: 'device-background-gallery' }));
-
     const isSupportedHomescreen = isHomescreenSupportedOnDevice(device);
 
-    // TODO: condition based on device screen width/height
     return (
         <>
             <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
@@ -115,40 +112,12 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             )
                         }
                     >
-                        <ButtonGroup size="small">
-                            <Tooltip
-                                isActive={isDeviceLocked}
-                                content={
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                }
-                            >
-                                <Button
-                                    onClick={() => fileInputElement?.current?.click()}
-                                    isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                    variant="primary"
-                                    data-testid="@settings/device/homescreen-upload"
-                                    key="@settings/device/homescreen-upload"
-                                >
-                                    <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-                                </Button>
-                            </Tooltip>
-                            <Tooltip
-                                isActive={isDeviceLocked}
-                                content={
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                }
-                            >
-                                <Button
-                                    onClick={openGallery}
-                                    isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                    data-testid="@settings/device/homescreen-gallery"
-                                    key="@settings/device/homescreen-gallery"
-                                    variant="primary"
-                                >
-                                    <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
-                                </Button>
-                            </Tooltip>
-                        </ButtonGroup>
+                        <ChangeHomescreenButtons
+                            deviceModelInternal={deviceModelInternal}
+                            isDeviceLocked={isDeviceLocked}
+                            isSupportedHomescreen={isSupportedHomescreen}
+                            onImageUploadClick={() => fileInputElement?.current?.click()}
+                        />
                     </Tooltip>
                 </ActionColumn>
             </SettingsSectionItem>
