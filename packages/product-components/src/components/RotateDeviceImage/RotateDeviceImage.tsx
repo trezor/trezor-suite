@@ -1,7 +1,9 @@
 import React from 'react';
 
+import { Icon } from '@trezor/components';
 import { DeviceModelInternal, normalizeDeviceColorVariant } from '@trezor/device-utils';
 
+import { mapTrezorModelToIcon } from '../../utils/mapTrezorModelToIcon';
 import { DeviceAnimation } from '../DeviceAnimation/DeviceAnimation';
 
 export type RotateDeviceImageProps = {
@@ -23,6 +25,10 @@ export const RotateDeviceImage = ({
 }: RotateDeviceImageProps) => {
     if (!deviceModel) {
         return null;
+    }
+
+    if (deviceModel === DeviceModelInternal.UNKNOWN) {
+        return <Icon name={mapTrezorModelToIcon[DeviceModelInternal.T3T1]} size="extraLarge" />;
     }
 
     return (
