@@ -6,9 +6,9 @@ import { Elevation, borders, spacings, spacingsPx, typography } from '@trezor/th
 
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
-import { baseInputStyle } from '../form/styles';
+import { baseInputDisabledStyle, baseInputStyle } from '../form/styles';
 
-const SymbolBox = styled.input<{ $elevation: Elevation }>`
+const SymbolBox = styled.input<{ $elevation: Elevation; $fakeDisabled?: boolean }>`
     ${baseInputStyle};
 
     height: ${spacingsPx.xxxxxl};
@@ -22,6 +22,12 @@ const SymbolBox = styled.input<{ $elevation: Elevation }>`
     &:focus-within {
         border-color: ${({ theme }) => theme.backgroundPrimaryDefault};
     }
+
+    ${({ $fakeDisabled }) =>
+        // This is here to prevent jump of browser-native focus jump to the next element.
+        // For example, it may focus the close [X] button of the Modal and user may accidentaly close
+        // it by hitting the enter key.
+        $fakeDisabled ? baseInputDisabledStyle : undefined}
 
     caret-color: transparent;
 `;
@@ -56,6 +62,12 @@ const SymbolInput = forwardRef<HTMLInputElement, SymbolInputProps>(
         const { elevation } = useElevation();
 
         const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+            if (disabled) {
+                e.preventDefault();
+
+                return;
+            }
+
             const newValue = e.target.value
                 // This is a trick how to solve the caret issue. Problem is that we do not know
                 // where the caret is in the underlying <input>. It can be before or after the symbol.
@@ -80,7 +92,8 @@ const SymbolInput = forwardRef<HTMLInputElement, SymbolInputProps>(
                 onClick={onClick}
                 $elevation={elevation}
                 onPaste={onPaste}
-                disabled={disabled}
+                disabled={false} // intentionally `false` always use `$fakeDisabled` instead
+                $fakeDisabled={disabled}
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={autoFocus}
             />
@@ -134,6 +147,12 @@ export const PinInput = ({
     }, [length, defaultCode]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        if (disabled) {
+            e.preventDefault();
+
+            return;
+        }
+
         if (e.key === 'Backspace') {
             e.preventDefault();
             setSymbols(setSymbolAtPosition(symbols, EMPTY_SYMBOL, index));
