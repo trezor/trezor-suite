@@ -12,16 +12,21 @@ const listItemStyle = prepareNativeStyle(() => ({
 
 type BottomSheetListItemProps = OrderedListIconProps & {
     translationKey: TxKeyPath;
+    translationValues?: Record<string, string | undefined>;
 };
 
-export const BottomSheetListItem = ({ translationKey, ...props }: BottomSheetListItemProps) => {
+export const BottomSheetListItem = ({
+    translationKey,
+    translationValues,
+    ...props
+}: BottomSheetListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <HStack spacing="sp12" alignItems="center">
             <OrderedListIcon {...props} />
             <Text style={applyStyle(listItemStyle)}>
-                <Translation id={translationKey} />
+                <Translation id={translationKey} values={translationValues} />
             </Text>
         </HStack>
     );
