@@ -1,7 +1,7 @@
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
-import { scrollUntilVisible, wait } from '../utils';
+import { scrollUntilVisible } from '../utils';
 
 class SettingsActions {
     async tapPreferences() {
@@ -47,9 +47,8 @@ class SettingsActions {
 
         const currencySelectorItemElement = element(by.id(`@select/item/${currencyCode}`));
         await scrollUntilVisible(currencySelectorItemElement, '@bottom-sheet/scroll-view');
-        await wait(1000);
 
-        await currencySelectorItemElement.tap({ x: 10, y: 10 });
+        await currencySelectorItemElement.tap();
     }
 
     async changeBitcoinUnits(unit: PROTO.AmountUnit) {

@@ -1,9 +1,9 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { regtestDiscoveryFinishedState } from '../fixtures/regtestDiscoveryFinishedState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
-import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
@@ -14,6 +14,7 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
+    mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
     restartApp,
@@ -63,78 +64,71 @@ const signTransactionAndSendIt = async () => {
     await onSendOutputsReview.clickSendTransaction();
 };
 
-conditionalDescribe(
-    false, // FIXME https://github.com/trezor/trezor-suite/issues/21827
-    /* device.getPlatform() === 'android' */ 'Send transaction flow.',
-    () => {
-        beforeAll(async () => {
-            await prepareTrezorEmulator();
-            await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
-
-            await TrezorUserEnvLink.sendToAddressAndMineBlock({
-                address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',
-                btc_amount: INITIAL_ACCOUNT_BALANCE,
-            });
-
-            await onCoinEnabling.waitForInitScreen();
-            await onCoinEnabling.toggleNetwork('regtest');
-            await onCoinEnabling.clickOnConfirmButton();
-        });
-
-        beforeEach(async () => {
-            await prepareTrezorEmulator();
-            await restartApp();
-
-            await appIsFullyLoaded();
-
-            await onHome.waitForScreen();
-            await onTabBar.navigateToMyAssets();
-
-            await onMyAssets.openAccountDetail({ accountName: 'Bitcoin Regtest #1' });
-
-            await onAccountDetail.openSend();
-            await onSendOutputsForm.waitForScreen();
-        });
-
-        afterAll(async () => {
-            await disconnectTrezorUserEnv();
-            await device.terminateApp();
-        });
-
-        it('Compose and dispatch a regtest transaction.', async () => {
-            await prepareTransactionForOnDeviceReview({ isFormEmpty: true });
-
-            await signTransactionAndSendIt();
-        });
-
-        it('Compose and dispatch a regtest transaction with a custom fee.', async () => {
-            await prepareTransactionForOnDeviceReview({
-                feeValues: { feeType: 'custom', customFeePerUnit: '100' },
-            });
-
-            await signTransactionAndSendIt();
-        });
-
-        it('Validate send form input errors.', async () => {
-            await onSendOutputsForm.fillForm([{ address: 'wrong address', amount: '200' }]);
-
-            await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.invalidAddress))).toBeVisible();
-            await waitFor(
-                element(by.text(SEND_FORM_ERROR_MESSAGES.higherThanBalance)),
-            ).toBeVisible();
-
-            await onSendOutputsForm.clearForm();
-
-            await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.addressRequired))).toBeVisible();
-            await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.amountRequired))).toBeVisible();
-
-            await onSendOutputsForm.fillForm([{ amount: '0.00000001' }]);
-            await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.dustAmount))).toBeVisible();
-
-            await onSendOutputsForm.clearForm();
-
-            await onSendOutputsForm.fillForm([{ amount: '0.10000000000' }]);
-            await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.tooManyDecimals))).toBeVisible();
-        });
-    },
+const preloadedState = mergePreloadedReduxState(
+    onboardingCompletedState,
+    regtestDiscoveryFinishedState,
 );
+
+conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.', () => {
+    beforeAll(async () => {
+        await openApp({ newInstance: true, args: { preloadedState } });
+
+        await TrezorUserEnvLink.sendToAddressAndMineBlock({
+            address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',
+            btc_amount: INITIAL_ACCOUNT_BALANCE,
+        });
+    });
+
+    beforeEach(async () => {
+        await prepareTrezorEmulator();
+        await restartApp();
+        await appIsFullyLoaded();
+
+        await onHome.waitForScreen();
+        await onTabBar.navigateToMyAssets();
+
+        await onMyAssets.openAccountDetail({ accountName: 'Bitcoin Regtest #1' });
+
+        await onAccountDetail.openSend();
+        await onSendOutputsForm.waitForScreen();
+    });
+
+    afterAll(async () => {
+        await disconnectTrezorUserEnv();
+        await device.terminateApp();
+    });
+
+    it('Compose and dispatch a regtest transaction.', async () => {
+        await prepareTransactionForOnDeviceReview({ isFormEmpty: true });
+
+        await signTransactionAndSendIt();
+    });
+
+    it('Compose and dispatch a regtest transaction with a custom fee.', async () => {
+        await prepareTransactionForOnDeviceReview({
+            feeValues: { feeType: 'custom', customFeePerUnit: '100' },
+        });
+
+        await signTransactionAndSendIt();
+    });
+
+    it('Validate send form input errors.', async () => {
+        await onSendOutputsForm.fillForm([{ address: 'wrong address', amount: '200' }]);
+
+        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.invalidAddress))).toBeVisible();
+        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.higherThanBalance))).toBeVisible();
+
+        await onSendOutputsForm.clearForm();
+
+        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.addressRequired))).toBeVisible();
+        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.amountRequired))).toBeVisible();
+
+        await onSendOutputsForm.fillForm([{ amount: '0.00000001' }]);
+        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.dustAmount))).toBeVisible();
+
+        await onSendOutputsForm.clearForm();
+
+        await onSendOutputsForm.fillForm([{ amount: '0.10000000000' }]);
+        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.tooManyDecimals))).toBeVisible();
+    });
+});

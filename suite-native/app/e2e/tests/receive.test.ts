@@ -1,19 +1,34 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
+import { btcDiscoveryFinishedState } from '../fixtures/btcDiscoveryFinishedState';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
-import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
+import {
+    disconnectTrezorUserEnv,
+    mergePreloadedReduxState,
+    openApp,
+    prepareTrezorEmulator,
+    restartApp,
+} from '../utils';
+
+const preloadedState = mergePreloadedReduxState(
+    onboardingCompletedState,
+    btcDiscoveryFinishedState,
+);
 
 conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
     beforeAll(async () => {
+        await openApp({
+            newInstance: true,
+            args: { preloadedState },
+        });
         await prepareTrezorEmulator();
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
+        await restartApp();
     });
 
     afterAll(async () => {
@@ -22,10 +37,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
     });
 
     it('Generate device confirmed receive address.', async () => {
-        await onCoinEnabling.waitForInitScreen();
-        await onCoinEnabling.toggleNetwork('btc');
-        await onCoinEnabling.clickOnConfirmButton();
-
         await onHome.waitForScreen();
         await onTabBar.navigateToMyAssets();
 
@@ -36,6 +47,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
 
         await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
-        await onAccountReceive.verifyReceiveAddress('bc1qa55m6kz3crfse5xg2rukulyap4eyp75w0puawz');
+        await onAccountReceive.verifyReceiveAddress('32hQpu7yqoxbXfUw1oaBuojodzxxoKhKHB');
     });
 });

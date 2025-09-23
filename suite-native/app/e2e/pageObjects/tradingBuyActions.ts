@@ -1,6 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import { sleep, waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../utils';
+import { wait, waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../utils';
 
 const LONG_TIMEOUT = 30000;
 const SHORT_TIMEOUT = 5000;
@@ -51,7 +51,7 @@ class TradingBuyActions {
         await this.expectSheetHeaderTitle('Assets');
         await this.getSearchCrytoElement().tap();
         await this.getSearchCrytoElement().replaceText(asset.slice(0, -1));
-        await sleep(SEARCH_AND_ANIMATION_TIMEOUT);
+        await wait(SEARCH_AND_ANIMATION_TIMEOUT);
         await element(by.text(asset)).tap();
 
         await detoxExpect(element(by.id('@trading/buy/asset-button/symbol'))).toHaveText(asset);
@@ -62,7 +62,7 @@ class TradingBuyActions {
         await this.expectSheetHeaderTitle('Currency');
         await this.getSearchFiatElement().tap();
         await this.getSearchFiatElement().replaceText(fiatCurrency.slice(0, -1));
-        await sleep(SEARCH_AND_ANIMATION_TIMEOUT);
+        await wait(SEARCH_AND_ANIMATION_TIMEOUT);
         await element(by.label(fiatCurrency)).tap();
 
         await detoxExpect(element(by.id('@trading/buy/fiat-button/ticker'))).toHaveText(
@@ -75,7 +75,7 @@ class TradingBuyActions {
         await this.expectSheetHeaderTitle('Country of residence');
         await this.getSearchCountryElement().tap();
         await this.getSearchCountryElement().replaceText(countrySearch);
-        await sleep(SEARCH_AND_ANIMATION_TIMEOUT);
+        await wait(SEARCH_AND_ANIMATION_TIMEOUT);
         await element(by.text(country)).tap();
 
         await detoxExpect(element(by.id('@trading/buy/country/value'))).toHaveText(country);
