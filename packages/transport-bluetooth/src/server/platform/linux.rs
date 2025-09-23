@@ -212,6 +212,8 @@ async fn connect_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformE
 
     // check the result
     if let Err(err) = result {
+        dispatch_status(manager, device, DeviceConnectionStatus::Disconnected).await;
+
         info!("connect_with_timeout error: {err}");
         return Err(err)?;
     }
