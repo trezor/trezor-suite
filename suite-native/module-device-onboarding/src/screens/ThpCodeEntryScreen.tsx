@@ -9,7 +9,7 @@ import {
 } from '@suite-native/navigation';
 import { ThpCodeEntryScreenContent } from '@suite-native/thp';
 
-import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
+import { NonClosableDeviceOnboardingScreen } from '../components/NonClosableDeviceOnboardingScreen';
 import { useInitiateThpConnection } from '../hooks/useInitiateThpConnection';
 
 export const ThpCodeEntryScreen = ({
@@ -26,8 +26,8 @@ export const ThpCodeEntryScreen = ({
     }, [thpStep, navigation]);
 
     return (
-        <DeviceOnboardingScreenWithExitButton>
+        <NonClosableDeviceOnboardingScreen>
             <ThpCodeEntryScreenContent onRetry={initiateThpConnection} />
-        </DeviceOnboardingScreenWithExitButton>
+        </NonClosableDeviceOnboardingScreen>
     );
 };

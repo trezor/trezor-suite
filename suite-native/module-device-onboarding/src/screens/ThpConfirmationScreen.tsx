@@ -9,7 +9,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 
-import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
+import { NonClosableDeviceOnboardingScreen } from '../components/NonClosableDeviceOnboardingScreen';
 
 export const ThpConfirmationScreen = ({
     navigation,
@@ -27,12 +27,8 @@ export const ThpConfirmationScreen = ({
     }, [thpStep, navigation]);
 
     return (
-        <DeviceOnboardingScreenWithExitButton
-            isScrollable={false}
-            noBottomPadding={true}
-            hasBottomInset={false}
-        >
+        <NonClosableDeviceOnboardingScreen noBottomPadding={true} hasBottomInset={false}>
             <ContinueOnTrezorScreenContent />
-        </DeviceOnboardingScreenWithExitButton>
+        </NonClosableDeviceOnboardingScreen>
     );
 };
