@@ -18,7 +18,6 @@ const graphMiddleware =
                 api.dispatch(
                     graphActions.updateGraphData({
                         accounts: [action.payload.account],
-                        newAccountsOnly: true,
                     }),
                 );
             }
@@ -31,7 +30,6 @@ const graphMiddleware =
             api.dispatch(
                 graphActions.updateGraphData({
                     accounts: currentAccounts,
-                    newAccountsOnly: true,
                 }),
             );
         }
