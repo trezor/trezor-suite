@@ -138,7 +138,8 @@ export class UdpApi extends AbstractApi {
             this.interface.addListener('error', onError);
             this.interface.addListener('message', onMessage);
 
-            const timeout = setTimeout(onError, 1000);
+            // TODO temporarily increased from 1s to 4s until success screen is solved on fw side
+            const timeout = setTimeout(onError, 4000);
         });
 
         return pinged;
