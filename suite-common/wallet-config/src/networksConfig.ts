@@ -13,7 +13,7 @@ export const networks = {
         decimals: 8,
         testnet: false,
         explorer: getExplorerUrls('https://btc1.trezor.io', 'bitcoin'),
-        features: ['rbf', 'sign-verify', 'amount-unit'],
+        features: ['rbf', 'sign-verify', 'amount-unit', 'graph'],
         backendTypes: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
@@ -60,6 +60,7 @@ export const networks = {
             'staking',
             'eip1559',
             'mev-protection',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -99,6 +100,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'eip1559',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -132,6 +134,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'mev-protection',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -166,6 +169,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'eip1559',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -201,6 +205,7 @@ export const networks = {
             'nft-definitions',
             'eip1559',
             'mev-protection',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -235,6 +240,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'eip1559',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -325,7 +331,7 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://etc1.trezor.io', 'ethereum'),
-        features: ['sign-verify', 'tokens', 'coin-definitions'],
+        features: ['sign-verify', 'tokens', 'coin-definitions', 'graph'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
@@ -370,7 +376,7 @@ export const networks = {
         decimals: 8,
         testnet: false,
         explorer: getExplorerUrls('https://ltc1.trezor.io', 'bitcoin'),
-        features: ['sign-verify'],
+        features: ['sign-verify', 'graph'],
         backendTypes: ['blockbook'],
         accountTypes: {
             segwit: {
@@ -395,7 +401,7 @@ export const networks = {
         decimals: 8,
         testnet: false,
         explorer: getExplorerUrls('https://bch1.trezor.io', 'bitcoin'),
-        features: ['sign-verify'],
+        features: ['sign-verify', 'graph'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'bitcoin-cash',
@@ -410,7 +416,7 @@ export const networks = {
         decimals: 8,
         testnet: false,
         explorer: getExplorerUrls('https://doge1.trezor.io', 'bitcoin'),
-        features: ['sign-verify'],
+        features: ['sign-verify', 'graph'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'dogecoin',
@@ -426,7 +432,7 @@ export const networks = {
         decimals: 8,
         testnet: false,
         explorer: getExplorerUrls('https://zec1.trezor.io', 'bitcoin'),
-        features: ['sign-verify'],
+        features: ['sign-verify', 'graph'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'zcash',
@@ -442,7 +448,7 @@ export const networks = {
         decimals: 8,
         testnet: true,
         explorer: getExplorerUrls('https://tbtc4-1.trezor.io', 'bitcoin'),
-        features: ['rbf', 'sign-verify', 'amount-unit'],
+        features: ['rbf', 'sign-verify', 'amount-unit', 'graph'],
         backendTypes: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
@@ -478,7 +484,7 @@ export const networks = {
         decimals: 8,
         testnet: true,
         explorer: getExplorerUrls('http://localhost:19121', 'bitcoin'),
-        features: ['rbf', 'sign-verify', 'amount-unit'],
+        features: ['rbf', 'sign-verify', 'amount-unit', 'graph'],
         backendTypes: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
@@ -515,7 +521,7 @@ export const networks = {
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://sepolia.etherscan.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559'],
+        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559', 'graph'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
@@ -531,7 +537,16 @@ export const networks = {
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://holesky.etherscan.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'nft-definitions', 'eip1559'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'staking',
+            'nfts',
+            'nft-definitions',
+            'eip1559',
+            'graph',
+        ],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'holesky-test-ethereum', // fake, coingecko does not have testnets

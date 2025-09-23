@@ -2,13 +2,14 @@ import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { type AppState } from 'src/reducers/store';
 import { State as GraphState } from 'src/reducers/wallet/graphReducer';
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
@@ -53,6 +54,20 @@ export const accountGraphDataFilterFn = (d: GraphData, account: Account) =>
     d.account.descriptor === account.descriptor &&
     d.account.symbol === account.symbol &&
     d.account.deviceState === account.deviceState;
+
+/**
+ * Extract only accounts for which we don't have any data for given interval
+ */
+export function getPristineAccounts(graph: AppState['wallet']['graph'], accounts: Account[]) {
+    return accounts.filter(account => !graph.data.find(d => accountGraphDataFilterFn(d, account)));
+}
+
+/**
+ * Does given network has backend type with support for retrieving transactions history, e.g. for showing graph?
+ */
+export function isNetworkWithGraphFeature(symbol: NetworkSymbol) {
+    return networks[symbol].features.find(feature => feature === 'graph');
+}
 
 export const enhanceBlockchainAccountHistory = (
     data: BlockchainAccountBalanceHistory[],

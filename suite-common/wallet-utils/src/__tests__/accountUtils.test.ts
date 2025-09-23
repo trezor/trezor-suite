@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import { NetworkFeature } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -234,7 +235,12 @@ describe('account utils', () => {
         const ethAcc = getWalletAccount();
         const coinjoinAcc = getWalletAccount({ symbol: 'regtest', accountType: 'coinjoin' });
 
-        expect(getNetworkAccountFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
+        expect(getNetworkAccountFeatures(btcAcc)).toEqual([
+            'rbf',
+            'sign-verify',
+            'amount-unit',
+            'graph',
+        ] satisfies NetworkFeature[]);
         expect(getNetworkAccountFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
         expect(getNetworkAccountFeatures(ethAcc)).toEqual([
             'rbf',
@@ -246,6 +252,7 @@ describe('account utils', () => {
             'staking',
             'eip1559',
             'mev-protection',
+            'graph',
         ]);
         expect(getNetworkAccountFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
         // when account does not have features defined, take them from root network object

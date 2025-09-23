@@ -3,13 +3,14 @@ import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-comm
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { Dispatch, GetState } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
-import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { type Dispatch, type GetState } from 'src/types/suite';
+import { type Account } from 'src/types/wallet';
+import { type GraphData, type GraphRange, type GraphScale } from 'src/types/wallet/graph';
 import {
-    accountGraphDataFilterFn,
     enhanceBlockchainAccountHistory,
     ensureHistoryRates,
+    getPristineAccounts,
+    isNetworkWithGraphFeature,
 } from 'src/utils/wallet/graph';
 
 import {
@@ -160,13 +161,14 @@ export const updateGraphData = createThunk<
 
         // TODO: default behaviour should be fetch only new data (since last timestamp)
         // exclude accounts with unsupported backend type
-        let filteredAccounts = accounts.filter(a => isTrezorConnectBackendType(a.backendType));
+        let filteredAccounts = accounts
+            .filter(account => isTrezorConnectBackendType(account.backendType))
+            .filter(account => isNetworkWithGraphFeature(account.symbol));
+
         if (newAccountsOnly) {
-            // add only accounts for which we don't have any data for given interval
-            filteredAccounts = filteredAccounts.filter(
-                account => !graph.data.find(d => accountGraphDataFilterFn(d, account)),
-            );
+            filteredAccounts = getPristineAccounts(graph, accounts);
         }
+
         if (filteredAccounts.length === 0) {
             return;
         }
@@ -185,16 +187,12 @@ export const updateGraphData = createThunk<
             dispatch({
                 type: AGGREGATED_GRAPH_SUCCESS,
             });
-
-            return;
         } catch (error) {
             if (error.name === 'AbortError') {
                 dispatch({
                     type: AGGREGATED_GRAPH_SUCCESS,
                 });
             }
-
-            return;
         }
     },
 );
