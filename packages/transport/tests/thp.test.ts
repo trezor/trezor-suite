@@ -152,7 +152,7 @@ describe('thp', () => {
                 apiRead,
             });
 
-            await jest.advanceTimersByTimeAsync(11 * 3000); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
+            await jest.advanceTimersByTimeAsync(11 * 30_000); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
             const result = await sendPromise;
 
             expect(result).toMatchObject({ success: false, message: 'Aborted by deadline' });
@@ -185,7 +185,7 @@ describe('thp', () => {
                 apiRead,
             });
 
-            await jest.advanceTimersByTimeAsync(20 * 3000); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
+            await jest.advanceTimersByTimeAsync(20 * 30_000); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
             const result = await sendPromise;
 
             expect(result).toMatchObject({ success: false, message: 'Aborted by deadline' });
@@ -262,7 +262,7 @@ describe('thp', () => {
                 signal: abortController.signal,
             });
 
-            await jest.advanceTimersByTimeAsync(4000);
+            await jest.advanceTimersByTimeAsync(40_000);
             expect(apiWrite).toHaveBeenCalledTimes(2); // there was 1 retransmission
 
             abortController.abort();
