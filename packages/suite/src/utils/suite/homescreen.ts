@@ -8,17 +8,21 @@ import { TrezorDevice } from 'src/types/suite/index';
 // TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
 // prior to that version and removing this definition from here
 
-const safe3Information = {
+type DeviceModelInformation = {
+    width: number;
+    height: number;
+    supports: Array<'png' | 'jpeg'>;
+    maxImageSize: number;
+};
+
+const safe3Information: DeviceModelInformation = {
     width: 128,
     height: 64,
-    supports: ['png', 'jpeg'] satisfies ('png' | 'jpeg')[],
+    supports: ['png', 'jpeg'],
     maxImageSize: 16384,
 };
 
-export const deviceModelInformation: Record<
-    DeviceModelInternal,
-    { width: number; height: number; supports: Array<'png' | 'jpeg'>; maxImageSize: number }
-> = {
+export const deviceModelInformation: Record<DeviceModelInternal, DeviceModelInformation> = {
     [DeviceModelInternal.UNKNOWN]: {
         width: 280,
         height: 520,
@@ -370,11 +374,12 @@ export const imagePathToHex = async (
     return bitmap(imageData, deviceModelInternal);
 };
 
-export const isHomescreenSupportedOnDevice = (device: TrezorDevice) => {
+export const isHomescreenSupportedOnDevice = (device: TrezorDevice): boolean => {
     const deviceModelInternal = device.features?.internal_model;
 
     return (
         deviceModelInternal !== DeviceModelInternal.T2T1 ||
-        (deviceModelInternal === DeviceModelInternal.T2T1 && device.features?.homescreen_format)
+        (deviceModelInternal === DeviceModelInternal.T2T1 &&
+            device.features?.homescreen_format !== undefined)
     );
 };
