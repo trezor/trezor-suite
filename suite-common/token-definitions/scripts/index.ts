@@ -60,8 +60,8 @@ const main = async () => {
     fs.mkdirSync(FILES_PATH, { recursive: true });
 
     const signedData = signData(data);
-    fs.writeFileSync(join(FILES_PATH, fileName, '.jws'), signedData);
-    fs.writeFileSync(join(FILES_PATH, fileName, '.json'), JSON.stringify(data));
+    fs.writeFileSync(join(FILES_PATH, `${fileName}.jws`), signedData);
+    fs.writeFileSync(join(FILES_PATH, `${fileName}.json`), JSON.stringify(data));
 
     console.log('JSON definitions saved to ', join(FILES_PATH, fileName, '.[jws,json]'));
 };
