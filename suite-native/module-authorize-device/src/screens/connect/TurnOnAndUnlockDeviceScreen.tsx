@@ -18,7 +18,6 @@ import {
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { isAndroid } from '@trezor/env-utils';
 import { TimerId } from '@trezor/type-utils';
 
 import { BluetoothPairingHelpButton } from '../../components/connect/BluetoothPairingHelpButton';
@@ -38,10 +37,6 @@ export const TurnOnAndUnlockDeviceScreen = () => {
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
     const hasKnownBluetoothDevices = useSelector(selectHasKnownBluetoothDevices);
     const nearbyPairableBluetoothDevices = useSelector(selectNearbyPairableBluetoothDevices);
-
-    const navigateToConnectAndUnlockDeviceScreen = () => {
-        navigation.replace(AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice);
-    };
 
     const navigateToRemoveBluetoothDeviceScreen = useCallback(() => {
         navigation.replace(AuthorizeDeviceStackRoutes.RemoveBluetoothDevice);
@@ -97,7 +92,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
         }
     }, [nearbyPairableBluetoothDevices, hideAlert, navigation]);
 
-    useBluetoothManager();
+    const { isScanningInProgress } = useBluetoothManager();
 
     return (
         <Screen
@@ -116,9 +111,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
             hasBottomInset={false}
             isScrollable={false}
         >
-            <TurnOnAndUnlockDeviceScreenContent
-                onConnectViaCable={isAndroid() ? navigateToConnectAndUnlockDeviceScreen : undefined}
-            />
+            <TurnOnAndUnlockDeviceScreenContent isScanningInProgress={isScanningInProgress} />
         </Screen>
     );
 };
