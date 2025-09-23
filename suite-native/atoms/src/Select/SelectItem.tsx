@@ -77,7 +77,10 @@ export const SelectItem = ({
             testID={`@select/item/${value}`}
         >
             {icon}
-            <Box style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}>
+            <Box
+                style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}
+                testID={`@select/item/${value}/content`}
+            >
                 <Text numberOfLines={1}>{label}</Text>
                 <Radio value={value} onPress={onSelect} isChecked={isSelected} />
             </Box>

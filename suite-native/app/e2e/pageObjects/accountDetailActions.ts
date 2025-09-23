@@ -18,7 +18,9 @@ class AccountDetailActions {
     }
 
     async openReceive() {
-        await element(by.id('@account-detail/receive-button')).tap();
+        const receiveButton = element(by.id('@account-detail/receive-button'));
+        await waitFor(receiveButton).toBeVisible().withTimeout(10000);
+        await receiveButton.tap();
     }
 }
 
