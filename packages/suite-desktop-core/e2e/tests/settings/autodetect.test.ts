@@ -35,7 +35,7 @@ const testCases = [
 
 test.use({ startEmulator: false });
 testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundColor }) => {
-    test.describe.serial('Language and theme detection', { tag: ['@group=settings'] }, () => {
+    test.describe('Language and theme detection', { tag: ['@group=settings'] }, () => {
         test.use(userPreferences);
         test(
             testName,
@@ -54,5 +54,5 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
                 );
             },
         );
-    });
+    })
 });

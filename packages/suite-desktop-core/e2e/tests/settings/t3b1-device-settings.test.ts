@@ -8,10 +8,12 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe.serial(
+test.describe(
     'T3B1 - Device settings',
     { tag: ['@group=settings', '@specificModel'] },
     () => {
+        test.describe.configure({ mode: 'serial' });
+
         test.use({
             emulatorStartConf: { model: 'T3B1', wipe: true },
         });
