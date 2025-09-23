@@ -93,7 +93,7 @@ describe('workflow/handshake', () => {
                 new Promise(resolve => {
                     const timeout = setTimeout(
                         () => resolve({ success: true, payload: Buffer.alloc(readAttempt) }),
-                        500 * readAttempt, // increase respond time on each attempt, should timeout on 3rd
+                        1500 * readAttempt, // increase respond time on each attempt, should timeout on 3rd
                     );
                     signal.addEventListener('abort', () => {
                         abortSpy();
@@ -107,7 +107,7 @@ describe('workflow/handshake', () => {
         const { device, abortController } = await getAcquiredDevice({ read: readMock });
         const promise = handshakeCancel({ device, signal: abortController.signal });
 
-        await fastForward(2000);
+        await fastForward(6000);
         await promise;
 
         expect(readMock).toHaveBeenCalledTimes(3);
@@ -177,7 +177,7 @@ describe('workflow/handshake', () => {
         const writeMock = jest.fn(
             (_a, _b, signal) =>
                 new Promise(resolve => {
-                    const timeout = setTimeout(() => resolve({ success: false }), 2000);
+                    const timeout = setTimeout(() => resolve({ success: false }), 6000);
                     signal.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
@@ -193,7 +193,7 @@ describe('workflow/handshake', () => {
         });
         const promise = handshakeCancel({ device, signal: abortController.signal });
 
-        await fastForward(2000);
+        await fastForward(6000);
         await promise;
 
         expect(writeMock).toHaveBeenCalledTimes(1);
