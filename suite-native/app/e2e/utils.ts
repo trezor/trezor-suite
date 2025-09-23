@@ -28,7 +28,9 @@ const INITIAL_LAUNCH_ARGS: LaunchArgumentsWithPreloadedState = {
 
 const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
 
-export const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+export const wait = async (ms: number) => {
+    await new Promise(resolve => setTimeout(resolve, ms));
+};
 
 const getExpoDeepLinkUrl = () => {
     const expoLauncherUrl = encodeURIComponent(
@@ -130,6 +132,9 @@ export const scrollUntilVisible = async (
 
         // add extra scroll in case that the element is still not fully visible.
         await element(by.id(scrollViewTestId)).scroll(150, 'down');
+
+        // wait for scroll animation to finish before performing next action
+        await wait(1000);
     }
 };
 
@@ -186,10 +191,6 @@ export const disconnectTrezorUserEnv = async () => {
     await TrezorUserEnvLink.stopEmu();
     await TrezorUserEnvLink.stopBridge();
     await TrezorUserEnvLink.disconnect();
-};
-
-export const wait = async (ms: number) => {
-    await new Promise(resolve => setTimeout(resolve, ms));
 };
 
 export const waitForElementByTextToBeVisible = (text: string, timeout = 30000) =>

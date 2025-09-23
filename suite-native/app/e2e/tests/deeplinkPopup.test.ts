@@ -1,21 +1,21 @@
 import { expect as jestExpect } from '@jest/globals';
 import { exec } from 'child_process';
-import { expect as detoxExpect } from 'detox';
 import http from 'http';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
-import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
+import { btcDiscoveryFinishedState } from '../fixtures/btcDiscoveryFinishedState';
+import { deviceAutoEjectState } from '../fixtures/deviceAutoEjectState';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
+    mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
     restartApp,
-    wait,
 } from '../utils';
 
 const SERVER_PORT = 8080;
@@ -37,6 +37,12 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
         console.error(stderr);
     });
 };
+
+const preloadedState = mergePreloadedReduxState(
+    onboardingCompletedState,
+    btcDiscoveryFinishedState,
+    deviceAutoEjectState,
+);
 
 conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.', () => {
     beforeAll(async () => {
@@ -63,24 +69,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
         await openApp({
             newInstance: true,
             args: {
-                preloadedState: {
-                    appSettings: {
-                        ...onboardingCompleted?.appSettings,
-                    },
-                    device: {
-                        isDeviceAutoEjectEnabled: true,
-                        persistentDeviceData: [],
-                        devices: [],
-                    },
-                },
+                preloadedState,
             },
         });
-
-        await onCoinEnabling.waitForInitScreen();
-        await onCoinEnabling.toggleNetwork('btc');
-        await onCoinEnabling.clickOnConfirmButton();
-
-        await detoxExpect(element(by.id('@home/portfolio/header'))).toExist();
 
         // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
         await TrezorConnect.init({
@@ -95,14 +86,11 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
             deeplinkCallbackUrl: `${SERVER_URL}/connect/`,
             connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
         });
-    });
 
-    beforeEach(async () => {
-        await prepareTrezorEmulator({ seed: MNEMONICS.mnemonic_12 });
+        await prepareTrezorEmulator();
         await restartApp();
 
         await appIsFullyLoaded();
-        await wait(5000); // wait for trezor device to start communicating with the app
     });
 
     afterAll(async () => {

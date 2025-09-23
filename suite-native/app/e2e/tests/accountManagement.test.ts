@@ -1,38 +1,40 @@
 import { expect as detoxExpect } from 'detox';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { xpubs } from '../fixtures/xpubs';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import {
+    PRELOADED_BTC_ACCOUNT_LABEL,
+    portfolioTrackerBtcAccountState,
+} from '../fixtures/portfolioTrackerBtcAccountState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';
-import { onAccountImport } from '../pageObjects/accountImportActions';
-import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { appIsFullyLoaded, openApp, restartApp } from '../utils';
+import { appIsFullyLoaded, mergePreloadedReduxState, openApp, wipeAppData } from '../utils';
+
+const preloadedState = mergePreloadedReduxState(
+    onboardingCompletedState,
+    portfolioTrackerBtcAccountState,
+);
 
 describe('Account management', () => {
-    beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
-    });
-
     beforeEach(async () => {
-        await restartApp();
+        await openApp({
+            newInstance: true,
+            args: { preloadedState },
+        });
         await appIsFullyLoaded();
     });
 
+    afterEach(async () => {
+        // state need to be wiped between the test runs
+        await wipeAppData();
+    });
+
     it('Import account and rename it', async () => {
-        const accountName = 'BTC SegWit';
-        const newAccountName = 'Renamed BTC account';
+        await onTabBar.navigateToMyAssets();
 
-        await onHome.tapSyncCoinsButton();
-
-        await onAccountImport.importAccount({
-            networkSymbol: 'btc',
-            xpub: xpubs.btc.segwit,
-            accountName,
-        });
-
-        await onMyAssets.openAccountDetail({ accountName });
+        const newAccountName = 'BTC Renamed SegWit';
+        await onMyAssets.openAccountDetail({ accountName: PRELOADED_BTC_ACCOUNT_LABEL });
         await onAccountDetail.openSettings();
 
         await onAccountDetailSettings.renameAccount({ newAccountName });
@@ -41,22 +43,12 @@ describe('Account management', () => {
     });
 
     it('Import account and remove it', async () => {
-        const accountName = 'BTC Legacy SegWit';
-
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.addAccount();
-
-        await onAccountImport.importAccount({
-            networkSymbol: 'btc',
-            xpub: xpubs.btc.legacySegwit,
-            accountName,
-        });
-
-        await onMyAssets.openAccountDetail({ accountName });
+        await onMyAssets.openAccountDetail({ accountName: PRELOADED_BTC_ACCOUNT_LABEL });
         await onAccountDetail.openSettings();
         await onAccountDetailSettings.removeAccount();
         await onTabBar.navigateToMyAssets();
 
-        await detoxExpect(element(by.text(accountName))).not.toExist();
+        await detoxExpect(element(by.text(PRELOADED_BTC_ACCOUNT_LABEL))).not.toExist();
     });
 });

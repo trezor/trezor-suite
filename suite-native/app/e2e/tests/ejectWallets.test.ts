@@ -1,8 +1,8 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { PROTO } from '@trezor/connect';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { regtestDiscoveryFinishedState } from '../fixtures/regtestDiscoveryFinishedState';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onSettings } from '../pageObjects/settingsActions';
@@ -10,10 +10,17 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
+    mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
-    wait,
+    restartApp,
+    wipeAppData,
 } from '../utils';
+
+const preloadedState = mergePreloadedReduxState(
+    onboardingCompletedState,
+    regtestDiscoveryFinishedState,
+);
 
 const navigateToEjectWallets = async () => {
     await onTabBar.navigateToSettings();
@@ -22,49 +29,20 @@ const navigateToEjectWallets = async () => {
 
 conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
     beforeEach(async () => {
-        await prepareTrezorEmulator();
         await openApp({
             newInstance: true,
             args: {
-                preloadedState: {
-                    appSettings: {
-                        ...onboardingCompleted?.appSettings,
-                        isCoinEnablingInitFinished: true,
-                    },
-                    wallet: {
-                        settings: {
-                            enabledNetworks: ['btc'],
-                            localCurrency: 'usd',
-                            discreetMode: false,
-                            hideSuspiciousTransactions: false,
-                            bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
-                        },
-                    },
-                },
+                preloadedState,
             },
         });
         await appIsFullyLoaded();
-        await wait(5000); // wait for trezor device to start communicating with the app
+        await prepareTrezorEmulator();
+        await restartApp();
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
+        await wipeAppData();
         await disconnectTrezorUserEnv();
-        await device.terminateApp();
-    });
-
-    it('Eject single wallet with connected device', async () => {
-        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
-        await navigateToEjectWallets();
-        await onSettings.ejectSingleWallet();
-
-        // Navigate home
-        await device.pressBack();
-        await onTabBar.navigateToHome();
-
-        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
-        await TrezorUserEnvLink.stopBridge();
-
-        await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });
 
     it('Eject single wallet with disconnected device', async () => {
@@ -82,12 +60,27 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });
 
+    it('Eject single wallet with connected device', async () => {
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
+        await navigateToEjectWallets();
+        await onSettings.ejectSingleWallet();
+
+        await device.pressBack();
+        await onTabBar.navigateToHome();
+
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
+        await TrezorUserEnvLink.stopEmu();
+
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
+    });
+
     it('Auto eject settings toggle switch', async () => {
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await navigateToEjectWallets();
 
         await onSettings.toggleAutoEject();
         await onAlertSheet.tapPrimaryButton();
-        await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.stopEmu();
 
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });

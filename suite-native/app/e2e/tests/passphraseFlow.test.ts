@@ -4,62 +4,65 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { regtestDiscoveryFinishedState } from '../fixtures/regtestDiscoveryFinishedState';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
+    mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
     restartApp,
     wait,
+    wipeAppData,
 } from '../utils';
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
+const enterPassphraseFlow = async (passphrase: string) => {
+    await onPassphrase.expectEnterPassphraseScreen();
+    await onPassphrase.enterPassphrase(passphrase);
+
+    await onPassphrase.expectConfirmPassphraseOnDeviceRequest();
+    await onPassphrase.confirmPassphraseOnEmu();
+};
+
+const emptyPassphraseFlow = async (passphrase: string) => {
+    await onPassphrase.expectEmptyPassphraseWalletScreen();
+    await onPassphrase.openEmptyPassphraseWalletAndConfirmBestPractices();
+
+    await onPassphrase.expectEmptyPassphraseWalletConfirmationScreen();
+    await onPassphrase.enterPassphrase(passphrase);
+
+    await onPassphrase.expectConfirmPassphraseOnDeviceRequest();
+    await onPassphrase.confirmPassphraseOnEmu();
+};
+
+const expectEmptyWallet = async () => {
+    await onPassphrase.expectSwitcherSubheader('Passphrase wallet #1');
+
+    await detoxExpect(element(by.id('@assets/cryptoAmount/regtest'))).toHaveText('0 BTC REGTEST');
+};
+
+const expectNonEmptyWallet = async () => {
+    await onPassphrase.expectSwitcherSubheader('Passphrase wallet #1');
+
+    const amountEl = element(by.id('@assets/cryptoAmount/regtest'));
+    const { text } = (await amountEl.getAttributes()) as { text: string };
+
+    jestExpect(text).not.toBe('0 BTC REGTEST');
+    jestExpect(text).toMatch(/[0-9.]+ BTC REGTEST/);
+};
+
+const preloadedState = mergePreloadedReduxState(
+    onboardingCompletedState,
+    regtestDiscoveryFinishedState,
+);
+
 conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () => {
-    const enterPassphraseFlow = async (passphrase: string) => {
-        await onPassphrase.expectEnterPassphraseScreen();
-        await onPassphrase.enterPassphrase(passphrase);
-
-        await onPassphrase.expectConfirmPassphraseOnDeviceRequest();
-        await onPassphrase.confirmPassphraseOnEmu();
-    };
-
-    const emptyPassphraseFlow = async (passphrase: string) => {
-        await onPassphrase.expectEmptyPassphraseWalletScreen();
-        await onPassphrase.openEmptyPassphraseWalletAndConfirmBestPractices();
-
-        await onPassphrase.expectEmptyPassphraseWalletConfirmationScreen();
-        await onPassphrase.enterPassphrase(passphrase);
-
-        await onPassphrase.expectConfirmPassphraseOnDeviceRequest();
-        await onPassphrase.confirmPassphraseOnEmu();
-    };
-
-    const expectEmptyWallet = async () => {
-        await onPassphrase.expectSwitcherSubheader('Passphrase wallet #1');
-
-        await detoxExpect(element(by.id('@assets/cryptoAmount/regtest'))).toHaveText(
-            '0 BTC REGTEST',
-        );
-    };
-
-    const expectNonEmptyWallet = async () => {
-        await onPassphrase.expectSwitcherSubheader('Passphrase wallet #2');
-
-        const amountEl = element(by.id('@assets/cryptoAmount/regtest'));
-        const { text } = (await amountEl.getAttributes()) as { text: string };
-
-        jestExpect(text).not.toBe('0 BTC REGTEST');
-        jestExpect(text).toMatch(/[0-9.]+ BTC REGTEST/);
-    };
-
     beforeAll(async () => {
-        await prepareTrezorEmulator();
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
-
+        // wallet without passphrase
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',
             btc_amount: INITIAL_ACCOUNT_BALANCE,
@@ -70,10 +73,14 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
             address: 'bcrt1qgxgjkuym9e0uzmxl7nhvv6a8pxxd63hdw5c70j',
             btc_amount: INITIAL_ACCOUNT_BALANCE,
         });
+    });
 
-        await onCoinEnabling.waitForInitScreen();
-        await onCoinEnabling.toggleNetwork('regtest');
-        await onCoinEnabling.clickOnConfirmButton();
+    beforeEach(async () => {
+        await openApp({ newInstance: true, args: { preloadedState } });
+    });
+
+    afterEach(async () => {
+        await wipeAppData();
     });
 
     afterAll(async () => {
@@ -129,7 +136,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
 
     describe('with passphrase already allowed on Trezor', () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator({ seed: undefined, passphrase_protection: true });
+            await prepareTrezorEmulator({ passphrase_protection: true });
             await restartApp();
             await appIsFullyLoaded();
         });
@@ -157,7 +164,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
             await onPassphrase.openNewPassphraseFlow();
             await onPassphrase.closePassphraseFlow();
 
-            await wait(1000);
+            await wait(5000);
             await detoxExpect(element(by.id('@screen/PassphraseForm'))).not.toExist();
         });
     });

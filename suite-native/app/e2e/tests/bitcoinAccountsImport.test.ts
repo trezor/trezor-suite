@@ -1,4 +1,4 @@
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
@@ -7,7 +7,7 @@ import { openApp } from '../utils';
 
 describe('Import Bitcoin network accounts.', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
+        await openApp({ newInstance: true, args: { preloadedState: onboardingCompletedState } });
         await onTabBar.navigateToMyAssets();
     });
 

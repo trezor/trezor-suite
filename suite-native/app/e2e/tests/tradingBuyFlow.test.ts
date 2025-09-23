@@ -1,15 +1,22 @@
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { btcWalletPreloaded } from '../fixtures/walletWithBtcAcc';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/tradingHistoryActions';
-import { appIsFullyLoaded, openApp, restartApp } from '../utils';
+import { appIsFullyLoaded, mergePreloadedReduxState, openApp, restartApp } from '../utils';
+
+const preloadedState = mergePreloadedReduxState(
+    portfolioTrackerBtcAccountState,
+    onboardingCompletedState,
+);
 
 describe('Trade Buy', () => {
     beforeAll(async () => {
         await openApp({
             newInstance: true,
-            args: { preloadedState: { ...btcWalletPreloaded, ...onboardingCompleted } },
+            args: {
+                preloadedState,
+            },
         });
     });
 

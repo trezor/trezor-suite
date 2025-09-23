@@ -1,28 +1,31 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { regtestDiscoveryFinishedState } from '../fixtures/regtestDiscoveryFinishedState';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySuccess';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
+    mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
     restartApp,
+    wipeAppData,
 } from '../utils';
+
+const preloadedState = mergePreloadedReduxState(
+    onboardingCompletedState,
+    regtestDiscoveryFinishedState,
+);
 
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
     beforeAll(async () => {
-        await prepareTrezorEmulator();
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompleted } });
-
-        await onCoinEnabling.waitForInitScreen();
-        await onCoinEnabling.toggleNetwork('btc');
-        await onCoinEnabling.clickOnConfirmButton();
+        await openApp({ newInstance: true, args: { preloadedState } });
+        await appIsFullyLoaded();
     });
 
     afterAll(async () => {
@@ -138,15 +141,34 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceSettings.passCheckBackupFlow();
         });
     });
+});
 
-    describe('Tests with T1B1 device model [@specificModel]', () => {
-        beforeEach(async () => {
+conditionalDescribe(
+    device.getPlatform() === 'android',
+    'Device Settings - Tests with T1B1 device model [@specificModel]',
+    () => {
+        beforeAll(async () => {
+            // state of previous tests with remembered state need to be wiped
+            await disconnectTrezorUserEnv();
+            await wipeAppData();
+
+            await openApp({
+                newInstance: true,
+                args: { preloadedState },
+            });
+            await appIsFullyLoaded();
+
             await prepareTrezorEmulator({ model: 'T1B1' });
             await restartApp();
             await appIsFullyLoaded();
 
             await onDeviceManager.tapDeviceSwitch();
             await onDeviceManager.tapDeviceSettingsButton();
+        });
+
+        afterAll(async () => {
+            await disconnectTrezorUserEnv();
+            await device.terminateApp();
         });
 
         test('Device Check Backup with unsupported Device Model', async () => {
@@ -156,5 +178,5 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
                 .toBeVisible()
                 .withTimeout(10000);
         });
-    });
-});
+    },
+);

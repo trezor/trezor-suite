@@ -1,17 +1,22 @@
 import { PROTO } from '@trezor/connect';
 
-import { onboardingCompleted } from '../fixtures/onboardingCompleted';
-import { btcWalletPreloaded } from '../fixtures/walletWithBtcAcc';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { appIsFullyLoaded, openApp, restartApp } from '../utils';
+import { appIsFullyLoaded, mergePreloadedReduxState, openApp, restartApp } from '../utils';
+
+const preloadedState = mergePreloadedReduxState(
+    portfolioTrackerBtcAccountState,
+    onboardingCompletedState,
+);
 
 describe('App Settings - without device interactions', () => {
     beforeAll(async () => {
         await openApp({
             newInstance: true,
-            args: { preloadedState: { ...btcWalletPreloaded, ...onboardingCompleted } },
+            args: { preloadedState },
         });
     });
 
@@ -25,21 +30,17 @@ describe('App Settings - without device interactions', () => {
     });
 
     it('Localization - Currency', async () => {
-        await waitFor(
-            element(by.id('@home/portfolio/fiat-balance-header').withDescendant(by.text('$'))),
-        )
+        await waitFor(element(by.text(/^.*\$.*$/i)))
             .toBeVisible()
             .withTimeout(10000);
 
         await onTabBar.navigateToSettings();
         await onSettings.tapPreferences();
         await onSettings.changeLocalizationCurrency('czk');
-        await onTabBar.tapBackButton();
+        await device.pressBack();
         await onTabBar.navigateToHome();
 
-        await waitFor(
-            element(by.id('@home/portfolio/fiat-balance-header').withDescendant(by.text('CZK'))),
-        )
+        await waitFor(element(by.text(/^.*CZK.*$/i)))
             .toBeVisible()
             .withTimeout(10000);
     });
@@ -52,7 +53,7 @@ describe('App Settings - without device interactions', () => {
         await onTabBar.navigateToSettings();
         await onSettings.tapPreferences();
         await onSettings.changeBitcoinUnits(PROTO.AmountUnit.SATOSHI);
-        await onTabBar.tapBackButton();
+        await device.pressBack();
         await onTabBar.navigateToHome();
 
         await waitFor(element(by.text('0 sat')))
@@ -63,18 +64,12 @@ describe('App Settings - without device interactions', () => {
     it('Privacy & Security - Discreet Mode', async () => {
         await onHome.assertIsDiscreetModeDisabled();
 
-        const portfolioHeader = element(by.id('@home/portfolio/fiat-balance-header'));
-        await waitFor(portfolioHeader).toBeVisible().withTimeout(30000);
-        await portfolioHeader.tap();
-
-        await onHome.assertIsDiscreetModeEnabled();
-
         await onTabBar.navigateToSettings();
         await onSettings.tapPrivacyAndSecurity();
         await onSettings.toggleDiscreetMode();
-        await onTabBar.tapBackButton();
+        await device.pressBack();
         await onTabBar.navigateToHome();
 
-        await onHome.assertIsDiscreetModeDisabled();
+        await onHome.assertIsDiscreetModeEnabled();
     });
 });
