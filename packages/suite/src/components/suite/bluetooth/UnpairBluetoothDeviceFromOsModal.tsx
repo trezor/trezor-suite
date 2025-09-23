@@ -11,7 +11,13 @@ import { setBluetoothDeviceNeedsManualOsRemoval } from '../../../actions/bluetoo
 import { selectIsUnpairingDevice } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
-export const UnpairBluetoothDeviceFromOsModal = () => {
+type UnpairBluetoothDeviceFromOsModalProps = {
+    onFinish?: () => void;
+};
+
+export const UnpairBluetoothDeviceFromOsModal = ({
+    onFinish,
+}: UnpairBluetoothDeviceFromOsModalProps) => {
     const dispatch = useDispatch();
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
@@ -28,6 +34,7 @@ export const UnpairBluetoothDeviceFromOsModal = () => {
     const onCancel = () => {
         dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: false }));
         dispatch(toggleConnectionModal());
+        onFinish?.();
     };
 
     if (isUnpairingDevice) {

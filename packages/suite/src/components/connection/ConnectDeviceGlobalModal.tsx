@@ -237,7 +237,8 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         );
     }
 
-    if (bluetoothMode && devices.length > 0) {
+    // we either found some devices or user troubleshoots and wants to pair again
+    if ((bluetoothMode && devices.length > 0) || (bluetoothMode && shouldPairAgain)) {
         return (
             <BluetoothConnectionModal
                 nearbyDevices={nearbyDevices}
@@ -245,6 +246,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                 devices={devices}
                 selectedDevice={selectedDevice}
                 shouldPairAgain={shouldPairAgain}
+                toggleShouldPairAgain={toggleShouldPairAgain}
                 onPairingCancel={handlePairingCancel}
                 onRescanClick={onReScanClick}
                 onConnect={onConnect}
