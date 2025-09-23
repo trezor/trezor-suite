@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Modal } from '@trezor/components';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
@@ -9,12 +11,15 @@ import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothS
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
 import { useSelector } from 'src/hooks/suite';
 
+import { UnpairBluetoothDeviceFromOsModal } from '../suite/bluetooth/UnpairBluetoothDeviceFromOsModal';
+
 type BluetoothConnectionModalProps = {
     devices: DesktopBluetoothDevice[];
     selectedDevice: DesktopBluetoothDevice | undefined;
     nearbyDevices: DesktopBluetoothDevice[] | null;
     knownDevices: DesktopBluetoothDevice[] | null;
     shouldPairAgain: boolean;
+    toggleShouldPairAgain: () => void;
     onPairingCancel: (deviceId: string) => Promise<void>;
     onRescanClick: () => void;
     onConnect: (deviceId: string) => Promise<void>;
@@ -30,12 +35,27 @@ export const BluetoothConnectionModal = ({
     knownDevices,
     selectedDevice,
     onPairingCancel,
+    toggleShouldPairAgain,
     onRescanClick,
     onConnect,
     onCancel,
     onClose,
 }: BluetoothConnectionModalProps) => {
     const connectingDevices = useSelector(selectConnectingDevices);
+    const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);
+
+    const openShowRemoveFromOsBluetooth = () => {
+        setShowRemoveFromOsBluetooth(!showRemoveFromOsBluetooth);
+    };
+
+    const closeShowRemoveFromOsBluetooth = () => {
+        setShowRemoveFromOsBluetooth(false);
+        toggleShouldPairAgain();
+    };
+
+    if (showRemoveFromOsBluetooth) {
+        return <UnpairBluetoothDeviceFromOsModal onFinish={closeShowRemoveFromOsBluetooth} />;
+    }
 
     if (
         selectedDevice !== undefined &&
@@ -92,7 +112,7 @@ export const BluetoothConnectionModal = ({
         );
     }
 
-    // if there are no nearby devices, but we do have a know devices or cant connect -> pair again
+    // if there are no nearby devices, but we do have a known device -> pair again
     if (nearbyDevices && nearbyDevices.length === 0 && knownDevices && knownDevices.length > 0) {
         return (
             <Modal
@@ -105,6 +125,7 @@ export const BluetoothConnectionModal = ({
                     deviceList={knownDevices}
                     onConnect={onConnect}
                     isScanning={false}
+                    onPairAgain={openShowRemoveFromOsBluetooth}
                 />
             </Modal>
         );

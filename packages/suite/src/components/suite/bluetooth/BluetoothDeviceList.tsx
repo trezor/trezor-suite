@@ -19,7 +19,7 @@ type BluetoothDeviceListProps = {
     deviceList: DesktopBluetoothDevice[];
     onConnect: (deviceId: string) => Promise<void>;
     isScanning: boolean;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onPairAgain?: () => void;
 };
 
 export const BluetoothDeviceList = ({

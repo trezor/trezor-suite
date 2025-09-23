@@ -32,7 +32,7 @@ type GhostDeviceActionButtonProps = {
     device: DesktopBluetoothDevice;
     isConnectingDevice: boolean;
     isLoading: boolean;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onPairAgain?: () => void;
 };
 
 const GhostDeviceActionButton = ({
@@ -45,7 +45,7 @@ const GhostDeviceActionButton = ({
 
     const handleDelete = useCallback(() => {
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
-        onPairAgain?.(device.id);
+        onPairAgain?.();
     }, [dispatch, device.id, onPairAgain]);
 
     const isDisabled = isLoading || isConnectingDevice;
@@ -61,7 +61,7 @@ type ActionButtonProps = {
     isGhostDevice: boolean;
     device: DesktopBluetoothDevice;
     onConnect: (deviceId: string) => Promise<void>;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onPairAgain?: () => void;
 };
 
 const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionButtonProps) => {
@@ -101,7 +101,7 @@ const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionB
 type BluetoothDeviceItemProps = {
     device: DesktopBluetoothDevice;
     onConnect: (deviceId: string) => Promise<void>;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onPairAgain?: () => void;
 };
 
 export const BluetoothDeviceListItem = ({
