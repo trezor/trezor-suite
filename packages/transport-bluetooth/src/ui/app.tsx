@@ -389,7 +389,7 @@ export const App: React.FC = () => {
                                             <option value="">Select characteristic</option>
                                             <option value="read">READ</option>
                                             <option value="trezor-push-notification">
-                                                PUSH_NOTIFICATION
+                                                TREZOR_PUSH_NOTIFICATION
                                             </option>
                                             <option value="battery-level">BATTERY_LEVEL</option>
                                         </select>

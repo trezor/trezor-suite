@@ -331,15 +331,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     if (this.bluetoothProps?.channels['battery-level']) {
                         this.transport.on('battery-level', event => {
-                            this._updateSocFeature(event.data[0]);
+                            this._updateFeature('soc', event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
 
                     if (this.bluetoothProps?.channels['push-notification']) {
                         this.transport.on('trezor-push-notification', ({ data }) => {
-                            this._features.bootloader_mode = data[2] === 1;
-                            this._features.firmware_present = data[2] === 1 ? true : null;
+                            const isBootloaderMode = data[2] === 1;
+                            this._updateFeature('bootloader_mode', isBootloaderMode);
+                            this._updateFeature('firmware_present', isBootloaderMode ? true : null);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
@@ -933,10 +934,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    private _updateSocFeature(soc: number) {
+    private _updateFeature<K extends keyof Features>(key: K, value: Features[K]) {
         this._features = {
-            ...this.features,
-            soc,
+            ...this._features,
+            [key]: value,
         };
     }
 
