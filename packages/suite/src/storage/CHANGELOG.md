@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 25.11.0
+
+- move `autoEject` from `suite.settings` to `wallet.walletSettings`
+
 ## 25.10.0
 
 - create `persistentDeviceData` object store
