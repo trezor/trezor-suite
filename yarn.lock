@@ -10299,6 +10299,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.0.0"
     react-redux: "npm:9.2.0"
   languageName: unknown

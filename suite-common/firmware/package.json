@@ -19,6 +19,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.0.0",
         "react-redux": "9.2.0"
     }
