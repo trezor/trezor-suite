@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
-import { Card, Row } from '@trezor/components';
+import { Banner, Card, Row } from '@trezor/components';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothTips } from './BluetoothTips';
@@ -57,5 +57,8 @@ export const BluetoothSelectedDevice = ({ device, onReScanClick }: BluetoothSele
     ) : (
         <Card>
             <OkComponent device={device} />
+            <Banner variant="info" icon="info" margin={{ top: 16 }}>
+                <Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />
+            </Banner>
         </Card>
     );
