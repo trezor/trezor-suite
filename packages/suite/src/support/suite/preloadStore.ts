@@ -112,7 +112,7 @@ export const preloadStore = async () => {
 
         return {
             type: STORAGE.CORRUPTED,
-            payload: error,
+            payload: error.message,
         } as const;
     }
 };
