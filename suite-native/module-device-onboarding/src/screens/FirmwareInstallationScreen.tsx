@@ -14,7 +14,6 @@ export const FirmwareInstallationScreen = () => {
             customHeader={<DeviceOnboardingExitButtonScreenHeader />}
             onCancelAction={handleExitButtonPress}
             onFirmwareInstallationSuccess={navigateToNextScreenAfterFirmwareInstallation}
-            isRetryAllowed={false}
             isTemporaryRememeberAllowed={false}
             navigationLocation="onboarding"
         />
