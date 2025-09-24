@@ -17,6 +17,7 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import {
     ImageValidationError,
+    convertImage,
     deviceModelInformation,
     fileToDataUrl,
     imagePathToHex,
@@ -72,9 +73,16 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
-        const file = files[0];
+        let file = files[0];
 
-        const validationResult = await validateImage({ file, deviceModelInternal });
+        let validationResult = await validateImage({ file, deviceModelInternal });
+
+        // Do NOT touch the image if it's already valid
+        if (validationResult) {
+            file = (await convertImage({ file, deviceModelInternal })) ?? file;
+            validationResult = await validateImage({ file, deviceModelInternal });
+        }
+
         setValidationError(validationResult);
 
         const dataUrl = await fileToDataUrl(file);
@@ -99,7 +107,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <HiddenInput
                         ref={fileInputElement}
                         type="file"
-                        accept={deviceModelInformation[deviceModelInternal].supports
+                        accept={['png', 'jpeg', 'gif', 'webp', 'svg+xml']
                             .map(format => `image/${format}`)
                             .join(', ')}
                         onChange={e => onUploadHomescreen(e.target.files)}

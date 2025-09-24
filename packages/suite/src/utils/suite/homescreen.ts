@@ -311,15 +311,78 @@ export const validateImageColors = (
     return undefined;
 };
 
-type ValidateImageParam = {
+type ImageOperationParam = {
     file: File;
     deviceModelInternal: DeviceModelInternal;
+};
+
+const exportCanvas = (
+    canvas: HTMLCanvasElement,
+    filename: string,
+    filetype: 'jpeg' | 'png',
+    quality: number,
+): File | undefined => {
+    try {
+        const mimeType = `image/${filetype}`;
+        const outDataUrl = canvas.toDataURL(mimeType, quality);
+        const bin = atob(outDataUrl.split(',')[1]);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+
+        return new File([arr], filename, { type: mimeType });
+    } catch {
+        return;
+    }
+};
+
+export const convertImage = async ({
+    file,
+    deviceModelInternal,
+}: ImageOperationParam): Promise<File | undefined> => {
+    // Tries converting to valid image. Best effort only.
+    const { supports, width, height, maxImageSize } = deviceModelInformation[deviceModelInternal];
+
+    const dataUrl = await fileToDataUrl(file);
+    const image = await dataUrlToImage(dataUrl);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return undefined;
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, width, height);
+
+    const scale = Math.min(width / image.width, height / image.height);
+    const drawWidth = image.width * scale;
+    const drawHeight = image.height * scale;
+    const offsetX = (width - drawWidth) / 2;
+    const offsetY = (height - drawHeight) / 2;
+    ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+
+    const QUALITY_DECREASE_STEP = 0.1;
+    for (const filetype of supports) {
+        let quality = 1.0;
+        while (quality > QUALITY_DECREASE_STEP) {
+            const attempt = exportCanvas(
+                canvas,
+                file.name.replace(/\.\w+$/, `.${filetype}`),
+                filetype,
+                quality,
+            );
+            if (attempt && attempt.size <= maxImageSize) return attempt;
+            quality -= QUALITY_DECREASE_STEP;
+        }
+    }
+
+    return;
 };
 
 export const validateImage = async ({
     file,
     deviceModelInternal,
-}: ValidateImageParam): Promise<ImageValidationError | undefined> => {
+}: ImageOperationParam): Promise<ImageValidationError | undefined> => {
     const dataUrl = await fileToDataUrl(file);
     const arrayBuffer = await fileToArrayBuffer(file);
     const image = await dataUrlToImage(dataUrl);
