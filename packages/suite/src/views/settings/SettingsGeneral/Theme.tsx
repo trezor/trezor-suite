@@ -3,7 +3,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { ThemeColorVariant } from '@trezor/theme';
 
 import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';

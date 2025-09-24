@@ -3,7 +3,7 @@ import { SelectBar } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setAddressDisplayType } from 'src/actions/suite/suiteActions';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

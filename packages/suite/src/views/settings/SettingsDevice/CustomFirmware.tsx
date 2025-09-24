@@ -1,7 +1,7 @@
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';

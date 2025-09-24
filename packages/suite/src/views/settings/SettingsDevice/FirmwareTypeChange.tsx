@@ -9,7 +9,7 @@ import {
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import {
     ActionButton,
     ActionColumn,

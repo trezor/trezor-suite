@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Tooltip, variables } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import {
     ActionButton,
     ActionColumn,

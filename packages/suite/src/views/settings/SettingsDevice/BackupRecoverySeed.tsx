@@ -1,7 +1,7 @@
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';

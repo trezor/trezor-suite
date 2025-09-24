@@ -1,6 +1,6 @@
 import { LANGUAGES, Locale } from '@suite-common/suite-types';
 
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 
 import { changeLanguage } from '../../../actions/settings/deviceSettingsActions';

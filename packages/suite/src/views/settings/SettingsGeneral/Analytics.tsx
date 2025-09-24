@@ -6,7 +6,7 @@ import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Switch } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
