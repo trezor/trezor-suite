@@ -3,10 +3,14 @@ import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { capitalizeFirstLetter, union } from '@trezor/utils';
+
+import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
 import { Translation } from '../../../components/suite';
 
-const UNSUPPORTED_NETWORKS = ['ripple', 'solana', 'stellar'];
+const hasAnyAccountWithTokens = (accounts: Account[]): boolean =>
+    accounts.some(account => getNetworkFeatures(account.symbol).includes('tokens'));
 
 export const useUnsupportedNetworkMessage = ({
     showGraphControls,
@@ -17,25 +21,16 @@ export const useUnsupportedNetworkMessage = ({
     device?: TrezorDevice;
     accounts: Account[];
 }) => {
-    const hasAnyAccountWithTokens = (accounts: Account[]): boolean =>
-        accounts.some(account => {
-            const features = getNetworkFeatures(account.symbol);
-
-            return features?.includes('tokens') ?? false;
-        });
-
     const affectedAccounts =
-        showGraphControls &&
-        !hasBitcoinOnlyFirmware(device) &&
-        accounts
-            .filter(
-                account => account.history && UNSUPPORTED_NETWORKS.includes(account.networkType),
-            )
-            .map(({ networkType }) => networkType);
+        showGraphControls && !hasBitcoinOnlyFirmware(device)
+            ? accounts
+                  .filter(account => account.history && !isNetworkWithGraphFeature(account.symbol))
+                  .map(({ networkType }) => networkType)
+            : [];
 
-    const affectedNetworks = [...new Set(affectedAccounts || [])];
+    const affectedNetworks = union(affectedAccounts);
     const hasTokens = hasAnyAccountWithTokens(accounts);
-    const showMissingDataTooltip = affectedNetworks.length > 0 || hasTokens;
+    const showMissingDataTooltip = affectedNetworks.length > 0 || hasAnyAccountWithTokens(accounts);
 
     return { affectedNetworks, showMissingDataTooltip, hasTokens };
 };
@@ -44,8 +39,6 @@ type MessageProps = {
     affectedNetworks: string[];
     hasTokens: boolean;
 };
-
-const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const Message = ({ affectedNetworks, hasTokens }: MessageProps) => {
     const hasNetworks = affectedNetworks.length > 0;

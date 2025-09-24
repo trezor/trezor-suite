@@ -2,7 +2,7 @@ import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
-import { type NetworkSymbol, getNetwork, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -66,7 +66,7 @@ export function getPristineAccounts(graph: AppState['wallet']['graph'], accounts
  * Does given network has backend type with support for retrieving transactions history, e.g. for showing graph?
  */
 export function isNetworkWithGraphFeature(symbol: NetworkSymbol) {
-    return networks[symbol].features.find(feature => feature === 'graph');
+    return getNetworkFeatures(symbol).includes('graph');
 }
 
 export const enhanceBlockchainAccountHistory = (
