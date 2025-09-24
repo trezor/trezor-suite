@@ -12,13 +12,13 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import {
+    ReviewOutputItemList,
     selectIsTransactionAlreadySigned,
     useOutputsReviewBackInterceptor,
 } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
-import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 
 const spacerStyle = prepareNativeStyle(_ => ({
     height: 150,
@@ -61,7 +61,11 @@ export const SendOutputsReviewScreen = ({
             }
         >
             <VStack flex={1} spacing="sp16" justifyContent="space-between">
-                <ReviewOutputItemList accountKey={accountKey} tokenContract={tokenContract} />
+                <ReviewOutputItemList
+                    prefix="send"
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                />
                 {showOutputsReviewFooter ? (
                     <OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />
                 ) : (
