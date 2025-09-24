@@ -39,12 +39,10 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@we
                 await route.fulfill({ json: {} });
             });
             await tradingPage.youPayFiatInput.fill('5000');
-            await expect(page.getByText('No offers available for your request.')).toBeVisible();
+            await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
             await tradingPage.compareButton.click();
-            await expect(
-                page.getByText('No offers available for your request. Change country or amount.'),
-            ).toBeVisible();
+            await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
             await expect(tradingPage.selectThisQuoteButton).toBeHidden();
         });
     });

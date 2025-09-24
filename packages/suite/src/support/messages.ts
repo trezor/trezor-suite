@@ -1190,7 +1190,7 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
     TR_TRADING_OFFERS_EMPTY: {
-        defaultMessage: 'No offers available for your request. Change country or amount.',
+        defaultMessage: 'Select your from/to assets and amount to search for your best offer.',
         id: 'TR_TRADING_OFFERS_EMPTY',
     },
     TR_TRADING_UNKNOWN_PROVIDER: {
@@ -1266,14 +1266,6 @@ export default defineMessages({
     TR_TRADING_OFFER_LOOKING: {
         defaultMessage: 'Searching for your best offer',
         id: 'TR_TRADING_OFFER_LOOKING',
-    },
-    TR_TRADING_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request.',
-        id: 'TR_TRADING_OFFER_NO_FOUND',
-    },
-    TR_TRADING_CHANGE_AMOUNT_OR_CURRENCY: {
-        defaultMessage: 'Change amount or currency.',
-        id: 'TR_TRADING_CHANGE_AMOUNT_OR_CURRENCY',
     },
     TR_TRADING_BEST_RATE: {
         defaultMessage: 'Best rate',

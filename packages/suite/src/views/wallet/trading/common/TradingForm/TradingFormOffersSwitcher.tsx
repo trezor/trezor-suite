@@ -59,9 +59,7 @@ export const TradingFormOffersSwitcher = ({
                     align="center"
                     margin={{ vertical: spacings.xs }}
                 >
-                    <Translation id="TR_TRADING_OFFER_NO_FOUND" />
-                    <br />
-                    <Translation id="TR_TRADING_CHANGE_AMOUNT_OR_CURRENCY" />
+                    <Translation id="TR_TRADING_OFFERS_EMPTY" />
                 </Paragraph>
             </Card>
         );
