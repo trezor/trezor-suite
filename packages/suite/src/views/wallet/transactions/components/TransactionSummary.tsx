@@ -49,14 +49,14 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
 
+    if (account.networkType === 'ripple' || account.networkType === 'stellar') {
+        return null;
+    }
+
     const intervalGraphData = getGraphDataForInterval({ account, graph });
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
-
-    if (account.networkType === 'ripple' || account.networkType === 'stellar') {
-        return null;
-    }
 
     const error = intervalGraphData[0]?.error ?? false;
     const isLoading = intervalGraphData[0]?.isLoading ?? false;
