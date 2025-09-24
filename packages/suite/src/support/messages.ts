@@ -5608,7 +5608,7 @@ export default defineMessages({
     },
     IMAGE_VALIDATION_ERROR_INVALID_SIZE_JPG: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_SIZE_JPG',
-        defaultMessage: 'Invalid size (Image must be less than 16KB)',
+        defaultMessage: 'Invalid size (Image must be less than {maxImageSize} KB)',
     },
     IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG: {
         id: 'IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG',
