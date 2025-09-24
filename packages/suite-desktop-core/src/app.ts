@@ -71,6 +71,9 @@ const createMainWindow = (winBounds: WinBounds, store: Store) => {
         backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].backgroundSurfaceElevation0,
     });
 
+    // Ensure all network requests from the renderer report a custom user-agent identifying Suite and its version.
+    mainWindow.webContents.setUserAgent(`Trezor Suite ${app.getVersion()}`);
+
     let resizeDebounce: TimerId | null = null;
 
     mainWindow.on('resize', () => {
