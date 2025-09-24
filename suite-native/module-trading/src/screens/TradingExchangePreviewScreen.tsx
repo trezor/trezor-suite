@@ -3,7 +3,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
-import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { TokenAddress } from '@suite-common/wallet-types';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -87,11 +88,16 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
     };
 
     const handleSignTransaction = () => {
+        const tokenContract = quote.send
+            ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
+            : undefined;
+
         navigation.navigate({
             name: TradingStackRoutes.TradingOutputsReview,
             params: {
                 tradingType: 'exchange',
                 accountKey: fromAccount.key,
+                tokenContract,
             },
         });
     };
