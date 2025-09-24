@@ -7,6 +7,7 @@ import {
     changeNetworks,
     deviceActions,
     discoveryActions,
+    selectIsBitcoinEnabled,
     selectSelectedDevice,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
@@ -38,14 +39,19 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
         const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
+        const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
 
         // ensure that BTC is enabled when device with BTC-only firmware is connected
         // (it could have been disabled via some other device with universal firmware)
         if (deviceActions.selectDevice.match(action)) {
             const device = action.payload;
             if (device?.connected && hasBitcoinOnlyFirmware(device)) {
-                dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
-                dispatch(setIsCoinEnablingInitFinished(true));
+                if (!isBitcoinEnabled) {
+                    dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+                }
+                if (!isCoinEnablingInitFinished) {
+                    dispatch(setIsCoinEnablingInitFinished(true));
+                }
             }
         }
 
