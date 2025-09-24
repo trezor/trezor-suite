@@ -119,6 +119,11 @@ export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
 export const selectIsAutoForgetDeviceDataEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.autoForgetDeviceData;
 
+export const selectIsBitcoinEnabled = createMemoizedSelector(
+    [selectEnabledNetworks],
+    enabledNetworks => enabledNetworks.includes('btc'),
+);
+
 export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {
     const bitcoinAmountUnit = selectBitcoinAmountUnit(state);
 
