@@ -29,7 +29,7 @@ export type GetAnalyticsTradingBuyPayloadProps = {
     coinInfo: CoinInfo | undefined;
 };
 
-export const TRADING_URL_BASE = 'trezorsuitelite://trading';
+export const TRADING_URL_BASE = 'trezorsuite://trading';
 export const TRADING_URL_DEFAULT_BACK = `${TRADING_URL_BASE}/back`;
 export const INVITY_CALLBACK_TREZOR_BUY_URL = 'https://suite.trezor.io/web/accounts/coinmarket/buy';
 

@@ -69,7 +69,7 @@ export const TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/trezor-fw-authenticity-check-failed',
 );
 export const TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/trezor-fw-authenticity-check-failed-on-mobile',
+    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-authenticity-check-failed',
 );
 export const TREZOR_SUPPORT_FW_ALREADY_INSTALLED: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/firmware-is-already-installed',
@@ -100,12 +100,12 @@ export const EXPERIMENTAL_PASSWORD_MANAGER_KB_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/bonus-tools/retrieve-dropbox-passwords-from-password-manager',
 );
 
-export const HELP_CENTER_WHAT_IS_TREZOR_SUITE_LITE_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/what-is-trezor-suite-lite',
+export const HELP_CENTER_WHAT_IS_TREZOR_SUITE_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/trezor-suite/getting-to-know-trezor-suite',
 );
 
-export const HELP_CENTER_VERIFY_TREZOR_SUITE_LITE_ADDRESSES_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/verifying-trezor-suite-lite-addresses',
+export const HELP_CENTER_VERIFY_TREZOR_SUITE_ADDRESSES_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/sending-receiving-staking-funds/trading-crypto-in-trezor-suite/receive-crypto-in-trezor-suite',
 );
 
 export const HELP_CENTER_PIN_URL: Url = withPlatformUtm(
@@ -196,7 +196,7 @@ export const HELP_CENTER_ADVANCED_RECOVERY_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/backups-recovery/general-standards/advanced-recovery-on-model-one',
 );
 export const HELP_CENTER_XPUB_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/public-keys-xpub-in-trezor-suite-lite',
+    'https://trezor.io/learn/supported-assets/bitcoin/what-is-a-public-key-xpub',
 );
 export const HELP_CENTER_BIP32_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/advanced/standards-proposals/what-is-bip32',
@@ -250,7 +250,7 @@ export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-revision-check',
 );
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-lite/trezor-firmware-authenticity-check-on-mobile',
+    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-authenticity-check',
 );
 export const HELP_CENTER_ENTROPY_CHECK_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/entropy-check',

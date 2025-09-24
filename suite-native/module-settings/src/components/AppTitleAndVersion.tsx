@@ -12,7 +12,7 @@ export const AppTitleAndVersion = () => {
         <VStack justifyContent="center" alignItems="center" marginBottom="sp24">
             <Icon name="trezorLogo" size="large" color="iconSubdued" />
             <Text variant="callout" color="textSubdued">
-                <Translation id="generic.trezorSuiteLite" />
+                <Translation id="generic.trezorSuite" />
             </Text>
             {S.isNotEmpty(version) && <Text color="textSubdued">{version}</Text>}
         </VStack>

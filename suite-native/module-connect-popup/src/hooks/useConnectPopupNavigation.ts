@@ -22,7 +22,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 const isConnectPopupUrl = (url: string): boolean => {
     if (isDevelopOrDebugEnv()) {
-        if (url.startsWith('trezorsuitelite://connect')) return true;
+        if (url.startsWith('trezorsuite://connect')) return true;
         if (/^https:\/\/dev\.suite\.sldev\.cz\/connect\/(.*)\/deeplink(.*)$/g.test(url))
             return true;
     }
@@ -31,8 +31,7 @@ const isConnectPopupUrl = (url: string): boolean => {
     return false;
 };
 
-const isWalletConnectUrl = (url: string): boolean =>
-    url.startsWith('trezorsuitelite://walletconnect');
+const isWalletConnectUrl = (url: string): boolean => url.startsWith('trezorsuite://walletconnect');
 
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected

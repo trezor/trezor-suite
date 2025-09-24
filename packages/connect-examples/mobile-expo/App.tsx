@@ -32,7 +32,7 @@ export const App = () => {
                 appUrl: 'http://your.application.com',
             },
             // for local development purposes. for production, leave it undefined to use the default value.
-            connectSrc: isEmulator ? 'trezorsuitelite://connect' : undefined,
+            connectSrc: isEmulator ? 'trezorsuite://connect' : undefined,
             deeplinkOpen: url => {
                 // eslint-disable-next-line no-console
                 console.log('deeplinkOpen', url);

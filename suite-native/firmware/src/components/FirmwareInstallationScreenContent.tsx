@@ -18,7 +18,7 @@ import {
     useConfirmOnTrezorController,
 } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
+import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader } from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
@@ -205,7 +205,7 @@ export const FirmwareInstallationScreenContent = ({
     }, [startFirmwareUpdate, resetReducer, handleAnalyticsReportStarted]);
 
     const handleContactSupport = useCallback(() => {
-        openLink(SUITE_LITE_SUPPORT_URL);
+        openLink(SUITE_MOBILE_SUPPORT_URL);
     }, [openLink]);
 
     useEffect(() => {

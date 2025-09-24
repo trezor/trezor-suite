@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';
+import { Button, TrezorSuiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
@@ -35,7 +35,7 @@ export const AccountSettingsRemoveCoinButton = ({
             title: (
                 <Translation
                     id="moduleAccountManagement.accountSettingsScreen.removeAccountAlert.title"
-                    values={{ trezorSuiteLiteHeader: <TrezorSuiteLiteHeader /> }}
+                    values={{ trezorSuiteHeader: <TrezorSuiteHeader /> }}
                 />
             ),
             description: (

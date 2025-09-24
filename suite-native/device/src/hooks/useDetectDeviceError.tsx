@@ -19,7 +19,7 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { selectShouldShowSystemUnpairingAlert } from '@suite-native/bluetooth';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
-import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
+import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     AuthorizeDeviceStackRoutes,
     HomeStackParamList,
@@ -271,7 +271,7 @@ export const useDetectDeviceError = () => {
                     <Translation id="moduleDevice.genericErrorModal.buttons.help" />
                 ),
                 secondaryButtonVariant: 'redElevation0',
-                onPressSecondaryButton: () => openLink(SUITE_LITE_SUPPORT_URL),
+                onPressSecondaryButton: () => openLink(SUITE_MOBILE_SUPPORT_URL),
                 testID: '@device/errors/alert/error',
             });
         }

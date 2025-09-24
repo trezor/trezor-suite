@@ -39,10 +39,10 @@ const appIconsAndroid = {
 } as const;
 
 const appNames = {
-    debug: 'Trezor Suite Lite Debug',
-    preview: 'Trezor Suite Lite Preview',
-    develop: 'Trezor Suite Lite Develop',
-    production: 'Trezor Suite Lite',
+    debug: 'Trezor Suite Debug',
+    preview: 'Trezor Suite Preview',
+    develop: 'Trezor Suite Develop',
+    production: 'Trezor Suite',
 } as const satisfies Record<BuildType, string>;
 
 const appSlugs = {
@@ -184,7 +184,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     return {
         ...config,
         name,
-        scheme: buildType === 'production' ? undefined : 'trezorsuitelite',
+        scheme: buildType === 'production' ? undefined : 'trezorsuite',
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,

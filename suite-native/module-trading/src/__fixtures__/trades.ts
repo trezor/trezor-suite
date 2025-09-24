@@ -30,7 +30,7 @@ export const getBuyTrade = ({
         orderId: 'd3ef3451-8f68-4250-9e08-580ece5e7d12',
         originalPaymentId: 'b907a5347-db51-4a2d-806d-3b4869f5cd44',
         partnerData:
-            'https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=SOL&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=Ee11dZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t&hide_address=false&country_code=CZ&merchant_transaction_id=1146b3a9-ba27-4c9c-b3ae-45524fe63a97&theme=invity&return_url=trezorsuitelite%3A%2F%2Fbuy%2Ftrade%3Freceive%3Dsolana%26send%3DCZK%26fiatAmount%3Dundefined&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=1ef703a2175a7d1a3ab255aabb753c8a54146c7c19453dc6ebc1f667fb0045755a03d4df979c3c68a37af5cb9f5e73b88eec390a49fd31311019a2a7a65c6cfb&fiat_amount=1234',
+            'https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=SOL&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=Ee11dZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t&hide_address=false&country_code=CZ&merchant_transaction_id=1146b3a9-ba27-4c9c-b3ae-45524fe63a97&theme=invity&return_url=trezorsuite%3A%2F%2Fbuy%2Ftrade%3Freceive%3Dsolana%26send%3DCZK%26fiatAmount%3Dundefined&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=1ef703a2175a7d1a3ab255aabb753c8a54146c7c19453dc6ebc1f667fb0045755a03d4df979c3c68a37af5cb9f5e73b88eec390a49fd31311019a2a7a65c6cfb&fiat_amount=1234',
         paymentId: '7546b3a9-ba27-4c9c-b3ae-45524fe63a97',
         paymentMethod: 'creditCard',
         paymentMethodName: 'Credit Card',
@@ -89,7 +89,7 @@ export const getSellTrade = ({
         exchange: 'mercuryo',
         status,
         partnerData:
-            'https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=SOL&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=Ee11dZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t&hide_address=false&country_code=CZ&merchant_transaction_id=1146b3a9-ba27-4c9c-b3ae-45524fe63a97&theme=invity&return_url=trezorsuitelite%3A%2F%2Fbuy%2Ftrade%3Freceive%3Dsolana%26send%3DCZK%26fiatAmount%3Dundefined&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=1ef703a2175a7d1a3ab255aabb753c8a54146c7c19453dc6ebc1f667fb0045755a03d4df979c3c68a37af5cb9f5e73b88eec390a49fd31311019a2a7a65c6cfb&fiat_amount=1234',
+            'https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=SOL&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=Ee11dZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t&hide_address=false&country_code=CZ&merchant_transaction_id=1146b3a9-ba27-4c9c-b3ae-45524fe63a97&theme=invity&return_url=trezorsuite%3A%2F%2Fbuy%2Ftrade%3Freceive%3Dsolana%26send%3DCZK%26fiatAmount%3Dundefined&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=1ef703a2175a7d1a3ab255aabb753c8a54146c7c19453dc6ebc1f667fb0045755a03d4df979c3c68a37af5cb9f5e73b88eec390a49fd31311019a2a7a65c6cfb&fiat_amount=1234',
     },
     sendAccountKey: 'btc1',
 });

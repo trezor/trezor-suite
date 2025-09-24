@@ -44,7 +44,7 @@ describe('formUtils', () => {
             <body>
                 <img style="margin-bottom:40px" alt="trezor logo" src="data:image/png;base64, ${trezorLogo}" />
                 CONTENT_TO_EMBED
-                <a style="margin-top:40px" href="trezorsuitelite://trading/back">Go back</a>
+                <a style="margin-top:40px" href="trezorsuite://trading/back">Go back</a>
             </body>
         </html>
     `);
@@ -192,7 +192,7 @@ describe('buildTradingUrl', () => {
                 orderId: '1234',
                 exchange: 'paybis',
             }),
-        ).toBe('trezorsuitelite://trading?action=quote&tradeType=buy&orderId=1234');
+        ).toBe('trezorsuite://trading?action=quote&tradeType=buy&orderId=1234');
     });
 
     it('should return correct url format with https', () => {

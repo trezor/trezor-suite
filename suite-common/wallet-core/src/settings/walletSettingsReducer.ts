@@ -37,7 +37,7 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
     discreetMode: false,
-    // Suite Lite did not have BTC enabled by default
+    // Suite Mobile did not have BTC enabled by default
     enabledNetworks: isNative() ? [] : ['btc'],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
