@@ -7,14 +7,17 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { useOutputsReviewBackInterceptor } from '@suite-native/transaction-management';
+import {
+    ReviewOutputItemList,
+    useOutputsReviewBackInterceptor,
+} from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ReviewOutputItemList } from '../components/reviewOutputs/ReviewOutputItemList';
 import { ReviewOutputsFooter } from '../components/reviewOutputs/ReviewOutputsFooter';
 import { ReviewOutputsSkeleton } from '../components/reviewOutputs/ReviewOutputsSkeleton';
 import { useDelayedReviewOutputListDisplayFlag } from '../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
 import { useTradingOutputsReviewScreenControls } from '../hooks/reviewOutputs/useTradingOutputsReviewScreenControls';
+import { getFormDraftKeyPrefixFromTradingType } from '../utils/general/utils';
 
 const spacerStyle = prepareNativeStyle(_ => ({
     height: 150,
@@ -31,6 +34,8 @@ export const TradingOutputsReviewScreen = ({
     const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
     useOutputsReviewBackInterceptor();
 
+    const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
+
     return (
         <ConfirmOnTrezorWrapper
             controlRef={confirmOnTrezorRef}
@@ -44,7 +49,7 @@ export const TradingOutputsReviewScreen = ({
         >
             <VStack flex={1} spacing="sp16" justifyContent="space-between">
                 {shouldDisplayReviewList ? (
-                    <ReviewOutputItemList accountKey={accountKey} tradingType={tradingType} />
+                    <ReviewOutputItemList prefix={prefix} accountKey={accountKey} />
                 ) : (
                     <ReviewOutputsSkeleton />
                 )}
