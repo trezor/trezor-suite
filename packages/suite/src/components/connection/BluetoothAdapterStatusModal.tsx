@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
+import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type BluetoothAdapterStatusModalProps = {
-    bluetoothAdapterStatus: 'disabled' | 'permission-denied' | 'not-compatible';
     onCancel: () => void;
 };
 
@@ -20,10 +20,9 @@ type AdapterIssueSolution = {
     deeplinkFailed?: TranslationKey;
 };
 
-export const BluetoothAdapterStatusModal = ({
-    bluetoothAdapterStatus,
-    onCancel,
-}: BluetoothAdapterStatusModalProps) => {
+export const BluetoothAdapterStatusModal = ({ onCancel }: BluetoothAdapterStatusModalProps) => {
+    const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
+
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
     const dispatch = useDispatch();
 
