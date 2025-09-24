@@ -10,6 +10,7 @@ import {
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceInitialized,
     getStatus,
+    isDeviceConnectedViaBluetooth,
 } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { Device, DeviceState, StaticSessionId } from '@trezor/connect';
@@ -148,7 +149,7 @@ export const selectIsDeviceConnected = createMemoizedSelector(
 
 export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
     [selectSelectedDevice],
-    device => !!device?.bluetoothProps,
+    device => isDeviceConnectedViaBluetooth(device),
 );
 
 export const selectDeviceBluetoothId = createMemoizedSelector(

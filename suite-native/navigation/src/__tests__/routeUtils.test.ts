@@ -73,17 +73,17 @@ describe('Navigation Utils', () => {
                 type: 'stack',
                 key: 'stack-test4',
                 index: 0,
-                routeNames: [DeviceOnboardingStackRoutes.ConnectAndUnlockDevice],
+                routeNames: [DeviceOnboardingStackRoutes.DeviceDisconnected],
                 routes: [
                     {
-                        name: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+                        name: DeviceOnboardingStackRoutes.DeviceDisconnected,
                         key: 'ConnectAndUnlockDevice-test4',
                     },
                 ],
             });
 
             const routeList = [
-                DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+                DeviceOnboardingStackRoutes.DeviceDisconnected,
                 DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
             ];
             const result = checkIsActiveRouteAnyOf(routeList);

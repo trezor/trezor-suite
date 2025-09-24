@@ -7,12 +7,12 @@ import {
 } from '@suite-native/navigation';
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
-import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';
 import { CreateOrRecoverCrossroadsScreen } from '../screens/CreateOrRecoverCrossroadsScreen';
 import { CreatePinScreen } from '../screens/CreatePinScreen';
 import { CreateWalletLoadingScreen } from '../screens/CreateWalletLoadingScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySuccessScreen';
+import { DeviceDisconnectedScreen } from '../screens/DeviceDisconnectedScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { RecoveryInstructionsScreen } from '../screens/RecoveryInstructionsScreen';
@@ -38,8 +38,8 @@ export const DeviceOnboardingStackNavigator = () => (
         screenOptions={stackNavigationOptionsConfig}
     >
         <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ConnectAndUnlockDevice}
-            component={ConnectAndUnlockDeviceScreen}
+            name={DeviceOnboardingStackRoutes.DeviceDisconnected}
+            component={DeviceDisconnectedScreen}
             options={{
                 gestureEnabled: false,
                 animation: 'slide_from_bottom',

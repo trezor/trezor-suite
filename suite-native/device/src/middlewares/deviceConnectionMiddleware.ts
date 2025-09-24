@@ -8,6 +8,7 @@ import {
 import {
     getDeviceInternalModel,
     getIsDeviceInitialized,
+    isDeviceConnectedViaBluetooth,
     isThpDevice,
 } from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
@@ -172,10 +173,15 @@ deviceConnectionMiddleware.startListening({
 
 deviceConnectionMiddleware.startListening({
     predicate: action => deviceActions.deviceDisconnect.match(action),
-    effect: (_action: UnknownAction, { getState }) => {
+    effect: (action: UnknownAction, { getState }) => {
+        if (!deviceActions.deviceDisconnect.match(action)) {
+            throw new Error('This listener only handles deviceDisconnect action');
+        }
+
         const isDeviceRemembered = selectIsDeviceRemembered(getState());
         const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(getState());
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
+        const wasDeviceConnectedViaBluetooth = isDeviceConnectedViaBluetooth(action.payload);
 
         if (
             checkIsActiveRouteAnyOf(
@@ -187,7 +193,8 @@ deviceConnectionMiddleware.startListening({
 
         if (checkIsDeviceOnboardingFocused()) {
             navigationContainerRef.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+                screen: DeviceOnboardingStackRoutes.DeviceDisconnected,
+                params: { wasDeviceConnectedViaBluetooth },
             });
         } else {
             if (!checkIsHomeStackFocused()) {

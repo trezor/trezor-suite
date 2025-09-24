@@ -134,7 +134,9 @@ export type OnboardingStackParamList = {
 };
 
 export type DeviceOnboardingStackParamList = {
-    [DeviceOnboardingStackRoutes.ConnectAndUnlockDevice]: undefined;
+    [DeviceOnboardingStackRoutes.DeviceDisconnected]: {
+        wasDeviceConnectedViaBluetooth: boolean;
+    };
     [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
