@@ -8,6 +8,7 @@ import {
 } from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
+import { OpenDeviceChannel } from '@trezor/transport/src/api/abstract';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
 import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 
@@ -116,7 +117,12 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly transportPath;
-    public readonly bluetoothProps;
+    public readonly bluetoothProps:
+        | {
+              channels: Record<OpenDeviceChannel, boolean> | undefined;
+              id: string;
+          }
+        | undefined;
     private thp: protocolThp.ThpState | undefined;
     private readonly descriptorType;
     private sessionAcquired: Session | null;
@@ -224,7 +230,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.transport = transport;
         this.transportPath = descriptor.path;
         this.descriptorType = descriptor.type;
-        this.bluetoothProps = descriptor.id ? { id: descriptor.id } : undefined;
+
+        if (descriptor.id) {
+            this.bluetoothProps = {
+                id: descriptor.id,
+                channels: undefined,
+            };
+        }
 
         this.sessionAcquired = null;
 
@@ -308,6 +320,29 @@ export class Device extends TypedEmitter<DeviceEvents> {
             });
 
         return this.acquirePromise;
+    }
+
+    subscribe() {
+        if (this.bluetoothProps?.id) {
+            this.transport
+                .subscribe({
+                    path: this.bluetoothProps.id,
+                    channels: ['battery-level'],
+                })
+                .then(result => {
+                    if (result.success && this.bluetoothProps) {
+                        this.bluetoothProps.channels = result.payload;
+                        this.lifecycle.emit(DEVICE.CHANGED);
+                    }
+
+                    if (this.bluetoothProps?.channels?.['battery-level']) {
+                        this.transport.on('battery-level', event => {
+                            this._updateFeature('soc', event.data[0]);
+                            this.lifecycle.emit(DEVICE.CHANGED);
+                        });
+                    }
+                });
+        }
     }
 
     release() {
@@ -445,6 +480,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.lifecycle.emit(DEVICE.CONNECT);
+                    // If device has `Capability_BLE` we assume it can do PUSH notifications so we subscribe.
+                    if (this.features.capabilities.includes('Capability_BLE')) {
+                        this.subscribe();
+                    }
                 }
             });
 
@@ -890,6 +929,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
             }
         }
+    }
+
+    private _updateFeature<K extends keyof Features>(key: K, value: Features[K]) {
+        this._features = {
+            ...this._features,
+            [key]: value,
+        };
     }
 
     prompt<
