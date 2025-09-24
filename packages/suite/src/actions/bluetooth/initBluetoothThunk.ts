@@ -8,7 +8,9 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices } from '@suite-common/wallet-core';
+import TrezorConnect from '@trezor/connect';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
+import { resolveAfter } from '@trezor/utils';
 
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
@@ -55,12 +57,6 @@ export const initBluetoothThunk = createThunk<void, void, void>(
                     status: apiInfo.payload.state,
                 }),
             );
-        }
-
-        // If we already have some paired devices, we assume user will have a BT device,
-        // and therefore we start looking for it.
-        if (knownDevices.length > 0) {
-            dispatch(bluetoothStartScanningThunk());
         }
 
         const attemptDeviceConnect = async ({ device }: { device: DesktopBluetoothDevice }) => {
@@ -149,11 +145,36 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             );
         });
 
-        bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
+        bluetoothIpc.on('device-update', (deviceIpc: BluetoothDevice) => {
             const device = fromBluetoothDevice(deviceIpc);
 
             dispatch(bluetoothActions.deviceUpdateAction({ device }));
-            await attemptDeviceConnect({ device });
+        });
+
+        // Wait for 3 seconds or earlier if a connected device is detected.
+        // The delay shouldn't be too perceptible, since other things are also loading at app start.
+        // If user connects a device via USB, we don't start the BT connection,
+        // this avoids clashes where both USB and BT try to connect at the same time.
+        const waitForDevice = new Promise<void>(resolve => {
+            const cleanup = () => {
+                TrezorConnect.off('device-connect', cleanup);
+                resolve();
+            };
+
+            TrezorConnect.on('device-connect', cleanup);
+        });
+        Promise.race([waitForDevice, resolveAfter(3000)]).then(() => {
+            // Start attempting to connect to known BT devices
+            bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
+                const device = fromBluetoothDevice(deviceIpc);
+                await attemptDeviceConnect({ device });
+            });
+
+            // If we already have some paired devices, we assume user will have a BT device,
+            // and therefore we start looking for it.
+            if (knownDevices.length > 0) {
+                dispatch(bluetoothStartScanningThunk());
+            }
         });
     },
 );
