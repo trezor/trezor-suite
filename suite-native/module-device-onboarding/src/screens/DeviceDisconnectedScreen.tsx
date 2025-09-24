@@ -1,37 +1,40 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/core';
-
 import { useAlert } from '@suite-native/alerts';
-import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
+import {
+    ConnectAndUnlockDeviceScreenContent,
+    TurnOnAndUnlockDeviceScreenContent,
+} from '@suite-native/device';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
     DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeNavigationProps,
+    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
+export const DeviceDisconnectedScreen = ({
+    route,
+    navigation,
+}: StackToStackCompositeScreenProps<
     DeviceOnboardingStackParamList,
-    RootStackRoutes.DeviceOnboardingStack,
+    DeviceOnboardingStackRoutes.DeviceDisconnected,
     RootStackParamList
->;
+>) => {
+    const { wasDeviceConnectedViaBluetooth } = route.params;
 
-export const ConnectAndUnlockDeviceScreen = () => {
     const dispatch = useDispatch();
-
     const { showAlert } = useAlert();
-
     const { translate } = useTranslate();
 
-    const navigation = useNavigation<NavigationProp>();
+    const [isAlertDismissed, setIsAlertDismissed] = useState(false);
 
     const navigateToHome = () =>
         navigation.popTo(RootStackRoutes.AppTabs, {
@@ -52,6 +55,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
             ),
             pictogramVariant: 'critical',
             primaryButtonVariant: 'redBold',
+            onPressPrimaryButton: () => setIsAlertDismissed(true),
             secondaryButtonTitle: translate('generic.buttons.cancel'),
             secondaryButtonVariant: 'redElevation0',
             onPressSecondaryButton: () => {
@@ -77,12 +81,17 @@ export const ConnectAndUnlockDeviceScreen = () => {
 
     return (
         <Screen
+            header={<ScreenHeader closeAction={navigateToHome} closeActionType="close" />}
             noHorizontalPadding
+            noBottomPadding
             hasBottomInset={false}
             isScrollable={false}
-            header={<ScreenHeader closeAction={navigateToHome} closeActionType="close" />}
         >
-            <ConnectAndUnlockDeviceScreenContent />
+            {wasDeviceConnectedViaBluetooth ? (
+                <TurnOnAndUnlockDeviceScreenContent isScanningInProgress={isAlertDismissed} />
+            ) : (
+                <ConnectAndUnlockDeviceScreenContent />
+            )}
         </Screen>
     );
 };
