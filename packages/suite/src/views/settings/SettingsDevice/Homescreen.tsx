@@ -98,6 +98,18 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const isSupportedHomescreen = isHomescreenSupportedOnDevice(device);
 
+    const cancelButton = (
+        <ActionButton
+            variant="tertiary"
+            onClick={resetUpload}
+            isDisabled={isDeviceLocked}
+            isTooltipActive={isDeviceLocked}
+            tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+        >
+            <Translation id="TR_CANCEL" />
+        </ActionButton>
+    );
+
     return (
         <>
             <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
@@ -144,17 +156,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         <ActionButton onClick={onChangeHomescreen} isDisabled={isDeviceLocked}>
                             <Translation id="TR_CHANGE_HOMESCREEN" />
                         </ActionButton>
-                        <ActionButton
-                            variant="primary"
-                            onClick={resetUpload}
-                            isDisabled={isDeviceLocked}
-                            isTooltipActive={isDeviceLocked}
-                            tooltipContent={
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            }
-                        >
-                            <Translation id="TR_DROP_IMAGE" />
-                        </ActionButton>
+                        {cancelButton}
                     </ActionColumn>
                 </SectionItem>
             )}
@@ -191,19 +193,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             />
                         </Col>
                     )}
-                    <ActionColumn>
-                        <ActionButton
-                            variant="primary"
-                            onClick={resetUpload}
-                            isDisabled={isDeviceLocked}
-                            isTooltipActive={isDeviceLocked}
-                            tooltipContent={
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            }
-                        >
-                            <Translation id="TR_DROP_IMAGE" />
-                        </ActionButton>
-                    </ActionColumn>
+                    <ActionColumn>{cancelButton}</ActionColumn>
                 </SectionItem>
             )}
         </>
