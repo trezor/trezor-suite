@@ -3,6 +3,7 @@ import { PROTOCOL_MALFORMED, ThpState, TransportProtocol } from '@trezor/protoco
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
 import type { BridgeCommonErrors } from './bridge';
+import { OpenDeviceChannel } from '../api/abstract';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import {
@@ -285,6 +286,18 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
             thpState?: ThpState;
         } & AbortableParam,
     ): AsyncResultWithTypedError<MessageResponse, ReadWriteError>;
+
+    /**
+     * Subscribe to push notification
+     */
+    subscribe(_params: {
+        path: any;
+        channels: OpenDeviceChannel[];
+        signal?: AbortSignal;
+    }): AsyncResultWithTypedError<Record<OpenDeviceChannel, boolean>, ReadWriteError> {
+        // Return a rejected promise to indicate this feature is not supported by this transport by default.
+        return Promise.reject(new Error(`${this.name} does not support the 'subscribe' method.`));
+    }
 
     /**
      * Stop transport = remove all listeners + try to release session + cancel all requests
