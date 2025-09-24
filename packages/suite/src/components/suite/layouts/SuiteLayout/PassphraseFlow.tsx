@@ -6,6 +6,7 @@ import { closeModalApp } from '../../../../actions/suite/routerActions';
 import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/suite';
 import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
 import { SwitchDevice } from '../../../../views/suite/SwitchDevice/SwitchDevice';
+import { ConnectionGlobalModal } from '../../../connection/ConnectionGlobalModal';
 import { PassphraseModal, PassphraseOnDeviceModal } from '../../modals';
 import { ConfirmPassphraseBeforeAction } from '../../modals/ReduxModal/DeviceContextModal/ConfirmPassphraseBeforeAction';
 
@@ -55,7 +56,15 @@ const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const onCancel = () => dispatch(closeModalApp());
 
     if (app === 'switch-device') {
-        return <SwitchDevice cancelable={cancelable} onCancel={onCancel} />;
+        return (
+            <>
+                <SwitchDevice cancelable={cancelable} onCancel={onCancel} />
+                {/* THP flow can be triggered by auto-connect and that will open THP modals.
+                 *  However, this ForegroundApp takes precedes and prevents ALL other modals
+                 *  to render. So we have to render it here as well.*/}
+                <ConnectionGlobalModal />
+            </>
+        );
     }
 };
 
