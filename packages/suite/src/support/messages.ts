@@ -7453,6 +7453,10 @@ export default defineMessages({
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
         defaultMessage: 'Reconnect the device without touching the screen.',
     },
+    TR_DEVICE_CONNECTED_BOOTLOADER_RESTART_FROM_MENU: {
+        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RESTART_FROM_MENU',
+        defaultMessage: 'Restart the device from Trezor menu.',
+    },
     TR_DEVICE_CONNECTED_UNACQUIRED: {
         id: 'TR_DEVICE_CONNECTED_UNACQUIRED',
         defaultMessage: 'This device is being used by another app.',
