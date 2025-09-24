@@ -51,12 +51,3 @@ RUN cargo build --target x86_64-apple-darwin --release --bins && \
   mkdir -p /output/mac-x64 && \
   cp ./target/x86_64-apple-darwin/release/trezor-bluetooth /output/mac-x64/trezor-bluetooth && \
   llvm-strip /output/mac-x64/trezor-bluetooth
-
-# Build NAPI for macOS (ARM64 and x64)
-COPY ./package.json ./package.json
-RUN yarn global add @napi-rs/cli && \
-  yarn build:napi && \
-  mkdir -p /output/mac-arm64 && \
-  mkdir -p /output/mac-x64 && \
-  cp ./napi/trezor_bluetooth.darwin-arm64.node /output/mac-arm64/trezor-bluetooth.node && \
-  cp ./napi/trezor_bluetooth.darwin-x64.node /output/mac-x64/trezor-bluetooth.node
