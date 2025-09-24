@@ -76,13 +76,25 @@ const config: webpack.Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
     devtool: 'source-map',
-    entry: ['app', 'preload', ...threads, 'winHelloChildProcess'].reduce(
+    entry: [
+        // NOTE: in DEV ONLY pick app with react dev tools installed
+        { app: isDev ? 'app-with-devtools' : 'app' },
+        { preload: 'preload' },
+        ...threads.map(thread => ({ [String(thread)]: thread })),
+        { winHelloChildProcessPath },
+    ].reduce(
         (prev, cur) => ({
             ...prev,
-            [cur]:
-                cur === 'winHelloChildProcess'
-                    ? winHelloChildProcessPath
-                    : path.resolve(__dirname, `../src/${cur}.ts`),
+            ...Object.entries(cur).reduce(
+                (acc, [key, value]) => ({
+                    ...acc,
+                    [key]:
+                        key === 'winHelloChildProcessPath'
+                            ? value
+                            : path.resolve(__dirname, `../src/${value}.ts`),
+                }),
+                {},
+            ),
         }),
         {},
     ),

@@ -1,3 +1,4 @@
+import { isDevEnv } from '@suite-common/suite-utils';
 import { TOR_URLS } from '@trezor/urls';
 
 export const onionDomain = TOR_URLS['trezor.io'];
@@ -8,6 +9,11 @@ export const oauthUrls = [
 ];
 
 export const allowedProtocols = ['http:', 'https:'];
+
+const allowedDomainsDev = [
+    // google store for chrome extensions (devtools) loaded in electron-react-devtools.ts, see https://github.com/MarshallOfSound/electron-devtools-installer/blob/f8ec609/src/downloadChromeExtension.ts#L30
+    'google.com',
+];
 
 export const allowedDomains = [
     'localhost',
@@ -36,6 +42,7 @@ export const allowedDomains = [
     'xrplcluster.com', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     'xrpl.ws', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     's2.ripple.com', // XRP Ledger cluster, hosted by Ripple
+    ...(isDevEnv === true ? allowedDomainsDev : []),
 ];
 
 export const silentlyBlockedDomains = [

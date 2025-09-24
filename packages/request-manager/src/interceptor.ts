@@ -16,6 +16,7 @@ export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     const context = { ...interceptorOptions, requestPool, torIdentities };
 
     const validateRequest = ({ hostname }: { hostname: string }) => {
+        // FYI for main electron session, the base list of whitelisted domains is in 'packages/suite-desktop-core/src/config.ts'
         if (!isWhitelistedHost(hostname, context.getWhitelistedDomains())) {
             // Sometimes the error is not reported correctly so for debug reasons we log it as well
             console.error(`Request blocked, not whitelisted domain: ${hostname}`);
