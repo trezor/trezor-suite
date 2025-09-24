@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
@@ -35,16 +37,18 @@ export const SendAddressReviewScreen = ({
             selectIsTransactionReviewInProgress(state, accountKey, tokenContract),
     );
 
-    useEffect(() => {
-        if (isAddressConfirmed) {
-            navigation.navigate(SendStackRoutes.SendOutputsReview, {
-                accountKey,
-                tokenContract,
-                prevHeaderHeight: currentHeaderHeight,
-                initialSnapIndex: currentHeaderHeight ? 1 : undefined,
-            });
-        }
-    }, [isAddressConfirmed, accountKey, navigation, tokenContract, currentHeaderHeight]);
+    useFocusEffect(
+        useCallback(() => {
+            if (isAddressConfirmed) {
+                navigation.navigate(SendStackRoutes.SendOutputsReview, {
+                    accountKey,
+                    tokenContract,
+                    prevHeaderHeight: currentHeaderHeight,
+                    initialSnapIndex: currentHeaderHeight ? 1 : undefined,
+                });
+            }
+        }, [accountKey, currentHeaderHeight, isAddressConfirmed, navigation, tokenContract]),
+    );
 
     useEffect(() => {
         if (isTransactionReviewInProgress) {
