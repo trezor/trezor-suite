@@ -6,7 +6,8 @@ import {
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 
-import { SettingsLayout, SettingsSection } from 'src/components/settings';
+import { SettingsLayout } from 'src/components/settings/SettingsLayout';
+import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { Translation } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';

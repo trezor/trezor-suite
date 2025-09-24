@@ -4,7 +4,7 @@ import { networksCollection } from '@suite-common/wallet-config';
 import { WALLET_SETTINGS, selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
 
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';

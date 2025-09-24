@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { TorSettings } from '@trezor/suite-desktop-api/src/messages';
 
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useSelector } from 'src/hooks/suite';

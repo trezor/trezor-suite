@@ -9,7 +9,7 @@ import {
     checkBioAuthAvailableThunk,
     requestBioAuthChangeThunk,
 } from 'src/actions/suite/bioAuthThunks';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

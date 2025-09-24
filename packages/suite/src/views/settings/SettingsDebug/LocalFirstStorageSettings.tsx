@@ -8,14 +8,13 @@ import { Banner, Button, Checkbox, Code, Column, Input, Text } from '@trezor/com
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
+import { setLocalFirstStorageRelayAction } from 'src/actions/settings/settingsActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
+import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-
-import { setLocalFirstStorageRelayAction } from '../../../actions/settings/settingsActions';
-import { setFlag } from '../../../actions/suite/suiteActions';
-import { SettingsSection } from '../../../components/settings';
-import { useDispatch, useSelector } from '../../../hooks/suite';
-import { useLabelingCombined } from '../../../hooks/suite/useLabelingCombined';
-import { selectLocalFirstStorageRelayUrl } from '../../../selectors/suite/suiteSelectors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
+import { selectLocalFirstStorageRelayUrl } from 'src/selectors/suite/suiteSelectors';
 
 export const LocalFirstStorageSettings = () => {
     const [isLoading, setIsLoading] = useState(false);

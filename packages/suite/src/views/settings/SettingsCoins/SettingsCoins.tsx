@@ -12,12 +12,10 @@ import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
-import {
-    DeviceBanner,
-    SettingsLayout,
-    SettingsSection,
-    SettingsSectionItem,
-} from 'src/components/settings';
+import { DeviceBanner } from 'src/components/settings/DeviceBanner';
+import { SettingsLayout } from 'src/components/settings/SettingsLayout';
+import { SettingsSection } from 'src/components/settings/SettingsSection';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { CoinGroup, Translation } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

@@ -4,7 +4,9 @@ import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-uti
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
-import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
+import { DeviceBanner } from 'src/components/settings/DeviceBanner';
+import { SettingsLayout } from 'src/components/settings/SettingsLayout';
+import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { Translation } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDevice, useSelector } from 'src/hooks/suite';

@@ -10,7 +10,7 @@ import {
     openJustUpdatedChangelog,
     setUpdateModalVisibility,
 } from 'src/actions/suite/desktopUpdateActions';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import {
     ActionButton,
     ActionColumn,

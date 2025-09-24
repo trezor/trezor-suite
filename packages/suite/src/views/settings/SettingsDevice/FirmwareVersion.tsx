@@ -12,7 +12,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import {
     ActionButton,
     ActionColumn,

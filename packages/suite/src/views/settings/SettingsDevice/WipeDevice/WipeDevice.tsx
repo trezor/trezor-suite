@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
-import { SettingsSectionItem } from 'src/components/settings';
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice } from 'src/hooks/suite';
