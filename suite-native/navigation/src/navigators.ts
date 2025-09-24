@@ -109,6 +109,8 @@ export type SendStackParamList = {
         transaction: GeneralPrecomposedTransactionFinal;
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
+        prevHeaderHeight?: number;
+        initialSnapIndex?: number;
     };
     [SendStackRoutes.SendOutputsReview]: {
         accountKey: AccountKey;

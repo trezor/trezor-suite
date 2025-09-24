@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorWrapper } from '@suite-native/device';
+import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
@@ -22,6 +22,8 @@ export const SendDestinationTagReviewScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendDestinationTagReview>) => {
     const { accountKey, tokenContract, destinationTag, transaction } = route.params;
     const [hasReviewAlreadyStarted, setHasReviewAlreadyStarted] = useState(false);
+
+    const { confirmOnTrezorRef, currentHeaderHeight } = useConfirmOnTrezorController();
 
     const isTransactionReviewInProgress = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
@@ -51,18 +53,32 @@ export const SendDestinationTagReviewScreen = ({
         ]),
     );
 
-    useEffect(() => {
-        if (isDestinationTagConfirmed) {
-            navigation.navigate(SendStackRoutes.SendAddressReview, {
-                accountKey,
-                tokenContract,
-                transaction,
-            });
-        }
-    }, [isDestinationTagConfirmed, accountKey, navigation, tokenContract, transaction]);
+    useFocusEffect(
+        useCallback(() => {
+            if (isDestinationTagConfirmed) {
+                navigation.navigate(SendStackRoutes.SendAddressReview, {
+                    accountKey,
+                    tokenContract,
+                    transaction,
+                    prevHeaderHeight: currentHeaderHeight,
+                    initialSnapIndex: currentHeaderHeight ? 1 : undefined,
+                });
+            }
+        }, [
+            accountKey,
+            currentHeaderHeight,
+            isDestinationTagConfirmed,
+            navigation,
+            tokenContract,
+            transaction,
+        ]),
+    );
 
     return (
-        <ConfirmOnTrezorWrapper closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}>
+        <ConfirmOnTrezorWrapper
+            controlRef={confirmOnTrezorRef}
+            closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
+        >
             <VStack flex={1} spacing="sp24" marginTop="sp16">
                 <Text variant="titleSmall">
                     <Translation id="moduleSend.review.destinationTagTitle" />
