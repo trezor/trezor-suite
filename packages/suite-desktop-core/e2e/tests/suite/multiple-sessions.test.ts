@@ -54,6 +54,8 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             await test.step('Reload inactive suite session', async () => {
                 await stealBridgeSession();
                 await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
+                // In this case we don't use suiteApp.reloadApp() because this reload doesn't lose the THP session
+                // It was kept active by the stolen session
                 await page.reload();
             });
 

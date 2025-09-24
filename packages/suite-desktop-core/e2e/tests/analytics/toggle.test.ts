@@ -11,6 +11,8 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
     test('should respect disabled analytics in onboarding with following enabling in settings', async ({
         analytics,
         page,
+        model,
+        suite,
         analyticsSection,
         onboardingPage,
         dashboardPage,
@@ -39,8 +41,13 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
             });
 
         await test.step('Finish onboarding', async () => {
+            if (model.isModelWithTHP()) {
+                await onboardingPage.allowConnectToTrezor();
+                await onboardingPage.enterTHPPairingCode();
+            }
+
             await onboardingPage.onboardingContinueButton.click();
-            if (onboardingPage.isModelWithSecureElement()) {
+            if (model.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
             }
         });
@@ -49,7 +56,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
             // app needs time to save initialRun flag into storage to change session id
             await page.getByTestId('@suite/loading').waitFor({ state: 'hidden' });
             await page.discoveryShouldFinish();
-            await page.reload();
+            await suite.reloadApp();
             await settingsPage.navigateTo('application');
             await expect(settingsPage.analyticsSwitchInput).not.toBeChecked();
         });
@@ -100,6 +107,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
     });
 
     test('should respect enabled analytics in onboarding with following disabling in settings', async ({
+        model,
         analytics,
         analyticsSection,
         onboardingPage,
@@ -116,8 +124,12 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         });
 
         await test.step('Finish onboarding', async () => {
+            if (model.isModelWithTHP()) {
+                await onboardingPage.allowConnectToTrezor();
+                await onboardingPage.enterTHPPairingCode();
+            }
             await onboardingPage.onboardingContinueButton.click();
-            if (onboardingPage.isModelWithSecureElement()) {
+            if (model.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
             }
         });

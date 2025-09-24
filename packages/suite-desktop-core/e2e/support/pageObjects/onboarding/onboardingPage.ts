@@ -1,7 +1,6 @@
 import { Locator, Page, TestInfo, expect } from '@playwright/test';
 
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
-import { Model } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, isWebProject, step } from '../../common';
 import { SeedType } from '../../enums/seedType';
@@ -11,6 +10,7 @@ import { BackupSection } from './backupSection';
 import { FirmwareSection } from './firmwareSection';
 import { PinSection } from './pinSection';
 import { TutorialSection } from './tutorialSection';
+import { ModelFixture } from '../../modelFixture';
 
 export class OnboardingPage {
     readonly backup: BackupSection;
@@ -37,12 +37,9 @@ export class OnboardingPage {
     readonly pairingInputAtIndex = (index: number) =>
         this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
 
-    isModelWithSecureElement = () => ['T3B1', 'T3T1', 'T3W1'].includes(this.model);
-    isModelWithTHP = () => ['T3W1'].includes(this.model);
-
     constructor(
         public page: Page,
-        readonly model: Model,
+        readonly model: ModelFixture,
         private readonly testInfo: TestInfo,
         private readonly devicePrompt: DevicePrompt,
         private readonly analyticsSection: AnalyticsSection,
@@ -96,9 +93,13 @@ export class OnboardingPage {
     }
 
     @step()
-    async confirmTHPPairing() {
+    async allowConnectToTrezor() {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
+    }
+
+    @step()
+    async enterTHPPairingCode() {
         const screenContent = await TrezorUserEnvLinkProxy.getScreenContent();
         const screenContentBody = screenContent.body as string;
         const digits =
@@ -119,12 +120,13 @@ export class OnboardingPage {
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
 
-        if (this.isModelWithTHP()) {
-            await this.confirmTHPPairing();
+        if (this.model.isModelWithTHP()) {
+            await this.allowConnectToTrezor();
+            await this.enterTHPPairingCode();
         }
 
         await this.onboardingContinueButton.click();
-        if (this.isModelWithSecureElement()) {
+        if (this.model.isModelWithSecureElement()) {
             await this.passThroughAuthenticityCheck();
         }
         // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
