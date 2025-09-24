@@ -1,0 +1,52 @@
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+
+import { useRequestDelayedNavigationToOutputsReview } from '../useRequestDelayedNavigationToOutputsReview';
+
+const mockSelectDeviceButtonRequestsCodes = jest.fn().mockReturnValue([]);
+const mockNavigate = jest.fn();
+
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectDeviceButtonRequestsCodes: () => mockSelectDeviceButtonRequestsCodes(),
+}));
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({
+        navigate: mockNavigate,
+    }),
+}));
+
+describe('useRequestDelayedNavigationToOutputsReview', () => {
+    const renderUseRequestDelayedNavigationToOutputsReview = () =>
+        renderHookWithStoreProviderAsync(() =>
+            useRequestDelayedNavigationToOutputsReview({
+                accountKey: 'accountKey' as AccountKey,
+                tokenContract: 'tokenContract' as TokenAddress,
+            }),
+        );
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should call navigate once there are any button requests', async () => {
+        const { result, rerender } = await renderUseRequestDelayedNavigationToOutputsReview();
+
+        act(() => {
+            result.current();
+        });
+
+        expect(mockNavigate).not.toHaveBeenCalled();
+
+        mockSelectDeviceButtonRequestsCodes.mockReturnValue(['buttonRequestMock1']);
+        rerender({});
+
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+        expect(mockNavigate).toHaveBeenCalledWith('SendOutputsReview', {
+            accountKey: 'accountKey',
+            tokenContract: 'tokenContract',
+        });
+    });
+});
