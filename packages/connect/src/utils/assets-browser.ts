@@ -1,17 +1,11 @@
 import fetch from 'cross-fetch';
 
+import { HttpRequestError } from './assetUtils';
 import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
-export class HttpRequestError extends Error {
-    response: Response;
-
-    constructor(response: Response) {
-        const message = `${response.status} while fetching ${response.url}`;
-        super(message);
-        this.response = response;
-    }
-}
-
+/**
+ * Http request wrapper for Suite Web & Desktop to handle various response states in a unified way.
+ */
 export const httpRequest = async <T extends HttpRequestType>(
     url: string,
     type: T = 'text' as T,

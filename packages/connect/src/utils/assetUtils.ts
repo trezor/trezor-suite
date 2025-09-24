@@ -6,6 +6,16 @@ import {
     VersionArray,
 } from '@trezor/device-utils';
 
+export class HttpRequestError extends Error {
+    response: Response;
+
+    constructor(response: Response) {
+        const message = `${response.status} while fetching ${response.url}`;
+        super(message);
+        this.response = response;
+    }
+}
+
 type FirmwareAssetMap = {
     [device: string]: {
         [type: string]: {
@@ -43,7 +53,7 @@ export const getReleaseAsset = (
 
 export const firmwareReleaseConfigAssets = require('@trezor/connect-common/files/firmware/release/releases.v1.json');
 
-export const tryLocalAssetRequire = (url: string) => {
+export const tryLocalAssetRequire = (url: string): unknown => {
     const fileUrl = url.split('?')[0];
 
     switch (fileUrl) {
