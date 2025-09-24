@@ -1,4 +1,4 @@
-import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModal';
+import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { ThpGlobalManager } from 'src/components/connection/thp/ThpGlobalManager';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
