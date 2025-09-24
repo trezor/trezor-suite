@@ -29,7 +29,9 @@ import {
     CoinBalance,
     HiddenPlaceholder,
 } from 'src/components/suite';
+import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { Translation } from 'src/components/suite/Translation';
+import { useIsSidebarCollapsed } from 'src/components/suite/layouts/SuiteLayout/Sidebar/utils';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
 
@@ -133,6 +135,7 @@ export const AccountItemContent = ({
 }: ItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const { shouldAnimate } = useLoadingSkeleton();
+    const isSidebarCollapsed = useIsSidebarCollapsed();
 
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
@@ -146,6 +149,13 @@ export const AccountItemContent = ({
                     {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
                     {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                 </AccountLabelContainer>
+                {isSidebarCollapsed && (
+                    <AccountTypeBadge
+                        accountType={account.accountType}
+                        networkType={account.networkType}
+                        shouldDisplayNormalType
+                    />
+                )}
                 <BaseCurrency
                     isLoading={isFiatLoading}
                     customFiatValue={customFiatValue}
