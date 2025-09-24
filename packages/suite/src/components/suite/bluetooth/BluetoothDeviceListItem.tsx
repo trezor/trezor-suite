@@ -34,7 +34,7 @@ type GhostDeviceActionButtonProps = {
     device: DesktopBluetoothDevice;
     isConnectingDevice: boolean;
     isLoading: boolean;
-    onPairAgain?: (deviceId: BluetoothDeviceId) => Promise<void>;
+    onPairAgain?: (deviceId: BluetoothDeviceId) => void;
 };
 
 const GhostDeviceActionButton = ({
@@ -62,8 +62,8 @@ const GhostDeviceActionButton = ({
 type ActionButtonProps = {
     isGhostDevice: boolean;
     device: DesktopBluetoothDevice;
-    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
-    onPairAgain?: (deviceId: BluetoothDeviceId) => Promise<void>;
+    onConnect: (deviceId: BluetoothDeviceId) => void;
+    onPairAgain?: (deviceId: BluetoothDeviceId) => void;
 };
 
 const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionButtonProps) => {
@@ -102,8 +102,8 @@ const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionB
 
 type BluetoothDeviceItemProps = {
     device: DesktopBluetoothDevice;
-    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
-    onPairAgain?: (deviceId: BluetoothDeviceId) => Promise<void>;
+    onConnect: (deviceId: BluetoothDeviceId) => void;
+    onPairAgain?: (deviceId: BluetoothDeviceId) => void;
 };
 
 export const BluetoothDeviceListItem = ({
