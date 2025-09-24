@@ -88,8 +88,8 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
             if (value && !isHexValid(value, '0x')) {
                 return translationString('DATA_NOT_VALID_HEX');
             }
-            if (value && value.length > 8192 * 2) {
-                return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
+            if (value && value.length > formInputsMaxLength.ethData * 2) {
+                return translationString('DATA_HEX_TOO_BIG');
             }
         },
     });
@@ -113,6 +113,10 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                 label={<Translation id="DATA_ETH" />}
                 innerRef={asciiRef}
                 {...asciiField}
+                characterCount={{
+                    current: asciiValue?.length,
+                    max: formInputsMaxLength.ethData,
+                }}
             />
             <Space> = </Space>
             <Textarea
@@ -131,6 +135,10 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                 }
                 innerRef={hexRef}
                 {...hexField}
+                characterCount={{
+                    current: hexValue?.length,
+                    max: formInputsMaxLength.ethData * 2,
+                }}
             />
         </Wrapper>
     );
