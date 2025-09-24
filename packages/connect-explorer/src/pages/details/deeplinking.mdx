@@ -6,11 +6,11 @@ import { BetaOnly } from '../../components/BetaOnly';
 
 <BetaOnly>
 
-To support connecting to Trezor devices from 3rd party apps on mobile devices, Trezor Suite Lite provides a communication interface via deep linking.
+To support connecting to Trezor devices from 3rd party apps on mobile devices, Trezor Suite provides a communication interface via deep linking.
 
 <Callout type="info">
     **This feature is still in beta and is subject to change. It's currently available only in
-    development builds of Trezor Suite Lite.**
+    development builds of Trezor Suite Mobile.**
 </Callout>
 
 ## Base URL
@@ -22,7 +22,7 @@ Last segment of the URL tracks the version of the deeplinking API.
 | ----------------- | -------------------------------------------------------- |
 | Production build  | `https://connect.trezor.io/9/deeplink/1/`                |
 | Development build | `https://dev.suite.sldev.cz/connect/develop/deeplink/1/` |
-| Local (emulator)  | `trezorsuitelite://connect/1/`                           |
+| Local (emulator)  | `trezorsuite://connect/1/`                               |
 
 ## Query parameters
 
@@ -65,7 +65,7 @@ The parameters would be:
 The encoded deep link URL would then be:
 
 ```
-trezorsuitelite://connect/1/?method=getAddress&params=%7B%22coin%22%3A%22btc%22%2C%22path%22%3A%22m%2F44%27%2F0%27%2F0%27%2F0%2F0%22%7D&callback=https%3A%2F%2Fhttpbin.org%2Fget%3Fid%3D123
+trezorsuite://connect/1/?method=getAddress&params=%7B%22coin%22%3A%22btc%22%2C%22path%22%3A%22m%2F44%27%2F0%27%2F0%27%2F0%2F0%22%7D&callback=https%3A%2F%2Fhttpbin.org%2Fget%3Fid%3D123
 ```
 
 When the user returns to the app, the callback URL is called with the result of the method call.

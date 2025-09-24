@@ -101,7 +101,7 @@ describe.skip('Settings', () => {
         'Change currency',
         {
             testCase: 'Change currency in settings',
-            prerequisites: ['Suite lite app with an Bitcoin account already imported'],
+            prerequisites: ['Suite app with an Bitcoin account already imported'],
             steps: [
                 'On bottom bar, click on "Settings gear" icon',
                 'Click on "Localization"',

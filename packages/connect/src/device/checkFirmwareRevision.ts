@@ -19,7 +19,7 @@ const isAbortControllerTimeout = (e: Error) =>
 
 /**
  * Check if an error signifies a missing fetch response (meaning network connection loss or unavailable host).
- * This can only by correctly identified in nodeJS or React native runtimes (i.e. Suite Desktop main process, or Suite Lite).
+ * This can only by correctly identified in nodeJS or React native runtimes (i.e. Suite Desktop main process, or Suite Mobile).
  * In browser runtime (Suite Web), all fetch errors are lumped together as CORS errors, therefore indistinguishable.
  * (even a request that had no response is CORS error, since a non-existent response does not have CORS headers).
  * Additionally, AbortController timeouts are also considered to be network issues.

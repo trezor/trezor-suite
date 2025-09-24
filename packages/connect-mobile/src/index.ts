@@ -47,7 +47,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
 
     private validateConnectSrc(connectSrc?: string) {
         if (!connectSrc) return DEFAULT_DOMAIN_MAJOR_VER;
-        if (connectSrc === 'trezorsuitelite://connect') return connectSrc;
+        if (connectSrc === 'trezorsuite://connect') return connectSrc;
 
         return corsValidator(connectSrc);
     }

@@ -44,7 +44,7 @@ It is also possible for development purposes to connect Trezor emulator to iOS S
 
 ## Connecting a physical Trezor
 
-Once Trezor Suite Lite is running in iOS Simulator / Android emulator, it's possible to use it with a physical Trezor.
+Once Trezor Suite is running in iOS Simulator / Android emulator, it's possible to use it with a physical Trezor.
 
 1. Start desktop version of Trezor Suite that will serve as Trezor Bridge.
     - Make sure Trezor emulator is stopped before starting the desktop app.
@@ -69,7 +69,7 @@ Aliases available in root folder:
 
 You can show DEV utils on production build FOR DEVELOPMENT PURPOSES ONLY – do not use it for your personal wallets!
 
-To reveal dev menu, you have to click at least 7 times on commit hash at the bottom of About Trezor Suite Lite page.
+To reveal dev menu, you have to click at least 7 times on commit hash at the bottom of About Trezor Suite page.
 
 ## Environment variables
 

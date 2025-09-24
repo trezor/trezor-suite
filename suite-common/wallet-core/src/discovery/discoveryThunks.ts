@@ -780,8 +780,8 @@ export const startOrRestartDiscoveryThunk = createThunk(
             return;
         }
 
-        // Note: currently used only in Suite. If a Suite Lite implementation is needed, create a new extra selector
-        // for this particular setting, and provide it for Suite Lite.
+        // Note: currently used only in Suite. If a Suite Mobile implementation is needed, create a new extra selector
+        // for this particular setting, and provide it for Suite Mobile.
         const isAddingHiddenWallet =
             extra.selectors.selectSuiteSettings(getState()).defaultWalletLoading === 'passphrase';
 

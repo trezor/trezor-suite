@@ -123,10 +123,10 @@ describe('utils', () => {
     });
 
     describe('doesUrlContainCloseCallbackUrl', () => {
-        const closeCallbackUrl = 'trezorsuitelite://trading';
+        const closeCallbackUrl = 'trezorsuite://trading';
 
         it('should return true when URL contains closeCallbackUrl', () => {
-            const url = 'trezorsuitelite://trading?action=trade&tradeType=buy&orderId=123';
+            const url = 'trezorsuite://trading?action=trade&tradeType=buy&orderId=123';
             expect(doesUrlContainCloseCallbackUrl(url, closeCallbackUrl)).toBe(true);
         });
 
@@ -151,7 +151,7 @@ describe('utils', () => {
 
         it('should handle URL with special characters', () => {
             const url =
-                'trezorsuitelite://trading?action=trade&tradeType=buy&orderId=dd070b73-fe29-4769-8be1-4075d6b43265&transactionId=8c9476a7-958b-412b-a378-3a3f59b6105a&baseCurrencyCode=czk&baseCurrencyAmount=384.78&transactionStatus=completed';
+                'trezorsuite://trading?action=trade&tradeType=buy&orderId=dd070b73-fe29-4769-8be1-4075d6b43265&transactionId=8c9476a7-958b-412b-a378-3a3f59b6105a&baseCurrencyCode=czk&baseCurrencyAmount=384.78&transactionStatus=completed';
             expect(doesUrlContainCloseCallbackUrl(url, closeCallbackUrl)).toBe(true);
         });
     });

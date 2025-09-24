@@ -3,14 +3,12 @@ import { NativeTypographyStyle } from '@trezor/theme';
 
 import { Text } from './Text';
 
-type TrezorSuiteLiteHeaderProps = {
+type TrezorSuiteHeaderProps = {
     textVariant?: NativeTypographyStyle;
 };
 
-export const TrezorSuiteLiteHeader = ({
-    textVariant = 'titleSmall',
-}: TrezorSuiteLiteHeaderProps) => (
+export const TrezorSuiteHeader = ({ textVariant = 'titleSmall' }: TrezorSuiteHeaderProps) => (
     <Text variant={textVariant} color="textSecondaryHighlight" textAlign="center">
-        <Translation id="generic.trezorSuiteLite" />
+        <Translation id="generic.trezorSuite" />
     </Text>
 );

@@ -4,7 +4,7 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 
 - **Connect** - tool that offers developers an easy way to integrate Trezor's functionality into their own applications
 - **Trezor Suite** - desktop and web application for managing Trezor hardware wallet
-- **Trezor Suite Lite** - Mobile application designed for tracking user portfolios
+- **Trezor Suite Mobile** - Mobile/Tablet application designed for managing Trezor hardware wallet
 
 ![img](https://repository-images.githubusercontent.com/148657224/439f6100-765f-11e9-9bff-b725eef3c4a6)
 
@@ -48,7 +48,7 @@ Run a dev build:
 - `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
 - `yarn suite:dev:desktop` (electron app)
 
-## **Trezor Suite Lite** @suite-native/app
+## **Trezor Suite Mobile** @suite-native/app
 
 > To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
 

@@ -1,14 +1,14 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
-import { Box, PictogramTitleHeader, Text, TrezorSuiteLiteHeader } from '@suite-native/atoms';
+import { Box, PictogramTitleHeader, Text, TrezorSuiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 const pictogramContent = {
     portfolioTracker: {
         title: (
             <Text>
-                <TrezorSuiteLiteHeader />
+                <TrezorSuiteHeader />
                 {'\n'}
                 <Text variant="titleSmall">
                     <Translation id="moduleReceive.receiveAddressCard.unverifiedWarning.portfolioTracker.title" />

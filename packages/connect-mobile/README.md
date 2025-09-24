@@ -2,7 +2,7 @@
 
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-mobile.svg)](https://www.npmjs.org/package/@trezor/connect-mobile)
 
-The `@trezor/connect-mobile` package provides an implementation of `@trezor/connect` which uses deep links to communicate with the Trezor Suite Lite app.
+The `@trezor/connect-mobile` package provides an implementation of `@trezor/connect` which uses deep links to communicate with the Trezor Suite app.
 
 To run a dev version of the Suite mobile app follow the instructions in [@suite-native/app](https://github.com/trezor/trezor-suite/blob/develop/suite-native/app/README.md)
 

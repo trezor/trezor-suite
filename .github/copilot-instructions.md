@@ -5,7 +5,7 @@
 Trezor Suite is a monorepo containing cryptocurrency wallet applications and developer tools:
 
 - **Trezor Suite**: Web and desktop wallet application
-- **Trezor Suite Lite**: Mobile portfolio tracking app
+- **Trezor Suite Mobile**: Mobile portfolio tracking app
 - **Connect**: Hardware wallet integration library
 
 The repository uses Yarn workspaces with 60+ packages and NX for build optimization.

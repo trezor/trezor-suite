@@ -52,7 +52,7 @@ export * from './TitleHeader/PictogramTitleHeader';
 export * from './TitleHeader/TitleHeader';
 export * from './TitleHeader/CenteredTitleHeader';
 export * from './RoundedIcon';
-export * from './TrezorSuiteLiteHeader';
+export * from './TrezorSuiteHeader';
 export * from './Skeleton/BoxSkeleton';
 export * from './Skeleton/ListItemSkeleton';
 export * from './IconListItem';

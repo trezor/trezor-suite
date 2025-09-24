@@ -1808,7 +1808,7 @@
                 },
                 "cta": {
                     "action": "external-link",
-                    "link": "https://trezor.io/learn/a/what-is-trezor-suite-lite#open-chat",
+                    "link": "https://trezor.io/guides/trezor-suite/getting-to-know-trezor-suite#open-chat",
                     "label": {
                         "en": "Contact support",
                         "es": "Contact support",
