@@ -20,6 +20,7 @@ css-loader
 css-minimizer-webpack-plugin
 csstype
 date-fns
+electron-devtools-installer
 framer-motion
 lottie-react
 node-addon-api

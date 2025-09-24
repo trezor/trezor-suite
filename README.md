@@ -47,6 +47,7 @@ Run a dev build:
 - `yarn suite:dev` (web app)
 - `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
 - `yarn suite:dev:desktop` (electron app)
+    - React dev tools are available with a known caveat: you need to reload the renderer process (Ctrl+R or Cmd+R)
 
 ## **Trezor Suite Mobile** @suite-native/app
 
