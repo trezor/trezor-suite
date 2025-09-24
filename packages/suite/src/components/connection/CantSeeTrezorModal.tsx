@@ -23,11 +23,9 @@ import { useSelector } from 'src/hooks/suite';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
+import { useConnectionGlobalModal } from './context/ConnectionGlobalModalContext';
+
 type DontSeeYourTrezorModalProps = {
-    isBluetoothMode: boolean;
-    onGoBack: () => void;
-    onRescan: () => void;
-    onStillDontWork: () => void;
     onClose: () => void;
 };
 
@@ -37,13 +35,9 @@ const commonCableTips = [
     TROUBLESHOOTING_TIP_USB,
 ];
 
-export const CantSeeTrezorModal = ({
-    onGoBack,
-    isBluetoothMode,
-    onRescan,
-    onStillDontWork,
-    onClose,
-}: DontSeeYourTrezorModalProps) => {
+export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => {
+    const { bluetoothMode, toggleShouldPairAgain, toggleShowHints, onReScanClick } =
+        useConnectionGlobalModal();
     const nearbyDevices = useSelector(selectNearbyDevices);
     const knownDevices = useSelector(selectKnownDevices);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
@@ -54,7 +48,7 @@ export const CantSeeTrezorModal = ({
 
     const openTrezorSupport = () => {
         window.open(TREZOR_SUPPORT_URL, '_blank');
-        onGoBack?.();
+        toggleShowHints();
     };
 
     const cableItem: TroubleshootingTipsItem[] = useMemo(() => {
@@ -76,32 +70,32 @@ export const CantSeeTrezorModal = ({
     }, [isWebUsbTransport, bridgeDesktopApi]);
 
     const tipItems = useMemo(() => {
-        if (isBluetoothMode && isDesktop()) {
+        if (bluetoothMode && isDesktop()) {
             return TROUBLESHOOTING_ALL_BLUETOOTH_TIPS;
         }
 
         return cableItem;
-    }, [isBluetoothMode, cableItem]);
+    }, [bluetoothMode, cableItem]);
 
     const tertiaryButtonTranslation: TranslationKey = useMemo(() => {
-        if (isBluetoothMode) {
+        if (bluetoothMode) {
             return allowPairAgain ? 'TR_STILL_NOT_WORKING' : 'TR_CANCEL';
         }
 
         return 'TR_CONTACT_TREZOR_SUPPORT';
-    }, [isBluetoothMode, allowPairAgain]);
+    }, [bluetoothMode, allowPairAgain]);
 
     const handlePrimaryCta = () => {
-        if (isBluetoothMode) {
-            onRescan?.();
+        if (bluetoothMode) {
+            onReScanClick();
         }
-        onGoBack?.();
+        toggleShowHints();
     };
 
     const handleTertiaryCta = () => {
-        if (isBluetoothMode) {
-            if (allowPairAgain) onStillDontWork();
-            onGoBack();
+        if (bluetoothMode) {
+            if (allowPairAgain) toggleShouldPairAgain();
+            toggleShowHints();
         } else {
             openTrezorSupport();
             onClose();
@@ -113,9 +107,7 @@ export const CantSeeTrezorModal = ({
             bottomContent={
                 <>
                     <Modal.Button onClick={handlePrimaryCta} variant="info">
-                        <Translation
-                            id={isBluetoothMode ? 'TR_BLUETOOTH_SCAN_AGAIN' : 'TR_GOT_IT'}
-                        />
+                        <Translation id={bluetoothMode ? 'TR_BLUETOOTH_SCAN_AGAIN' : 'TR_GOT_IT'} />
                     </Modal.Button>
                     <Modal.Button variant="tertiary" onClick={handleTertiaryCta}>
                         <Translation id={tertiaryButtonTranslation} />

@@ -21,7 +21,7 @@ import {
     useOnboardingCancelButtonContext,
 } from './OnboardingCancelButtonContext';
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
-import { ConnectionGlobalModalManager } from '../connection/ConnectionGlobalModal';
+import { ConnectionGlobalModalManager } from '../connection/ConnectionGlobalModalManager';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '../suite/TrafficLightOffset';
 import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 

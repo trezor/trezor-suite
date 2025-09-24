@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
+import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
 import { Modal } from '@trezor/components';
 
-import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { Translation } from 'src/components/suite/Translation';
 import { BluetoothDeviceList } from 'src/components/suite/bluetooth/BluetoothDeviceList';
@@ -11,37 +11,29 @@ import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothS
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
 import { useSelector } from 'src/hooks/suite';
 
+import { useConnectionGlobalModal } from './context/ConnectionGlobalModalContext';
 import { UnpairBluetoothDeviceFromOsModal } from '../suite/bluetooth/UnpairBluetoothDeviceFromOsModal';
 
 type BluetoothConnectionModalProps = {
-    devices: DesktopBluetoothDevice[];
-    selectedDevice: DesktopBluetoothDevice | undefined;
-    nearbyDevices: DesktopBluetoothDevice[] | null;
-    knownDevices: DesktopBluetoothDevice[] | null;
-    shouldPairAgain: boolean;
-    toggleShouldPairAgain: () => void;
-    onPairingCancel: (deviceId: string) => Promise<void>;
-    onRescanClick: () => void;
-    onConnect: (deviceId: string) => Promise<void>;
-    onCancel: () => void;
     onClose: () => void;
 };
 
 const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
-export const BluetoothConnectionModal = ({
-    devices,
-    nearbyDevices,
-    knownDevices,
-    selectedDevice,
-    onPairingCancel,
-    toggleShouldPairAgain,
-    onRescanClick,
-    onConnect,
-    onCancel,
-    onClose,
-}: BluetoothConnectionModalProps) => {
+export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalProps) => {
+    const {
+        toggleShouldPairAgain,
+        handlePairingCancel,
+        onReScanClick,
+        onConnect,
+        handleBluetoothConnectionCancel,
+        devices,
+        selectedDevice,
+    } = useConnectionGlobalModal();
     const connectingDevices = useSelector(selectConnectingDevices);
+    const nearbyDevices = useSelector(selectNearbyDevices);
+    const knownDevices = useSelector(selectKnownDevices);
+
     const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);
 
     const openShowRemoveFromOsBluetooth = () => {
@@ -65,7 +57,7 @@ export const BluetoothConnectionModal = ({
     ) {
         return (
             <Modal
-                onCancel={() => onPairingCancel(selectedDevice.id)}
+                onCancel={() => handlePairingCancel(selectedDevice.id)}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
             >
@@ -89,7 +81,7 @@ export const BluetoothConnectionModal = ({
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
                 size="small"
             >
-                <BluetoothSelectedDevice device={selectedDevice} onReScanClick={onRescanClick} />
+                <BluetoothSelectedDevice device={selectedDevice} onReScanClick={onReScanClick} />
             </Modal>
         );
     }
@@ -106,7 +98,7 @@ export const BluetoothConnectionModal = ({
                 <BluetoothScanningList
                     devices={devices}
                     onConnect={onConnect}
-                    onReScanClick={onRescanClick}
+                    onReScanClick={onReScanClick}
                 />
             </Modal>
         );
@@ -116,7 +108,7 @@ export const BluetoothConnectionModal = ({
     if (nearbyDevices && nearbyDevices.length === 0 && knownDevices && knownDevices.length > 0) {
         return (
             <Modal
-                onCancel={onCancel}
+                onCancel={handleBluetoothConnectionCancel}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
                 size="small"
@@ -130,6 +122,8 @@ export const BluetoothConnectionModal = ({
             </Modal>
         );
     }
+
+    console.log('hello?');
 
     return null;
 };

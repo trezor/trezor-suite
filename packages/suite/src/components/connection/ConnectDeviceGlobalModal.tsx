@@ -1,42 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-
 import { useTheme } from 'styled-components';
 
-import {
-    SCAN_TIMEOUT,
-    UNPAIRED_DEVICES_LAST_UPDATED_LIMIT,
-    bluetoothActions,
-    prepareSelectAllDevices,
-    selectAdapterStatus,
-    selectKnownDevices,
-    selectNearbyDevices,
-} from '@suite-common/bluetooth';
+import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
-import { isDesktop } from '@trezor/env-utils';
 import { borders } from '@trezor/theme';
-import { TimerId } from '@trezor/type-utils';
 
-import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
-import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConnectDeviceThunk';
-import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
-import { bluetoothStartScanningThunk } from 'src/actions/bluetooth/bluetoothStartScanningThunk';
-import { bluetoothStopScanningThunk } from 'src/actions/bluetooth/bluetoothStopScanningThunk';
 import {
     selectIsUnpairingDevice,
     selectUnpairedDeviceNeedsManualOsRemoval,
 } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
-import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
 import { CantSeeTrezorModal } from './CantSeeTrezorModal';
 import { CableConnectionAnimation } from './DeviceConnectionAnimation';
-
-const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
+import { useConnectionGlobalModal } from './context/ConnectionGlobalModalContext';
 
 type DontSeeTrezorPillProps = {
     onClick: () => void;
@@ -80,12 +60,16 @@ const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentP
 );
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
-    const dispatch = useDispatch();
-    const [showHints, setShowHints] = useState(false);
-    const scannerTimerId = useRef<TimerId | null>(null);
-    const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
-    const [shouldPairAgain, setShouldPairAgain] = useState(false);
     const theme = useTheme();
+
+    const {
+        toggleBluetoothMode,
+        toggleShowHints,
+        devices,
+        bluetoothMode,
+        showHints,
+        shouldPairAgain,
+    } = useConnectionGlobalModal();
 
     const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
@@ -93,130 +77,10 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
 
-    const defaultConnectionMode = useSelector(selectDeviceDefaultConnectionMode);
-
-    const isBluetoothMode = defaultConnectionMode === 'bluetooth';
-
-    const bluetoothMode = isBluetoothMode && isBluetoothEnabled && isDesktop();
-
-    const toggleBluetoothMode = () => {
-        dispatch(setConnectionMode(bluetoothMode ? 'cable' : 'bluetooth'));
-    };
-
-    const toggleShowHints = () => {
-        setShowHints(!showHints);
-    };
-
-    const toggleShouldPairAgain = () => {
-        setShouldPairAgain(!shouldPairAgain);
-    };
-
-    const allDevices = useSelector(selectAllDevices);
-    const nearbyDevices = useSelector(selectNearbyDevices);
-    const knownDevices = useSelector(selectKnownDevices);
-
-    const lastUpdatedBoundaryTimestamp = Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
-
-    // TODO get back to this and refactor this so it makes more sense
-    const devices = allDevices.filter(it => {
-        const isDeviceUnresponsiveForTooLong =
-            it.lastUpdatedTimestamp < lastUpdatedBoundaryTimestamp;
-
-        if (isDeviceUnresponsiveForTooLong) {
-            // If the device is connected or paired (it may have been paired in the OS system directly)
-            // => do not filter it based isDeviceUnresponsiveForTooLong
-
-            return it.connected;
-        }
-
-        return true;
-    });
-
-    const selectedDevice =
-        selectedDeviceId !== null
-            ? devices.find(device => device.id === selectedDeviceId)
-            : undefined;
-
-    // starts to scan for devices when connection mode is bluetooth
-    useEffect(() => {
-        if (isBluetoothMode) dispatch(bluetoothStartScanningThunk());
-
-        return () => {
-            dispatch(bluetoothStopScanningThunk());
-        };
-    }, [dispatch, isBluetoothMode]);
-
-    const clearScanTimer = useCallback(() => {
-        if (scannerTimerId.current !== null) {
-            clearTimeout(scannerTimerId.current);
-        }
-    }, []);
-
-    // stop scanning after 15s
-    useEffect(() => {
-        if (isBluetoothMode)
-            scannerTimerId.current = setTimeout(() => {
-                setShowHints(true);
-                dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
-            }, SCAN_TIMEOUT);
-
-        return clearScanTimer;
-    }, [dispatch, clearScanTimer, isBluetoothMode]);
-
-    useEffect(() => {
-        if (devices.length > 0) {
-            clearScanTimer();
-            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
-        }
-    }, [devices, dispatch, clearScanTimer]);
-
-    const onReScanClick = () => {
-        setSelectedDeviceId(null);
-        clearScanTimer();
-
-        dispatch(bluetoothStartScanningThunk());
-        scannerTimerId.current = setTimeout(() => {
-            setShowHints(true);
-            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
-        }, SCAN_TIMEOUT);
-    };
-
-    const handlePairingCancel = async (deviceId: string) => {
-        await dispatch(bluetoothDisconnectDeviceThunk({ id: deviceId }));
-        setSelectedDeviceId(null);
-        onReScanClick();
-    };
-
-    const handleBluetoothConnectionCancel = () => {
-        setSelectedDeviceId(null);
-        onReScanClick();
-        toggleBluetoothMode();
-    };
-
-    const onConnect = async (deviceId: string) => {
-        setSelectedDeviceId(deviceId);
-        const result = await dispatch(bluetoothConnectDeviceThunk({ deviceId })).unwrap();
-
-        if (result.success) {
-            onCancel();
-        } else {
-            // No additional failure handling needed, it is handled in bluetoothConnectDeviceThunk
-            setSelectedDeviceId(null);
-        }
-    };
-
     if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
 
     if (showHints) {
-        return (
-            <CantSeeTrezorModal
-                isBluetoothMode={isBluetoothMode}
-                onRescan={onReScanClick}
-                onGoBack={toggleShowHints}
-                onClose={onCancel}
-                onStillDontWork={toggleShouldPairAgain}
-            />
-        );
+        return <CantSeeTrezorModal onClose={onCancel} />;
     }
 
     // handle Bluetooth adapter status cases
@@ -226,34 +90,15 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             bluetoothAdapterStatus === 'permission-denied' ||
             bluetoothAdapterStatus === 'not-compatible')
     ) {
-        return (
-            <BluetoothAdapterStatusModal
-                bluetoothAdapterStatus={bluetoothAdapterStatus}
-                onCancel={onCancel}
-            />
-        );
+        return <BluetoothAdapterStatusModal onCancel={onCancel} />;
     }
 
     // we either found some devices or user troubleshoots and wants to pair again
     if ((bluetoothMode && devices.length > 0) || (bluetoothMode && shouldPairAgain)) {
-        return (
-            <BluetoothConnectionModal
-                nearbyDevices={nearbyDevices}
-                knownDevices={knownDevices}
-                devices={devices}
-                selectedDevice={selectedDevice}
-                shouldPairAgain={shouldPairAgain}
-                toggleShouldPairAgain={toggleShouldPairAgain}
-                onPairingCancel={handlePairingCancel}
-                onRescanClick={onReScanClick}
-                onConnect={onConnect}
-                onCancel={handleBluetoothConnectionCancel}
-                onClose={onCancel}
-            />
-        );
+        return <BluetoothConnectionModal onClose={onCancel} />;
     }
 
-    if (isBluetoothMode) {
+    if (bluetoothMode) {
         return (
             <Modal.Backdrop onClick={onCancel}>
                 <DontSeeTrezorPill onClick={toggleShowHints} />
