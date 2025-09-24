@@ -12,6 +12,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ReviewOutputItemList } from '../components/reviewOutputs/ReviewOutputItemList';
 import { ReviewOutputsFooter } from '../components/reviewOutputs/ReviewOutputsFooter';
+import { ReviewOutputsSkeleton } from '../components/reviewOutputs/ReviewOutputsSkeleton';
 import { useDelayedReviewOutputListDisplayFlag } from '../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
 import { useTradingOutputsReviewScreenControls } from '../hooks/reviewOutputs/useTradingOutputsReviewScreenControls';
 
@@ -42,8 +43,10 @@ export const TradingOutputsReviewScreen = ({
             }
         >
             <VStack flex={1} spacing="sp16" justifyContent="space-between">
-                {shouldDisplayReviewList && (
+                {shouldDisplayReviewList ? (
                     <ReviewOutputItemList accountKey={accountKey} tradingType={tradingType} />
+                ) : (
+                    <ReviewOutputsSkeleton />
                 )}
                 {isTransactionAlreadySigned ? (
                     <ReviewOutputsFooter
