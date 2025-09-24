@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useScrollShadow } from '@trezor/components';
-import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -15,15 +14,6 @@ import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    z-index: ${zIndices.expandableNavigationHeader};
-    overflow: auto;
-    gap: ${spacingsPx.sm};
-`;
 
 const ScrollContainer = styled.div`
     height: auto;
@@ -38,31 +28,27 @@ export const AccountsMenu = () => {
     const isSidebarCollapsed = useIsSidebarCollapsed();
 
     if (!device) {
-        if (isSidebarCollapsed) return <Wrapper />;
+        if (isSidebarCollapsed) return null;
 
         return (
-            <Wrapper>
-                <AccountsMenuNotice>
-                    <Translation id="TR_ACCOUNT_NO_ACCOUNTS" />
-                </AccountsMenuNotice>
-            </Wrapper>
+            <AccountsMenuNotice>
+                <Translation id="TR_ACCOUNT_NO_ACCOUNTS" />
+            </AccountsMenuNotice>
         );
     }
 
     return (
         <ReduxAccountSearchProvider>
-            <Wrapper>
-                <AccountsMenuHeader />
-                <ShadowContainer>
-                    <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
-                    <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
-                        <AccountsList />
+            <AccountsMenuHeader />
+            <ShadowContainer>
+                <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
+                <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
+                    <AccountsList />
 
-                        <RefreshAfterDiscoveryNeeded />
-                    </ScrollContainer>
-                    <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
-                </ShadowContainer>
-            </Wrapper>
+                    <RefreshAfterDiscoveryNeeded />
+                </ScrollContainer>
+                <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
+            </ShadowContainer>
         </ReduxAccountSearchProvider>
     );
 };

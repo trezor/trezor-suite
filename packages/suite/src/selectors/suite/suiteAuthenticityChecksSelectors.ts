@@ -9,6 +9,7 @@ import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
     selectIsEntropyCheckFailed,
+    selectIsFirmwareAuthenticityCheckDismissed,
 } from '@suite-common/wallet-core';
 
 import { AppState } from 'src/types/suite';
@@ -90,4 +91,18 @@ export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
     const isEntropyCheckFailed = selectIsEntropyCheckFailed(state);
 
     return isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
+};
+
+export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean => {
+    const isFirmwareCheckEnabledAndFailed =
+        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
+    const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(state);
+
+    // Entropy check won't be performed if disabled but we must also check it here to avoid showing the UI when the failed state is stored in database.
+    const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(state);
+
+    return (
+        (!isFirmwareAuthenticityCheckDismissed && isFirmwareCheckEnabledAndFailed) ||
+        isEntropyCheckEnabledAndFailed
+    );
 };

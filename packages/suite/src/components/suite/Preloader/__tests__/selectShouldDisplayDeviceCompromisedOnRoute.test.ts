@@ -5,7 +5,7 @@ import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/suppo
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { AcquiredDevice, AppState } from 'src/types/suite';
 
-import { selectShouldDisplayDeviceCompromised } from '../selectShouldDisplayDeviceCompromised';
+import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromised';
 
 type Fixture = {
     description: string;
@@ -179,10 +179,10 @@ const fixtures: Fixture[] = [
     },
 ];
 
-describe(selectShouldDisplayDeviceCompromised.name, () => {
+describe(selectShouldDisplayDeviceCompromisedOnRoute.name, () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            expect(selectShouldDisplayDeviceCompromised(f.state as AppState)).toBe(f.result);
+            expect(selectShouldDisplayDeviceCompromisedOnRoute(f.state as AppState)).toBe(f.result);
         });
     });
 });

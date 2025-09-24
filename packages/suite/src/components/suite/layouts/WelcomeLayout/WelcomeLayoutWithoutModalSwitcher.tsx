@@ -21,10 +21,10 @@ import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
 import { TrafficLightOffset } from '../../TrafficLightOffset';
 import { ContentContainer } from '../ContentContainer';
-import { LoggedOutSidebar } from '../LoggedOutSidebar';
 import { PageHeader } from '../SuiteLayout';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
 import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
+import { Sidebar } from '../SuiteLayout/Sidebar/Sidebar';
 
 const Content = styled.div<{ $elevation: Elevation; $verticalCenter?: boolean }>`
     display: flex;
@@ -64,6 +64,7 @@ export type WelcomeLayoutWithoutModalSwitcherProps = {
     children: ReactNode;
     showPureChildren?: boolean;
     hideSidebar?: boolean;
+    showAccounts?: boolean;
 };
 
 type RightContentProps = {
@@ -112,6 +113,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
     children,
     hideSidebar,
     showPureChildren = false,
+    showAccounts = true,
 }: WelcomeLayoutWithoutModalSwitcherProps) => {
     const theme = useSelector(state => state.suite.settings.theme);
 
@@ -127,7 +129,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                     <Modal.Provider>
                         {!hideSidebar ? (
                             <ElevationDown>
-                                <LoggedOutSidebar />
+                                <Sidebar showAccounts={showAccounts} />
                             </ElevationDown>
                         ) : null}
                         <RightSideContent showPureChildren={showPureChildren}>

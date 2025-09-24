@@ -4,9 +4,10 @@ import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, BannerVariant, Icon, IconName, Row } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
+import { Translation } from 'src/components/suite/Translation';
+
 import { goto } from '../../../actions/suite/routerActions';
 import { redirectAfterWalletSelectedThunk } from '../../../actions/wallet/addWalletThunk';
-import { Translation } from '../../../components/suite';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import type { ForegroundAppProps, TrezorDevice } from '../../../types/suite';
 
