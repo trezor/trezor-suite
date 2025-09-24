@@ -18,12 +18,12 @@ import {
 import {
     TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
+    useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { signTransactionNativeThunk } from '../sendFormThunks';
-import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,

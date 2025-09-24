@@ -1958,10 +1958,6 @@ export const messages = {
         },
         review: {
             confirmOnDeviceMessage: 'Go to your Trezor and confirm the amounts & recipients.',
-            cancelAlert: {
-                title: 'Are you sure you’d like to cancel sending the transaction?',
-                continueButton: 'Continue editing',
-            },
             deviceDisconnectedAlert: {
                 title: 'Your Trezor has been disconnected.',
                 description: 'Reconnect your Trezor to continue.',
@@ -2642,6 +2638,10 @@ export const messages = {
                 },
                 noAccount: 'Account not found.',
                 signSuccessMessage: 'Everything is ready, you can send the transaction now.',
+            },
+            cancelAlert: {
+                title: 'Are you sure you’d like to cancel sending the transaction?',
+                continueButton: 'Continue editing',
             },
         },
     },

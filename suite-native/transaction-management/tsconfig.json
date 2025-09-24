@@ -23,6 +23,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../feature-flags" },

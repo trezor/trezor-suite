@@ -11,16 +11,16 @@ export const useShowReviewCancellationAlert = () => {
     const { showAlert } = useAlert();
     const dispatch = useDispatch();
 
-    const showReviewCancellationAlert = useCallback(
+    return useCallback(
         () =>
             new Promise<AlertResolveValue>(resolve =>
                 showAlert({
-                    title: <Translation id="moduleSend.review.cancelAlert.title" />,
+                    title: <Translation id="transactionManagement.review.cancelAlert.title" />,
                     primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                     primaryButtonVariant: 'redBold',
                     secondaryButtonVariant: 'redElevation0',
                     secondaryButtonTitle: (
-                        <Translation id="moduleSend.review.cancelAlert.continueButton" />
+                        <Translation id="transactionManagement.review.cancelAlert.continueButton" />
                     ),
                     onPressPrimaryButton: () => {
                         dispatch(cancelSignSendFormTransactionThunk());
@@ -32,6 +32,4 @@ export const useShowReviewCancellationAlert = () => {
             ),
         [dispatch, showAlert],
     );
-
-    return showReviewCancellationAlert;
 };
