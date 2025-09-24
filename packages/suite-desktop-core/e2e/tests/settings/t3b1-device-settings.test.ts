@@ -8,53 +8,49 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe(
-    'T3B1 - Device settings',
-    { tag: ['@group=settings', '@specificModel'] },
-    () => {
-        test.describe.configure({ mode: 'serial' });
+test.describe('T3B1 - Device settings', { tag: ['@group=settings', '@specificModel'] }, () => {
+    test.describe.configure({ mode: 'serial' });
 
-        test.use({
-            emulatorStartConf: { model: 'T3B1', wipe: true },
-        });
+    test.use({
+        emulatorStartConf: { model: 'T3B1', wipe: true },
+    });
 
-        test.beforeEach(async ({ onboardingPage, settingsPage }) => {
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('device');
-        });
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('device');
+    });
 
-        test(
-            'change all possible device settings',
-            {
-                annotation: createTestAnnotation({
-                    testCase: 'Verifies that a user can change all possible device settings.',
-                    category: TestCategory.Settings,
-                    priority: TestPriority.Medium,
-                }),
-            },
-            async ({ settingsPage, page }) => {
-                await test.step('Verify firmware modal', async () => {
-                    await page.getByTestId('@settings/device/update-button').click();
-                    await page.getByTestId('@modal/close-button').click();
-                });
+    test(
+        'change all possible device settings',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can change all possible device settings.',
+                category: TestCategory.Settings,
+                priority: TestPriority.Medium,
+            }),
+        },
+        async ({ settingsPage, page }) => {
+            await test.step('Verify firmware modal', async () => {
+                await page.getByTestId('@settings/device/update-button').click();
+                await page.getByTestId('@modal/close-button').click();
+            });
 
-                await test.step("Change and verify device's name", async () => {
-                    const newDeviceName = 'TREVOR!';
-                    await settingsPage.changeDeviceName(newDeviceName);
-                    await expect(page.getByTestId('@menu/device/label')).toHaveText(newDeviceName);
-                });
+            await test.step("Change and verify device's name", async () => {
+                const newDeviceName = 'TREVOR!';
+                await settingsPage.changeDeviceName(newDeviceName);
+                await expect(page.getByTestId('@menu/device/label')).toHaveText(newDeviceName);
+            });
 
-                await settingsPage.changeDeviceBackground('circleweb');
-            },
-        );
+            await settingsPage.changeDeviceBackground('circleweb');
+        },
+    );
 
-        test('Device Wipe', async ({ page, trezorUserEnvLink }) => {
-            await page.getByTestId('@settings/device/open-wipe-modal-button').click();
-            await page.getByTestId('@wipe/checkbox-1').click();
-            await page.getByTestId('@wipe/checkbox-2').click();
-            await page.getByTestId('@wipe/wipe-button').click();
-            await trezorUserEnvLink.pressYes();
-            //TODO: Verification?
-        });
-    },
-);
+    test('Device Wipe', async ({ page, trezorUserEnvLink }) => {
+        await page.getByTestId('@settings/device/open-wipe-modal-button').click();
+        await page.getByTestId('@wipe/checkbox-1').click();
+        await page.getByTestId('@wipe/checkbox-2').click();
+        await page.getByTestId('@wipe/wipe-button').click();
+        await trezorUserEnvLink.pressYes();
+        //TODO: Verification?
+    });
+});

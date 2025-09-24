@@ -54,5 +54,5 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
                 );
             },
         );
-    })
+    });
 });

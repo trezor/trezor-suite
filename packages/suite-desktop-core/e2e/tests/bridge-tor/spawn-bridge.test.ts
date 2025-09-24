@@ -17,7 +17,7 @@ const NODE_BRIDGE_VERSION = '3.1.0';
 
 test.use({ exceptionLogger: skipFixture });
 test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
-    test.describe.configure({ mode: 'serial' })
+    test.describe.configure({ mode: 'serial' });
 
     test.beforeEach(async ({ trezorUserEnvLink }) => {
         //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
