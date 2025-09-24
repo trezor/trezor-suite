@@ -177,7 +177,7 @@ export const selectAssetFiatValue = createMemoizedSelector(
     (assets, symbol) => {
         const asset = assets.assets.find(a => a.symbol === symbol);
 
-        return asset?.fiatBalance ?? null;
+        return asset?.fiatBalance?.toString() ?? null;
     },
 );
 
