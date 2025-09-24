@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Icon, Tooltip } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import { borders, spacingsPx } from '@trezor/theme';
+import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
 import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
@@ -100,6 +100,7 @@ export const DeviceSelector = () => {
             content={<RecentlyConnectedDeviceTooltipContent />}
             placement="right-end"
             hasArrow
+            zIndex={zIndices.popover /* to prevent it from appearing above modals */}
         >
             <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
                 <Tooltip
