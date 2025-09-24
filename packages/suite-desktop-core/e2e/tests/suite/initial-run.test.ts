@@ -16,6 +16,8 @@ const optionallyDismissFwHashCheckError = (page: Page) => {
 test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
     test('Until user passed through initial run, it will be there after reload', async ({
         page,
+        suite,
+        model,
         analyticsSection,
         onboardingPage,
     }) => {
@@ -24,15 +26,25 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         await onboardingPage.optionallyDismissFwHashCheckError();
         await expect(analyticsSection.toggleSwitch).toBeVisible();
 
-        await page.reload();
+        await page.reload(); // Cannot use suiteApp.reloadApp here yet, because it only works after analytics consent is passed
         await onboardingPage.verifySuiteIsLoaded();
         optionallyDismissFwHashCheckError(page);
         // analytics screen is there until user confirms his choice
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await analyticsSection.continueButton.click();
+
+        if (model.isModelWithTHP()) {
+            await onboardingPage.enterTHPPairingCode();
+        }
+
         await expect(page.getByTestId('@onboarding/exit-app-button')).toBeVisible();
 
-        await page.reload();
+        await suite.reloadApp();
+
+        if (model.isModelWithTHP()) {
+            await onboardingPage.enterTHPPairingCode();
+        }
+
         await onboardingPage.verifySuiteIsLoaded();
         optionallyDismissFwHashCheckError(page);
         await expect(analyticsSection.toggleSwitch).toBeHidden();
@@ -41,10 +53,11 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
 
     test('Once user passed trough, skips initial run and shows connect-device modal', async ({
         page,
+        suite,
         onboardingPage,
     }) => {
         await onboardingPage.completeOnboarding();
-        await page.reload();
+        await suite.reloadApp();
         await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
             timeout: 30_000,
         });

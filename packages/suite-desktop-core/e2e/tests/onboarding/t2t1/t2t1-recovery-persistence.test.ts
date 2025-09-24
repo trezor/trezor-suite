@@ -66,6 +66,7 @@ test.describe(
 
         test('Initial run with device that is already in recovery mode', async ({
             page,
+            suite,
             trezorUserEnvLink,
             onboardingPage,
             analyticsSection,
@@ -87,7 +88,7 @@ test.describe(
             await devicePrompt.connectDevicePromptIsShown();
 
             await indexedDb.reset();
-            await page.reload();
+            await suite.reloadApp();
 
             // Restart emulator and disable firmware hash check
             await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });

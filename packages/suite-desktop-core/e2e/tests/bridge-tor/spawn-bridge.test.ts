@@ -58,8 +58,9 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
 
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
         trezorUserEnvLink,
+        model,
     }, testInfo) => {
-        await trezorUserEnvLink.startEmu({ wipe: true, model: 'T2T1' });
+        await trezorUserEnvLink.startEmu({ wipe: true, model: model.model });
         await trezorUserEnvLink.setupEmu({});
         await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
@@ -74,7 +75,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
 
         const onboardingPage = new OnboardingPage(
             suite.window,
-            trezorUserEnvLink.defaultModel,
+            model,
             testInfo,
             devicePrompt,
             new AnalyticsSection(suite.window),

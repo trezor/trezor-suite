@@ -12,6 +12,7 @@ test.describe(
 
         test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
             page,
+            model,
             analyticsSection,
             onboardingPage,
             walletPage,
@@ -20,7 +21,7 @@ test.describe(
             await analyticsSection.continueButton.click();
             await page.getByTestId('@onboarding/exit-app-button').click();
 
-            if (onboardingPage.isModelWithSecureElement()) {
+            if (model.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
             }
 

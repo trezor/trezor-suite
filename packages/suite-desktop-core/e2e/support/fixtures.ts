@@ -6,6 +6,7 @@ import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
 import { TradingMock } from './mocks/tradingMock';
+import { ModelFixture } from './modelFixture';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
@@ -17,6 +18,7 @@ import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/stakingSection';
+import { SuiteApp } from './pageObjects/suiteApp';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
 import { WalletPage } from './pageObjects/walletPage';
@@ -43,6 +45,8 @@ type Fixtures = {
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
     stakingSection: StakingSection;
+    suite: SuiteApp;
+    model: ModelFixture;
 };
 
 const suiteTest = suiteBaseTest.extend<Fixtures>({
@@ -58,20 +62,8 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     walletPage: async ({ page }, use) => {
         await use(new WalletPage(page));
     },
-    onboardingPage: async (
-        { page, emulatorStartConf, devicePrompt, analyticsSection },
-        use,
-        testInfo,
-    ) => {
-        await use(
-            new OnboardingPage(
-                page,
-                emulatorStartConf.model,
-                testInfo,
-                devicePrompt,
-                analyticsSection,
-            ),
-        );
+    onboardingPage: async ({ page, model, devicePrompt, analyticsSection }, use, testInfo) => {
+        await use(new OnboardingPage(page, model, testInfo, devicePrompt, analyticsSection));
     },
     analyticsSection: async ({ page }, use) => {
         await use(new AnalyticsSection(page));
@@ -105,7 +97,6 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
         await use(metadataMock);
         await metadataMock.stop();
     },
-
     blockbookMock: async ({}, use) => {
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
@@ -119,6 +110,12 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
+    },
+    suite: async ({ page, model, onboardingPage }, use) => {
+        await use(new SuiteApp(page, model, onboardingPage));
+    },
+    model: async ({ emulatorStartConf }, use) => {
+        await use(new ModelFixture(emulatorStartConf.model));
     },
 });
 

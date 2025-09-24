@@ -66,7 +66,14 @@ test.describe(
                     priority: TestPriority.Medium,
                 }),
             },
-            async ({ page, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
+            async ({
+                page,
+                suite,
+                settingsPage,
+                recoveryModal,
+                trezorUserEnvLink,
+                trezorInput,
+            }) => {
                 await test.step('Initiate recovery dry run in settings', async () => {
                     await settingsPage.checkSeedButton.click();
                     await recoveryModal.userUnderstandsCheckbox.click();
@@ -101,7 +108,7 @@ test.describe(
                 });
 
                 await test.step('Reload suite and check recovery dry run is reinitialized', async () => {
-                    await page.reload();
+                    await suite.reloadApp();
                     await recoveryModal.verifyDryCheckPrompt();
                 });
 
