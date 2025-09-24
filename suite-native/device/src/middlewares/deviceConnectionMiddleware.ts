@@ -5,10 +5,8 @@ import {
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInternalModel,
-    getIsDeviceConnectedAndAuthorized,
     getIsDeviceInitialized,
     isThpDevice,
 } from '@suite-common/suite-utils';
@@ -17,6 +15,7 @@ import {
     deviceActions,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { selectWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
@@ -151,14 +150,11 @@ deviceConnectionMiddleware.startListening({
         if (isDeviceUsingPassphrase) return;
 
         // If device is authorized already (usually in case of remembered device which has already been authorized)
-        const isDeviceConnectedAndAuthorized = getIsDeviceConnectedAndAuthorized({
-            deviceState: device.state as TrezorDevice['state'],
-            deviceFeatures: device.features,
-        });
+        const isDeviceRemembered =
+            !!device.features && selectSelectedDevice(getState())?.id === device.id;
+
         const isNonThpRememberedDeviceConnectAction =
-            isDeviceConnectedAndAuthorized &&
-            deviceActions.connectDevice.match(action) &&
-            !isThpDevice(action.payload.device);
+            isDeviceRemembered && !isThpDevice(action.payload.device);
 
         if (isNonThpRememberedDeviceConnectAction) return;
 
