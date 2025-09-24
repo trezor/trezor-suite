@@ -5,7 +5,7 @@ import { serializeError, versionUtils } from '@trezor/utils';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 import { getOnlineReleaseByVersion } from '../data/firmwareInfo';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
-import { HttpRequestError } from '../utils/assets-browser';
+import { HttpRequestError } from '../utils/assetUtils';
 
 const isNotFoundError = (e: unknown): boolean =>
     e instanceof HttpRequestError && e.response.status === 404;

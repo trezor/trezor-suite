@@ -9,6 +9,13 @@ if (global && typeof global.fetch !== 'function') {
     global.fetch = fetch;
 }
 
+/**
+ * Http request wrapper for Suite Web & Desktop, that first tries to read files locally (unless forced to skip),
+ * then fetches from remote source.
+ *
+ * ATTENTION !!! For suite-native, see assets.native.ts
+ * (automatically replaced by bundler, no explicit import)
+ */
 export function httpRequest<T extends HttpRequestType>(
     url: string,
     type: T,

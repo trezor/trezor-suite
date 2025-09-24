@@ -1,6 +1,10 @@
-import { tryLocalAssetRequire } from './assetUtils';
+import { HttpRequestError, tryLocalAssetRequire } from './assetUtils';
 import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
+/**
+ * Http requesst wrapper for suite-native, that first tries to read files locally (unless forced to skip),
+ * then fetches from remote source and handles various response states in a unified way.
+ */
 export function httpRequest<T extends HttpRequestType>(
     url: string,
     type: T,
@@ -14,9 +18,7 @@ export function httpRequest<T extends HttpRequestType>(
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(
-                        `HTTP request failed with status ${response.status} ${response.statusText}`,
-                    );
+                    throw new HttpRequestError(response);
                 }
                 if (type === 'binary') {
                     return response.arrayBuffer() as unknown as HttpRequestReturnType<T>;
