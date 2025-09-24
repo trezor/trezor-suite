@@ -3,9 +3,8 @@ import { useState } from 'react';
 import { removeThpAutoconnectThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
@@ -14,11 +13,11 @@ export const ResetThpCredentials = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
 
-    if (!device) {
-        return null;
-    }
-
     const onClick = async () => {
+        if (!device) {
+            return null;
+        }
+
         setIsLoading(true);
 
         const result = await dispatch(removeThpAutoconnectThunk()).unwrap();
@@ -43,9 +42,15 @@ export const ResetThpCredentials = () => {
                 description="Delete all THP credentials stored in the Suite for the connected device."
             />
             <ActionColumn>
-                <Button onClick={onClick} isLoading={isLoading}>
+                <ActionButton
+                    isTooltipActive={!device}
+                    tooltipContent="Connect device to reset THP credentials"
+                    isDisabled={!device}
+                    onClick={onClick}
+                    isLoading={isLoading}
+                >
                     Reset
-                </Button>
+                </ActionButton>
             </ActionColumn>
         </SectionItem>
     );
