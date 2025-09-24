@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Button, H3, Modal, Paragraph } from '@trezor/components';
+import { H3, Modal } from '@trezor/components';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 import { Translation } from 'src/components/suite';
@@ -16,15 +16,18 @@ export const DatabaseCorruptedModal = () => {
     };
 
     return (
-        <Modal iconName="database" variant="destructive">
+        <Modal
+            iconName="database"
+            variant="destructive"
+            bottomContent={
+                <Modal.Button onClick={handleClick} isLoading={isLoading} variant="primary">
+                    <Translation id="TR_CLEAR_STORAGE" />
+                </Modal.Button>
+            }
+        >
             <H3>
                 <Translation id="TR_DATABASE_CORRUPTED" />
             </H3>
-            <Paragraph variant="tertiary">
-                <Button onClick={handleClick} isLoading={isLoading}>
-                    <Translation id="TR_CLEAR_STORAGE" />
-                </Button>
-            </Paragraph>
         </Modal>
     );
 };
