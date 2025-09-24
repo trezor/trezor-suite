@@ -43,22 +43,20 @@ export const ContinueOnTrezorScreenContent = ({
     const deviceModel = useSelector(selectDeviceModel);
 
     return (
-        <>
-            <VStack spacing="sp24">
-                <Text variant="titleMedium" style={applyStyle(titleStyle)}>
-                    <Translation id={titleTxKey} />
-                </Text>
-                {onActionPress && (
-                    <Button
-                        size="small"
-                        colorScheme="tertiaryElevation0"
-                        style={applyStyle(actionButtonStyle)}
-                        onPress={onActionPress}
-                    >
-                        <Translation id={actionLabelTxKey} />
-                    </Button>
-                )}
-            </VStack>
+        <VStack flex={1} spacing="sp24">
+            <Text variant="titleMedium" style={applyStyle(titleStyle)}>
+                <Translation id={titleTxKey} />
+            </Text>
+            {onActionPress && (
+                <Button
+                    size="small"
+                    colorScheme="tertiaryElevation0"
+                    style={applyStyle(actionButtonStyle)}
+                    onPress={onActionPress}
+                >
+                    <Translation id={actionLabelTxKey} />
+                </Button>
+            )}
             <Box flex={1} alignItems="center" justifyContent="flex-end">
                 <DeviceImage
                     deviceModel={deviceModel || DeviceModelInternal.T3T1}
@@ -67,6 +65,6 @@ export const ContinueOnTrezorScreenContent = ({
                 />
                 <ConnectorImage maxHeight={0.18 * SCREEN_HEIGHT} />
             </Box>
-        </>
+        </VStack>
     );
 };
