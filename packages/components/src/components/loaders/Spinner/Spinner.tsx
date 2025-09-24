@@ -28,6 +28,7 @@ const StyledLottie = styled(Lottie)<
     width: ${({ size }) => `${size}px`};
     height: ${({ size }) => `${size}px`};
     filter: ${({ $isGrey }) => ($isGrey ? 'grayscale(1) opacity(0.6)' : 'none')};
+    display: flex;
 
     ${withFrameProps}
 `;
