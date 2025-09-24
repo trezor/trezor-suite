@@ -6,7 +6,6 @@
 export const messages = {
     generic: {
         trezorSuite: 'Trezor Suite',
-        trezorSuiteLite: 'Trezor Suite Lite',
         buttons: {
             back: 'Back',
             cancel: 'Cancel',
@@ -71,8 +70,7 @@ export const messages = {
     messageSystem: {
         killswitch: {
             title: 'Update required',
-            content:
-                'Update to continue using Trezor Suite Lite. Don’t worry, your funds are secure.',
+            content: 'Update to continue using Trezor Suite. Don’t worry, your funds are secure.',
             cta: 'Download latest version',
         },
     },
@@ -440,7 +438,7 @@ export const messages = {
             laterButton: 'I’ll do it later',
             step1: 'Go to Trezor Suite for Web using the button below.',
             step2: 'Complete check backup in your browser.',
-            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
+            step3: 'Start using your Trezor with\nTrezor Suite.',
         },
         checkBackupSupportScreen: {
             title: 'Don’t worry—we’ll figure this out',
@@ -506,7 +504,7 @@ export const messages = {
                 step1: '1. Reconnect your Trezor',
                 step2: '2. Use a different USB data cable',
                 step3: '3. Use a different mobile device',
-                step4: '4. Enable connection for Trezor Suite Lite via phone system message',
+                step4: '4. Enable connection for Trezor Suite via phone system message',
             },
             pairing: {
                 title: 'Unable to pair your Trezor?',
@@ -648,7 +646,7 @@ export const messages = {
                 lines: {
                     '1': 'Go to Trezor Suite for Web using the button below.',
                     '2': 'Complete the device setup in your browser.',
-                    '3': 'Start using your Trezor with Trezor Suite Lite.',
+                    '3': 'Start using your Trezor with Trezor Suite.',
                 },
             },
         },
@@ -961,7 +959,7 @@ export const messages = {
             },
             usbEnabled: {
                 '0': {
-                    question: 'Can I connect my Trezor to Trezor Suite Lite?',
+                    question: 'Can I connect my Trezor to Trezor Suite?',
                     answer: 'Yes, you can connect your Trezor Hardware Wallet and use limited functionality. It is designed to work as a companion to the desktop/web version of Trezor Suite, but we will gradually add more features to make it a standalone application to manage your {coinLabel} funds with Trezor Hardware Wallet.',
                 },
                 '1': {
@@ -979,11 +977,11 @@ export const messages = {
                         '0': 'Reconnect your Trezor',
                         '1': 'Use a different USB data cable',
                         '2': 'Use a different mobile device',
-                        '3': 'Enable connection for Trezor Suite Lite via phone system message',
+                        '3': 'Enable connection for Trezor Suite via phone system message',
                     },
                 },
                 '4': {
-                    question: 'What version of Trezor device Firmware Trezor Suite Lite supports?',
+                    question: 'What version of Trezor device Firmware Trezor Suite supports?',
                     answer: {
                         '0': 'Trezor One: from version 1.12.1',
                         '1': 'Trezor T: from version 2.6.3',
@@ -993,11 +991,11 @@ export const messages = {
                 },
                 '5': {
                     question: 'Why don’t I see my coin listed?',
-                    answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
+                    answer: 'Trezor Suite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
                 },
                 '6': {
                     question: 'What does the graph display?',
-                    answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
+                    answer: 'The graph in Trezor Suite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
                 '7': {
                     question: 'What is View-only?',
@@ -1010,24 +1008,24 @@ export const messages = {
                     answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. For Ethereum, share only your address, while keeping your private key secure.',
                 },
                 '1': {
-                    question: 'Can I connect my Trezor to Trezor Suite Lite?',
+                    question: 'Can I connect my Trezor to Trezor Suite?',
                     answer: 'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
                 },
                 '2': {
-                    question: 'How do I send {coinLabel} in Trezor Suite Lite?',
-                    answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send {coinLabel} using Trezor Suite Lite. To send {coinLabel}, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
+                    question: 'How do I send {coinLabel} in Trezor Suite?',
+                    answer: 'Trezor Suite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send {coinLabel} using Trezor Suite. To send {coinLabel}, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
                 },
                 '3': {
                     question: 'Why don’t I see my coin listed?',
-                    answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
+                    answer: 'Trezor Suite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
                 },
                 '4': {
                     question: 'What does the graph display?',
-                    answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
+                    answer: 'The graph in Trezor Suite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
                 '5': {
                     question:
-                        'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
+                        'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite?',
                     answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
                 },
             },
@@ -1043,10 +1041,10 @@ export const messages = {
             title: 'Customization',
         },
         aboutUs: {
-            title: '<grey>About</grey> <green>Trezor Suite Lite</green>',
+            title: '<grey>About</grey> <green>Trezor Suite</green>',
             followUs: 'Follow us',
             lastCommitHash: 'Last commit hash: {lastCommitHash}',
-            body: 'Trezor Suite Lite is a safe and secure way to stay connected to the {coinLabel} on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
+            body: 'Trezor Suite is a safe and secure way to stay connected to the {coinLabel} on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
         },
         privacyAndSecurity: {
             title: 'Privacy & Security',
@@ -1205,7 +1203,7 @@ export const messages = {
             laterButton: 'I’ll do it later',
             step1: 'Go to Trezor Suite for Web using the button below.',
             step2: 'Complete recovery in your browser.',
-            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
+            step3: 'Start using your Trezor with\nTrezor Suite.',
         },
         createPinScreen: {
             title: 'Set your Trezor’s PIN',
@@ -1571,7 +1569,7 @@ export const messages = {
                 coinLabel: 'Coin label',
             },
             removeAccountAlert: {
-                title: 'Do you really want to remove this coin from {trezorSuiteLiteHeader}?',
+                title: 'Do you really want to remove this coin from {trezorSuiteHeader}?',
                 description:
                     'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
                 primaryButton: 'Remove coin',
@@ -2060,7 +2058,7 @@ export const messages = {
         },
         stakingBottomSheet: {
             title: 'To manage your staked funds, please use Trezor Suite for desktop.',
-            description: 'We currently support staking as view-only in Trezor Suite Lite.',
+            description: 'We currently support staking as view-only in Trezor Suite.',
         },
     },
     moduleTrading: {
