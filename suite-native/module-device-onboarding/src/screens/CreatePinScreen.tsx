@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/core';
 
 import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { Box, TitleHeader } from '@suite-native/atoms';
-import { usePinAction } from '@suite-native/device';
+import { Box, TitleHeader, VStack } from '@suite-native/atoms';
+import { ConnectorImage, usePinAction } from '@suite-native/device';
 import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
@@ -25,18 +25,10 @@ import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useReportOnboardingSuccessAnalytics } from '../hooks/useReportOnboardingSuccessAnalytics';
 
-const DEVICE_IMAGE_MAX_HEIGHT = 0.6 * getScreenHeight();
-
-const containerStyle = prepareNativeStyle(utils => ({
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: utils.spacings.sp32,
-}));
+const SCREEN_HEIGHT = getScreenHeight();
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
@@ -49,7 +41,6 @@ export const CreatePinScreen = () => {
     const deviceModel = useSelector(selectDeviceModel);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
-    const { applyStyle } = useNativeStyles();
     const { showAlert, hideAlert } = useAlert();
     const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
@@ -112,19 +103,27 @@ export const CreatePinScreen = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader closeAction={onCancel} />} isScrollable={false}>
-            <Box style={applyStyle(containerStyle)}>
+        <Screen
+            header={<ScreenHeader closeAction={onCancel} />}
+            isScrollable={false}
+            noBottomPadding={true}
+            hasBottomInset={false}
+        >
+            <VStack flex={1} marginTop="sp32" spacing="sp24">
                 <TitleHeader
                     titleVariant="titleMedium"
                     title={<Translation id="moduleDeviceOnboarding.createPinScreen.title" />}
                     subtitle={<Translation id="moduleDeviceOnboarding.createPinScreen.subtitle" />}
                     textAlign="center"
                 />
-                <DevicePinImage
-                    deviceModel={deviceModel || DeviceModelInternal.UNKNOWN}
-                    maxHeight={DEVICE_IMAGE_MAX_HEIGHT}
-                />
-            </Box>
+                <Box flex={1} justifyContent="flex-end">
+                    <DevicePinImage
+                        deviceModel={deviceModel || DeviceModelInternal.UNKNOWN}
+                        maxHeight={0.42 * SCREEN_HEIGHT}
+                    />
+                    <ConnectorImage maxHeight={0.18 * SCREEN_HEIGHT} />
+                </Box>
+            </VStack>
         </Screen>
     );
 };
