@@ -197,6 +197,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return (this.descriptorType ?? 0) <= 2;
     }
 
+    public get isProtocolV2Device() {
+        // TODO currently only DEVICE_TYPE.TypeBluetooth is detected;
+        // in the future we can also check productName === "Trezor Safe 7" for usb transports
+        return this.descriptorType === 6;
+    }
+
     private name = 'Trezor';
 
     private color?: string;

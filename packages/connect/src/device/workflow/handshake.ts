@@ -33,6 +33,12 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
         return;
     }
 
+    if (device.isProtocolV2Device) {
+        await device.setupThp();
+
+        return;
+    }
+
     logger?.debug('handshake Cancel start');
 
     // send could fail on T1 bootloader when device has erase/wipe button request displayed
