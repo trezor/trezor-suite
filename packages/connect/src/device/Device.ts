@@ -336,6 +336,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     channels: ['battery-level'],
                 })
                 .then(result => {
+                    console.log('result', result);
                     if (result.success && this.bluetoothProps) {
                         this.bluetoothProps.channels = result.payload;
                         this.lifecycle.emit(DEVICE.CHANGED);
