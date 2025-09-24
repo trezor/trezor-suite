@@ -16,7 +16,7 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { Preloader } from '../Preloader';
-import * as selectShouldDisplayDeviceCompromisedModule from '../selectShouldDisplayDeviceCompromised';
+import * as selectShouldDisplayDeviceCompromisedModule from '../selectShouldDisplayDeviceCompromisedOnRoute';
 
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({
@@ -485,7 +485,7 @@ describe(`${Preloader.name} component`, () => {
         const spy = jest
             .spyOn(
                 selectShouldDisplayDeviceCompromisedModule,
-                'selectShouldDisplayDeviceCompromised',
+                'selectShouldDisplayDeviceCompromisedOnRoute',
             )
             .mockImplementation(() => true);
 

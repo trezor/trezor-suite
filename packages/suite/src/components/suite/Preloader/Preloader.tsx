@@ -10,7 +10,6 @@ import { useGuideKeyboard } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
-    selectIsLoggedOut,
     selectIsTransportInitialized,
     selectPrerequisite,
 } from 'src/selectors/suite/suiteSelectors';
@@ -22,12 +21,11 @@ import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
-import { selectShouldDisplayDeviceCompromised } from './selectShouldDisplayDeviceCompromised';
+import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
 import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScreen';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
-import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
@@ -49,8 +47,9 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
-    const isLoggedOut = useSelector(selectIsLoggedOut);
-    const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
+    const shouldDisplayDeviceCompromisedOnRoute = useSelector(
+        selectShouldDisplayDeviceCompromisedOnRoute,
+    );
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     useReportDeviceCompromised();
@@ -96,7 +95,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         return <InitialLoading timeout={90 * 5} />;
     }
 
-    if (shouldDisplayDeviceCompromised) {
+    if (shouldDisplayDeviceCompromisedOnRoute) {
         return <DeviceCompromised />;
     }
 
@@ -116,7 +115,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     // Fullscreen Apps should handle prerequisites by themselves!!!
     if (prerequisite !== null) {
         return (
-            <WelcomeLayout>
+            <WelcomeLayout showAccounts={false}>
                 <Card paddingType="large">
                     <PrerequisitesGuide allowSwitchDevice />
                 </Card>
@@ -128,11 +127,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     // because if it is handled by Router it is wrapped in SuiteLayout
     if (!router.route) {
         return <ErrorPage />;
-    }
-
-    // if a device is not connected or initialized
-    if (isLoggedOut) {
-        return <LoggedOutLayout>{children}</LoggedOutLayout>;
     }
 
     // everything is set.
