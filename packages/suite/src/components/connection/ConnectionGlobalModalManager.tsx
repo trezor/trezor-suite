@@ -5,6 +5,7 @@ import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { ConnectDeviceGlobalModal } from './ConnectDeviceGlobalModal';
+import { ConnectionGlobalModalProvider } from './hook/useConnectionGlobalModal';
 
 export const ConnectionGlobalModalManager = () => {
     const dispatch = useDispatch();
@@ -17,5 +18,9 @@ export const ConnectionGlobalModalManager = () => {
 
     if (!isConnectDeviceModalOpen || thpStep !== null) return null;
 
-    return <ConnectDeviceGlobalModal onCancel={closeConnectionModal} />;
+    return (
+        <ConnectionGlobalModalProvider>
+            <ConnectDeviceGlobalModal onCancel={closeConnectionModal} />;
+        </ConnectionGlobalModalProvider>
+    );
 };
