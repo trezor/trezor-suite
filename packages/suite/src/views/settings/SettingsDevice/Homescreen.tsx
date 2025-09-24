@@ -161,6 +161,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                     values={{
                                         width: deviceModelInformation[deviceModelInternal].width,
                                         height: deviceModelInformation[deviceModelInternal].height,
+                                        maxImageSize:
+                                            deviceModelInformation[deviceModelInternal]
+                                                .maxImageSize / 1024,
                                     }}
                                 />
                             </ValidationMessage>
