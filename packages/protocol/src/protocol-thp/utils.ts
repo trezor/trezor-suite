@@ -95,7 +95,10 @@ export const getExpectedResponses = (bytes: Buffer) => {
 // get expected responses from ThpState (stored as numbers)
 // and join them with the channel to receive 3 bytes header
 export const getExpectedHeaders = (state: ThpState): Buffer[] =>
-    state.expectedResponses.map(resp => {
+    [
+        ...state.expectedResponses,
+        THP_ERROR_HEADER_BYTE, // error could be sent any time
+    ].map(resp => {
         let magic;
         switch (resp) {
             case THP_CONTINUATION_PACKET:
