@@ -10726,4 +10726,8 @@ export default defineMessages({
         id: 'TR_CONFIRM_BLUETOOTH_PAIRING',
         defaultMessage: 'Confirm the Bluetooth pairing request on your Trezor as well.',
     },
+    TR_THP_LOADING: {
+        id: 'TR_THP_LOADING',
+        defaultMessage: 'Securing connection',
+    },
 } as const);

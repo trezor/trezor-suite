@@ -2,7 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Icon, IconName, IconVariant, Row, Text } from '@trezor/components';
+import { Icon, IconName, IconVariant, Row, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const Container = styled.span<{ $isAction?: boolean }>`
@@ -23,6 +23,7 @@ type DeviceConnectionTextProps = {
     icon: IconName;
     children: ReactNode;
     isAction?: boolean;
+    isLoading?: boolean;
 };
 
 export const DeviceConnectionText = ({
@@ -33,6 +34,7 @@ export const DeviceConnectionText = ({
     children,
     icon,
     isAction,
+    isLoading,
 }: DeviceConnectionTextProps) => (
     <Container
         $isAction={isAction}
@@ -41,7 +43,7 @@ export const DeviceConnectionText = ({
         data-testid-alt={dataTestAlt}
     >
         <Row gap={spacings.xxs}>
-            <Icon name={icon} size={12} variant={variant} />
+            {isLoading ? <Spinner size={12} /> : <Icon name={icon} size={12} variant={variant} />}
             <Text typographyStyle="label" variant={variant}>
                 {children}
             </Text>
