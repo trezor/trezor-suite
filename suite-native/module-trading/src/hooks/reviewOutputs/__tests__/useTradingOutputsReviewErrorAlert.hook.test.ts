@@ -1,0 +1,74 @@
+import { AccountKey } from '@suite-common/wallet-types';
+import {
+    TestStore,
+    act,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils';
+
+import { getWalletState } from '../../../__fixtures__/walletState';
+import { useTradingOutputsReviewErrorAlert } from '../useTradingOutputsReviewErrorAlert';
+
+const mockShowAlert = jest.fn();
+
+jest.mock('@suite-native/alerts', () => ({
+    useAlert: () => ({
+        showAlert: mockShowAlert,
+    }),
+}));
+
+describe('useTradingOutputsReviewErrorAlert', () => {
+    let store: TestStore;
+
+    const renderUseTradingOutputsReviewErrorAlert = (accountKey: AccountKey) =>
+        renderHookWithStoreProviderAsync(() => useTradingOutputsReviewErrorAlert(accountKey), {
+            store,
+        });
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+        store = await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) });
+    });
+
+    it('should show alert', async () => {
+        const mockOnRetry = jest.fn();
+        const mockOnCancel = jest.fn();
+        const { result } = await renderUseTradingOutputsReviewErrorAlert('btc-account-1');
+
+        act(() => {
+            result.current(mockOnRetry, mockOnCancel);
+        });
+
+        expect(mockShowAlert).toHaveBeenCalledTimes(1);
+        expect(mockShowAlert).toHaveBeenCalledWith({
+            icon: 'warningCircle',
+            title: 'Transaction failed',
+            description:
+                'There has been an unexpected error, please try sending your transaction again.',
+            primaryButtonTitle: 'Try again',
+            primaryButtonVariant: 'redBold',
+            onPressPrimaryButton: mockOnRetry,
+            secondaryButtonTitle: 'Cancel',
+            secondaryButtonVariant: 'redElevation0',
+            onPressSecondaryButton: mockOnCancel,
+        });
+    });
+
+    it('should show special text fort solana', async () => {
+        const mockOnRetry = jest.fn();
+        const mockOnCancel = jest.fn();
+        const { result } = await renderUseTradingOutputsReviewErrorAlert('sol-account-1');
+
+        act(() => {
+            result.current(mockOnRetry, mockOnCancel);
+        });
+
+        expect(mockShowAlert).toHaveBeenCalledTimes(1);
+        expect(mockShowAlert).toHaveBeenCalledWith(
+            expect.objectContaining({
+                title: 'Transaction failed due to timeout',
+                description: 'Make sure you send the transaction within 1 minute from signing.',
+            }),
+        );
+    });
+});

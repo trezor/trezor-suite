@@ -26,11 +26,11 @@ const spacerStyle = prepareNativeStyle(_ => ({
 export const TradingOutputsReviewScreen = ({
     route,
 }: StackProps<TradingStackParamList, TradingStackRoutes.TradingOutputsReview>) => {
-    const { accountKey, tokenContract, tradingType } = route.params;
+    const { accountKey, tokenContract, tradingType, orderId } = route.params;
 
     const { applyStyle } = useNativeStyles();
     const { isTransactionAlreadySigned, isConsentRequested, resolveConsent, confirmOnTrezorRef } =
-        useTradingOutputsReviewScreenControls();
+        useTradingOutputsReviewScreenControls(orderId, accountKey);
     const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
     useOutputsReviewBackInterceptor();
 
