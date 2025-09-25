@@ -32,7 +32,7 @@ pub async fn open_device(
     let characteristic = characteristic.unwrap_or(NotificationCharacteristic::Read);
     let characteristic_uuid = match characteristic {
         NotificationCharacteristic::Read => CHARACTERISTIC_TX,
-        NotificationCharacteristic::PushNotification => CHARACTERISTIC_PUSH_NOTIFICATION,
+        NotificationCharacteristic::TrezorPushNotification => CHARACTERISTIC_PUSH_NOTIFICATION,
         NotificationCharacteristic::BatteryLevel => CHARACTERISTIC_BATTERY_LEVEL,
     };
 

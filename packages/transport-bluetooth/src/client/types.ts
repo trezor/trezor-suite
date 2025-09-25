@@ -1,4 +1,3 @@
-import { NotificationData } from '@trezor/transport/src/transports/abstract';
 import type { Logger } from '@trezor/transport/src/types';
 import type { TypedEmitter } from '@trezor/utils';
 
@@ -47,7 +46,7 @@ export interface BluetoothDevice {
 
 export type BluetoothAdapterState = 'enabled' | 'disabled' | 'permission-denied';
 
-export type NotificationCharacteristic = 'read' | 'push-notification' | 'battery-level';
+export type NotificationCharacteristic = 'read' | 'trezor-push-notification' | 'battery-level';
 
 export interface NotificationEvent {
     adapter_state_changed: { state: BluetoothAdapterState };
@@ -56,10 +55,8 @@ export interface NotificationEvent {
     device_connected: { id: string; devices: BluetoothDevice[] };
     device_connection_status: { device: BluetoothDevice };
     device_disconnected: { id: string; devices: BluetoothDevice[] };
-    device_read:
-        | { id: string; characteristic: 'read'; data: Buffer }
-        | { id: string; characteristic: 'battery-level'; data: number[] }
-        | { id: string; characteristic: 'push-notification'; data: NotificationData };
+    device_read: { id: string; characteristic: NotificationCharacteristic; data: number[] };
+
     device_settings_ui: undefined; // dispatched by linux pairing process
     device_removed: { id: string };
 }

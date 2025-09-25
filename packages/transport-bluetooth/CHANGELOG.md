@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.4.2
+
+- added open_device/close_device characteristics param
+- dispatching notifications from requested characteristics
+- removed NAPI bindings
+- fix: get_info method
+- fix: linux connectionsStatus after unsuccessful connection
+
 ### 0.4.1
 
 - breaking change in websocket api parameters, responses and notifications
