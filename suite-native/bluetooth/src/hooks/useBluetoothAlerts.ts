@@ -9,6 +9,7 @@ import { useTranslate } from '@suite-native/intl';
 
 import { selectBluetoothAdapterStatus, selectBluetoothPermissionStatus } from '../selectors';
 import { useBluetoothPermissions } from './useBluetoothPermissions';
+// @ts-expect-error The definition of the hook is stored in platform-specific files (.ios.tsx for iOS, .android.tsx for Android).
 import { useBluetoothPlatformSpecificAlerts } from './useBluetoothPlatformSpecificAlerts';
 import { useBluetoothSettings } from './useBluetoothSettings';
 
