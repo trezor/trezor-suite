@@ -11,6 +11,7 @@ import type {
     Success,
 } from '../types';
 import { error, success, unknownError } from '../utils/result';
+import { NotificationData } from '../transports/abstract';
 
 export interface AbstractApiConstructorParams {
     logger?: Logger;
@@ -27,7 +28,7 @@ export enum DEVICE_TYPE {
     TypeBluetooth = 6,
 }
 
-export type OpenDeviceChannel = 'read' | 'push-notification' | 'battery-level';
+export type OpenDeviceChannel = 'read' | 'trezor-push-notification' | 'battery-level';
 
 type AccessLock = {
     read: boolean;
@@ -43,7 +44,7 @@ type AccessLock = {
 export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
     'transport-interface-error': { error: typeof ERRORS.API_DISCONNECTED };
-    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
+    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: NotificationData };
     [TRANSPORT.BATTERY_LEVEL]: { id: string; data: number[] };
 }> {
     protected logger?: Logger;
