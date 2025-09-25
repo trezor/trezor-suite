@@ -39,7 +39,7 @@ export class OnboardingPage {
 
     constructor(
         public page: Page,
-        readonly model: ModelFixture,
+        private readonly model: ModelFixture,
         private readonly testInfo: TestInfo,
         private readonly devicePrompt: DevicePrompt,
         private readonly analyticsSection: AnalyticsSection,
@@ -94,8 +94,7 @@ export class OnboardingPage {
 
     @step()
     async allowConnectToTrezor() {
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.devicePrompt.waitForPromptAndConfirm();
     }
 
     @step()

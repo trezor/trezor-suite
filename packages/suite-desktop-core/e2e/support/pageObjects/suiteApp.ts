@@ -6,9 +6,9 @@ import { OnboardingPage } from './onboarding/onboardingPage';
 
 export class SuiteApp {
     constructor(
-        readonly page: Page,
-        readonly model: ModelFixture,
-        readonly onboardingPage: OnboardingPage,
+        private readonly page: Page,
+        private readonly model: ModelFixture,
+        private readonly onboardingPage: OnboardingPage,
     ) {}
 
     @step()

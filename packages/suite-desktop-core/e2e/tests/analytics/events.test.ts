@@ -116,7 +116,6 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         settingsPage,
         onboardingPage,
         trezorUserEnvLink,
-        emulatorStartConf,
     }) => {
         await test.step('Start suite with disabled analytics', async () => {
             await onboardingPage.optionallyDismissFwHashCheckError();
@@ -127,7 +126,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             // the only message about the analytics being sent is the "settings/analytics" disabled.
             await analytics.interceptAnalytics();
 
-            await trezorUserEnvLink.startEmu({ wipe: true, model: emulatorStartConf.model });
+            await trezorUserEnvLink.startEmu({ wipe: true, model: model.model });
             await trezorUserEnvLink.setupEmu({
                 passphrase_protection: true,
             });
