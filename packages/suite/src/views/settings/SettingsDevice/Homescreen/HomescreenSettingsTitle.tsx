@@ -3,6 +3,7 @@ import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
 import { TextColumn, Translation } from 'src/components/suite';
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
+import { useTranslation } from 'src/hooks/suite';
 import { deviceModelInformation } from 'src/utils/suite/homescreen';
 
 type HomescreenSettingsTitle = {
@@ -11,12 +12,20 @@ type HomescreenSettingsTitle = {
 
 export const HomescreenSettingsTitle = ({ deviceModelInternal }: HomescreenSettingsTitle) => {
     const hasMonochromeScreen = HAS_MONOCHROME_SCREEN[deviceModelInternal];
+    const { translationString } = useTranslation();
+
+    const baseDescription = translationString('TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS', {
+        width: deviceModelInformation[deviceModelInternal].width,
+        height: deviceModelInformation[deviceModelInternal].height,
+    });
 
     return hasMonochromeScreen ? (
         <TextColumn
             title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
             description={
-                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64" />
+                baseDescription +
+                ' ' +
+                translationString('TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW')
             }
             buttonLink={HOMESCREEN_EDITOR_URL}
             buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
@@ -24,18 +33,7 @@ export const HomescreenSettingsTitle = ({ deviceModelInternal }: HomescreenSetti
     ) : (
         <TextColumn
             title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
-            description={
-                <Translation
-                    id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR"
-                    values={{
-                        width: deviceModelInformation[deviceModelInternal].width,
-                        height: deviceModelInformation[deviceModelInternal].height,
-                        maxSizeKb: Math.round(
-                            deviceModelInformation[deviceModelInternal].maxImageSize / 1024,
-                        ),
-                    }}
-                />
-            }
+            description={baseDescription}
         />
     );
 };
