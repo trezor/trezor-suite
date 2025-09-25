@@ -347,5 +347,6 @@ export type TradingStackParamList = {
         tradingType: TradingType;
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
+        orderId: string;
     };
 };

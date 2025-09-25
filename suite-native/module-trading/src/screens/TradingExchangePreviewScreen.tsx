@@ -78,6 +78,7 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
                 receiveAddress: addressText,
                 trade: quote,
                 approvalFlow: false,
+                nextStep: () => {},
             });
 
             if (success) {
@@ -150,6 +151,7 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
                 tradingType: 'exchange',
                 accountKey: fromAccount.key,
                 tokenContract,
+                orderId: quote.orderId ?? '',
             },
         });
     };

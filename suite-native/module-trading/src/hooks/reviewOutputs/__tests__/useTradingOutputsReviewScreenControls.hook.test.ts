@@ -6,10 +6,12 @@ import {
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { getWalletState } from '../../../__fixtures__/walletState';
+import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 
 const mockUseExchangeFlow = {
-    signAndSendTransaction: jest.fn(),
+    signAndSendTransaction: jest.fn(() => Promise.resolve(true)),
     isConsentRequested: false,
     resolveConsent: jest.fn(),
 };
@@ -18,6 +20,11 @@ const mockUseConfirmOnTrezorController = {
     confirmOnTrezorRef: { current: null },
     closeSheet: jest.fn(),
 };
+
+const mockPopToTop = jest.fn();
+const mockPop = jest.fn();
+const mockUseOutputsReviewBackInterceptor = jest.fn();
+const mockShowAlert = jest.fn();
 
 jest.mock('../../exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => mockUseExchangeFlow,
@@ -28,17 +35,40 @@ jest.mock('@suite-native/device', () => ({
     useConfirmOnTrezorController: () => mockUseConfirmOnTrezorController,
 }));
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({
+        popToTop: mockPopToTop,
+        pop: mockPop,
+    }),
+}));
+
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    useOutputsReviewBackInterceptor: (onReviewCanceled: () => void) =>
+        mockUseOutputsReviewBackInterceptor(onReviewCanceled),
+}));
+
+jest.mock('@suite-native/alerts', () => ({
+    useAlert: () => ({
+        showAlert: mockShowAlert,
+    }),
+}));
+
 describe('useTradingOutputsReviewScreenControls', () => {
     let store: TestStore;
 
     const renderUseTradingOutputsReviewScreenControls = () =>
-        renderHookWithStoreProviderAsync(() => useTradingOutputsReviewScreenControls(), {
-            store,
-        });
+        renderHookWithStoreProviderAsync(
+            () => useTradingOutputsReviewScreenControls('orderId', 'btc-account-1'),
+            {
+                store,
+            },
+        );
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        store = await initStore();
+        store = await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) });
     });
 
     it('should return values from useExchangeFlow', async () => {
@@ -67,6 +97,94 @@ describe('useTradingOutputsReviewScreenControls', () => {
             await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseConfirmOnTrezorController.closeSheet).not.toHaveBeenCalled();
+        });
+
+        it('should navigate to trade detail', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+
+            expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    nextStep: expect.any(Function),
+                }),
+            );
+
+            // call the nextStep callback to simulate thunk behavior
+            act(() => {
+                const { nextStep } = (
+                    mockUseExchangeFlow.signAndSendTransaction.mock.lastCall as unknown as [
+                        TradingExchangeSignAndSendTransactionProps,
+                    ]
+                )[0];
+                nextStep();
+            });
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('orderId');
+        });
+
+        it('should display alert on thunk error', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+
+            expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    nextStep: expect.any(Function),
+                }),
+            );
+
+            // call the onError callback to simulate thunk behavior
+            act(() => {
+                const { onError } = (
+                    mockUseExchangeFlow.signAndSendTransaction.mock.lastCall as unknown as [
+                        TradingExchangeSignAndSendTransactionProps,
+                    ]
+                )[0];
+                onError({
+                    type: 'sign-tx-error',
+                    error: {
+                        id: 'TR_ERROR',
+                    },
+                });
+            });
+            expect(mockShowAlert).toHaveBeenCalledTimes(1);
+            expect(mockShowAlert).toHaveBeenCalledWith(
+                expect.objectContaining({ title: 'Transaction failed' }),
+            );
+        });
+
+        it('should offer pop and popToTop action on thunk error', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+
+            expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    nextStep: expect.any(Function),
+                }),
+            );
+
+            // call the onError callback to simulate thunk behavior
+            act(() => {
+                const { onError } = (
+                    mockUseExchangeFlow.signAndSendTransaction.mock.lastCall as unknown as [
+                        TradingExchangeSignAndSendTransactionProps,
+                    ]
+                )[0];
+                onError({
+                    type: 'sign-tx-error',
+                    error: {
+                        id: 'TR_ERROR',
+                    },
+                });
+            });
+
+            act(() => {
+                mockShowAlert.mock.calls[0][0].onPressPrimaryButton();
+            });
+
+            expect(mockPop).toHaveBeenCalledTimes(1);
+
+            act(() => {
+                mockShowAlert.mock.calls[0][0].onPressSecondaryButton();
+            });
+
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
         });
     });
 

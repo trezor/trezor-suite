@@ -26,13 +26,11 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
 import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
 import {
     NativeSupportedFeeLevel,
@@ -47,17 +45,21 @@ import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } f
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
 import { useConsent } from '../general/useConsent';
 
-type TradingExchangeConfirmTradeProps = {
+export type TradingExchangeConfirmTradeProps = {
     receiveAddress: string;
     extraField?: string;
     trade?: ExchangeTrade;
     approvalFlow?: boolean;
+    nextStep: () => void;
+};
+
+export type TradingExchangeSignAndSendTransactionProps = {
+    nextStep: () => void;
+    onError: (error: TradingSendRejectedProps) => void;
 };
 
 export const useExchangeFlow = () => {
     const dispatch = useDispatch();
-
-    const { showToast } = useToast();
 
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -210,15 +212,10 @@ export const useExchangeFlow = () => {
             const processResponseData = (response: ExchangeTrade) =>
                 handleWebview(tradeToUse, response.tradeForm?.form, returnUrl);
 
-            const nextStep = () => {
-                // TODO: add next step
-            };
-
             return {
                 returnUrl,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
-                nextStep,
             };
         },
         [handleWebview, selectedQuote],
@@ -231,6 +228,7 @@ export const useExchangeFlow = () => {
             extraField,
             trade,
             approvalFlow,
+            nextStep,
         }: TradingExchangeConfirmTradeProps & { sendAccount: any }): Promise<boolean> => {
             const commonFunctions = getCommonFunctions(trade);
 
@@ -242,7 +240,7 @@ export const useExchangeFlow = () => {
                 return false;
             }
 
-            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
+            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData } =
                 commonFunctions;
 
             return !!(await dispatch(
@@ -264,91 +262,82 @@ export const useExchangeFlow = () => {
 
     // this is called when we want to sign and send a transaction
     // waitForPushApproval is used so that we can wait for the user to approve the transaction before sending it
-    const signAndSendTransaction = useCallback(async () => {
-        const commonFunctions = getCommonFunctions(selectedQuote);
+    const signAndSendTransaction = useCallback(
+        async ({ nextStep, onError }: TradingExchangeSignAndSendTransactionProps) => {
+            const commonFunctions = getCommonFunctions(selectedQuote);
 
-        if (!commonFunctions || !sendAccount) {
-            console.error(
-                'Common functions and send account are required to sign and send transaction',
-            );
+            if (!commonFunctions || !sendAccount) {
+                console.error(
+                    'Common functions and send account are required to sign and send transaction',
+                );
 
-            return false;
-        }
-
-        const network = getNetwork(sendAccount.symbol);
-        const decimals = tokenDecimals ?? network.decimals;
-
-        const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
-            commonFunctions;
-
-        const signAndPushSendFormTransaction = async ({
-            formState,
-            precomposedTransaction,
-            selectedAccount,
-            paymentRequests,
-        }: TradingSignAndPushSendFormTransactionProps): Promise<TradingFulfillValue> => {
-            const result = await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState,
-                    precomposedTransaction,
-                    selectedAccount,
-                    paymentRequests,
-                    waitForPushApprovalPromise: waitForConsent,
-                }),
-            );
-
-            if (isFulfilled(result)) {
-                return result.payload as TradingFulfillValue;
+                return false;
             }
 
-            return result.error as TradingFulfillValue;
-        };
+            const network = getNetwork(sendAccount.symbol);
+            const decimals = tokenDecimals ?? network.decimals;
 
-        try {
-            await dispatch(
-                exchangeThunks.sendTransactionThunk({
-                    account: sendAccount,
-                    trade: selectedQuote,
-                    returnUrl,
-                    setMaxOutputId: undefined,
-                    decimals,
-                    shouldSendInSats,
-                    isSlip24Active,
-                    nextStep,
-                    processResponseData,
-                    triggerAnalyticsTradeConfirmation,
-                    signAndPushSendFormTransaction,
-                }),
-            ).unwrap();
+            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData } =
+                commonFunctions;
 
-            return true;
-        } catch (e) {
-            const errorTyped = e as TradingSendRejectedProps;
+            const signAndPushSendFormTransaction = async ({
+                formState,
+                precomposedTransaction,
+                selectedAccount,
+                paymentRequests,
+            }: TradingSignAndPushSendFormTransactionProps): Promise<TradingFulfillValue> => {
+                const result = await dispatch(
+                    signAndPushSendFormTransactionThunk({
+                        formState,
+                        precomposedTransaction,
+                        selectedAccount,
+                        paymentRequests,
+                        waitForPushApprovalPromise: waitForConsent,
+                    }),
+                );
 
-            showToast({
-                icon: 'warningCircle',
-                variant: 'error',
-                message:
-                    errorTyped.type === 'sign-transaction-timeout' ? (
-                        <Translation id="moduleSend.review.outputs.errorAlert.solana.description" />
-                    ) : (
-                        e.message
-                    ),
-            });
+                if (isFulfilled(result)) {
+                    return result.payload as TradingFulfillValue;
+                }
 
-            return false;
-        }
-    }, [
-        dispatch,
-        getCommonFunctions,
-        isSlip24Active,
-        selectedQuote,
-        sendAccount,
-        shouldSendInSats,
-        showToast,
-        tokenDecimals,
-        waitForConsent,
-    ]);
+                return result.error as TradingFulfillValue;
+            };
+
+            try {
+                await dispatch(
+                    exchangeThunks.sendTransactionThunk({
+                        account: sendAccount,
+                        trade: selectedQuote,
+                        returnUrl,
+                        setMaxOutputId: undefined,
+                        decimals,
+                        shouldSendInSats,
+                        isSlip24Active,
+                        nextStep,
+                        processResponseData,
+                        triggerAnalyticsTradeConfirmation,
+                        signAndPushSendFormTransaction,
+                    }),
+                ).unwrap();
+
+                return true;
+            } catch (e) {
+                onError(e as TradingSendRejectedProps);
+
+                return false;
+            }
+        },
+        [
+            dispatch,
+            getCommonFunctions,
+            isSlip24Active,
+            selectedQuote,
+            sendAccount,
+            shouldSendInSats,
+            tokenDecimals,
+            waitForConsent,
+        ],
+    );
 
     useEffect(() => {
         if (selectedFee && networkFeeInfo) {
