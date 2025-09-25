@@ -17,7 +17,7 @@ import {
     NavigateParameters,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
-    useOverrideBackNavigation,
+    useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
@@ -91,7 +91,7 @@ export const ConnectDeviceScreenHeader = ({
         navigation,
     ]);
 
-    useOverrideBackNavigation({ onNavigateBack: handleCancel });
+    useHandleHardwareBackNavigation(handleCancel);
 
     // Hide alert when navigating away from the PIN entry screen (PIN entered or canceled on device)
     // eslint-disable-next-line arrow-body-style
