@@ -13,6 +13,7 @@ import { DEVICE, UI } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -76,6 +77,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             trezorConnectActions.connectInitThunk({
                 [DEVICE.CONNECT]: device => {
                     dispatch(markDeviceAsRecentlyConnectedThunk(device));
+                    dispatch(bluetoothOnDeviceConnectedThunk(device));
                 },
                 [DEVICE.CONNECT_UNACQUIRED]: device => {
                     dispatch(markDeviceAsRecentlyConnectedThunk(device));
