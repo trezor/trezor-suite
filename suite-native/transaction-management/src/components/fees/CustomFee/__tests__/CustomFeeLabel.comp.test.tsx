@@ -9,12 +9,12 @@ import {
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
+import { useFeesForm } from '../../../../hooks';
 import { CustomFeeLabel } from '../CustomFeeLabel';
 
 describe('CustomFeeLabel', () => {
     const defaultState = {
-        wallet: { ...getWalletState() },
+        wallet: getWalletState(),
     };
 
     const renderUseFeesForm = async (

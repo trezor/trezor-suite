@@ -11,7 +11,7 @@ import {
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
+import { useFeesForm } from '../../../../hooks';
 import { CustomFee } from '../CustomFee';
 
 type CustomFeeProps = {
@@ -30,7 +30,7 @@ describe('CustomFee', () => {
     };
 
     const defaultState = {
-        wallet: { ...getWalletState() },
+        wallet: getWalletState(),
     };
 
     const renderUseFeesForm = async (

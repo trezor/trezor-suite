@@ -9,7 +9,7 @@ import {
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
+import { useFeesForm } from '../../../../hooks';
 import { CustomFeeCard, CustomFeeCardProps } from '../CustomFeeCard';
 
 describe('CustomFeeCard', () => {
@@ -20,7 +20,7 @@ describe('CustomFeeCard', () => {
     };
 
     const defaultState = {
-        wallet: { ...getWalletState() },
+        wallet: getWalletState(),
     };
 
     const renderUseFeesForm = async (
