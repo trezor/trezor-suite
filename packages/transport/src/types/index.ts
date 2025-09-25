@@ -1,6 +1,6 @@
 import { Branded } from '@trezor/type-utils';
 
-import type { DEVICE_TYPE } from '../api/abstract';
+import { DEVICE_TYPE } from '../constants';
 
 export * from './apiCall';
 
