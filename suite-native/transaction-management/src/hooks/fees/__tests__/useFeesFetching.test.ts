@@ -1,4 +1,5 @@
-import { AccountKey, FeesStatus } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FeesStatus } from '@suite-common/wallet-types';
 import {
     PreloadedState,
     TestStore,
@@ -6,7 +7,7 @@ import {
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { getBtcAccount, getWalletState } from '../../../__fixtures__/walletState';
+import { getWalletState } from '../../../__fixtures__/walletState';
 import { useFeesFetching } from '../useFeesFetching';
 
 // Mock the fee hooks since they have side effects and we want to test the hook's logic
@@ -20,7 +21,6 @@ jest.mock('@suite-common/wallet-core', () => ({
 
 const mockUseFetchFeesOnce = jest.requireMock('@suite-common/wallet-core').useFetchFeesOnce;
 const mockUseRefetchFees = jest.requireMock('@suite-common/wallet-core').useRefetchFees;
-const mockSelectAccountByKey = jest.requireMock('@suite-common/wallet-core').selectAccountByKey;
 const mockSelectAreFeesLoading = jest.requireMock('@suite-common/wallet-core').selectAreFeesLoading;
 
 // Add fees to the wallet state for testing
@@ -44,29 +44,29 @@ describe('useFeesFetching', () => {
 
     const renderUseFeesFetching = ({
         store,
-        accountKey = 'btc-account-1',
+        networkSymbol,
         isRefetchDisabled = false,
     }: {
         store: TestStore;
-        accountKey?: AccountKey;
+        networkSymbol?: NetworkSymbol;
         isRefetchDisabled?: boolean;
     }) =>
-        renderHookWithStoreProviderAsync(() => useFeesFetching({ accountKey, isRefetchDisabled }), {
-            store,
-        });
+        renderHookWithStoreProviderAsync(
+            () => useFeesFetching({ networkSymbol, isRefetchDisabled }),
+            { store },
+        );
 
     beforeEach(() => {
         jest.clearAllMocks();
         // Default mock implementations
         mockUseFetchFeesOnce.mockImplementation(() => {});
         mockUseRefetchFees.mockImplementation(() => {});
-        mockSelectAccountByKey.mockReturnValue(getBtcAccount());
         mockSelectAreFeesLoading.mockReturnValue(false);
     });
 
     it('should select account by key from state', async () => {
         const store = await initStore(createMockState());
-        const { result } = await renderUseFeesFetching({ store });
+        const { result } = await renderUseFeesFetching({ store, networkSymbol: 'btc' });
 
         expect(result.current.areFeesLoading).toBe(false);
         expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: 'btc' });
@@ -76,26 +76,10 @@ describe('useFeesFetching', () => {
         });
     });
 
-    it('should handle undefined account gracefully', async () => {
-        mockSelectAccountByKey.mockReturnValue(undefined);
-        const store = await initStore(createMockState());
-        const { result } = await renderUseFeesFetching({
-            store,
-            accountKey: 'non-existent-account' as AccountKey,
-        });
-
-        expect(result.current.areFeesLoading).toBe(false);
-        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: undefined });
-        expect(mockUseRefetchFees).toHaveBeenCalledWith({
-            networkSymbol: undefined,
-            isDisabled: false,
-        });
-    });
-
     it('should handle loading state correctly', async () => {
         mockSelectAreFeesLoading.mockReturnValue(true);
         const store = await initStore(createMockState());
-        const { result } = await renderUseFeesFetching({ store });
+        const { result } = await renderUseFeesFetching({ store, networkSymbol: 'btc' });
 
         expect(result.current.areFeesLoading).toBe(true);
         expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: 'btc' });
@@ -109,6 +93,7 @@ describe('useFeesFetching', () => {
         const store = await initStore(createMockState());
         const { result } = await renderUseFeesFetching({
             store,
+            networkSymbol: 'btc',
             isRefetchDisabled: true,
         });
 
@@ -117,6 +102,21 @@ describe('useFeesFetching', () => {
         expect(mockUseRefetchFees).toHaveBeenCalledWith({
             networkSymbol: 'btc',
             isDisabled: true,
+        });
+    });
+
+    it('should handle undefined networkSymbol gracefully', async () => {
+        const store = await initStore(createMockState());
+        const { result } = await renderUseFeesFetching({
+            store,
+            networkSymbol: undefined,
+        });
+
+        expect(result.current.areFeesLoading).toBe(false);
+        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: undefined });
+        expect(mockUseRefetchFees).toHaveBeenCalledWith({
+            networkSymbol: undefined,
+            isDisabled: false,
         });
     });
 });

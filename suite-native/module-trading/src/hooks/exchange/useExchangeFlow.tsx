@@ -103,7 +103,7 @@ export const useExchangeFlow = () => {
     const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
 
     useFeesFetching({
-        accountKey: sendAccount?.key,
+        networkSymbol: sendAccount?.symbol,
         isRefetchDisabled: selectedFee === 'custom',
     });
 

@@ -57,7 +57,7 @@ export const useFeeCalculation = ({
     const normalFee = feeLevels.normal as PrecomposedTransactionFinal;
 
     const { areFeesLoading } = useFeesFetching({
-        accountKey,
+        networkSymbol: symbol,
         isRefetchDisabled: selectedFeeLevel === 'custom' || selectedSetMaxOutputId !== undefined,
     });
 
