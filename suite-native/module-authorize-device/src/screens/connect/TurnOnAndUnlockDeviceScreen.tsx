@@ -92,7 +92,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
         }
     }, [nearbyPairableBluetoothDevices, hideAlert, navigation]);
 
-    const { isScanningInProgress } = useBluetoothManager();
+    useBluetoothManager();
 
     return (
         <Screen
@@ -111,7 +111,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
             hasBottomInset={false}
             isScrollable={false}
         >
-            <TurnOnAndUnlockDeviceScreenContent isScanningInProgress={isScanningInProgress} />
+            <TurnOnAndUnlockDeviceScreenContent />
         </Screen>
     );
 };

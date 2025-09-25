@@ -79,7 +79,7 @@ export const DeviceDisconnectedScreen = ({
             isScrollable={false}
         >
             {wasDeviceConnectedViaBluetooth ? (
-                <TurnOnAndUnlockDeviceScreenContent isScanningInProgress={isAlertDismissed} />
+                <TurnOnAndUnlockDeviceScreenContent isStatusVisible={isAlertDismissed} />
             ) : (
                 <ConnectAndUnlockDeviceScreenContent />
             )}
