@@ -466,7 +466,10 @@ export const messages = {
         },
         turnOnAndUnlockScreen: {
             title: 'Turn on & unlock\nyour Trezor',
-            scanningLoader: 'Scanning for nearby Trezors',
+            status: {
+                adapterDisabled: 'Bluetooth is turned off',
+                scanning: 'Scanning for nearby Trezors',
+            },
         },
         pinScreen: {
             title: 'Enter PIN\non your Trezor',
