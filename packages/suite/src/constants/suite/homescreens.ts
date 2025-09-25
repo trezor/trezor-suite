@@ -82,11 +82,7 @@ export const getHomescreens = (isBitcoinOnlyFirmware: boolean): HomeScreensMap =
         'solid',
         'smile-2',
     ],
-    [DeviceModelInternal.T3W1]: [
-        // TODO - update to current images
-        // isBitcoinOnlyFirmware ? 'orange_t3w1' : 'green_t3w1',
-        // isBitcoinOnlyFirmware ? 'green_t3w1' : 'orange_t3w1',
-    ],
+    [DeviceModelInternal.T3W1]: ['original_t3w1', 'aurora', 'metallic', 'pizza-slices'],
 });
 
 type GetDefaultHomeScreenImageParms = {
@@ -108,9 +104,9 @@ export const getDefaultHomeScreenImage = ({
         case DeviceModelInternal.T3B1:
             return 'original_t3b1';
         case DeviceModelInternal.T3T1:
-            return isBitcoinOnlyFirmware ? 'orange' : 'green'; // Todo: specify
+            return isBitcoinOnlyFirmware ? 'orange' : 'green';
         case DeviceModelInternal.T3W1:
-            return isBitcoinOnlyFirmware ? 'orange' : 'green'; // Todo: specify
+            return 'original_t3w1';
         case DeviceModelInternal.UNKNOWN:
             return isBitcoinOnlyFirmware ? 'orange' : 'green'; // just to have something
         default:

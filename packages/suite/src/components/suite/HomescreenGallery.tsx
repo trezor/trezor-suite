@@ -58,9 +58,12 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
         const isOriginalImage =
             getDefaultHomeScreenImage({ deviceModelInternal, isBitcoinOnlyFirmware }) === image;
 
-        const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
-
-        dispatch(applySettings({ homescreen: hex }));
+        if (isOriginalImage) {
+            dispatch(applySettings({ homescreen_length: 0 }));
+        } else {
+            const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
+            dispatch(applySettings({ homescreen: hex }));
+        }
 
         if (onConfirm) {
             onConfirm();
