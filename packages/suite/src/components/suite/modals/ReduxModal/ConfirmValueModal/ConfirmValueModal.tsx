@@ -191,19 +191,22 @@ export const ConfirmValueModal = ({
                                 ) : (
                                     outputValue
                                 )}
-                                <MetadataLabeling
-                                    variant="button"
-                                    deviceStaticSessionId={account!.deviceState}
-                                    payload={{
-                                        type: 'addressLabel',
-                                        entityKey: value,
-                                        defaultValue: value,
-                                        value:
-                                            localFirstAddressLabels.find(it => it.address === value)
-                                                ?.label ?? addressLabels[value],
-                                    }}
-                                    visible
-                                />
+                                {account && (
+                                    <MetadataLabeling
+                                        variant="button"
+                                        deviceStaticSessionId={account.deviceState}
+                                        payload={{
+                                            type: 'addressLabel',
+                                            entityKey: account.key,
+                                            defaultValue: value,
+                                            value:
+                                                localFirstAddressLabels.find(
+                                                    it => it.address === value,
+                                                )?.label ?? addressLabels[value],
+                                        }}
+                                        visible
+                                    />
+                                )}
                                 {isCopyButtonVisible && (
                                     <Button
                                         onClick={copy}
