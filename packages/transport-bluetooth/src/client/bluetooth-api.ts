@@ -68,7 +68,9 @@ export class BluetoothApi extends AbstractApi {
             transportApiEvent(event);
         });
         api.on('device_read', ({ id, data, characteristic }) => {
-            if (characteristic === 'push-notification') {
+            if (characteristic === 'trezor-push-notification') {
+                // TODO: we should create a protocol decode that passes some type that is more humanfriendly to be emmited.
+                // @ts-expect-error data is number[] but we are emitting it as NotificationData.
                 this.emit('trezor-push-notification', { id, data });
             } else if (characteristic === 'battery-level') {
                 this.emit('battery-level', { id, data });
