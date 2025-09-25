@@ -4,7 +4,7 @@
  * with `-c ../../jest.config.native` option in package.json scripts
  * allows us to run jest tests directly from IDEs.
  */
-const { ...baseConfig } = require('../../jest.config.native');
+const baseConfig = require('../../jest.config.native');
 
 module.exports = {
     ...baseConfig,
