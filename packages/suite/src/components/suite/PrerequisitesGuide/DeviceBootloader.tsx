@@ -3,6 +3,7 @@ import { useDevice } from 'src/hooks/suite/useDevice';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
 
 import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
+import { UpdateGoToSettingsDescription } from '../troubleshooting/tips/UpdateGoToSettingsDescription';
 
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
 export const DeviceBootloader = () => {
@@ -16,6 +17,12 @@ export const DeviceBootloader = () => {
             key: 'device-bootloader',
             heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
             description: tipDescription !== null ? <Translation id={tipDescription} /> : null,
+            noBullet: true,
+        },
+        {
+            key: 'wipe-or-update',
+            heading: <Translation id="TR_WIPE_OR_UPDATE" />,
+            description: <UpdateGoToSettingsDescription />,
             noBullet: true,
         },
     ];

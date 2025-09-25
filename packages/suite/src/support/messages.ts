@@ -7471,7 +7471,7 @@ export default defineMessages({
     },
     TR_WIPE_OR_UPDATE_DESCRIPTION: {
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
-        defaultMessage: 'Go to device settings.',
+        defaultMessage: 'Go to <a/>device settings</a>.',
     },
     TR_YOU_HAVE_CONNECTED: {
         id: 'TR_YOU_HAVE_CONNECTED',
