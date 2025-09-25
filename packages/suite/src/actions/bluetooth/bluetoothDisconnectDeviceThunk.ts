@@ -4,6 +4,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
+import { stopConnectingBluetoothDevice } from './desktopBluetoothReducer';
+
 type BluetoothDisconnectDeviceThunkResult = {
     success: boolean;
 };
@@ -32,6 +34,9 @@ export const bluetoothDisconnectDeviceThunk = createThunk<
                 }),
             );
         }
+
+        // just in case if we were in the process of connecting this device
+        dispatch(stopConnectingBluetoothDevice({ deviceId: id }));
 
         return fulfillWithValue({ success: result.success });
     },
