@@ -58,6 +58,10 @@ export const config: Config = {
             label: 'MetaMask',
         },
         {
+            origin: 'fiikommddbeccaoicoejoniammnalkfa',
+            label: 'Nightly',
+        },
+        {
             origin: 'bpcdaglidgnlggelgbjfagekoapjmccp',
             label: 'Rainbow DEV',
         },
