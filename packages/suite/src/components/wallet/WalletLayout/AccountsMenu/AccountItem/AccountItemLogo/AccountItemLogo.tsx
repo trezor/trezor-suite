@@ -2,26 +2,29 @@ import { Column, Icon } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { Account, AccountItemType } from '../../../../../types/wallet';
-import { TokenIconSetWrapper } from '../../../TokenIconSetWrapper';
+import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+import { type Account, type AccountItemType } from 'src/types/wallet';
 
-const ICON_SIZE = 24;
-type AccountItemLeftProps = {
+type AccountItemLogoProps = {
     type: AccountItemType;
     account: Account;
 };
-export const AccountItemLeft = ({ type, account }: AccountItemLeftProps) => {
+
+export const AccountItemLogo = ({ type, account }: AccountItemLogoProps) => {
     switch (type) {
         case 'coin':
             return (
                 <Column alignItems="center">
-                    <CoinLogo size={ICON_SIZE} symbol={account.symbol} />
+                    <CoinLogo size={24} symbol={account.symbol} />
                 </Column>
             );
+
         case 'staking':
             return <Icon name="piggyBankFilled" variant="tertiary" />;
+
         case 'tokens':
             return <TokenIconSetWrapper accounts={[account]} symbol={account.symbol} />;
+
         default:
             return exhaustive(type);
     }
