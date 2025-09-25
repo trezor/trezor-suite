@@ -29,8 +29,9 @@ export const Onboarding = () => {
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);
 
-    // This is a temporary hack until we refactor onboarding
-    // we cant include THP modals in the onboarding flow, so in a this specific edge we redirect user to the dashboard where onboarding starts over and picks up where it ended
+    // This is a temporary hack until we refactor onboarding.
+    // We cant include THP modals in the onboarding flow, so in this specific edge
+    // we redirect user to the dashboard where onboarding starts over and picks up where it ended.
     useEffect(() => {
         if (activeStepId !== STEP.ID_FIRMWARE_STEP && thpStep === 'ConfirmOnlyConnection') {
             dispatch(goto('suite-index'));

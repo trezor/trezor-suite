@@ -36,7 +36,11 @@ const BottomAnimatedContainer = styled(motion.div)`
     display: flex;
 `;
 
-export const PrerequisitesGuide = () => {
+type PrerequisitesGuideProps = {
+    showDeviceImage?: boolean;
+};
+
+export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuideProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
@@ -94,6 +98,7 @@ export const PrerequisitesGuide = () => {
                 }
                 showWarningIcon={shouldDisplayInitialWarningIcon(deviceStatus)}
                 prerequisite={prerequisite}
+                showImage={showDeviceImage}
             />
             <BottomAnimatedContainer
                 initial={{ opacity: 0 }}

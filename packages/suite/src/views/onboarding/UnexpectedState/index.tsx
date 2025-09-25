@@ -2,12 +2,12 @@ import { JSX } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { PrerequisitesGuide } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferent } from './DeviceDifferent';
 import { ShowPinMatrix } from './ShowPinMatrix';
+import { DeviceDisconnectedStep } from '../steps/DeviceDisconnectedStep';
 
 interface UnexpectedStateProps {
     children: JSX.Element;
@@ -38,7 +38,7 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
 
     // otherwise handle common prerequisite which are determined and passed as prop from Preloader component
     if (prerequisite && activeStep?.prerequisites?.includes(prerequisite)) {
-        return <PrerequisitesGuide />;
+        return <DeviceDisconnectedStep />;
     }
 
     return children;

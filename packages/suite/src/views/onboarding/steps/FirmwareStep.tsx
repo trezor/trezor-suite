@@ -16,10 +16,11 @@ import {
     FirmwareRetryButton,
 } from 'src/components/firmware';
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
-import { PrerequisitesGuide, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
+import { DeviceDisconnectedStep } from './DeviceDisconnectedStep';
 import { FirmwareInstallation } from './FirmwareInstallation';
 import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
 import { ThpPairingFailedStep } from './ThpPairingFailedStep';
@@ -131,12 +132,12 @@ export const FirmwareStep = () => {
     if (['initial', 'done'].includes(status) && (!device?.connected || !device?.features)) {
         // Most users won't see this as they should come here with a connected device.
         // This is just for people who want to shoot themselves in the foot and disconnect the device before proceeding with fw update flow
-        return <PrerequisitesGuide />;
+        return <DeviceDisconnectedStep />;
     }
 
     if (thpStep !== null) {
         if (device === undefined) {
-            return null;
+            return <DeviceDisconnectedStep />;
         }
 
         switch (thpStep) {

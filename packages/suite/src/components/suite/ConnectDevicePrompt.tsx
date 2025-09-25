@@ -166,6 +166,7 @@ type ConnectDevicePromptProps = {
     showWarningIcon: boolean;
     prerequisite: PrerequisiteType | null;
     deviceStatus: ConnectedDeviceStatus | null;
+    showImage?: boolean;
 };
 
 const ConnectImage = ({
@@ -225,6 +226,7 @@ export const ConnectDevicePrompt = ({
     connected,
     showWarning,
     showWarningIcon,
+    showImage = true,
 }: ConnectDevicePromptProps) => {
     const { elevation } = useElevation();
 
@@ -246,10 +248,12 @@ export const ConnectDevicePrompt = ({
             <Column alignItems="center" gap={spacings.sm}>
                 <Column alignItems="center" gap={spacings.xxl}>
                     <ElevationUp>
-                        <ConnectImage
-                            connected={connected}
-                            showWarningIcon={showWarningIcon ?? showWarning}
-                        />
+                        {showImage && (
+                            <ConnectImage
+                                connected={connected}
+                                showWarningIcon={showWarningIcon ?? showWarning}
+                            />
+                        )}
 
                         <HeadingText>
                             <Translation id={texts.heading} />
