@@ -117,7 +117,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         return (
             <WelcomeLayout showAccounts={false}>
                 <Card paddingType="large">
-                    <PrerequisitesGuide allowSwitchDevice />
+                    <PrerequisitesGuide />
                 </Card>
             </WelcomeLayout>
         );
