@@ -2355,18 +2355,17 @@ export default defineMessages({
         defaultMessage: 'Display rotation',
         id: 'TR_DEVICE_SETTINGS_DISPLAY_ROTATION',
     },
-    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64: {
-        defaultMessage:
-            'Supports PNG or JPG (128 x 64 pixels) in pure black and white (no grayscale).',
-        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64',
+    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS: {
+        defaultMessage: 'Recommended dimensions: {width}×{height} px.',
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS',
+    },
+    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW: {
+        defaultMessage: 'Image must be in pure black and white (no grayscale).',
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
         defaultMessage: 'Homescreen editor',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR',
-    },
-    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR: {
-        defaultMessage: '{width}×{height} px, up to {maxSizeKb} KB',
-        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY: {
         defaultMessage: 'Gallery',
