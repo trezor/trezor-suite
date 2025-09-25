@@ -10,7 +10,16 @@ import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
 import { OpenDeviceChannel } from '@trezor/transport/src/api/abstract';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
-import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import {
+    Deferred,
+    ScheduleActionParams,
+    ScheduledAction,
+    TypedEmitter,
+    createDeferred,
+    isArrayMember,
+    scheduleAction,
+    versionUtils,
+} from '@trezor/utils';
 
 import { DeviceCommands } from './DeviceCommands';
 import { ERRORS, FIRMWARE, PROTO } from '../constants';
@@ -333,7 +342,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.transport
                 .subscribe({
                     path: this.bluetoothProps.id,
-                    channels: ['battery-level'],
+                    channels: ['trezor-push-notification', 'battery-level'],
                 })
                 .then(result => {
                     if (result.success && this.bluetoothProps) {
@@ -344,6 +353,39 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     if (this.bluetoothProps?.channels?.['battery-level']) {
                         this.transport.on('battery-level', event => {
                             this._updateFeature('soc', event.data[0]);
+                            this.lifecycle.emit(DEVICE.CHANGED);
+                        });
+                    }
+
+                    if (this.bluetoothProps?.channels?.['trezor-push-notification']) {
+                        this.transport.on('trezor-push-notification', async ({ data }) => {
+                            const isBootloaderMode = data[2] === 1;
+                            if (isBootloaderMode) {
+                                this._protocol = protocolV1;
+                                this.thp = undefined;
+                                // this.thp?.resetState();
+                                await this.acquire();
+                            } else {
+                                // this._protocol = protocolV2;
+                                await this.setupThp();
+                                await this.acquire();
+                            }
+
+                            const getFeaturesAndCheckMode: ScheduledAction<boolean> = async () => {
+                                const newFeatures = await this.getFeatures();
+                                if (newFeatures?.bootloader_mode === isBootloaderMode) {
+                                    return true;
+                                }
+                                throw new Error('Again...');
+                            };
+
+                            const params: ScheduleActionParams = {
+                                attempts: 100,
+                                timeout: 500,
+                                gap: 1_000,
+                            };
+
+                            await scheduleAction(getFeaturesAndCheckMode, params);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
@@ -714,9 +756,18 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async getFeatures() {
-        const { message } = await this.getCurrentSession().typedCall('GetFeatures', 'Features', {});
-        this._updateFeatures(message);
-        this._updateCurrentRelease(message);
+        try {
+            const { message } = await this.getCurrentSession().typedCall(
+                'GetFeatures',
+                'Features',
+                {},
+            );
+            this._updateFeatures(message);
+            this._updateCurrentRelease(message);
+            return message;
+        } catch (error) {
+            console.log('error from GetFeatures', error);
+        }
     }
 
     getAuthenticityChecks() {
