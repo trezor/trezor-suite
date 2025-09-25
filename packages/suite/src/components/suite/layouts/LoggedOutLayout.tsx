@@ -66,7 +66,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                 </PageWrapper>
                 <GuideRouter />
             </Wrapper>
-            {theme.variant === 'debug' && <DebugLegend />}
+            {theme.variant === 'debug' && <DebugLegend layout={LoggedOutLayout.name} />}
         </ElevationContext>
     );
 };
