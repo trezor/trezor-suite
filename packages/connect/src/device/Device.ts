@@ -323,19 +323,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     subscribe() {
-        if (this.bluetoothProps?.id) {
+        const { bluetoothProps } = this;
+        if (bluetoothProps?.id) {
             this.transport
                 .subscribe({
-                    path: this.bluetoothProps.id,
-                    channels: ['battery-level'],
+                    path: bluetoothProps.id,
+                    channels: ['battery-level', 'trezor-push-notification'],
                 })
                 .then(result => {
-                    if (result.success && this.bluetoothProps) {
-                        this.bluetoothProps.channels = result.payload;
+                    if (result.success && bluetoothProps) {
+                        bluetoothProps.channels = result.payload;
                         this.lifecycle.emit(DEVICE.CHANGED);
                     }
 
-                    if (this.bluetoothProps?.channels?.['battery-level']) {
+                    if (bluetoothProps.channels?.['battery-level']) {
                         this.transport.on('battery-level', event => {
                             this._updateFeature('soc', event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
@@ -423,6 +424,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
+        // We subscribe now that we have completed handshake with device.
+        this.subscribe();
+
         return true;
     }
 
@@ -480,10 +484,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.lifecycle.emit(DEVICE.CONNECT);
-                    // If device has `Capability_BLE` we assume it can do PUSH notifications so we subscribe.
-                    if (this.features.capabilities.includes('Capability_BLE')) {
-                        this.subscribe();
-                    }
                 }
             });
 
