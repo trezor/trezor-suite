@@ -182,31 +182,33 @@ export const ConfirmValueModal = ({
                             alignItems="stretch"
                             data-testid="@modal/output-address"
                         >
-                            <Box aspectRatio="1" width={180} height={180}>
+                            <Box aspectRatio="1" width={170} height={170}>
                                 <QrCode value={value} />
                             </Box>
                             <Column gap={spacings.lg}>
-                                {label ? (
-                                    <InfoItem label={label}>{outputValue}</InfoItem>
-                                ) : (
-                                    outputValue
-                                )}
-                                {account && (
-                                    <MetadataLabeling
-                                        variant="button"
-                                        deviceStaticSessionId={account.deviceState}
-                                        payload={{
-                                            type: 'addressLabel',
-                                            entityKey: account.key,
-                                            defaultValue: value,
-                                            value:
-                                                localFirstAddressLabels.find(
-                                                    it => it.address === value,
-                                                )?.label ?? addressLabels[value],
-                                        }}
-                                        visible
-                                    />
-                                )}
+                                <Column gap={spacings.xs}>
+                                    {label ? (
+                                        <InfoItem label={label}>{outputValue}</InfoItem>
+                                    ) : (
+                                        outputValue
+                                    )}
+                                    {account && (
+                                        <MetadataLabeling
+                                            variant="button"
+                                            deviceStaticSessionId={account.deviceState}
+                                            payload={{
+                                                type: 'addressLabel',
+                                                entityKey: account.key,
+                                                defaultValue: value,
+                                                value:
+                                                    localFirstAddressLabels.find(
+                                                        it => it.address === value,
+                                                    )?.label ?? addressLabels[value],
+                                            }}
+                                            visible
+                                        />
+                                    )}
+                                </Column>
                                 {isCopyButtonVisible && (
                                     <Button
                                         onClick={copy}

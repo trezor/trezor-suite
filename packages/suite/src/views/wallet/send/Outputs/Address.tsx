@@ -492,7 +492,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     )}
                     {outputsCount > 1 && (
                         <IconButton
-                            margin={{ left: spacings.xxs }}
+                            margin={{ left: spacings.md }}
                             icon="x"
                             size="tiny"
                             variant="tertiary"

@@ -9,7 +9,8 @@ import {
 
 import styled, { useTheme } from 'styled-components';
 
-import { AutoScalingInput, Icon } from '@trezor/components';
+import { AutoScalingInput, Icon, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 const IconWrapper = styled.div<{ $bgColor: string }>`
     display: flex;
@@ -23,7 +24,6 @@ const IconWrapper = styled.div<{ $bgColor: string }>`
 
 const IconListWrapper = styled.div`
     display: flex;
-    margin: 0 0 0 10px;
 `;
 
 // To inherit everything so the input looks like the text we want to edit
@@ -89,7 +89,7 @@ export const withEditable =
         }, [value, touched]);
 
         return (
-            <>
+            <Row gap={spacings.xs}>
                 <WrappedComponent {...props}>
                     <Editable
                         minWidth={20}
@@ -140,6 +140,6 @@ export const withEditable =
                         />
                     </IconWrapper>
                 </IconListWrapper>
-            </>
+            </Row>
         );
     };
