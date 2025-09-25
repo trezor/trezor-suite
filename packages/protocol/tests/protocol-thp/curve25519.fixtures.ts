@@ -578,7 +578,7 @@ export const curve25519fixtures = [
     },
     {
         tcId: 83,
-        comment:
+        description:
             'public key = 57896044618658097711785492504343953926634992332820282019728792003956564819949',
         public: 'edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f',
         private: '40ff586e73d61f0960dc2d763ac19e98225f1194f6fe43d5dd97ad55b3d35961',
@@ -586,7 +586,7 @@ export const curve25519fixtures = [
     },
     {
         tcId: 84,
-        comment:
+        description:
             'public key = 57896044618658097711785492504343953926634992332820282019728792003956564819950',
         public: 'eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f',
         private: '584fceaebae944bfe93b2e0d0a575f706ce5ada1da2b1311c3b421f9186c7a6f',
