@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNavigation, usePreventRemove } from '@react-navigation/native';
+
 import {
     BlockchainRootState,
     TransactionsRootState,
@@ -11,6 +13,7 @@ import {
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, VStack } from '@suite-native/atoms';
+import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -29,7 +32,10 @@ import { TransactionName } from '../components/TransactionName';
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
-    const { txid, accountKey, tokenContract, closeActionType = 'back' } = route.params;
+    const { askForRating } = useInAppRating();
+    const navigation = useNavigation();
+
+    const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
     const openLink = useOpenLink();
     const transaction = useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
@@ -42,6 +48,11 @@ export const TransactionDetailScreen = ({
     );
 
     const tokenTransfer = transaction?.tokens.find(token => token.contract === tokenContract);
+
+    usePreventRemove(source === 'send', ({ data }) => {
+        navigation.dispatch(data.action);
+        askForRating();
+    });
 
     useEffect(() => {
         if (transaction) {

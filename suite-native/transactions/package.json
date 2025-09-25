@@ -31,6 +31,7 @@
         "@suite-native/formatters": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/icons": "workspace:*",
+        "@suite-native/in-app-rating": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",

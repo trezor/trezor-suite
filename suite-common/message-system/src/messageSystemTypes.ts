@@ -50,8 +50,7 @@ export const Feature = {
 
     entropyCheck: 'security.entropyCheck',
     entropyCheckMobile: 'security.entropyCheck.mobile',
-    // FW update feature flag implemented only for mobile app
-    firmwareUpdate: 'device.firmware.update',
+
     trading: {
         buy: 'trading.buy',
         sell: 'trading.sell',
@@ -62,6 +61,10 @@ export const Feature = {
     },
     dashboardPromoBanner: 'dashboard.promoBanner',
     mevProtection: 'settings.mevProtection',
+
+    // Feature flags implemented only for mobile app
+    firmwareUpdate: 'device.firmware.update',
+    inAppRating: 'inAppRating',
 } as const;
 
 type ExtractFeatureValues<T> =

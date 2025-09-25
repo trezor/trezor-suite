@@ -19,6 +19,7 @@
         { "path": "../device-mutex" },
         { "path": "../helpers" },
         { "path": "../icons" },
+        { "path": "../in-app-rating" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
