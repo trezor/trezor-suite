@@ -5,24 +5,11 @@ import styled from 'styled-components';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
 
-import { Left } from './AccountItem';
-import { AccountItemContent } from './AccountItemContent';
-import { AccountItemLeft } from './AccountItemLeft';
-import { Account, AccountItemType } from '../../../../../types/wallet';
-import { NavigationItemBase } from '../../../../suite/layouts/SuiteLayout/Sidebar/NavigationItem';
+import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
+import { type Account, type AccountItemType } from 'src/types/wallet';
 
-type AccountRowProps = {
-    isSelected: boolean;
-    isGroup?: boolean;
-    isGroupSelected?: boolean;
-    handleHeaderClick: () => void;
-    dataTestKey?: string;
-    type: AccountItemType;
-    account: Account;
-    customFiatValue?: BaseCurrencyAmount;
-    formattedBalance: string;
-    isFiatLoading?: boolean;
-};
+import { AccountItemContent } from './AccountItemContent';
+import { AccountItemLogo } from '../AccountItemLogo/AccountItemLogo';
 
 const Wrapper = styled(NavigationItemBase)<{
     $isSelected: boolean;
@@ -41,6 +28,23 @@ const Wrapper = styled(NavigationItemBase)<{
             !$isSelected && theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
+
+const IconWrapper = styled.div`
+    position: relative;
+`;
+
+export type AccountRowProps = {
+    isSelected: boolean;
+    isGroup?: boolean;
+    isGroupSelected?: boolean;
+    handleHeaderClick: () => void;
+    dataTestKey?: string;
+    type: AccountItemType;
+    account: Account;
+    customFiatValue?: BaseCurrencyAmount;
+    formattedBalance: string;
+    isFiatLoading?: boolean;
+};
 
 export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
     (
@@ -67,9 +71,9 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             data-testid={dataTestKey}
             tabIndex={0}
         >
-            <Left>
-                <AccountItemLeft type={type} account={account} />
-            </Left>
+            <IconWrapper>
+                <AccountItemLogo type={type} account={account} />
+            </IconWrapper>
             <AccountItemContent
                 customFiatValue={customFiatValue}
                 account={account}

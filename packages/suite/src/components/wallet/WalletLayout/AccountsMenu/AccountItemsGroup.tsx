@@ -12,9 +12,9 @@ import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Account, AccountItemType } from 'src/types/wallet';
+import { Account } from 'src/types/wallet';
 
-import { AccountItem } from './AccountItem/AccountItem';
+import { AccountItem, type AccountItemProps } from './AccountItem/AccountItem';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean }>`
@@ -45,7 +45,7 @@ interface AccountItemsGroupProps {
     showStaking: boolean;
     tokens?: Account['tokens'];
     dataTestKey?: string;
-    onItemClick?: (account: Account, type: AccountItemType) => void;
+    onItemClick?: AccountItemProps['onClick'];
 }
 
 export const AccountItemsGroup = ({

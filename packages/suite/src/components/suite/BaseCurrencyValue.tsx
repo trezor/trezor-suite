@@ -29,7 +29,7 @@ interface Params {
     timestamp: number | null;
 }
 
-type BaseCurrencyValueProps = UseFiatFromCryptoValueParams & {
+export type BaseCurrencyValueProps = UseFiatFromCryptoValueParams & {
     children?: (props: Params) => ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;

@@ -11,12 +11,12 @@ import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/P
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { Account, AccountItemType } from 'src/types/wallet';
 
-import { AccountItemLeft } from './AccountItemLeft';
-import { AccountRow } from './AccountRow';
+import { AccountItemLogo } from './AccountItemLogo/AccountItemLogo';
+import { AccountRow } from './AccountRow/AccountRow';
 import { CollapsedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 
-export const CollapsedItem = styled(NavigationItemBase)<{ $isSelected: boolean }>`
+const CollapsedItem = styled(NavigationItemBase)<{ $isSelected: boolean }>`
     background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};
     line-height: 0;
     z-index: 0;
@@ -29,11 +29,21 @@ export const CollapsedItem = styled(NavigationItemBase)<{ $isSelected: boolean }
             !$isSelected && theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
-export const Left = styled.div`
-    position: relative;
-`;
 
-interface AccountItemProps {
+function getRoute(type: AccountItemType) {
+    switch (type) {
+        case 'coin':
+            return 'wallet-index';
+        case 'staking':
+            return 'wallet-staking';
+        case 'tokens':
+            return 'wallet-tokens';
+        default:
+            return exhaustive(type);
+    }
+}
+
+export interface AccountItemProps {
     account: Account;
     // NOTE: disables the default item click behavior
     forceOnlyItemClick?: boolean;
@@ -71,25 +81,6 @@ export const AccountItem = forwardRef(
 
         const goToWithAnalytics = useGoToWithAnalytics(account);
 
-        const accountRouteParams = {
-            symbol,
-            accountIndex: index,
-            accountType,
-        };
-
-        const getRoute = () => {
-            switch (type) {
-                case 'coin':
-                    return 'wallet-index';
-                case 'staking':
-                    return 'wallet-staking';
-                case 'tokens':
-                    return 'wallet-tokens';
-                default:
-                    return exhaustive(type);
-            }
-        };
-
         const handleHeaderClick = () => {
             onClick?.(account, type);
 
@@ -98,7 +89,14 @@ export const AccountItem = forwardRef(
             if (forceOnlyItemClick) {
                 return;
             }
-            goToWithAnalytics(getRoute(), { params: accountRouteParams });
+
+            goToWithAnalytics(getRoute(type), {
+                params: {
+                    symbol,
+                    accountIndex: index,
+                    accountType,
+                },
+            });
 
             if (type === 'staking') {
                 analytics.report({
@@ -141,7 +139,7 @@ export const AccountItem = forwardRef(
                             hasArrow
                         >
                             <CollapsedItem $isSelected={isSelected} onClick={handleHeaderClick}>
-                                <AccountItemLeft type={type} account={account} />
+                                <AccountItemLogo type={type} account={account} />
                             </CollapsedItem>
                         </Tooltip>
                     </Column>
