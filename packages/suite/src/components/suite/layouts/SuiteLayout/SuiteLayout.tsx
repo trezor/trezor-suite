@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useEffect, useRef, useState } from 'react';
 
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
 import { useDebounce } from '@trezor/react-utils';
@@ -127,7 +127,7 @@ interface SuiteLayoutProps {
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
-    const theme = useSelector(state => state.suite.settings.theme);
+    const theme = useTheme();
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isBelowTablet } = useLayoutSize();
@@ -189,7 +189,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                     <GuideRouter />
                 </Wrapper>
-                {theme.variant === 'debug' && <DebugLegend />}
+                {theme.variant === 'debug' && <DebugLegend layout={SuiteLayout.name} />}
             </ElevationContext>
         </ScrollContext.Provider>
     );

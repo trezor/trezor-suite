@@ -138,7 +138,9 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                     </Modal.Provider>
                 </Row>
             </Column>
-            {theme.variant === 'debug' && <DebugLegend />}
+            {theme.variant === 'debug' && (
+                <DebugLegend layout={WelcomeLayoutWithoutModalSwitcher.name} />
+            )}
         </ElevationDown>
     );
 };

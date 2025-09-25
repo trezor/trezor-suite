@@ -200,7 +200,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                     <GuideRouter />
                 </Body>
             </Wrapper>
-            {theme.variant === 'debug' && <DebugLegend />}
+            {theme.variant === 'debug' && <DebugLegend layout={OnboardingLayout.name} />}
         </>
     );
 };

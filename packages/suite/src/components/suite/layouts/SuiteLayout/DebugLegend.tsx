@@ -2,8 +2,17 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Column, Icon, Row, Text } from '@trezor/components';
-import { CSSColor, borders, colorVariants, spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { Code, Column, Divider, Icon, Row, Text } from '@trezor/components';
+import {
+    CSSColor,
+    Elevation,
+    borders,
+    colorVariants,
+    spacings,
+    spacingsPx,
+    zIndices,
+} from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 const DebugLegendContainer = styled.div`
     position: absolute;
@@ -12,7 +21,7 @@ const DebugLegendContainer = styled.div`
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     border-radius: ${borders.radii.xs};
     margin: ${spacingsPx.xxxs};
-    padding: ${spacingsPx.xxs};
+    padding: ${spacingsPx.xs};
     z-index: ${zIndices.guideButton};
     cursor: pointer;
     user-select: none;
@@ -26,7 +35,10 @@ const Badge = styled.div<{ $fill: CSSColor; $stroke: CSSColor }>`
     border: solid 1px ${({ $stroke }) => $stroke};
 `;
 
-type MapDebugElevationType = Record<string, { border: CSSColor; background: CSSColor }>;
+type MapDebugElevationType = Record<
+    `Elevation ${Elevation}`,
+    { border: CSSColor; background: CSSColor }
+>;
 
 const mapDebugElevations: MapDebugElevationType = {
     'Elevation -1': {
@@ -51,7 +63,11 @@ const mapDebugElevations: MapDebugElevationType = {
     },
 } as const;
 
-export const DebugLegend = () => {
+type DebugLegend = {
+    layout: string;
+};
+
+export const DebugLegend = ({ layout }: DebugLegend) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -63,7 +79,7 @@ export const DebugLegend = () => {
                         gap={spacings.xs}
                         margin={{ bottom: spacings.xs }}
                     >
-                        {Object.keys(mapDebugElevations).map(key => (
+                        {typedObjectKeys(mapDebugElevations).map(key => (
                             <Row key={key} gap={spacings.xs}>
                                 <Badge
                                     $fill={mapDebugElevations[key].background}
@@ -72,6 +88,12 @@ export const DebugLegend = () => {
                                 <Text typographyStyle="label">{key}</Text>
                             </Row>
                         ))}
+                        <Divider orientation="horizontal" margin={{ vertical: spacings.xs }} />
+                        <Row gap={spacings.xs}>
+                            <Text typographyStyle="label">
+                                <Code>[{layout}]</Code>
+                            </Text>
+                        </Row>
                     </Column>
                 </>
             )}
