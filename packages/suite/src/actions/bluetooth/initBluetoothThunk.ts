@@ -5,6 +5,7 @@ import {
     selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
+import { selectFirmware } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices } from '@suite-common/wallet-core';
@@ -66,6 +67,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             const connectingDevices = selectConnectingDevices(getState());
             const adapterStatus = selectAdapterStatus(getState());
             const suiteDevices = selectDevices(getState());
+            const firmwareStatus = selectFirmware(getState());
 
             if (adapterStatus === 'power-suspending') {
                 // system is going to sleep
@@ -86,8 +88,12 @@ export const initBluetoothThunk = createThunk<void, void, void>(
                     !d.bluetoothProps &&
                     d.connected,
             );
+            // if FW update is in progress, only connect if it's the same device
+            const fwUpdatingDifferentDevice =
+                firmwareStatus.status === 'started' &&
+                firmwareStatus.cachedDevice?.bluetoothProps?.id !== device.id;
 
-            if (hasUnacquiredDevice || hasSameUsbDevice) {
+            if (hasUnacquiredDevice || hasSameUsbDevice || fwUpdatingDifferentDevice) {
                 return;
             }
 
