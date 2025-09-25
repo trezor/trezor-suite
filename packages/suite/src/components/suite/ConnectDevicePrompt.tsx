@@ -160,14 +160,13 @@ const getMessageId = ({
     return map[prerequisite];
 };
 
-interface ConnectDevicePromptProps {
+type ConnectDevicePromptProps = {
     connected: boolean;
     showWarning?: boolean;
     showWarningIcon: boolean;
-    allowSwitchDevice?: boolean;
     prerequisite: PrerequisiteType | null;
     deviceStatus: ConnectedDeviceStatus | null;
-}
+};
 
 const ConnectImage = ({
     connected,

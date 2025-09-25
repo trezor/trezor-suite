@@ -8,13 +8,12 @@ import {
     getStatus,
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column, motionEasing } from '@trezor/components';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Column, motionEasing } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { ConnectDevicePrompt, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { ConnectDevicePrompt } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceAcquire } from './DeviceAcquire';
@@ -37,15 +36,8 @@ const BottomAnimatedContainer = styled(motion.div)`
     display: flex;
 `;
 
-type PrerequisitesGuideProps = {
-    allowSwitchDevice?: boolean;
-};
-
-export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
-    const dispatch = useDispatch();
+export const PrerequisitesGuide = () => {
     const device = useSelector(selectSelectedDevice);
-    const devices = useSelector(selectDevices);
-    const connectedDevicesCount = devices.filter(d => d.connected === true).length;
     const prerequisite = useSelector(selectPrerequisite);
 
     const TipComponent = useMemo(
@@ -89,18 +81,10 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
         [prerequisite],
     );
 
-    const handleSwitchDeviceClick = () =>
-        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
-
     const deviceStatus = (device && getStatus(device)) ?? null;
 
     return (
         <Column alignItems="center" gap={spacings.xxxl} margin={{ vertical: 40 }}>
-            {allowSwitchDevice && connectedDevicesCount > 1 && (
-                <Button variant="tertiary" onClick={handleSwitchDeviceClick} icon="trezorDevices">
-                    <Translation id="TR_SWITCH_DEVICE" />
-                </Button>
-            )}
             <ConnectDevicePrompt
                 connected={!!device}
                 deviceStatus={deviceStatus}
