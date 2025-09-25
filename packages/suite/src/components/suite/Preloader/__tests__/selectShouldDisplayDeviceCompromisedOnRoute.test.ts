@@ -5,7 +5,7 @@ import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/suppo
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { AcquiredDevice, AppState } from 'src/types/suite';
 
-import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromised';
+import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromisedOnRoute';
 
 type Fixture = {
     description: string;

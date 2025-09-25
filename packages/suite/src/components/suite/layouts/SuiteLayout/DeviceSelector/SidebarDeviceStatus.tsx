@@ -1,6 +1,7 @@
 import { MouseEventHandler } from 'react';
 
 import * as deviceUtils from '@suite-common/suite-utils';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { acquireDevice, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { TrezorDevice } from 'src/types/suite';
@@ -41,7 +42,7 @@ export const SidebarDeviceStatus = () => {
         }
     };
 
-    const selectedDeviceModelInternal = selectedDevice?.features?.internal_model;
+    const selectedDeviceModelInternal = getDeviceInternalModel(selectedDevice);
 
     if (!selectedDevice || !selectedDeviceModelInternal) {
         return null;
