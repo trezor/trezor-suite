@@ -1,17 +1,16 @@
-import { useSelector } from 'react-redux';
-
-import { selectDeviceName } from '@suite-common/wallet-core';
 import { BottomSheetListItem, Box, Text, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
 
 type SystemUnpairingAlertIosInstructionsProps = {
     translationKey: TxKeyPath;
+    deviceName?: string;
 };
 
 export const SystemUnpairingAlertIosInstructions = ({
     translationKey,
+    deviceName,
 }: SystemUnpairingAlertIosInstructionsProps) => {
-    const deviceName = useSelector(selectDeviceName);
+    const { translate } = useTranslate();
 
     return (
         <Box>
@@ -27,7 +26,9 @@ export const SystemUnpairingAlertIosInstructions = ({
                     iconNumber={2}
                     translationKey="bluetooth.alerts.pairingInstructions.step2"
                     translationValues={{
-                        deviceName,
+                        deviceName:
+                            deviceName ??
+                            translate('bluetooth.alerts.pairingFailed.deviceNamePlaceholder'),
                     }}
                 />
                 <BottomSheetListItem
