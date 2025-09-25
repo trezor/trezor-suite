@@ -15,7 +15,7 @@ import {
 
 type PortfolioHeaderProps = {
     isLoading: boolean;
-    totalFiatBalance: BaseCurrencyAmount;
+    totalFiatBalance?: BaseCurrencyAmount;
 };
 
 export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeaderProps) => {
@@ -36,3 +36,5 @@ export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeader
         </Box>
     );
 };
+
+PortfolioHeader.displayName = 'PortfolioHeader';

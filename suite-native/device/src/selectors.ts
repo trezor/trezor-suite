@@ -30,6 +30,7 @@ import {
     selectDevices,
     selectFirmwareRevisionCheckError,
     selectHasDeviceFirmwareInstalled,
+    selectHasRunningDiscovery,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInBootloader,
@@ -139,9 +140,12 @@ const getTotalFiatBalanceNative = ({
 };
 
 export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
-    [selectDeviceAccounts, selectCurrentFiatRates, selectBaseCurrency],
-    (deviceAccounts, rates, localCurrency) =>
-        getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+    [selectDeviceAccounts, selectCurrentFiatRates, selectBaseCurrency, selectHasRunningDiscovery],
+    (deviceAccounts, rates, localCurrency, hasRunningDiscovery) =>
+        // do not return any value before discovery is finished to prevent unnecessary rerenders of portfolio graph.
+        hasRunningDiscovery
+            ? undefined
+            : getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
 );
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(

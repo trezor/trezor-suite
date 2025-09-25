@@ -199,7 +199,7 @@ type UseGraphAtomsParams<TGraphPoint extends FiatGraphPoint> = {
     referencePointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
     selectedPointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
     graphPoints: TGraphPoint[];
-    totalFiatBalance: BaseCurrencyAmount;
+    totalFiatBalance?: BaseCurrencyAmount;
 };
 
 export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({

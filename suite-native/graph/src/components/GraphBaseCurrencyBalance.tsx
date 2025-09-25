@@ -24,7 +24,7 @@ type GraphFiatBalanceProps = BalanceProps & {
     percentageChangeAtom: Atom<number>;
     showChange?: boolean;
     isLoading?: boolean;
-    totalBaseCurrencyBalance: BaseCurrencyAmount;
+    totalBaseCurrencyBalance?: BaseCurrencyAmount;
     isHistoryEnabledAccount?: boolean;
 };
 
