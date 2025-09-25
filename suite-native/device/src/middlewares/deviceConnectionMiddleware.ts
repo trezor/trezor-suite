@@ -9,7 +9,6 @@ import {
     getDeviceInternalModel,
     getIsDeviceInitialized,
     isDeviceConnectedViaBluetooth,
-    isThpDevice,
 } from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
 import {
@@ -158,10 +157,7 @@ deviceConnectionMiddleware.startListening({
         const isDeviceRemembered =
             !!device.features && selectSelectedDevice(getState())?.id === device.id;
 
-        const isNonThpRememberedDeviceConnectAction =
-            isDeviceRemembered && !isThpDevice(action.payload.device);
-
-        if (isNonThpRememberedDeviceConnectAction) return;
+        if (isDeviceRemembered) return;
 
         handleDeviceConnectNavigation({
             hasDeviceBitcoinOnlyFirmware: hasBitcoinOnlyFirmware(device),
