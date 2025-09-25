@@ -2,12 +2,8 @@ import UDP from 'dgram';
 
 import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 
-import {
-    AbstractApi,
-    AbstractApiAwaitedResult,
-    AbstractApiConstructorParams,
-    DEVICE_TYPE,
-} from './abstract';
+import { AbstractApi, AbstractApiAwaitedResult, AbstractApiConstructorParams } from './abstract';
+import { DEVICE_TYPE } from '../constants';
 import * as ERRORS from '../errors';
 import { DescriptorApiLevel, PathInternal } from '../types';
 import { readMessageBuffer } from '../utils/readMessageBuffer';

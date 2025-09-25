@@ -1,10 +1,11 @@
 import { arrayPartition, createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
 
-import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
+import { AbstractApi, AbstractApiConstructorParams } from './abstract';
 import {
     CONFIGURATION_ID,
     DEBUGLINK_ENDPOINT_ID,
     DEBUGLINK_INTERFACE_ID,
+    DEVICE_TYPE,
     ENDPOINT_ID,
     INTERFACE_ID,
     T1_HID_PRODUCT,

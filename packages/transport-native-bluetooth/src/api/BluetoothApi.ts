@@ -1,10 +1,7 @@
 import { Subscription } from 'react-native-ble-plx';
 
-import {
-    AbstractApi,
-    AbstractApiConstructorParams,
-    DEVICE_TYPE,
-} from '@trezor/transport/src/api/abstract';
+import { AbstractApi, AbstractApiConstructorParams } from '@trezor/transport/src/api/abstract';
+import { DEVICE_TYPE } from '@trezor/transport/src/constants';
 import * as ERRORS from '@trezor/transport/src/errors';
 import {
     AsyncResultWithTypedError,
