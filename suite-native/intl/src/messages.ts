@@ -191,6 +191,7 @@ export const messages = {
                     'The Trezor you’re trying to connect may still be remembered in your phone’s Bluetooth settings. Remove it and try again.',
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
+                deviceNamePlaceholder: 'your Trezor',
             },
             systemUnpairing: {
                 title: {
