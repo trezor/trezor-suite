@@ -11,7 +11,7 @@ import {
 
 import { FeesFormType } from '../../../..';
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
+import { useFeesForm } from '../../../../hooks';
 import { CustomFeeInputs, CustomFeeInputsProps } from '../CustomFeeInputs';
 
 // Mock the selectors
@@ -31,7 +31,7 @@ describe('CustomFeeInputs', () => {
         symbol: 'btc' as NetworkSymbol,
     };
     const defaultState = {
-        wallet: { ...getWalletState() },
+        wallet: getWalletState(),
     };
 
     const renderUseFeesForm = async (

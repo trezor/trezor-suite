@@ -25,9 +25,9 @@ export const getBtcAccount = (key = 'btc-account-1', overrides: Partial<Account>
             unused: [],
         },
         ...overrides,
-    }) as unknown as Account;
+    }) as Account;
 
-export const getEthAccount = (key = 'eth-account-1') =>
+export const getEthAccount = (key = 'eth-account-1', overrides: Partial<Account> = {}) =>
     ({
         key,
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
@@ -95,9 +95,10 @@ export const getEthAccount = (key = 'eth-account-1') =>
             size: 7,
             total: 8,
         },
-    }) as unknown as Account;
+        ...overrides,
+    }) as Account;
 
-export const getBaseAccount = (key = 'base-account-1') =>
+export const getBaseAccount = (key = 'base-account-1', overrides: Partial<Account> = {}) =>
     ({
         key,
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
@@ -133,9 +134,10 @@ export const getBaseAccount = (key = 'base-account-1') =>
             size: 1,
             total: 1,
         },
-    }) as unknown as Account;
+        ...overrides,
+    }) as Account;
 
-export const getCardanoAccount = (key = 'ada-account-1') =>
+export const getCardanoAccount = (key = 'ada-account-1', overrides: Partial<Account> = {}) =>
     ({
         key,
         symbol: 'ada',
@@ -148,7 +150,8 @@ export const getCardanoAccount = (key = 'ada-account-1') =>
         networkType: 'cardano',
         visible: true,
         deviceState: 'test-device',
-    }) as unknown as Account;
+        ...overrides,
+    }) as Account;
 
 export const getSolAccount = (key = 'sol-account-1', overrides: Partial<Account> = {}) =>
     ({
