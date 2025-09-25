@@ -7,6 +7,7 @@ import type {
     AsyncResultWithTypedError,
     DescriptorApiLevel,
     Logger,
+    NotificationData,
     PathInternal,
     Success,
 } from '../types';
@@ -16,7 +17,7 @@ export interface AbstractApiConstructorParams {
     logger?: Logger;
 }
 
-export type OpenDeviceChannel = 'read' | 'push-notification' | 'battery-level';
+export type OpenDeviceChannel = 'read' | 'trezor-push-notification' | 'battery-level';
 
 type AccessLock = {
     read: boolean;
@@ -32,7 +33,7 @@ type AccessLock = {
 export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
     'transport-interface-error': { error: typeof ERRORS.API_DISCONNECTED };
-    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
+    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: NotificationData };
     [TRANSPORT.BATTERY_LEVEL]: { id: string; data: number[] };
 }> {
     protected logger?: Logger;
