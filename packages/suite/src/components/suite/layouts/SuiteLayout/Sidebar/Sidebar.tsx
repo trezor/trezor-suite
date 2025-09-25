@@ -4,7 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 
 import { selectDevicesCount, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Box, ElevationUp, ResizableBox, useElevation } from '@trezor/components';
+import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
 import {
     Elevation,
@@ -57,6 +57,28 @@ const HorizontalSpacer = styled.div`
     gap: ${spacingsPx.sm};
 `;
 
+type WalletSwitcherProps = {
+    isCollapsed: boolean;
+};
+
+const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
+    const devicesCount = useSelector(selectDevicesCount);
+
+    if (devicesCount > 0) {
+        return <DeviceSelector />;
+    }
+
+    return isCollapsed ? (
+        <Box margin={{ left: 'auto', right: 'auto', top: 12, bottom: 12 }}>
+            <Icon name="trezorLogo" size="large" pointerEvents="none" />
+        </Box>
+    ) : (
+        <Box margin={{ left: 20, right: 12, top: 12, bottom: 12 }}>
+            <TrezorLogo width="107px" type="horizontal" />
+        </Box>
+    );
+};
+
 export const SIDEBAR_MIN_WIDTH = 84;
 
 type SidebarProps = {
@@ -75,7 +97,6 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
 
     const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const devicesCount = useSelector(selectDevicesCount);
 
     const handleSidebarWidthChanged = (width: number) => {
         setSidebarWidth(width);
@@ -120,13 +141,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 <Container $elevation={elevation}>
                     <TrafficLightOffset>
                         <Content>
-                            {devicesCount > 0 ? (
-                                <DeviceSelector />
-                            ) : (
-                                <Box margin={{ left: 20, right: 12, top: 12, bottom: 12 }}>
-                                    <TrezorLogo width="107px" type="horizontal" />
-                                </Box>
-                            )}
+                            <WalletSwitcher isCollapsed={isSidebarCollapsed} />
                             <ElevationUp>
                                 <Navigation />
                             </ElevationUp>
