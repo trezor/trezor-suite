@@ -26,7 +26,6 @@ export type TroubleshootingTipsItem = {
     heading?: ReactNode;
     description?: ReactNode;
     hide?: boolean;
-    noBullet?: boolean;
     icon?: IconName;
 };
 
