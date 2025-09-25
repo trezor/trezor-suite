@@ -96,7 +96,7 @@ const DeviceCompromisedContent = () => {
 };
 
 export const DeviceCompromised = () => (
-    <WelcomeLayout showDeviceSwitcher={true} showAccounts={false}>
+    <WelcomeLayout showAccounts={false}>
         <Card data-testid="@device-compromised">
             <DeviceCompromisedContent />
         </Card>
