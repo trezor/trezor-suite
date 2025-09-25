@@ -246,17 +246,16 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         if (this.params.serialize) {
             const tx = await createTransactionShimFromHex(this.params.serialized_tx);
 
-            const { message } = await cmd.typedCall('SolanaSignTx', 'SolanaTxSignature', {
-                ...this.params,
-                serialized_tx: tx.serializeMessage(),
-            });
-
             const addressCall = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {
                 address_n: this.params.address_n,
                 show_display: false,
                 chunkify: false,
             });
             const { address } = addressCall.message;
+            const { message } = await cmd.typedCall('SolanaSignTx', 'SolanaTxSignature', {
+                ...this.params,
+                serialized_tx: tx.serializeMessage(),
+            });
 
             tx.addSignature(address, message.signature);
             const signedSerializedTx = tx.serialize();
