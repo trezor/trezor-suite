@@ -11576,6 +11576,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/in-app-rating@workspace:*, @suite-native/in-app-rating@workspace:suite-native/in-app-rating":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/in-app-rating@workspace:suite-native/in-app-rating"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/message-system": "workspace:*"
+    expo-store-review: "npm:~8.1.5"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/intl@workspace:*, @suite-native/intl@workspace:^, @suite-native/intl@workspace:suite-native/intl":
   version: 0.0.0-use.local
   resolution: "@suite-native/intl@workspace:suite-native/intl"
@@ -12437,6 +12448,7 @@ __metadata:
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
+    "@suite-native/in-app-rating": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/module-device-onboarding": "workspace:*"
@@ -12731,6 +12743,7 @@ __metadata:
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
+    "@suite-native/in-app-rating": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -24890,6 +24903,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/d82e4155f7a549bbb010e7b5c13386fd8b5b513c6e219823ab99633a942bb88192cb4a3db6e3f0f1eddb3ce891439ada79a1ff03073e219041bfcaa67e69c1ef
+  languageName: node
+  linkType: hard
+
+"expo-store-review@npm:~8.1.5":
+  version: 8.1.5
+  resolution: "expo-store-review@npm:8.1.5"
+  peerDependencies:
+    expo: "*"
+    react-native: "*"
+  checksum: 10/8740804f795c9e7a26e6a59551fe0865ffb2064fce32cba52f038b2d77176de3db5f261efa66de8e4abb54386977f2f5a379c0947de862efe7993b426c303849
   languageName: node
   linkType: hard
 

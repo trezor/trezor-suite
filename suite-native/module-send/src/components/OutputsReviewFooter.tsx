@@ -69,6 +69,7 @@ const navigateOutOfSendFlowAction = ({
                 tokenContract,
                 txid,
                 closeActionType: 'close',
+                source: 'send',
             },
         });
     }

@@ -26,6 +26,7 @@
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/icons": "workspace:*",
+        "@suite-native/in-app-rating": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/module-device-onboarding": "workspace:*",

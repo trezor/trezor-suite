@@ -1,0 +1,19 @@
+{
+    "name": "@suite-native/in-app-rating",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/message-system": "workspace:*",
+        "expo-store-review": "~8.1.5",
+        "react-redux": "9.2.0"
+    }
+}

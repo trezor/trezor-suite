@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -24,12 +23,14 @@ type ReceiveScreenHeaderProps = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
     closeActionType: CloseActionType;
+    onLeave?: () => void;
 };
 
 export const ReceiveScreenHeader = ({
     accountKey,
     tokenContract,
     closeActionType,
+    onLeave,
 }: ReceiveScreenHeaderProps) => {
     const navigation = useNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
@@ -44,14 +45,13 @@ export const ReceiveScreenHeader = ({
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', () => {
-            // When leaving the screen, cancel the request for address on trezor device
-            TrezorConnect.cancel();
-        });
+    usePreventRemove(true, ({ data }) => {
+        TrezorConnect.cancel();
 
-        return unsubscribe;
-    }, [navigation]);
+        navigation.dispatch(data.action);
+
+        onLeave?.();
+    });
 
     return (
         <ScreenHeader

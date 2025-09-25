@@ -59,6 +59,7 @@ expo-splash-screen
 expo-sqlite
 expo-status-bar
 expo-system-ui
+expo-store-review
 expo-updates
 expo-video
 fantasticon

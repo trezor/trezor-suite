@@ -36,6 +36,7 @@
         { "path": "../formatters" },
         { "path": "../helpers" },
         { "path": "../icons" },
+        { "path": "../in-app-rating" },
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../link" },

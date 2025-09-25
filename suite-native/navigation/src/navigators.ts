@@ -302,6 +302,7 @@ export type RootStackParamList = {
         accountKey: AccountKey;
         closeActionType?: CloseActionType;
         tokenContract?: TokenAddress;
+        source?: 'send';
     };
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;

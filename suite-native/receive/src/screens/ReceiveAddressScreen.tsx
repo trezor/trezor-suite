@@ -25,10 +25,11 @@ import {
     selectHasFirmwareAuthenticityCheckHardFailed,
     useConfirmOnTrezorController,
 } from '@suite-native/device';
+import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
-import { CloseActionType, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { CloseActionType } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
@@ -49,10 +50,10 @@ export const ReceiveAddressScreen = ({
     tokenContract,
     closeActionType,
 }: ReceiveAddressScreenProps) => {
+    const { askForRating } = useInAppRating();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const navigateToInitialScreen = useNavigateToInitialScreen();
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
 
     const { revealConfirmOnTrezorSheet, confirmOnTrezorRef, closeSheet } =
@@ -113,13 +114,14 @@ export const ReceiveAddressScreen = ({
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
-            closeActionType={isReceiveApproved ? 'close' : closeActionType}
-            closeAction={isReceiveApproved ? navigateToInitialScreen : onCancel}
+            closeActionType={closeActionType}
+            closeAction={onCancel}
             defaultHeader={
                 <ReceiveScreenHeader
                     accountKey={accountKey}
                     tokenContract={tokenContract}
                     closeActionType={isReceiveApproved ? 'close' : closeActionType}
+                    onLeave={isReceiveApproved ? askForRating : undefined}
                 />
             }
         >
