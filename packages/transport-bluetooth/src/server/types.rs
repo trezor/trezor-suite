@@ -48,7 +48,7 @@ pub struct ForgetDeviceParams {
 #[serde(rename_all = "kebab-case")]
 pub enum NotificationCharacteristic {
     Read,
-    PushNotification,
+    TrezorPushNotification,
     BatteryLevel,
 }
 
