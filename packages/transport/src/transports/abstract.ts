@@ -13,7 +13,6 @@ import {
     Descriptor,
     Logger,
     MessageResponse,
-    NotificationData,
     PathPublic,
     ResultWithTypedError,
     Session,
@@ -80,7 +79,7 @@ type TransportEvents = {
     [TRANSPORT.ERROR]: BridgeCommonErrors | typeof ERRORS.API_DISCONNECTED; // BluetoothApi disconnected
     [TRANSPORT.STOPPED]: void;
     [TRANSPORT.SEND_MESSAGE_PROGRESS]: number;
-    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: NotificationData };
+    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
     [TRANSPORT.BATTERY_LEVEL]: { id: string; data: number[] };
 };
 

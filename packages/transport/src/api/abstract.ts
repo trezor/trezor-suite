@@ -7,7 +7,6 @@ import type {
     AsyncResultWithTypedError,
     DescriptorApiLevel,
     Logger,
-    NotificationData,
     PathInternal,
     Success,
 } from '../types';
@@ -33,7 +32,7 @@ type AccessLock = {
 export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
     'transport-interface-error': { error: typeof ERRORS.API_DISCONNECTED };
-    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: NotificationData };
+    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
     [TRANSPORT.BATTERY_LEVEL]: { id: string; data: number[] };
 }> {
     protected logger?: Logger;
