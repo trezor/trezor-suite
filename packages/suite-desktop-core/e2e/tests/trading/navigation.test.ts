@@ -29,7 +29,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
 
             await test.step('Buy from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
-                await page.getByTestId('@trading/menu/wallet-trading-buy').click();
+                await tradingPage.openBuyForm();
                 await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
