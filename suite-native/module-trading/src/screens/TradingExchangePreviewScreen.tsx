@@ -3,8 +3,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useNetInfo } from '@react-native-community/netinfo';
+
 import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { useAlert } from '@suite-native/alerts';
 import { Button, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -15,6 +19,7 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
+import { useDebounce } from '@trezor/react-utils';
 
 import { ExchangeTradePreviewCard } from '../components/exchange/ExchangeTradePreviewCard';
 import { FeePickerCard } from '../components/fees/FeePickerCard';
@@ -32,29 +37,24 @@ export type TradingExchangePreviewScreenProps = StackProps<
     TradingStackRoutes.TradingExchangePreview
 >;
 
-type FlowStep = 'confirm' | 'signTxn';
-
-// TODO: this is very WIP just to be able to test the flow
-// it wont be implemented in this component this way in the end
-const flowStepToButtonText: Record<FlowStep, string> = {
-    confirm: 'Continue',
-    signTxn: 'Sign and Send Transaction',
-};
-
 export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePreviewScreenProps) => {
+    const { showAlert } = useAlert();
     const dispatch = useDispatch();
+    const debounce = useDebounce();
+    const { isInternetReachable } = useNetInfo();
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
+    const precomposedTransaction = useSelector(selectSendPrecomposedTx);
     const hasRequestedTradeConfirmation = useRef(false);
-
     const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 
     const { txnErrorString, confirmTrade, fetchFeesAndCompose } = useExchangeFlow();
 
-    const [flowStep, setFlowStep] = useState<FlowStep>('confirm');
+    const [isConfirmationErrorRequested, setIsConfirmationErrorRequested] =
+        useState<boolean>(false);
 
     // clear trading state on unmount
     useEffect(
@@ -82,13 +82,46 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
 
             if (success) {
                 await fetchFeesAndCompose();
-                setFlowStep('signTxn');
             }
         } catch (e) {
-            // TODO: show warning https://github.com/trezor/trezor-suite/issues/21882
+            debounce(() => {
+                setIsConfirmationErrorRequested(true);
+            });
+
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, fetchFeesAndCompose, fromAccount, quote, toAccount]);
+    }, [confirmTrade, debounce, fetchFeesAndCompose, fromAccount, quote, toAccount]);
+
+    useEffect(() => {
+        if (isConfirmationErrorRequested) {
+            const description =
+                isInternetReachable === false ? (
+                    <Translation id="moduleTrading.error.deviceOfflineDescription" />
+                ) : undefined;
+
+            showAlert({
+                title: (
+                    <Translation id="moduleTrading.tradingExchangePreviewScreen.confirmationAlertTitle" />
+                ),
+                description,
+                primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
+                primaryButtonVariant: 'redBold',
+                onPressPrimaryButton: handleConfirmTrade,
+                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                secondaryButtonVariant: 'redElevation0',
+                onPressSecondaryButton: () => {
+                    navigation.popToTop();
+                },
+            });
+            setIsConfirmationErrorRequested(false);
+        }
+    }, [
+        handleConfirmTrade,
+        isConfirmationErrorRequested,
+        isInternetReachable,
+        navigation,
+        showAlert,
+    ]);
 
     useEffect(() => {
         if (!hasRequestedTradeConfirmation.current) {
@@ -119,14 +152,6 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
                 tokenContract,
             },
         });
-    };
-
-    const handleTapContinue = () => {
-        if (flowStep === 'signTxn') {
-            handleSignTransaction();
-        } else {
-            console.warn('Unknown flow step', flowStep);
-        }
     };
 
     return (
@@ -184,12 +209,11 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
                 </VStack>
             </ScrollView>
 
-            <Button
-                onPress={handleTapContinue}
-                isDisabled={flowStep === 'confirm' || !!txnErrorString}
-            >
-                {flowStepToButtonText[flowStep]}
-            </Button>
+            {precomposedTransaction?.type === 'final' && (
+                <Button onPress={handleSignTransaction} isDisabled={!!txnErrorString}>
+                    <Translation id="generic.buttons.continue" />
+                </Button>
+            )}
         </Screen>
     );
 };

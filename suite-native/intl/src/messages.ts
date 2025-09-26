@@ -2296,6 +2296,7 @@ export const messages = {
             feeLabel: 'Fee',
             providerNamePlaceholder: 'Provider',
             providerReceiveAddressLabel: "{providerName}'s receive address",
+            confirmationAlertTitle: 'Failed to confirm offer.',
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',

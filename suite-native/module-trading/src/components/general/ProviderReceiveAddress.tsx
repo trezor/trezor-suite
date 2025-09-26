@@ -10,8 +10,7 @@ import {
     selectTradingProviderByNameAndTradeType,
     selectTradingSellAccountKey,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config/src/utils';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -30,8 +29,8 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
             : selectTradingSellAccountKey(state),
     );
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
-        sendAccountKey ? selectAccountNetworkSymbol(state, sendAccountKey) : null,
+    const networkType = useSelector((state: AccountsRootState) =>
+        sendAccountKey ? selectAccountNetworkType(state, sendAccountKey) : null,
     );
 
     const providerName =
@@ -43,11 +42,10 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
             ? (trade as ExchangeTrade).sendAddress
             : (trade as SellFiatTrade).destinationAddress;
 
-    if (!receiveAddress || !networkSymbol) {
+    if (!receiveAddress || !networkType) {
         return null;
     }
 
-    const { networkType } = getNetwork(networkSymbol);
     const addressText =
         networkType === 'solana'
             ? receiveAddress
