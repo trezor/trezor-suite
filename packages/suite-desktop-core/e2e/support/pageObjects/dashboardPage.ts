@@ -37,6 +37,8 @@ export class DashboardPage {
     readonly notificationNoBackupButton: Locator;
     readonly openUnusedWalletButton1: Locator;
     readonly openUnusedWalletButton2: Locator;
+    readonly assetBuyButton = (asset: string) =>
+        this.page.getByTestId(`@dashboard/asset/${asset}/buy-button`);
 
     constructor(
         private readonly page: Page,
@@ -80,6 +82,11 @@ export class DashboardPage {
     async navigateTo() {
         await this.dashboardMenuButton.click();
         await expect(this.dashboardHeader).toBeVisible();
+    }
+
+    @step()
+    async openBuyForm(asset: string) {
+        await this.assetBuyButton(asset).click();
     }
 
     @step()
