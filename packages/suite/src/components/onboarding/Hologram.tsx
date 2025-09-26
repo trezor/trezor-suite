@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { getPackagingUrl } from '@suite-common/suite-utils';
+import { getDeviceInternalModel, getPackagingUrl } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, Image, Row, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -39,7 +39,7 @@ export const Hologram = () => {
     const hologramRef = useRef<HTMLVideoElement>(null);
 
     const packagingUrl = getPackagingUrl(device);
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const isOldT2B1Packaging =
         deviceModelInternal === DeviceModelInternal.T2B1 &&
         (device?.features?.unit_packaging === undefined || device?.features?.unit_packaging === 0);

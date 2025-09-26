@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { getDeviceInternalModel, isDeviceAcquired } from '@suite-common/suite-utils';
 import { usePin } from '@suite-common/wallet-core';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
@@ -41,7 +41,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const intl = useIntl();
     const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? []);
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;
     const statesInProgressBar: SeedInputStatus[] = isT1B1
         ? [

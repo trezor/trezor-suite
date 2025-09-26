@@ -1,3 +1,5 @@
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
+
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite/useDevice';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
@@ -8,7 +10,7 @@ import { UpdateGoToSettingsDescription } from '../troubleshooting/tips/UpdateGoT
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
 export const DeviceBootloader = () => {
     const { device } = useDevice();
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     const tipDescription = getHowToGetFromBootloaderInstructionsMap({ deviceModelInternal });
 

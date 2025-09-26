@@ -1,5 +1,6 @@
 import { deflateRaw } from 'pako';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
@@ -449,7 +450,7 @@ export const imagePathToHex = async (
 };
 
 export const isHomescreenSupportedOnDevice = (device: TrezorDevice): boolean => {
-    const deviceModelInternal = device.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     return (
         deviceModelInternal !== DeviceModelInternal.T2T1 ||

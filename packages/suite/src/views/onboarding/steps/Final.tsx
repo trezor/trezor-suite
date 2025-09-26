@@ -4,6 +4,7 @@ import { FormProvider } from 'react-hook-form';
 import useMeasure from 'react-use/lib/useMeasure';
 import styled, { css } from 'styled-components';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { Button, Menu, Popover, PopoverRef, Tooltip, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -104,7 +105,7 @@ export const FinalStep = () => {
     const onboardingAnalytics = useSelector(state => state.onboarding.onboardingAnalytics);
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
 

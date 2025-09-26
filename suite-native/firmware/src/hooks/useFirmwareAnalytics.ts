@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
 import {
     EventType,
@@ -10,11 +11,7 @@ import {
     analytics,
 } from '@suite-native/analytics';
 import { FirmwareType } from '@trezor/connect';
-import {
-    DeviceModelInternal,
-    getBootloaderVersion,
-    getFirmwareVersion,
-} from '@trezor/device-utils';
+import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
 export const useFirmwareAnalytics = ({
     device,
@@ -29,7 +26,7 @@ export const useFirmwareAnalytics = ({
 
     const prepareAnalyticsPayload = useCallback(
         () => ({
-            model: device?.features?.internal_model ?? DeviceModelInternal.UNKNOWN,
+            model: getDeviceInternalModel(device),
             fromBootloaderVersion: getBootloaderVersion(device),
             fromFwVersion: device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
             toFwVersion: toFwVersion ?? '?.?.?',

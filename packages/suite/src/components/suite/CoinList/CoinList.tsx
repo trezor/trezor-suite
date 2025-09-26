@@ -1,4 +1,4 @@
-import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
+import { getCoinUnavailabilityMessage, getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
@@ -34,7 +34,7 @@ export const CoinList = ({
     const lockedTooltip = isDeviceLocked ? 'TR_DISABLED_SWITCH_TOOLTIP' : null;
     const discoveryTooltip = isDiscoveryRunning ? 'TR_LOADING_ACCOUNTS' : null;
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const isBootloaderMode = isDeviceInBootloaderMode(device);
     const firmwareVersion = getFirmwareVersion(device);
 

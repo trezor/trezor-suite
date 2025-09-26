@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
+import { getDeviceInternalModel, resolveStaticPath } from '@suite-common/suite-utils';
 import { Grid } from '@trezor/components';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { borders, spacings } from '@trezor/theme';
@@ -46,7 +46,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal) return null;
 

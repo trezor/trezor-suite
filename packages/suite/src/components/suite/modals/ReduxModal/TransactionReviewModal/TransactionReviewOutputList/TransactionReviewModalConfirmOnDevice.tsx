@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { SerializedTx, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ReviewOutput } from '@suite-common/wallet-types';
 import { ConfirmOnDevice } from '@trezor/product-components';
@@ -22,7 +23,7 @@ export const TransactionReviewModalConfirmOnDevice = ({
     onCancel,
 }: TransactionReviewModalConfirmOnDeviceProps) => {
     const device = useSelector(selectSelectedDevice);
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     const offsetReviewStep = reviewStep + 1; // adjust for 0-based index
 

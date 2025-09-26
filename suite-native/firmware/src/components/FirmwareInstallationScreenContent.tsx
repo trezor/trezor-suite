@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
 import { firmwareActions } from '@suite-common/firmware';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Badge, Box, Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -95,7 +96,7 @@ export const FirmwareInstallationScreenContent = ({
         useConfirmOnTrezorController();
     const openLink = useOpenLink();
 
-    const deviceInternalModel = originalDevice?.features?.internal_model;
+    const deviceInternalModel = getDeviceInternalModel(originalDevice);
     const deviceRevision = originalDevice?.features?.revision;
     const deviceFirmwareVendor = originalDevice?.features?.fw_vendor;
 

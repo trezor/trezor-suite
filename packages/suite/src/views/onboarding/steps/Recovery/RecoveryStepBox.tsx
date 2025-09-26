@@ -1,3 +1,4 @@
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
@@ -15,7 +16,7 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
 
     const { device } = useDevice();
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal) {
         return null;

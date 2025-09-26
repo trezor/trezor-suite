@@ -1,5 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -136,7 +137,7 @@ export const firmwareUpdate = createThunk<
                     level: 'error',
                     checkType: 'Firmware version',
                     contextData: {
-                        model: device.features?.internal_model,
+                        model: getDeviceInternalModel(device),
                         revision: device.features?.revision,
                         vendor: device.features?.fw_vendor,
                         bootloaderVersion,

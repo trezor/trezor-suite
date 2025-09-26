@@ -248,8 +248,16 @@ export const getSelectedDevice = (
     });
 };
 
+export const getDeviceInternalModel = (
+    device?: Pick<Device, 'features' | 'thp'> | undefined,
+    defaultDevice = DeviceModelInternal.UNKNOWN,
+): DeviceModelInternal =>
+    device?.features?.internal_model ??
+    (device?.thp?.properties?.internal_model as DeviceModelInternal) ??
+    defaultDevice;
+
 export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) => {
-    const deviceModelInternal = device.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const commit = revision || 'main';
     const isDeviceWithLegacyFirmware = deviceModelInternal === DeviceModelInternal.T1B1;
     const folder = isDeviceWithLegacyFirmware ? 'legacy/firmware' : 'core';
@@ -261,7 +269,7 @@ export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) 
 };
 
 export const getCheckBackupUrl = (device?: TrezorDevice) => {
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN) {
         return undefined;
@@ -271,7 +279,7 @@ export const getCheckBackupUrl = (device?: TrezorDevice) => {
 };
 
 export const getPackagingUrl = (device?: TrezorDevice) => {
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN) {
         return '';
@@ -281,7 +289,7 @@ export const getPackagingUrl = (device?: TrezorDevice) => {
 };
 
 export const getFirmwareDowngradeUrl = (device?: TrezorDevice) => {
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN) {
         return undefined;
@@ -464,13 +472,6 @@ export const isDeviceWithButtons = (
 
 export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
     isArrayMember(action.type, Object.values(DEVICE));
-
-export const getDeviceInternalModel = (
-    device?: Pick<Device, 'features' | 'thp'> | undefined,
-): DeviceModelInternal =>
-    device?.features?.internal_model ??
-    (device?.thp?.properties?.internal_model as DeviceModelInternal) ??
-    DeviceModelInternal.UNKNOWN;
 
 export const isThpDevice = <T extends Device | TrezorDevice>(
     device: T,

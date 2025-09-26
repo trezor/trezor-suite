@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
@@ -72,7 +73,7 @@ export const OnboardingStepBox = ({
 }: OnboardingStepBoxProps) => {
     const intl = useIntl();
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     const isBackDropVisible = !!deviceModelInternal && !disableConfirmWrapper;
 

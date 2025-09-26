@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { getDeviceInternalModel, isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -12,7 +12,7 @@ import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenario
 
 const useCommonData = () => {
     const device = useSelector(selectSelectedDevice);
-    const model = device?.features?.internal_model;
+    const model = getDeviceInternalModel(device);
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
     const vendor = device?.features?.fw_vendor;

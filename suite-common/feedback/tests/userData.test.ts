@@ -1,3 +1,4 @@
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import * as helpers from '@trezor/env-utils';
@@ -27,7 +28,7 @@ describe(buildUserFeedbackData.name, () => {
             suite_version: '25.7.0',
             suite_revision: 'commit-hash',
             window_dimensions: '1920x1080',
-            device_model: device?.features?.internal_model,
+            device_model: getDeviceInternalModel(device),
             firmware_version: device?.features ? getFirmwareVersion(device) : '',
             firmware_revision: device?.features?.revision || '',
             firmware_type: device?.firmwareType || '',

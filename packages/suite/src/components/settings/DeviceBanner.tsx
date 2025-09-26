@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { getDeviceInternalModel, isDeviceAcquired } from '@suite-common/suite-utils';
 import { Card, Column, LottieAnimation, Paragraph, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -43,7 +43,7 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
                     type="CONNECT"
                     shape="CIRCLE"
                     size={64}
-                    deviceModelInternal={device?.features?.internal_model}
+                    deviceModelInternal={getDeviceInternalModel(device)}
                     loop
                 />
                 <Column>

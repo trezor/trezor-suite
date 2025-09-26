@@ -2,6 +2,7 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     type Network,
     type NetworkSymbol,
@@ -38,7 +39,7 @@ const filterUnavailableNetworks = (
 ): Network[] =>
     networksCollection.filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
-        const internalModel = device?.features?.internal_model;
+        const internalModel = getDeviceInternalModel(device);
 
         const isSupportedInSuite =
             !n.support || // support is not defined => is supported

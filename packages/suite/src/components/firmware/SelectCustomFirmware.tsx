@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { BulletList, Button } from '@trezor/components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
@@ -16,7 +17,7 @@ type SelectCustomFirmwareProps = {
 export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmwareProps) => {
     const { device } = useDevice();
 
-    const deviceModel = device?.features?.internal_model;
+    const deviceModel = getDeviceInternalModel(device);
     const githubUrl = deviceModel
         ? `${GITHUB_FW_BINARIES_URL}/${deviceModel.toLowerCase()}`
         : GITHUB_FW_BINARIES_URL;

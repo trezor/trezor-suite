@@ -3,6 +3,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
+    getDeviceInternalModel,
     getFirstDeviceInstance,
     getSelectedDevice,
     isThpDevice,
@@ -537,7 +538,7 @@ export const failEntropyCheckThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
     ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
         const contextData = {
-            model: device?.features?.internal_model,
+            model: getDeviceInternalModel(device),
             revision: device?.features?.revision,
             version: getFirmwareVersion(device),
             vendor: device?.features?.fw_vendor,

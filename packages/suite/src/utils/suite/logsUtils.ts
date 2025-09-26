@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { LogEntry, selectLogs } from '@suite-common/logger';
-import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
+import { getDeviceInternalModel, getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 import { accountsActions, deviceActions, selectDevices } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';
@@ -213,7 +213,7 @@ const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) => ({
             mode: device.mode,
             connected: device.connected,
             passphraseProtection: device.features?.passphrase_protection,
-            model: device.features?.internal_model,
+            model: getDeviceInternalModel(device),
             firmware: device.features ? getFirmwareVersion(device) : '',
             firmwareRevision: device.features ? getFirmwareRevision(device) : '',
             firmwareType: device.firmwareType || '',

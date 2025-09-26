@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { BackupType } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Divider, Text, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -36,7 +37,7 @@ export const ResetDeviceStep = () => {
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
-    const deviceModel = device?.features?.internal_model;
+    const deviceModel = getDeviceInternalModel(device);
     const unitPackaging = device?.features?.unit_packaging ?? 0;
 
     const [submitted, setSubmitted] = useState(false);

@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Button,
@@ -57,7 +58,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
         state => state.suite.flags.hasSeenDisconnectTooltip,
     );
     const [showTooltip, setShowTooltip] = useState(false);
-    const deviceModelInternal = device.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
+    const deviceModelInternal = getDeviceInternalModel(device, DEFAULT_FLAGSHIP_MODEL);
     const instancesWithState = instances.filter(i => i.state);
 
     useEffect(() => {

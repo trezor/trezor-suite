@@ -3,6 +3,7 @@ import * as semver from 'semver';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, H2, Modal, Paragraph } from '@trezor/components';
 import { Device } from '@trezor/connect';
@@ -27,7 +28,7 @@ const RebootDeviceGraphics = ({
         return device ? <DeviceConfirmImage device={device} /> : null;
     }
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     const getRebootType = () => {
         // Used during intermediary update on T1B1.
@@ -93,7 +94,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
 
     const rebootPhase = getRebootPhase();
     const isRebootDone = rebootPhase === 'done';
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const isAbortable =
         onClose !== undefined && isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
     const showWebUsbButton = rebootPhase === 'disconnected' && isWebUsbTransport;
@@ -118,8 +119,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         }
 
         // internal_model cannot be read from features while in bootloader mode.
-        const deviceModelFromEvent =
-            eventDevice?.features?.internal_model || DeviceModelInternal.UNKNOWN;
+        const deviceModelFromEvent = getDeviceInternalModel(eventDevice);
         const deviceFwVersion = getFirmwareVersion(eventDevice);
         const switchToBootloaderMap: Record<DeviceModelInternal, TranslationKey> = {
             // just to have something, I assume new models will have touch screen

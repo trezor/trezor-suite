@@ -2,6 +2,7 @@ import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -107,7 +108,7 @@ const sentryMiddleware =
                         ? getFirmwareVersion(action.payload)
                         : undefined,
                     mode: action.payload?.mode,
-                    model: action.payload?.features?.internal_model,
+                    model: getDeviceInternalModel(action.payload),
                     remember: action.payload?.remember,
                 });
                 break;

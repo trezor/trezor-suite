@@ -1,4 +1,8 @@
-import { getCheckBackupUrl, isDeviceWithButtons } from '@suite-common/suite-utils';
+import {
+    getCheckBackupUrl,
+    getDeviceInternalModel,
+    isDeviceWithButtons,
+} from '@suite-common/suite-utils';
 import { BulletList, Card, Paragraph } from '@trezor/components';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -25,7 +29,7 @@ type InitialStepProps = {
 
 export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps) => {
     const { device } = useDevice();
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal) {
         return null;

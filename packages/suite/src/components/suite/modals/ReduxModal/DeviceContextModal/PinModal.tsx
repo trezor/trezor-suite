@@ -1,3 +1,4 @@
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { usePin } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
@@ -43,7 +44,7 @@ export const PinModal = ({ device }: PinModalProps) => {
         <Modal.Backdrop>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                deviceModelInternal={device.features?.internal_model}
+                deviceModelInternal={getDeviceInternalModel(device)}
                 deviceUnitColor={device?.features?.unit_color}
                 onCancel={onCancel}
             />

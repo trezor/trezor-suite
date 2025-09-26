@@ -1,3 +1,4 @@
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Column, Grid, Image } from '@trezor/components';
 import {
@@ -23,7 +24,7 @@ export const SecurityCheckLayout = ({
     const device = useSelector(selectSelectedDevice);
     const { isBelowTablet } = useLayoutSize();
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const isDeviceImageRotating = imageMode === 'ROTATE' && deviceModelInternal;
 
     const deviceUnitColor = device?.features?.unit_color;

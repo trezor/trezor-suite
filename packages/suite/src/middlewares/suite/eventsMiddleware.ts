@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
 import * as deviceUtils from '@suite-common/suite-utils';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
 import {
     accountsActions,
@@ -70,7 +71,7 @@ const eventsMiddleware =
                 level: 'error',
                 checkType: 'Firmware version',
                 contextData: {
-                    model: device?.features?.internal_model,
+                    model: getDeviceInternalModel(device),
                     revision: device?.features?.revision,
                     oldVersion,
                     newVersion,

@@ -6,10 +6,10 @@ import {
     getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect/src/constants/errors';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevice, mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -65,7 +65,7 @@ export const ConnectAddressConfirmation = () => {
         <ConnectModalBackdrop onClick={onFinish} canSwitchDevice={!popupCall.exported}>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                deviceModelInternal={device?.features?.internal_model}
+                deviceModelInternal={getDeviceInternalModel(device)}
                 deviceUnitColor={device?.features?.unit_color}
                 isConfirmed={!isLoading}
             />
@@ -171,12 +171,7 @@ export const ConnectAddressConfirmation = () => {
                                         data-testid={`@connect-address-confirmation/verify-button/${index}`}
                                         variant="tertiary"
                                         onClick={() => onVerify(index)}
-                                        icon={
-                                            mapTrezorModelToIcon[
-                                                device?.features?.internal_model ||
-                                                    DeviceModelInternal.UNKNOWN
-                                            ]
-                                        }
+                                        icon={mapTrezorModelToIcon[getDeviceInternalModel(device)]}
                                         size="small"
                                         isLoading={address.loading}
                                         isDisabled={isLoading}

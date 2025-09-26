@@ -1,5 +1,6 @@
 import { satisfies, valid } from 'semver';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 
@@ -58,7 +59,7 @@ export const validateFirmware = (
     fw: ArrayBuffer,
     device: TrezorDevice | undefined,
 ): ExtendedMessageDescriptor['id'] | undefined => {
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal) {
         return 'TR_UNKNOWN_DEVICE';

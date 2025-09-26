@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, H4, Paragraph } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
@@ -16,8 +17,10 @@ type ConnectDevicePromoProps = {
 
 const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const selectedDeviceModelInternal =
-        selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
+    const selectedDeviceModelInternal = getDeviceInternalModel(
+        selectedDevice,
+        DEFAULT_FLAGSHIP_MODEL,
+    );
 
     return (
         <Banner

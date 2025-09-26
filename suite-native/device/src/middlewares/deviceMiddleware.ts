@@ -1,7 +1,7 @@
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
+import { getDeviceInternalModel, isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
     accountsActions,
     deviceActions,
@@ -107,7 +107,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                     level: 'error',
                     checkType: 'Firmware version',
                     contextData: {
-                        model: device?.features?.internal_model,
+                        model: getDeviceInternalModel(device),
                         revision: device?.features?.revision,
                         oldVersion,
                         newVersion,

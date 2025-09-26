@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
@@ -29,11 +30,11 @@ const determineIfDeviceWillBeWiped = (
     device: TrezorDevice | undefined,
     shouldSwitchFirmwareType: boolean,
 ) => {
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const deviceIsInitializedOrInBootloader = device?.mode !== 'initialize';
     // Changing the vendor header always results in device wipe. T1B1 and T2T1 have the same vendor header for bitcoin-only and universal firmware.
     const installationWillChangeFirmwareVendorHeader =
-        !!shouldSwitchFirmwareType &&
+        shouldSwitchFirmwareType &&
         deviceModelInternal !== undefined &&
         ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal);
     // Faulty firmware version.

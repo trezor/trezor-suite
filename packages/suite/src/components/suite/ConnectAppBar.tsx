@@ -5,6 +5,7 @@ import {
     connectPopupActions,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
@@ -62,7 +63,7 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                                 cursor={canSwitchDevice && !isWalletConnect ? 'pointer' : 'default'}
                             >
                                 <DeviceStatus
-                                    deviceModel={device.features.internal_model}
+                                    deviceModel={getDeviceInternalModel(device)}
                                     device={device}
                                 />
                                 {canSwitchDevice && !isWalletConnect && (

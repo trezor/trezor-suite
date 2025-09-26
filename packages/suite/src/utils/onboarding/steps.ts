@@ -1,3 +1,4 @@
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -33,7 +34,7 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
         isDeviceAuthenticityCheckEnabled,
         isUnlockedBootloaderAllowed,
     } = props;
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
     const firmwareVersion = getFirmwareVersion(device);
 
     // The order of IF conditions matters!

@@ -1,6 +1,7 @@
 import styled, { RuleSet, css } from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -52,7 +53,7 @@ export const Address = ({
     'data-testid': dataTestId,
 }: AddressProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const deviceModelInternal = selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
+    const deviceModelInternal = getDeviceInternalModel(selectedDevice, DEFAULT_FLAGSHIP_MODEL);
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
     const placeholder = isAddressChunked ? TRUNCATION_PLACEHOLDER : TRUNCATION_PLACEHOLDER.trim();

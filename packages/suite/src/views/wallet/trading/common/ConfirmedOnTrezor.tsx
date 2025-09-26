@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { variables } from '@trezor/components';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
@@ -35,7 +36,7 @@ interface ConfirmedOnTrezorProps {
 export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => (
     <Confirmed data-testid="@trading/offer/confirm-on-trezor-button">
         <StyledRotateDeviceImage
-            deviceModel={device?.features?.internal_model}
+            deviceModel={getDeviceInternalModel(device)}
             deviceColor={device?.features?.unit_color}
             animationHeight="34px"
             animationWidth="34px"

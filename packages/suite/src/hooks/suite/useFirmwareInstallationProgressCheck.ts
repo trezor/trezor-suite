@@ -4,6 +4,7 @@ import * as semver from 'semver';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { UI } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 
@@ -14,7 +15,7 @@ const MIN_T1B1_FW_VERSION = '1.12.1';
  * This check is currently targeted only for T1B1 devices, and only for specific versions
  */
 const getCheckSupport = (device?: TrezorDevice): boolean => {
-    const isT1B1 = device?.features?.internal_model === DeviceModelInternal.T1B1;
+    const isT1B1 = getDeviceInternalModel(device) === DeviceModelInternal.T1B1;
     const deviceFWVersion = getFirmwareVersion(device);
     if (semver.valid(deviceFWVersion) === null) return false;
 

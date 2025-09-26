@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectPhysicalDevicesGrouppedById } from '@suite-common/wallet-core';
 import { Box, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { ConnectionDot } from '@suite-native/device-manager';
@@ -17,7 +18,7 @@ export const DevicesManagement = () => {
             <AutoEjectSwitch />
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
-                const deviceModel = firstDevice.features?.internal_model;
+                const deviceModel = getDeviceInternalModel(firstDevice);
 
                 return (
                     <Card key={firstDevice.id} noPadding>

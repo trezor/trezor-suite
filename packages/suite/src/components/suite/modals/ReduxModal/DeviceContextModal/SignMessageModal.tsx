@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { NetworkSymbol, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
@@ -49,7 +50,7 @@ export const SignMessageModal = ({
 }: SignMessageModalProps) => {
     const accounts = useSelector(selectDeviceAccounts);
     const accountLabels = useSelector(selectAccountLabels);
-    const deviceModelInternal = device.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     const onCancel = () => {
         TrezorConnect.cancel();

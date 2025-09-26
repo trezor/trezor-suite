@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
     selectSelectedDeviceLabelOrName,
@@ -41,7 +42,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
         <Modal.Backdrop onClick={onCancel}>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                deviceModelInternal={device?.features?.internal_model}
+                deviceModelInternal={getDeviceInternalModel(device)}
                 deviceUnitColor={device?.features?.unit_color}
                 onCancel={onCancel}
             />

@@ -1,3 +1,4 @@
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -21,7 +22,7 @@ export const useNetworkSupport = () => {
     const supportedTestnets = testnets.filter(isNetworkSupported);
 
     const showUnsupportedCoins =
-        device?.features?.internal_model === DeviceModelInternal.T1B1 &&
+        getDeviceInternalModel(device) === DeviceModelInternal.T1B1 &&
         !hasBitcoinOnlyFirmware(device);
 
     return {
