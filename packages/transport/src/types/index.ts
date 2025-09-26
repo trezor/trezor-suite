@@ -34,20 +34,6 @@ export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
     id?: string;
 };
 
-/** Device boot/startup notification */
-type NotifyBoot = 0;
-/** Device unlocked and ready to accept messages */
-type NotifyUnlock = 1;
-/** Device hard-locked and won't accept messages */
-type NotifyLock = 2;
-type NormalMode = 0;
-type BootloaderMode = 1;
-export type NotificationData = [
-    1,
-    NotifyBoot | NotifyUnlock | NotifyLock,
-    NormalMode | BootloaderMode,
-];
-
 export interface Logger {
     info(...args: any): void;
 
