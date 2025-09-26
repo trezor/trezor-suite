@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils/';
 import { isThpDevice } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { Unsuccessful } from '@trezor/connect';
 
 import { THP_PREFIX, thpActions } from './thpActions';
 
@@ -11,24 +11,22 @@ type RemoveThpAutoconnectThunkParams =
       }
     | undefined;
 
-type RemoveThpAutoconnectThunkResult =
-    | ReturnType<typeof TrezorConnect.thpRemoveCredentials>
-    | undefined;
+type RemoveThpAutoconnectThunkResult = ReturnType<typeof TrezorConnect.thpRemoveCredentials>;
 
 export const removeThpAutoconnectThunk = createThunk<
     RemoveThpAutoconnectThunkResult,
     RemoveThpAutoconnectThunkParams,
-    void
+    { rejectValue: Unsuccessful | 'invalid-device' }
 >(
     `${THP_PREFIX}/removeThpAutoconnectThunk`,
     async (
         params,
         { getState, dispatch, fulfillWithValue, rejectWithValue },
-    ): Promise<RemoveThpAutoconnectThunkResult> => {
+    ): Promise<RemoveThpAutoconnectThunkResult | ReturnType<typeof rejectWithValue>> => {
         const device = selectSelectedDevice(getState());
 
         if (device === undefined || !isThpDevice(device)) {
-            return fulfillWithValue(undefined);
+            return rejectWithValue('invalid-device');
         }
 
         const credentialsToRemove =
@@ -41,10 +39,11 @@ export const removeThpAutoconnectThunk = createThunk<
         if (response.success) {
             dispatch(thpActions.removeCredentials({ credentials: credentialsToRemove }));
         }
+
         dispatch(thpActions.finishThpFlow());
 
         if (!response.success) {
-            rejectWithValue(response);
+            return rejectWithValue(response);
         }
 
         return fulfillWithValue(response);

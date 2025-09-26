@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { removeThpAutoconnectThunk, startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
@@ -13,12 +14,23 @@ export const useThpAutoconnectAlerts = () => {
     const dispatch = useDispatch();
     const { showAlert } = useAlert();
     const { showToast } = useToast();
+    const navigation = useNavigation();
 
     const autoconnectCredentials = useSelector(selectDeviceAutoconnectCredentials);
 
-    const turnOnAutoconnect = useCallback(() => {
-        dispatch(startThpAutoconnectThunk());
-    }, [dispatch]);
+    const turnOnAutoconnect = useCallback(async () => {
+        const response = await dispatch(startThpAutoconnectThunk()).unwrap();
+
+        if (isRejected(response)) {
+            showToast({
+                variant: 'error',
+                message: response.error.message,
+            });
+        }
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [dispatch, navigation, showToast]);
 
     const turnOffAutoconnect = useCallback(async () => {
         const result = await dispatch(
@@ -33,7 +45,10 @@ export const useThpAutoconnectAlerts = () => {
                 message: result.error.message,
             });
         }
-    }, [dispatch, showToast, autoconnectCredentials]);
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [navigation, dispatch, autoconnectCredentials, showToast]);
 
     const ignoreAutoconnect = useCallback(() => {
         dispatch(thpActions.finishThpFlow());

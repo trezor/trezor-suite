@@ -12617,6 +12617,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/thp@workspace:suite-native/thp"
   dependencies:
+    "@react-navigation/native": "npm:7.1.17"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"

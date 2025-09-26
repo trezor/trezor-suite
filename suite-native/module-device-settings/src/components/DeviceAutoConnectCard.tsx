@@ -1,13 +1,28 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { selectDeviceAutoconnectCredentials } from '@suite-common/wallet-core';
 import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import {
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 import { useThpAutoconnectAlerts } from '@suite-native/thp';
+
+type NavigationProp = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.DeviceSettings
+>;
 
 export const DeviceAutoConnectCard = () => {
     const { translate } = useTranslate();
+
+    const navigation = useNavigation<NavigationProp>();
+
     const { showThpAutoconnectTurnOffAlert, showThpAutoconnectTurnOnAlert } =
         useThpAutoconnectAlerts();
 
@@ -23,12 +38,18 @@ export const DeviceAutoConnectCard = () => {
             : translate('moduleDeviceSettings.autoconnect.enable.subtitle');
 
     const onPress = useCallback(() => {
+        navigation.navigate(DeviceSettingsStackRoutes.ContinueOnTrezor);
         if (autoconnectCredentials.length > 0) {
             showThpAutoconnectTurnOffAlert();
         } else {
             showThpAutoconnectTurnOnAlert();
         }
-    }, [showThpAutoconnectTurnOffAlert, showThpAutoconnectTurnOnAlert, autoconnectCredentials]);
+    }, [
+        navigation,
+        autoconnectCredentials.length,
+        showThpAutoconnectTurnOffAlert,
+        showThpAutoconnectTurnOnAlert,
+    ]);
 
     return (
         <CompactCardWithIconLayout
