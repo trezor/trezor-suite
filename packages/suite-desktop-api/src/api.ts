@@ -119,7 +119,7 @@ export interface InvokeChannels {
     'connect-popup/set-enabled': (enabled: boolean) => void;
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
-    'system/open-settings': (settings: string) => InvokeResult;
+    'system/open-settings': (settings: 'bluetooth' | 'bluetooth-permissions') => InvokeResult;
     'bio-auth/is-bio-auth-available': () => boolean;
     'bio-auth/validate-bio-auth': ({ message }: { message: string }) =>
         | {

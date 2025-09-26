@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
+import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
 
@@ -22,9 +22,9 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
 
     const handleOpenBluetoothSettings = async () => {
-        const opened = await desktopApi.openSystemSettings('bluetooth');
+        const result = await dispatch(openSystemSettingsThunk({ type: 'bluetooth' })).unwrap();
 
-        if (!opened.success) {
+        if (!result.success) {
             setHasDeeplinkFailed(true);
         }
     };
