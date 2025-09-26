@@ -73,7 +73,7 @@ describe('Suite Actions', () => {
         it(`init: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const { store, routerServices } = initStore(state);
-            routerServices.history.push(defaultLocation);
+            routerServices.navigate(defaultLocation);
             store.dispatch(routerActions.init());
             if (f.result) {
                 expect(store.getState().router).toEqual(f.result);
@@ -96,7 +96,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const { store, routerServices } = initStore(state);
 
-            routerServices.history.push({
+            routerServices.navigate({
                 ...defaultLocation,
                 pathname: f.pathname || '/',
             });
@@ -110,7 +110,7 @@ describe('Suite Actions', () => {
         it(`goto: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const { store, routerServices } = initStore(state);
-            routerServices.history.push({
+            routerServices.navigate({
                 ...defaultLocation,
                 hash: `#${f.hash}`,
             });
@@ -118,7 +118,7 @@ describe('Suite Actions', () => {
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
                 expect(
-                    routerServices.history.location.pathname + routerServices.history.location.hash,
+                    routerServices.getLocation().pathname + routerServices.getLocation().hash,
                 ).toEqual(f.result);
             }
         });
@@ -138,7 +138,7 @@ describe('Suite Actions', () => {
         // @ts-expect-error this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const { store, routerServices } = initStore(state);
-        routerServices.history.push({
+        routerServices.navigate({
             ...defaultLocation,
             pathname: '/accounts/send',
         });

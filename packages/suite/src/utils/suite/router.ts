@@ -186,7 +186,7 @@ export const getTopLevelRoute = (url: string) => {
  * Returns Route of application beneath the application modal. (real Router value)
  */
 export const getBackgroundRoute = (extra: ExtraDependencies) => {
-    const { location } = extra.routerServices.history;
+    const location = extra.routerServices.getLocation();
 
     return findRoute(location.pathname + location.hash);
 };

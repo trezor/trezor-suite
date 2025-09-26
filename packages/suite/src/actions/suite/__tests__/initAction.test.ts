@@ -286,7 +286,7 @@ describe('Suite init action', () => {
             const { store, routerServices } = initStore(getInitialState(options.initialRun));
 
             if (options?.initialPath) {
-                routerServices.history.push(options.initialPath);
+                routerServices.navigate(options.initialPath);
             }
 
             if (options?.trezorConnectError) {
