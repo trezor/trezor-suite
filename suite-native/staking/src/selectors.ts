@@ -47,7 +47,7 @@ export const selectDeviceAccountsWithStaking = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(state, 'eth');
         case 'dsol':
@@ -72,7 +72,7 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
 
     switch (account.symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return getEthereumCryptoBalanceWithStaking(account);
         case 'dsol':
@@ -102,7 +102,7 @@ export const selectAccountHasStaking = (state: NativeStakingRootState, accountKe
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumAccountHasStaking(state, accountKey);
         case 'dsol':
@@ -125,7 +125,7 @@ export const selectIsStakePendingByAccountKey = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumIsStakePendingByAccountKey(state, accountKey);
         case 'dsol':
@@ -148,7 +148,7 @@ export const selectIsStakeConfirmingByAccountKey = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumIsStakeConfirmingByAccountKey(state, accountKey);
         case 'dsol':
@@ -181,7 +181,7 @@ export const selectStakedBalanceByAccountKey = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumStakedBalanceByAccountKey(state, accountKey);
         case 'dsol':
@@ -204,7 +204,7 @@ export const selectRewardsBalanceByAccountKey = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumRewardsBalanceByAccountKey(state, accountKey);
         case 'dsol':
@@ -228,7 +228,7 @@ export const selectTotalStakePendingByAccountKey = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumTotalStakePendingByAccountKey(state, accountKey);
         case 'dsol':
@@ -251,7 +251,7 @@ export const selectClaimableAmountByAccountKey = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumClaimableAmountByAccountKey(state, accountKey);
         case 'dsol':
@@ -274,7 +274,7 @@ export const selectCanClaimByAccountKey = (
 
     switch (symbol) {
         case 'eth':
-        case 'thol':
+        case 'thod':
         case 'tsep':
             return selectEthereumCanClaimByAccountKey(state, accountKey);
         case 'dsol':

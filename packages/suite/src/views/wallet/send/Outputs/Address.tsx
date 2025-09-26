@@ -86,7 +86,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
-    const isExternalAddressCheckEnabled = ['eth', 'tsep', 'thol', 'sol', 'dsol'].includes(symbol);
+    const isExternalAddressCheckEnabled = ['eth', 'tsep', 'thod', 'sol', 'dsol'].includes(symbol);
 
     useEffect(() => {
         setIsExternalAddressCheckWarningDismissed(false);
@@ -341,7 +341,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         }
                     }
 
-                    // 2. Check if address is a contract address (right now only for Eth, Holesky and Sepolia)
+                    // 2. Check if address is a contract address (right now only for Eth, Hoodi and Sepolia)
                     if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
                         const isContract = payload.misc?.contractInfo;
                         if (isContract) {

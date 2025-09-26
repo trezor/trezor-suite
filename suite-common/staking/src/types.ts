@@ -8,7 +8,7 @@ export interface StakingTotalRewards {
     lastSuccessfulFetchTimestamp?: Timestamp;
 }
 
-export type EthNetwork = 'holesky' | 'mainnet';
+export type EthNetwork = 'hoodi' | 'mainnet';
 
 export type StakeTxBaseArgs = {
     from: string;

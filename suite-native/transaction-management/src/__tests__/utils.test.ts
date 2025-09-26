@@ -4,7 +4,7 @@ import { getFeeDecimals, getFeeValue } from '../utils';
 
 describe('utils', () => {
     describe('getFeeDecimals', () => {
-        it.each(['eth', 'pol', 'bsc', 'arb', 'base', 'op', 'etc', 'tsep', 'thol'])(
+        it.each(['eth', 'pol', 'bsc', 'arb', 'base', 'op', 'etc', 'tsep', 'thod'])(
             'should return 9 decimals for Ethereum network: %s',
             symbol => {
                 expect(getFeeDecimals({ symbol: symbol as NetworkSymbol })).toBe(9);
@@ -73,7 +73,7 @@ describe('utils', () => {
             },
         );
 
-        it.each(['eth', 'pol', 'bsc', 'arb', 'base', 'op', 'etc', 'tsep', 'thol'])(
+        it.each(['eth', 'pol', 'bsc', 'arb', 'base', 'op', 'etc', 'tsep', 'thod'])(
             'should work consistently for Ethereum network variant: %s',
             symbol => {
                 expect(

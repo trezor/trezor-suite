@@ -36,7 +36,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                 'sol',
                 'test',
                 'tsep',
-                'thol',
+                'thod',
                 'txrp',
                 // 'txlm', add when removed from experimental features
                 'dsol',

@@ -24,7 +24,7 @@ export const coinsColors: CoinsColors = {
     sol: '#9945ff',
     tada: '#3468d1',
     test: '#e75f5f',
-    thol: '#454a75',
+    thod: '#454a75',
     tsep: '#454a75',
     txlm: '#e75f5f',
     txrp: '#e75f5f',

@@ -186,7 +186,7 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
 
     // refetch also evm txs for version 52+
     if (oldVersion >= 52) {
-        accountsToUpdate.push(...['eth', 'pol', 'bsc', 'base', 'arb', 'op', 'thol', 'tsep']);
+        accountsToUpdate.push(...['eth', 'pol', 'bsc', 'base', 'arb', 'op', 'thod', 'tsep']);
     }
 
     await updateAll<'txs', DBWalletAccountTransactionCompatible>(transaction, 'txs', tx => {

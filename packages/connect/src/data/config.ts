@@ -158,7 +158,7 @@ export const config: Config = {
             ],
         },
         {
-            coin: ['eth', 'tsep', 'thol'],
+            coin: ['eth', 'tsep', 'thod'],
             min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],
         },

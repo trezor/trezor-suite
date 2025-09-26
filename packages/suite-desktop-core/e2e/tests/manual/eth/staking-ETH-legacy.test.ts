@@ -9,7 +9,7 @@ test.describe.skip('Ethereum staking legacy FW', { tag: ['@group=manual'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that a user can stake Ethereum. Holesky testnet can be used as backup',
+                    'Verifies that a user can stake Ethereum. Hoodi testnet can be used as backup',
                 prerequisites: [
                     'Seeded Trezor device with transactions with "all" seed',
                     'Connected Trezor Suite',
@@ -46,7 +46,7 @@ test.describe.skip('Ethereum staking legacy FW', { tag: ['@group=manual'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that a user can unstake Ethereum. Holesky testnet can be used as backup',
+                    'Verifies that a user can unstake Ethereum. Hoodi testnet can be used as backup',
                 prerequisites: [
                     'Seeded Trezor device with transactions with "all" seed',
                     'Connected Trezor Suite',
@@ -74,7 +74,7 @@ test.describe.skip('Ethereum staking legacy FW', { tag: ['@group=manual'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that a user can claim Ethereum rewards. Holesky testnet can be used as backup',
+                    'Verifies that a user can claim Ethereum rewards. Hoodi testnet can be used as backup',
                 prerequisites: [
                     'Seeded Trezor device with transactions with "all" seed',
                     'Connected Trezor Suite',

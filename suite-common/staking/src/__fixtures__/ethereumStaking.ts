@@ -1,3 +1,5 @@
+import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk-ethereum';
+
 export const transformTxFixtures = [
     {
         description:
@@ -6,7 +8,7 @@ export const transformTxFixtures = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xCe66A9577F4e2589c1D1547B75B7A2b0807cE0ed',
             gasLimit: 416102,
-            to: '0xAFA848357154a6a624686b348303EF9a13F63264',
+            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
             value: '122222000000000000',
         },
         gasPrice: '50',
@@ -18,7 +20,7 @@ export const transformTxFixtures = [
             gasPrice: '0xba43b7400',
             nonce: '0x1a',
             chainId: 1,
-            to: '0xAFA848357154a6a624686b348303EF9a13F63264',
+            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
             value: '0x1b23842edbce000',
         },
     },
@@ -29,7 +31,7 @@ export const transformTxFixtures = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xCe66A9577F4e2589c1D1547B75B7A2b0807cE0ed',
             gasLimit: 300000,
-            to: '0xAFA848357154a6a624686b348303EF9a13F63264',
+            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
             value: '10000',
         },
         gasPrice: '1',
@@ -41,7 +43,7 @@ export const transformTxFixtures = [
             gasPrice: '0x3b9aca00',
             nonce: '0x1',
             chainId: 1,
-            to: '0xAFA848357154a6a624686b348303EF9a13F63264',
+            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
             value: '0x2710',
         },
     },
@@ -66,7 +68,7 @@ export const stakeFixture = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             gasLimit: 241000, // 21000 + 220000 (reserve)
-            to: '0xD523794C879D9eC028960a231F866758e405bE34',
+            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
             value: '100000000000000000', // wei
         },
     },
@@ -88,7 +90,7 @@ export const stakeFixture = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             gasLimit: 220000, // GAS_RESERVE = 220000
-            to: '0xD523794C879D9eC028960a231F866758e405bE34',
+            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
             value: '100000000000000000', // wei
         },
     },
@@ -162,7 +164,7 @@ export const unstakeFixture = [
             data: '0x76ec871c000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000001',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             gasLimit: 241000, // 21000 + 220000
-            to: '0xD523794C879D9eC028960a231F866758e405bE34',
+            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
             value: '0', // wei
         },
     },
@@ -301,7 +303,7 @@ export const claimFixture = [
         result: {
             data: '0x33986ffa', // claim signature
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
-            to: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e', // contract accounting address
+            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractAccounting, // contract accounting address
             value: '0', // wei
             gasLimit: 241000, // 21000 + 220000
         },
@@ -313,7 +315,7 @@ export const claimFailedFixture = [
         description: 'should throw an error when account info is failed',
         args: {
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
-            symbol: 'thol',
+            symbol: 'thod',
             identity: '0',
         },
         accountInfo: {
@@ -656,11 +658,11 @@ export const getAdjustedGasLimitConsumptionFixture = [
 
 export const getEthNetworkForWalletSdkFixture = [
     {
-        description: 'should return "holesky" for "thol"',
+        description: 'should return "hoodi" for "thod"',
         args: {
-            symbol: 'thol' as const,
+            symbol: 'thod' as const,
         },
-        result: 'holesky',
+        result: 'hoodi',
     },
     {
         description: 'should return "mainnet" for "eth"',
@@ -690,8 +692,8 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "stake" for valid instant stake transfer (mainnet)',
         args: {
             internalTransfer: {
-                from: '0xD523794C879D9eC028960a231F866758e405bE34',
-                to: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+                to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
             },
             address: 'address',
             symbol: 'eth' as const,
@@ -699,14 +701,14 @@ export const getInstantStakeTypeFixture = [
         result: 'stake',
     },
     {
-        description: 'should return "stake" for valid instant stake transfer (hokesky)',
+        description: 'should return "stake" for valid instant stake transfer (hoodi)',
         args: {
             internalTransfer: {
-                from: '0xAFA848357154a6a624686b348303EF9a13F63264',
-                to: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+                from: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
+                to: ETH_NETWORK_ADDRESSES.hoodi.addressContractWithdrawTreasury,
             },
             address: 'address',
-            symbol: 'thol' as const,
+            symbol: 'thod' as const,
         },
         result: 'stake',
     },
@@ -714,7 +716,7 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "unstake" for valid instant unstake transfer (mainnet)',
         args: {
             internalTransfer: {
-                from: '0xD523794C879D9eC028960a231F866758e405bE34',
+                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
                 to: 'address',
             },
             address: 'address',
@@ -723,14 +725,14 @@ export const getInstantStakeTypeFixture = [
         result: 'unstake',
     },
     {
-        description: 'should return "unstake" for valid instant unstake transfer (hokesky)',
+        description: 'should return "unstake" for valid instant unstake transfer (hoodi)',
         args: {
             internalTransfer: {
-                from: '0xAFA848357154a6a624686b348303EF9a13F63264',
+                from: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
                 to: 'address',
             },
             address: 'address',
-            symbol: 'thol' as const,
+            symbol: 'thod' as const,
         },
         result: 'unstake',
     },
@@ -738,7 +740,7 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "claim" for valid claim transfer (mainnet)',
         args: {
             internalTransfer: {
-                from: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
                 to: 'address',
             },
             address: 'address',
@@ -747,14 +749,14 @@ export const getInstantStakeTypeFixture = [
         result: 'claim',
     },
     {
-        description: 'should return "claim" for valid claim transfer (hokesky)',
+        description: 'should return "claim" for valid claim transfer (hoodi)',
         args: {
             internalTransfer: {
-                from: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+                from: ETH_NETWORK_ADDRESSES.hoodi.addressContractWithdrawTreasury,
                 to: 'address',
             },
             address: 'address',
-            symbol: 'thol' as const,
+            symbol: 'thod' as const,
         },
         result: 'claim',
     },
@@ -812,8 +814,8 @@ export const getChangedInternalTxFixture = [
                     txid: '1',
                     internalTransfers: [
                         {
-                            from: '0xD523794C879D9eC028960a231F866758e405bE34',
-                            to: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+                            from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+                            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
                             type: 'external',
                             amount: '1',
                         },
@@ -825,8 +827,8 @@ export const getChangedInternalTxFixture = [
             symbol: 'eth' as const,
         },
         result: {
-            from: '0xD523794C879D9eC028960a231F866758e405bE34',
-            to: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+            from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
             type: 'external',
             amount: '1',
         },
@@ -849,7 +851,7 @@ export const simulateUnstakeFixture = [
         args: {
             amount: '0.1',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
-            to: '0xAFA848357154a6a624686b348303EF9a13F63264',
+            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
             symbol: 'eth',
         },
         blockchainEvmRpcCallResult: {

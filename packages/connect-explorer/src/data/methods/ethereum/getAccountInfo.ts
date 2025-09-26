@@ -5,7 +5,7 @@ export const select = [
     { value: 'eth', label: 'Ethereum', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'etc', label: 'Ethereum Classic', affectedValue: `m/44'/61'/0'/0/0` },
     { value: 'tsep', label: 'Sepolia', affectedValue: `m/44'/60'/0'/0/0` },
-    { value: 'thol', label: 'Holesky', affectedValue: `m/44'/60'/0'/0/0` },
+    { value: 'thod', label: 'Hoodi', affectedValue: `m/44'/60'/0'/0/0` },
 ];
 
 const batch = [

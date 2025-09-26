@@ -69,7 +69,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }:
             wallet: {
                 send,
                 coinjoin,
-                settings: { bitcoinAmountUnit, enabledNetworks: ['thol'] },
+                settings: { bitcoinAmountUnit, enabledNetworks: ['thod'] },
             },
             suite: { settings: { language: 'en' } },
             router: { route: { name: 'wallet-send' } },

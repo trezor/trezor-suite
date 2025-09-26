@@ -57,7 +57,7 @@ export const getStakingLimitsByNetworkSymbol = (
 ): StakingLimits | null => {
     switch (symbol) {
         case 'tsep':
-        case 'thol':
+        case 'thod':
         case 'eth':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_ETH_AMOUNT_FOR_STAKING,

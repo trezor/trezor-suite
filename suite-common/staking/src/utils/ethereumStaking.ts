@@ -46,7 +46,7 @@ export const getEthNetworkForWalletSdk = (
     symbol: NetworkSymbol | 'unknown' | undefined,
 ): EthNetwork => {
     const ethNetworks: PartialRecord<NetworkSymbol, EthNetwork> = {
-        thol: 'holesky',
+        thod: 'hoodi',
         eth: 'mainnet',
     };
     const network = symbol && symbol !== 'unknown' ? ethNetworks[symbol] : null;
