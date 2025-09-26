@@ -932,10 +932,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private _updateFeature<K extends keyof Features>(key: K, value: Features[K]) {
-        this._features = {
-            ...this._features,
-            [key]: value,
-        };
+        if (this._features) {
+            this._features = {
+                ...this._features,
+                [key]: value,
+            };
+        }
     }
 
     prompt<
