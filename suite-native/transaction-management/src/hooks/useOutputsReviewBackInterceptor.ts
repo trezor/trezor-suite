@@ -1,20 +1,19 @@
 import { useCallback } from 'react';
 
-import { useNavigateToInitialScreen, useOverrideBackNavigation } from '@suite-native/navigation';
+import { useOverrideBackNavigation } from '@suite-native/navigation';
 
 import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert';
 
-export const useOutputsReviewBackInterceptor = () => {
+export const useOutputsReviewBackInterceptor = (onReviewCanceled: () => void) => {
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
-    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const onNavigateBack = useCallback(async () => {
         const { wasReviewCanceled } = await showReviewCancellationAlert();
 
         if (wasReviewCanceled) {
-            navigateToInitialScreen();
+            onReviewCanceled();
         }
-    }, [navigateToInitialScreen, showReviewCancellationAlert]);
+    }, [onReviewCanceled, showReviewCancellationAlert]);
 
     useOverrideBackNavigation({ onNavigateBack });
 };

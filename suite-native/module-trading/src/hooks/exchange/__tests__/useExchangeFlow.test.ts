@@ -105,17 +105,11 @@ describe('useExchangeFlow', () => {
                 orderId: 'test-order',
             };
 
-            const mockAccount = {
-                key: 'btc1',
-                symbol: 'btc',
-            };
-
             await act(async () => {
                 await result.current.confirmTrade({
                     receiveAddress: 'test-address',
                     trade: mockTrade,
                     approvalFlow: false,
-                    sendAccount: mockAccount,
                     nextStep: mockNextStep,
                 });
             });
@@ -159,18 +153,12 @@ describe('useExchangeFlow', () => {
                 orderId: 'test-order',
             };
 
-            const mockAccount = {
-                key: 'btc1',
-                symbol: 'btc',
-            };
-
             const confirmResult = await act(
                 async () =>
                     await result.current.confirmTrade({
                         receiveAddress: 'test-address',
                         trade: mockTrade,
                         approvalFlow: false,
-                        sendAccount: mockAccount,
                         nextStep: jest.fn(),
                     }),
             );
@@ -471,7 +459,6 @@ describe('useExchangeFlow', () => {
                     receiveAddress: 'test-address',
                     trade: undefined,
                     approvalFlow: false,
-                    sendAccount: { key: 'btc1', symbol: 'btc' },
                     nextStep: jest.fn(),
                 }),
             );

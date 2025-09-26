@@ -7,10 +7,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import {
-    ReviewOutputItemList,
-    useOutputsReviewBackInterceptor,
-} from '@suite-native/transaction-management';
+import { ReviewOutputItemList } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ReviewOutputsFooter } from '../components/reviewOutputs/ReviewOutputsFooter';
@@ -32,7 +29,6 @@ export const TradingOutputsReviewScreen = ({
     const { isTransactionAlreadySigned, isConsentRequested, resolveConsent, confirmOnTrezorRef } =
         useTradingOutputsReviewScreenControls(orderId, accountKey);
     const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
-    useOutputsReviewBackInterceptor();
 
     const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
 

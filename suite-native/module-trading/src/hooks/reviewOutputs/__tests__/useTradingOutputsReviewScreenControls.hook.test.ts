@@ -5,6 +5,7 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { transactionManagementActions } from '@suite-native/transaction-management';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
@@ -151,6 +152,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         });
 
         it('should offer pop and popToTop action on thunk error', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
             await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledWith(
@@ -179,6 +181,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
 
             expect(mockPop).toHaveBeenCalledTimes(1);
+            expect(dispatchSpy).toHaveBeenCalledWith(sendFormActions.dispose());
+            expect(dispatchSpy).toHaveBeenCalledWith(transactionManagementActions.clearFeeLevels());
 
             act(() => {
                 mockShowAlert.mock.calls[0][0].onPressSecondaryButton();
@@ -212,6 +216,19 @@ describe('useTradingOutputsReviewScreenControls', () => {
             await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseConfirmOnTrezorController.closeSheet).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('useOutputsReviewBackInterceptor', () => {
+        it('should be initialized with popToTop navigation callback', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+
+            act(() => {
+                const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
+                onReviewCanceled();
+            });
+
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
         });
     });
 });

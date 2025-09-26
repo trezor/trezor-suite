@@ -10,6 +10,7 @@ import {
     SendStackParamList,
     SendStackRoutes,
     StackProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
     ReviewOutputItemList,
@@ -41,7 +42,8 @@ export const SendOutputsReviewScreen = ({
 
     const showOutputsReviewFooter = isTransactionAlreadySigned && account;
 
-    useOutputsReviewBackInterceptor();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+    useOutputsReviewBackInterceptor(navigateToInitialScreen);
 
     useEffect(() => {
         if (showOutputsReviewFooter) {

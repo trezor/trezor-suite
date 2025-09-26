@@ -229,7 +229,7 @@ export const useExchangeFlow = () => {
             trade,
             approvalFlow,
             nextStep,
-        }: TradingExchangeConfirmTradeProps & { sendAccount: any }): Promise<boolean> => {
+        }: TradingExchangeConfirmTradeProps): Promise<boolean> => {
             const commonFunctions = getCommonFunctions(trade);
 
             if (!trade || !sendAccount || !commonFunctions) {

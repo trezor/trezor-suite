@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { sendFormActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/device';
 import type {
@@ -11,7 +12,11 @@ import type {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
+import {
+    selectIsTransactionAlreadySigned,
+    transactionManagementActions,
+    useOutputsReviewBackInterceptor,
+} from '@suite-native/transaction-management';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { tradingActions } from '../../reducers';
@@ -27,45 +32,60 @@ type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationPro
 >;
 
 export const useTradingOutputsReviewScreenControls = (orderId: string, accountKey: AccountKey) => {
+    const allowAlertRef = useRef(true);
     const signingExecutedRef = useRef(false);
+
     const navigation = useNavigation<TradingOutputsReviewScreenNavigationProp>();
     const dispatch = useDispatch();
     const { signAndSendTransaction, isConsentRequested, resolveConsent } = useExchangeFlow();
     const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
-    const showAlert = useTradingOutputsReviewErrorAlert(accountKey);
+    const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert(accountKey);
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
-    const nextStep: TradingExchangeSignAndSendTransactionProps['nextStep'] = () => {
+    const onReviewCanceled = useCallback(() => {
+        navigation.popToTop();
+    }, [navigation]);
+    useOutputsReviewBackInterceptor(onReviewCanceled);
+
+    const nextStep: TradingExchangeSignAndSendTransactionProps['nextStep'] = useCallback(() => {
         navigation.popToTop();
         dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
-    };
-    const onError: TradingExchangeSignAndSendTransactionProps['onError'] = _error => {
-        showAlert(
-            () => {
-                // TODO 21883 clear state and rerun flow?
-                navigation.pop();
-            },
-            () => {
-                navigation.popToTop();
-            },
-        );
-    };
+    }, [dispatch, navigation, orderId]);
+
+    const onError: TradingExchangeSignAndSendTransactionProps['onError'] = useCallback(
+        _error => {
+            if (allowAlertRef.current) {
+                showOutputsReviewErrorAlert(() => {
+                    dispatch(sendFormActions.dispose());
+                    dispatch(transactionManagementActions.clearFeeLevels());
+                    navigation.pop();
+                }, navigation.popToTop);
+            }
+        },
+        [dispatch, navigation, showOutputsReviewErrorAlert],
+    );
 
     useEffect(() => {
         if (!signingExecutedRef.current && !isTransactionAlreadySigned) {
             signingExecutedRef.current = true;
             signAndSendTransaction({ nextStep, onError });
         }
-        // only run on mount
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [nextStep, onError, signAndSendTransaction, isTransactionAlreadySigned]);
 
     useEffect(() => {
         if (isTransactionAlreadySigned) {
             closeSheet();
         }
     }, [closeSheet, isTransactionAlreadySigned]);
+
+    // just in case, we don't want to show alert if user already left the screen
+    useEffect(
+        () => () => {
+            allowAlertRef.current = false;
+        },
+        [],
+    );
 
     return {
         isTransactionAlreadySigned,
