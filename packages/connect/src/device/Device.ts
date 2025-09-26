@@ -336,6 +336,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.acquirePromise;
     }
 
+    reset() {
+        _log.info(`Resetting Features and ThpState`);
+        // @ts-expect-error
+        this._features = undefined;
+        this._protocol = protocolV1;
+        this.thp?.resetState();
+        this.thp = undefined;
+    }
+
+    setBusy(value?: DeviceBusyStatus) {
+        this.busy = value;
+    }
+
     subscribe() {
         if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
             this.transport
