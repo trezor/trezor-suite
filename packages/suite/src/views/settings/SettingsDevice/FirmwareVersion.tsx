@@ -3,10 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { getChangelogUrl } from '@suite-common/suite-utils';
-import {
-    DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
-    selectIsDeviceConnectedViaBluetooth,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
@@ -59,7 +56,9 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const [lowBatteryWarning, setLowBatteryWarning] = useState(false);
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
+    const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(
+        selectIsDeviceConnectedViaBluetoothLowOnBattery,
+    );
 
     if (!device?.features) {
         return null;
@@ -71,11 +70,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const githubButtonIcon = revision ? 'arrowUpRight' : undefined;
 
     const handleUpdate = () => {
-        if (
-            isDeviceConnectedViaBluetooth &&
-            typeof device?.features.soc === 'number' &&
-            device.features.soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD
-        ) {
+        if (isDeviceConnectedViaBluetoothLowOnBattery) {
             setLowBatteryWarning(true);
 
             return;

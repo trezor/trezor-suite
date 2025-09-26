@@ -23,7 +23,10 @@ import {
 import { getSuiteVersion } from '@trezor/env-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
+import {
+    DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
+    PORTFOLIO_TRACKER_DEVICE_ID,
+} from './deviceConstants';
 import { DeviceRootState } from './deviceReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
@@ -173,6 +176,14 @@ export const selectIsDeviceConnected = createMemoizedSelector(
 export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
     [selectSelectedDevice],
     device => isDeviceConnectedViaBluetooth(device),
+);
+
+export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSelector(
+    [selectIsDeviceConnectedViaBluetooth, selectDeviceFeatures],
+    (isDeviceConnectedViaBt, features) =>
+        isDeviceConnectedViaBt &&
+        typeof features?.soc === 'number' &&
+        features.soc <= DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
 );
 
 export const selectDeviceBluetoothId = createMemoizedSelector(

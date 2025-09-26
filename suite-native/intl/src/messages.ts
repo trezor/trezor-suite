@@ -709,6 +709,13 @@ export const messages = {
         toasts: {
             firmwareRevisionCheckOtherError: "Couldn't perform firmware authenticity check.",
         },
+        alerts: {
+            lowBattery: {
+                title: 'Charge your Trezor before continuing',
+                description:
+                    'Charge your Trezor to at least {percentage}% or power it with a cable to prevent interruptions.',
+            },
+        },
     },
     moduleDeviceSettings: {
         sectionTitles: {

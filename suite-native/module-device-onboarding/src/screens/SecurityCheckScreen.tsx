@@ -1,5 +1,6 @@
 import { EventType, analytics } from '@suite-native/analytics';
 import { CardStepper, CardStepperMap, TitleHeader, VStack } from '@suite-native/atoms';
+import { useDeviceLowBatteryAlert } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import {
@@ -62,7 +63,13 @@ const cardStepperContentMap = {
 export const SecurityCheckScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
+    const { showLowBatteryAlertIfNecessary } = useDeviceLowBatteryAlert();
+
     const handleFinishStepper = () => {
+        if (showLowBatteryAlertIfNecessary()) {
+            return;
+        }
+
         navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInstallation);
     };
 
