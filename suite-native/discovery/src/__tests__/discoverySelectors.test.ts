@@ -55,7 +55,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         // Test networks should be filtered out
         expect(networkSymbols).not.toContain('test');
         expect(networkSymbols).not.toContain('tsep');
-        expect(networkSymbols).not.toContain('thol');
+        expect(networkSymbols).not.toContain('thod');
         expect(networkSymbols).not.toContain('txrp');
         expect(networkSymbols).not.toContain('txlm');
         expect(networkSymbols).not.toContain('tada');
@@ -77,7 +77,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         // Test networks should be included
         expect(networkSymbols).toContain('test');
         expect(networkSymbols).toContain('tsep');
-        expect(networkSymbols).toContain('thol');
+        expect(networkSymbols).toContain('thod');
         expect(networkSymbols).toContain('txrp');
         expect(networkSymbols).toContain('txlm');
         expect(networkSymbols).toContain('tada');
@@ -131,7 +131,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         // Test networks should be included due to forced parameter
         expect(networkSymbols).toContain('test');
         expect(networkSymbols).toContain('tsep');
-        expect(networkSymbols).toContain('thol');
+        expect(networkSymbols).toContain('thod');
         expect(networkSymbols).toContain('txrp');
         expect(networkSymbols).toContain('txlm');
         expect(networkSymbols).toContain('tada');

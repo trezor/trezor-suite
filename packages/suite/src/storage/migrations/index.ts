@@ -552,7 +552,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         // remove trop from backend settings
         const backendSettings = transaction.objectStore('backendSettings');
         // @ts-expect-error
-        backendSettings.delete('trop');
+        await backendSettings.delete('trop');
     }
 
     if (oldVersion < 37) {

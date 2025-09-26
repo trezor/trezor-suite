@@ -20,7 +20,7 @@ export const NETWORK_ICONS: Record<NetworkSymbol | LegacyNetworkSymbol, string> 
     sol: require('../../images/networks/sol.svg'),
     tada: require('../../images/networks/tada.svg'),
     test: require('../../images/networks/btc_test.svg'),
-    thol: require('../../images/networks/thol.svg'),
+    thod: require('../../images/networks/thod.svg'),
     tsep: require('../../images/networks/tsep.svg'),
     txlm: require('../../images/networks/txlm.svg'),
     txrp: require('../../images/networks/txrp.svg'),

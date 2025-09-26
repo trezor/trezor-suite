@@ -42,7 +42,7 @@ export type Protocol =
     | 'test'
     | 'regtest'
     | 'tsep'
-    | 'thol'
+    | 'thod'
     | 'txrp'
     | 'txlm'
     | 'tada'
@@ -67,7 +67,7 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     test: ['test'],
     regtest: ['regtest'],
     tsep: ['tsep'],
-    thol: ['thol'],
+    thod: ['thod'],
     txrp: ['txrp'],
     tada: ['tada'],
     dsol: ['dsol'],

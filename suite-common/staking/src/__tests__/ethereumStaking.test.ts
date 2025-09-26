@@ -229,8 +229,8 @@ describe('getAdjustedGasLimitConsumption', () => {
 
 describe('getEthNetworkForWalletSdk', () => {
     getEthNetworkForWalletSdkFixture.forEach(test => {
-        it(test.description, async () => {
-            const result = await getEthNetworkForWalletSdk(test.args.symbol);
+        it(test.description, () => {
+            const result = getEthNetworkForWalletSdk(test.args.symbol);
             expect(result).toEqual(test.result);
         });
     });
@@ -238,8 +238,8 @@ describe('getEthNetworkForWalletSdk', () => {
 
 describe('getInstantStakeType', () => {
     getInstantStakeTypeFixture.forEach(test => {
-        it(test.description, async () => {
-            const result = await getInstantStakeType(
+        it(test.description, () => {
+            const result = getInstantStakeType(
                 test.args.internalTransfer as InternalTransfer,
                 test.args.address,
                 test.args.symbol,

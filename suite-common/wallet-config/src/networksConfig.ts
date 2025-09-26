@@ -527,16 +527,16 @@ export const networks = {
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
     },
-    thol: {
-        symbol: 'thol',
+    thod: {
+        symbol: 'thod',
         displaySymbol: 'tETH',
-        name: 'Ethereum Holesky',
+        name: 'Ethereum Hoodi',
         networkType: 'ethereum',
         bip43Path: "m/44'/1'/0'/0/i",
-        chainId: 17000,
+        chainId: 560048,
         decimals: 18,
         testnet: true,
-        explorer: getExplorerUrls('https://holesky.etherscan.io', 'ethereum'),
+        explorer: getExplorerUrls('https://hoodi.etherscan.io/', 'ethereum'),
         features: [
             'rbf',
             'sign-verify',
@@ -549,8 +549,8 @@ export const networks = {
         ],
         backendTypes: ['blockbook'],
         accountTypes: {},
-        coingeckoId: 'holesky-test-ethereum', // fake, coingecko does not have testnets
-        tradeCryptoId: 'holesky-test-ethereum', // fake, coingecko does not have testnets
+        coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
+        tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
     },
     dsol: {
         symbol: 'dsol',

@@ -28,7 +28,7 @@ type NetworkSymbol =
     | 'test'
     | 'regtest'
     | 'tsep'
-    | 'thol'
+    | 'thod'
     | 'txrp'
     | 'ada'
     | 'tada'

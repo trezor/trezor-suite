@@ -147,7 +147,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             await settingsPage.changeTheme(Theme.Dark);
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('eth');
-            await settingsPage.coins.enableNetwork('thol');
+            await settingsPage.coins.enableNetwork('thod');
             await settingsPage.coins.disableNetwork('btc');
             await settingsPage.coins.openNetworkAdvanceSettings('eth');
             await settingsPage.coins.changeBackend('blockbook', 'https://eth.marek.pl/');
@@ -188,7 +188,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             >(EventType.SuiteReady);
             expect(suiteReadyEvent).toContainSubObject({
                 language: 'en-US',
-                enabledNetworks: 'eth,thol',
+                enabledNetworks: 'eth,thod',
                 customBackends: 'eth',
                 localCurrency: 'czk',
                 bitcoinUnit: 'sat',

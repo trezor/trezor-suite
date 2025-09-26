@@ -53,7 +53,7 @@ describe('mapTestnetCryptoCurrency', () => {
         ['eth', 'eth'],
         ['test', 'btc'],
         ['tsep', 'eth'],
-        ['thol', 'eth'],
+        ['thod', 'eth'],
         ['txrp', 'xrp'],
         ['txlm', 'xlm'],
         ['tada', 'ada'],

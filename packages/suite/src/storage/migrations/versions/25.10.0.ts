@@ -4,6 +4,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { SuiteDBSchema } from 'src/storage/definitions';
 
+import { removeNetwork } from '../networks/removeNetwork';
+
 type DeletedSecurityType =
     | {
           devicesWithFailedEntropyCheck?: (string | null)[];
@@ -44,4 +46,7 @@ export default createMigration<SuiteDBSchema>('25.10.0', async (db, tx) => {
         // @ts-expect-error security no longer exists
         db.deleteObjectStore('security');
     }
+
+    // Remove Holesky test network. Now there's Hoodi (tHOD) test network.
+    await removeNetwork(tx, 'thol');
 });

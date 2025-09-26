@@ -13,7 +13,7 @@ export const isWhitelistedHost = (
     return whitelist.some(
         whitelistedUrl =>
             whitelistedUrl === hostname ||
-            // This needs to be here to allow sub-domains (like btc1.trezor.io, holesky1.trezor.io, ...,
+            // This needs to be here to allow sub-domains (like btc1.trezor.io, hoodi1.trezor.io, ...,
             hostname.endsWith(`.${whitelistedUrl}`),
     );
 };

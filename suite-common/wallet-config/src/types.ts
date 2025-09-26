@@ -21,7 +21,7 @@ export type NetworkSymbol =
     | 'test'
     | 'regtest'
     | 'tsep'
-    | 'thol'
+    | 'thod'
     | 'txrp'
     | 'txlm'
     | 'tada'
