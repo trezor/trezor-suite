@@ -61,7 +61,7 @@ const connectInitSettings = {
 };
 
 export const createRouterServices = (history: History) => ({
-    history,
+    getLocation: () => history.location,
     navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
 

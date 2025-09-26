@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit';
-import { createMemoryHistory } from 'history';
 
 import {
     type ExtraDependencies,
@@ -150,12 +149,12 @@ export const extraDependenciesMock: ExtraDependencies = {
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckProps) =>
             console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
     },
-    routerServices: (() => {
-        const history = createMemoryHistory();
-
-        return {
-            history,
-            navigate: (to: To, state?: LocationPushState) => history.push(to, state),
-        };
-    })(),
+    routerServices: {
+        getLocation: () => ({
+            pathname: 'mocked_path',
+            hash: 'mocked_hash',
+        }),
+        navigate: (to: To, state?: LocationPushState) =>
+            console.warn(`Mock navigating to ${to} with state`, state),
+    },
 };

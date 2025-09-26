@@ -91,7 +91,7 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
 export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const { location } = extra.routerServices.history;
+        const location = extra.routerServices.getLocation();
         const url = location.pathname + location.hash;
         dispatch(onLocationChange(url));
     }
@@ -131,7 +131,7 @@ export const goto =
 
             return;
         }
-        const { location } = extra.routerServices.history;
+        const location = extra.routerServices.getLocation();
         const newUrl = `${urlBase}${preserveParams ? location.hash : ''}`;
 
         const route = findRouteByName(routeName);
@@ -171,7 +171,7 @@ export const closeModalApp =
             return dispatch(goto('suite-index'));
         }
 
-        const { location } = extra.routerServices.history;
+        const location = extra.routerServices.getLocation();
 
         if (!preserveParams && location.hash.length > 0) {
             extra.routerServices.navigate(getPrefixedURL(location.pathname));
@@ -188,7 +188,7 @@ export const closeModalApp =
 export const initialRedirection = createThunk(
     '@suite/initial-redirection',
     (_, { dispatch, getState, extra }) => {
-        const { location } = extra.routerServices.history;
+        const location = extra.routerServices.getLocation();
         const route = findRoute(location.pathname + location.hash);
 
         const { initialRun } = getState().suite.flags;

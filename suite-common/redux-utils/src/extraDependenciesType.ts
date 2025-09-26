@@ -3,7 +3,6 @@ import {
     ActionCreatorWithPreparedPayload,
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
-import type { History, Path } from 'history';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import {
@@ -36,6 +35,12 @@ type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload:
 type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
+
+type Path = {
+    pathname: string;
+    search: string;
+    hash: string;
+};
 
 export type To = string | Partial<Path>;
 
@@ -126,7 +131,12 @@ export type ExtraDependencies = {
         reportSecurityCheck: (props: ReportSecurityCheckProps) => void;
     };
     routerServices: {
-        history: History;
+        getLocation: () => {
+            // NOTE: this type is satisfied by the history from history package, it is not window.location
+            // but window.location does satisfies it, we can extend it depending of needs of using history object
+            pathname: string;
+            hash: string;
+        };
         navigate: (to: To, state?: LocationPushState) => void;
     };
 };

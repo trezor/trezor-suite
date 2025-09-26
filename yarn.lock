@@ -10583,7 +10583,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     core-js: "npm:^3.45.1"
     fake-indexeddb: "npm:^6.2.2"
-    history: "npm:^5.3.0"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
   languageName: unknown
