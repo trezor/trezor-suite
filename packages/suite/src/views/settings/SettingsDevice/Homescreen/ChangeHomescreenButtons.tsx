@@ -33,6 +33,7 @@ export const ChangeHomescreenButtons = ({
                 onClick={onImageUploadClick}
                 isDisabled={isDeviceLocked || !isSupportedHomescreen}
                 variant="primary"
+                size="small"
                 data-testid="@settings/device/homescreen-upload"
                 key="@settings/device/homescreen-upload"
             >
@@ -52,6 +53,7 @@ export const ChangeHomescreenButtons = ({
                 data-testid="@settings/device/homescreen-gallery"
                 key="@settings/device/homescreen-gallery"
                 variant="primary"
+                size="small"
             >
                 <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
             </Button>
