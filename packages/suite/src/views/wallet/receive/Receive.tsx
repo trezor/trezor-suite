@@ -2,7 +2,6 @@ import { selectPendingAccountAddresses, selectSelectedDevice } from '@suite-comm
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
@@ -11,6 +10,7 @@ import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 import { ConnectDeviceReceivePromo } from './components/ConnectDevicePromo';
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
+import { ConfirmEvmExplanationModal } from '../../../components/suite/modals/ConfirmEvmExplanationModal';
 
 export const Receive = () => {
     const isCoinjoinReceiveWarningHidden = useSelector(

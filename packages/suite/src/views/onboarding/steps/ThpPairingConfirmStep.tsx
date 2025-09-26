@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 
-import { ConfirmActionModal } from '../../../components/suite/modals';
+import { ConfirmActionModal } from '../../../components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
 import messages from '../../../support/messages';
 
 type ThpPairingConfirmStepParams = {

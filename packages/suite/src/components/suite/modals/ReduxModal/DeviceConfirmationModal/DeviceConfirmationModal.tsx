@@ -1,11 +1,11 @@
 import { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { NoBackupModal } from 'src/components/suite/modals';
 
 import { SelectAccountModal } from './SelectAccountModal';
 import { SelectFeeModal } from './SelectFeeModal';
 import type { ReduxModalProps } from '../ReduxModal';
+import { NoBackupModal } from './NoBackupModal';
 
 /** Modals requested from `trezor-connect` */
 export const DeviceConfirmationModal = ({

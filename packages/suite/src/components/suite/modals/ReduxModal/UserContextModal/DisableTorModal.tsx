@@ -8,10 +8,11 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
-import { AdvancedCoinSettingsModal } from 'src/components/suite/modals';
 import { useCustomBackends } from 'src/hooks/settings/backends';
 import { useDispatch } from 'src/hooks/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
+
+import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
 type DisableTorModalProps = Omit<Extract<UserContextPayload, { type: 'disable-tor' }>, 'type'> & {
     onCancel: () => void;

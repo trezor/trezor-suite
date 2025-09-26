@@ -7,8 +7,9 @@ import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/s
 import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
 import { SwitchDevice } from '../../../../views/suite/SwitchDevice/SwitchDevice';
 import { ConnectionGlobalModal } from '../../../connection/ConnectionGlobalModal';
-import { PassphraseModal, PassphraseOnDeviceModal } from '../../modals';
 import { ConfirmPassphraseBeforeAction } from '../../modals/ReduxModal/DeviceContextModal/ConfirmPassphraseBeforeAction';
+import { PassphraseModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModal';
+import { PassphraseOnDeviceModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseOnDeviceModal';
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
