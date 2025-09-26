@@ -28,3 +28,9 @@ export interface TransportProtocol {
     decode: TransportProtocolDecode;
     getHeaders: (data: Buffer) => [header: Buffer, chunkHeader: Buffer];
 }
+
+export {
+    TrezorPushNotificationType,
+    TrezorPushNotificationMode,
+    type DecodedTrezorPushNotification,
+} from './protocol-tpn/index';
