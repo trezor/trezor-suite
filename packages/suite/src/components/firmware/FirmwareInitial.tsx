@@ -25,7 +25,7 @@ import {
     OnboardingStepBox,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDevice, useOnboarding, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { PrerequisitesGuide, Translation } from '../suite';
@@ -115,12 +115,12 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
         : 'TR_FIRMWARE_SUBHEADING_UNKNOWN';
 };
 
-interface FirmwareInitialProps {
+type FirmwareInitialProps = {
     shouldSwitchFirmwareType?: boolean;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     onClose?: () => void;
-}
+};
 
 export const FirmwareInitial = ({
     shouldSwitchFirmwareType = false,
@@ -132,6 +132,7 @@ export const FirmwareInitial = ({
             shouldSwitchFirmwareType,
         });
     const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
+    const { translationString } = useTranslation();
     const devices = useSelector(selectDevices);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
@@ -255,7 +256,7 @@ export const FirmwareInitial = ({
                                 {chunks}
                             </TextButton>
                         ),
-                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                        bitcoinOnly: translationString('TR_FIRMWARE_TYPE_BITCOIN_ONLY'),
                     }}
                 />
             ),
