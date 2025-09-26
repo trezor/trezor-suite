@@ -34,10 +34,18 @@ const getDeviceNeedsAttentionMessage = (
             return 'TR_NEEDS_ATTENTION_UNAVAILABLE';
         case 'unreadable':
             return 'TR_NEEDS_ATTENTION_UNREADABLE';
-        case 'unacquired-thp-required':
+        case 'device-thp-locked':
             return 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED';
         case 'device-busy':
             return 'TR_NEEDS_ATTENTION_DEVICE_BUSY';
+        case 'device-bootloader-locked':
+            return 'TR_NEEDS_ATTENTION_DEVICE_BUSY'; // TODO
+        case 'device-hard-locked':
+            return 'TR_NEEDS_ATTENTION_DEVICE_BUSY'; // TODO
+        case 'device-pin-locked':
+            return 'TR_NEEDS_ATTENTION_DEVICE_BUSY'; // TODO
+        case 'device-rebooting':
+            return 'TR_NEEDS_ATTENTION_DEVICE_BUSY'; // TODO
 
         case 'connected':
         case 'disconnected':
@@ -59,7 +67,7 @@ const getDeviceStatusWarningVariant = (
         case 'was-used-in-other-window':
         case 'used-in-other-window':
         case 'unacquired':
-        case 'unacquired-thp-required':
+        case 'device-thp-locked':
             return 'info';
         case 'firmware-required':
             return 'destructive';
@@ -130,13 +138,17 @@ export const NeedsAttentionBanner = ({
             case 'was-used-in-other-window':
             case 'unacquired':
                 return () => dispatch(acquireDevice({ requestedDevice: device }));
-            case 'unacquired-thp-required':
+            case 'device-thp-locked':
                 return () => {
                     onCancel?.(false);
                     dispatch(acquireDevice({ requestedDevice: device }));
                 };
 
             case 'device-busy':
+            case 'device-rebooting':
+            case 'device-bootloader-locked':
+            case 'device-hard-locked':
+            case 'device-pin-locked':
                 return null;
 
             default:

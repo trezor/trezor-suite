@@ -9,7 +9,7 @@ export const getDeviceResolveStatusCTAMessage = (
             return 'TR_SELECT_DEVICE_SHORT';
         case 'initialize':
             return 'TR_CONTINUE_SETUP';
-        case 'unacquired-thp-required':
+        case 'device-thp-locked':
             return 'TR_TRY_AGAIN';
         case 'firmware-required':
             return 'TR_JUST_INSTALL';

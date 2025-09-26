@@ -18,7 +18,7 @@ export type PrerequisiteType =
     | 'device-disconnected'
     | 'device-disconnect-required'
     | 'device-used-elsewhere'
-    | 'device-unacquired-requires-thp'
+    | 'device-thp-locked'
     | 'device-unacquired'
     | 'device-unreadable'
     | 'device-unknown'
@@ -29,7 +29,11 @@ export type PrerequisiteType =
     | 'device-bootloader'
     | 'firmware-missing'
     | 'firmware-required'
-    | 'device-busy';
+    | 'device-busy'
+    | 'device-rebooting'
+    | 'device-bootloader-locked'
+    | 'device-hard-locked'
+    | 'device-pin-locked';
 
 export const getPrerequisiteName = ({
     router,
@@ -51,11 +55,15 @@ export const getPrerequisiteName = ({
         return 'device-used-elsewhere';
 
     if (device.status === 'busy') return 'device-busy';
+    if (device.status === 'rebooting') return 'device-rebooting';
+    if (device.status === 'bootloader-locked') return 'device-bootloader-locked';
+    if (device.status === 'hard-locked') return 'device-hard-locked';
+    if (device.status === 'pin-locked') return 'device-pin-locked';
 
     // Unacquired device with Trezor Host Protocol properties means
     // that the user must perform the Trezor Host Protocol paring
-    if (device.type === 'unacquired' && device.thp?.properties !== undefined) {
-        return 'device-unacquired-requires-thp';
+    if (device.status === 'thp-locked') {
+        return 'device-thp-locked';
     }
 
     // device features cannot be read, device is probably used in another window
