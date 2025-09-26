@@ -1,12 +1,17 @@
 import { useState } from 'react';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import { finishThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import { Translation } from '../../suite/Translation';
 
-export const ThpAutoconnectInfoModal = () => {
+type ThpAutoconnectInfoModalParams = {
+    device: TrezorDevice;
+};
+
+export const ThpAutoconnectInfoModal = ({ device }: ThpAutoconnectInfoModalParams) => {
     const [isLoading, setIsLoading] = useState(false);
     const { isLocked } = useDevice();
     const dispatch = useDispatch();
@@ -14,11 +19,11 @@ export const ThpAutoconnectInfoModal = () => {
 
     const onTurnOn = () => {
         setIsLoading(true);
-        dispatch(startThpAutoconnectThunk());
+        dispatch(startThpAutoconnectThunk({ device }));
     };
 
     const onCancel = () => {
-        dispatch(finishThpAutoconnectThunk());
+        dispatch(finishThpAutoconnectThunk({ path: device.path }));
     };
 
     return (

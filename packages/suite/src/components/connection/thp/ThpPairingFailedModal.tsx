@@ -1,16 +1,20 @@
 import { useState } from 'react';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Column, Modal, Paragraph } from '@trezor/components';
 
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
-import { useDevice, useDispatch, useSelector } from '../../../hooks/suite';
+import { useDispatch, useSelector } from '../../../hooks/suite';
 import { Translation } from '../../suite/Translation';
 
-export const ThpPairingFailedModal = () => {
+type ThpPairingFailedModalParams = {
+    device: TrezorDevice;
+};
+
+export const ThpPairingFailedModal = ({ device }: ThpPairingFailedModalParams) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { device } = useDevice();
     const dispatch = useDispatch();
     const lastThpCode = useSelector(state => state.thp.lastThpCode);
 
@@ -21,7 +25,7 @@ export const ThpPairingFailedModal = () => {
     };
 
     const onCancel = () => {
-        dispatch(thpActions.finishThpFlow());
+        dispatch(thpActions.finishThpFlow({ path: device.path }));
     };
 
     return (

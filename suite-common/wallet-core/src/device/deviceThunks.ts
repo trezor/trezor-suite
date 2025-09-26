@@ -205,7 +205,7 @@ export const acquireDevice = createThunk(
 
         if (!response.success) {
             if (response.payload.code === 'Device_ThpPairingTagInvalid') {
-                dispatch(thpActions.invalidCode());
+                dispatch(thpActions.invalidCode({ path: device.path }));
             } else {
                 dispatch(
                     notificationsActions.addToast({
@@ -215,7 +215,7 @@ export const acquireDevice = createThunk(
                     }),
                 );
                 if (device?.thp !== undefined) {
-                    dispatch(thpActions.cancelThpFlow());
+                    dispatch(thpActions.cancelThpFlow({ path: device.path }));
                 }
             }
         } else if (startDiscovery) {

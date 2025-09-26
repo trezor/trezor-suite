@@ -8,7 +8,7 @@ import { selectThpCredentials } from './thpSelectors';
 const NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT = 3;
 
 type ConnectThpDeviceThinkParams = {
-    device: Pick<Device, 'thp'>;
+    device: Pick<Device, 'thp' | 'path'>;
 };
 
 export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkParams, void>(
@@ -42,11 +42,11 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
 
             dispatch(
                 shallShowAutoConnectDialog
-                    ? thpActions.showAutoconnectInfo()
-                    : thpActions.finishThpFlow(),
+                    ? thpActions.showAutoconnectInfo({ path: device.path })
+                    : thpActions.finishThpFlow({ path: device.path }),
             );
         } else {
-            dispatch(thpActions.finishThpFlow());
+            dispatch(thpActions.finishThpFlow({ path: device.path }));
         }
     },
 );

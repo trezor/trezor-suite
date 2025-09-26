@@ -1,20 +1,18 @@
 import { createThunk } from '@suite-common/redux-utils/';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { finishThpAutoconnectThunk } from './finishThpAutoconnectThunk';
 import { THP_PREFIX, thpActions } from './thpActions';
 
-export const startThpAutoconnectThunk = createThunk<void, void, void>(
+type StartThpAutoconnectThunkParam = {
+    device: TrezorDevice;
+};
+
+export const startThpAutoconnectThunk = createThunk<void, StartThpAutoconnectThunkParam, void>(
     `${THP_PREFIX}/startThpAutoconnectThunk`,
-    async (_, { getState, dispatch }) => {
-        const device = selectSelectedDevice(getState());
-
-        if (device === undefined) {
-            return;
-        }
-
+    async ({ device }, { dispatch }) => {
         const response = await TrezorConnect.thpGetCredentials({ device });
 
         if (response.success) {
@@ -24,6 +22,6 @@ export const startThpAutoconnectThunk = createThunk<void, void, void>(
                 notificationsActions.addToast({ type: 'error', error: response.payload.error }),
             );
         }
-        dispatch(finishThpAutoconnectThunk());
+        dispatch(finishThpAutoconnectThunk({ path: device.path }));
     },
 );

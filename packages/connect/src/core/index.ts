@@ -289,6 +289,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
                 enhanceMessageWithAnalytics(
                     createUiMessage(UI.REQUEST_CONFIRMATION, {
                         view: 'no-backup',
+                        device: device.toMessageObject(),
                     }),
                     { device: device.toMessageObject() },
                 ),

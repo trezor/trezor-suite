@@ -22,15 +22,17 @@ export const ConnectionGlobalModal = ({ showThpModals = true }: ConnectionGlobal
     const dispatch = useDispatch();
     const isConnectDeviceModalOpen = useSelector(selectIsConnectionModalOpen);
     const device = useSelector(selectSelectedDevice);
-    const thpStep = useSelector(selectThpStep);
+    const thpStepState = useSelector(selectThpStep);
 
     const closeConnectionModal = () => {
         dispatch(setConnectionModal(false));
     };
 
+    const thpStep = device !== undefined ? thpStepState[device.path] : null;
+
     // handle THP modals first if we have a device and thpStep
     if (device !== undefined && thpStep !== null && showThpModals) {
-        switch (thpStep) {
+        switch (thpStep.step) {
             case 'BeforeConnectionInfo':
                 return null;
             case 'ConfirmConnectionBeforePairing':
@@ -38,15 +40,15 @@ export const ConnectionGlobalModal = ({ showThpModals = true }: ConnectionGlobal
             case 'ConfirmOnlyConnection':
                 return <ThpConnectionModal device={device} />;
             case 'CodeEntry':
-                return <ThpPairingPinEntryModal />;
+                return <ThpPairingPinEntryModal device={device} />;
             case 'CodeInvalid':
-                return <ThpPairingFailedModal />;
+                return <ThpPairingFailedModal device={device} />;
             case 'AutoconnectInfo':
-                return <ThpAutoconnectInfoModal />;
+                return <ThpAutoconnectInfoModal device={device} />;
             case 'Autoconnect':
                 return <ThpAutoconnectionModal device={device} />;
             default:
-                return exhaustive(thpStep);
+                return exhaustive(thpStep.step);
         }
     }
 

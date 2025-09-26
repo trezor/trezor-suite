@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 import { Box, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -9,13 +10,17 @@ import messages from '../../../../../support/messages';
 import { ThpPairingCodeEntry } from '../../../../connection/thp/ThpPairingCodeEntry';
 import { Translation } from '../../../Translation';
 
-export const ThpPairingPinEntryModal = () => {
+type ThpPairingPinEntryModalParams = {
+    device: TrezorDevice;
+};
+
+export const ThpPairingPinEntryModal = ({ device }: ThpPairingPinEntryModalParams) => {
     const intl = useIntl();
     const dispatch = useDispatch();
 
     const onCancel = () => {
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
-        dispatch(thpActions.finishThpFlow());
+        dispatch(thpActions.finishThpFlow({ path: device.path }));
     };
 
     return (

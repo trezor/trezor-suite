@@ -77,6 +77,13 @@ export type FirmwareHashCheckResult =
           errorPayload?: unknown;
       };
 
+/**
+ * The Unique Device Identifier per Suite run & Connected Device.
+ * When Suite is restarted or the Device is reconnected this will change.
+ *
+ * The main reason for this identifier is to reference device which is unacquired
+ * and therefore has no `id` yet. Typical use case is THP pairing
+ */
 export type DeviceUniquePath = string & Branded<'DeviceUniquePath'>;
 export const DeviceUniquePath = (id: string) => id as DeviceUniquePath;
 

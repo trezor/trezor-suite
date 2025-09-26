@@ -6,7 +6,9 @@ import {
     DEVICE,
     DeviceButtonRequest,
     DeviceThpCredentialsChanged,
+    DeviceUniquePath,
     UI,
+    UiRequestButton,
     UiRequestConfirmation,
     UiRequestThpPairing,
 } from '@trezor/connect';
@@ -33,11 +35,10 @@ export type ThpStep =
     | 'AutoconnectInfo'
     | 'Autoconnect'
     // Currently relevant only for Firmware Update / Custom Firmware & Onboarding Firmware
-    | 'BeforeConnectionInfo'
-    | null;
+    | 'BeforeConnectionInfo';
 
 export type ThpState = {
-    step: ThpStep;
+    step: Record<DeviceUniquePath, { step: ThpStep } | null>;
     lastThpCode?: string;
     credentials: ThpSuiteCredentials[];
     // staticKey for the application.
@@ -46,7 +47,7 @@ export type ThpState = {
 };
 
 export const initialThpState: ThpState = {
-    step: null,
+    step: {},
     lastThpCode: undefined,
     credentials: [] as ThpSuiteCredentials[],
 };
@@ -55,14 +56,14 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
     initialThpState,
     (builder, extra) =>
         builder
-            .addCase(thpActions.invalidCode, state => {
-                state.step = 'CodeInvalid';
+            .addCase(thpActions.invalidCode, (state, { payload }) => {
+                state.step[payload.path] = { step: 'CodeInvalid' };
             })
             .addCase(thpActions.setLastThpCode, (state, { payload }) => {
                 state.lastThpCode = payload.code;
             })
-            .addCase(thpActions.showAutoconnectInfo, state => {
-                state.step = 'AutoconnectInfo';
+            .addCase(thpActions.showAutoconnectInfo, (state, { payload }) => {
+                state.step[payload.path] = { step: 'AutoconnectInfo' };
             })
             .addCase(thpActions.incrementCredentialConnectionCounter, (state, { payload }) => {
                 const credentialToUpdate = state.credentials.find(
@@ -88,13 +89,16 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             .addCase(thpActions.removeAllCredentials, state => {
                 state.credentials = [];
             })
-            .addMatcher(isAnyOf(thpActions.finishThpFlow, thpActions.cancelThpFlow), state => {
-                state.step = null;
-            })
+            .addMatcher(
+                isAnyOf(thpActions.finishThpFlow, thpActions.cancelThpFlow),
+                (state, { payload }) => {
+                    state.step[payload.path] = null;
+                },
+            )
             .addMatcher(
                 action => action.type === UI.REQUEST_THP_PAIRING,
-                state => {
-                    state.step = 'CodeEntry';
+                (state, { payload }: UiRequestThpPairing) => {
+                    state.step[payload.device.path] = { step: 'CodeEntry' };
                 },
             )
             .addMatcher(
@@ -111,17 +115,18 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             )
             .addMatcher(
                 action => action.type === UI.REQUEST_BUTTON,
-                (state, action: AnyAction) => {
-                    const actionName: THPButtonRequestName = action.payload.name;
+                (state, action: UiRequestButton) => {
+                    const devicePath = action.payload.device.path;
+                    const actionName = action.payload.name as THPButtonRequestName;
                     switch (actionName) {
                         case 'thp_pairing_request':
-                            state.step = 'ConfirmConnectionBeforePairing';
+                            state.step[devicePath] = { step: 'ConfirmConnectionBeforePairing' };
                             break;
                         case 'thp_connection_request':
-                            state.step = 'ConfirmOnlyConnection';
+                            state.step[devicePath] = { step: 'ConfirmOnlyConnection' };
                             break;
                         case 'thp_autoconnect_credential_request':
-                            state.step = 'Autoconnect';
+                            state.step[devicePath] = { step: 'Autoconnect' };
                             break;
                     }
                 },
@@ -130,26 +135,28 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             .addMatcher<DeviceButtonRequest | UiRequestThpPairing | UiRequestConfirmation>(
                 action => action.type === UI.REQUEST_CONFIRMATION || action.type === DEVICE.BUTTON,
                 (state, action) => {
+                    const devicePath = action.payload.device.path;
+
                     // The THP device is ready for pairing, wait for user action
                     if (action.type === UI.REQUEST_CONFIRMATION) {
                         if (action.payload.view === 'thp-pairing-start') {
-                            state.step = 'BeforeConnectionInfo';
+                            state.step[devicePath] = { step: 'BeforeConnectionInfo' };
                         }
                         if (action.payload.view === 'thp-pairing-failed') {
-                            state.step = 'CodeInvalid';
+                            state.step[devicePath] = { step: 'CodeInvalid' };
                         }
                     }
 
                     // Handle button requests in the THP pairing
                     if (action.type === DEVICE.BUTTON) {
                         if (action.payload.name === 'thp_pairing_request') {
-                            state.step = 'ConfirmConnectionBeforePairing';
+                            state.step[devicePath] = { step: 'ConfirmConnectionBeforePairing' };
                         }
                         if (action.payload.name === 'thp_connection_request') {
-                            state.step = 'ConfirmOnlyConnection';
+                            state.step[devicePath] = { step: 'ConfirmOnlyConnection' };
                         }
                         if (action.payload.name === 'thp_autoconnect_credential_request') {
-                            state.step = 'Autoconnect';
+                            state.step[devicePath] = { step: 'Autoconnect' };
                         }
                     }
                 },

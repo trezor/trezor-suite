@@ -12,7 +12,7 @@ export const ThpAutoconnectionModal = ({ device }: ThpAutoconnectionModalProps) 
     const dispatch = useDispatch();
 
     const onCancel = () => {
-        dispatch(thpActions.finishThpFlow());
+        dispatch(thpActions.finishThpFlow({ path: device.path }));
     };
 
     return (
