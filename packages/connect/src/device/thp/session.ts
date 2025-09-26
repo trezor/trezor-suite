@@ -5,7 +5,7 @@ import { thpCall } from './thpCall';
 
 export const createThpSession = async (device: Device, deriveCardano: boolean) => {
     let passphrase: protocolThp.ThpCreateNewSession;
-    if (!device.features.passphrase_protection) {
+    if (device.features.passphrase_protection === false) {
         passphrase = { passphrase: '' };
     } else {
         // same flow as DeviceCurrentSession PassphraseRequest
