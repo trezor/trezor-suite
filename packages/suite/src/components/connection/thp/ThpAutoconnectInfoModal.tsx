@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { finishThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
-import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { Card, Modal, Paragraph } from '@trezor/components';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import { Translation } from '../../suite/Translation';
@@ -33,6 +33,7 @@ export const ThpAutoconnectInfoModal = ({ device }: ThpAutoconnectInfoModalParam
     return (
         <Modal
             data-testid="@modal/thp-autoconnect-info"
+            heading={<Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER" />}
             bottomContent={
                 <>
                     <Modal.Button
@@ -47,18 +48,12 @@ export const ThpAutoconnectInfoModal = ({ device }: ThpAutoconnectInfoModalParam
                 </>
             }
             onCancel={onCancel}
-            size="small"
-            variant="info"
-            iconName="bluetooth"
         >
-            <Column gap={4}>
-                <H3>
-                    <Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER" />
-                </H3>
-                <Paragraph variant="tertiary">
+            <Card>
+                <Paragraph>
                     <Translation id="TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION" />
                 </Paragraph>
-            </Column>
+            </Card>
         </Modal>
     );
 };
