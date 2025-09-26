@@ -12,6 +12,11 @@ export type DeviceConnectionStatusChangeEvent = {
     connectionStatus: DeviceConnectionStatus;
 };
 
+export type DevicePushNotificationEvent = {
+    deviceId: string;
+    data: number[];
+};
+
 export interface BluetoothDevice {
     id: string;
     name: string;

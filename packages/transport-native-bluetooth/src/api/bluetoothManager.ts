@@ -16,7 +16,11 @@ import { EventEmitter } from 'events';
 import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
 import type { TimerId } from '@trezor/type-utils';
 
-import { BluetoothDevice, DeviceConnectionStatusChangeEvent } from './types';
+import {
+    BluetoothDevice,
+    DeviceConnectionStatusChangeEvent,
+    DevicePushNotificationEvent,
+} from './types';
 
 type DeviceId = string;
 
@@ -26,14 +30,16 @@ type BleDeviceWithMetadata = {
 };
 
 const eventNames = {
-    deviceConnectionStatusChange: 'deviceConnectionStatusChange',
     nearbyDevicesChange: 'nearbyDevicesChange',
-};
+    deviceConnectionStatusChange: 'deviceConnectionStatusChange',
+    devicePushNotification: 'devicePushNotification',
+} as const;
 
 // UUID of the Bluetooth service used to identify a BLE device as Trezor.
 const SERVICE_UUID = '8c000001-a59b-4d58-a9ad-073df69fa1b1';
 const WRITE_CHARACTERISTIC_UUID = '8c000002-a59b-4d58-a9ad-073df69fa1b1';
 const NOTIFY_CHARACTERISTIC_UUID = '8c000003-a59b-4d58-a9ad-073df69fa1b1';
+const PUSH_CHARACTERISTIC_UUID = '8c000004-a59b-4d58-a9ad-073df69fa1b1';
 
 const DEBUG_LOGS = false;
 
@@ -48,11 +54,13 @@ const errorLog = (...args: any[]) => {
     console.error('BluetoothManager', ...args);
 };
 
+const base64ToByteArray = (value: string) => Array.from(Buffer.from(value, 'base64'));
+
 const toBluetoothDevice = (device: Device): BluetoothDevice => ({
     id: device.id,
     name: device.name ?? 'Unknown',
     // @suite-common utils expect the Bluetooth company identifier (first two bytes) to be trimmed
-    manufacturerData: Array.from(Buffer.from(device.manufacturerData ?? '', 'base64')).slice(2),
+    manufacturerData: base64ToByteArray(device.manufacturerData ?? '').slice(2),
     lastUpdatedTimestamp: Date.now(),
     connectionStatus: { type: 'disconnected' },
 });
@@ -80,26 +88,26 @@ class BluetoothManager {
 
     public onNearbyDevicesChange = (
         listener: (nearbyDevices: BluetoothDevice[]) => void,
-    ): Subscription => {
-        this.eventEmitter.on(eventNames.nearbyDevicesChange, listener);
+    ): Subscription => this.subscribeTo(eventNames.nearbyDevicesChange, listener);
+
+    public onDeviceConnectionStatusChange = (
+        listener: (event: DeviceConnectionStatusChangeEvent) => void,
+    ): Subscription => this.subscribeTo(eventNames.deviceConnectionStatusChange, listener);
+
+    public onDevicePushNotification = (
+        listener: (event: DevicePushNotificationEvent) => void,
+    ): Subscription => this.subscribeTo(eventNames.devicePushNotification, listener);
+
+    private subscribeTo = (eventName: keyof typeof eventNames, listener: (arg: any) => void) => {
+        this.eventEmitter.on(eventName, listener);
 
         return {
-            remove: () => this.eventEmitter.off(eventNames.nearbyDevicesChange, listener),
+            remove: () => this.eventEmitter.off(eventName, listener),
         };
     };
 
     private emitNearbyDevicesChange = () => {
         this.eventEmitter.emit(eventNames.nearbyDevicesChange, this.nearbyDevices);
-    };
-
-    public onDeviceConnectionStatusChange = (
-        listener: (event: DeviceConnectionStatusChangeEvent) => void,
-    ): Subscription => {
-        this.eventEmitter.on(eventNames.deviceConnectionStatusChange, listener);
-
-        return {
-            remove: () => this.eventEmitter.off(eventNames.deviceConnectionStatusChange, listener),
-        };
     };
 
     private updateDeviceConnectionStatusChange = (event: DeviceConnectionStatusChangeEvent) => {
@@ -113,6 +121,10 @@ class BluetoothManager {
         // TODO: Do not emit any other events when the connection status is pairing-error?
         this.eventEmitter.emit(eventNames.deviceConnectionStatusChange, event);
         this.emitNearbyDevicesChange();
+    };
+
+    private emitDevicePushNotification = (event: DevicePushNotificationEvent) => {
+        this.eventEmitter.emit(eventNames.devicePushNotification, event);
     };
 
     public startDeviceScan = (errorHandler?: (error: BleError) => void) => {
@@ -302,25 +314,23 @@ class BluetoothManager {
     private discoverAndTestCharacteristics = async (device: Device) => {
         await device.discoverAllServicesAndCharacteristics();
 
-        const characteristics: Characteristic[] =
-            await device.characteristicsForService(SERVICE_UUID);
-        if (characteristics.length === 0) {
-            throw new Error(
-                'No device characteristics found. Make sure the device is connected and has the correct service UUID.',
-            );
-        }
+        const characteristics = await device.characteristicsForService(SERVICE_UUID);
 
         let writeCharacteristic: Characteristic | undefined;
         let notifyCharacteristic: Characteristic | undefined;
+        let pushCharacteristic: Characteristic | undefined;
         for (const characteristic of characteristics) {
             if (characteristic.uuid === WRITE_CHARACTERISTIC_UUID) {
-                debugLog('Found write characteristic: ', characteristic.uuid);
+                debugLog('Found write characteristic', characteristic.uuid);
                 writeCharacteristic = characteristic;
             } else if (characteristic.uuid === NOTIFY_CHARACTERISTIC_UUID) {
-                debugLog('Found notify characteristic: ', characteristic.uuid);
+                debugLog('Found notify characteristic', characteristic.uuid);
                 notifyCharacteristic = characteristic;
+            } else if (characteristic.uuid === PUSH_CHARACTERISTIC_UUID) {
+                debugLog('Found push characteristic', characteristic.uuid);
+                pushCharacteristic = characteristic;
             } else {
-                debugLog('Found other unknown characteristic: ', characteristic.uuid);
+                debugLog('Found other unknown characteristic', characteristic.uuid);
             }
         }
 
@@ -329,6 +339,9 @@ class BluetoothManager {
         }
         if (!notifyCharacteristic) {
             throw new Error('Notify characteristic not found.');
+        }
+        if (!pushCharacteristic) {
+            throw new Error('Push characteristic not found.');
         }
 
         try {
@@ -345,24 +358,15 @@ class BluetoothManager {
             throw error;
         }
 
-        device.monitorCharacteristicForService(
-            SERVICE_UUID,
-            notifyCharacteristic.uuid,
-            (error, characteristic) => {
-                if (error) {
-                    debugLog('Error monitoring characteristic', error);
-                } else if (characteristic) {
-                    const { value } = characteristic;
-                    debugLog('Received data', value);
-                    if (value) {
-                        debugLog('Processing device message', device.id, value);
-                        this.readBuffer.onMessage(device.id, Buffer.from(value, 'base64'));
-                    }
-                } else {
-                    errorLog('No characteristic received');
-                }
-            },
-        );
+        this.monitorCharacteristic(notifyCharacteristic, 'notify', (value: string) => {
+            this.readBuffer.onMessage(device.id, Buffer.from(value, 'base64'));
+        });
+        this.monitorCharacteristic(pushCharacteristic, 'push', (value: string) => {
+            this.emitDevicePushNotification({
+                deviceId: device.id,
+                data: base64ToByteArray(value),
+            });
+        });
 
         debugLog(`Adding device ${device.id} to connected devices`);
         this.connectedDevices[device.id] = {
@@ -391,6 +395,24 @@ class BluetoothManager {
             clearTimeout(timeoutId);
         }
     };
+
+    private monitorCharacteristic = (
+        characteristicToMonitor: Characteristic,
+        name: 'notify' | 'push',
+        callback: (value: string) => void,
+    ) =>
+        characteristicToMonitor.monitor((error, characteristic) => {
+            if (error) {
+                debugLog(`Error monitoring ${name} characteristic:`, error);
+            } else if (characteristic) {
+                const { deviceID, value } = characteristic;
+                debugLog(`Received ${name} characteristic data:`, value);
+                if (value) {
+                    debugLog(`Processing message for device ${deviceID}:`, value);
+                    callback(value);
+                }
+            }
+        });
 
     public disconnectDevice = ({ deviceId }: { deviceId: DeviceId }) => {
         debugLog(`Disconnecting device ${deviceId}`);
