@@ -190,7 +190,7 @@ const connectDevice = (draft: DeviceReducerState, device: Device) => {
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
             if (
-                d.useEmptyPassphrase === true &&
+                d.useEmptyPassphrase !== true &&
                 isUnlocked(device.features) &&
                 !features.passphrase_protection
             ) {
