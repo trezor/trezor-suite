@@ -41,7 +41,9 @@ export const confirmBuyTradeThunk = createThunk(
 
         const buyTrade = quote ?? selectedQuote;
 
-        if (!buyTrade) return undefined;
+        if (!buyTrade) {
+            return undefined;
+        }
 
         dispatch(tradingBuyActions.setIsLoading(true));
 
@@ -68,7 +70,9 @@ export const confirmBuyTradeThunk = createThunk(
             dispatch(tradingBuyActions.setIsLoading(false));
 
             return undefined;
-        } else if (response.trade.error) {
+        }
+
+        if (response.trade.error) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
@@ -79,21 +83,21 @@ export const confirmBuyTradeThunk = createThunk(
             dispatch(tradingBuyActions.setIsLoading(false));
 
             return undefined;
-        } else {
-            dispatch(
-                tradingActions.saveTrade({
-                    tradeType: 'buy',
-                    date: new Date().toISOString(),
-                    key: response.trade.paymentId,
-                    data: response.trade,
-                    receiveAccountKey,
-                    selectedAccountKey: account.key,
-                }),
-            );
-
-            // response.tradeForm.form should be processed in this callback
-            processResponseData(response);
         }
+
+        dispatch(
+            tradingActions.saveTrade({
+                tradeType: 'buy',
+                date: new Date().toISOString(),
+                key: response.trade.paymentId,
+                data: response.trade,
+                receiveAccountKey,
+                selectedAccountKey: account.key,
+            }),
+        );
+
+        // response.tradeForm.form should be processed in this callback
+        processResponseData(response);
 
         dispatch(tradingBuyActions.setIsLoading(false));
 

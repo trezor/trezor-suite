@@ -26,7 +26,6 @@ import {
     useReceiveAccountsListData,
 } from '../../../hooks/general/useReceiveAccountsListData';
 import { useSectionList } from '../../../hooks/general/useSectionList';
-import { buyActions, exchangeActions } from '../../../reducers';
 import { selectBuySelectedReceiveAccount } from '../../../selectors/buySelectors';
 import { selectExchangeSelectedReceiveAccount } from '../../../selectors/exchangeSelectors';
 import { ReceiveAccount } from '../../../types/general';
@@ -89,8 +88,8 @@ export const AccountList = ({
                 : tradingExchangeActions.setReceiveAccountKey(receiveAccount.account.key);
         const addressAction =
             tradingType === 'buy'
-                ? buyActions.setReceiveAddress(receiveAccount.address?.address)
-                : exchangeActions.setReceiveAddress(receiveAccount.address?.address);
+                ? tradingBuyActions.setReceiveAddress(receiveAccount.address?.address)
+                : tradingExchangeActions.setReceiveAddress(receiveAccount.address?.address);
         dispatch(accountAction);
         dispatch(addressAction);
         const hasAddresses = receiveAccount.account.addresses;
