@@ -11,6 +11,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
+import { getDeviceResolveStatusCTAMessage } from '../getDeviceResolveStatusCTAMessage';
 
 type DeviceStatusTextProps = {
     onRefreshClick?: MouseEventHandler;
@@ -69,7 +70,7 @@ export const DeviceStatusText = ({
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
 
-    if (connected && needsAttention && onRefreshClick) {
+    if (connected && needsAttention && onRefreshClick !== undefined) {
         return (
             <DeviceConnectionText
                 variant="warning"
@@ -77,8 +78,9 @@ export const DeviceStatusText = ({
                 data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
                 data-testid-alt="@deviceStatus"
                 isAction
+                onClick={onRefreshClick}
             >
-                <Translation id="TR_SOLVE_ISSUE" />
+                <Translation id={getDeviceResolveStatusCTAMessage(deviceStatus)} />
             </DeviceConnectionText>
         );
     }
