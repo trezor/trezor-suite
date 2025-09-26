@@ -4,21 +4,6 @@ import quotes from '../../__fixtures__/buyQuotes.json';
 import { TradingBuyState, buyActions, buyInitialState, buyReducer } from '../buySlice';
 
 describe('buySlice', () => {
-    describe('setReceiveAddress', () => {
-        it('should set buy receive address', () => {
-            const address = 'bc1qxyz';
-            const state = buyReducer(undefined, buyActions.setReceiveAddress(address));
-
-            expect(state.receiveAddress).toEqual(address);
-        });
-
-        it('should set buy receive address to undefined', () => {
-            const state = buyReducer(undefined, buyActions.setReceiveAddress(undefined));
-
-            expect(state.receiveAddress).toBeUndefined();
-        });
-    });
-
     describe('clearState', () => {
         it('should clear buy state', () => {
             const prevState: TradingBuyState = {

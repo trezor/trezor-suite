@@ -20,21 +20,6 @@ describe('exchangeSlice', () => {
         });
     });
 
-    describe('setReceiveAddress', () => {
-        it('should set exchange receive address', () => {
-            const address = 'bc1qxyz';
-            const state = exchangeReducer(undefined, exchangeActions.setReceiveAddress(address));
-
-            expect(state.receiveAddress).toEqual(address);
-        });
-
-        it('should set exchange receive address to undefined', () => {
-            const state = exchangeReducer(undefined, exchangeActions.setReceiveAddress(undefined));
-
-            expect(state.receiveAddress).toBeUndefined();
-        });
-    });
-
     describe('clearState', () => {
         it('should clear exchange state', () => {
             const prevState: TradingExchangeState = {

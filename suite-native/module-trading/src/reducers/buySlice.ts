@@ -1,10 +1,10 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { TradingBuyState as CommonTradingBuyState, initialState } from '@suite-common/trading';
 
 export interface TradingBuyState extends CommonTradingBuyState {}
 
-export const buyInitialState: TradingBuyState = { ...initialState.buy };
+export const buyInitialState: TradingBuyState = initialState.buy;
 
 export const TRADING_BUY = 'tradingBuy';
 
@@ -12,9 +12,6 @@ const buySlice = createSlice({
     name: TRADING_BUY,
     initialState: buyInitialState,
     reducers: {
-        setReceiveAddress: (state, { payload }: PayloadAction<string | undefined>) => {
-            state.receiveAddress = payload;
-        },
         clearState: state => {
             state.tradingAccountKey = undefined;
             state.receiveAddress = undefined;

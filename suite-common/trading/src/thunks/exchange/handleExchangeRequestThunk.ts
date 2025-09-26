@@ -45,7 +45,6 @@ export const getQuoteRequestData = ({
             : unformattedOutputAmount;
 
     if (
-        !receiveAddress ||
         !receiveCryptoSelect?.value ||
         !sendCryptoSelect?.value ||
         !sendStringAmount ||
