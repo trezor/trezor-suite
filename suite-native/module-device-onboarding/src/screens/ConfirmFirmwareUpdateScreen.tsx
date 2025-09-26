@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useSetAtom } from 'jotai';
 
 import { selectHasDeviceFirmwareInstalled } from '@suite-common/wallet-core';
-import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
+import { selectIsDeviceFirmwareSupported, useDeviceLowBatteryAlert } from '@suite-native/device';
 import {
     ConfirmFirmwareUpdateScreenContent,
     ConfirmFirmwareUpdateScreenFooter,
@@ -27,12 +27,18 @@ export const ConfirmFirmwareUpdateScreen = ({
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
 
+    const { showLowBatteryAlertIfNecessary } = useDeviceLowBatteryAlert();
+
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
     const { navigateToNextScreenAfterFirmwareInstallation } =
         useNavigateToNextScreenAfterFirmwareInstallation();
 
     const handleUpdateConfirmation = () => {
+        if (showLowBatteryAlertIfNecessary()) {
+            return;
+        }
+
         updateOnboardingAnalytics({
             firmware: hasDeviceFirmwareInstalled ? 'update' : 'install',
         });
