@@ -41,6 +41,9 @@ export type ConnectionGlobalModalContextProps = {
     bluetoothMode: boolean;
     showHints: boolean;
     shouldPairAgain: boolean;
+    openShowRemoveFromOsBluetooth: () => void;
+    closeShowRemoveFromOsBluetooth: () => void;
+    showRemoveFromOsBluetooth: boolean;
 };
 
 const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalContextProps>({
@@ -56,6 +59,9 @@ const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalCon
     bluetoothMode: false,
     showHints: false,
     shouldPairAgain: false,
+    openShowRemoveFromOsBluetooth: () => {},
+    closeShowRemoveFromOsBluetooth: () => {},
+    showRemoveFromOsBluetooth: false,
 });
 
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
@@ -66,6 +72,7 @@ const useConnectionGlobalModal = () => {
     const scannerTimerId = useRef<TimerId | null>(null);
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
     const [shouldPairAgain, setShouldPairAgain] = useState(false);
+    const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);
 
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
 
@@ -84,6 +91,15 @@ const useConnectionGlobalModal = () => {
 
     const toggleShouldPairAgain = () => {
         setShouldPairAgain(!shouldPairAgain);
+    };
+
+    const openShowRemoveFromOsBluetooth = () => {
+        setShowRemoveFromOsBluetooth(!showRemoveFromOsBluetooth);
+    };
+
+    const closeShowRemoveFromOsBluetooth = () => {
+        setShowRemoveFromOsBluetooth(false);
+        toggleShouldPairAgain();
     };
 
     const allDevices = useSelector(selectAllDevices);
@@ -204,6 +220,9 @@ const useConnectionGlobalModal = () => {
         handleBluetoothConnectionCancel,
         onConnect,
         onReScanClick,
+        openShowRemoveFromOsBluetooth,
+        closeShowRemoveFromOsBluetooth,
+        showRemoveFromOsBluetooth,
     };
 };
 

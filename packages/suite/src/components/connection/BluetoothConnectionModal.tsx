@@ -1,11 +1,8 @@
-import { useState } from 'react';
-
-import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
+import { selectNearbyDevices } from '@suite-common/bluetooth';
 import { Modal } from '@trezor/components';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { Translation } from 'src/components/suite/Translation';
-import { BluetoothDeviceList } from 'src/components/suite/bluetooth/BluetoothDeviceList';
 import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
@@ -22,28 +19,16 @@ const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
 export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalProps) => {
     const {
-        toggleShouldPairAgain,
         handlePairingCancel,
         onReScanClick,
         onConnect,
-        handleBluetoothConnectionCancel,
         devices,
         selectedDevice,
+        showRemoveFromOsBluetooth,
+        closeShowRemoveFromOsBluetooth,
     } = useConnectionGlobalModalContext();
     const connectingDevices = useSelector(selectConnectingDevices);
     const nearbyDevices = useSelector(selectNearbyDevices);
-    const knownDevices = useSelector(selectKnownDevices);
-
-    const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);
-
-    const openShowRemoveFromOsBluetooth = () => {
-        setShowRemoveFromOsBluetooth(!showRemoveFromOsBluetooth);
-    };
-
-    const closeShowRemoveFromOsBluetooth = () => {
-        setShowRemoveFromOsBluetooth(false);
-        toggleShouldPairAgain();
-    };
 
     if (showRemoveFromOsBluetooth) {
         return <UnpairBluetoothDeviceFromOsModal onFinish={closeShowRemoveFromOsBluetooth} />;
@@ -95,6 +80,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
                 size="small"
             >
+                is it this for fuck sake?
                 <BluetoothScanningList
                     devices={devices}
                     onConnect={onConnect}
@@ -103,26 +89,6 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
             </Modal>
         );
     }
-
-    // if there are no nearby devices, but we do have a known device -> pair again
-    if (nearbyDevices && nearbyDevices.length === 0 && knownDevices && knownDevices.length > 0) {
-        return (
-            <Modal
-                onCancel={handleBluetoothConnectionCancel}
-                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
-                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
-                size="small"
-            >
-                <BluetoothDeviceList
-                    deviceList={knownDevices}
-                    onConnect={onConnect}
-                    isScanning={false}
-                    onPairAgain={openShowRemoveFromOsBluetooth}
-                />
-            </Modal>
-        );
-    }
-
     console.log('hello?');
 
     return null;

@@ -1,6 +1,10 @@
 import { useTheme } from 'styled-components';
 
-import { selectAdapterStatus } from '@suite-common/bluetooth';
+import {
+    selectAdapterStatus,
+    selectKnownDevices,
+    selectNearbyDevices,
+} from '@suite-common/bluetooth';
 import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
@@ -17,6 +21,7 @@ import { BluetoothConnectionModal } from './BluetoothConnectionModal';
 import { CantSeeTrezorModal } from './CantSeeTrezorModal';
 import { CableConnectionAnimation } from './DeviceConnectionAnimation';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
+import { BluetoothDeviceList } from '../suite/bluetooth/BluetoothDeviceList';
 
 type DontSeeTrezorPillProps = {
     onClick: () => void;
@@ -69,6 +74,9 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         bluetoothMode,
         showHints,
         shouldPairAgain,
+        handleBluetoothConnectionCancel,
+        onConnect,
+        openShowRemoveFromOsBluetooth,
     } = useConnectionGlobalModalContext();
 
     const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
@@ -76,6 +84,13 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
+
+    const nearbyDevices = useSelector(selectNearbyDevices);
+    const knownDevices = useSelector(selectKnownDevices);
+    const notConnectedKnownDevices = knownDevices.filter(device => device.connected === false);
+
+    const shouldShowBluetoothUnPairDeviceList =
+        nearbyDevices.length === 0 && notConnectedKnownDevices.length >= knownDevices.length;
 
     if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
 
@@ -93,7 +108,26 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return <BluetoothAdapterStatusModal onCancel={onCancel} />;
     }
 
-    // we either found some devices or user troubleshoots and wants to pair again
+    // no nearby devices found, but we have some known devices, allow user to pair again
+    if (bluetoothMode && shouldShowBluetoothUnPairDeviceList) {
+        return (
+            <Modal
+                onCancel={handleBluetoothConnectionCancel}
+                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
+                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
+                size="small"
+            >
+                <BluetoothDeviceList
+                    deviceList={notConnectedKnownDevices}
+                    onConnect={onConnect}
+                    isScanning={false}
+                    onPairAgain={openShowRemoveFromOsBluetooth}
+                />
+            </Modal>
+        );
+    }
+
+    // we found some devices, show the list
     if ((bluetoothMode && devices.length > 0) || (bluetoothMode && shouldPairAgain)) {
         return <BluetoothConnectionModal onClose={onCancel} />;
     }
