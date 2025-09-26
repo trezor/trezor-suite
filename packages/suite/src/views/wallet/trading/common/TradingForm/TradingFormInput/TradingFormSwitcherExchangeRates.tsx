@@ -10,8 +10,7 @@ import {
 import { Column, Grid, Paragraph, RadioCard } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 
 type ItemProps = {
     isSelected: boolean;

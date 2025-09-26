@@ -7,7 +7,7 @@ import { Icon, Input, Spinner, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useGuideSearch } from 'src/hooks/guide';
 import { useTranslation } from 'src/hooks/suite';
 

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Image, Link, variables } from '@trezor/components';
 import { INVITY_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';
 
 const Wrapper = styled.div`

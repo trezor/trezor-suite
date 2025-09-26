@@ -1,7 +1,7 @@
 import { Banner, Column, H4 } from '@trezor/components';
 
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

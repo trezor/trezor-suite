@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Button, ButtonProps } from '@trezor/components';
 import { Url } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { useExternalLink } from '../../hooks/suite';
 

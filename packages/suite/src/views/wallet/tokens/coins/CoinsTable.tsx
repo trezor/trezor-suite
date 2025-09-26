@@ -3,7 +3,7 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import {
     enhanceTokensWithRates,

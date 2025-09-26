@@ -14,7 +14,7 @@ import {
 import { Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
 const SelectWrapper = styled.div`

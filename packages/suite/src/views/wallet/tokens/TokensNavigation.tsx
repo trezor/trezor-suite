@@ -9,7 +9,7 @@ import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';

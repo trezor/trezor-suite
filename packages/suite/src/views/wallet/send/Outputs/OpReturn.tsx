@@ -8,7 +8,7 @@ import { IconButton, Row, Textarea, Tooltip, variables } from '@trezor/component
 import { spacingsPx } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 

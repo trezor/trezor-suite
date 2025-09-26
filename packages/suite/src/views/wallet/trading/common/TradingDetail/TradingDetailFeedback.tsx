@@ -13,9 +13,9 @@ import { TradingType } from '@suite-common/trading';
 import { Button, Card, Column, IconCircle, Row, Text, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { EmojiRatingSelector } from 'src/components/suite/EmojiRatingSelector';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 

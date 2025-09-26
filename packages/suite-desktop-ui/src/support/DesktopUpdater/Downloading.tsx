@@ -5,7 +5,7 @@ import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { bytesToHumanReadable } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface DownloadingProps {
     hideWindow: () => void;

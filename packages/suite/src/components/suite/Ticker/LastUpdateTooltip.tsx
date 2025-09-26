@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { Tooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 const LastUpdate = styled.div`
     text-transform: none;

@@ -10,7 +10,7 @@ import {
 import { Badge, Radio, Row, Text, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
 const Offer = styled.div<{ $isSelected: boolean; $elevation: Elevation }>`

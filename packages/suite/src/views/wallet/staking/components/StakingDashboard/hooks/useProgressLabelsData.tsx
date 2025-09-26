@@ -4,7 +4,7 @@ import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { Account } from '@suite-common/wallet-types';
 import { Column, Paragraph } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { ProgressLabelData } from '../components/ProgressLabels/types';
 

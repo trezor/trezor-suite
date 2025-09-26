@@ -1,5 +1,5 @@
 import { OnboardingOption, OptionsDivider, OptionsWrapper } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface SelectRecoveryTypeProps {
     onSelect: (type: 'standard' | 'advanced') => void;

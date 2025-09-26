@@ -1,6 +1,6 @@
 import { Modal, Paragraph } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { BackupState } from '../../reducers/backup/backupReducer';
 

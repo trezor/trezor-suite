@@ -7,7 +7,7 @@ import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Icon, Textarea } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 

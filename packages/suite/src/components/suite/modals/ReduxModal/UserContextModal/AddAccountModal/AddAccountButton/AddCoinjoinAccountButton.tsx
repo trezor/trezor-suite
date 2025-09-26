@@ -11,7 +11,7 @@ import { resolveAfter } from '@trezor/utils';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';

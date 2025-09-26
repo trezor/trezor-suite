@@ -5,7 +5,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';

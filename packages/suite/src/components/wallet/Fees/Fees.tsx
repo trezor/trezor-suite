@@ -28,7 +28,7 @@ import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES } from 'src/actions/suite/constants/modalConstants';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 

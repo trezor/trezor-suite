@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Image, variables } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 

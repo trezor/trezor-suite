@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Tooltip } from '@trezor/components';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 import { getHomescreens } from '../../../../constants/suite/homescreens';

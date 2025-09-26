@@ -4,7 +4,7 @@ import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Paragraph, Table } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';

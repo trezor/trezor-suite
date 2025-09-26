@@ -3,7 +3,7 @@ import { Button, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 interface TradingTransactionIdProps {

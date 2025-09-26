@@ -2,7 +2,7 @@ import { invityAPI } from '@suite-common/trading';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
 
 export interface TradingProviderInfoProps {

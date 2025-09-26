@@ -15,7 +15,7 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useExternalLink } from 'src/hooks/suite';
 
 type WordInputAdvancedProps = {

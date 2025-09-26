@@ -2,7 +2,7 @@ import { ChainedTransactions } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Link, Row, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { AffectedTransactionItem } from './AffectedTransactionItem';
 

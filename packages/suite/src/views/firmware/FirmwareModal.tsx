@@ -12,7 +12,7 @@ import { ConfirmOnDevice } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 

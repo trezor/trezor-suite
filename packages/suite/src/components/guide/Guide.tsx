@@ -14,7 +14,7 @@ import {
     GuideSearch,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const FeedbackLinkWrapper = styled.div`

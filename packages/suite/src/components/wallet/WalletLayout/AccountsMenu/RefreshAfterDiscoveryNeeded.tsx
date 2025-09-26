@@ -11,7 +11,7 @@ import {
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AccountsMenuNotice } from './AccountsMenuNotice';

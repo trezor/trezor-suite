@@ -7,7 +7,7 @@ import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport, selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';

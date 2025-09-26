@@ -21,8 +21,8 @@ import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/com
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
+import { Translation } from 'src/components/suite/Translation';
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ApproveModal';
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/RevokeModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';

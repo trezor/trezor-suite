@@ -7,7 +7,7 @@ import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { usePasswords } from 'src/hooks/suite';
 import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';

@@ -1,7 +1,7 @@
 import { Card, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 export const TradingOffersEmpty = () => (
     <Card margin={{ top: spacings.md }}>

@@ -7,8 +7,8 @@ import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/c
 import { spacingsPx } from '@trezor/theme';
 
 import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation } from 'src/components/suite';
 import { Error } from 'src/components/suite/Error';
+import { Translation } from 'src/components/suite/Translation';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {

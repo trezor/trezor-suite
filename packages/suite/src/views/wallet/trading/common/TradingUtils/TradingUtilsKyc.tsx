@@ -3,7 +3,7 @@ import { useTheme } from 'styled-components';
 
 import { Banner, Icon, Tooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import {
     KYC_DEX,
     KYC_NO_KYC,

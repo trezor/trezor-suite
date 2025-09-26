@@ -4,7 +4,7 @@ import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { TradingType } from '@suite-common/trading';
 import { Banner } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
 
 const typeLabels: Record<TradingDisabledProps['type'], ExtendedMessageDescriptor['id']> = {

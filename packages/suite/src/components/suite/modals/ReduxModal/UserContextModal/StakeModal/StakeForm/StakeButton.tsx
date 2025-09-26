@@ -3,7 +3,7 @@ import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';

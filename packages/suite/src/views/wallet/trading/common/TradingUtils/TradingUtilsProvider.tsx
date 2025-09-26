@@ -4,7 +4,7 @@ import { type TradingUtilsProvidersProps, invityAPI } from '@suite-common/tradin
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 const Icon = styled.img`
     flex: none;

@@ -9,7 +9,7 @@ import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';

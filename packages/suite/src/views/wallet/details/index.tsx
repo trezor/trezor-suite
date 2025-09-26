@@ -8,10 +8,9 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
-import { Translation } from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';

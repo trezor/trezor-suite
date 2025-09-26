@@ -9,8 +9,8 @@ import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-util
 import { Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { Translation } from 'src/components/suite/Translation';
 
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43PathTemplate;

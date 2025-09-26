@@ -10,7 +10,7 @@ import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, InfoSegments, Select } from '@trezor/components';
 import type { AccountAddress } from '@trezor/connect';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';

@@ -4,8 +4,8 @@ import { Banner, Collapsible } from '@trezor/components';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { Translation } from 'src/components/suite/Translation';
 
 type CustomFeeTooLowBannerProps = {
     feePerUnitValue: string;

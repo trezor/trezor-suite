@@ -9,7 +9,7 @@ import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

@@ -8,8 +8,8 @@ import { CoinLogo } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import { Translation } from 'src/components/suite';
 import type { NotificationRendererProps } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';

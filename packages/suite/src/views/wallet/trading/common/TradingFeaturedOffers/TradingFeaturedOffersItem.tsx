@@ -11,7 +11,7 @@ import { Badge, Button, Card, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TradingTradeDetailBuySellType } from 'src/types/trading/trading';
 import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {

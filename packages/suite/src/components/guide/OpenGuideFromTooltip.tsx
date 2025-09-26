@@ -6,7 +6,7 @@ import styled, { useTheme } from 'styled-components';
 import { Icon } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useGuideOpenNode } from 'src/hooks/guide';
 
 const OpenGuideLink = styled.span`

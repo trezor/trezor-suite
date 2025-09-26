@@ -4,7 +4,7 @@ import {
     OptionsDivider,
     OptionsWrapper,
 } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useOnboarding } from 'src/hooks/suite';
 

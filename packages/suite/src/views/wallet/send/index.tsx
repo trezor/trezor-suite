@@ -6,7 +6,7 @@ import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';

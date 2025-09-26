@@ -17,7 +17,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useBackendsForm, useDefaultUrls } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';

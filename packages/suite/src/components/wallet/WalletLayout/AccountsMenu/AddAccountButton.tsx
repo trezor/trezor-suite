@@ -2,7 +2,7 @@ import { Button, ButtonProps, TOOLTIP_DELAY_NORMAL, TextButton, Tooltip } from '
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 

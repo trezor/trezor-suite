@@ -12,7 +12,7 @@ import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';

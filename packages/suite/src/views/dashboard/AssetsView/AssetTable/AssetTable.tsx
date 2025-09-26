@@ -4,7 +4,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { AssetData } from '../AssetsView';
 import { AssetRow } from './AssetRow';

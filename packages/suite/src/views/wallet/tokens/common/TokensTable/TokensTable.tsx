@@ -7,7 +7,7 @@ import { Account } from '@suite-common/wallet-types';
 import { Card, Paragraph, Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 import { TokenRow } from './TokenRow';

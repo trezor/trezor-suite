@@ -10,7 +10,7 @@ import {
     GuideNode,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { getNodeTitle } from 'src/utils/suite/guide';

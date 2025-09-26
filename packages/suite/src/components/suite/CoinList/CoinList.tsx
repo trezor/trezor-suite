@@ -5,7 +5,7 @@ import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-uti
 import { spacings } from '@trezor/theme';
 import { versionUtils } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 

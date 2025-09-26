@@ -4,7 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { Button, Input, Modal } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 
 interface WalletConnectButtonProps {

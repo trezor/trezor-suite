@@ -20,7 +20,7 @@ import {
     variables,
 } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useGraph, useLocales } from 'src/hooks/suite';
 import { GraphRange } from 'src/types/wallet/graph';
 

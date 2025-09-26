@@ -1,7 +1,7 @@
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite';

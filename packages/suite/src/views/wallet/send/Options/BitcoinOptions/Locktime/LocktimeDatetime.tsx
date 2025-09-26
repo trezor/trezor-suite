@@ -7,7 +7,7 @@ import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { getInputState } from '@suite-common/wallet-utils';
 import { Input, Row, Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 

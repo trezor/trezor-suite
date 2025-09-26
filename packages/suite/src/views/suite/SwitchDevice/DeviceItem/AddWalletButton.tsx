@@ -19,7 +19,7 @@ import { CardButton } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';

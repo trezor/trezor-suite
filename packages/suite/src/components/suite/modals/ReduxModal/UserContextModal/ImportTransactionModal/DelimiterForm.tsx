@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Input, Row, SelectBar } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 type DelimiterFormProps = {
     value?: string;

@@ -5,7 +5,7 @@ import { spacings } from '@trezor/theme';
 
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';

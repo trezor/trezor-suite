@@ -6,7 +6,7 @@ import {
 } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';

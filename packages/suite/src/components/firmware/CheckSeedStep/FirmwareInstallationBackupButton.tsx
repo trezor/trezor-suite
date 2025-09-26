@@ -2,7 +2,7 @@ import { useFirmwareInstallation } from '@suite-common/firmware';
 import { Button } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 type FirmwareInstallationBackupButtonProps = {

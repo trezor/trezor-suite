@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapability } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 

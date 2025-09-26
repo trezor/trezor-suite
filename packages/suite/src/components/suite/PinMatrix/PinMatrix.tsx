@@ -16,7 +16,7 @@ import {
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useExternalLink } from 'src/hooks/suite';
 
 type PinMatrixProps = {

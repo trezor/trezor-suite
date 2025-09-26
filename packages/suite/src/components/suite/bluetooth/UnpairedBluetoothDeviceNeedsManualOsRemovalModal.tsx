@@ -5,7 +5,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { setBluetoothDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import {

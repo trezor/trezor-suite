@@ -23,7 +23,7 @@ import {
     setFlag,
     setRecentlyDisconnectedDevice,
 } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';

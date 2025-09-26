@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useGuideLoadArticle } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';

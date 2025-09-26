@@ -1,7 +1,7 @@
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 
 import { OnboardingButtonCta } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { getIsTorLoading } from 'src/utils/suite/tor';
 

@@ -9,7 +9,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { OnboardingButtonBack, OnboardingStepBox, OptionsWrapper } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';

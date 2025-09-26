@@ -10,7 +10,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 import { useExternalLink } from '../../../hooks/suite';

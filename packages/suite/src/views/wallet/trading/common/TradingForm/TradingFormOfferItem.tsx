@@ -2,7 +2,7 @@ import type { TradingTradeType, TradingUtilsProvidersProps } from '@suite-common
 import { Card, Paragraph, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
 interface TradingFormOfferItemProps {

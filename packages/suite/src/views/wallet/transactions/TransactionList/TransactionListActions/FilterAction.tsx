@@ -20,7 +20,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 const options = [
