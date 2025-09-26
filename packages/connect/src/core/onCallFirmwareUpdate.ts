@@ -181,67 +181,38 @@ const waitForReconnectedDevice = async (
     return reconnectedDevice;
 };
 
-const getRebootMethod = async ({
-    deviceList,
+const waitForBluetoothReboot = ({
     device,
-    log,
+    target,
     postMessage,
 }: {
-    deviceList: DeviceList;
+    target: 'bootloader' | 'normal';
     device: Device;
-    log: Log;
     postMessage: PostMessage;
-}) => {
-    let method: ReconnectParams['method'] = 'wait';
+}) =>
+    new Promise<void>(resolve => {
+        postMessage(
+            createUiMessage(UI.FIRMWARE_RECONNECT, {
+                device: device.toMessageObject(),
+                disconnected: false,
+                method: 'auto',
+                target,
+                i: 0,
+            }),
+        );
 
-    // not a bluetooth device
-    if (!device.bluetoothProps) {
-        return method;
-    }
+        const handler = () => {
+            const deviceIsReady =
+                (target === 'bootloader' && device.features?.bootloader_mode) ||
+                (target === 'normal' && device.getThpState()?.properties);
 
-    const ctrl = new AbortController();
-    // device disconnected before it was requested to disconnect by the BT api. see: UI.FIRMWARE_DISCONNECT
-    const disconnectedPromise = new Promise<void>(resolve => {
-        const handleDisconnect = () => {
-            log.info(`waitForBluetoothReboot device-disconnected. aborted: ${ctrl.signal.aborted}`);
-            if (!ctrl.signal.aborted) {
-                ctrl.abort();
-                method = 'auto'; // do not wait for disconnection
+            if (deviceIsReady) {
+                device.lifecycle.off('device-changed', handler);
+                resolve();
             }
-
-            resolve();
         };
-        deviceList.once('device-disconnect', handleDisconnect);
-        ctrl.signal.addEventListener('abort', () => {
-            deviceList.off('device-disconnect', handleDisconnect);
-            resolve();
-        });
+        device.lifecycle.on('device-changed', handler);
     });
-
-    // close device
-    await device.release();
-
-    // wait T3W1 countdown after FW installation
-    const restartPromise = new Promise<void>(resolve => {
-        resolveAfter(4000).then(() => {
-            log.info(`waitForBluetoothReboot restartPromise. aborted: ${ctrl.signal.aborted}`);
-            if (!ctrl.signal.aborted) {
-                ctrl.abort();
-                // request ui (suite) to disconnect the device
-                postMessage(
-                    createUiMessage(UI.FIRMWARE_DISCONNECT, {
-                        device: device.toMessageObject(),
-                    }),
-                );
-            }
-            resolve();
-        });
-    });
-
-    await Promise.race([disconnectedPromise, restartPromise]);
-
-    return method;
-};
 
 const getInstallationParams = (device: Device, params: Params) => {
     const btcOnly = params.btcOnly ?? device.firmwareType === FirmwareType.BitcoinOnly;
@@ -523,20 +494,17 @@ export const onCallFirmwareUpdate = async ({
         if (device.bluetoothProps) {
             // close device
             await device.release();
-            // request ui (suite) to disconnect the device
-            postMessage(
-                createUiMessage(UI.FIRMWARE_DISCONNECT, {
-                    device: device.toMessageObject(),
-                }),
-            );
+            // wait for device-change
+            await waitForBluetoothReboot({ device, target: 'bootloader', postMessage });
+        } else {
+            await disconnectedPromise;
+
+            // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
+            if (device.features.major_version === 1) {
+                await resolveAfter(2000);
+            }
         }
 
-        await disconnectedPromise;
-
-        // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
-        if (device.features.major_version === 1) {
-            await resolveAfter(2000);
-        }
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'auto' },
             { ...context, device },
@@ -584,7 +552,11 @@ export const onCallFirmwareUpdate = async ({
         });
     }
 
-    const method = await getRebootMethod({ deviceList, device, log, postMessage });
+    let method: ReconnectParams['method'] = 'wait';
+    if (device.bluetoothProps) {
+        await waitForBluetoothReboot({ device, target: 'normal', postMessage });
+        method = 'auto';
+    }
 
     reconnectedDevice = await waitForReconnectedDevice(
         { bootloader: false, method },

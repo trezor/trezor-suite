@@ -201,7 +201,7 @@ export const useFirmwareInstallation = (
         }
 
         // Automatically restarting from bootloader to normal mode at the end of non-intermediary installation:
-        if (reconnectEvent?.method === 'wait') {
+        if (reconnectEvent?.method === 'wait' || reconnectEvent?.method === 'auto') {
             return { operation: 'restarting', progress: 100 };
         }
 
