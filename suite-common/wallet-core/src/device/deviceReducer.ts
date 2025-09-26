@@ -226,15 +226,13 @@ const changeDevice = (
     device: Device | TrezorDevice,
     extended: Partial<AcquiredDevice>,
 ) => {
-    // change only acquired and THP devices
     if (!device.features) {
-        if (device.thp) {
-            const affectedDevice = draft.devices.find(d => !d.features && d.path === device.path);
-            if (affectedDevice) {
+        draft.devices.forEach(affectedDevice => {
+            if (affectedDevice.path === device.path) {
                 affectedDevice.status = device.status;
                 affectedDevice.thp = device.thp;
             }
-        }
+        });
 
         return;
     }
