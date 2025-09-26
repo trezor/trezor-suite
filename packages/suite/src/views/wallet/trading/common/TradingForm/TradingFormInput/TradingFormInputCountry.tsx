@@ -4,7 +4,7 @@ import { TRADING_FORM_COUNTRY_SELECT, TradingCountryOption, regional } from '@su
 import { Flag, Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import {

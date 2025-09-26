@@ -17,7 +17,7 @@ import { BigNumber, arrayPartition } from '@trezor/utils';
 
 import { setStakingDashboardCollapsed } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 

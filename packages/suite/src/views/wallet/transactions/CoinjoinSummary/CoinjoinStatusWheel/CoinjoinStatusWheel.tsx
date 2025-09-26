@@ -4,7 +4,7 @@ import { Button, Card } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinWheelStates } from 'src/reducers/wallet/coinjoinReducer';

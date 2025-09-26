@@ -9,7 +9,7 @@ import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import messages from 'src/support/messages';
 
 import {

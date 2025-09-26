@@ -11,7 +11,7 @@ import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wal
 import { findChainedTransactions, getAccountKey, isPending } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 

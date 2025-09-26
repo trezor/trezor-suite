@@ -4,7 +4,7 @@ import { Button, Column, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
 import { ThpPairingFailedForFirmwareInstallation } from '../../../components/connection/thp/ThpPairingFailedForFirmwareInstallation';

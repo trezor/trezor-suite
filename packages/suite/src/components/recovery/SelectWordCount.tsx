@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { OnboardingOption, OptionsDivider, OptionsWrapper } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { WordCount } from 'src/types/recovery';
 
 const StyledOption = styled(OnboardingOption)`

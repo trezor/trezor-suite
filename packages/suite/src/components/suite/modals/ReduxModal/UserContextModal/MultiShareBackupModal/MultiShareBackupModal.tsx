@@ -11,8 +11,8 @@ import {
     TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
 } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';

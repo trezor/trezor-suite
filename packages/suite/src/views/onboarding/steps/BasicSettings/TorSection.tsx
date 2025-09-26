@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Switch, variables } from '@trezor/components';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { TorStatus } from 'src/types/suite';

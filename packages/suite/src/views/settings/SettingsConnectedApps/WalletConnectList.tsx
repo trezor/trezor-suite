@@ -7,8 +7,8 @@ import { Badge, Card, Column, Dropdown, H3, Row, Text } from '@trezor/components
 import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const WalletConnectList = () => {

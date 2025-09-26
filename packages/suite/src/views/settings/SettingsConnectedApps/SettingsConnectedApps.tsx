@@ -5,7 +5,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 import { ConnectPermissions } from './ConnectPermissions';

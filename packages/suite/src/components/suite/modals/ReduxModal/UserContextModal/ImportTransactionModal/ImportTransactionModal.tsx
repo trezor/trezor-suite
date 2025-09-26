@@ -7,8 +7,8 @@ import { parseCSV } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { DropZone } from 'src/components/suite/DropZone';
+import { Translation } from 'src/components/suite/Translation';
 
 import { DelimiterForm } from './DelimiterForm';
 import { useExampleCSV } from './useExampleCSV';

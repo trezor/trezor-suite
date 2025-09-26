@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Card, Column, Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 

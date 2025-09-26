@@ -16,7 +16,7 @@ import {
 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { usePrintableLog } from 'src/utils/suite/logsUtils';
 
 const ScrollContainer = styled.div`

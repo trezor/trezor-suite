@@ -10,7 +10,7 @@ import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/sr
 import { CoinLogo } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;

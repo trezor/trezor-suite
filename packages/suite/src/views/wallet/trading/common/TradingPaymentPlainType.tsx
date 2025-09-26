@@ -4,7 +4,7 @@ import {
 } from '@suite-common/trading';
 import { Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface TradingPaymentTypeProps {
     method?: TradingPaymentMethodType;

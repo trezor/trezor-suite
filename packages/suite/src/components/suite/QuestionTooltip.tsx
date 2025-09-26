@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { H3, Tooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const Wrapper = styled.div`

@@ -21,7 +21,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { DeviceWithScene } from '@trezor/product-components';
 import { Elevation, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import type { PrerequisiteType } from 'src/types/suite';
 
 import { TranslationKey } from './Translation';

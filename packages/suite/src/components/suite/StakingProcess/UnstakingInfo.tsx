@@ -8,7 +8,7 @@ import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';

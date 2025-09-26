@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { H3, Spinner, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 const Container = styled(motion.div)`
     background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};

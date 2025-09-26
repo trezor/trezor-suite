@@ -9,7 +9,7 @@ import { Row } from '@trezor/components';
 import { AccountTransaction } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { useTranslation } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';

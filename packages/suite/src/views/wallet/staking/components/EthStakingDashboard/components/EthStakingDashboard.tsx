@@ -18,7 +18,7 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 

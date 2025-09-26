@@ -8,8 +8,8 @@ import { Card, Column, Icon, Modal, ModalProps, Paragraph, Row } from '@trezor/c
 import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { Translation } from 'src/components/suite/Translation';
 
 const ContentWrapper = styled.div`
     height: 380px;

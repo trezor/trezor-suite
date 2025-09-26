@@ -7,7 +7,7 @@ import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { AdvancedCoinSettingsModal } from 'src/components/suite/modals';
 import { useCustomBackends } from 'src/hooks/settings/backends';
 import { useDispatch } from 'src/hooks/suite';

@@ -3,7 +3,7 @@ import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls'
 import { selectExplorer } from '@suite-common/wallet-core';
 import { Banner, Column, H4, Paragraph } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useExternalLink, useSelector } from 'src/hooks/suite';
 
 type AnalyzeInExplorerBannerProps = {

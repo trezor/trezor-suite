@@ -4,7 +4,7 @@ import { Grid, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { StakeFormContext, useStakeForm } from 'src/hooks/wallet/useStakeForm';
 

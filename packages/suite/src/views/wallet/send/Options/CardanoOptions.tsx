@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const Wrapper = styled.div`

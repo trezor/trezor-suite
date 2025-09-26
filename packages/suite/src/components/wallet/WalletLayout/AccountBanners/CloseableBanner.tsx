@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Banner, BannerProps, Column, Margin, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme/src';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface Props {
     onClose: () => void;

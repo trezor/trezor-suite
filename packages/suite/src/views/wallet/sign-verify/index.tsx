@@ -19,8 +19,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
 import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
-import { Translation } from 'src/components/suite';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCopySignedMessage } from 'src/hooks/wallet/sign-verify/useCopySignedMessage';

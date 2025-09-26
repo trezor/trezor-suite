@@ -1,6 +1,6 @@
 import { SelectBar, SelectBarProps } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useGraph } from 'src/hooks/suite';
 import { GraphScale } from 'src/types/wallet/graph';
 

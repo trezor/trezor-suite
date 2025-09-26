@@ -7,7 +7,7 @@ import {
     Url,
 } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 

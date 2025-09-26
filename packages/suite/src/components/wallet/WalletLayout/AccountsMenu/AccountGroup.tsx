@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Box, Column, Icon, Row, Text, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
 
 import { AnimationWrapper } from '../../AnimationWrapper';

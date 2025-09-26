@@ -6,7 +6,7 @@ import { spacings } from '@trezor/theme';
 import type { Deferred } from '@trezor/utils';
 
 import { connectProvider } from 'src/actions/suite/metadataProviderActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 

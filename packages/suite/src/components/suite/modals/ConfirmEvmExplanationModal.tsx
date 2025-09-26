@@ -8,8 +8,7 @@ import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { onCancel } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const ImageWrapper = styled.div`

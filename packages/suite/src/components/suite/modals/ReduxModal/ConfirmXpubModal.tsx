@@ -3,7 +3,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { convertTaprootXpub } from '@trezor/utils';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

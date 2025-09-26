@@ -10,7 +10,7 @@ import {
     ReconnectDevicePrompt,
     RotatingPhrases,
 } from 'src/components/firmware';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 

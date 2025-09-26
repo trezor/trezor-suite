@@ -6,7 +6,7 @@ import { variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';

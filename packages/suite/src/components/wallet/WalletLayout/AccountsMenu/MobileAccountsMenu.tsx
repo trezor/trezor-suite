@@ -6,7 +6,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { H2, Icon, variables } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';

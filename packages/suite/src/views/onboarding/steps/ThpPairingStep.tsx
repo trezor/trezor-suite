@@ -6,7 +6,7 @@ import TrezorConnect from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { ThpPairingCodeEntry } from '../../../components/connection/thp/ThpPairingCodeEntry';
 import messages from '../../../support/messages';

@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, H4, Paragraph } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { useSelector } from '../../../../hooks/suite';
 

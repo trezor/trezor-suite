@@ -21,9 +21,9 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite';
 import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

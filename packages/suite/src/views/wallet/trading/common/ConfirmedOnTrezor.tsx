@@ -7,7 +7,7 @@ import { variables } from '@trezor/components';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 const Confirmed = styled.div`
     display: flex;

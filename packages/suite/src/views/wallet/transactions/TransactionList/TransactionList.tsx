@@ -12,7 +12,7 @@ import { SkeletonStack } from '@trezor/components';
 import { arrayPartition } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';

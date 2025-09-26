@@ -1,7 +1,7 @@
 import { Card, Column, Icon, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface ApyCardProps {
     apy: number;

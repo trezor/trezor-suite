@@ -7,7 +7,7 @@ import { useOnClickOutside } from '@trezor/react-utils';
 import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';
 import { TradingProvidedByInvity } from 'src/views/wallet/trading/common/TradingFooter/TradingProvidedByInvity';
 

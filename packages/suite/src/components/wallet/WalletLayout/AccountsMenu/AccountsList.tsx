@@ -7,7 +7,7 @@ import { Column } from '@trezor/components';
 import type { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels as selectAccountLabelsOld } from 'src/reducers/suite/metadataReducer';
 import { AccountItemType } from 'src/types/wallet';

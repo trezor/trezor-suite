@@ -1,6 +1,6 @@
 import { Banner } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import type { Account } from 'src/types/wallet/index';
 
 type AccountOutOfSyncProps = {

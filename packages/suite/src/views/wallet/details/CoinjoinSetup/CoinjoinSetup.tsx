@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/components';
 
 import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 

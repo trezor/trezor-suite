@@ -5,7 +5,7 @@ import { Explorer } from '@suite-common/wallet-config';
 import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 
 type InputRowProps = {

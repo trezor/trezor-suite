@@ -6,7 +6,7 @@ import addressValidator from '@trezor/address-validator';
 import { Column, Input, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
 import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 

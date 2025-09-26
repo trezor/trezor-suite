@@ -6,7 +6,7 @@ import { Icon } from '@trezor/components';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 

@@ -20,7 +20,7 @@ import {
     requestBioAuthValidationThunk,
     requestOnceBioAuthValidationThunk,
 } from 'src/actions/suite/bioAuthThunks';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import {
     Body,
     Columns,

@@ -6,7 +6,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { Card, Tabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { AmountDetails } from './AmountDetails';
 import { Data } from './Data';

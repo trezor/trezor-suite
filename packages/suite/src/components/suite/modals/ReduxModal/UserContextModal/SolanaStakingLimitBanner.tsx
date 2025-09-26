@@ -15,7 +15,7 @@ import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { Banner } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface SolanaStakingLimitBannerProps {
     account: Account;

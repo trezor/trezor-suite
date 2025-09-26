@@ -7,10 +7,10 @@ import { ERRORS } from '@trezor/connect';
 import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 

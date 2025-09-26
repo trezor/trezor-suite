@@ -4,7 +4,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Column, Divider, H2, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SecurityChecklist } from 'src/views/onboarding/steps/SecurityCheck/SecurityChecklist';
 import { SecurityChecklistItem } from 'src/views/onboarding/steps/SecurityCheck/types';
 

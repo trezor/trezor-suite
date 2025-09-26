@@ -1,6 +1,6 @@
 import { Button, ButtonProps, Tooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
 
 const InstallButtonCommon = (

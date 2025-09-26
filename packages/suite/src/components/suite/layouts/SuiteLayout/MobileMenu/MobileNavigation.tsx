@@ -5,7 +5,7 @@ import { variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 import { findRouteByName } from 'src/utils/suite/router';

@@ -9,7 +9,7 @@ import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectIsLabelingAvailableForEntity,

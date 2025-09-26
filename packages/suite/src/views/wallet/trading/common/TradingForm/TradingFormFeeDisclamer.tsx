@@ -2,7 +2,7 @@ import { Button, Flex, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { INVITY_SCHEDULE_OF_FEES } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 export const TradingFormFeesDisclamer = () => (
     <Flex gap={spacings.sm}>

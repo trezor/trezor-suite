@@ -4,7 +4,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 

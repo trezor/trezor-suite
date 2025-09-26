@@ -3,7 +3,7 @@ import { spacings } from '@trezor/theme';
 
 import { onReceiveConfirmation } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 

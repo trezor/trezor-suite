@@ -10,7 +10,7 @@ import { Dropdown, Note, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useTranslation } from 'src/hooks/suite/useTranslation';

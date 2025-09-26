@@ -4,7 +4,7 @@ import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
 import { Fingerprint } from 'src/components/firmware';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TrezorDevice } from 'src/types/suite';
 
 type ConfirmFingerprintProps = {

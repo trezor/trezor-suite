@@ -12,7 +12,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import {
     ConfirmValueModal,
     ConfirmValueModalProps,

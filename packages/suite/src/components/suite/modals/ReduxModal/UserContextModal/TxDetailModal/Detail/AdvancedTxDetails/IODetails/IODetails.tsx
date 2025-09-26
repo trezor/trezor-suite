@@ -2,7 +2,7 @@ import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';

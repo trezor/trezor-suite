@@ -6,7 +6,7 @@ import {
 } from '@suite-common/trading';
 import { Select } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import {

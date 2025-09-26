@@ -7,7 +7,7 @@ import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { Account } from 'src/types/wallet';

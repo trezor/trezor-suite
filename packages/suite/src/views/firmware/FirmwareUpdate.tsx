@@ -2,7 +2,7 @@ import { useFirmwareInstallation } from '@suite-common/firmware';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitialStandalone } from 'src/components/firmware';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { FirmwareModal } from './FirmwareModal';
 

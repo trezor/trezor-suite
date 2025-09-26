@@ -14,7 +14,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';

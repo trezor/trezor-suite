@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { H3, Modal } from '@trezor/components';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 export const DatabaseCorruptedModal = () => {

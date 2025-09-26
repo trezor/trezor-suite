@@ -6,7 +6,7 @@ import type { Route } from '@suite-common/suite-types';
 import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useGuide } from 'src/hooks/guide/useGuide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';

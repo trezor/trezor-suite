@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Card, Icon, variables } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
 

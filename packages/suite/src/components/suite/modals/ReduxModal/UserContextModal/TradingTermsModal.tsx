@@ -19,7 +19,7 @@ import { spacings } from '@trezor/theme';
 import type { Deferred } from '@trezor/utils';
 
 import { setDismissedTradingTerms } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 const getTradingType = (modalType: TradingTermsModalProps['type']): TradingType => {

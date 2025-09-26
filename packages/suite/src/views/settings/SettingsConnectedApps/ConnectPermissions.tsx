@@ -4,9 +4,9 @@ import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/
 import { Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const PermissionsList = styled.ul`

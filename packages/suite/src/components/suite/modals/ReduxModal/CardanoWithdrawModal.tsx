@@ -2,7 +2,7 @@ import { getNetworkName } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Link, Modal, Paragraph, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';

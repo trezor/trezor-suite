@@ -6,7 +6,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacingsPx } from '@trezor/theme';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

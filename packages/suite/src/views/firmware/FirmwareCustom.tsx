@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { SelectCustomFirmware } from 'src/components/firmware';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { FirmwareModal } from './FirmwareModal';
 

@@ -3,7 +3,7 @@ import { FC, PropsWithChildren, ReactNode } from 'react';
 import { selectIsDeviceBackupUnfinished } from '@suite-common/wallet-core';
 import { Tooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 import { useSelector } from './useSelector';

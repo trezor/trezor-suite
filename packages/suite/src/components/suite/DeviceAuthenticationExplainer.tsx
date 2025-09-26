@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Icon, IconName, variables } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 const Item = styled.div`
     display: flex;

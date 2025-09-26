@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { H2 } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 export const HeaderHeading = styled(H2)`

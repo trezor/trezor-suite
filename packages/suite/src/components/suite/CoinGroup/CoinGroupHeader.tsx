@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { IconButton, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
     @media (hover: hover) {

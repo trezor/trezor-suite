@@ -24,7 +24,7 @@ import { spacings } from '@trezor/theme';
 import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
 
 import { CONTEXT_DEVICE } from 'src/actions/suite/constants/modalConstants';
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 
 type PassphraseInputCardProps = {
