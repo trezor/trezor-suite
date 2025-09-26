@@ -16,6 +16,7 @@ node_modules
 *.sublime-workspace
 .vscode/**/*
 !.vscode/*.code-snippets
+tags*
 
 # Logs
 logs
