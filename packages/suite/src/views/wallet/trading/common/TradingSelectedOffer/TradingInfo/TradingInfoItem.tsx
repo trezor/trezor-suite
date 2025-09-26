@@ -9,7 +9,7 @@ import {
 } from '@suite-common/trading';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Box, Column, InfoItem, Row, Text } from '@trezor/components';
+import { Box, Column, InfoItem, Row, Text, Tooltip } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -21,6 +21,8 @@ import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
+import { StyledReceiveAddress } from './TradingInfoItem.styles';
+
 interface TradingInfoItemProps {
     account?: Account;
     type: TradingType;
@@ -29,6 +31,7 @@ interface TradingInfoItemProps {
     amount?: string;
     isReceive?: boolean;
     formStep?: TradingExchangeStepType | TradingSellStepType;
+    receiveAddress?: string;
 }
 
 export const TradingInfoItem = ({
@@ -39,6 +42,7 @@ export const TradingInfoItem = ({
     currency,
     amount,
     formStep,
+    receiveAddress,
 }: TradingInfoItemProps) => {
     const { translationString } = useTranslation();
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
@@ -59,11 +63,17 @@ export const TradingInfoItem = ({
                     <Text variant="tertiary" typographyStyle="hint" as="div">
                         <Row>
                             {accountLabelPrefix}&nbsp;
-                            <AccountLabel
-                                account={account}
-                                showAccountTypeBadge
-                                accountTypeBadgeSize="small"
-                            />
+                            {type === 'exchange' && receiveAddress ? (
+                                <Tooltip content={receiveAddress} hasArrow>
+                                    <StyledReceiveAddress>{receiveAddress}</StyledReceiveAddress>
+                                </Tooltip>
+                            ) : (
+                                <AccountLabel
+                                    account={account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
+                                />
+                            )}
                         </Row>
                     </Text>
                 )}
