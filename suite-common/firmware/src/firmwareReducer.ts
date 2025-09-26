@@ -47,7 +47,7 @@ const initialState: FirmwareUpdateState = {
     targetType: undefined,
     useDevkit: false,
     uiEvent: undefined,
-    firmwareUpdateSource: 'production',
+    firmwareUpdateSource: 'test-unsigned',
 };
 
 type RootState = {
