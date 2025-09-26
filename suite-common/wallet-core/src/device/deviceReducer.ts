@@ -228,12 +228,22 @@ const changeDevice = (
 ) => {
     // change only acquired and THP devices
     if (!device.features) {
+        const affectedDevice = draft.devices.find(d => !d.features && d.path === device.path);
         if (device.thp) {
-            const affectedDevice = draft.devices.find(d => !d.features && d.path === device.path);
             if (affectedDevice) {
                 affectedDevice.status = device.status;
                 affectedDevice.thp = device.thp;
             }
+        } else if (affectedDevice?.features) {
+            const udpated = draft.devices.map(d => {
+                if (d.path === device.path) {
+                    return device as TrezorDevice;
+                } else {
+                    return d;
+                }
+            });
+            draft.devices.splice(0, draft.devices.length);
+            draft.devices.push(...udpated);
         }
 
         return;

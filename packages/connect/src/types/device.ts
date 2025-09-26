@@ -11,7 +11,7 @@ import type { FirmwareReleaseConfigInfo } from './firmware';
  * - `used`       another has released the device and no other application has an active session
  * - `busy`       this application has an active session but device is currently busy (example: connect to host device screen after RebootToBootloader)
  */
-export type DeviceStatus = 'available' | 'occupied' | 'used' | 'busy';
+export type DeviceStatus = 'available' | 'occupied' | 'used' | 'busy' | 'rebooting';
 
 export type DeviceMode = 'normal' | 'bootloader' | 'initialize' | 'seedless';
 

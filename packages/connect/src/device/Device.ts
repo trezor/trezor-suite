@@ -3,6 +3,7 @@ import { DeviceModelInternal, FirmwareRelease, models } from '@trezor/device-uti
 import {
     TransportProtocol,
     thp as protocolThp,
+    tpn as protocolTpn,
     v1 as protocolV1,
     v2 as protocolV2,
 } from '@trezor/protocol';
@@ -10,7 +11,14 @@ import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
 import { OpenDeviceChannel } from '@trezor/transport/src/api/abstract';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
-import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import {
+    Deferred,
+    TypedEmitter,
+    createDeferred,
+    isArrayMember,
+    resolveAfter,
+    versionUtils,
+} from '@trezor/utils';
 
 import { DeviceCommands } from './DeviceCommands';
 import { ERRORS, FIRMWARE, PROTO } from '../constants';
@@ -106,6 +114,7 @@ interface DeviceLifecycleEvents {
     [DEVICE.CONNECT_UNACQUIRED]: void;
     [DEVICE.CHANGED]: void;
     [DEVICE.DISCONNECT]: void;
+    [DEVICE.REBOOT]: void;
 }
 
 type DeviceParams = {
@@ -322,6 +331,82 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.acquirePromise;
     }
 
+    rebooting = false;
+
+    async resetBootMode(mode: protocolTpn.TrezorPushNotificationMode) {
+        // @ts-expect-error
+        this._features = undefined;
+        if (mode === 1) {
+            this._protocol = protocolV1;
+            this.thp = undefined;
+        } else {
+            await this.setupThp();
+        }
+    }
+
+    async setupBootMode(mode: protocolTpn.TrezorPushNotificationMode) {
+        if (mode === 1) {
+            await this.acquire();
+            await this.getFeatures();
+            this.busy = false;
+            await this.release();
+        } else {
+            const withInteraction = this.lifecycle.listenerCount('device-reboot') === 0; // TODO in fw update flow we want to wait
+
+            // device unlocked
+            await resolveAfter(1000);
+            await this.acquire();
+            await getThpChannel(this);
+            const credentials = this.getThpState()?.pairingCredentials;
+            if (credentials && credentials.length > 0) {
+                await getThpChannel(this, true);
+                await this.getFeatures();
+            }
+
+            if (withInteraction) {
+                await this.getFeatures();
+            }
+
+            this.busy = false;
+            await this.release();
+        }
+    }
+
+    async handleModeChange({ type, mode }: protocolTpn.DecodedTrezorPushNotification) {
+        this.rebooting = type === 0;
+        // this.busy = event === 0 || event === 2;
+
+        if (mode === 1) {
+            if (this.thp?.properties || (this.features && !this.features.bootloader_mode)) {
+                await this.resetBootMode(mode);
+                this.lifecycle.emit(DEVICE.REBOOT);
+            }
+            if (type === 0 || type === 2) {
+                // device busy
+                this.busy = true;
+                this.lifecycle.emit(DEVICE.CHANGED);
+            }
+            if (type === 1) {
+                // device unlocked
+                await this.setupBootMode(mode);
+            }
+        } else if (mode === 0) {
+            if (this.features?.bootloader_mode) {
+                await this.resetBootMode(mode);
+                this.lifecycle.emit(DEVICE.REBOOT);
+            }
+            if (type === 0 || type === 2) {
+                // device busy
+                this.busy = true;
+                this.lifecycle.emit(DEVICE.CHANGED);
+            }
+            if (type === 1) {
+                // device unlocked
+                await this.setupBootMode(mode);
+            }
+        }
+    }
+
     subscribe() {
         const { bluetoothProps } = this;
         if (bluetoothProps?.id) {
@@ -331,7 +416,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     channels: ['battery-level', 'trezor-push-notification'],
                 })
                 .then(result => {
-                    if (result.success && bluetoothProps) {
+                    if (result.success) {
                         bluetoothProps.channels = result.payload;
                         this.lifecycle.emit(DEVICE.CHANGED);
                     }
@@ -340,6 +425,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         this.transport.on('battery-level', event => {
                             this._updateFeature('soc', event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
+                        });
+                    }
+
+                    if (bluetoothProps.channels?.['trezor-push-notification']) {
+                        this.transport.on('trezor-push-notification', ({ data }) => {
+                            console.warn('--> subs3', data, data[2] === 1);
+                            const notif = protocolTpn.decode(data);
+                            this.handleModeChange(notif);
                         });
                     }
                 });
@@ -932,10 +1025,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private _updateFeature<K extends keyof Features>(key: K, value: Features[K]) {
-        this._features = {
-            ...this._features,
-            [key]: value,
-        };
+        if (this._features) {
+            this._features = {
+                ...this._features,
+                [key]: value,
+            };
+        }
     }
 
     prompt<
@@ -1065,6 +1160,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.isUsedElsewhere()) return 'occupied';
         if (this.wasUsedElsewhere) return 'used';
         if (this.busy) return 'busy';
+        if (this.rebooting) return 'rebooting';
 
         return 'available';
     }
@@ -1082,7 +1178,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 hid: this.possibleHIDdevice,
             };
         }
-        if (this.isUnacquired()) {
+
+        const { features } = this;
+        if (!features) {
             const sessionOwner = this.transport.getDescriptor(this.transportPath)?.sessionOwner;
 
             return {
@@ -1093,22 +1191,21 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
                 bluetoothProps: this.bluetoothProps,
                 thp: this.thp?.serialize(),
-                status: this.busy ? 'busy' : undefined,
+                status: this.busy || this.rebooting ? this.getStatus() : undefined,
             };
         }
         const defaultLabel = 'My Trezor';
-        const label =
-            this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
+        const label = features.label === '' || !features.label ? defaultLabel : features.label;
 
         return {
             ...base,
             type: 'acquired',
-            id: this.features.device_id,
+            id: features.device_id,
             label,
             _state: this.getState(),
             state: this.getState()?.staticSessionId,
             status: this.getStatus(),
-            mode: getFirmwareMode(this.features),
+            mode: getFirmwareMode(features),
             color: this.color,
             firmware: this.firmwareStatus,
             firmwareReleaseConfigInfo: this.firmwareReleaseConfigInfo,

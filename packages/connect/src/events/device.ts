@@ -13,6 +13,7 @@ export const DEVICE = {
     DISCONNECT: 'device-disconnect',
     CHANGED: 'device-changed',
     FIRMWARE_VERSION_CHANGED: 'device-firmware_version_changed',
+    REBOOT: 'device-reboot',
 
     // This event is triggered every time, the device provides the THP credentials to the Suite.
     // This happens on two occasions:
