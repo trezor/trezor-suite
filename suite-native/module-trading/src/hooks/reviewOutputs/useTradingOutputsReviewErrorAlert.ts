@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -19,21 +20,24 @@ export const useTradingOutputsReviewErrorAlert = (accountKey: AccountKey) => {
 
     const isSolanaAccount = accountNetworkType === 'solana';
 
-    return (onRetry: () => void, onCancel: () => void) => {
-        showAlert({
-            icon: 'warningCircle',
-            title: isSolanaAccount
-                ? translate('moduleSend.review.outputs.errorAlert.solana.title')
-                : translate('moduleSend.review.outputs.errorAlert.generic.title'),
-            description: isSolanaAccount
-                ? translate('moduleSend.review.outputs.errorAlert.solana.description')
-                : translate('moduleSend.review.outputs.errorAlert.generic.description'),
-            primaryButtonTitle: translate('generic.buttons.tryAgain'),
-            primaryButtonVariant: 'redBold',
-            onPressPrimaryButton: onRetry,
-            secondaryButtonTitle: translate('generic.buttons.cancel'),
-            secondaryButtonVariant: 'redElevation0',
-            onPressSecondaryButton: onCancel,
-        });
-    };
+    return useCallback(
+        (onRetry: () => void, onCancel: () => void) => {
+            showAlert({
+                icon: 'warningCircle',
+                title: isSolanaAccount
+                    ? translate('moduleSend.review.outputs.errorAlert.solana.title')
+                    : translate('moduleSend.review.outputs.errorAlert.generic.title'),
+                description: isSolanaAccount
+                    ? translate('moduleSend.review.outputs.errorAlert.solana.description')
+                    : translate('moduleSend.review.outputs.errorAlert.generic.description'),
+                primaryButtonTitle: translate('generic.buttons.tryAgain'),
+                primaryButtonVariant: 'redBold',
+                onPressPrimaryButton: onRetry,
+                secondaryButtonTitle: translate('generic.buttons.cancel'),
+                secondaryButtonVariant: 'redElevation0',
+                onPressSecondaryButton: onCancel,
+            });
+        },
+        [isSolanaAccount, showAlert, translate],
+    );
 };
