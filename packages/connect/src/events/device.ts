@@ -1,9 +1,15 @@
 import type { VersionArray } from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
+import type {
+    DecodedTrezorPushNotification,
+    ThpCredentials,
+    ThpPairingMethod,
+} from '@trezor/protocol';
 
 import type { Device } from '../types/device';
 import type { MessageFactoryFn } from '../types/utils';
+
+export { type DecodedTrezorPushNotification } from '@trezor/protocol';
 
 export const DEVICE_EVENT = 'DEVICE_EVENT';
 export const DEVICE = {
@@ -13,6 +19,7 @@ export const DEVICE = {
     DISCONNECT: 'device-disconnect',
     CHANGED: 'device-changed',
     FIRMWARE_VERSION_CHANGED: 'device-firmware_version_changed',
+    TREZOR_PUSH_NOTIFICATION: 'device-trezor_push_notification',
 
     // This event is triggered every time, the device provides the THP credentials to the Suite.
     // This happens on two occasions:
@@ -66,6 +73,13 @@ export interface DeviceThpCredentialsChanged {
     };
 }
 
+export interface DeviceTrezorPushNotification {
+    type: typeof DEVICE.TREZOR_PUSH_NOTIFICATION;
+    payload: DecodedTrezorPushNotification & {
+        device: Device;
+    };
+}
+
 export type DeviceEvent =
     | {
           type:
@@ -77,7 +91,8 @@ export type DeviceEvent =
       }
     | DeviceButtonRequest
     | DeviceThpCredentialsChanged
-    | DeviceVersionChanged;
+    | DeviceVersionChanged
+    | DeviceTrezorPushNotification;
 
 export type DeviceEventMessage = DeviceEvent & { event: typeof DEVICE_EVENT };
 

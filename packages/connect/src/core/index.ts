@@ -987,6 +987,16 @@ const initDeviceList = (context: CoreContext) => {
         sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
     });
 
+    deviceList.on(DEVICE.TREZOR_PUSH_NOTIFICATION, payload => {
+        sendCoreMessage(
+            createDeviceMessage(DEVICE.TREZOR_PUSH_NOTIFICATION, {
+                device: payload.device.toMessageObject(),
+                mode: payload.mode,
+                type: payload.type,
+            }),
+        );
+    });
+
     deviceList.on(TRANSPORT.START, transport =>
         sendCoreMessage(createTransportMessage(TRANSPORT.START, transport)),
     );

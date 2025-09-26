@@ -40,6 +40,9 @@ export const events = (api: TrezorConnect) => {
 
             return;
         }
+        if (event.type === 'device-trezor_push_notification') {
+            return;
+        }
         const { payload } = event;
         payload.path.toLowerCase();
         if (payload.type === 'acquired') {

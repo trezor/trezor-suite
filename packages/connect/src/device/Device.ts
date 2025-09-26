@@ -1,10 +1,12 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 import { DeviceModelInternal, FirmwareRelease, models } from '@trezor/device-utils';
 import {
+    type DecodedTrezorPushNotification,
     TransportProtocol,
     thp as protocolThp,
     v1 as protocolV1,
     v2 as protocolV2,
+    tpn,
 } from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
@@ -94,6 +96,10 @@ export interface DeviceEvents {
     [DEVICE.PASSPHRASE_ON_DEVICE]: void;
     [DEVICE.BUTTON]: { device: Device; payload: DeviceButtonRequestPayload };
     [DEVICE.FIRMWARE_VERSION_CHANGED]: DeviceVersionChanged['payload'];
+    [DEVICE.TREZOR_PUSH_NOTIFICATION]: {
+        device: DeviceTyped;
+        payload: DecodedTrezorPushNotification;
+    };
     [DEVICE.THP_PAIRING]: {
         payload: DeviceThpPairingPayload;
         callback: (response: Result<UiResponseThpPairingTag['payload']>) => void;
@@ -106,6 +112,7 @@ interface DeviceLifecycleEvents {
     [DEVICE.CONNECT_UNACQUIRED]: void;
     [DEVICE.CHANGED]: void;
     [DEVICE.DISCONNECT]: void;
+    [DEVICE.TREZOR_PUSH_NOTIFICATION]: DecodedTrezorPushNotification;
 }
 
 type DeviceParams = {
@@ -322,6 +329,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.acquirePromise;
     }
 
+    trezorPushNotificationHandler(message: number[]) {
+        // TODO: now we are just emitting event, other logic will be implemented for some notifications.
+        const decoded: DecodedTrezorPushNotification = tpn.decode(message);
+        this.lifecycle.emit(DEVICE.TREZOR_PUSH_NOTIFICATION, decoded);
+    }
+
     subscribe() {
         const { bluetoothProps } = this;
         if (bluetoothProps?.id) {
@@ -340,6 +353,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         this.transport.on('battery-level', event => {
                             this._updateFeature('soc', event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
+                        });
+                    }
+                    if (this.bluetoothProps?.channels?.['trezor-push-notification']) {
+                        this.transport.on('trezor-push-notification', ({ id, data }) => {
+                            if (id === bluetoothProps.id) {
+                                this.trezorPushNotificationHandler(data);
+                            }
                         });
                     }
                 });

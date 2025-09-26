@@ -14,7 +14,7 @@ import {
 } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
-import { DEVICE, TransportError, TransportInfo } from '../events';
+import { DEVICE, DecodedTrezorPushNotification, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
 import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
 import { createTransportList } from './TransportList';
@@ -61,6 +61,7 @@ interface DeviceListEvents {
     [TRANSPORT.ERROR]: TransportError;
     [DEVICE.CONNECT]: Device;
     [DEVICE.CONNECT_UNACQUIRED]: Device;
+    [DEVICE.TREZOR_PUSH_NOTIFICATION]: DecodedTrezorPushNotification & { device: Device };
     [DEVICE.DISCONNECT]: Device;
     [DEVICE.CHANGED]: Device;
 }
@@ -161,6 +162,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         device.lifecycle.on(DEVICE.CONNECT_UNACQUIRED, () =>
             this.emit(DEVICE.CONNECT_UNACQUIRED, device),
         );
+        device.lifecycle.on(DEVICE.TREZOR_PUSH_NOTIFICATION, payload => {
+            this.emit(DEVICE.TREZOR_PUSH_NOTIFICATION, {
+                device,
+                ...payload,
+            });
+        });
         device.lifecycle.on(DEVICE.DISCONNECT, () => {
             device.lifecycle.removeAllListeners();
             this.authPenaltyManager.remove(device);
