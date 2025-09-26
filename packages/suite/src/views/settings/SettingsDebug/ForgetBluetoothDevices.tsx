@@ -1,7 +1,7 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
@@ -12,7 +12,9 @@ export const ForgetAllDevicesButton = () => {
         dispatch(bluetoothActions.knownDevicesUpdateAction({ knownDevices: [] }));
         dispatch(notificationsActions.addToast({ type: 'clear-storage' }));
     };
-    const handleOpenSettingsButtonClick = () => desktopApi.openSystemSettings('bluetooth');
+    const handleOpenSettingsButtonClick = () => {
+        dispatch(openSystemSettingsThunk({ type: 'bluetooth' }));
+    };
 
     return (
         <SectionItem>
