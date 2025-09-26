@@ -23,7 +23,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
             // BUY
             await test.step('Buy from dashboard asset card', async () => {
                 await dashboardPage.navigateTo();
-                await page.getByTestId('@dashboard/asset/btc/buy-button').click();
+                await dashboardPage.openBuyForm('btc');
                 await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
