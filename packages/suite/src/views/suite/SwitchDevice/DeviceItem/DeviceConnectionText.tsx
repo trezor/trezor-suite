@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -16,7 +16,7 @@ const Container = styled.span<{ $isAction?: boolean }>`
 `;
 
 type DeviceConnectionTextProps = {
-    onClick?: () => void;
+    onClick?: MouseEventHandler;
     variant: IconVariant;
     'data-testid'?: string;
     'data-testid-alt'?: string;

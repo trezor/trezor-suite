@@ -6,31 +6,11 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 
+import { getDeviceResolveStatusCTAMessage } from './getDeviceResolveStatusCTAMessage';
 import { goto } from '../../../actions/suite/routerActions';
 import { redirectAfterWalletSelectedThunk } from '../../../actions/wallet/addWalletThunk';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import type { ForegroundAppProps, TrezorDevice } from '../../../types/suite';
-
-const getDeviceResolveStatusCTAMessage = (
-    deviceStatus: ReturnType<typeof getStatus>,
-): TranslationKey => {
-    switch (deviceStatus) {
-        case 'bootloader':
-            return 'TR_SELECT_DEVICE_SHORT';
-        case 'initialize':
-            return 'TR_CONTINUE_SETUP';
-        case 'unacquired-thp-required':
-            return 'TR_TRY_AGAIN';
-        case 'firmware-required':
-            return 'TR_JUST_INSTALL';
-        case 'was-used-in-other-window':
-        case 'used-in-other-window':
-        case 'unacquired':
-            return 'TR_USE_HERE';
-        default:
-            return 'TR_SOLVE_ISSUE';
-    }
-};
 
 const getDeviceNeedsAttentionMessage = (
     deviceStatus: ReturnType<typeof getStatus>,
