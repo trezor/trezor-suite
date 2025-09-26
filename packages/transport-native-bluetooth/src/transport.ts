@@ -9,11 +9,11 @@ export class NativeBluetoothTransport extends AbstractApiTransport {
     constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
         const { logger, ...rest } = params;
 
-        super({
-            api: new BluetoothApi({
-                logger,
-            }),
-            ...rest,
+        const api = new BluetoothApi({ logger });
+        api.on('trezor-push-notification', event => {
+            this.emit('trezor-push-notification', event);
         });
+
+        super({ api, ...rest });
     }
 }

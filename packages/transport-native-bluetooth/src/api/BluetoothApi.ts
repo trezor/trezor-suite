@@ -1,6 +1,10 @@
 import { Subscription } from 'react-native-ble-plx';
 
-import { AbstractApi, AbstractApiConstructorParams } from '@trezor/transport/src/api/abstract';
+import {
+    AbstractApi,
+    AbstractApiConstructorParams,
+    OpenDeviceChannel,
+} from '@trezor/transport/src/api/abstract';
 import { DEVICE_TYPE } from '@trezor/transport/src/constants';
 import * as ERRORS from '@trezor/transport/src/errors';
 import {
@@ -15,14 +19,23 @@ import { bluetoothManager } from './bluetoothManager';
 export class BluetoothApi extends AbstractApi {
     chunkSize = 244;
 
-    private subscription: Subscription;
+    private subscriptions: Subscription[];
+    private pushNotificationSubscribedDevices = new Set<string>();
 
     constructor(params: AbstractApiConstructorParams) {
         super(params);
-        this.subscription = bluetoothManager.onDeviceConnectionStatusChange(event => {
-            this.logger?.debug('onDeviceConnectionStatusChange', event);
-            this.emit('transport-interface-change', this.getDescriptors());
-        });
+        this.subscriptions = [
+            bluetoothManager.onDeviceConnectionStatusChange(event => {
+                this.logger?.debug('onDeviceConnectionStatusChange', event);
+                this.emit('transport-interface-change', this.getDescriptors());
+            }),
+            bluetoothManager.onDevicePushNotification(({ deviceId, data }) => {
+                this.logger?.debug('onDevicePushNotificationEvent', { deviceId, data });
+                if (this.pushNotificationSubscribedDevices.has(deviceId)) {
+                    this.emit('trezor-push-notification', { id: deviceId, data });
+                }
+            }),
+        ];
     }
 
     public async enumerate() {
@@ -105,23 +118,31 @@ export class BluetoothApi extends AbstractApi {
         }
     }
 
-    public async openDevice(path: string) {
-        this.logger?.debug('openDevice', path);
+    public async openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
+        this.logger?.debug('openDevice', path, options);
+
+        if (options?.channel === 'trezor-push-notification') {
+            this.pushNotificationSubscribedDevices.add(path);
+        }
 
         // BT does not need to be opened, it is opened when connected
         return this.success(undefined);
     }
 
-    public async closeDevice(path: string) {
-        this.logger?.debug('closeDevice', path);
-        bluetoothManager.cancelRead(path);
+    public async closeDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
+        this.logger?.debug('closeDevice', path, options);
+
+        if (options?.channel === 'read') {
+            bluetoothManager.cancelRead(path);
+        } else if (options?.channel === 'trezor-push-notification') {
+            this.pushNotificationSubscribedDevices.delete(path);
+        }
 
         return this.success(undefined);
     }
 
     public async dispose(): Promise<void> {
         this.logger?.debug('dispose');
-        // Clean up any resources or listeners here
-        this.subscription?.remove();
+        this.subscriptions.forEach(s => s.remove());
     }
 }
