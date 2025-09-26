@@ -43,6 +43,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../device" },
         { "path": "../device-manager" },

@@ -10,6 +10,9 @@ export const getBtcAccount = (key = 'btc-account-1', overrides: Partial<Account>
         balance: '1000000',
         availableBalance: '1000000',
         formattedBalance: '0.01',
+        networkType: 'bitcoin',
+        visible: true,
+        deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         addresses: {
             used: [
                 {

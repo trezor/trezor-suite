@@ -710,7 +710,7 @@ describe('commonSelectors', () => {
                 'exchange',
             );
 
-            const accountAsset = result[1].data[0];
+            const accountAsset = result[3].data[0];
             expect(accountAsset.symbol).toBe('base');
             expect(accountAsset.name).toBe('Base Ethereum');
         });

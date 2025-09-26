@@ -1,7 +1,12 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    TestStore,
+    initStore,
+    renderWithStoreProviderAsync,
+    waitFor,
+} from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../__fixtures__/account';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
@@ -35,6 +40,16 @@ jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
     }),
 }));
 
+const mockShowAlert = jest.fn();
+jest.mock('@suite-native/alerts', () => ({
+    useAlert: () => ({
+        showAlert: mockShowAlert,
+    }),
+}));
+
+const mockPopToTop = jest.fn();
+const mockNavigate = jest.fn();
+
 describe('TradingExchangePreviewScreen', () => {
     let store: TestStore;
 
@@ -43,14 +58,13 @@ describe('TradingExchangePreviewScreen', () => {
             <TradingExchangePreviewScreen
                 navigation={
                     {
-                        navigate: jest.fn(),
+                        navigate: mockNavigate,
+                        popToTop: mockPopToTop,
                     } as unknown as TradingExchangePreviewScreenProps['navigation']
                 }
                 route={{} as TradingExchangePreviewScreenProps['route']}
             />,
-            {
-                store,
-            },
+            { store },
         );
 
     beforeEach(async () => {
@@ -64,6 +78,21 @@ describe('TradingExchangePreviewScreen', () => {
             receiveAccountKey: 'btc-account-1',
             receiveAddress: getBtcAccount().addresses?.used[0].address,
             selectedQuote: exchangeQuotes[0],
+        };
+
+        // Add precomposed transaction to show the Continue button
+        preloadedState.wallet = {
+            ...preloadedState.wallet,
+            send: {
+                ...preloadedState.wallet.send,
+                precomposedTx: {
+                    type: 'final',
+                    fee: '1000',
+                    feePerByte: '10',
+                    totalSpent: '100000',
+                    bytes: 100,
+                } as any,
+            },
         };
 
         store = await initStore(preloadedState);
@@ -101,5 +130,78 @@ describe('TradingExchangePreviewScreen', () => {
         // Should render the fee picker section
         expect(getByText('Transaction details')).toBeOnTheScreen();
         expect(getByText('Fee')).toBeOnTheScreen();
+    });
+
+    describe('Error Alert Functionality', () => {
+        it('should show error alert when trade confirmation fails', async () => {
+            // Mock confirmTrade to throw an error
+            mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
+
+            await renderTradingExchangePreviewScreen();
+
+            // Wait for the error to be processed
+            await waitFor(() => {
+                expect(mockShowAlert).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        it('should retry trade confirmation when retry button is pressed', async () => {
+            // Mock confirmTrade to throw an error first, then succeed
+            mockConfirmTrade
+                .mockRejectedValueOnce(new Error('Trade confirmation failed'))
+                .mockResolvedValueOnce(true);
+
+            await renderTradingExchangePreviewScreen();
+
+            // Wait for the error alert to be shown
+            await waitFor(() => {
+                expect(mockShowAlert).toHaveBeenCalled();
+            });
+
+            // Get the retry function from the alert call
+            const alertCall = mockShowAlert.mock.calls[0][0];
+            const retryFunction = alertCall.onPressPrimaryButton;
+
+            // Call the retry function
+            await retryFunction();
+
+            // Verify confirmTrade was called again
+            expect(mockConfirmTrade).toHaveBeenCalledTimes(2);
+        });
+
+        it('should navigate to top when cancel button is pressed', async () => {
+            // Mock confirmTrade to throw an error
+            mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
+
+            await renderTradingExchangePreviewScreen();
+
+            // Wait for the error alert to be shown
+            await waitFor(() => {
+                expect(mockShowAlert).toHaveBeenCalled();
+            });
+
+            // Get the cancel function from the alert call
+            const alertCall = mockShowAlert.mock.calls[0][0];
+            const cancelFunction = alertCall.onPressSecondaryButton;
+
+            // Call the cancel function
+            cancelFunction();
+
+            // Verify navigation.popToTop was called
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not show error alert when trade confirmation succeeds', async () => {
+            // Mock confirmTrade to succeed
+            mockConfirmTrade.mockResolvedValue(true);
+
+            await renderTradingExchangePreviewScreen();
+
+            // Wait a bit to ensure no error alert is shown
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Verify no error alert was shown
+            expect(mockShowAlert).not.toHaveBeenCalled();
+        });
     });
 });

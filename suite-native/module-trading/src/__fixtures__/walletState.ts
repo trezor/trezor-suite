@@ -48,5 +48,11 @@ export const getWalletState = ({
             getBaseAccount(undefined, accountOverrides),
             getSolAccount(undefined, accountOverrides),
         ] as Account[],
+        send: {
+            drafts: {},
+            precomposedTx: undefined,
+            serializedTx: undefined,
+            signedTx: undefined,
+        },
     };
 };

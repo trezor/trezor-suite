@@ -287,8 +287,6 @@ export const useExchangeFlow = () => {
             selectedAccount,
             paymentRequests,
         }: TradingSignAndPushSendFormTransactionProps): Promise<TradingFulfillValue> => {
-            resolveConsent(true);
-
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formState,
@@ -344,7 +342,6 @@ export const useExchangeFlow = () => {
         dispatch,
         getCommonFunctions,
         isSlip24Active,
-        resolveConsent,
         selectedQuote,
         sendAccount,
         shouldSendInSats,
