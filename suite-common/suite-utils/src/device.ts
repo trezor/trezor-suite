@@ -69,12 +69,28 @@ export const getStatus = (device: TrezorDevice) => {
         return 'connected';
     }
 
-    if (device.type === 'unacquired' && device.status === 'busy') {
+    if (device.status === 'busy') {
         return 'device-busy';
     }
 
-    if (device.type === 'unacquired' && device.thp?.properties !== undefined) {
-        return 'unacquired-thp-required';
+    if (device.status === 'rebooting') {
+        return 'device-rebooting';
+    }
+
+    if (device.status === 'bootloader-locked') {
+        return 'device-bootloader-locked';
+    }
+
+    if (device.status === 'hard-locked') {
+        return 'device-hard-locked';
+    }
+
+    if (device.status === 'pin-locked') {
+        return 'device-pin-locked';
+    }
+
+    if (device.status === 'thp-locked') {
+        return 'device-thp-locked';
     }
 
     if (device.type === 'unacquired') {
@@ -112,13 +128,17 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boole
         case 'firmware-required':
         case 'unreadable':
         case 'device-busy':
-        case 'unacquired-thp-required':
+        case 'device-bootloader-locked':
+        case 'device-hard-locked':
+        case 'device-pin-locked':
+        case 'device-thp-locked':
             return true;
 
         case 'disconnected':
         case 'unavailable': // this case is already solved in Account view @wallet-components/AccountMode/DeviceUnavailable
         case 'firmware-recommended':
         case 'connected':
+        case 'device-rebooting':
         case 'unknown':
             return false;
 
@@ -135,7 +155,8 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceSta
     switch (deviceStatus) {
         case 'bootloader':
         case 'initialize':
-        case 'unacquired-thp-required':
+        case 'device-thp-locked':
+        case 'device-rebooting':
             return false;
         default:
             return true;

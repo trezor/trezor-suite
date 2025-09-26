@@ -56,7 +56,7 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
                 case 'device-unacquired':
                 case 'device-busy':
                     return <DeviceAcquire />;
-                case 'device-unacquired-requires-thp':
+                case 'device-thp-locked':
                     return <DeviceTrezorHostProtocolPair />;
                 case 'device-used-elsewhere':
                     return <DeviceUsedElsewhere />;

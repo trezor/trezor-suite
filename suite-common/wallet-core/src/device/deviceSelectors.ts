@@ -222,7 +222,7 @@ export const selectDeviceStatus = createMemoizedSelector(
 
 export const selectIsDeviceThpRequired = createMemoizedSelector(
     [selectDeviceStatus],
-    deviceStatus => deviceStatus === 'unacquired-thp-required',
+    deviceStatus => deviceStatus === 'device-thp-locked',
 );
 
 export const selectSupportedNetworkByDevice = (device: TrezorDevice | undefined) => {

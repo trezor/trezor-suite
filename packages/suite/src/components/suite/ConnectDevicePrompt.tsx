@@ -140,11 +140,15 @@ const getMessageId = ({
         'device-unacquired': {
             heading: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
         },
-        'device-unacquired-requires-thp': {
+        'device-thp-locked': {
             heading: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
         },
 
-        'device-busy': defaultKey,
+        'device-busy': defaultKey, // TODO: device returned Busy error - we don't know exactly why it depends on the workflow
+        'device-rebooting': defaultKey, // TODO: device is booting to normal mode
+        'device-bootloader-locked': defaultKey, // TODO: device is  a) rebooting or b) its was rebooted to bootloader
+        'device-hard-locked': defaultKey, // TODO: device is hard locked and will not respond to messages, unlock it
+        'device-pin-locked': defaultKey, // TODO: unlock PIN on your device
         'device-disconnect-required': defaultKey,
         'device-disconnected': defaultKey,
         'device-initialize': defaultKey,

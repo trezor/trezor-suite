@@ -8,7 +8,7 @@ const commonPrerequisites: Step['prerequisites'] = [
     'device-bootloader',
     'device-seedless',
     'device-unacquired',
-    'device-unacquired-requires-thp',
+    'device-thp-locked',
     'device-used-elsewhere',
     'device-unknown',
     'device-unreadable',
