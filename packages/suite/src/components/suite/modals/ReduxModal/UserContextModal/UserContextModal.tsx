@@ -5,61 +5,59 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
-import {
-    AddAccountModal,
-    AddTokenModal,
-    AdvancedCoinSettingsModal,
-    ApplicationLogModal,
-    AuthenticateDeviceFailModal,
-    AuthenticateDeviceModal,
-    BackgroundGalleryModal,
-    CancelCoinjoinModal,
-    ClaimModal,
-    CoinjoinSuccessModal,
-    ConfirmAddressModal,
-    ConfirmUnverifiedAddressModal,
-    ConfirmUnverifiedProceedModal,
-    ConfirmUnverifiedXpubModal,
-    ConfirmXpubModal,
-    ConnectPermissionsModal,
-    CopyAddressModal,
-    CriticalCoinjoinPhaseModal,
-    DeviceAuthenticityOptOutModal,
-    DisableTorModal,
-    DisableTorStopCoinjoinModal,
-    ImportTransactionModal,
-    MetadataProviderModal,
-    MoreRoundsNeededModal,
-    PinInvalidModal,
-    PinMismatchModal,
-    QrScannerModal,
-    RequestEnableTorModal,
-    SafetyChecksModal,
-    StakeInANutshellModal,
-    StakeModal,
-    TorLoadingModal,
-    TradingTermsModal,
-    TransactionReviewModal,
-    TxDetailModal,
-    UnecoCoinjoinModal,
-    UnhideTokenModal,
-    UnstakeModal,
-} from 'src/components/suite/modals';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
 
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import type { ReduxModalProps } from '../ReduxModal';
+import { AddAccountModal } from './AddAccountModal/AddAccountModal';
+import { AddTokenModal } from './AddTokenModal';
+import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
+import { ApplicationLogModal } from './ApplicationLogModal';
+import { AuthenticateDeviceFailModal } from './AuthenticateDeviceFailModal';
+import { AuthenticateDeviceModal } from './AuthenticateDeviceModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
+import { BackgroundGalleryModal } from './BackgroundGalleryModal';
+import { CancelCoinjoinModal } from './CancelCoinjoinModal';
+import { UnhideTokenModal } from '../UnhideTokenModal';
+import { ClaimModal } from './ClaimModal/ClaimModal';
+import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
+import { ConfirmUnverifiedAddressModal } from './ConfirmUnverifiedAddressModal';
+import { ConfirmUnverifiedProceedModal } from './ConfirmUnverifiedProceedModal';
+import { ConfirmUnverifiedXpubModal } from './ConfirmUnverifiedXpubModal';
 import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
+import { ConnectPermissionsModal } from './ConnectPermissionsModal';
+import { CopyAddressModal } from '../CopyAddressModal';
+import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
+import { DisableTorModal } from './DisableTorModal';
+import { DisableTorStopCoinjoinModal } from './DisableTorStopCoinjoinModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
+import { ImportTransactionModal } from './ImportTransactionModal/ImportTransactionModal';
+import { MetadataProviderModal } from './MetadataProviderModal/MetadataProviderModal';
+import { MoreRoundsNeededModal } from './MoreRoundsNeededModal';
+import { PinMismatchModal } from './PinMismatchModal';
+import { RequestEnableTorModal } from './RequestEnableTorModal';
+import { SafetyChecksModal } from './SafetyChecksModal';
+import { StakeInANutshellModal } from './StakeInANutshellModal/StakeInANutshellModal';
+import { StakeModal } from './StakeModal/StakeModal';
+import { TorLoadingModal } from './TorLoadingModal';
 import { TradingDCAModal } from './TradingDCAModal';
 import { TxSimulationModal } from './TxSimulationModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
+import { ConfirmAddressModal } from '../ConfirmAddressModal';
+import { ConfirmXpubModal } from '../ConfirmXpubModal';
+import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
+import { QrScannerModal } from './QrScannerModal';
+import { TradingTermsModal } from './TradingTermsModal';
+import { TxDetailModal } from './TxDetailModal/TxDetailModal';
+import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
+import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
+import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
+import { UnstakeModal } from './UnstakeModal/UnstakeModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {

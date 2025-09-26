@@ -4,21 +4,19 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
-import {
-    ConfirmActionModal,
-    ConfirmAddressModal,
-    ConfirmFingerprintModal,
-    ConfirmXpubModal,
-    PassphraseOnDeviceModal,
-    PinModal,
-    TransactionReviewModal,
-} from 'src/components/suite/modals';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import messages from 'src/support/messages';
 
 import type { ReduxModalProps } from '../ReduxModal';
+import { ConfirmActionModal } from './ConfirmActionModal';
+import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';
+import { PassphraseOnDeviceModal } from './PassphraseOnDeviceModal';
+import { PinModal } from './PinModal';
 import { SignMessageModal } from './SignMessageModal';
+import { ConfirmAddressModal } from '../ConfirmAddressModal';
+import { ConfirmXpubModal } from '../ConfirmXpubModal';
+import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({

@@ -8,7 +8,7 @@ import { LocalAccountSearchProvider } from '../../../../../../hooks/suite/useAcc
 import { AccountItemType } from '../../../../../../types/wallet';
 import { AddAccountButton } from '../../../../../wallet/WalletLayout/AccountsMenu/AddAccountButton';
 import { Translation } from '../../../../Translation';
-import { AddAccountModal } from '../../../../modals';
+import { AddAccountModal } from '../../../../modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 
 type GlobalReceiveModalProps = {
     onCancel: () => void;
