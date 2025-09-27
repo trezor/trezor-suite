@@ -147,7 +147,7 @@ export const ApproveModal = ({
             receiveAddress: selectedQuote.receiveAddress,
         });
 
-        setValue('ethereumDataHex', trade?.dexTx?.data);
+        setValue('transactionData', trade?.dexTx?.data);
 
         await fetchFeesAndCompose();
 

@@ -35,7 +35,7 @@ export type RecomposeAndSignTxThunkProps = {
     address: string;
     amount: string;
     destinationTag?: string;
-    ethereumDataHex?: string;
+    transactionData?: string;
     recalculateCustomLimit?: boolean;
     ethereumAdjustGasLimit?: string;
     setMaxOutputId?: number | undefined;
@@ -57,7 +57,7 @@ export type RecomposeAndSignTxThunkProps = {
 /**
  * This thunk is particularly useful for scenarios where transaction details (e.g., fees, outputs) need to be recalculated
  * dynamically before signing and broadcasting the transaction. (for example for DEX trade is necessary to
- * recompose the transaction based on the ethereumDataHex, which contains the details of the trade)
+ * recompose the transaction based on the transactionData, which contains the details of the trade)
  *
  * 1. Validates inputs and retrieves necessary data.
  * 2. Dynamically recomposes the transaction and recalculates fees.
@@ -78,7 +78,7 @@ export const recomposeAndSignTxThunk = createThunk<
             address,
             amount,
             destinationTag,
-            ethereumDataHex,
+            transactionData,
             recalculateCustomLimit,
             ethereumAdjustGasLimit,
             setMaxOutputId,
@@ -110,10 +110,10 @@ export const recomposeAndSignTxThunk = createThunk<
         }
 
         // Token is being used for approval transactions unless on firmware < 2.9.0.
-        // Otherwise if ethereumDataHex is present, token is not used as details are in the ethereumDataHex.
+        // Otherwise if transactionData is present, token is not used as details are in the transactionData.
         const shouldIncludeToken =
-            !ethereumDataHex ||
-            (isApprovalFlowSupported(device) && isEvmApprovalTx(ethereumDataHex));
+            !transactionData ||
+            (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData));
 
         // prepare the fee levels, set custom values from composed
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
@@ -136,7 +136,7 @@ export const recomposeAndSignTxThunk = createThunk<
             maxPriorityFeePerGas: composed.maxPriorityFeePerGas,
             options,
             destinationTag,
-            ethereumDataHex,
+            transactionData,
             ethereumAdjustGasLimit,
             selectedUtxos: [],
             trading: tradingFormState,
@@ -146,7 +146,7 @@ export const recomposeAndSignTxThunk = createThunk<
         const composeContext = { account, network, feeInfo };
 
         // recalculateCustomLimit is used in case of custom fee level, when we want to keep the feePerUnit defined by the user
-        // but recompute the feeLimit based on a different transaction data (for example from ethereumDataHex)
+        // but recompute the feeLimit based on a different transaction data (for example from transactionData)
         if (recalculateCustomLimit && selectedFee === 'custom') {
             const normalLevels = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({

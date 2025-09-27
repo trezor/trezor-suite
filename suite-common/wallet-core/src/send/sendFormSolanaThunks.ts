@@ -180,6 +180,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 computeUnitPrice: formState.feePerUnit || '1',
                 computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
             },
+            txData: formState.transactionData,
         });
 
         if (!transaction.success) {
@@ -321,6 +322,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             coin: selectedAccount.symbol,
             identity: getAccountIdentity(selectedAccount),
+            txData: formState.transactionData,
         });
 
         if (!transaction.success) {

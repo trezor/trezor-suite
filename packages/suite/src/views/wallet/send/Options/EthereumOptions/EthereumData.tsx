@@ -12,7 +12,7 @@ import { useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const inputAsciiName = 'ethereumDataAscii';
-const inputHexName = 'ethereumDataHex';
+const inputHexName = 'transactionData';
 const inputAmountName = 'outputs.0.amount';
 
 const Wrapper = styled.div`
@@ -51,7 +51,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
     const [asciiValue, hexValue, amount] = watch([inputAsciiName, inputHexName, inputAmountName]);
 
     const asciiError = errors.ethereumDataAscii;
-    const hexError = errors.ethereumDataHex;
+    const hexError = errors.transactionData;
 
     const handleClose = () => {
         resetDefaultValue(inputAsciiName);

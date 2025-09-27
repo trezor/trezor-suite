@@ -49,7 +49,7 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (precomposedForm?.trading?.activeSection === 'exchange') {
-        const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.ethereumDataHex);
+        const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.transactionData);
 
         switch (transactionPurpose) {
             case 'approval':

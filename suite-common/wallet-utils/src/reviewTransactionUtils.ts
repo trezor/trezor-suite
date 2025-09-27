@@ -232,8 +232,8 @@ const constructOldFlow = ({
             });
     }
 
-    if (precomposedForm.ethereumDataHex && !precomposedTx.token) {
-        outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
+    if (precomposedForm.transactionData && !precomposedTx.token) {
+        outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
 
     // For bump fee we have to analyze tx data,
@@ -277,8 +277,8 @@ const constructNewFlow = ({
     const isCardano = isCardanoTx(account, precomposedTx);
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
-    const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.ethereumDataHex);
-    const isEvmApproval = isEvmApprovalTx(precomposedForm.ethereumDataHex);
+    const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.transactionData);
+    const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
 
     const { networkType, symbol } = account;
 
@@ -310,10 +310,10 @@ const constructNewFlow = ({
     }
 
     if (
-        (precomposedForm.ethereumDataHex && !precomposedTx.token && !isEvmApproval) ||
-        (precomposedForm.ethereumDataHex && isEvmApproval && !isApprovalFlowSupported)
+        (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
+        (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported)
     ) {
-        outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
+        outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
 
     const isRbf = isRbfBumpFeeTransaction(precomposedTx);
@@ -392,7 +392,7 @@ const constructNewFlow = ({
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
-                    (precomposedForm.ethereumDataHex && !isEvmApproval) ||
+                    (precomposedForm.transactionData && !isEvmApproval) ||
                     (isEvmApproval && !isApprovalFlowSupported)
                 ) {
                     // EVM contract call

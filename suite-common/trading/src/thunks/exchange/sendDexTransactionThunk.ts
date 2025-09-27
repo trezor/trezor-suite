@@ -84,7 +84,7 @@ export const sendDexTransactionThunk = createThunk<
                 address: selectedQuote.dexTx.to,
                 amount: selectedQuote.dexTx.value,
                 destinationTag: selectedQuote.partnerPaymentExtraId,
-                ethereumDataHex: selectedQuote.dexTx.data,
+                transactionData: serializedTx,
                 recalculateCustomLimit: true,
                 ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
                 setMaxOutputId,
