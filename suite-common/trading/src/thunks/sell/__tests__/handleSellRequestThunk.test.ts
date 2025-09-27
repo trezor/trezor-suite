@@ -100,7 +100,7 @@ describe('handleSellRequestThunk', () => {
             bitcoinLocktimeDatetime: '',
             ethereumNonce: '',
             ethereumDataAscii: '',
-            ethereumDataHex: '',
+            transactionData: '',
             destinationTag: '',
             isCoinControlEnabled: false,
             hasCoinControlBeenOpened: false,

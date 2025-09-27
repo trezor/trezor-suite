@@ -247,7 +247,7 @@ const buildFakePendingEvmTx = ({
             maxPriorityFeePerGas: isLegacyTx
                 ? undefined
                 : toWei(precomposedTransaction.maxPriorityFeePerGas ?? '0', 'gwei'),
-            data: ensureHexPrefix(precomposedForm?.ethereumDataHex),
+            data: ensureHexPrefix(precomposedForm?.transactionData),
         },
         details: {
             vin: [
@@ -365,7 +365,7 @@ export const addFakePendingEvmTxThunk = createThunk(
             precomposedTransaction,
             precomposedForm,
             token:
-                precomposedTransaction.token && !precomposedForm.ethereumDataHex
+                precomposedTransaction.token && !precomposedForm.transactionData
                     ? precomposedTransaction.token
                     : undefined,
             txid,

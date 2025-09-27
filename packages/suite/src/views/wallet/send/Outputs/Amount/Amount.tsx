@@ -106,7 +106,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             // allow 0 amount ONLY for ethereum transaction with data
-            min: validateMin(translationString, { except: !!getDefaultValue('ethereumDataHex') }),
+            min: validateMin(translationString, { except: !!getDefaultValue('transactionData') }),
             integer: validateInteger(translationString, { except: !shouldSendInSats }),
             decimals: validateDecimals(translationString, { decimals }),
             dust: (value: string) => {

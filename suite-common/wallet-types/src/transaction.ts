@@ -267,7 +267,7 @@ export interface ComposeTransactionData {
     isMaxActive: boolean;
     address?: string;
     token?: string;
-    ethereumDataHex?: string;
+    transactionData?: string;
     isInvity?: boolean;
 }
 

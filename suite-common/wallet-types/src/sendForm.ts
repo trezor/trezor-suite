@@ -79,8 +79,8 @@ export interface FormState {
     bitcoinLocktimeDatetime?: string;
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumDataAscii?: string;
-    ethereumDataHex?: string;
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
+    transactionData?: string;
     destinationTag?: string; // For Ripple and Stellar
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;

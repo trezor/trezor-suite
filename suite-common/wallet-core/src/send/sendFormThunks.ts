@@ -350,7 +350,7 @@ export const pushSendFormTransactionThunk = createThunk<
             : '0';
 
         const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
-        const evmApprovalData = getEvmApprovalTxData(precomposedForm?.ethereumDataHex);
+        const evmApprovalData = getEvmApprovalTxData(precomposedForm?.transactionData);
 
         if (isSuccessfullyPushedTransaction(pushTxResponse)) {
             const { txid } = pushTxResponse.payload;

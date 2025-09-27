@@ -86,7 +86,7 @@ const getLines = (
         };
 
         return isUnknownStakingValue ||
-            (isEvmApprovalTx(precomposedForm.ethereumDataHex) && isApprovalFlowSupported(device))
+            (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device))
             ? [feeLine]
             : [amountLine, feeLine];
     }

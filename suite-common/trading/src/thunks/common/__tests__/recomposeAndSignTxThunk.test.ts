@@ -497,7 +497,7 @@ describe('recomposeAndSignTxThunk', () => {
                 address: 'address',
                 amount: '0.1',
                 destinationTag: '123456',
-                ethereumDataHex: '0x123456',
+                transactionData: '0x123456',
                 ethereumAdjustGasLimit: '1',
                 setMaxOutputId: 0,
                 tradingFormState,

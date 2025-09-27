@@ -163,7 +163,7 @@ export const TransactionReviewOutputList = ({
                                 isTrading={!!trading}
                                 stakeType={stakeType}
                                 evmTxType={getEvmTransactionTextSignature(
-                                    precomposedForm.ethereumDataHex,
+                                    precomposedForm.transactionData,
                                 )}
                             />
                         </Column>

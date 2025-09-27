@@ -776,10 +776,10 @@ export const useTradingExchangeForm = ({
         }
     }, [account, setValue, exchangeType]);
 
-    // set ethereumDataHex from DEX quote for correct fees fetching
+    // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
-            return setValue('ethereumDataHex', '');
+            setValue('transactionData', '');
         }
 
         if (isFormLoading || isLoadingQuote) {
@@ -791,12 +791,12 @@ export const useTradingExchangeForm = ({
         const quote = isEvmNativeToken ? dexQuotes[0] : selectedQuote;
 
         if (!quote || !quote.dexTx) {
-            return setValue('ethereumDataHex', '');
+            return setValue('transactionData', '');
         }
 
         const { dexTx } = quote;
 
-        setValue('ethereumDataHex', dexTx.data);
+        setValue('transactionData', dexTx.data);
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
@@ -809,11 +809,11 @@ export const useTradingExchangeForm = ({
         isLoadingQuote,
     ]);
 
-    // fetch fees when ethereumDataHex changes
+    // fetch fees when transactionData changes
     useEffect(() => {
         fetchFeesAndCompose();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [values.ethereumDataHex, values.outputs?.[0]?.address]);
+    }, [values.transactionData, values.outputs?.[0]?.address]);
 
     useEffect(() => {
         setValue('receiveAddress', receiveAddress);

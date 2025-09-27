@@ -49,7 +49,7 @@ export const DEFAULT_VALUES = {
     bitcoinLocktimeDatetime: '',
     ethereumNonce: '',
     ethereumDataAscii: '',
-    ethereumDataHex: '',
+    transactionData: '',
     destinationTag: '',
     outputs: [],
     isCoinControlEnabled: false,

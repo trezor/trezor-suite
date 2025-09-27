@@ -151,9 +151,9 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         const device = selectSelectedDevice(getState());
 
         const { account, network, feeInfo } = composeContext;
-        const { ethereumDataHex } = formState;
+        const { transactionData } = formState;
 
-        const isApproveTx = isEvmApprovalTx(ethereumDataHex);
+        const isApproveTx = isEvmApprovalTx(transactionData);
         const contract = isApprovalFlowSupported(device)
             ? (formState.outputs[0].token ?? undefined)
             : formState.outputs[0].address;
@@ -181,12 +181,12 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
 
         const ethereumEstimateFeeParams =
             isApproveTx && contract
-                ? getEthereumEstimateFeeParams(contract, '0', undefined, formState.ethereumDataHex)
+                ? getEthereumEstimateFeeParams(contract, '0', undefined, formState.transactionData)
                 : getEthereumEstimateFeeParams(
                       address || account.descriptor,
                       amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
                       tokenInfo,
-                      formState.ethereumDataHex,
+                      formState.transactionData,
                   );
 
         // gasLimit calculation based on address, amount and data size
@@ -208,7 +208,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             customFeeLimit = new BigNumber(estimatedFee.payload.levels[0].feeLimit || '');
         } else {
             customFeeLimit = new BigNumber(
-                tokenInfo || ethereumDataHex
+                tokenInfo || transactionData
                     ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
                     : ETH_TRANSFER_BACKUP_GAS_LIMIT,
             );
@@ -225,7 +225,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         }
 
         // increase gas limit for staking, this flow is used only during bump fee
-        const isStakeEthTx = !!getTxStakeNameByDataHex(formState.ethereumDataHex);
+        const isStakeEthTx = !!getTxStakeNameByDataHex(formState.transactionData);
         if (isStakeEthTx) {
             customFeeLimit = customFeeLimit.plus(STAKE_GAS_LIMIT_RESERVE);
         }
@@ -362,7 +362,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             chainId: network.chainId,
             to: formState.outputs[0].address,
             amount: formState.outputs[0].amount,
-            data: formState.ethereumDataHex,
+            data: formState.transactionData,
             gasLimit: precomposedTransaction.feeLimit || '',
             maxFeePerGas: precomposedTransaction.maxFeePerGas,
             maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,

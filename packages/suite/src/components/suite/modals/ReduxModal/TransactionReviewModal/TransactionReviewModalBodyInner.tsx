@@ -111,7 +111,7 @@ export const TransactionReviewModalBodyInner = ({
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
-    const isApprovalTx = isEvmApprovalTx(precomposedForm.ethereumDataHex);
+    const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
 
     const totalRecipients = outputs.filter(({ type }) => type === 'address').length;
     const hasOpReturn = outputs.some(output => output.type === 'opreturn');

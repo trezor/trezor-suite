@@ -39,7 +39,7 @@ const _storePrecomposedTransaction = ({
             options: ['ethereumNonce', 'ethereumData'],
             selectedFee: 'custom',
             ethereumDataAscii: '',
-            ethereumDataHex: typedPayload.transaction.data?.replace(/^0x/, ''),
+            transactionData: typedPayload.transaction.data?.replace(/^0x/, ''),
             ethereumNonce: typedPayload.transaction.nonce,
         },
         precomposedTransaction: {
