@@ -29,6 +29,7 @@ export type DeviceBluetoothConnectionStatus =
     | { type: 'paired' }
     | { type: 'connecting' }
     | { type: 'connected' }
+    | { type: 'pairing-canceled' }
     | {
           type: 'pairing-error'; // This device cannot be paired ever again (new macAddress, new device)
           error: string;

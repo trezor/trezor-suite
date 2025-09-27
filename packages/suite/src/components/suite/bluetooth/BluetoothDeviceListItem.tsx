@@ -25,6 +25,7 @@ const connectionStatusMap: Record<
     'connection-error': { component: 'button', text: 'TR_BLUETOOTH_TRY_AGAIN' }, // Out-of-range, offline, in the faraday cage, ...
     pairing: { component: 'loader', text: 'TR_BLUETOOTH_PAIRING' },
     paired: null, // This shall never be shown to the user
+    'pairing-canceled': null, // This shall never be shown to the user
     'pairing-error': null, // This shall never be shown to the user
 };
 
