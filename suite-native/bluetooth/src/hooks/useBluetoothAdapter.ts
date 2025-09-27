@@ -9,6 +9,7 @@ import {
 } from '@suite-common/bluetooth';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
 import { isIOs } from '@trezor/env-utils';
 import {
     BluetoothDevice as TransportBluetoothDevice,
@@ -32,6 +33,7 @@ const toBluetoothDevice = (device: TransportBluetoothDevice) => ({
 
 export const useBluetoothAdapter = () => {
     const dispatch = useDispatch();
+    const { showToast } = useToast();
     const { translate } = useTranslate();
 
     const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
@@ -85,7 +87,12 @@ export const useBluetoothAdapter = () => {
                 }),
                 bluetoothManager.onDeviceConnectionStatusChange(event => {
                     dispatch(bluetoothActions.updateDeviceConnectionStatus(event));
-                    if (event.connectionStatus.type === 'pairing-error') {
+                    if (event.connectionStatus.type === 'pairing-canceled') {
+                        showToast({
+                            message: translate('bluetooth.toasts.pairingCanceled'),
+                            variant: 'default',
+                        });
+                    } else if (event.connectionStatus.type === 'pairing-error') {
                         showPairingFailedAlert();
                     }
                 }),
@@ -95,7 +102,7 @@ export const useBluetoothAdapter = () => {
                 subscriptions.forEach(subscription => subscription.remove());
             };
         }
-    }, [bluetoothPermissionStatus, dispatch, showPairingFailedAlert, translate]);
+    }, [bluetoothPermissionStatus, dispatch, showPairingFailedAlert, showToast, translate]);
 
     useEffect(() => {
         if (bluetoothAdapterStatus === 'enabled' && knownBluetoothDevices.length > 0) {

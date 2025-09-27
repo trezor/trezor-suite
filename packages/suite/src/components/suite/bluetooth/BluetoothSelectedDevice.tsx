@@ -18,6 +18,7 @@ const OkComponent = ({ device }: OkComponentProps) => {
         disconnected: <PairingState isLoading text="TR_BLUETOOTH_DISCONNECTED_BUT_WAITING" />,
         pairing: <PairingState isLoading text="TR_BLUETOOTH_PAIRING" />,
         paired: <PairingState text="TR_BLUETOOTH_PAIRED" />,
+        'pairing-canceled': 'Pairing canceled', // Shall not be shown in the UI
         'pairing-error': 'Pairing failed', // Shall not be shown in the UI
         connecting: <PairingState isLoading text="TR_BLUETOOTH_CONNECTING" />,
         connected: <PairingState text="TR_BLUETOOTH_CONNECTED" />,

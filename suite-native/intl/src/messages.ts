@@ -213,6 +213,9 @@ export const messages = {
                 step3: 'Tap “Forget this device”',
             },
         },
+        toasts: {
+            pairingCanceled: 'Bluetooth pairing canceled.',
+        },
         deviceList: {
             connect: {
                 title: 'Connect your Trezor',

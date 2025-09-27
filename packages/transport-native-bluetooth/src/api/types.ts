@@ -4,6 +4,7 @@ export type DeviceConnectionStatus =
     | { type: 'paired' }
     | { type: 'connecting' }
     | { type: 'connected' }
+    | { type: 'pairing-canceled' }
     | { type: 'pairing-error'; error: string }
     | { type: 'connection-error'; error: string };
 

@@ -104,13 +104,19 @@ class BluetoothManager {
 
     private updateDeviceConnectionStatusChange = (event: DeviceConnectionStatusChangeEvent) => {
         const { deviceId, connectionStatus } = event;
-        this.nearbyDevices = this.nearbyDevices.map(d =>
-            // Make sure that pairing-error is the final state, reconnecting is not possible.
-            d.id === deviceId && d.connectionStatus.type !== 'pairing-error'
-                ? { ...d, lastUpdatedTimestamp: Date.now(), connectionStatus }
-                : d,
-        );
-        // TODO: Do not emit any other events when the connection status is pairing-error?
+        if (
+            connectionStatus.type === 'pairing-canceled' ||
+            connectionStatus.type === 'pairing-error'
+        ) {
+            // If pairing is canceled or fails, the device vanishes and is no longer connectable.
+            this.nearbyDevices = this.nearbyDevices.filter(d => d.id !== deviceId);
+        } else {
+            this.nearbyDevices = this.nearbyDevices.map(d =>
+                d.id === deviceId
+                    ? { ...d, lastUpdatedTimestamp: Date.now(), connectionStatus }
+                    : d,
+            );
+        }
         this.eventEmitter.emit(eventNames.deviceConnectionStatusChange, event);
         this.emitNearbyDevicesChange();
     };
@@ -173,17 +179,11 @@ class BluetoothManager {
             return;
         }
 
-        const now = Date.now();
         // Since we get frequent scan updates, we can filter disconnected devices quite aggressively.
-        const disconnectedCutoffTimestamp = now - 3_000;
-        // Pairing requests timeout after 30 seconds on both platforms.
-        const pairingErrorCutoffTimestamp = now - 30_000;
-
+        const disconnectedCutoffTimestamp = Date.now() - 3_000;
         const filteredNearbyDevices = this.nearbyDevices.filter(
             ({ lastUpdatedTimestamp, connectionStatus: { type: status } }) =>
-                (status !== 'disconnected' && status !== 'pairing-error') ||
-                (status === 'disconnected' && lastUpdatedTimestamp > disconnectedCutoffTimestamp) ||
-                (status === 'pairing-error' && lastUpdatedTimestamp > pairingErrorCutoffTimestamp),
+                status !== 'disconnected' || lastUpdatedTimestamp > disconnectedCutoffTimestamp,
         );
         if (filteredNearbyDevices.length !== this.nearbyDevices.length) {
             this.nearbyDevices = filteredNearbyDevices;
@@ -337,7 +337,7 @@ class BluetoothManager {
             debugLog(`Device ${device.id} pairing canceled`);
             this.updateDeviceConnectionStatusChange({
                 deviceId: device.id,
-                connectionStatus: { type: 'pairing-error', error: error.message },
+                connectionStatus: { type: 'pairing-canceled' },
             });
             // If a pairing request is first accepted on the device but later rejected on the host,
             // the bluetooth connection might stay open, and thus we have to cancel it explicitly.
