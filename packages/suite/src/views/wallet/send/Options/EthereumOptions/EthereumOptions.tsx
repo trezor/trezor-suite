@@ -34,7 +34,7 @@ export const EthereumOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
 
     const options = getDefaultValue('options', []);
-    const dataEnabled = options.includes('ethereumData');
+    const dataEnabled = options.includes('transactionData');
     const tokenValue = getDefaultValue<string, string | undefined>('outputs.0.token', undefined);
     const broadcastEnabled = options.includes('broadcast');
 
@@ -42,7 +42,7 @@ export const EthereumOptions = () => {
         toggleOption(option);
         composeTransaction();
     };
-    const toggleData = () => toggle('ethereumData');
+    const toggleData = () => toggle('transactionData');
     const toggleBroadcast = () => toggle('broadcast');
 
     return (

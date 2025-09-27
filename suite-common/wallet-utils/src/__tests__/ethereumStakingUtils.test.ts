@@ -45,7 +45,7 @@ describe('getEthAccountTotalStakingBalance', () => {
 describe('getUnstakeAmountByEthereumDataHex', () => {
     getUnstakeAmountByEthereumDataHexFixtures.forEach(f => {
         it(f.description, () => {
-            const result = getUnstakeAmountByEthereumDataHex(f.ethereumData);
+            const result = getUnstakeAmountByEthereumDataHex(f.transactionData);
             expect(result).toBe(f.expectedAmountWei);
         });
     });

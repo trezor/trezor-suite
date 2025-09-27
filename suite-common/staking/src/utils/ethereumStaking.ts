@@ -670,18 +670,18 @@ export const simulateUnstake = async ({
         .encodeABI();
     if (!data) return null;
 
-    const ethereumData = await TrezorConnect.blockchainEvmRpcCall({
+    const transactionData = await TrezorConnect.blockchainEvmRpcCall({
         coin: symbol,
         from,
         to: addressContractPool,
         data,
     });
 
-    if (!ethereumData.success) {
-        throw new Error(ethereumData.payload.error);
+    if (!transactionData.success) {
+        throw new Error(transactionData.payload.error);
     }
 
-    const approximatedAmount = ethereumData.payload.data;
+    const approximatedAmount = transactionData.payload.data;
 
     return fromWei(approximatedAmount, 'ether');
 };

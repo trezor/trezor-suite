@@ -84,7 +84,7 @@ export const TransactionReviewModalBottomContent = ({
                 outputsCount: precomposedForm.outputs.length,
                 broadcast: isBroadcastEnabled,
                 bitcoinLocktime: !!options.includes('bitcoinLocktime'),
-                ethereumData: !!options.includes('ethereumData'),
+                transactionData: !!options.includes('transactionData'),
                 ethereumNonce: !!options.includes('ethereumNonce'),
                 destinationTag: !!options.includes('destinationTag'),
                 selectedFee: selectedFee || 'normal',

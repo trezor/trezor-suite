@@ -33,7 +33,7 @@ In order to work with properly validated state `useSendFormCompose.composeReques
 Every `networkType` has own `sendFormActions.composeTransaction` method
 
 - `sendFormActionsBitcoin` does calculation using `@trezor/connect`
-- `sendFormActionsEthereum` does calculation locally, custom `feePerUnit` is calculated if `ethereumData` is used
+- `sendFormActionsEthereum` does calculation locally, custom `feePerUnit` is calculated if `transactionData` is used
 - `sendFormActionsRipple` does calculation locally, additional `account.reserve` check on recipient address
 
 ![img](./compose.png)
