@@ -9,7 +9,7 @@ export type FormOptions =
     | 'broadcast'
     | 'utxoSelection'
     | 'bitcoinLocktime'
-    | 'ethereumData'
+    | 'transactionData'
     | 'ethereumNonce' // TODO
     | 'destinationTag';
 

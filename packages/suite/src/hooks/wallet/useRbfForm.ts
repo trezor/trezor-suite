@@ -206,7 +206,8 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
                 selectedFee: undefined,
                 setMaxOutputId,
                 options: ['broadcast'] satisfies FormOptions[],
-                transactionData: rbfParams.type === 'ethereum' ? rbfParams.ethereumData : undefined,
+                transactionData:
+                    rbfParams.type === 'ethereum' ? rbfParams.transactionData : undefined,
                 rbfParams,
                 baseFee,
             },

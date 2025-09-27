@@ -165,7 +165,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     );
 
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
-    const dataEnabled = getDefaultValue('options', []).includes('ethereumData');
+    const dataEnabled = getDefaultValue('options', []).includes('transactionData');
 
     // Amount needs to be re-validated again AFTER token change propagation (decimal places, available balance)
     // watch token change and use "useSendFormFields.setAmount" util for validation (if amount is set)
@@ -267,7 +267,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         // remove Amount if isSetMaxActive or ETH data options are enabled
         if (isSetMaxActive || dataEnabled) setAmount(outputId, '');
         // remove ETH data option
-        if (dataEnabled) toggleOption('ethereumData');
+        if (dataEnabled) toggleOption('transactionData');
         // compose (could be prevented because of Amount error from re-validation above)
         composeTransaction(amountInputName);
     };
