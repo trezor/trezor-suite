@@ -41,10 +41,6 @@ const useExplorerInput = (currentValues: Explorer) => {
         validate: validateSuffix,
     });
 
-    const { ref: accountInputRef, ...accountInputField } = register('account', {
-        validate: validateSuffix,
-    });
-
     const { ref: addressInputRef, ...addressInputField } = register('address', {
         validate: validateSuffix,
     });
@@ -81,12 +77,6 @@ const useExplorerInput = (currentValues: Explorer) => {
                 field: txInputField,
                 error: errors.tx?.message,
             },
-            account: {
-                ref: accountInputRef,
-                value: watch('account'),
-                field: accountInputField,
-                error: errors.account?.message,
-            },
             address: {
                 ref: addressInputRef,
                 value: watch('address'),
@@ -121,19 +111,18 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
     const explorerConfig = useSelector(state => state.wallet.explorer[symbol]);
 
     const input = useExplorerInput(explorerConfig.custom ?? explorerConfig.default);
-    const { base, tx, account, address, token, nft, queryString } = input.fields;
+    const { base, tx, address, token, nft, queryString } = input.fields;
 
     const explorer: Explorer = useMemo(
         () => ({
             base: base.value,
             tx: tx.value,
-            account: account.value,
             address: address.value,
             token: token.value,
             nft: nft.value,
             queryString: queryString.value,
         }),
-        [base, tx, account, address, token, nft, queryString],
+        [base, tx, address, token, nft, queryString],
     );
 
     const normalizeExplorer = (explorer: Explorer) => {
@@ -168,7 +157,6 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
     const setDefaultValues = () => {
         input.setValue('base', explorerConfig.default.base);
         input.setValue('tx', explorerConfig.default.tx);
-        input.setValue('account', explorerConfig.default.account);
         input.setValue('address', explorerConfig.default.address);
         input.setValue('token', explorerConfig.default.token);
         input.setValue('nft', explorerConfig.default.nft);
@@ -180,7 +168,6 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
     const isValid =
         !input.fields.base.error &&
         !input.fields.tx.error &&
-        !input.fields.account.error &&
         !input.fields.address.error &&
         !input.fields.token.error &&
         !input.fields.nft.error &&
