@@ -25,10 +25,11 @@ import {
     OnboardingStepBox,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useOnboarding, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-import { PrerequisitesGuide, Translation } from '../suite';
+import { PrerequisitesGuide } from '../suite';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareLowBatteryModal } from './FirmwareLowBatteryModal';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';

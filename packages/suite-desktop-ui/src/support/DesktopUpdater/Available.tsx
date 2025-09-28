@@ -4,7 +4,8 @@ import { spacings } from '@trezor/theme';
 
 import { download } from 'src/actions/suite/desktopUpdateActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { MarkdownWithComponents, Translation } from 'src/components/suite';
+import { MarkdownWithComponents } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 

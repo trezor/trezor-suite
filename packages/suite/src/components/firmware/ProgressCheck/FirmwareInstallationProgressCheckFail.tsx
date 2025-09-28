@@ -1,7 +1,8 @@
 import { Button } from '@trezor/components';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
-import { Translation } from '../../suite';
+import { Translation } from 'src/components/suite/Translation';
+
 import { SecurityCheckFail } from '../../suite/SecurityCheck/SecurityCheckFail';
 import { hardFailureChecklistItems } from '../../suite/SecurityCheck/checklistItems';
 import { ContactSupport } from '../../suite/SecurityCheck/deviceCompromisedCtas';

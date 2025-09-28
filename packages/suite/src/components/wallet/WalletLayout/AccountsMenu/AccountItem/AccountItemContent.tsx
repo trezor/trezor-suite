@@ -28,8 +28,8 @@ import {
     BaseCurrencyValue,
     CoinBalance,
     HiddenPlaceholder,
-    Translation,
 } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
 

@@ -42,12 +42,8 @@ import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import {
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    HiddenPlaceholder,
-    Translation,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';

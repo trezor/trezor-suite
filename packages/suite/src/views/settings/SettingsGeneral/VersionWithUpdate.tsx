@@ -11,13 +11,8 @@ import {
     setUpdateModalVisibility,
 } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import {
-    ActionButton,
-    ActionColumn,
-    TextColumn,
-    Translation,
-    TrezorLink,
-} from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
 import { DesktopUpdateState, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';

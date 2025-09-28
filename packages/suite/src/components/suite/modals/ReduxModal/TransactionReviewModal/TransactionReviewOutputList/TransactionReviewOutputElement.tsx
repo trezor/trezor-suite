@@ -22,12 +22,8 @@ import { TokenInfo } from '@trezor/connect';
 import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import {
-    Address,
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    Translation,
-} from 'src/components/suite';
+import { Address, BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 import { Account } from 'src/types/wallet';
 

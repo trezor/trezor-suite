@@ -5,7 +5,8 @@ import { useTheme } from 'styled-components';
 import { Card, Modal, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { MarkdownWithComponents, Translation, TrezorLink } from 'src/components/suite';
+import { MarkdownWithComponents, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { getReleaseUrl } from 'src/services/github';
 
 interface AvailableProps {

@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { Button, Column, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite/Translation';
+
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
 import { useDispatch } from '../../../hooks/suite';
-import { Translation } from '../../suite';
 
 export const ThpPairingStart = () => {
     const [isLoading, setIsLoading] = useState(false);

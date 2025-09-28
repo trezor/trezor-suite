@@ -1,6 +1,6 @@
 import { IconCircle, List, Paragraph, Text } from '@trezor/components';
 
-import { Translation } from '../suite';
+import { Translation } from 'src/components/suite/Translation';
 
 export const FirmwareWarningsList = () => (
     <List bulletGap={12} gap={16}>

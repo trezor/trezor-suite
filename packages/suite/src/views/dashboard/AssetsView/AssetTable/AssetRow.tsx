@@ -20,9 +20,9 @@ import {
     BaseCurrencyValue,
     CoinBalance,
     PriceTicker,
-    Translation,
     TrendTicker,
 } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

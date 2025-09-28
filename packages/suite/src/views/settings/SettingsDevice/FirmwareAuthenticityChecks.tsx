@@ -2,13 +2,8 @@ import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
-import {
-    ActionButton,
-    ActionColumn,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectIsFirmwareHashCheckEnabled,
