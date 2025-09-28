@@ -7,7 +7,8 @@ import { type TradingSellType, sellUtils } from '@suite-common/trading';
 import { Button, Icon, Row, Select } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 
-import { QuestionTooltip, Translation } from 'src/components/suite';
+import { QuestionTooltip } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
 const Wrapper = styled.div`

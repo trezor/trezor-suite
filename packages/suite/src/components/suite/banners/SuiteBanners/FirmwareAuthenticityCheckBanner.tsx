@@ -9,7 +9,8 @@ import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/conn
 import { spacings } from '@trezor/theme';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,

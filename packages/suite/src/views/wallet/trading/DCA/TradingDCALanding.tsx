@@ -24,7 +24,8 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { TRADING_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';

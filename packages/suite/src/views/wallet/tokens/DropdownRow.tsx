@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { Badge, Icon, Row, Text, TextVariant } from '@trezor/components';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
-import { HiddenPlaceholder, Translation } from 'src/components/suite';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { HiddenPlaceholder } from 'src/components/suite';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 
 const IconWrapper = styled.div<{ $isActive: boolean }>`
     transition: transform 0.2s ease-in-out;

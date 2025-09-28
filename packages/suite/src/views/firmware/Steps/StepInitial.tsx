@@ -5,7 +5,8 @@ import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 
 import { updateAnalytics } from '../../../actions/onboarding/onboardingActions';
-import { PrerequisitesGuide, Translation } from '../../../components/suite';
+import { PrerequisitesGuide } from '../../../components/suite';
+import { Translation } from '../../../components/suite/Translation';
 import { useSelector } from '../../../hooks/suite';
 
 type StepInitialProps = {

@@ -17,7 +17,8 @@ import {
 import { spacings } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import type { Steps } from './MultiShareBackupModal';
 

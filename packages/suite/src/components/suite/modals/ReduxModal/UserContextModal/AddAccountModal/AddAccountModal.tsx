@@ -16,7 +16,8 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { CoinList, Translation } from 'src/components/suite';
+import { CoinList } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';

@@ -27,7 +27,8 @@ import { spacings } from '@trezor/theme';
 
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { AccountLabeling, Translation } from 'src/components/suite';
+import { AccountLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';

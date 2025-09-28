@@ -8,7 +8,8 @@ import {
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { TroubleshootingTips } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceInitialize = () => {

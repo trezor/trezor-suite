@@ -11,8 +11,9 @@ import { ConfirmOnDevice, DeviceAnimation } from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
-import { Translation, WebUsbButton } from 'src/components/suite';
+import { WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 

@@ -6,7 +6,8 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Metadata, Translation } from 'src/components/suite';
+import { Metadata } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 

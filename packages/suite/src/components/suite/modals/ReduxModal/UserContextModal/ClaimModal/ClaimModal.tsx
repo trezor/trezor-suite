@@ -8,7 +8,8 @@ import { Banner, Column, InfoItem, Modal, Paragraph, Tooltip } from '@trezor/com
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';

@@ -4,7 +4,8 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
+import { ActionColumn, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDiscovery } from 'src/hooks/suite';
 

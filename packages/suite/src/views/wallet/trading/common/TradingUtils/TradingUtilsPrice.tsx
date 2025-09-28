@@ -13,8 +13,9 @@ import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { BaseCurrencyValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
+import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCryptoAmountProps } from 'src/types/trading/trading';
 import {

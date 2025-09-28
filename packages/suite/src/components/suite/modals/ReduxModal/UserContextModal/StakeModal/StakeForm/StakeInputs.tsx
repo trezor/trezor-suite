@@ -8,7 +8,8 @@ import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';

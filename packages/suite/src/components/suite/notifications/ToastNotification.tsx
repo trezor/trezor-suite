@@ -6,7 +6,8 @@ import { NotificationEntry, notificationsActions } from '@suite-common/toast-not
 import { Button, Icon } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
-import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
+import { NotificationRenderer, NotificationViewProps } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
 

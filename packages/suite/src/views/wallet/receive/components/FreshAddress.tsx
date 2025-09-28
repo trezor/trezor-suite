@@ -20,7 +20,8 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { ReadMoreLink, Translation } from 'src/components/suite';
+import { ReadMoreLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { AppState } from 'src/types/suite';

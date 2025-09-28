@@ -2,7 +2,8 @@ import { Explorer } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';

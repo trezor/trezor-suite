@@ -2,7 +2,8 @@ import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Metadata, Translation } from 'src/components/suite';
+import { Metadata } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import {

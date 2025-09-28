@@ -4,7 +4,8 @@ import { AccountType, Network } from '@suite-common/wallet-config';
 import { ChainedTransactions } from '@suite-common/wallet-types';
 import { variables } from '@trezor/components';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 
 import { AffectedTransactionItem } from './AffectedTransactions/AffectedTransactionItem';

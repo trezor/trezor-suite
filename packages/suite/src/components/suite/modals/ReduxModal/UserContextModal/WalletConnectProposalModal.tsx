@@ -30,8 +30,9 @@ import { spacings, spacingsPx } from '@trezor/theme';
 
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { AccountLabel, Translation } from 'src/components/suite';
+import { AccountLabel } from 'src/components/suite';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 

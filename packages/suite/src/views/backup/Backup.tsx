@@ -5,7 +5,8 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, Image, Modal, Text } from '@trezor/components';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 

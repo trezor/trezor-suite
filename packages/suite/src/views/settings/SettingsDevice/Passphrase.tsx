@@ -4,7 +4,8 @@ import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
+import { ActionColumn, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 

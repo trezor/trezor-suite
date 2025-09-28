@@ -7,7 +7,8 @@ import { Badge, Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { BaseCurrencyValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

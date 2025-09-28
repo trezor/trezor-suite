@@ -4,7 +4,8 @@ import type { NotificationEntry } from '@suite-common/toast-notifications';
 import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { FormattedDateWithBullet, Translation } from 'src/components/suite';
+import { FormattedDateWithBullet } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite';
 import type { ExtendedMessageDescriptor, ToastNotificationVariant } from 'src/types/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';

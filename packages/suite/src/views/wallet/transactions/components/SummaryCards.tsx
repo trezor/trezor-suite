@@ -12,7 +12,8 @@ import { variables } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FormattedDate, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { FormattedDate, HiddenPlaceholder } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
 import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
 import { FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';

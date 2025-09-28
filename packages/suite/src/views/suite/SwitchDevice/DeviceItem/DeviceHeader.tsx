@@ -5,7 +5,8 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, WebUsbButton } from 'src/components/suite';
+import { WebUsbButton } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { useSelector } from 'src/hooks/suite';

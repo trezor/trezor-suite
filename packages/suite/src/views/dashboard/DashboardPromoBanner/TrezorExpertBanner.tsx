@@ -16,7 +16,7 @@ import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
 import { AnimatedWrapper } from './AnimatedWrapper';
-import { Translation } from '../../../components/suite';
+import { Translation } from '../../../components/suite/Translation';
 import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
 
 const underlineImage = resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES.DASHBOARD_PROMO_UNDERLINE}`);

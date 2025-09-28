@@ -7,7 +7,8 @@ import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common
 import { Card, Column, InfoItem, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 

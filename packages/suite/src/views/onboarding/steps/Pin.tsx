@@ -12,7 +12,8 @@ import {
     OnboardingStepBox,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
-import { PinMatrix, Translation } from 'src/components/suite';
+import { PinMatrix } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 

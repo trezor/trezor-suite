@@ -15,7 +15,8 @@ import { Column, Row, Text } from '@trezor/components';
 import { PrecomposedTransactionCardano } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 

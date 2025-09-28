@@ -2,7 +2,8 @@ import { usePin } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
-import { PinMatrix, Translation } from 'src/components/suite';
+import { PinMatrix } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TrezorDevice } from 'src/types/suite';
 
 type PinModalProps = {

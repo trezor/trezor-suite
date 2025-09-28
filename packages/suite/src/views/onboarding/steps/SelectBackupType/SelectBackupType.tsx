@@ -29,7 +29,7 @@ import {
 import { FloatingSelections } from './FloatingSelections';
 import { OptionText, SelectedOption } from './OptionWithContent';
 import { typesToLabelMap } from './typesToLabelMap';
-import { Translation } from '../../../../components/suite';
+import { Translation } from '../../../../components/suite/Translation';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 
 const SELECT_ELEMENT_HEIGHT = 84;

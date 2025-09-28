@@ -1,4 +1,5 @@
-import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { TroubleshootingTips } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite/useDevice';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
 

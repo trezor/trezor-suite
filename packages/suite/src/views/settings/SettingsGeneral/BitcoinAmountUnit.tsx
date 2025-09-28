@@ -2,7 +2,8 @@ import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
 import { PROTO } from '@trezor/connect';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
+import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 

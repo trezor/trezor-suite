@@ -7,7 +7,8 @@ import { Column, FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';

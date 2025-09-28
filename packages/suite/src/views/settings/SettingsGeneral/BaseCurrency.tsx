@@ -11,7 +11,8 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
+import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 

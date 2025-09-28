@@ -8,7 +8,8 @@ import { CoinLogo } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { SectionItem, StatusLight, Translation } from 'src/components/suite';
+import { SectionItem, StatusLight } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

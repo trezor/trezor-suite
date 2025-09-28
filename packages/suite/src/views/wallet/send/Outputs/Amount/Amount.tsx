@@ -15,7 +15,8 @@ import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { BaseCurrencyValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';

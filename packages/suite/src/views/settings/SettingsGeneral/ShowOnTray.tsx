@@ -6,7 +6,8 @@ import { Switch } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
+import { ActionColumn, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const PositionedSwitch = styled.div`

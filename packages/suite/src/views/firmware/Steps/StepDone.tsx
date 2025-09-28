@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Modal } from '@trezor/components';
 
 import { FirmwareInstallationStandalone } from '../../../components/firmware';
-import { Translation } from '../../../components/suite';
+import { Translation } from '../../../components/suite/Translation';
 
 type StepDoneProps = {
     onClose: () => void;

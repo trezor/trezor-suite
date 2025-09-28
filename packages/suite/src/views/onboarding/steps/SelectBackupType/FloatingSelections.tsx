@@ -22,7 +22,8 @@ import {
 } from '@trezor/theme';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 import { LegacyOptions } from './LegacyOptions';
 import { isShamirBackupType } from './SelectBackupType';

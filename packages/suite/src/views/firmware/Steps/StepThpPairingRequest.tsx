@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from '../../../components/suite';
+import { Translation } from '../../../components/suite/Translation';
 
 type StepThpPairingRequestProps = {
     modalHeading: ReactNode;

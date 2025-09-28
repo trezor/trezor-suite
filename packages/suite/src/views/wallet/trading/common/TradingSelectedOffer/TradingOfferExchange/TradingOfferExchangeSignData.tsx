@@ -5,7 +5,8 @@ import { Button, Card, CollapsibleBox, Column, Divider, InfoItem, Text } from '@
 import { EthereumSignTypedDataMessage, EthereumSignTypedDataTypes } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { AccountLabeling, Address, Translation } from 'src/components/suite';
+import { AccountLabeling, Address } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 

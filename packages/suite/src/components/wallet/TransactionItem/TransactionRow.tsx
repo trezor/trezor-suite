@@ -9,7 +9,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';

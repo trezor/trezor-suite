@@ -2,7 +2,8 @@ import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
-import { BaseCurrencyValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';

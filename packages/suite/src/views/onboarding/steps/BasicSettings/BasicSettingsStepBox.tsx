@@ -7,7 +7,8 @@ import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
-import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
+import { CoinGroup, TooltipSymbol } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

@@ -9,9 +9,10 @@ import { spacingsPx } from '@trezor/theme';
 
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
-import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
+import { DeviceAuthenticationExplainer } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

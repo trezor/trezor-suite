@@ -1,7 +1,8 @@
 import { Banner, Card, Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, WordInput } from 'src/components/suite';
+import { WordInput } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 export const WordInputStep = () => (
     <Card>

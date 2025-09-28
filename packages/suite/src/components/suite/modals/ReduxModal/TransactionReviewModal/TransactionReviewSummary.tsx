@@ -15,8 +15,9 @@ import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { AccountLabel, Translation } from 'src/components/suite';
+import { AccountLabel } from 'src/components/suite';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
+import { Translation } from 'src/components/suite/Translation';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';

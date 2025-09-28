@@ -11,7 +11,8 @@ import { AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { FormattedCryptoAmount, MetadataLabeling, Translation } from 'src/components/suite';
+import { FormattedCryptoAmount, MetadataLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';

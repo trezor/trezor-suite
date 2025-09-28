@@ -5,7 +5,7 @@ import { spacings } from '@trezor/theme';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
 import { ThpPairingFailedForFirmwareInstallation } from '../../../components/connection/thp/ThpPairingFailedForFirmwareInstallation';
-import { Translation } from '../../../components/suite';
+import { Translation } from '../../../components/suite/Translation';
 import { useDispatch } from '../../../hooks/suite';
 
 type StepThpFailedProps = {

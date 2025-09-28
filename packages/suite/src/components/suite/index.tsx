@@ -14,7 +14,6 @@ import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
-import { Translation } from './Translation';
 import {
     AccountLabeling,
     AddressLabeling,
@@ -61,7 +60,6 @@ export {
     CheckItem,
     PrerequisitesGuide,
     BaseCurrencyValue,
-    Translation,
     WordInput,
     WordInputAdvanced,
     Loading,
