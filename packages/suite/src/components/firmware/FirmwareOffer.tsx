@@ -9,7 +9,8 @@ import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
-import { MarkdownWithComponents, Translation, TrezorLink } from 'src/components/suite';
+import { MarkdownWithComponents, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 

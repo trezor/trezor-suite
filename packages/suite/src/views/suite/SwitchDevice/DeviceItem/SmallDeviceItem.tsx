@@ -7,7 +7,7 @@ import { spacings } from '@trezor/theme';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceDetail } from './DeviceDetail';
-import { Translation } from '../../../../components/suite';
+import { Translation } from '../../../../components/suite/Translation';
 import { useSelector } from '../../../../hooks/suite';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

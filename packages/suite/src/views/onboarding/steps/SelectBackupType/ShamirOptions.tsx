@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 
 import { DefaultTag } from './DefaultTag';
 import { OptionWithContent } from './OptionWithContent';
-import { Translation } from '../../../../components/suite';
+import { Translation } from '../../../../components/suite/Translation';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 
 const UpgradableToMultiTag = () => {

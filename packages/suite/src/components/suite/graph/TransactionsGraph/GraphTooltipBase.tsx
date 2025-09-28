@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { Row, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { FormattedDate, Translation } from 'src/components/suite';
+import { FormattedDate } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 // Used for triggering custom Tooltip alignment

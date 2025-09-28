@@ -18,7 +18,8 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setAutoForgetDeviceDataThunk } from 'src/actions/suite/autoForgetDeviceDataThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

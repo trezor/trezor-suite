@@ -5,7 +5,8 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
+import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
 

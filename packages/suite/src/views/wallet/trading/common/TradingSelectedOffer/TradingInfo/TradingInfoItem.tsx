@@ -14,8 +14,9 @@ import { borders, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
-import { AccountLabel, BaseCurrencyValue, Translation } from 'src/components/suite';
+import { AccountLabel, BaseCurrencyValue } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
+import { Translation } from 'src/components/suite/Translation';
 import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
 import { useTranslation } from 'src/hooks/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';

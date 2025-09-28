@@ -23,7 +23,8 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import { MetadataLabeling, Translation, WalletLabeling } from 'src/components/suite';
+import { MetadataLabeling, WalletLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';

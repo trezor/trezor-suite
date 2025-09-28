@@ -10,7 +10,8 @@ import { WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie, variables } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { CountdownTimer, Translation, WalletLabeling } from 'src/components/suite';
+import { CountdownTimer, WalletLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';

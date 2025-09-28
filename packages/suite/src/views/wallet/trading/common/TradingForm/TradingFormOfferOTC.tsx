@@ -15,7 +15,8 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

@@ -9,7 +9,8 @@ import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Button, variables } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
-import { HiddenPlaceholder, TransactionsGraph, Translation } from 'src/components/suite';
+import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';

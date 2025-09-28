@@ -8,7 +8,8 @@ import {
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { PrerequisitesGuide, Translation } from 'src/components/suite';
+import { PrerequisitesGuide } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { goto } from '../../../actions/suite/routerActions';

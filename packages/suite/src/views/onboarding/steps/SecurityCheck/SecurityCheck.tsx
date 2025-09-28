@@ -28,10 +28,11 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';

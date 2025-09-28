@@ -9,7 +9,8 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import * as routerActions from 'src/actions/suite/routerActions';
-import { CheckItem, Translation } from 'src/components/suite';
+import { CheckItem } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouterApp } from 'src/reducers/suite/routerReducer';
 

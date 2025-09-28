@@ -18,7 +18,8 @@ import { borders, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet/index';

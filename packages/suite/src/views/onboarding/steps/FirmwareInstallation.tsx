@@ -11,7 +11,8 @@ import {
     RotatingPhrases,
 } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { Translation, WebUsbButton } from 'src/components/suite';
+import { WebUsbButton } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectHasTransportOfType,

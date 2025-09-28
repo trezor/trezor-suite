@@ -1,7 +1,8 @@
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const BackupFailed = () => (

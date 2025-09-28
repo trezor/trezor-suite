@@ -6,7 +6,8 @@ import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/compon
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
-import { AccountLabeling, Address, Translation } from 'src/components/suite';
+import { AccountLabeling, Address } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';

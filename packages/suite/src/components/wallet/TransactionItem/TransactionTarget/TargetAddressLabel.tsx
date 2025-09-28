@@ -5,7 +5,8 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 import { ArrayElement } from '@trezor/type-utils';
 
-import { AddressLabeling, Translation } from 'src/components/suite';
+import { AddressLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
 

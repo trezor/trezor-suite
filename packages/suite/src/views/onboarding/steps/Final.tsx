@@ -12,8 +12,9 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { HomescreenGallery, Translation } from 'src/components/suite';
+import { HomescreenGallery } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';

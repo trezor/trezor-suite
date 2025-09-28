@@ -10,7 +10,8 @@ import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { AccountLabeling, Translation } from 'src/components/suite';
+import { AccountLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingVerifyOptionsItemProps } from 'src/types/trading/tradingVerify';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';

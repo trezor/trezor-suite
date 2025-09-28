@@ -28,7 +28,8 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { AccountLabeling, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';

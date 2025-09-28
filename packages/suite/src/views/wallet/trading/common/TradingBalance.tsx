@@ -3,7 +3,8 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
-import { BaseCurrencyValue, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';

@@ -3,9 +3,9 @@ import { BulletList, Card, Paragraph } from '@trezor/components';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
-import { CheckItem, Translation } from 'src/components/suite';
+import { CheckItem } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite/useDevice';
 
 const enterSeedInstructionsMap: Record<DeviceModelInternal, TranslationKey> = {

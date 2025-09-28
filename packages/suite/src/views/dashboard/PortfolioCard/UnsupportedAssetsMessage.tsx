@@ -7,7 +7,7 @@ import { capitalizeFirstLetter, union } from '@trezor/utils';
 
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
-import { Translation } from '../../../components/suite';
+import { Translation } from '../../../components/suite/Translation';
 
 const hasAnyAccountWithTokens = (accounts: Account[]): boolean =>
     accounts.some(account => getNetworkFeatures(account.symbol).includes('tokens'));

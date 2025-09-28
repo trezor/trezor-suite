@@ -5,7 +5,8 @@ import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { Card, IconButton, Row, Select, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { TextColumn, Translation } from 'src/components/suite';
+import { TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 

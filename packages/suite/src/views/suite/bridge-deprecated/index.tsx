@@ -3,8 +3,9 @@ import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Metadata, Translation } from 'src/components/suite';
+import { Metadata } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 
 /**

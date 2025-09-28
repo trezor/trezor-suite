@@ -3,7 +3,8 @@ import React from 'react';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { InfoItem, Row, Text } from '@trezor/components';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface StakeAvailableBalanceProps {
     formattedBalance: string;

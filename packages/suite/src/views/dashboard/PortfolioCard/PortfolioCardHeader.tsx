@@ -4,7 +4,8 @@ import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Button, Row, SkeletonRectangle } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
-import { GraphRangeSelector, Translation } from 'src/components/suite';
+import { GraphRangeSelector } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
 import { Discovery } from 'src/types/wallet';

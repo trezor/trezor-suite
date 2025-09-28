@@ -14,7 +14,8 @@ import {
     setDeviceTutorialStatus,
 } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { DeviceConfirmImage, Translation } from 'src/components/suite';
+import { DeviceConfirmImage } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';

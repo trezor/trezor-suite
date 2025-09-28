@@ -10,7 +10,8 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Icon } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
 

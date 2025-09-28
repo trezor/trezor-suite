@@ -1,6 +1,7 @@
 import { isDesktop } from '@trezor/env-utils';
 
-import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { TroubleshootingTips } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import {
     TROUBLESHOOTING_ENABLE_IN_DEBUG,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,

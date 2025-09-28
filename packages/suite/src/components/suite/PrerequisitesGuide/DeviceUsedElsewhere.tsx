@@ -2,7 +2,8 @@ import { MouseEventHandler } from 'react';
 
 import { isDesktop } from '@trezor/env-utils';
 
-import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { TroubleshootingTips } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,

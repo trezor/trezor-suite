@@ -4,7 +4,7 @@ import { Button, Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
-import { Translation } from '../../../components/suite';
+import { Translation } from '../../../components/suite/Translation';
 import { useDispatch } from '../../../hooks/suite';
 
 type StepThpStartProps = {

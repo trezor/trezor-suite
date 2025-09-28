@@ -17,7 +17,8 @@ import {
     SUITE_URL,
 } from '@trezor/urls';
 
-import { QrCode, Translation, TrezorLink } from 'src/components/suite';
+import { QrCode, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

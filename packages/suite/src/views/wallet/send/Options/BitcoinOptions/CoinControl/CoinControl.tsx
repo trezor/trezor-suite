@@ -13,7 +13,8 @@ import {
 import { Card, Checkbox, Column, Icon, Row, Switch, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';

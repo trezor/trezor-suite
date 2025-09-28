@@ -1,7 +1,8 @@
 import { Button } from '@trezor/components';
 
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
-import { Translation, WebUsbButton } from 'src/components/suite';
+import { WebUsbButton } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 

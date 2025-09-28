@@ -17,7 +17,8 @@ import {
     setWordsCount,
 } from 'src/actions/recovery/recoveryActions';
 import { MODAL } from 'src/actions/suite/constants';
-import { Loading, PinMatrix, Translation, WordInputAdvanced } from 'src/components/suite';
+import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 import type { RecoveryType, WordCount } from 'src/types/recovery';

@@ -29,8 +29,9 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { AccountLabel, Address, MetadataLabeling, Translation } from 'src/components/suite';
+import { AccountLabel, Address, MetadataLabeling } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
+import { Translation } from 'src/components/suite/Translation';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
