@@ -10,13 +10,8 @@ import {
 import { Card, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import {
-    ActionButton,
-    ActionColumn,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {

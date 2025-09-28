@@ -11,12 +11,8 @@ import { AccountUtxo } from '@trezor/connect';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import {
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    MetadataLabeling,
-    Translation,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, MetadataLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';

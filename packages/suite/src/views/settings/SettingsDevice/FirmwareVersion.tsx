@@ -13,13 +13,8 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import {
-    ActionButton,
-    ActionColumn,
-    TextColumn,
-    Translation,
-    TrezorLink,
-} from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { AcquiredDevice } from 'src/types/suite';

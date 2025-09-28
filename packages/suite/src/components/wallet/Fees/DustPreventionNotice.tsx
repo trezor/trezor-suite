@@ -3,8 +3,9 @@ import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Note } from '@trezor/components';
 import { isApproximatelyEqual } from '@trezor/utils';
 
+import { Translation } from 'src/components/suite/Translation';
+
 import { useSelector } from '../../../hooks/suite';
-import { Translation } from '../../suite';
 
 type DustPreventionNoticeProps = {
     symbol: NetworkSymbol;

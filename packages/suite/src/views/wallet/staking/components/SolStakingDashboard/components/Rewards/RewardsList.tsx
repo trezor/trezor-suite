@@ -12,8 +12,8 @@ import {
     FormattedCryptoAmount,
     FormattedDate,
     HiddenPlaceholder,
-    Translation,
 } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { Pagination } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { useSolanaRewards } from 'src/hooks/wallet/useSolanaRewards';

@@ -8,12 +8,8 @@ import { Button, Card, Column, Row, variables } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
-import {
-    GraphRangeSelector,
-    HiddenPlaceholder,
-    TransactionsGraph,
-    Translation,
-} from 'src/components/suite';
+import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import {

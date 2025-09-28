@@ -5,8 +5,9 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Box, Column, Icon, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite/Translation';
+
 import { useSelector } from '../../hooks/suite';
-import { Translation } from '../suite';
 
 const Percentage = styled.div`
     font-variant-numeric: tabular-nums;

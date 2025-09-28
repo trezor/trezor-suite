@@ -29,13 +29,8 @@ import { spacings } from '@trezor/theme';
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { goto } from 'src/actions/suite/routerActions';
-import {
-    Address,
-    HiddenPlaceholder,
-    RedactNumericalValue,
-    Translation,
-    TrezorLink,
-} from 'src/components/suite';
+import { Address, HiddenPlaceholder, RedactNumericalValue, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';

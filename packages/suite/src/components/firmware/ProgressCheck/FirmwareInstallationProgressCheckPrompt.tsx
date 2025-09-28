@@ -1,7 +1,8 @@
 import { Button, Column, Divider, H2, Image, Paragraph, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
-import { Translation } from '../../suite';
+import { Translation } from 'src/components/suite/Translation';
+
 import { SecurityCheckLayout } from '../../suite/SecurityCheck/SecurityCheckLayout';
 
 // only relevant for bootloader 1.12.1

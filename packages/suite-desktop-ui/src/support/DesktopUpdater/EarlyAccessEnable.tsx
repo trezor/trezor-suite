@@ -5,7 +5,8 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
-import { CheckItem, Translation } from 'src/components/suite';
+import { CheckItem } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
 interface EarlyAccessEnableProps {
     hideWindow: () => void;

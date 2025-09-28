@@ -18,12 +18,8 @@ import {
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    FormattedDate,
-    Translation,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';

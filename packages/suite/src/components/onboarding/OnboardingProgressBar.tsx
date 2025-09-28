@@ -5,12 +5,12 @@ import styled, { css, useTheme } from 'styled-components';
 import { Icon, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceAuthenticityCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 
 import { stepCategories } from '../../config/onboarding/steps';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';
-import { Translation } from '../suite';
 
 /**
  * Returns stepCategories that have at least one currently relevant step

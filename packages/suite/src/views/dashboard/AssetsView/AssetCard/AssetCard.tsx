@@ -29,9 +29,9 @@ import {
     AmountUnitSwitchWrapper,
     CoinBalance,
     PriceTicker,
-    Translation,
     TrendTicker,
 } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 

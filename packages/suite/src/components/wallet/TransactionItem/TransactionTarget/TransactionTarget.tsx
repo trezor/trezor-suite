@@ -23,8 +23,8 @@ import {
     BaseCurrencyValue,
     FormattedCryptoAmount,
     MetadataLabeling,
-    Translation,
 } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from 'src/types/suite/metadata';

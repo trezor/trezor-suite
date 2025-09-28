@@ -3,12 +3,8 @@ import { Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import {
-    BaseCurrencyValue,
-    CoinBalance,
-    HiddenPlaceholder,
-    Translation,
-} from 'src/components/suite';
+import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 
 type AssetCardTokensAndStakingInfoProps = {
