@@ -13,40 +13,34 @@ export const getExplorerUrls = (
         bitcoin: {
             base: baseUrl,
             tx: `${baseUrl}/tx/`,
-            account: `${baseUrl}/xpub/`,
             address: `${baseUrl}/address/`,
         },
         ethereum: {
             base: baseUrl,
             tx: `${baseUrl}/tx/`,
-            account: `${baseUrl}/address/`,
             address: `${baseUrl}/address/`,
             nft: `${baseUrl}/nft/`,
         },
         ripple: {
             base: baseUrl,
             tx: `${baseUrl}/tx/`,
-            account: `${baseUrl}/account/`,
             address: `${baseUrl}/account/`,
         },
         solana: {
             base: baseUrl,
             tx: `${baseUrl}/tx/`,
-            account: `${baseUrl}/account/`,
             address: `${baseUrl}/account/`,
             queryString: solanaDevnet ? `?cluster=devnet` : '',
         },
         cardano: {
             base: baseUrl,
             tx: `${baseUrl}/tx/`,
-            account: `${baseUrl}/address/`,
             address: `${baseUrl}/address/`,
             token: `${baseUrl}/asset/`,
         },
         stellar: {
             base: baseUrl,
             tx: `${baseUrl}/tx/`,
-            account: `${baseUrl}/account/`,
             address: `${baseUrl}/account/`,
             token: `${baseUrl}/asset/`,
         },
@@ -82,12 +76,11 @@ export const getParsedExplorerUrls = (explorer: Explorer): Explorer => {
     const { base, queryString } = explorer;
 
     const tx = getExplorerUrlSuffix(explorer, 'tx');
-    const account = getExplorerUrlSuffix(explorer, 'account');
     const address = getExplorerUrlSuffix(explorer, 'address');
     const nft = getExplorerUrlSuffix(explorer, 'nft');
     const token = getExplorerUrlSuffix(explorer, 'token');
 
-    return { base, tx, account, address, nft, token, queryString };
+    return { base, tx, address, nft, token, queryString };
 };
 
 export const getExplorerUrl = (explorer: Explorer | undefined, key: keyof Explorer) => {

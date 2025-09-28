@@ -107,11 +107,6 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
                     ? info.url + getBlockExplorerUrlSuffix(network.explorer.tx)
                     : network.explorer.tx
             }`,
-            account: `${
-                useBackendAsExplorer
-                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.account)
-                    : network.explorer.account
-            }`,
             queryString: network.explorer.queryString,
             nft: network.explorer.nft
                 ? `${

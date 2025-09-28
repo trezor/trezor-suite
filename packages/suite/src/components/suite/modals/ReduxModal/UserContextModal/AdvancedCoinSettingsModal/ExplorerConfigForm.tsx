@@ -54,8 +54,6 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
         switch (key) {
             case 'tx':
                 return <Translation id="TR_EXPLORER_TX" />;
-            case 'account':
-                return <Translation id="TR_EXPLORER_ACCOUNT" />;
             case 'address':
                 return <Translation id="TR_EXPLORER_ADDRESS" />;
             case 'nft':

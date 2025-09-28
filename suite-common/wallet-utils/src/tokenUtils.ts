@@ -37,7 +37,7 @@ export const getTokenExplorerUrl = (
     networkType: NetworkType,
     token: Pick<TokenInfo, 'contract' | 'fingerprint'>,
 ) => {
-    const suffix = networkType === 'cardano' || networkType === 'stellar' ? 'token' : 'account';
+    const suffix = networkType === 'cardano' || networkType === 'stellar' ? 'token' : 'address';
     const explorerUrl = getExplorerUrl(explorer, suffix);
     const contractAddress = networkType === 'cardano' ? token.fingerprint : token.contract;
     const queryString = explorer.queryString ?? '';
@@ -54,7 +54,7 @@ export const getNftExplorerUrl = (explorer: Explorer, nft: TokenInfo, id: string
 };
 
 export const getNftContractExplorerUrl = (explorer: Explorer, nft: TokenInfo) => {
-    const explorerUrl = getExplorerUrl(explorer, 'account');
+    const explorerUrl = getExplorerUrl(explorer, 'address');
     const contractAddress = nft.contract;
     const queryString = explorer.queryString ?? '';
 
