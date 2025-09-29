@@ -23,8 +23,11 @@ export class UdpApi extends AbstractApi {
     private debugLink?: boolean;
     private readBuffer: ReturnType<typeof readMessageBuffer>;
 
-    constructor({ logger, debugLink }: AbstractApiConstructorParams & { debugLink?: boolean }) {
-        super({ logger });
+    constructor({
+        logger,
+        debugLink,
+    }: Omit<AbstractApiConstructorParams, 'type'> & { debugLink?: boolean }) {
+        super({ logger, type: 'udp' });
         this.debugLink = debugLink;
         this.readBuffer = readMessageBuffer();
 

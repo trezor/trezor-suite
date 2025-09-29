@@ -12,8 +12,10 @@ import type {
 } from '../types';
 import { error, success, unknownError } from '../utils/result';
 
+export type ApiType = 'usb' | 'bluetooth' | 'udp';
 export interface AbstractApiConstructorParams {
     logger?: Logger;
+    type: ApiType;
 }
 
 export type OpenDeviceChannel = 'read' | 'trezor-push-notification' | 'battery-level';
@@ -38,9 +40,11 @@ export abstract class AbstractApi extends TypedEmitter<{
     protected logger?: Logger;
     protected listening: boolean = false;
     protected lock: Record<string, AccessLock> = {};
-    constructor({ logger }: AbstractApiConstructorParams) {
+    public type: ApiType;
+    constructor({ logger, type }: AbstractApiConstructorParams) {
         super();
 
+        this.type = type;
         this.logger = logger;
     }
     /**

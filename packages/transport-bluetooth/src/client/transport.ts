@@ -10,13 +10,17 @@ type BluetoothTransportParams = Omit<AbstractTransportParams, 'api'> & TrezorBlu
 
 export class BluetoothTransport extends AbstractApiTransport {
     public name = 'BluetoothTransport' as const;
-    public apiType = 'bluetooth' as const;
     private wsApi: BluetoothApi;
 
     constructor(params: BluetoothTransportParams) {
         const { url, logger, writeWithResponse, writeWithDelay, ...rest } = params;
 
-        const api = new BluetoothApi({ url, logger, writeWithResponse, writeWithDelay });
+        const api = new BluetoothApi({
+            url,
+            logger,
+            writeWithResponse,
+            writeWithDelay,
+        });
         api.on('transport-interface-error', ({ error }) => {
             this.emit('transport-error', error);
         });

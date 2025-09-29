@@ -38,6 +38,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         this.sessionsClient = new SessionsClient(this.sessionsBackground);
     }
 
+    get apiType() {
+        return this.api.type;
+    }
+
     public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
         return this.scheduleAction(
             async () => {
