@@ -9,12 +9,7 @@ export type AnalyticsSendFlowStep =
     | 'utxo_selection'
     | 'destination_tag_review';
 
-export type DeviceAuthenticityCheckResult =
-    | 'successful'
-    | 'compromised'
-    | 'configExpired'
-    | 'cancelled'
-    | 'failed';
+export type DeviceAuthenticityCheckResult = 'successful' | 'compromised' | 'cancelled' | 'failed';
 
 export type FirmwareUpdatePayload = {
     model: DeviceModelInternal;

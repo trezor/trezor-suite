@@ -1,82 +1,78 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { AuthenticateDeviceResult } from '@trezor/connect';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import TrezorConnect from '@trezor/connect';
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
+import { StoredAuthenticateDeviceResult } from './types';
+import { isDeviceAuthenticityValid } from './utils';
 
 type CheckDeviceAuthenticityThunkParams = {
     allowDebugKeys: boolean;
     skipSuccessToast?: boolean;
 };
 
-export type CheckDeviceAuthenticityThunkResult =
-    | AuthenticateDeviceResult
-    | { error: string; valid?: boolean }
-    | undefined;
-
 export const checkDeviceAuthenticityThunk = createThunk<
-    CheckDeviceAuthenticityThunkResult,
+    StoredAuthenticateDeviceResult,
     CheckDeviceAuthenticityThunkParams,
-    void
+    { rejectValue: StoredAuthenticateDeviceResult }
 >(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
     async (
         { allowDebugKeys, skipSuccessToast },
-        { dispatch, getState, extra, fulfillWithValue },
+        { dispatch, getState, extra, fulfillWithValue, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectDevice },
-        } = extra;
-        const device = selectDevice(getState());
+        const device = extra.selectors.selectDevice(getState());
         if (!device) {
             throw new Error('device is not connected');
         }
 
         const result = await TrezorConnect.authenticateDevice({
-            device: {
-                path: device.path,
-            },
+            device: { path: device.path },
             allowDebugKeys,
         });
 
-        let storedResult: CheckDeviceAuthenticityThunkResult = result.payload;
-        let toastPayload: ToastPayload | undefined;
-
+        // error from the TrezorConnect call itself (e.g. device cannot perform the check)
         if (!result.success) {
-            toastPayload = {
-                type: 'error',
-                error: `Unable to validate device: ${result.payload.error}`,
-            };
-            storedResult = device.features?.bootloader_locked
-                ? undefined
-                : {
-                      valid: false,
-                      error: result.payload.error,
-                  };
-        } else if (result.payload.error === 'CA_PUBKEY_BLACKLISTED') {
-            toastPayload = {
-                type: 'device-authenticity-error',
-                error: `Device is not authentic: ${result.payload.error}`,
-            };
-            storedResult = {
-                error: result.payload.error,
-                valid: false,
-            };
-        } else if (!result.payload.valid) {
-            toastPayload = {
-                type: 'device-authenticity-error',
-                error: `Device is not authentic: ${result.payload.error}`,
-            };
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: `Unable to validate device: ${result.payload.error}`,
+                }),
+            );
+            const isDeviceBootloaderUnlocked = device?.features?.bootloader_locked !== true;
+            const storedResult = isDeviceBootloaderUnlocked
+                ? // error can be because bootloader is unlocked (definite cause of failure, should persist)
+                  { valid: false, error: result.payload.error }
+                : // or internal error (then skip the check by storing undefined)
+                  undefined;
+            dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
+
+            return rejectWithValue(storedResult);
         }
 
-        if (!skipSuccessToast && storedResult?.valid) {
-            toastPayload = { type: 'device-authenticity-success' };
+        const isOverallValid = isDeviceAuthenticityValid(result.payload);
+        const storedResult = { valid: isOverallValid, ...result.payload };
+
+        // successful TrezorConnect call, but the signature authenticity validation failed
+        if (!isOverallValid) {
+            // to keep the notification short, display only the first error that failed
+            const error = result.payload.optigaResult.error ?? result.payload.tropicResult?.error;
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'device-authenticity-error',
+                    error: `Device is not authentic: ${error}`,
+                }),
+            );
+
+            dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
+
+            return rejectWithValue(storedResult);
         }
 
-        if (toastPayload) {
-            dispatch(notificationsActions.addToast(toastPayload));
+        // successful TrezorConnect call and signature is authentic
+        if (!skipSuccessToast) {
+            dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
         }
-
         dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
 
         return fulfillWithValue(storedResult);

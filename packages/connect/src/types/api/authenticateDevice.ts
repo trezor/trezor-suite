@@ -1,5 +1,6 @@
 import { Static, Type } from '@trezor/schema-utils';
 
+import { VerifyAuthenticityProofResult } from '../../api/firmware/verifyAuthenticity/types';
 import { DeviceAuthenticityBlacklistConfig } from '../../data/deviceAuthenticityBlacklistConfig';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfigTypes';
 import type { Params, Response } from '../params';
@@ -11,26 +12,10 @@ export const AuthenticateDeviceParams = Type.Object({
     allowDebugKeys: Type.Optional(Type.Boolean()),
 });
 
-export type AuthenticateDeviceResult =
-    | {
-          valid: true;
-          caPubKey: string;
-          debugKey?: boolean;
-          configExpired?: typeof undefined;
-          error?: typeof undefined;
-      }
-    | {
-          valid: false;
-          caPubKey: string;
-          debugKey?: boolean;
-          configExpired?: boolean;
-          error:
-              | 'ROOT_PUBKEY_NOT_FOUND'
-              | 'CA_PUBKEY_BLACKLISTED'
-              | 'INVALID_DEVICE_MODEL'
-              | 'INVALID_DEVICE_CERTIFICATE'
-              | 'INVALID_DEVICE_SIGNATURE';
-      };
+export type AuthenticateDeviceResult = {
+    optigaResult: VerifyAuthenticityProofResult;
+    tropicResult: VerifyAuthenticityProofResult | null;
+};
 
 export declare function authenticateDevice(
     params: Params<AuthenticateDeviceParams>,

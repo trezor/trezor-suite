@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    CheckDeviceAuthenticityThunkResult,
+    StoredAuthenticateDeviceResult,
     deviceAuthenticityActions,
+    isDeviceAuthenticityValid,
 } from '@suite-common/device-authenticity';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
@@ -14,8 +15,10 @@ import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { useToast } from '@suite-native/toasts';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { AuthenticateDeviceResult, Response } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
+
+type RawResult = Awaited<Response<AuthenticateDeviceResult>>;
 
 type CheckDeviceAuthenticityParams = {
     handleSuccess: () => void;
@@ -35,18 +38,14 @@ export const useDeviceAuthenticityCheck = () => {
         (
             result: DeviceAuthenticityCheckResult,
             error?: string,
-            payload?: CheckDeviceAuthenticityThunkResult,
+            payload?: StoredAuthenticateDeviceResult,
         ) => {
             analytics.report({
                 type: EventType.DeviceSettingsAuthenticityCheck,
                 payload: { result },
             });
-            if (isArrayMember(result, ['compromised', 'configExpired', 'failed'])) {
-                const sentryLevelMap = {
-                    compromised: 'fatal',
-                    configExpired: 'warning',
-                    failed: 'error',
-                } as const;
+            if (isArrayMember(result, ['compromised', 'failed'])) {
+                const sentryLevelMap = { compromised: 'fatal', failed: 'error' } as const;
                 const sentryLevel = sentryLevelMap[result];
 
                 withSentryScope(scope => {
@@ -66,31 +65,20 @@ export const useDeviceAuthenticityCheck = () => {
     );
 
     const createStoredResult = useCallback(
-        (payload: CheckDeviceAuthenticityThunkResult) => {
-            if (
-                payload?.error === 'CA_PUBKEY_NOT_FOUND' &&
-                'configExpired' in payload &&
-                payload?.configExpired
-            ) {
-                // CA_PUBKEY_NOT_FOUND with configExpired is temporarily allowed and just logged to Sentry
-                reportCheckResult('configExpired', payload.error, payload);
-
-                return {
-                    ...payload,
-                    valid: true,
-                };
+        (result: RawResult): StoredAuthenticateDeviceResult => {
+            // Error from the TrezorConnect call itself. It is considered as valid: false if the cause was bootloader unlocked.
+            // Otherwise it may be cancel on device (must not be considered device compromised), or a transport error, etc.
+            if (!result.success) {
+                return isDeviceBootloaderUnlocked
+                    ? { valid: false, error: result.payload.error }
+                    : undefined;
             }
 
-            if (isDeviceBootloaderUnlocked) {
-                return {
-                    valid: false,
-                    error: payload?.error ?? 'Bootloader unlocked!',
-                };
-            }
+            const isOverallValid = isDeviceAuthenticityValid(result.payload);
 
-            return payload;
+            return { valid: isOverallValid, ...result.payload };
         },
-        [isDeviceBootloaderUnlocked, reportCheckResult],
+        [isDeviceBootloaderUnlocked],
     );
 
     const handleDeviceAccessError = useCallback(
@@ -178,15 +166,18 @@ export const useDeviceAuthenticityCheck = () => {
                 handleError(error, code);
             }
 
-            const storedResult: CheckDeviceAuthenticityThunkResult = createStoredResult(
-                result.payload,
-            );
+            const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);
 
             dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
 
             if (storedResult?.valid === false) {
                 handleFailure();
-                reportCheckResult('compromised', storedResult.error, storedResult);
+                if ('optigaResult' in storedResult && storedResult.optigaResult.error) {
+                    reportCheckResult('compromised', storedResult.optigaResult.error, storedResult);
+                }
+                if ('tropicResult' in storedResult && storedResult.tropicResult?.error) {
+                    reportCheckResult('compromised', storedResult.tropicResult.error, storedResult);
+                }
             } else if (result.success) {
                 handleSuccess();
                 reportCheckResult('successful');

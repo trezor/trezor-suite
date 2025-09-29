@@ -21,22 +21,23 @@ describe('TrezorConnect.authenticateDevice', () => {
     });
 
     // NOTE: emulator uses different provisioning keys than production FW (different than ./data/deviceAuthenticityConfig)
-    const config = {
+    const config: DeviceAuthenticityConfig = {
         ...deviceAuthenticityConfig,
         ...Object.fromEntries(
             Object.entries(deviceAuthenticityConfig)
+                // if debug property is available, replace the normal keys with debug keys, so that we can test them as if they were prod keys
                 .filter(
                     ([_, value]) => typeof value === 'object' && value !== null && 'debug' in value,
                 )
                 .map(([key, value]: [string, any]) => [
                     key,
                     {
-                        rootPubKeys: value.debug.rootPubKeys,
-                        caPubKeys: value.debug.caPubKeys,
+                        rootPubKeysOptiga: value.debug.rootPubKeysOptiga,
+                        rootPubKeysTropic: value.debug.rootPubKeysTropic,
                     },
                 ]),
         ),
-    } as DeviceAuthenticityConfig;
+    };
 
     conditionalTest(['!T2T1', '!T1B1'], 'validation successful', async () => {
         const result = await TrezorConnect.authenticateDevice({
@@ -45,7 +46,11 @@ describe('TrezorConnect.authenticateDevice', () => {
 
         expect(result).toMatchObject({
             success: true,
-            payload: { valid: true },
+            payload: {
+                optigaResult: { valid: true },
+                // trezor-user-env T3W1 has no tropic debug keys provisioned. This test will fail if that changes in future.
+                tropicResult: null,
+            },
         });
     });
 
@@ -63,11 +68,11 @@ describe('TrezorConnect.authenticateDevice', () => {
                                     key as DeviceModelInternal,
                                 ),
                             )
-                            .map(([key, value]) => [
+                            .map(([key, _]) => [
                                 key,
                                 {
-                                    ...value,
-                                    rootPubKeys: [],
+                                    rootPubKeysOptiga: [],
+                                    rootPubKeysTropic: [],
                                 },
                             ]),
                     ),
@@ -76,7 +81,10 @@ describe('TrezorConnect.authenticateDevice', () => {
 
             expect(result).toMatchObject({
                 success: true,
-                payload: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
+                payload: {
+                    optigaResult: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
+                    tropicResult: null,
+                },
             });
         },
     );
@@ -86,23 +94,7 @@ describe('TrezorConnect.authenticateDevice', () => {
         'sanity check unsuccessful (caPubkey is on blacklist)',
         async () => {
             const result = await TrezorConnect.authenticateDevice({
-                config: {
-                    ...config,
-                    ...Object.fromEntries(
-                        Object.entries(config)
-                            .filter(([key, _]) =>
-                                Object.values(DeviceModelInternal).includes(
-                                    key as DeviceModelInternal,
-                                ),
-                            )
-                            .map(([key, value]) => [
-                                key,
-                                {
-                                    ...value,
-                                },
-                            ]),
-                    ),
-                },
+                config,
                 blacklistConfig: {
                     version: 1,
                     blacklistedCaPubKeys: [
@@ -116,7 +108,10 @@ describe('TrezorConnect.authenticateDevice', () => {
 
             expect(result).toMatchObject({
                 success: true,
-                payload: { valid: false, error: 'CA_PUBKEY_BLACKLISTED' },
+                payload: {
+                    optigaResult: { valid: false, error: 'CA_PUBKEY_BLACKLISTED' },
+                    tropicResult: null,
+                },
             });
         },
     );

@@ -38,7 +38,7 @@ export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) =>
             request.code === 'ButtonRequest_PinEntry', // Device can be locked, and we can get Pin Request first
     );
     const isCheckFailed = isSubmitted && selectedDeviceAuthenticity?.valid === false;
-    const isCheckSuccessful = isSubmitted && selectedDeviceAuthenticity?.valid;
+    const isCheckSuccessful = isSubmitted && selectedDeviceAuthenticity?.valid === true;
 
     const getHeadingText = () => {
         if (isCheckSuccessful) {
