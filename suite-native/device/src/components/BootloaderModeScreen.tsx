@@ -15,8 +15,8 @@ import {
     Screen,
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
+    useInterceptNativeNavigation,
     useNavigateToInitialScreen,
-    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -47,7 +47,7 @@ export const BootloaderModeScreen = () => {
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
-    useOverrideBackNavigation();
+    useInterceptNativeNavigation();
 
     const handleRedirectToFactoryReset = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {

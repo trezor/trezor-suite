@@ -12,6 +12,7 @@ import {
     FirmwareUpdateStackRoutes,
     Screen,
     StackNavigationProps,
+    useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
@@ -21,6 +22,7 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const ThpConfirmationScreen = () => {
+    useInterceptNativeNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();

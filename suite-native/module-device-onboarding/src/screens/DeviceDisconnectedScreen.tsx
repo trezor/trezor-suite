@@ -18,7 +18,7 @@ import {
     Screen,
     ScreenHeader,
     StackToStackCompositeScreenProps,
-    useOverrideBackNavigation,
+    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
 export const DeviceDisconnectedScreen = ({
@@ -36,7 +36,7 @@ export const DeviceDisconnectedScreen = ({
     const { translate } = useTranslate();
 
     const [isAlertDismissed, setIsAlertDismissed] = useState(false);
-    useOverrideBackNavigation();
+    useInterceptNativeNavigation();
 
     const navigateToHome = () =>
         navigation.popTo(RootStackRoutes.AppTabs, {

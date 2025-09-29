@@ -6,7 +6,7 @@ import {
     DynamicScreenHeader,
     Screen,
     ScreenProps,
-    useOverrideBackNavigation,
+    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
 import { useExitAlert } from '../hooks/useExitAlert';
@@ -21,7 +21,7 @@ export const DeviceOnboardingExitButtonScreenHeader = ({
     onAlertContinueButtonPress,
 }: DeviceOnboardingExitButtonScreenHeaderProps) => {
     const { handleExitButtonPress } = useExitAlert(onAlertContinueButtonPress);
-    useOverrideBackNavigation({ onNavigateBack: handleExitButtonPress });
+    useInterceptNativeNavigation({ onPress: handleExitButtonPress });
 
     return (
         <DynamicScreenHeader

@@ -1,11 +1,11 @@
 import { Translation } from '@suite-native/intl';
-import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
+import { ScreenHeader, useInterceptNativeNavigation } from '@suite-native/navigation';
 import { HELP_CENTER_ENTROPY_CHECK_URL } from '@trezor/urls';
 
 import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
 
 export const EntropyCheckFailModalContent = () => {
-    useOverrideBackNavigation();
+    useInterceptNativeNavigation();
 
     return (
         <DeviceCompromisedModalContent

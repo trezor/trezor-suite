@@ -10,6 +10,7 @@ import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     StackProps,
+    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
@@ -19,6 +20,7 @@ export const DeviceTutorialScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.DeviceTutorial>) => {
     const device = useSelector(selectSelectedDevice);
+    useInterceptNativeNavigation();
 
     useFocusEffect(
         useCallback(() => {
