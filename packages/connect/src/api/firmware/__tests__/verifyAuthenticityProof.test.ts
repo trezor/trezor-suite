@@ -43,8 +43,10 @@ const BLACKLIST_CONFIG: DeviceAuthenticityBlacklistConfig = {
 describe('firmware/verifyAuthenticityProof', () => {
     it('verify success (with prod keys)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT, CA_CERT],
-            signature: SIGNATURE,
+            optiga_certificates: [DEVICE_CERT, CA_CERT],
+            optiga_signature: SIGNATURE,
+            tropic_certificates: [],
+            tropic_signature: 'TODO',
             challenge: Buffer.from(CHALLENGE, 'hex'),
             deviceModel: 'T2B1',
             config: CONFIG,
@@ -58,8 +60,10 @@ describe('firmware/verifyAuthenticityProof', () => {
 
     it('verify success (with debug keys)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT, CA_CERT],
-            signature: SIGNATURE,
+            optiga_certificates: [DEVICE_CERT, CA_CERT],
+            optiga_signature: SIGNATURE,
+            tropic_certificates: [],
+            tropic_signature: 'TODO',
             challenge: Buffer.from(CHALLENGE, 'hex'),
             deviceModel: 'T2B1',
             config: {
@@ -82,10 +86,12 @@ describe('firmware/verifyAuthenticityProof', () => {
 
     it('verify failed (signature missmatch)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT, CA_CERT],
-            signature:
+            optiga_certificates: [DEVICE_CERT, CA_CERT],
+            optiga_signature:
                 // invalid 2nd byte of signature
                 '3044022100c01793ffbe4f16d4efc84a4533d9bbfbbf1baa5349346678e07fdb6d848cca7902200df11b9d2850173d9c93993fca983c6d2a3f31ea69a0e19b69e18cc3b78424fe',
+            tropic_certificates: [],
+            tropic_signature: 'TODO',
             challenge: Buffer.from(CHALLENGE, 'hex'),
             deviceModel: 'T2B1',
             config: CONFIG,
@@ -98,8 +104,10 @@ describe('firmware/verifyAuthenticityProof', () => {
 
     it('verify failed (missing rootPubKey)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT, CA_CERT],
-            signature: SIGNATURE,
+            optiga_certificates: [DEVICE_CERT, CA_CERT],
+            optiga_signature: SIGNATURE,
+            tropic_certificates: [],
+            tropic_signature: 'TODO',
             challenge: Buffer.from(CHALLENGE, 'hex'),
             deviceModel: 'T2B1',
             config: {
@@ -121,11 +129,13 @@ describe('firmware/verifyAuthenticityProof', () => {
 
     it('verify failed (device model mismatch)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [
+            optiga_certificates: [
                 '3082019e30820145a00302010202044ee2a50f300a06082a8648ce3d040302304f310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3120301e06035504030c175472657a6f72204d616e75666163747572696e67204341301e170d3232303433303134313630315a170d3432303433303134313630315a301d311b301906035504030c1254324232205472657a6f72205361666520333059301306072a8648ce3d020106082a8648ce3d030107034200049bbf06dad9ab5905e05471ce16d5222c89c2caa39f26267ac0747129885fbd441bcc7fa84de120a36755daf30a6f47e8c0d4bddc15036ed2a3447dfa7a1d3e88a341303f300e0603551d0f0101ff040403020080300c0603551d130101ff04023000301f0603551d23041830168014176d8b9a403574f6a2b9ac353ef578682201a21a300a06082a8648ce3d04030203470030440220747c545e112df816173d3071f1ab25d399d8108550764ce1a3a428f1f18b506902200cda822c75b3da6e44e098014452f3fc324f29a79204c3fb4d5815afafc04b17',
                 CA_CERT,
             ],
-            signature: SIGNATURE,
+            optiga_signature: SIGNATURE,
+            tropic_certificates: [],
+            tropic_signature: 'TODO',
             challenge: Buffer.from(CHALLENGE, 'hex'),
             deviceModel: 'T2B1',
             config: CONFIG,
@@ -138,8 +148,10 @@ describe('firmware/verifyAuthenticityProof', () => {
 
     it('verify failed (caPubKey on blacklist)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT, CA_CERT],
-            signature: SIGNATURE,
+            optiga_certificates: [DEVICE_CERT, CA_CERT],
+            optiga_signature: SIGNATURE,
+            tropic_certificates: [],
+            tropic_signature: 'TODO',
             challenge: Buffer.from(CHALLENGE, 'hex'),
             deviceModel: 'T2B1',
             config: {
@@ -166,33 +178,33 @@ describe('firmware/verifyAuthenticityProof', () => {
 describe('firmware/x509certificate', () => {
     [
         {
-            signature:
+            optiga_signature:
                 '3048022200007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f02220000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
             result: '304502207f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f022100800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
         },
         {
-            signature:
+            optiga_signature:
                 '3045022100007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e0220800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
             result: '3044021f7f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e022100800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
         },
         {
-            signature:
+            optiga_signature:
                 '30330220007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e020f000000000000008001020304050607',
             result: '302c021f7f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e0209008001020304050607',
         },
         {
-            signature:
+            optiga_signature:
                 '303402210000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e020f000000000000007f01020304050607',
             result: '302c022000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e02087f01020304050607',
         },
         {
-            signature:
+            optiga_signature:
                 '30440221007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f021f800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e',
             result: '304402207f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f022000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e',
         },
     ].forEach(f => {
-        it(`fixSignature: ${f.signature.length} to ${f.result.length}`, () => {
-            const signature = fixSignature(new Uint8Array(Buffer.from(f.signature, 'hex')));
+        it(`fixSignature: ${f.optiga_signature.length} to ${f.result.length}`, () => {
+            const signature = fixSignature(new Uint8Array(Buffer.from(f.optiga_signature, 'hex')));
             expect(Buffer.from(signature).toString('hex')).toEqual(f.result);
         });
     });

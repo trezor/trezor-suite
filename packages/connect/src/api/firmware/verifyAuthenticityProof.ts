@@ -91,8 +91,8 @@ const validateCaCertExtensions = (cert: ReturnType<typeof parseCertificate>, pat
 };
 
 export const verifyAuthenticityProof = async ({
-    certificates,
-    signature,
+    optiga_certificates,
+    optiga_signature,
     challenge,
     config,
     blacklistConfig,
@@ -107,7 +107,7 @@ export const verifyAuthenticityProof = async ({
     const { blacklistedCaPubKeys, debug: debugBlacklist } = blacklistConfig;
 
     // 1. parse all x509 certificates received from AuthenticityProof
-    const [deviceCert, caCert] = certificates.map((c, i) => {
+    const [deviceCert, caCert] = optiga_certificates.map((c, i) => {
         const cert = parseCertificate(new Uint8Array(Buffer.from(c, 'hex')));
         if (i === 0) {
             // deviceCert is always at index 0
@@ -187,7 +187,7 @@ export const verifyAuthenticityProof = async ({
     const isSignatureValid = await verifySignature(
         Buffer.from(deviceCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes),
         prefixedChallenge,
-        fixSignature(Buffer.from(signature, 'hex')),
+        fixSignature(Buffer.from(optiga_signature, 'hex')),
     );
 
     if (rootPubKey && isDeviceCertValid && isSignatureValid) {
