@@ -1,23 +1,12 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    TradingRootStateWithDeviceAndAccounts,
-    TradingTransaction,
-    selectDeviceTradingTrades,
-    tradeFinalStatuses,
-    tradingThunks,
-} from '@suite-common/trading';
-import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { tradingThunks } from '@suite-common/trading';
 
 import { useReloadTimer } from './useReloadTimer';
+import { selectTradesToWatchByAccount } from '../../selectors/commonSelectors';
 
 const REFRESH_SECONDS = 120;
-
-// Helper function to determine if a trade needs watching
-const shouldRefreshTrade = (trade: TradingTransaction) =>
-    trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
 export const useAllTradesReloadTimer = () => {
     const dispatch = useDispatch();
@@ -28,32 +17,7 @@ export const useAllTradesReloadTimer = () => {
     // For preventing multiple calls to refreshAllTrades
     const isFetchingRef = useRef(false);
 
-    const deviceTrades = useSelector((state: TradingRootStateWithDeviceAndAccounts) =>
-        selectDeviceTradingTrades(state),
-    );
-
-    const visibleAccounts = useSelector(selectVisibleDeviceAccounts);
-
-    const tradesToWatch = deviceTrades.filter(trade => shouldRefreshTrade(trade));
-
-    const tradesByAccount = useMemo(() => {
-        const grouped: Record<string, { account: Account; trades: TradingTransaction[] }> = {};
-
-        tradesToWatch.forEach(trade => {
-            const tradeKey =
-                'selectedAccountKey' in trade ? trade.selectedAccountKey : trade.sendAccountKey;
-            const account = visibleAccounts.find(acc => acc.key === tradeKey);
-
-            if (account) {
-                if (!grouped[account.key]) {
-                    grouped[account.key] = { account, trades: [] };
-                }
-                grouped[account.key].trades.push(trade);
-            }
-        });
-
-        return Object.values(grouped);
-    }, [tradesToWatch, visibleAccounts]);
+    const { tradesByAccount, tradesToWatch } = useSelector(selectTradesToWatchByAccount);
 
     const { timer, shouldReload, resetCount } = useReloadTimer({
         isEnabled: tradesToWatch.length > 0,

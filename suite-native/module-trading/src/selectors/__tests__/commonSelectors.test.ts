@@ -1,11 +1,16 @@
-import { Action, Feature, Message } from '@suite-common/suite-types';
-import { InvityServerEnvironment } from '@suite-common/trading';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { Action, Feature, Message, TrezorDevice } from '@suite-common/suite-types';
+import {
+    InvityServerEnvironment,
+    TradingRootStateWithDeviceAndAccounts,
+} from '@suite-common/trading';
+import { AccountsRootState, deviceInitialState } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { BigNumber } from '@trezor/utils';
 
 import { getBtcAccount, getCardanoAccount, getEthAccount } from '../../__fixtures__/account';
 import { btcAsset } from '../../__fixtures__/tradeableAssets';
+import { getBuyTrade, getExchangeTrade } from '../../__fixtures__/trades';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState, initialState } from '../../reducers';
@@ -22,6 +27,7 @@ import {
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
     selectTradeToBeOpened,
+    selectTradesToWatchByAccount,
     selectTradingEnvironment,
 } from '../commonSelectors';
 
@@ -850,6 +856,129 @@ describe('commonSelectors', () => {
             expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
             expect(result[0].data[1].contract).toBe('0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48'); // USDC
             expect(result[0].data[1].isEnabled).toBe(true);
+        });
+    });
+
+    describe('selectTradesToWatchByAccount', () => {
+        const getStateWithTrades = ({ trades = [] }: { trades?: any[] } = {}) =>
+            ({
+                wallet: {
+                    trading: {
+                        ...getInitializedTradingState(),
+                        trades,
+                    },
+                    accounts: [
+                        {
+                            key: 'btc1',
+                            symbol: 'btc',
+                            deviceState: 'device1@test:123',
+                            descriptor: 'btc-descriptor',
+                            addresses: { unused: [{ address: 'btc-address' }] },
+                            visible: true,
+                        },
+                        {
+                            key: 'eth1',
+                            symbol: 'eth',
+                            deviceState: 'device1@test:123',
+                            descriptor: 'eth-descriptor',
+                            addresses: { unused: [{ address: 'eth-address' }] },
+                            visible: true,
+                        },
+                        {
+                            key: 'sol1',
+                            symbol: 'sol',
+                            deviceState: 'device1@test:123',
+                            descriptor: 'sol-descriptor',
+                            addresses: { unused: [{ address: 'sol-address' }] },
+                            visible: true,
+                        },
+                    ] as any as Account[],
+                    selectedAccount: {
+                        status: 'none',
+                    },
+                },
+                device: {
+                    ...deviceInitialState,
+                    selectedDevice: {
+                        state: { staticSessionId: 'device1@test:123' },
+                    } as TrezorDevice,
+                },
+            }) as TradingRootStateWithDeviceAndAccounts;
+
+        it('should filter trades that need watching correctly', () => {
+            const mockTrades = [
+                getBuyTrade({ status: 'SUBMITTED' }), // Should be watched
+                getBuyTrade({ status: 'SUCCESS' }), // Should not be watched (final status)
+                getExchangeTrade({ status: 'CONVERTING' }), // Should be watched
+                getExchangeTrade({ status: 'ERROR' }), // Should not be watched (final status)
+            ];
+            const tradesWithAccounts = mockTrades.map(trade => ({
+                ...trade,
+                selectedAccountKey: 'btc1',
+            }));
+            const state = getStateWithTrades({ trades: tradesWithAccounts });
+
+            const result = selectTradesToWatchByAccount(state);
+
+            expect(result.tradesToWatch).toHaveLength(2);
+            expect(result.tradesToWatch[0].data.status).toBe('SUBMITTED');
+            expect(result.tradesToWatch[1].data.status).toBe('CONVERTING');
+        });
+
+        it('should group trades by account correctly', () => {
+            const mockTrades = [
+                getBuyTrade({ status: 'SUBMITTED' }),
+                getExchangeTrade({ status: 'CONVERTING' }),
+            ];
+            const tradesWithAccounts = mockTrades.map((trade, index) => ({
+                ...trade,
+                selectedAccountKey: index === 0 ? 'btc1' : 'eth1',
+            }));
+            const state = getStateWithTrades({ trades: tradesWithAccounts });
+
+            const result = selectTradesToWatchByAccount(state);
+
+            expect(result.tradesByAccount).toHaveLength(2);
+            expect(result.tradesByAccount[0].account.key).toBe('btc1');
+            expect(result.tradesByAccount[0].trades).toHaveLength(1);
+            expect(result.tradesByAccount[1].account.key).toBe('eth1');
+            expect(result.tradesByAccount[1].trades).toHaveLength(1);
+        });
+
+        it('should handle trades with undefined status', () => {
+            const mockTrades = [
+                getBuyTrade({ status: undefined }), // Should not be watched
+                getExchangeTrade({ status: 'CONVERTING' }), // Should be watched
+            ];
+            const tradesWithAccounts = mockTrades.map(trade => ({
+                ...trade,
+                selectedAccountKey: 'btc1',
+            }));
+            const state = getStateWithTrades({ trades: tradesWithAccounts });
+
+            const result = selectTradesToWatchByAccount(state);
+
+            expect(result.tradesToWatch).toHaveLength(1);
+            expect(result.tradesToWatch[0].data.status).toBe('CONVERTING');
+        });
+
+        it('should handle trades without account keys', () => {
+            const mockTrades = [
+                getBuyTrade({ status: 'SUBMITTED' }),
+                getExchangeTrade({ status: 'CONVERTING' }),
+            ];
+            // Remove account keys to test fallback behavior
+            const tradesWithoutAccounts = mockTrades.map(trade => ({
+                ...trade,
+                selectedAccountKey: undefined,
+                sendAccountKey: undefined,
+            }));
+            const state = getStateWithTrades({ trades: tradesWithoutAccounts });
+
+            const result = selectTradesToWatchByAccount(state);
+
+            // Trades without account keys should not be grouped
+            expect(result.tradesByAccount).toHaveLength(0);
         });
     });
 });
