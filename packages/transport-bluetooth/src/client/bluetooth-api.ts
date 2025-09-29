@@ -13,15 +13,16 @@ import { BluetoothDevice, TrezorBluetoothSettings } from './types';
 
 // implementation of @trezor/transport/src/api/abstract
 
-type BluetoothApiParams = AbstractApiConstructorParams & TrezorBluetoothSettings;
+type BluetoothApiParams = Omit<AbstractApiConstructorParams, 'type'> & TrezorBluetoothSettings;
 
 export class BluetoothApi extends AbstractApi {
     chunkSize = 244;
     api: TrezorBluetooth;
+
     private readBuffer = readMessageBuffer();
 
     constructor(options: BluetoothApiParams) {
-        super(options);
+        super({ ...options, type: 'bluetooth' });
 
         this.api = new TrezorBluetooth(options);
     }

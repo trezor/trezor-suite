@@ -41,7 +41,6 @@ const createUsbMock = (optional = {}) =>
 
 class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
-    public apiType = 'usb' as const;
 }
 
 // we cant directly use abstract class (UsbTransport)

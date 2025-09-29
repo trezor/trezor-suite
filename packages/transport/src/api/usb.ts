@@ -16,7 +16,7 @@ import {
 import * as ERRORS from '../errors';
 import { DescriptorApiLevel, PathInternal } from '../types';
 
-interface ConstructorParams extends AbstractApiConstructorParams {
+interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
     usbInterface: USB;
     forceReadSerialOnConnect?: boolean;
     debugLink?: boolean;
@@ -45,7 +45,7 @@ export class UsbApi extends AbstractApi {
     private deviceResetMap: Record<string, boolean> = {};
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
-        super({ logger });
+        super({ logger, type: 'usb' });
 
         this.usbInterface = usbInterface;
         this.forceReadSerialOnConnect = forceReadSerialOnConnect;

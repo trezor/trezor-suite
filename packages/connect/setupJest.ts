@@ -7,7 +7,6 @@ import { type Features } from './src/types';
 
 class TestTransport extends AbstractApiTransport {
     name = 'TestTransport' as any;
-    apiType = 'usb' as const;
 }
 
 // mock of navigator.usb
@@ -29,6 +28,7 @@ const createTransportApi = (override = {}) =>
             }),
         listen: () => {},
         dispose: () => {},
+        type: 'usb',
         ...override,
     }) as unknown as UsbApi;
 

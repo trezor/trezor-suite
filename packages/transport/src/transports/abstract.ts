@@ -88,8 +88,6 @@ export type TransportDeviceEvent =
     | { type: typeof TRANSPORT.DEVICE_REQUEST_RELEASE }
     | { type: typeof TRANSPORT.DEVICE_SESSION_CHANGED; descriptor: Descriptor };
 
-export type TransportApiType = 'usb' | 'udp' | 'bluetooth';
-
 export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
     public abstract readonly name:
         | 'BridgeTransport'
@@ -100,7 +98,6 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         | 'BluetoothTransport' // implementation in @trezor/transport-bluetooth
         | 'NativeBluetoothTransport'; // implementation in @trezor/transport-native-bluetooth
 
-    public abstract readonly apiType: TransportApiType;
     /**
      * transports with "external element" such as bridge can be outdated.
      */
@@ -148,6 +145,10 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         this.logger = logger;
         this.id = id;
         this.deviceEvents = new TypedEmitter<{ [path: PathPublic]: TransportDeviceEvent }>();
+    }
+
+    get apiType(): 'usb' | 'bluetooth' | 'udp' {
+        return 'usb' as const;
     }
 
     ping(_params?: AbortableParam) {
