@@ -194,7 +194,21 @@ export const extraDependencies: ExtraDependencies = {
         },
         storageLoadDevices: (state: DeviceReducerState, { payload }: StorageLoadAction) => {
             // @ts-expect-error loaded devices have empty path, TODO deviceReducer should have path nullable, because remembered wallets??
-            state.devices = payload.devices;
+            state.devices = payload.devices.map(device => {
+                const persistentDeviceData = payload.persistentDeviceData?.find(
+                    ({ device_id }) => device_id === device.id,
+                );
+                if (persistentDeviceData) {
+                    return {
+                        ...device,
+                        bluetoothProps: persistentDeviceData.bluetoothProps,
+                        thp: persistentDeviceData.thp,
+                    };
+                } else {
+                    return device;
+                }
+            });
+
             state.persistentDeviceData = payload.persistentDeviceData ?? [];
         },
         storageLoadFormDrafts: (state: SendState, { payload }: StorageLoadAction) => {
