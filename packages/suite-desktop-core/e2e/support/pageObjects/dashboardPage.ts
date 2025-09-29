@@ -39,7 +39,7 @@ export class DashboardPage {
     readonly notificationNoBackupButton: Locator;
     readonly openUnusedWalletButton1: Locator;
     readonly openUnusedWalletButton2: Locator;
-    readonly assetBuyButton = (networkSymbol: NetworkSymbol): Locator =>
+    readonly buyButton = (networkSymbol: NetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/buy-button`);
 
     constructor(
@@ -84,11 +84,6 @@ export class DashboardPage {
     async navigateTo() {
         await this.dashboardMenuButton.click();
         await expect(this.dashboardHeader).toBeVisible();
-    }
-
-    @step()
-    async openBuyForm(asset: NetworkSymbol) {
-        await this.assetBuyButton(asset).click();
     }
 
     @step()
