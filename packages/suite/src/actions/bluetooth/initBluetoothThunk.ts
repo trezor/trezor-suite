@@ -50,8 +50,11 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         // NOTE: getInfo when adapter is disabled adapter may return different result in adapter_info field
         const apiInfo = await bluetoothIpc.getInfo();
         if (apiInfo.success) {
-            // TODO: validate apiInfo.payload.adapter_info string
-            // and store data in redux
+            dispatch(
+                bluetoothActions.adapterEventAction({
+                    status: apiInfo.payload.state,
+                }),
+            );
         }
 
         // If we already have some paired devices, we assume user will have a BT device,
