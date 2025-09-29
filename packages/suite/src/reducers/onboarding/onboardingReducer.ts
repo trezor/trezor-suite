@@ -13,8 +13,6 @@ export interface OnboardingRootState {
     onboarding: OnboardingState;
 }
 
-export type DeviceTutorialStatus = 'active' | 'completed' | 'cancelled' | null;
-
 export interface OnboardingState {
     backupType: BackupType;
     isActive: boolean;
@@ -22,7 +20,6 @@ export interface OnboardingState {
     activeStepId: AnyStepId;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
-    tutorialStatus: DeviceTutorialStatus;
 }
 
 const initialState: OnboardingState = {
@@ -36,7 +33,6 @@ const initialState: OnboardingState = {
     activeStepId: STEP.ID_FIRMWARE_STEP,
     path: [],
     onboardingAnalytics: {},
-    tutorialStatus: null,
     backupType: 'shamir-single',
 };
 
@@ -82,10 +78,6 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
             case ONBOARDING.ANALYTICS:
                 draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
                 break;
-            case ONBOARDING.SET_TUTORIAL_STATUS:
-                draft.tutorialStatus = action.payload;
-                break;
-
             case ONBOARDING.SELECT_BACKUP_TYPE:
                 draft.backupType = action.payload;
                 break;
@@ -96,9 +88,6 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
         }
     });
 };
-
-export const selectOnboardingTutorialStatus = (state: OnboardingRootState) =>
-    state.onboarding.tutorialStatus;
 
 export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
 

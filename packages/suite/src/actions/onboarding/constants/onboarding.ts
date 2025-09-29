@@ -4,5 +4,4 @@ export const REMOVE_PATH = '@onboarding/remove-path' as const;
 export const RESET_ONBOARDING = '@onboarding/reset-onboarding' as const;
 export const ENABLE_ONBOARDING_REDUCER = '@onboarding/enable-onboarding-reducer' as const;
 export const ANALYTICS = '@onboarding/analytics' as const;
-export const SET_TUTORIAL_STATUS = '@onboarding/set-tutorial-status' as const;
 export const SELECT_BACKUP_TYPE = '@onboarding/select-backup-type' as const;

@@ -6,7 +6,6 @@ import { OnboardingAnalytics } from '@trezor/suite-analytics';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 import { Dispatch, GetState } from 'src/types/suite';
 import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
@@ -34,10 +33,6 @@ export type OnboardingAction =
     | {
           type: typeof ONBOARDING.ANALYTICS;
           payload: Partial<OnboardingAnalytics>;
-      }
-    | {
-          type: typeof ONBOARDING.SET_TUTORIAL_STATUS;
-          payload: DeviceTutorialStatus;
       }
     | {
           type: typeof ONBOARDING.SELECT_BACKUP_TYPE;
@@ -122,11 +117,6 @@ const updateAnalytics = (payload: Partial<OnboardingAnalytics>): OnboardingActio
     payload,
 });
 
-const setDeviceTutorialStatus = (status: DeviceTutorialStatus): OnboardingAction => ({
-    type: ONBOARDING.SET_TUTORIAL_STATUS,
-    payload: status,
-});
-
 const updateBackupType = (payload: BackupType): OnboardingAction => ({
     type: ONBOARDING.SELECT_BACKUP_TYPE,
     payload,
@@ -136,15 +126,8 @@ const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetSt
     const device = selectSelectedDevice(getState());
     if (!device) return;
 
-    dispatch(setDeviceTutorialStatus('active'));
-
-    const { success } = await TrezorConnect.showDeviceTutorial({ device });
-
-    if (success) {
-        dispatch(setDeviceTutorialStatus('completed'));
-    } else {
-        dispatch(setDeviceTutorialStatus('cancelled'));
-    }
+    await TrezorConnect.showDeviceTutorial({ device });
+    dispatch(goToNextStep());
 };
 
 export {
@@ -156,7 +139,6 @@ export {
     removePath,
     resetOnboarding,
     updateAnalytics,
-    setDeviceTutorialStatus,
     beginOnboardingTutorial,
     updateBackupType,
 };

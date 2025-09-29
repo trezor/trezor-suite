@@ -51,6 +51,12 @@ const SetPinStep = () => {
     };
 
     useEffect(() => {
+        if (status === 'success') {
+            goToNextStep();
+        }
+    }, [status, goToNextStep]);
+
+    useEffect(() => {
         // This is where we detect requests from a device, figure out whether the PIN functionality got enabled,
         // and set a status of the setup process accordingly
         if (device?.features) {
@@ -106,22 +112,7 @@ const SetPinStep = () => {
     }
 
     if (status === 'success') {
-        // Pin successfully set up
-        return (
-            <OnboardingStepBox
-                image="PIN"
-                heading={<Translation id="TR_PIN_HEADING_SUCCESS" />}
-                description={<Translation id="TR_PIN_SET_SUCCESS" />}
-                outerActions={
-                    <OnboardingButtonCta
-                        data-testid="@onboarding/pin/continue-button"
-                        onClick={() => goToNextStep()}
-                    >
-                        <Translation id="TR_CONTINUE" />
-                    </OnboardingButtonCta>
-                }
-            />
-        );
+        return null;
     }
 
     // 'initial', 'enter-pin', 'repeat-pin' states
