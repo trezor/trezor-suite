@@ -19,7 +19,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
                 testCase: 'Verifies navigation to all Trading Forms.',
             }),
         },
-        async ({ page, dashboardPage, tradingPage, walletPage }) => {
+        async ({ dashboardPage, tradingPage, walletPage }) => {
             // BUY
             await test.step('Buy from dashboard asset card', async () => {
                 await dashboardPage.navigateTo();
