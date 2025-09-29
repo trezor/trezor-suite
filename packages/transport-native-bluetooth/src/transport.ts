@@ -3,7 +3,7 @@ import { AbstractApiTransport, Transport as AbstractTransport } from '@trezor/tr
 import { BluetoothApi } from './api/BluetoothApi';
 
 export class NativeBluetoothTransport extends AbstractApiTransport {
-    public name = 'NativeBluetoothTransport' as any;
+    public name = 'NativeBluetoothTransport' as const;
     public apiType = 'bluetooth' as const;
 
     constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
