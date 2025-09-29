@@ -18,6 +18,11 @@ export type DevicePushNotificationEvent = {
     data: number[];
 };
 
+export type DeviceBatteryLevelChangeEvent = {
+    deviceId: string;
+    data: number[];
+};
+
 export interface BluetoothDevice {
     id: string;
     name: string;
