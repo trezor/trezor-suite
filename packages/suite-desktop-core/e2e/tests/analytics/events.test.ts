@@ -116,6 +116,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         settingsPage,
         onboardingPage,
         trezorUserEnvLink,
+        devicePrompt,
     }) => {
         await test.step('Start suite with disabled analytics', async () => {
             await onboardingPage.optionallyDismissFwHashCheckError();
@@ -133,7 +134,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
 
             await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
             if (model.isModelWithTHP()) {
-                await onboardingPage.allowConnectToTrezor();
+                await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
             }
         });

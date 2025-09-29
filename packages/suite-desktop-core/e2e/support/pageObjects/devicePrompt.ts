@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, analyzeObject, step } from '../common';
+import { ModelFixture } from '../modelFixture';
 
 export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
@@ -33,7 +34,10 @@ export class DevicePrompt {
     readonly ethereumPriorityFeeRate: Locator;
     readonly headerFeeRate: Locator;
 
-    constructor(private page: Page) {
+    constructor(
+        private page: Page,
+        private readonly model: ModelFixture,
+    ) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
         this.modalCloseButton = page.getByTestId('@modal/close-button');
@@ -91,6 +95,11 @@ export class DevicePrompt {
     async waitForPromptAndConfirm() {
         await this.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
+    }
+
+    @step()
+    async allowConnectToTrezor() {
+        await this.waitForPromptAndConfirm();
     }
 
     @step()
@@ -220,5 +229,9 @@ export class DevicePrompt {
         }
 
         return addressRaw[0].join('').replace(/\n/g, '');
+    }
+
+    getDeviceModel() {
+        return this.model.model;
     }
 }

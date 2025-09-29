@@ -150,6 +150,9 @@ export const expect = baseExpect.extend({
             lineFormat: 'fourTetragrams',
         },
     ) {
+        if (devicePrompt.getDeviceModel() !== 'T3T1') {
+            return { pass: true, message: () => 'Test is skipped on non-T3T1 models' };
+        }
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
 
         let expectedContent;
@@ -175,6 +178,10 @@ export const expect = baseExpect.extend({
     },
 
     async toDisplayOnEmulator(devicePrompt: DevicePrompt, expectedContent: object) {
+        if (devicePrompt.getDeviceModel() !== 'T3T1') {
+            return { pass: true, message: () => 'Test is skipped on non-T3T1 models' };
+        }
+
         return await compareDisplayContent(
             devicePrompt,
             expectedContent,

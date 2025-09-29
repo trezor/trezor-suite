@@ -94,7 +94,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             });
             await pageTwo.goto('./');
             const analyticsSectionTwo = new AnalyticsSection(pageTwo);
-            const devicePromptTwo = new DevicePrompt(pageTwo);
+            const devicePromptTwo = new DevicePrompt(pageTwo, model);
             const onboardingPageTwo = new OnboardingPage(
                 pageTwo,
                 model,

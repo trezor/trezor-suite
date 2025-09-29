@@ -71,7 +71,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
         enhancePage(suite.window);
         await suite.window.title();
 
-        const devicePrompt = new DevicePrompt(suite.window);
+        const devicePrompt = new DevicePrompt(suite.window, model);
 
         const onboardingPage = new OnboardingPage(
             suite.window,
