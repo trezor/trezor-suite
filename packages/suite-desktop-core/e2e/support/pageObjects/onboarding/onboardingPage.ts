@@ -11,6 +11,7 @@ import { FirmwareSection } from './firmwareSection';
 import { PinSection } from './pinSection';
 import { TutorialSection } from './tutorialSection';
 import { ModelFixture } from '../../modelFixture';
+import { SettingsPage } from '../settings/settingsPage';
 
 export class OnboardingPage {
     readonly backup: BackupSection;
@@ -43,6 +44,7 @@ export class OnboardingPage {
         private readonly testInfo: TestInfo,
         private readonly devicePrompt: DevicePrompt,
         private readonly analyticsSection: AnalyticsSection,
+        private readonly settingsPage: SettingsPage,
     ) {
         this.backup = new BackupSection(page, devicePrompt);
         this.firmware = new FirmwareSection(page);
@@ -117,6 +119,7 @@ export class OnboardingPage {
         if (this.model.isModelWithTHP()) {
             await this.devicePrompt.allowConnectToTrezor();
             await this.enterTHPPairingCode();
+            await this.enableAutoconnect();
         }
 
         await this.onboardingContinueButton.click();
@@ -129,6 +132,14 @@ export class OnboardingPage {
             await this.disableDebugMode();
         }
         await this.page.discoveryShouldFinish();
+    }
+
+    @step()
+    async enableAutoconnect() {
+        await this.settingsPage.navigateTo('device');
+        await this.settingsPage.device.autoconnectSwitch.click();
+        await this.devicePrompt.allowConnectToTrezor();
+        await this.settingsPage.closeSettings();
     }
 
     @step()

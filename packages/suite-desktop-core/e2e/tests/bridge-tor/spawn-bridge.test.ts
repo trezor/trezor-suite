@@ -11,6 +11,7 @@ import { expect, test } from '../../support/fixtures';
 import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
 import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
+import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
 const NODE_BRIDGE_VERSION = '3.1.0';
@@ -79,6 +80,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
             testInfo,
             devicePrompt,
             new AnalyticsSection(suite.window),
+            new SettingsPage(suite.window),
         );
         await onboardingPage.completeOnboarding();
 

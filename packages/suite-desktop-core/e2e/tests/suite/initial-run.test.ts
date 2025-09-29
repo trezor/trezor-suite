@@ -16,17 +16,17 @@ const optionallyDismissFwHashCheckError = (page: Page) => {
 test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
     test('Until user passed through initial run, it will be there after reload', async ({
         page,
-        suite,
         model,
         analyticsSection,
         onboardingPage,
+        devicePrompt,
     }) => {
         // I was not able to debug why the initial start can be handled by onboardingPage.optionallyDismissFwHashCheckError
         // but follow up reloads need a different approach that is defined here above.
         await onboardingPage.optionallyDismissFwHashCheckError();
         await expect(analyticsSection.toggleSwitch).toBeVisible();
 
-        await page.reload(); // Cannot use suiteApp.reloadApp here yet, because it only works after analytics consent is passed
+        await page.reload();
         await onboardingPage.verifySuiteIsLoaded();
         optionallyDismissFwHashCheckError(page);
         // analytics screen is there until user confirms his choice
@@ -34,15 +34,16 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         await analyticsSection.continueButton.click();
 
         if (model.isModelWithTHP()) {
+            await devicePrompt.allowConnectToTrezor();
             await onboardingPage.enterTHPPairingCode();
         }
 
         await expect(page.getByTestId('@onboarding/exit-app-button')).toBeVisible();
 
-        await suite.reloadApp();
+        await page.reload();
 
         if (model.isModelWithTHP()) {
-            await onboardingPage.enterTHPPairingCode();
+            await devicePrompt.allowConnectToTrezor();
         }
 
         await onboardingPage.verifySuiteIsLoaded();
@@ -53,11 +54,10 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
 
     test('Once user passed trough, skips initial run and shows connect-device modal', async ({
         page,
-        suite,
         onboardingPage,
     }) => {
         await onboardingPage.completeOnboarding();
-        await suite.reloadApp();
+        await page.reload();
         await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
             timeout: 30_000,
         });

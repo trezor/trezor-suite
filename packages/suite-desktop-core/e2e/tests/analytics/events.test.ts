@@ -111,7 +111,6 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         analytics,
         model,
         page,
-        suite,
         analyticsSection,
         settingsPage,
         onboardingPage,
@@ -160,12 +159,17 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             await settingsPage.navigateTo('application');
             await settingsPage.analyticsSwitch.click();
             await settingsPage.closeSettings();
-            await suite.reloadApp();
+            await page.reload();
+
+            if (model.isModelWithTHP()) {
+                await devicePrompt.allowConnectToTrezor();
+            }
+
             await onboardingPage.onboardingContinueButton.click();
         });
 
         await test.step('Wait for analytics events and validate event types', async () => {
-            await analytics.waitForAnalyticsRequests(3);
+            await analytics.waitForAnalyticsRequests(4);
             expect(analytics.requests[0]).toHaveProperty('c_type', EventType.SettingsAnalytics);
             expect(analytics.requests[1]).toHaveProperty('c_type', EventType.RouterLocationChange);
             expect(analytics.requests[2]).toHaveProperty('c_type', EventType.SuiteReady);

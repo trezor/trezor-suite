@@ -18,7 +18,6 @@ import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/stakingSection';
-import { SuiteApp } from './pageObjects/suiteApp';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
 import { WalletPage } from './pageObjects/walletPage';
@@ -45,7 +44,6 @@ type Fixtures = {
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
     stakingSection: StakingSection;
-    suite: SuiteApp;
     model: ModelFixture;
 };
 
@@ -62,8 +60,14 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     walletPage: async ({ page }, use) => {
         await use(new WalletPage(page));
     },
-    onboardingPage: async ({ page, model, devicePrompt, analyticsSection }, use, testInfo) => {
-        await use(new OnboardingPage(page, model, testInfo, devicePrompt, analyticsSection));
+    onboardingPage: async (
+        { page, model, devicePrompt, analyticsSection, settingsPage },
+        use,
+        testInfo,
+    ) => {
+        await use(
+            new OnboardingPage(page, model, testInfo, devicePrompt, analyticsSection, settingsPage),
+        );
     },
     analyticsSection: async ({ page }, use) => {
         await use(new AnalyticsSection(page));
@@ -110,9 +114,6 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
-    },
-    suite: async ({ page, model, devicePrompt }, use) => {
-        await use(new SuiteApp(page, model, devicePrompt));
     },
     model: async ({ emulatorStartConf }, use) => {
         await use(new ModelFixture(emulatorStartConf.model));

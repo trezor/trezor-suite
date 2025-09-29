@@ -99,7 +99,8 @@ export class DevicePrompt {
 
     @step()
     async allowConnectToTrezor() {
-        await this.waitForPromptAndConfirm();
+        await this.confirmOnDevicePromptIsShown({ timeout: 30_000 });
+        await TrezorUserEnvLinkProxy.pressYes();
     }
 
     @step()
