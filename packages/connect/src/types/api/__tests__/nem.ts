@@ -1,4 +1,4 @@
-import { DeviceUniquePath, NEM, TrezorConnect } from '../../..';
+import { NEM, TrezorConnect, asDeviceUniquePath } from '../../..';
 
 export const nemGetAddress = async (api: TrezorConnect) => {
     // regular
@@ -33,7 +33,7 @@ export const nemGetAddress = async (api: TrezorConnect) => {
     // with all possible params
     api.nemGetAddress({
         device: {
-            path: DeviceUniquePath('1'),
+            path: asDeviceUniquePath('1'),
             instance: 1,
             state: 'state@device-id:1',
         },

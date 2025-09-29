@@ -22,6 +22,7 @@ import {
     Features,
     FirmwareType,
     TrezorConnect,
+    asDeviceUniquePath,
 } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -160,7 +161,7 @@ type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path
  * @returns {Device}
  */
 const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Features>): Device => {
-    const path = DeviceUniquePath(dev?.path ?? '1');
+    const path = asDeviceUniquePath(dev?.path ?? '1');
 
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
