@@ -152,7 +152,13 @@ export class UdpApi extends AbstractApi {
                 paths.map(path =>
                     this.ping(path, signal).then(pinged =>
                         pinged
-                            ? { path, type: DEVICE_TYPE.TypeEmulator, product: 0, vendor: 0 }
+                            ? {
+                                  path,
+                                  type: DEVICE_TYPE.TypeEmulator,
+                                  product: 0,
+                                  vendor: 0,
+                                  id: path,
+                              }
                             : undefined,
                     ),
                 ),
