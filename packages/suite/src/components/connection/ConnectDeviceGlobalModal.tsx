@@ -1,10 +1,6 @@
 import { useTheme } from 'styled-components';
 
-import {
-    selectAdapterStatus,
-    selectKnownDevices,
-    selectNearbyDevices,
-} from '@suite-common/bluetooth';
+import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
@@ -77,6 +73,8 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         handleBluetoothConnectionCancel,
         onConnect,
         openShowRemoveFromOsBluetooth,
+        shouldShowBluetoothUnPairDeviceList,
+        notConnectedKnownDevices,
     } = useConnectionGlobalModalContext();
 
     const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
@@ -84,13 +82,6 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
-
-    const nearbyDevices = useSelector(selectNearbyDevices);
-    const knownDevices = useSelector(selectKnownDevices);
-    const notConnectedKnownDevices = knownDevices.filter(device => device.connected === false);
-
-    const shouldShowBluetoothUnPairDeviceList =
-        nearbyDevices.length === 0 && notConnectedKnownDevices.length >= knownDevices.length;
 
     if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
 
