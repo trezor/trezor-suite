@@ -1,33 +1,81 @@
+import { memo } from 'react';
+import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
-
+import { useFormatters } from '@suite-common/formatters';
 import {
-    TradeHistoryListItemMemoized,
-    TradeHistoryListItemMemoizedProps,
-} from './TradeHistoryListItemMemoized';
-import { useWatchTrade } from '../../../hooks/general/useWatchTrade';
+    TradingRootState,
+    TradingTransaction,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
+import { Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-export { TRADE_HISTORY_LIST_ITEM_HEIGHT } from './TradeHistoryListItemMemoized';
+import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { ProviderLogo } from '../../general/ProviderLogo';
+import { TradeStatusBadge } from '../TradeStatusBadge';
 
-export const TradeHistoryListItem = ({
-    transaction,
-    onPress,
-}: TradeHistoryListItemMemoizedProps) => {
-    const account = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectAccountByKey(
+export type TradeHistoryListItemProps = {
+    transaction: TradingTransaction;
+    onPress?: () => void;
+};
+
+const pressableStyle = prepareNativeStyle(() => ({
+    paddingBottom: 16,
+}));
+
+export const TRADE_HISTORY_LIST_ITEM_HEIGHT = 148;
+
+export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistoryListItemProps) => {
+    const { DateFormatter, TimeFormatter } = useFormatters();
+    const { applyStyle } = useNativeStyles();
+    const { fromStringValue, toStringValue } = useChangeStringsExtractor(transaction.data);
+
+    const providerInfo = useSelector((state: TradingRootState) =>
+        selectTradingProviderByNameAndTradeType(
             state,
-            'selectedAccountKey' in transaction
-                ? transaction.selectedAccountKey
-                : transaction.sendAccountKey,
+            transaction.data.exchange,
+            transaction.tradeType,
         ),
     );
 
-    useWatchTrade({
-        account: account ?? undefined,
-        trade: transaction,
-        isInProgress: false,
-    });
+    const date = new Date(transaction.date);
 
-    return <TradeHistoryListItemMemoized transaction={transaction} onPress={onPress} />;
-};
+    return (
+        <Pressable onPress={onPress} style={applyStyle(pressableStyle)}>
+            <Card>
+                <VStack>
+                    <HStack justifyContent="space-between">
+                        <Text color="textSubdued">
+                            <Translation
+                                id="moduleTrading.tradeHistory.timeAt"
+                                values={{
+                                    date: <DateFormatter value={date} />,
+                                    time: <TimeFormatter value={date} />,
+                                }}
+                            />
+                        </Text>
+                        <TradeStatusBadge status={transaction.data.status} />
+                    </HStack>
+                    <HStack>
+                        {providerInfo?.logo && <ProviderLogo logo={providerInfo.logo} />}
+                        <Text>{providerInfo?.companyName}</Text>
+                    </HStack>
+                    <HStack alignItems="center">
+                        <Text>{fromStringValue}</Text>
+                        <Icon name="caretRight" size="medium" />
+                        <Text>{toStringValue}</Text>
+                    </HStack>
+                    <Text variant="hint" color="textSubdued">
+                        <Translation
+                            id="moduleTrading.tradeHistory.transactionId"
+                            values={{ orderId: transaction.data.orderId }}
+                        />
+                    </Text>
+                </VStack>
+            </Card>
+        </Pressable>
+    );
+});
