@@ -80,7 +80,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
 
             await test.step('Swap from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
-                await page.getByTestId('@trading/menu/wallet-trading-exchange').click();
+                await walletPage.openSwapForm();
                 await tradingPage.verifySwapFormOpened(/BTC/);
             });
 
