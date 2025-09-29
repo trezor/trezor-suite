@@ -124,12 +124,6 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly transportPath;
-    public readonly bluetoothProps:
-        | {
-              channels: Record<OpenDeviceChannel, boolean> | undefined;
-              id: string;
-          }
-        | undefined;
     private thp: protocolThp.ThpState | undefined;
     private readonly descriptorType;
     private sessionAcquired: Session | null;
@@ -150,6 +144,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
      * with and user needs to take some action. for example reconnect the device, update firmware or change transport type
      */
     private unreadableError?: string;
+
+    private _bluetoothProps?: {
+        channels: Record<OpenDeviceChannel, boolean> | undefined;
+        id: string;
+    };
+    public get bluetoothProps() {
+        return this._bluetoothProps;
+    }
 
     // @ts-expect-error: strictPropertyInitialization
     private _firmwareStatus: DeviceFirmwareStatus;
@@ -239,7 +241,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.descriptorType = descriptor.type;
 
         if (descriptor.id) {
-            this.bluetoothProps = {
+            this._bluetoothProps = {
                 id: descriptor.id,
                 channels: undefined,
             };
@@ -336,28 +338,31 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     subscribe() {
-        const { bluetoothProps } = this;
-        if (bluetoothProps?.id) {
+        if (this._bluetoothProps?.id) {
             this.transport
                 .subscribe({
-                    path: bluetoothProps.id,
+                    path: this._bluetoothProps.id,
                     channels: ['battery-level', 'trezor-push-notification'],
                 })
                 .then(result => {
-                    if (result.success && bluetoothProps) {
-                        bluetoothProps.channels = result.payload;
+                    if (result.success && this._bluetoothProps) {
+                        const channels = result.payload;
+                        this._bluetoothProps = {
+                            ...this._bluetoothProps,
+                            channels,
+                        };
                         this.lifecycle.emit(DEVICE.CHANGED);
                     }
 
-                    if (bluetoothProps.channels?.['battery-level']) {
+                    if (this._bluetoothProps?.channels?.['battery-level']) {
                         this.transport.on('battery-level', event => {
                             this._updateFeature('soc', event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
-                    if (this.bluetoothProps?.channels?.['trezor-push-notification']) {
+                    if (this._bluetoothProps?.channels?.['trezor-push-notification']) {
                         this.transport.on('trezor-push-notification', ({ id, data }) => {
-                            if (id === bluetoothProps.id) {
+                            if (id === this._bluetoothProps?.id) {
                                 this.trezorPushNotificationHandler(data);
                             }
                         });
