@@ -12,20 +12,27 @@ import {
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { TradingType, selectTradingSupportedSymbols, toTokenCryptoId } from '@suite-common/trading';
+import {
+    TradingRootStateWithDeviceAndAccounts,
+    TradingTransaction,
+    TradingType,
+    isFinalStatus,
+    selectDeviceTradingTrades,
+    selectTradingSupportedSymbols,
+    toTokenCryptoId,
+} from '@suite-common/trading';
 import {
     getNetwork,
     getNetworkDisplaySymbolName,
     getNetworkType,
 } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    DeviceRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
+    selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
 import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -42,14 +49,15 @@ import { TradingRootState } from '../reducers';
 import { MyAsset, TradeableAsset } from '../types/general';
 import { getSymbolFromTradeableAsset } from '../utils/general/tradeableAssetUtils';
 
-export type CombinedSelectorsRootState = TradingRootState &
-    AccountsRootState &
-    DeviceRootState &
+export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
     TokenDefinitionsRootState &
     FiatRatesRootState &
     WalletSettingsRootState &
     TokensRootState &
     FeatureFlagsRootState;
+
+const createTradingWithDeviceAndAccountsMemoizedSelector =
+    createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 
 const createCombinedMemoizedSelector =
     createWeakMapSelector.withTypes<CombinedSelectorsRootState>();
@@ -278,3 +286,36 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                 .filter(section => section.data.length > 0);
         },
     );
+
+export const selectTradesToWatchByAccount = createTradingWithDeviceAndAccountsMemoizedSelector(
+    [selectDeviceTradingTrades, selectVisibleDeviceAccountsMap],
+    (deviceTrades, visibleDeviceAccountsMap) => {
+        const tradesToWatch = deviceTrades.filter(
+            ({ tradeType, data }: TradingTransaction) =>
+                data.status && !isFinalStatus(tradeType, data.status),
+        );
+
+        const tradesMap = tradesToWatch.reduce((grouped, trade) => {
+            const tradeKey =
+                'selectedAccountKey' in trade ? trade.selectedAccountKey : trade.sendAccountKey;
+
+            const account = tradeKey ? visibleDeviceAccountsMap.get(tradeKey) : undefined;
+
+            if (account) {
+                const existingGroup = grouped.get(account.key);
+                if (existingGroup) {
+                    existingGroup.trades.push(trade);
+                } else {
+                    grouped.set(account.key, { account, trades: [trade] });
+                }
+            }
+
+            return grouped;
+        }, new Map<string, { account: Account; trades: TradingTransaction[] }>());
+
+        return {
+            tradesByAccount: returnStableArrayIfEmpty(Array.from(tradesMap.values())),
+            tradesToWatch: returnStableArrayIfEmpty(tradesToWatch),
+        };
+    },
+);
