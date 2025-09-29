@@ -85,8 +85,8 @@ export const CoinPurchaseMemo = Type.Object(
 export type TextDetailsMemo = Static<typeof TextDetailsMemo>;
 export const TextDetailsMemo = Type.Object(
     {
-        title: Type.Optional(Type.String()),
-        text: Type.Optional(Type.String()),
+        title: Type.String(),
+        text: Type.String(),
     },
     { $id: 'TextDetailsMemo' },
 );
@@ -2400,6 +2400,7 @@ export const Features = Type.Object(
         recovery_type: Type.Optional(RecoveryType),
         optiga_sec: Type.Optional(Type.Number()),
         soc: Type.Optional(Type.Number()),
+        firmware_corrupted: Type.Optional(Type.Boolean()),
     },
     { $id: 'Features' },
 );
@@ -2434,6 +2435,7 @@ export const ApplySettings = Type.Object(
         hide_passphrase_from_host: Type.Optional(Type.Boolean()),
         haptic_feedback: Type.Optional(Type.Boolean()),
         homescreen_length: Type.Optional(Type.Number()),
+        auto_lock_delay_battery_ms: Type.Optional(Type.Number()),
     },
     { $id: 'ApplySettings' },
 );
@@ -2560,8 +2562,10 @@ export const AuthenticateDevice = Type.Object(
 export type AuthenticityProof = Static<typeof AuthenticityProof>;
 export const AuthenticityProof = Type.Object(
     {
-        certificates: Type.Array(Type.String()),
-        signature: Type.String(),
+        optiga_certificates: Type.Array(Type.String()),
+        optiga_signature: Type.String(),
+        tropic_certificates: Type.Array(Type.String()),
+        tropic_signature: Type.Optional(Type.String()),
     },
     { $id: 'AuthenticityProof' },
 );
@@ -3175,6 +3179,7 @@ export const StellarSignTx = Type.Object(
         memo_id: Type.Optional(Type.Uint()),
         memo_hash: Type.Optional(Type.Union([Type.Buffer(), Type.String()])),
         num_operations: Type.Number(),
+        payment_req: Type.Optional(PaymentRequest),
     },
     { $id: 'StellarSignTx' },
 );

@@ -63,8 +63,8 @@ export type CoinPurchaseMemo = {
 };
 
 export type TextDetailsMemo = {
-    title?: string;
-    text?: string;
+    title: string;
+    text: string;
 };
 
 export type PaymentRequestMemo = {
@@ -1587,6 +1587,7 @@ export type Features = {
     recovery_type?: RecoveryType;
     optiga_sec?: number;
     soc?: number;
+    firmware_corrupted?: boolean;
 };
 
 export type LockDevice = {};
@@ -1611,6 +1612,7 @@ export type ApplySettings = {
     hide_passphrase_from_host?: boolean;
     haptic_feedback?: boolean;
     homescreen_length?: number;
+    auto_lock_delay_battery_ms?: number;
 };
 
 export type ChangeLanguage = {
@@ -1677,8 +1679,10 @@ export type AuthenticateDevice = {
 };
 
 export type AuthenticityProof = {
-    certificates: string[];
-    signature: string;
+    optiga_certificates: string[];
+    optiga_signature: string;
+    tropic_certificates: string[];
+    tropic_signature?: string;
 };
 
 export type WipeDevice = {};
@@ -2055,6 +2059,7 @@ export type StellarSignTx = {
     memo_id?: UintType;
     memo_hash?: Buffer | string;
     num_operations: number;
+    payment_req?: PaymentRequest;
 };
 
 export type StellarTxOpRequest = {};
