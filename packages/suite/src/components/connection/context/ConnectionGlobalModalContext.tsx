@@ -13,6 +13,8 @@ import {
     UNPAIRED_DEVICES_LAST_UPDATED_LIMIT,
     bluetoothActions,
     prepareSelectAllDevices,
+    selectKnownDevices,
+    selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { BluetoothDeviceId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
@@ -44,6 +46,8 @@ export type ConnectionGlobalModalContextProps = {
     openShowRemoveFromOsBluetooth: () => void;
     closeShowRemoveFromOsBluetooth: () => void;
     showRemoveFromOsBluetooth: boolean;
+    notConnectedKnownDevices: DesktopBluetoothDevice[];
+    shouldShowBluetoothUnPairDeviceList: boolean;
 };
 
 const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalContextProps>({
@@ -62,6 +66,8 @@ const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalCon
     openShowRemoveFromOsBluetooth: () => {},
     closeShowRemoveFromOsBluetooth: () => {},
     showRemoveFromOsBluetooth: false,
+    notConnectedKnownDevices: [],
+    shouldShowBluetoothUnPairDeviceList: false,
 });
 
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
@@ -77,6 +83,19 @@ const useConnectionGlobalModal = () => {
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
 
     const defaultConnectionMode = useSelector(selectDeviceDefaultConnectionMode);
+
+    const nearbyDevices = useSelector(selectNearbyDevices);
+    const knownDevices = useSelector(selectKnownDevices);
+
+    const notConnectedKnownDevices = knownDevices.filter(device => device.connected === false);
+
+    // special state when user is prompted to unpair the device and then pair again
+    // if he has any known device but no nearby devices were found
+    const shouldShowBluetoothUnPairDeviceList =
+        nearbyDevices.length === 0 &&
+        notConnectedKnownDevices.length >= knownDevices.length &&
+        knownDevices.length > 0 &&
+        shouldPairAgain;
 
     const bluetoothMode =
         defaultConnectionMode === 'bluetooth' && isBluetoothEnabled && isDesktop();
@@ -106,7 +125,6 @@ const useConnectionGlobalModal = () => {
 
     const lastUpdatedBoundaryTimestamp = Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
 
-    // TODO get back to this and refactor this so it makes more sense
     const devices = allDevices.filter(it => {
         const isDeviceUnresponsiveForTooLong =
             it.lastUpdatedTimestamp < lastUpdatedBoundaryTimestamp;
@@ -195,17 +213,6 @@ const useConnectionGlobalModal = () => {
         }
     };
 
-    // TODO dump the state
-    console.log('state here');
-    console.log({
-        shouldPairAgain,
-        showHints,
-        bluetoothMode,
-        devices,
-        selectedDevice,
-        allDevices,
-    });
-
     return {
         shouldPairAgain,
         showHints,
@@ -223,6 +230,8 @@ const useConnectionGlobalModal = () => {
         openShowRemoveFromOsBluetooth,
         closeShowRemoveFromOsBluetooth,
         showRemoveFromOsBluetooth,
+        notConnectedKnownDevices,
+        shouldShowBluetoothUnPairDeviceList,
     };
 };
 
