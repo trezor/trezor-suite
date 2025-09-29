@@ -1,4 +1,3 @@
-import { selectNearbyDevices } from '@suite-common/bluetooth';
 import { Modal } from '@trezor/components';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
@@ -9,7 +8,6 @@ import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/Bluetoot
 import { useSelector } from 'src/hooks/suite';
 
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
-import { UnpairBluetoothDeviceFromOsModal } from '../suite/bluetooth/UnpairBluetoothDeviceFromOsModal';
 
 type BluetoothConnectionModalProps = {
     onClose: () => void;
@@ -18,21 +16,9 @@ type BluetoothConnectionModalProps = {
 const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
 export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalProps) => {
-    const {
-        handlePairingCancel,
-        onReScanClick,
-        onConnect,
-        devices,
-        selectedDevice,
-        showRemoveFromOsBluetooth,
-        closeShowRemoveFromOsBluetooth,
-    } = useConnectionGlobalModalContext();
+    const { handlePairingCancel, onReScanClick, onConnect, devices, selectedDevice } =
+        useConnectionGlobalModalContext();
     const connectingDevices = useSelector(selectConnectingDevices);
-    const nearbyDevices = useSelector(selectNearbyDevices);
-
-    if (showRemoveFromOsBluetooth) {
-        return <UnpairBluetoothDeviceFromOsModal onFinish={closeShowRemoveFromOsBluetooth} />;
-    }
 
     if (
         selectedDevice !== undefined &&
@@ -71,25 +57,18 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
         );
     }
 
-    // show result of scanning and let user connect
-    if (devices.length > 0 && !selectedDevice && nearbyDevices && nearbyDevices.length > 0) {
-        return (
-            <Modal
-                onCancel={onClose}
-                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
-                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
-                size="small"
-            >
-                is it this for fuck sake?
-                <BluetoothScanningList
-                    devices={devices}
-                    onConnect={onConnect}
-                    onReScanClick={onReScanClick}
-                />
-            </Modal>
-        );
-    }
-    console.log('hello?');
-
-    return null;
+    return (
+        <Modal
+            onCancel={onClose}
+            heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
+            description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
+            size="small"
+        >
+            <BluetoothScanningList
+                devices={devices}
+                onConnect={onConnect}
+                onReScanClick={onReScanClick}
+            />
+        </Modal>
+    );
 };

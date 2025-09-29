@@ -18,6 +18,7 @@ import { CantSeeTrezorModal } from './CantSeeTrezorModal';
 import { CableConnectionAnimation } from './DeviceConnectionAnimation';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
 import { BluetoothDeviceList } from '../suite/bluetooth/BluetoothDeviceList';
+import { UnpairBluetoothDeviceFromOsModal } from '../suite/bluetooth/UnpairBluetoothDeviceFromOsModal';
 
 type DontSeeTrezorPillProps = {
     onClick: () => void;
@@ -66,15 +67,15 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     const {
         toggleBluetoothMode,
         toggleShowHints,
-        devices,
-        bluetoothMode,
+        isBluetoothMode,
         showHints,
-        shouldPairAgain,
-        handleBluetoothConnectionCancel,
         onConnect,
         openShowRemoveFromOsBluetooth,
         shouldShowBluetoothUnPairDeviceList,
         notConnectedKnownDevices,
+        notConnectedNearbyDevices,
+        showRemoveFromOsBluetooth,
+        closeShowRemoveFromOsBluetooth,
     } = useConnectionGlobalModalContext();
 
     const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
@@ -89,9 +90,9 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return <CantSeeTrezorModal onClose={onCancel} />;
     }
 
-    // handle Bluetooth adapter status cases
+    // handle Bluetooth adapter non ideal status cases
     if (
-        bluetoothMode &&
+        isBluetoothMode &&
         (bluetoothAdapterStatus === 'disabled' ||
             bluetoothAdapterStatus === 'permission-denied' ||
             bluetoothAdapterStatus === 'not-compatible')
@@ -99,11 +100,16 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return <BluetoothAdapterStatusModal onCancel={onCancel} />;
     }
 
-    // no nearby devices found, but we have some known devices, allow user to pair again
-    if (bluetoothMode && shouldShowBluetoothUnPairDeviceList) {
+    // prompt user to remove the device from OS bluetooth settings
+    if (showRemoveFromOsBluetooth) {
+        return <UnpairBluetoothDeviceFromOsModal onFinish={closeShowRemoveFromOsBluetooth} />;
+    }
+
+    // no nearby devices found, but there are known devices that user might troubleshoot, so let him pair again
+    if (isBluetoothMode && shouldShowBluetoothUnPairDeviceList) {
         return (
             <Modal
-                onCancel={handleBluetoothConnectionCancel}
+                onCancel={onCancel}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
                 size="small"
@@ -118,12 +124,13 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         );
     }
 
-    // we found some devices, show the list
-    if ((bluetoothMode && devices.length > 0) || (bluetoothMode && shouldPairAgain)) {
+    // there are nearby devices, show the list and let user connect
+    if (isBluetoothMode && notConnectedNearbyDevices.length > 0) {
         return <BluetoothConnectionModal onClose={onCancel} />;
     }
 
-    if (bluetoothMode) {
+    // scanning for nearby devices
+    if (isBluetoothMode) {
         return (
             <Modal.Backdrop onClick={onCancel}>
                 <DontSeeTrezorPill onClick={toggleShowHints} />
@@ -141,6 +148,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         );
     }
 
+    // waiting for user to connect device via wired connection
     return (
         <Modal.Backdrop onClick={onCancel}>
             <DontSeeTrezorPill onClick={toggleShowHints} />

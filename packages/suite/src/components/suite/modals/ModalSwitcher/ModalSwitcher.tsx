@@ -1,5 +1,5 @@
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
-import { ThpGlobalManager } from 'src/components/connection/thp/ThpGlobalManager';
+import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ForegroundAppModal } from './ForegroundAppModal';
@@ -31,7 +31,7 @@ export const ModalSwitcher = () => {
     return (
         <>
             <WipedBleDeviceNeedsManualOsRemovalModalManager />
-            <ThpGlobalManager />
+            <ThpGlobalModalManager />
             <ConnectionGlobalModalManager />
             <Inner modal={modal} />
         </>
