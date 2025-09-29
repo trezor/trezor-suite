@@ -82,7 +82,8 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
 
     if (methodCallDevice?.state?.staticSessionId) {
         device = deviceList.getDeviceByStaticState(methodCallDevice.state.staticSessionId);
-    } else if (methodCallDevice?.path) {
+    }
+    if (!device && methodCallDevice?.path) {
         device = deviceList.getDeviceByPath(methodCallDevice.path);
     }
 
