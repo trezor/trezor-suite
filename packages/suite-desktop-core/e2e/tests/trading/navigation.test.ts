@@ -23,13 +23,13 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
             // BUY
             await test.step('Buy from dashboard asset card', async () => {
                 await dashboardPage.navigateTo();
-                await dashboardPage.openBuyForm('btc');
+                await dashboardPage.buyButton('btc').click();
                 await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
             await test.step('Buy from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
-                await tradingPage.openBuyForm();
+                await tradingPage.buyButton.click();
                 await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
@@ -45,7 +45,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
 
             await test.step('Buy from empty account', async () => {
                 await walletPage.openAccount({ symbol: 'ltc' });
-                await walletPage.openBuyForm();
+                await walletPage.buyButton.click();
                 await tradingPage.verifyBuyFormOpened(/LTC/);
             });
 
@@ -58,7 +58,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
             // We don't test cases where navigation goes first thru buy form
             await test.step('Sell from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
-                await walletPage.openSellForm();
+                await walletPage.sellButton.click();
                 await tradingPage.verifySellFormOpened(/BTC/);
             });
 
@@ -80,7 +80,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
 
             await test.step('Swap from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
-                await walletPage.openSwapForm();
+                await walletPage.swapButton.click();
                 await tradingPage.verifySwapFormOpened(/BTC/);
             });
 
