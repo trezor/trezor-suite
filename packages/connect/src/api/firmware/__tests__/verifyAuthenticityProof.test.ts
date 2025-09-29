@@ -12,22 +12,23 @@ const CHALLENGE = '29d0be0f3cb191c80d108359c64d22984a77ad8b99433814be31db0b6e9e7
 const CONFIG: DeviceAuthenticityConfig = {
     version: 1,
     T3B1: {
-        rootPubKeys: [
+        rootPubKeysOptiga: [
             '045b5c3fdd01f3602092834209b86df0ca86a9faf25cac35c73bf6237d66eb21eafcec3706f1ccd5eb4cc7f2fa1751213eccb1c78389afba89a5788ff31ee46a5d',
         ],
     },
     T2B1: {
-        rootPubKeys: [
+        rootPubKeysOptiga: [
             '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
         ],
     },
     T3T1: {
-        rootPubKeys: [
+        rootPubKeysOptiga: [
             '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
         ],
     },
     T3W1: {
-        rootPubKeys: ['you shall not pass'], // TODO T3W1
+        rootPubKeysOptiga: ['you shall not pass'], // TODO T3W1
+        rootPubKeysTropic: ['you shall not pass'], // TODO T3W1
     },
 };
 
@@ -68,9 +69,11 @@ describe('firmware/verifyAuthenticityProof', () => {
             config: {
                 ...CONFIG,
                 T2B1: {
-                    rootPubKeys: [],
+                    rootPubKeysOptiga: [],
+                    rootPubKeysTropic: [],
                     debug: {
-                        rootPubKeys: CONFIG.T2B1.rootPubKeys,
+                        rootPubKeysOptiga: CONFIG.T2B1.rootPubKeysOptiga,
+                        rootPubKeysTropic: [],
                     },
                 },
             },
@@ -113,7 +116,7 @@ describe('firmware/verifyAuthenticityProof', () => {
                 ...CONFIG,
                 T2B1: {
                     ...CONFIG.T2B1,
-                    rootPubKeys: [
+                    rootPubKeysOptiga: [
                         // invalid root pub key
                         '0423a5c9ec44dfb96023838d958f6289fa611277ee7af60c3bcb54eff2310546d5ece48b1a507503142b122b53eda53fef3f3d3510f3b7ae2fd5f13614b025ede1',
                     ],

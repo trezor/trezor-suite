@@ -99,7 +99,7 @@ export const verifyAuthenticityProof = async ({
         throw new Error(`Pubkeys for ${deviceModel} not found in config`);
     }
     const { debug } = modelConfig;
-    const { blacklistedCaPubKeys, debug: debugBlacklist } = blacklistConfig;
+    const { blacklistedCaPubKeysOptiga, debug: debugBlacklist } = blacklistConfig;
 
     // 1. parse all x509 certificates received from AuthenticityProof
     const [deviceCert, caCert] = optiga_certificates.map((c, i) => {
@@ -118,8 +118,8 @@ export const verifyAuthenticityProof = async ({
         'hex',
     );
     const rootPubKeys = allowDebugKeys
-        ? modelConfig.rootPubKeys.concat(debug?.rootPubKeys || [])
-        : modelConfig.rootPubKeys;
+        ? modelConfig.rootPubKeysOptiga.concat(debug?.rootPubKeysOptiga || [])
+        : modelConfig.rootPubKeysOptiga;
 
     const isCertSignedByRootPubkey = await Promise.all(
         rootPubKeys.map(rootPubKey =>
@@ -133,7 +133,7 @@ export const verifyAuthenticityProof = async ({
 
     const rootPubKeyIndex = isCertSignedByRootPubkey.findIndex(valid => !!valid);
     const rootPubKey = rootPubKeys[rootPubKeyIndex];
-    const isDebugRootPubKey = debug?.rootPubKeys.includes(rootPubKey);
+    const isDebugRootPubKey = debug?.rootPubKeysOptiga.includes(rootPubKey);
     const caCertValidityFrom = caCert.tbsCertificate.validity.from.getTime();
 
     if (caCertValidityFrom > new Date().getTime()) {
@@ -187,8 +187,8 @@ export const verifyAuthenticityProof = async ({
 
     if (rootPubKey && isDeviceCertValid && isSignatureValid) {
         if (
-            (!isDebugRootPubKey && blacklistedCaPubKeys.includes(caPubKey)) ||
-            (isDebugRootPubKey && debugBlacklist?.blacklistedCaPubKeys.includes(caPubKey))
+            (!isDebugRootPubKey && blacklistedCaPubKeysOptiga.includes(caPubKey)) ||
+            (isDebugRootPubKey && debugBlacklist?.blacklistedCaPubKeysOptiga.includes(caPubKey))
         ) {
             return {
                 valid: false,
