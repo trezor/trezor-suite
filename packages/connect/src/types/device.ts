@@ -1,6 +1,7 @@
 import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpStateSerialized } from '@trezor/protocol';
+import { Descriptor } from '@trezor/transport';
 import { Branded } from '@trezor/type-utils';
 
 import type { FirmwareReleaseConfigInfo } from './firmware';
@@ -105,6 +106,7 @@ export const asDeviceUniquePath = (id: string) => id as DeviceUniquePath;
 type BaseDevice = {
     path: DeviceUniquePath;
     name: string;
+    descriptor: Descriptor;
 };
 
 export type BluetoothDeviceId = string & Branded<'BluetoothDeviceId'>;
