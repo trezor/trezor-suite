@@ -30,7 +30,7 @@ const getAcquiredDevice = async (apiMethods: any = {}) => {
     const device = new Device({
         id: 'ABCD' as any, // any = DeviceUniquePath
         transport,
-        descriptor: { path: '1' as any, type: 1, session: null }, // any = PathPublic
+        descriptor: { path: '1' as any, type: 1, session: null, apiType: 'usb' }, // any = PathPublic
     });
     await device.acquire();
 

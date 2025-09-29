@@ -10,7 +10,8 @@ const debugSession = USE_NODE_BRIDGE ? undefined : null;
 const path = USE_NODE_BRIDGE ? expect.any(String) : '1';
 const product = USE_HW ? 21441 : 0;
 const vendor = USE_HW ? 4617 : 0;
-
+const id = USE_NODE_BRIDGE ? expect.any(String) : undefined;
+const apiType = 'usb' as const;
 const type = USE_NODE_BRIDGE ? expect.toBeOneOf(Object.values(DEVICE_TYPE)) : undefined;
 
 /**
@@ -21,7 +22,7 @@ const type = USE_NODE_BRIDGE ? expect.toBeOneOf(Object.values(DEVICE_TYPE)) : un
  */
 export const pathLength = 1;
 
-export const descriptor = { debug, debugSession, path, product, vendor, type };
+export const descriptor = { debug, debugSession, path, product, vendor, type, id, apiType };
 
 export const errorCase1 =
     !USE_NODE_BRIDGE && !USE_HW

@@ -17,6 +17,7 @@ const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
         ...fixtureDescriptor,
         session: Session('1'),
         ...descriptor,
+        apiType: 'usb' as const,
     };
 
     if (env.USE_NODE_BRIDGE && d.session && !d.sessionOwner) {

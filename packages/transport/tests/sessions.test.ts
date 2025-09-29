@@ -29,7 +29,9 @@ describe('sessions', () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
 
-        await client1.enumerateDone({ descriptors: [{ path: PathInternal('abc'), type: 1 }] });
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('abc'), type: 1, apiType: 'usb' }],
+        });
 
         const acquireIntent = await client1.acquireIntent({
             path: PathPublic('1'),
@@ -54,6 +56,7 @@ describe('sessions', () => {
                         path: '1',
                         session: '1',
                         type: 1,
+                        apiType: 'usb',
                     },
                 ],
             },
@@ -66,7 +69,9 @@ describe('sessions', () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
 
-        await client1.enumerateDone({ descriptors: [{ path: PathInternal('1'), type: 1 }] });
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
+        });
 
         const acquire1 = await client1.acquireIntent({
             path: PathPublic('1'),
@@ -117,7 +122,9 @@ describe('sessions', () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
 
-        await client1.enumerateDone({ descriptors: [{ path: PathInternal('1'), type: 1 }] });
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
+        });
 
         const acquire1Intent = await client1.acquireIntent({
             path: PathPublic('1'),
