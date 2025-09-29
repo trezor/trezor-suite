@@ -5,8 +5,9 @@ import { deviceAuthenticityBlacklist } from '../data/deviceAuthenticityBlacklist
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { deviceAuthenticityConfig } from '../data/deviceAuthenticityConfig';
-import { getRandomChallenge, verifyAuthenticityProof } from './firmware/verifyAuthenticityProof';
+import { verifyAuthenticityProof } from './firmware/verifyAuthenticityProof';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
+import { getRandomChallenge } from './firmware/verifyAuthenticity/utils';
 
 export default class AuthenticateDevice extends AbstractMethod<
     'authenticateDevice',
@@ -42,15 +43,34 @@ export default class AuthenticateDevice extends AbstractMethod<
 
         const config = this.params.config || deviceAuthenticityConfig;
         const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklist;
-        const valid = await verifyAuthenticityProof({
-            ...message,
+        const commonParams = {
             challenge,
+            deviceModel: this.device.features.internal_model,
+            allowDebugKeys: this.params.allowDebugKeys,
             config,
             blacklistConfig,
-            allowDebugKeys: this.params.allowDebugKeys,
-            deviceModel: this.device.features.internal_model,
+        } as const;
+
+        // when this method is called, optiga is currently always expected to be there
+        const optigaResult = await verifyAuthenticityProof({
+            ...commonParams,
+            certificates: message.optiga_certificates,
+            signature: message.optiga_signature,
         });
 
-        return valid;
+        // Tropic check is still is optional = not enforced
+        // TODO make it compulsory for T3W1 which is expected to have it https://github.com/trezor/trezor-suite/issues/22448
+        const { tropic_signature } = message;
+        const isTropicAvailable =
+            tropic_signature !== undefined && message.tropic_certificates.length > 0;
+        const tropicResult = isTropicAvailable
+            ? await verifyAuthenticityProof({
+                  ...commonParams,
+                  certificates: message.tropic_certificates,
+                  signature: tropic_signature,
+              })
+            : null;
+
+        return { optigaResult, tropicResult };
     }
 }

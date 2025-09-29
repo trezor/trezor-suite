@@ -127,17 +127,31 @@ const sentryMiddleware =
                 break;
             }
             case deviceAuthenticityActions.result.type: {
-                if (!action.payload.result?.error) return;
+                const { result } = action.payload;
+                if (!result) return;
 
-                withSentryScope(scope => {
-                    scope.setLevel('error');
-                    scope.setTag('deviceAuthenticityError', action.payload.result?.error);
-                    captureSentryMessage(
-                        `Device authenticity invalid!
-                        ${JSON.stringify(action.payload.result, null, 2)}`,
-                        scope,
-                    );
-                });
+                const reportToSentry = (error: string) => {
+                    withSentryScope(scope => {
+                        scope.setLevel('error');
+                        scope.setTag('deviceAuthenticityError', error);
+                        captureSentryMessage(
+                            `Device authenticity invalid! ${JSON.stringify(result, null, 2)}`,
+                            scope,
+                        );
+                    });
+                };
+
+                // report error from the TrezorConnect call itself
+                if ('error' in result) {
+                    reportToSentry(result.error);
+                }
+                // report errors from either one of the secure elements (or both)
+                if ('optigaResult' in result && result.optigaResult.error) {
+                    reportToSentry(result.optigaResult.error);
+                }
+                if ('tropicResult' in result && result.tropicResult?.error) {
+                    reportToSentry(result.tropicResult.error);
+                }
                 break;
             }
             default:

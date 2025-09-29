@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { isRejected } from '@reduxjs/toolkit';
+
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Icon, IconName, List, Modal, Paragraph } from '@trezor/components';
@@ -26,11 +28,11 @@ export const AuthenticateDeviceModal = () => {
 
         const result = await dispatch(
             checkDeviceAuthenticityThunk({ allowDebugKeys: isDebugModeActive }),
-        ).unwrap();
+        );
 
         setIsLoading(false);
 
-        if (result?.valid === false) {
+        if (isRejected(result)) {
             dispatch(openModal({ type: 'authenticate-device-fail' }));
         }
     };

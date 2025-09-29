@@ -14,7 +14,12 @@ interface Asn1 {
     raw: Uint8Array; // original byte array
 }
 
-type Oid = `${number}.${number}.${number}.${number}`;
+type Oid =
+    | `${number}.${number}.${number}.${number}`
+    | `${number}.${number}.${number}.${number}.${number}.${number}`;
+
+// algorithms supported by Suite to verify certificates and signatures
+export type AlgorithmName = 'P-256' | 'Ed25519' | 'unknown';
 
 type Extension =
     | {
@@ -32,6 +37,13 @@ type Extension =
           key: Oid;
           critical?: boolean;
       });
+
+const parseOidToAlgorithmName = (oid: Oid): AlgorithmName => {
+    if (oid === '1.2.840.10045.4.3.2') return 'P-256'; // https://oid-base.com/get/1.2.840.10045.4.3.2
+    if (oid === '1.3.101.112') return 'Ed25519'; // https://oid-base.com/get/1.3.101.112
+
+    return 'unknown';
+};
 
 const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
     let position = 0;
@@ -209,11 +221,13 @@ const parseAlgorithmIdentifier = (asn1: Asn1) => {
     if (encodedAlgorithm.cls !== 0 || encodedAlgorithm.tag !== 6 || encodedAlgorithm.structured) {
         throw new Error('Bad algorithm identifier. Does not begin with an OBJECT IDENTIFIER.');
     }
-    const algorithm = derObjectIdentifierValue(encodedAlgorithm.contents);
+    const algorithmOid = derObjectIdentifierValue(encodedAlgorithm.contents);
+    const algorithmName = parseOidToAlgorithmName(algorithmOid);
 
     return {
         asn1,
-        algorithm,
+        algorithmOid,
+        algorithmName,
         parameters: pieces.length === 2 ? { asn1: pieces[1] } : null,
     };
 };

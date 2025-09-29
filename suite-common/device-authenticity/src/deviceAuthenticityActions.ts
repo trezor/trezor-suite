@@ -1,15 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { AuthenticateDeviceResult } from '@trezor/connect';
+
+import { StoredAuthenticateDeviceResult } from './types';
 
 export const ACTION_PREFIX = '@device-authenticity';
-
-export type StoredAuthenticateDeviceResult =
-    | (Omit<Partial<AuthenticateDeviceResult>, 'error'> & {
-          error?: string;
-      })
-    | undefined;
 
 const result = createAction(
     `${ACTION_PREFIX}/result`,

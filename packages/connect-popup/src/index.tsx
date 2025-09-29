@@ -204,7 +204,7 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
                     type: 'error',
                     code,
                     detail: 'response-event-error',
-                    message: ('error' in data.payload && data.payload.error) || 'Unknown error',
+                    message: 'error' in data.payload ? String(data.payload.error) : 'Unknown error',
                 });
                 analytics.report({
                     type: EventType.ViewChangeError,
