@@ -43,7 +43,7 @@ test.describe(
             await trezorUserEnvLink.inputEmu('12');
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
-            await expect(page.getByTestId('@onboarding/pin/continue-button')).toBeVisible();
+            await expect(page.getByTestId('@onboarding/coins/continue-button')).toBeVisible();
         });
     },
 );

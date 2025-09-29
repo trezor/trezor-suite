@@ -64,8 +64,6 @@ test.describe(
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await trezorUserEnvLink.pressYes();
-
-                await onboardingPage.pin.continueButton.click();
             },
         );
     },
