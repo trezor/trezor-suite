@@ -45,7 +45,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
 
             await test.step('Buy from empty account', async () => {
                 await walletPage.openAccount({ symbol: 'ltc' });
-                await page.getByTestId('@accounts/empty-account/buy').click();
+                await walletPage.openBuyForm();
                 await tradingPage.verifyBuyFormOpened(/LTC/);
             });
 
