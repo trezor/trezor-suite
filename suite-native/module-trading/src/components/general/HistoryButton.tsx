@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pressable } from 'react-native';
 import { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -42,18 +43,9 @@ const buttonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-export const HistoryButton = ({ isFormMountedRecently }: HistoryButtonProps) => {
+const HistoryButtonMemoized = memo(({ isFormMountedRecently }: HistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
-
     const navigation = useNavigation<NavigationProps>();
-
-    const { totalTrades } = useWatchAllTrades();
-
-    const shouldHideButton = useSelector(selectIsAmountInputActive);
-
-    if (totalTrades === 0 || shouldHideButton) {
-        return null;
-    }
 
     const handleOnPress = () => navigation.navigate(TradingStackRoutes.TradingHistory);
 
@@ -73,4 +65,15 @@ export const HistoryButton = ({ isFormMountedRecently }: HistoryButtonProps) => 
             </Pressable>
         </AnimatedBox>
     );
+});
+
+export const HistoryButton = (props: HistoryButtonProps) => {
+    const { totalTrades } = useWatchAllTrades();
+    const shouldHideButton = useSelector(selectIsAmountInputActive);
+
+    if (totalTrades === 0 || shouldHideButton) {
+        return null;
+    }
+
+    return <HistoryButtonMemoized {...props} />;
 };
