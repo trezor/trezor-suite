@@ -58,7 +58,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
             // We don't test cases where navigation goes first thru buy form
             await test.step('Sell from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
-                await page.getByTestId('@trading/menu/wallet-trading-sell').click();
+                await walletPage.openSellForm();
                 await tradingPage.verifySellFormOpened(/BTC/);
             });
 

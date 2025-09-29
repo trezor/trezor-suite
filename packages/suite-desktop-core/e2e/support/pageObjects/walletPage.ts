@@ -49,6 +49,7 @@ export class WalletPage {
     readonly addAccountButton: Locator;
     readonly copyToCliboardToast: Locator;
     readonly emptyAccBuyButton: Locator;
+    readonly tradingSellButton: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -86,6 +87,7 @@ export class WalletPage {
         this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
         this.emptyAccBuyButton = this.page.getByTestId('@accounts/empty-account/buy');
+        this.tradingSellButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
     }
 
     accountButton = ({
@@ -115,6 +117,11 @@ export class WalletPage {
     @step()
     async openBuyForm() {
         await this.emptyAccBuyButton.click();
+    }
+
+    @step()
+    async openSellForm() {
+        await this.tradingSellButton.click();
     }
 
     @step()
