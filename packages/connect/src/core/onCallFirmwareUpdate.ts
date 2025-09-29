@@ -121,6 +121,7 @@ const waitForReconnectedDevice = async (
                 postMessage(
                     createUiMessage(UI.REQUEST_CONFIRMATION, {
                         view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+                        device: device.toMessageObject(),
                     }),
                 );
                 const uiResp = await uiPromise.promise;

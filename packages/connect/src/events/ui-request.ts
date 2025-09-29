@@ -203,6 +203,7 @@ export interface UiRequestPermission {
 export interface UiRequestConfirmation {
     type: typeof UI_REQUEST.REQUEST_CONFIRMATION;
     payload: {
+        device: Device;
         view:
             | 'thp-pairing-start'
             | 'thp-pairing-failed'
