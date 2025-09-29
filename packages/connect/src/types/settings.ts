@@ -22,7 +22,10 @@ export type Proxy = BlockchainSettings['proxy'];
 export type LocalFirmwares = { firmwareDir: string; firmwareList: string[] };
 
 // omit transports which are not implemented in @trezor/connect
-type KnownTransport = Exclude<Transport['name'], 'NativeUsbTransport' | 'BluetoothTransport'>;
+type KnownTransport = Exclude<
+    Transport['name'],
+    'NativeUsbTransport' | 'BluetoothTransport' | 'NativeBluetoothTransport'
+>;
 export type ThpSettings = {
     hostName?: string; // displayed on Trezor during pairing process.
     appName?: string; // displayed on Trezor during pairing process. fallbacks to Manifest['appName']

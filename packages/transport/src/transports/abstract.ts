@@ -97,7 +97,8 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         | 'WebUsbTransport'
         | 'UdpTransport'
         | 'NativeUsbTransport' // implementation in @trezor/transport-native
-        | 'BluetoothTransport'; // implementation in @trezor/transport-bluetooth
+        | 'BluetoothTransport' // implementation in @trezor/transport-bluetooth
+        | 'NativeBluetoothTransport'; // implementation in @trezor/transport-native-bluetooth
 
     public abstract readonly apiType: TransportApiType;
     /**
