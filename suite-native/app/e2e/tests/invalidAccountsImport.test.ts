@@ -5,7 +5,7 @@ import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { appIsFullyLoaded, openApp, restartApp } from '../utils';
+import { appIsFullyLoaded, openApp, preparePreloadedReduxState, restartApp } from '../utils';
 
 const goToBtcImportXpubScreen = async () => {
     await onTabBar.navigateToMyAssets();
@@ -15,7 +15,12 @@ const goToBtcImportXpubScreen = async () => {
 
 describe('Import invalid accounts', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompletedState } });
+        await openApp({
+            newInstance: true,
+            args: {
+                preloadedState: preparePreloadedReduxState(onboardingCompletedState),
+            },
+        });
     });
 
     beforeEach(async () => {

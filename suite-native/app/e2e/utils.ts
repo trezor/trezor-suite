@@ -8,11 +8,7 @@ import { mergeDeepObject } from '@trezor/utils';
 
 const platform = device.getPlatform();
 
-type LaunchArgumentsWithPreloadedState = Omit<LaunchArguments, 'preloadedState'> & {
-    preloadedState?: PreloadedState;
-};
-
-const INITIAL_LAUNCH_ARGS: LaunchArgumentsWithPreloadedState = {
+const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
     // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
     detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*"\\)',
@@ -44,7 +40,7 @@ const openExpoDevClientApp = async ({
     launchArgs,
 }: {
     newInstance: boolean;
-    launchArgs: LaunchArgumentsWithPreloadedState;
+    launchArgs: LaunchArguments;
 }) => {
     const deepLinkUrl = getExpoDeepLinkUrl();
 
@@ -81,7 +77,7 @@ export const openApp = async ({
     args = {},
 }: {
     newInstance: boolean;
-    args?: LaunchArgumentsWithPreloadedState;
+    args?: LaunchArguments;
 }) => {
     const launchArgs = {
         ...INITIAL_LAUNCH_ARGS,
@@ -99,7 +95,7 @@ export const openApp = async ({
 };
 
 type RestartAppProps = {
-    args?: LaunchArgumentsWithPreloadedState;
+    args?: LaunchArguments;
 };
 
 export const restartApp = async ({ args = {} }: RestartAppProps = {}) => {
@@ -121,7 +117,7 @@ export const scrollUntilVisible = async (
 ) => {
     try {
         // Try to confirm that the element is visible without scrolling.
-        await detoxExpect(target).toBeVisible(100);
+        await detoxExpect(target).toBeVisible();
     } catch {
         // If the element is not visible, then use the scroll to find it.
         await waitFor(target)
@@ -206,8 +202,11 @@ export const waitForElementByIdToBeVisible = (testId: string, timeout = 30000) =
  * Merges multiple preloaded state fragments into a single preloaded state. Be mindful about the
  * order of the fragments, as the later fragments will always override the earlier ones!
  */
-export const mergePreloadedReduxState = (...stateFragments: PreloadedState[]): PreloadedState => {
+export const mergeAndSerializePreloadedReduxState = (
+    ...stateFragments: PreloadedState[]
+): string => {
     const definedFragments = stateFragments.filter(fragment => fragment !== undefined);
+    const mergedState = mergeDeepObject(...definedFragments);
 
-    return mergeDeepObject(...definedFragments);
+    return JSON.stringify(mergedState);
 };

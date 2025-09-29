@@ -14,8 +14,8 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
-    mergePreloadedReduxState,
     openApp,
+    preparePreloadedReduxState,
     prepareTrezorEmulator,
     restartApp,
 } from '../utils';
@@ -64,7 +64,7 @@ const signTransactionAndSendIt = async () => {
     await onSendOutputsReview.clickSendTransaction();
 };
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
     regtestDiscoveryFinishedStateT3T1,
 );

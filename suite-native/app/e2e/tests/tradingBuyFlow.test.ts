@@ -3,9 +3,9 @@ import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtc
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/tradingHistoryActions';
-import { appIsFullyLoaded, mergePreloadedReduxState, openApp, restartApp } from '../utils';
+import { appIsFullyLoaded, openApp, preparePreloadedReduxState, restartApp } from '../utils';
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedState = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
     onboardingCompletedState,
 );

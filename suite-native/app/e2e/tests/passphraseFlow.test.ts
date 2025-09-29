@@ -10,8 +10,8 @@ import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
-    mergePreloadedReduxState,
     openApp,
+    preparePreloadedReduxState,
     prepareTrezorEmulator,
     restartApp,
     wait,
@@ -55,7 +55,7 @@ const expectNonEmptyWallet = async () => {
     jestExpect(text).toMatch(/[0-9.]+ BTC REGTEST/);
 };
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
     regtestDiscoveryFinishedStateT3T1,
 );

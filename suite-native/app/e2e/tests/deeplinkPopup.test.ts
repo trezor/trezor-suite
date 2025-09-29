@@ -12,8 +12,8 @@ import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
-    mergePreloadedReduxState,
     openApp,
+    preparePreloadedReduxState,
     prepareTrezorEmulator,
     restartApp,
 } from '../utils';
@@ -38,7 +38,7 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
     });
 };
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
     btcDiscoveryFinishedState,
     deviceAutoEjectState,

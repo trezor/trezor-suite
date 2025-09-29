@@ -11,7 +11,7 @@ export type LaunchArguments = {
     isTradingSellEnabled?: boolean;
     isDeviceConnectEnabled?: boolean;
     areDebugOnlyNetworksEnabled?: boolean;
-    preloadedState?: Record<string, unknown>;
+    preloadedState?: string; // stringified object
     isFirmwareUpdateEnabled?: boolean;
     isLocalizationEnabled?: boolean;
     isLocalFirstStorageEnabled?: boolean;

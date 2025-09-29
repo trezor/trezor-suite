@@ -10,14 +10,14 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
-    mergePreloadedReduxState,
     openApp,
+    preparePreloadedReduxState,
     prepareTrezorEmulator,
     restartApp,
     wipeAppData,
 } from '../utils';
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
     regtestDiscoveryFinishedStateT3T1,
 );

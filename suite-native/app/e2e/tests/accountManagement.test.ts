@@ -9,9 +9,9 @@ import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { appIsFullyLoaded, mergePreloadedReduxState, openApp, wipeAppData } from '../utils';
+import { appIsFullyLoaded, openApp, preparePreloadedReduxState, wipeAppData } from '../utils';
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
     portfolioTrackerBtcAccountState,
 );

@@ -8,8 +8,8 @@ import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import {
     disconnectTrezorUserEnv,
-    mergePreloadedReduxState,
     openApp,
+    preparePreloadedReduxState,
     prepareTrezorEmulator,
     wait,
     wipeAppData,
@@ -40,7 +40,7 @@ const finishOnboardingFlow = async () => {
     await onHome.waitForScreen();
 };
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
     deviceChecksEnabledState,
     btcCoinEnabled,
