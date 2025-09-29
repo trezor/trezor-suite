@@ -3,7 +3,8 @@ import { Static, Type } from '@trezor/schema-utils';
 
 type CertPubKeys = Static<typeof CertPubKeys>;
 const CertPubKeys = Type.Object({
-    rootPubKeys: Type.Array(Type.String()),
+    rootPubKeysOptiga: Type.Array(Type.String()),
+    rootPubKeysTropic: Type.Optional(Type.Array(Type.String())),
 });
 
 type ModelPubKeys = Static<typeof ModelPubKeys>;
