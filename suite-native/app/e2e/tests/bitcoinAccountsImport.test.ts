@@ -3,11 +3,16 @@ import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../utils';
 
 describe('Import Bitcoin network accounts.', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompletedState } });
+        await openApp({
+            newInstance: true,
+            args: {
+                preloadedState: preparePreloadedReduxState(onboardingCompletedState),
+            },
+        });
         await onTabBar.navigateToMyAssets();
     });
 

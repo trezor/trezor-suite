@@ -6,12 +6,22 @@ import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
+import {
+    disconnectTrezorUserEnv,
+    openApp,
+    preparePreloadedReduxState,
+    prepareTrezorEmulator,
+} from '../utils';
 
 conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling', () => {
     beforeAll(async () => {
         await prepareTrezorEmulator();
-        await openApp({ newInstance: true, args: { preloadedState: onboardingCompletedState } });
+        await openApp({
+            newInstance: true,
+            args: {
+                preloadedState: preparePreloadedReduxState(onboardingCompletedState),
+            },
+        });
     });
 
     afterAll(async () => {

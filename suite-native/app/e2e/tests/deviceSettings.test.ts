@@ -11,14 +11,14 @@ import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
-    mergePreloadedReduxState,
     openApp,
+    preparePreloadedReduxState,
     prepareTrezorEmulator,
     restartApp,
     wipeAppData,
 } from '../utils';
 
-const preloadedStateT3T1 = mergePreloadedReduxState(
+const preloadedStateT3T1 = preparePreloadedReduxState(
     onboardingCompletedState,
     regtestDiscoveryFinishedStateT3T1,
 );
@@ -144,7 +144,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 });
 
-const preloadedStateT1B1 = mergePreloadedReduxState(
+const preloadedStateT1B1 = preparePreloadedReduxState(
     onboardingCompletedState,
     regtestDiscoveryFinishedStateT1B1,
 );
