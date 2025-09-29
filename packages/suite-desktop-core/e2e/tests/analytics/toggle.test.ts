@@ -17,6 +17,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         onboardingPage,
         dashboardPage,
         settingsPage,
+        devicePrompt,
     }) => {
         await test.step('Disable analytics in onboarding', async () => {
             await expect(settingsPage.analyticsSwitchInput).toBeChecked();
@@ -42,7 +43,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
 
         await test.step('Finish onboarding', async () => {
             if (model.isModelWithTHP()) {
-                await onboardingPage.allowConnectToTrezor();
+                await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
             }
 
@@ -112,6 +113,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         analyticsSection,
         onboardingPage,
         settingsPage,
+        devicePrompt,
     }) => {
         await test.step('Pass through onboarding with enabled analytics', async () => {
             await expect(settingsPage.analyticsSwitchInput).toBeChecked();
@@ -125,7 +127,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
 
         await test.step('Finish onboarding', async () => {
             if (model.isModelWithTHP()) {
-                await onboardingPage.allowConnectToTrezor();
+                await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
             }
             await onboardingPage.onboardingContinueButton.click();

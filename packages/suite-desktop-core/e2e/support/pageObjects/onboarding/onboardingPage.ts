@@ -93,11 +93,6 @@ export class OnboardingPage {
     }
 
     @step()
-    async allowConnectToTrezor() {
-        await this.devicePrompt.waitForPromptAndConfirm();
-    }
-
-    @step()
     async enterTHPPairingCode() {
         const screenContent = await TrezorUserEnvLinkProxy.getScreenContent();
         const screenContentBody = screenContent.body as string;
@@ -120,7 +115,7 @@ export class OnboardingPage {
         await this.analyticsSection.continueButton.click();
 
         if (this.model.isModelWithTHP()) {
-            await this.allowConnectToTrezor();
+            await this.devicePrompt.allowConnectToTrezor();
             await this.enterTHPPairingCode();
         }
 

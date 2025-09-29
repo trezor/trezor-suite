@@ -2,13 +2,13 @@ import { Page } from '@playwright/test';
 
 import { step } from '../common';
 import { ModelFixture } from '../modelFixture';
-import { OnboardingPage } from './onboarding/onboardingPage';
+import { DevicePrompt } from './devicePrompt';
 
 export class SuiteApp {
     constructor(
         private readonly page: Page,
         private readonly model: ModelFixture,
-        private readonly onboardingPage: OnboardingPage,
+        private readonly devicePrompt: DevicePrompt,
     ) {}
 
     @step()
@@ -19,6 +19,6 @@ export class SuiteApp {
             return;
         }
 
-        await this.onboardingPage.allowConnectToTrezor();
+        await this.devicePrompt.allowConnectToTrezor();
     }
 }

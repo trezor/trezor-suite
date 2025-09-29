@@ -68,8 +68,8 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     analyticsSection: async ({ page }, use) => {
         await use(new AnalyticsSection(page));
     },
-    devicePrompt: async ({ page }, use) => {
-        await use(new DevicePrompt(page));
+    devicePrompt: async ({ page, model }, use) => {
+        await use(new DevicePrompt(page, model));
     },
     recoveryModal: async ({ page }, use) => {
         await use(new RecoveryModal(page));
@@ -111,8 +111,8 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
     },
-    suite: async ({ page, model, onboardingPage }, use) => {
-        await use(new SuiteApp(page, model, onboardingPage));
+    suite: async ({ page, model, devicePrompt }, use) => {
+        await use(new SuiteApp(page, model, devicePrompt));
     },
     model: async ({ emulatorStartConf }, use) => {
         await use(new ModelFixture(emulatorStartConf.model));
