@@ -6,3 +6,8 @@ export type WorkflowContext = {
     method: AbstractMethod<any>;
     signal: AbortSignal;
 };
+
+export type TpnWorkflowContext = {
+    device: Device;
+    message: number[];
+};

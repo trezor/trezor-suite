@@ -6,7 +6,6 @@ import {
     thp as protocolThp,
     v1 as protocolV1,
     v2 as protocolV2,
-    tpn,
 } from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
@@ -64,6 +63,7 @@ import {
     parseRevision,
 } from '../utils/deviceFeaturesUtils';
 import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
+import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
 
 // custom log
 const _log = initLog('Device');
@@ -331,12 +331,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.acquirePromise;
     }
 
-    trezorPushNotificationHandler(message: number[]) {
-        // TODO: now we are just emitting event, other logic will be implemented for some notifications.
-        const decoded: DecodedTrezorPushNotification = tpn.decode(message);
-        this.lifecycle.emit(DEVICE.TREZOR_PUSH_NOTIFICATION, decoded);
-    }
-
     subscribe() {
         if (this._bluetoothProps?.id) {
             this.transport
@@ -363,7 +357,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     if (this._bluetoothProps?.channels?.['trezor-push-notification']) {
                         this.transport.on('trezor-push-notification', ({ id, data }) => {
                             if (id === this._bluetoothProps?.id) {
-                                this.trezorPushNotificationHandler(data);
+                                trezorPushNotificationHandler({ device: this, message: data });
                             }
                         });
                     }
