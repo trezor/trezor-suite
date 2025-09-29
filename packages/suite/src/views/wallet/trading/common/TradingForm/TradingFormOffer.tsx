@@ -339,27 +339,37 @@ export const TradingFormOffer = () => {
                 )}
             </Column>
             <Column gap={spacings.xxs}>
-                <Row justifyContent="space-between">
-                    {showProviderAdjustedAmountTooltip ? (
-                        <Tooltip
-                            hasIcon
-                            placement="right"
-                            content={
+                {context.quotes.length > 1 && (
+                    <Row justifyContent="space-between">
+                        {showProviderAdjustedAmountTooltip ? (
+                            <Tooltip
+                                hasIcon
+                                placement="right"
+                                content={
+                                    <Translation
+                                        id="TR_SELL_PROVIDER_ADJUSTED_AMOUNT"
+                                        values={{
+                                            roundedAmountWithSymbol: (
+                                                <TradingCryptoAmount
+                                                    amount={bestScoredQuoteAmounts.receiveAmount}
+                                                    cryptoId={
+                                                        bestScoredQuoteAmounts.receiveCurrency as CryptoId
+                                                    }
+                                                />
+                                            ),
+                                        }}
+                                    />
+                                }
+                            >
                                 <Translation
-                                    id="TR_SELL_PROVIDER_ADJUSTED_AMOUNT"
-                                    values={{
-                                        roundedAmountWithSymbol: (
-                                            <TradingCryptoAmount
-                                                amount={bestScoredQuoteAmounts.receiveAmount}
-                                                cryptoId={
-                                                    bestScoredQuoteAmounts.receiveCurrency as CryptoId
-                                                }
-                                            />
-                                        ),
-                                    }}
+                                    id={
+                                        preselectedQuote
+                                            ? 'TR_TRADING_YOUR_SELECTED_OFFER'
+                                            : 'TR_TRADING_YOUR_BEST_OFFER'
+                                    }
                                 />
-                            }
-                        >
+                            </Tooltip>
+                        ) : (
                             <Translation
                                 id={
                                     preselectedQuote
@@ -367,27 +377,19 @@ export const TradingFormOffer = () => {
                                         : 'TR_TRADING_YOUR_BEST_OFFER'
                                 }
                             />
-                        </Tooltip>
-                    ) : (
-                        <Translation
-                            id={
-                                preselectedQuote
-                                    ? 'TR_TRADING_YOUR_SELECTED_OFFER'
-                                    : 'TR_TRADING_YOUR_BEST_OFFER'
-                            }
-                        />
-                    )}
-                    <TextButton
-                        onClick={onCompareAllOffersClick}
-                        size="small"
-                        isDisabled={state.isLoadingOrInvalid || isLoading || isQuoteOutdated}
-                        isLoading={isCompareLoading}
-                        data-testid="@trading/form/compare-button"
-                        type="button"
-                    >
-                        <Translation id="TR_TRADING_COMPARE_OFFERS" />
-                    </TextButton>
-                </Row>
+                        )}
+                        <TextButton
+                            onClick={onCompareAllOffersClick}
+                            size="small"
+                            isDisabled={state.isLoadingOrInvalid || isLoading || isQuoteOutdated}
+                            isLoading={isCompareLoading}
+                            data-testid="@trading/form/compare-button"
+                            type="button"
+                        >
+                            <Translation id="TR_TRADING_COMPARE_OFFERS" />
+                        </TextButton>
+                    </Row>
+                )}
                 {isTradingExchangeContext(context) ? (
                     <TradingFormOffersSwitcher
                         context={context}
