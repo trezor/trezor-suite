@@ -18,6 +18,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
         "core-js": "^3.45.1",
         "fake-indexeddb": "^6.2.2",

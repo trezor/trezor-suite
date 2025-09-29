@@ -25,6 +25,7 @@ import {
     asDeviceUniquePath,
 } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { PathPublic } from '@trezor/transport/src/types';
 
 /**
  * Generate wallet account
@@ -165,6 +166,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
 
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
+            descriptor: { path: PathPublic('1'), session: null, type: 1 },
             type: 'unreadable',
             path,
             label: 'Unreadable device',
@@ -176,6 +178,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
 
     if (dev && typeof dev.type === 'string' && dev.type === 'unacquired') {
         return {
+            descriptor: { path: PathPublic('1'), session: null, type: 1 },
             type: dev.type,
             path,
             label: 'Unacquired device',
@@ -189,6 +192,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
     const features = getDeviceFeatures(feat);
 
     return {
+        descriptor: { path: PathPublic('1'), session: null, type: 1 },
         id: features.device_id,
         // @ts-expect-error
         path: '',

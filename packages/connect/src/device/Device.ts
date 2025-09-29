@@ -126,9 +126,8 @@ type DeviceParams = {
 
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
-    public readonly transportPath;
     private thp: protocolThp.ThpState | undefined;
-    private readonly descriptorType;
+    private readonly descriptor: Descriptor;
     private sessionAcquired: Session | null;
 
     // protocol related
@@ -208,11 +207,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private get possibleHIDdevice() {
-        return this.descriptorType === 0 || this.descriptorType === 2;
+        return this.descriptor.type === 0 || this.descriptor.type === 2;
     }
 
     public get possibleT1() {
-        return (this.descriptorType ?? 0) <= 2;
+        return (this.descriptor.type ?? 0) <= 2;
     }
 
     private name = 'Trezor';
@@ -240,8 +239,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // === immutable properties
         this.uniquePath = id;
         this.transport = transport;
-        this.transportPath = descriptor.path;
-        this.descriptorType = descriptor.type;
+        this.descriptor = descriptor;
 
         if (descriptor.id) {
             this._bluetoothProps = {
@@ -253,7 +251,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.sessionAcquired = null;
 
         transport.on(TRANSPORT.STOPPED, this.onTransportStopped);
-        transport.deviceEvents.on(this.transportPath, this.onTransportDeviceEvent);
+        transport.deviceEvents.on(this.descriptor.path, this.onTransportDeviceEvent);
+    }
+
+    get transportPath() {
+        return this.descriptor.path;
     }
 
     private readonly onTransportStopped = () => this.disconnect();
@@ -307,10 +309,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     acquire() {
         const sessionPromise = this.getSessionChangePromise();
-        const previous = this.transport.getDescriptor(this.transportPath)?.session ?? null;
+        const previous = this.transport.getDescriptor(this.descriptor.path)?.session ?? null;
 
         this.acquirePromise = this.transport
-            .acquire({ input: { path: this.transportPath, previous } })
+            .acquire({ input: { path: this.descriptor.path, previous } })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
             .then(result => {
                 if (result.success) {
@@ -376,7 +378,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const sessionPromise = this.getSessionChangePromise();
 
         this.releasePromise = this.transport
-            .release({ session: this.sessionAcquired, path: this.transportPath })
+            .release({ session: this.sessionAcquired, path: this.descriptor.path })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
             .then(result => {
                 if (result.success) {
@@ -1002,7 +1004,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         _log.debug('Disconnect cleanup');
 
         this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
-        this.transport.deviceEvents.off(this.transportPath, this.onTransportDeviceEvent);
+        this.transport.deviceEvents.off(this.descriptor.path, this.onTransportDeviceEvent);
         this.removeAllListeners();
 
         this.sessionDfd?.reject(new Error());
@@ -1049,7 +1051,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     isUsed() {
-        return !!this.transport.getDescriptor(this.transportPath)?.session;
+        return !!this.transport.getDescriptor(this.descriptor.path)?.session;
     }
 
     isUsedHere() {
@@ -1100,8 +1102,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
-        const { name, uniquePath: path } = this;
-        const base = { path, name };
+        const { name, uniquePath: path, descriptor } = this;
+        const base = { path, name, descriptor };
 
         if (this.unreadableError) {
             return {
@@ -1113,7 +1115,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             };
         }
         if (this.isUnacquired()) {
-            const sessionOwner = this.transport.getDescriptor(this.transportPath)?.sessionOwner;
+            const sessionOwner = this.transport.getDescriptor(this.descriptor.path)?.sessionOwner;
 
             return {
                 ...base,
