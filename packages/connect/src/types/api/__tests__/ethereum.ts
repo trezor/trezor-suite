@@ -1,4 +1,4 @@
-import { DeviceUniquePath, TrezorConnect } from '../../..';
+import { TrezorConnect, asDeviceUniquePath } from '../../..';
 
 export const ethereumGetAddress = async (api: TrezorConnect) => {
     // regular
@@ -30,7 +30,7 @@ export const ethereumGetAddress = async (api: TrezorConnect) => {
     // with all possible params
     api.ethereumGetAddress({
         device: {
-            path: DeviceUniquePath('1'),
+            path: asDeviceUniquePath('1'),
             instance: 1,
             state: 'state@device-id:1',
         },

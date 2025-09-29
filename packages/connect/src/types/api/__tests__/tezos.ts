@@ -1,4 +1,4 @@
-import { DeviceUniquePath, TrezorConnect } from '../../..';
+import { TrezorConnect, asDeviceUniquePath } from '../../..';
 
 export const tezosGetAddress = async (api: TrezorConnect) => {
     // regular
@@ -29,7 +29,7 @@ export const tezosGetAddress = async (api: TrezorConnect) => {
     // with all possible params
     api.tezosGetAddress({
         device: {
-            path: DeviceUniquePath('1'),
+            path: asDeviceUniquePath('1'),
             instance: 1,
             state: 'state@device-id:1',
         },

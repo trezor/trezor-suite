@@ -16,7 +16,7 @@ import {
 import { ERRORS } from '../constants';
 import { DEVICE, DecodedTrezorPushNotification, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
-import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
+import { ConnectSettings, DeviceUniquePath, StaticSessionId, asDeviceUniquePath } from '../types';
 import { createTransportList } from './TransportList';
 import { TransportManager } from './TransportManager';
 import { initLog } from '../utils/debug';
@@ -144,7 +144,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private async onDeviceConnected(descriptor: Descriptor, transport: Transport) {
         const id = (this.deviceCounter++).toString(16).slice(-8);
-        const device = new Device({ id: DeviceUniquePath(id), transport, descriptor });
+        const device = new Device({ id: asDeviceUniquePath(id), transport, descriptor });
 
         const penalty = this.authPenaltyManager.get();
         const stillConnected = await this.handshakeLock(() =>

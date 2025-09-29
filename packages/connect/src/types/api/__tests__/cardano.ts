@@ -1,4 +1,4 @@
-import { DeviceUniquePath, PROTO, TrezorConnect } from '../../..';
+import { PROTO, TrezorConnect, asDeviceUniquePath } from '../../..';
 
 const {
     CardanoAddressType,
@@ -122,7 +122,7 @@ export const cardanoGetAddress = async (api: TrezorConnect) => {
     // with all possible params
     api.cardanoGetAddress({
         device: {
-            path: DeviceUniquePath('1'),
+            path: asDeviceUniquePath('1'),
             instance: 1,
             state: 'state@device-id:1',
         },
