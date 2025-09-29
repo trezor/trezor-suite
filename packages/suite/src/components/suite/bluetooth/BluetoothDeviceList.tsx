@@ -1,4 +1,5 @@
 import { Card, Column, Row, SkeletonRectangle } from '@trezor/components';
+import { BluetoothDeviceId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { BluetoothDeviceListItem } from './BluetoothDeviceListItem';
@@ -17,9 +18,9 @@ const SkeletonDevice = () => (
 
 type BluetoothDeviceListProps = {
     deviceList: DesktopBluetoothDevice[];
-    onConnect: (deviceId: string) => Promise<void>;
+    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
     isScanning: boolean;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onPairAgain?: (deviceId: BluetoothDeviceId) => Promise<void>;
 };
 
 export const BluetoothDeviceList = ({

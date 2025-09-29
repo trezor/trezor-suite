@@ -1,11 +1,11 @@
 export type {
     BluetoothManufacturerData,
     BluetoothScanStatus,
+    BluetoothFilterPolicy,
     DeviceBluetoothConnectionStatusType,
 } from './types';
 export type { BluetoothState } from './bluetoothReducer';
 export type { WithBluetoothState } from './bluetoothSelectors';
-export type { BluetoothFilterPolicy } from './types';
 
 export { BLUETOOTH_PREFIX, bluetoothActions } from './bluetoothActions';
 export { prepareInitialState, prepareBluetoothReducerCreator } from './bluetoothReducer';

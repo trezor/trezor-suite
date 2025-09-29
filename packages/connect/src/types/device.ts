@@ -92,8 +92,11 @@ type BaseDevice = {
     name: string;
 };
 
+export type BluetoothDeviceId = string & Branded<'BluetoothDeviceId'>;
+export const asBluetoothDeviceId = (id: string) => id as BluetoothDeviceId;
+
 export type BluetoothDeviceProps = {
-    id: string;
+    id: BluetoothDeviceId;
 };
 
 export type KnownDevice = BaseDevice & {

@@ -18,7 +18,13 @@ import {
     SelectedAccountStatus,
     WalletType,
 } from '@suite-common/wallet-types';
-import { BlockchainBlock, ConnectSettings, Manifest, StaticSessionId } from '@trezor/connect';
+import {
+    BlockchainBlock,
+    BluetoothDeviceId,
+    ConnectSettings,
+    Manifest,
+    StaticSessionId,
+} from '@trezor/connect';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
@@ -42,7 +48,7 @@ export type ExtraDependencies = {
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
-        forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: string }>;
+        forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: BluetoothDeviceId }>;
 
         // This needs to be over `extra` to prevent circular dependency
         subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;

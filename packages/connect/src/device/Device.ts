@@ -41,6 +41,7 @@ import {
     UiResponseWord,
 } from '../events';
 import {
+    BluetoothDeviceId,
     DeviceFirmwareStatus,
     DeviceState,
     DeviceStatus,
@@ -53,6 +54,7 @@ import {
     KnownDevice,
     UnavailableCapabilities,
     VersionArray,
+    asBluetoothDeviceId,
 } from '../types';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
@@ -147,7 +149,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private _bluetoothProps?: {
         channels: Record<OpenDeviceChannel, boolean> | undefined;
-        id: string;
+        id: BluetoothDeviceId;
     };
     public get bluetoothProps() {
         return this._bluetoothProps;
@@ -242,7 +244,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         if (descriptor.id) {
             this._bluetoothProps = {
-                id: descriptor.id,
+                id: asBluetoothDeviceId(descriptor.id),
                 channels: undefined,
             };
         }

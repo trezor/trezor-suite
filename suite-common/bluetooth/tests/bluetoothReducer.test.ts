@@ -3,16 +3,12 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
-import { Device } from '@trezor/connect';
+import { Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
-    BluetoothManufacturerData,
-    bluetoothActions,
-    prepareBluetoothReducerCreator,
-    prepareInitialState,
-} from '../src';
-import { BluetoothDeviceCommon } from '../src/types';
+import { bluetoothActions } from '../src/bluetoothActions';
+import { prepareBluetoothReducerCreator, prepareInitialState } from '../src/bluetoothReducer';
+import { BluetoothDeviceCommon, BluetoothManufacturerData } from '../src/types';
 
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,
@@ -26,7 +22,7 @@ const bluetoothReducer =
 const initialState = prepareInitialState();
 
 const pairingDeviceA: BluetoothDeviceCommon = {
-    id: 'A',
+    id: asBluetoothDeviceId('A'),
     manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
@@ -34,7 +30,7 @@ const pairingDeviceA: BluetoothDeviceCommon = {
 };
 
 const disconnectedDeviceB: BluetoothDeviceCommon = {
-    id: 'B',
+    id: asBluetoothDeviceId('B'),
     manufacturerData,
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,
@@ -42,7 +38,7 @@ const disconnectedDeviceB: BluetoothDeviceCommon = {
 };
 
 const pairingErrorDevice: BluetoothDeviceCommon = {
-    id: 'pairing-error',
+    id: asBluetoothDeviceId('pairing-error'),
     manufacturerData,
     name: 'Trezor Pairing Error',
     lastUpdatedTimestamp: 1,
@@ -103,7 +99,7 @@ describe('bluetoothReducer', () => {
         );
         expect(store.getState().bluetooth.knownDevices).toEqual(knownDeviceToAdd);
 
-        store.dispatch(bluetoothActions.removeKnownDeviceAction({ id: 'A' }));
+        store.dispatch(bluetoothActions.removeKnownDeviceAction({ id: asBluetoothDeviceId('A') }));
 
         expect(store.getState().bluetooth.knownDevices).toEqual([disconnectedDeviceB]);
     });
@@ -118,7 +114,7 @@ describe('bluetoothReducer', () => {
         });
 
         const trezorDevice: Pick<TrezorDevice, 'bluetoothProps'> = {
-            bluetoothProps: { id: 'A' },
+            bluetoothProps: { id: asBluetoothDeviceId('A') },
         };
 
         store.dispatch(deviceActions.deviceDisconnect(trezorDevice as TrezorDevice));
@@ -140,7 +136,7 @@ describe('bluetoothReducer', () => {
         });
 
         const trezorDevice: Pick<Device, 'bluetoothProps'> = {
-            bluetoothProps: { id: 'A' },
+            bluetoothProps: { id: asBluetoothDeviceId('A') },
         };
 
         store.dispatch(

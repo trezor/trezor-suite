@@ -1,3 +1,4 @@
+import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { BluetoothDeviceCommon } from '../types';
@@ -10,7 +11,7 @@ import { BluetoothDeviceCommon } from '../types';
 export const createBluetoothDevice = (
     partialBluetoothDevice?: Partial<BluetoothDeviceCommon>,
 ): BluetoothDeviceCommon => ({
-    id: 'bt-device-1',
+    id: asBluetoothDeviceId('bt-device-1'),
     name: 'Mock Trezor bt-device-1',
     manufacturerData: {
         deviceModel: DeviceModelInternal.T3W1,

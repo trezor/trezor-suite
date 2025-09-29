@@ -1,4 +1,5 @@
 import { BluetoothManufacturerData } from '@suite-common/bluetooth';
+import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
@@ -11,7 +12,7 @@ const manufacturerData: BluetoothManufacturerData = {
 };
 
 const nearbyDeviceA: DesktopBluetoothDevice = {
-    id: 'New-Id-A',
+    id: asBluetoothDeviceId('New-Id-A'),
     manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
@@ -23,7 +24,7 @@ const nearbyDeviceA: DesktopBluetoothDevice = {
 };
 
 const nearbyDeviceC: DesktopBluetoothDevice = {
-    id: 'C',
+    id: asBluetoothDeviceId('C'),
     manufacturerData,
     name: 'Trezor C',
     lastUpdatedTimestamp: 1,
@@ -35,7 +36,7 @@ const nearbyDeviceC: DesktopBluetoothDevice = {
 };
 
 const knownDeviceB: DesktopBluetoothDevice = {
-    id: 'B',
+    id: asBluetoothDeviceId('B'),
     manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
@@ -47,7 +48,7 @@ const knownDeviceB: DesktopBluetoothDevice = {
 };
 
 const knownDeviceA: DesktopBluetoothDevice = {
-    id: 'Original-Id A',
+    id: asBluetoothDeviceId('Original-Id A'),
     manufacturerData,
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,
@@ -69,7 +70,7 @@ describe(remapKnownDevicesForLinuxAndWindows.name, () => {
             macAddress: 'Address-Trezor-A-Staying-Same',
             connected: false,
             manufacturerData,
-            id: 'New-Id-A',
+            id: asBluetoothDeviceId('New-Id-A'),
             lastUpdatedTimestamp: 2,
             connectionStatus: {
                 type: 'pairing',
