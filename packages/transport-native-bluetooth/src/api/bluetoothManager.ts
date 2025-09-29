@@ -6,7 +6,6 @@ import {
     ConnectionOptions,
     Device,
     LogLevel,
-    ScanOptions,
     State,
     Subscription,
 } from 'react-native-ble-plx';
@@ -18,6 +17,7 @@ import type { TimerId } from '@trezor/type-utils';
 
 import {
     BluetoothDevice,
+    DeviceBatteryLevelChangeEvent,
     DeviceConnectionStatusChangeEvent,
     DevicePushNotificationEvent,
 } from './types';
@@ -29,17 +29,30 @@ type BleDeviceWithMetadata = {
     writeCharacteristic: Characteristic;
 };
 
+const TrezorService = {
+    // UUID of the Bluetooth service used to identify a BLE device as Trezor.
+    uuid: '8c000001-a59b-4d58-a9ad-073df69fa1b1',
+    characteristics: {
+        writeUuid: '8c000002-a59b-4d58-a9ad-073df69fa1b1',
+        notifyUuid: '8c000003-a59b-4d58-a9ad-073df69fa1b1',
+        pushUuid: '8c000004-a59b-4d58-a9ad-073df69fa1b1',
+    },
+} as const;
+
+const BatteryService = {
+    // UUID of the standardized Battery service.
+    uuid: '0000180f-0000-1000-8000-00805f9b34fb',
+    characteristics: {
+        batteryLevelUuid: '00002a19-0000-1000-8000-00805f9b34fb',
+    },
+} as const;
+
 const eventNames = {
     nearbyDevicesChange: 'nearbyDevicesChange',
     deviceConnectionStatusChange: 'deviceConnectionStatusChange',
     devicePushNotification: 'devicePushNotification',
+    deviceBatteryLevelChange: 'deviceBatteryLevelChange',
 } as const;
-
-// UUID of the Bluetooth service used to identify a BLE device as Trezor.
-const SERVICE_UUID = '8c000001-a59b-4d58-a9ad-073df69fa1b1';
-const WRITE_CHARACTERISTIC_UUID = '8c000002-a59b-4d58-a9ad-073df69fa1b1';
-const NOTIFY_CHARACTERISTIC_UUID = '8c000003-a59b-4d58-a9ad-073df69fa1b1';
-const PUSH_CHARACTERISTIC_UUID = '8c000004-a59b-4d58-a9ad-073df69fa1b1';
 
 const DEBUG_LOGS = false;
 
@@ -98,6 +111,10 @@ class BluetoothManager {
         listener: (event: DevicePushNotificationEvent) => void,
     ): Subscription => this.subscribeTo(eventNames.devicePushNotification, listener);
 
+    public onDeviceBatteryLevelChange = (
+        listener: (event: DeviceBatteryLevelChangeEvent) => void,
+    ): Subscription => this.subscribeTo(eventNames.deviceBatteryLevelChange, listener);
+
     private subscribeTo = (eventName: keyof typeof eventNames, listener: (arg: any) => void) => {
         this.eventEmitter.on(eventName, listener);
 
@@ -133,35 +150,42 @@ class BluetoothManager {
         this.eventEmitter.emit(eventNames.devicePushNotification, event);
     };
 
+    private emitDeviceBatteryLevelChange = (event: DeviceBatteryLevelChangeEvent) => {
+        this.eventEmitter.emit(eventNames.deviceBatteryLevelChange, event);
+    };
+
     public startDeviceScan = (errorHandler?: (error: BleError) => void) => {
-        const options: ScanOptions = {
-            allowDuplicates: true, // ensures we get frequent scan updates even on iOS
-        };
-        this.getBleManager().startDeviceScan([SERVICE_UUID], options, (error, scannedDevice) => {
-            if (error) {
-                errorLog('Scan error', error);
-                this.stopStaleNearbyDevicesRemoval();
-                errorHandler?.(error);
-            }
-            if (scannedDevice) {
-                debugLog(`Scanned device ${scannedDevice}`);
-                const nearbyDevice = toBluetoothDevice(scannedDevice);
-                const nearbyDeviceIndex = this.nearbyDevices.findIndex(
-                    d => d.id === nearbyDevice.id,
-                );
-                if (nearbyDeviceIndex >= 0) {
-                    const oldNearbyDevice = this.nearbyDevices[nearbyDeviceIndex];
-                    nearbyDevice.connectionStatus = oldNearbyDevice.connectionStatus;
-                    this.nearbyDevices[nearbyDeviceIndex] = nearbyDevice;
-                    if (nearbyDevice.manufacturerData[0] !== oldNearbyDevice.manufacturerData[0]) {
+        this.getBleManager().startDeviceScan(
+            [TrezorService.uuid],
+            { allowDuplicates: true }, // ensures we get frequent scan updates even on iOS
+            (error, scannedDevice) => {
+                if (error) {
+                    errorLog('Scan error', error);
+                    this.stopStaleNearbyDevicesRemoval();
+                    errorHandler?.(error);
+                }
+                if (scannedDevice) {
+                    debugLog(`Scanned device ${scannedDevice}`);
+                    const nearbyDevice = toBluetoothDevice(scannedDevice);
+                    const nearbyDeviceIndex = this.nearbyDevices.findIndex(
+                        d => d.id === nearbyDevice.id,
+                    );
+                    if (nearbyDeviceIndex >= 0) {
+                        const oldNearbyDevice = this.nearbyDevices[nearbyDeviceIndex];
+                        nearbyDevice.connectionStatus = oldNearbyDevice.connectionStatus;
+                        this.nearbyDevices[nearbyDeviceIndex] = nearbyDevice;
+                        if (
+                            nearbyDevice.manufacturerData[0] !== oldNearbyDevice.manufacturerData[0]
+                        ) {
+                            this.emitNearbyDevicesChange();
+                        }
+                    } else {
+                        this.nearbyDevices.unshift(nearbyDevice);
                         this.emitNearbyDevicesChange();
                     }
-                } else {
-                    this.nearbyDevices.unshift(nearbyDevice);
-                    this.emitNearbyDevicesChange();
                 }
-            }
-        });
+            },
+        );
         this.startStaleNearbyDevicesRemoval();
     };
 
@@ -231,7 +255,9 @@ class BluetoothManager {
         if (!device) {
             // Get a list of the peripherals currently connected to the system which have discovered
             // services. Connected to system doesn't mean connected to our app, we check that below.
-            const connectedDevices = await this.getBleManager().connectedDevices([SERVICE_UUID]);
+            const connectedDevices = await this.getBleManager().connectedDevices([
+                TrezorService.uuid,
+            ]);
             const matchingConnectedDevices = connectedDevices.filter(d => d.id === deviceId);
             debugLog(`Found ${matchingConnectedDevices.length} already connected device(s)`);
             [device] = matchingConnectedDevices;
@@ -314,23 +340,30 @@ class BluetoothManager {
     private discoverAndTestCharacteristics = async (device: Device) => {
         await device.discoverAllServicesAndCharacteristics();
 
-        const characteristics = await device.characteristicsForService(SERVICE_UUID);
+        const trezorCharacteristics = await device.characteristicsForService(TrezorService.uuid);
+        const batteryCharacteristics = await device.characteristicsForService(BatteryService.uuid);
 
         let writeCharacteristic: Characteristic | undefined;
         let notifyCharacteristic: Characteristic | undefined;
         let pushCharacteristic: Characteristic | undefined;
-        for (const characteristic of characteristics) {
-            if (characteristic.uuid === WRITE_CHARACTERISTIC_UUID) {
+        let batteryCharacteristic: Characteristic | undefined;
+
+        for (const characteristic of trezorCharacteristics) {
+            if (characteristic.uuid === TrezorService.characteristics.writeUuid) {
                 debugLog('Found write characteristic', characteristic.uuid);
                 writeCharacteristic = characteristic;
-            } else if (characteristic.uuid === NOTIFY_CHARACTERISTIC_UUID) {
+            } else if (characteristic.uuid === TrezorService.characteristics.notifyUuid) {
                 debugLog('Found notify characteristic', characteristic.uuid);
                 notifyCharacteristic = characteristic;
-            } else if (characteristic.uuid === PUSH_CHARACTERISTIC_UUID) {
+            } else if (characteristic.uuid === TrezorService.characteristics.pushUuid) {
                 debugLog('Found push characteristic', characteristic.uuid);
                 pushCharacteristic = characteristic;
-            } else {
-                debugLog('Found other unknown characteristic', characteristic.uuid);
+            }
+        }
+        for (const characteristic of batteryCharacteristics) {
+            if (characteristic.uuid === BatteryService.characteristics.batteryLevelUuid) {
+                debugLog('Found battery characteristic', characteristic.uuid);
+                batteryCharacteristic = characteristic;
             }
         }
 
@@ -342,6 +375,9 @@ class BluetoothManager {
         }
         if (!pushCharacteristic) {
             throw new Error('Push characteristic not found.');
+        }
+        if (!batteryCharacteristic) {
+            throw new Error('Battery characteristic not found.');
         }
 
         try {
@@ -363,6 +399,12 @@ class BluetoothManager {
         });
         this.monitorCharacteristic(pushCharacteristic, 'push', (value: string) => {
             this.emitDevicePushNotification({
+                deviceId: device.id,
+                data: base64ToByteArray(value),
+            });
+        });
+        this.monitorCharacteristic(batteryCharacteristic, 'battery', (value: string) => {
+            this.emitDeviceBatteryLevelChange({
                 deviceId: device.id,
                 data: base64ToByteArray(value),
             });
@@ -398,7 +440,7 @@ class BluetoothManager {
 
     private monitorCharacteristic = (
         characteristicToMonitor: Characteristic,
-        name: 'notify' | 'push',
+        name: 'notify' | 'push' | 'battery',
         callback: (value: string) => void,
     ) =>
         characteristicToMonitor.monitor((error, characteristic) => {

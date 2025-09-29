@@ -21,6 +21,7 @@ export class BluetoothApi extends AbstractApi {
 
     private subscriptions: Subscription[];
     private pushNotificationSubscribedDevices = new Set<string>();
+    private batteryLevelChangeSubscribedDevices = new Set<string>();
 
     constructor(params: AbstractApiConstructorParams) {
         super(params);
@@ -33,6 +34,12 @@ export class BluetoothApi extends AbstractApi {
                 this.logger?.debug('onDevicePushNotificationEvent', { deviceId, data });
                 if (this.pushNotificationSubscribedDevices.has(deviceId)) {
                     this.emit('trezor-push-notification', { id: deviceId, data });
+                }
+            }),
+            bluetoothManager.onDeviceBatteryLevelChange(({ deviceId, data }) => {
+                this.logger?.debug('onDeviceBatteryLevelChange', { deviceId, data });
+                if (this.batteryLevelChangeSubscribedDevices.has(deviceId)) {
+                    this.emit('battery-level', { id: deviceId, data });
                 }
             }),
         ];
@@ -123,6 +130,8 @@ export class BluetoothApi extends AbstractApi {
 
         if (options?.channel === 'trezor-push-notification') {
             this.pushNotificationSubscribedDevices.add(path);
+        } else if (options?.channel === 'battery-level') {
+            this.batteryLevelChangeSubscribedDevices.add(path);
         }
 
         // BT does not need to be opened, it is opened when connected
@@ -136,6 +145,8 @@ export class BluetoothApi extends AbstractApi {
             bluetoothManager.cancelRead(path);
         } else if (options?.channel === 'trezor-push-notification') {
             this.pushNotificationSubscribedDevices.delete(path);
+        } else if (options?.channel === 'battery-level') {
+            this.batteryLevelChangeSubscribedDevices.delete(path);
         }
 
         return this.success(undefined);
