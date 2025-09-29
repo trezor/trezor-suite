@@ -1,5 +1,4 @@
 import { selectThpStep } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
@@ -21,30 +20,34 @@ type ConnectionGlobalModalProps = {
 export const ConnectionGlobalModal = ({ showThpModals = true }: ConnectionGlobalModalProps) => {
     const dispatch = useDispatch();
     const isConnectDeviceModalOpen = useSelector(selectIsConnectionModalOpen);
-    const device = useSelector(selectSelectedDevice);
+
     const thpStep = useSelector(selectThpStep);
+    const thpStepDevicePath = useSelector(selectThpStep);
+    const thpDevice = useSelector(state =>
+        state.device.devices.find(it => it.path === thpStepDevicePath),
+    );
 
     const closeConnectionModal = () => {
         dispatch(setConnectionModal(false));
     };
 
     // handle THP modals first if we have a device and thpStep
-    if (device !== undefined && thpStep !== null && showThpModals) {
+    if (thpDevice !== undefined && thpStep !== null && showThpModals) {
         switch (thpStep) {
             case 'BeforeConnectionInfo':
                 return null;
             case 'ConfirmConnectionBeforePairing':
-                return <ThpConnectionModal device={device} />;
+                return <ThpConnectionModal device={thpDevice} />;
             case 'ConfirmOnlyConnection':
-                return <ThpConnectionModal device={device} />;
+                return <ThpConnectionModal device={thpDevice} />;
             case 'CodeEntry':
                 return <ThpPairingPinEntryModal />;
             case 'CodeInvalid':
-                return <ThpPairingFailedModal />;
+                return <ThpPairingFailedModal device={thpDevice} />;
             case 'AutoconnectInfo':
-                return <ThpAutoconnectInfoModal />;
+                return <ThpAutoconnectInfoModal device={thpDevice} />;
             case 'Autoconnect':
-                return <ThpAutoconnectionModal device={device} />;
+                return <ThpAutoconnectionModal device={thpDevice} />;
             default:
                 return exhaustive(thpStep);
         }

@@ -6,7 +6,9 @@ import {
     DEVICE,
     DeviceButtonRequest,
     DeviceThpCredentialsChanged,
+    DeviceUniquePath,
     UI,
+    UiRequestButton,
     UiRequestConfirmation,
     UiRequestThpPairing,
 } from '@trezor/connect';
@@ -38,6 +40,11 @@ export type ThpStep =
 
 export type ThpState = {
     step: ThpStep;
+    /**
+     * @deprecated This is hack, until we implement it properly.
+     * @see: https://github.com/trezor/trezor-suite/pull/21960
+     */
+    stepDevicePath: DeviceUniquePath | null;
     lastThpCode?: string;
     credentials: ThpSuiteCredentials[];
     // staticKey for the application.
@@ -47,6 +54,7 @@ export type ThpState = {
 
 export const initialThpState: ThpState = {
     step: null,
+    stepDevicePath: null,
     lastThpCode: undefined,
     credentials: [] as ThpSuiteCredentials[],
 };
@@ -90,11 +98,15 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             })
             .addMatcher(isAnyOf(thpActions.finishThpFlow, thpActions.cancelThpFlow), state => {
                 state.step = null;
+
+                // Todo: solve in better way. See: https://github.com/trezor/trezor-suite/pull/21960
+                state.stepDevicePath = null;
             })
             .addMatcher(
                 action => action.type === UI.REQUEST_THP_PAIRING,
-                state => {
+                (state, { payload }: UiRequestThpPairing) => {
                     state.step = 'CodeEntry';
+                    state.stepDevicePath = payload.device.path;
                 },
             )
             .addMatcher(
@@ -111,8 +123,12 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             )
             .addMatcher(
                 action => action.type === UI.REQUEST_BUTTON,
-                (state, action: AnyAction) => {
-                    const actionName: THPButtonRequestName = action.payload.name;
+                (state, action: UiRequestButton) => {
+                    const actionName = action.payload.name as THPButtonRequestName;
+
+                    // Todo: solve in better way. See: https://github.com/trezor/trezor-suite/pull/21960
+                    state.stepDevicePath = action.payload.device.path;
+
                     switch (actionName) {
                         case 'thp_pairing_request':
                             state.step = 'ConfirmConnectionBeforePairing';
@@ -130,6 +146,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             .addMatcher<DeviceButtonRequest | UiRequestThpPairing | UiRequestConfirmation>(
                 action => action.type === UI.REQUEST_CONFIRMATION || action.type === DEVICE.BUTTON,
                 (state, action) => {
+                    // Todo: solve in better way. See: https://github.com/trezor/trezor-suite/pull/21960
+                    state.stepDevicePath = action.payload.device.path;
+
                     // The THP device is ready for pairing, wait for user action
                     if (action.type === UI.REQUEST_CONFIRMATION) {
                         if (action.payload.view === 'thp-pairing-start') {

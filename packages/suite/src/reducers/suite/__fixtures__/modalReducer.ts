@@ -175,6 +175,7 @@ export default [
                 type: UI.REQUEST_CONFIRMATION,
                 payload: {
                     view: 'no-backup',
+                    device: CONNECT_DEVICE,
                 },
             },
         ],
