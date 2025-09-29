@@ -60,11 +60,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () 
 
     afterEach(async () => {
         await wipeAppData();
-    });
-
-    afterAll(async () => {
         await disconnectTrezorUserEnv();
-        await device.terminateApp();
     });
 
     it('Create Wallet', async () => {
