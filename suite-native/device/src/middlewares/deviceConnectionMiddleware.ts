@@ -13,9 +13,9 @@ import {
 import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
 import {
     deviceActions,
+    selectDevices,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { selectWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
@@ -122,7 +122,10 @@ deviceConnectionMiddleware.startListening({
     predicate: action => deviceActions.connectDevice.match(action),
     effect: (
         action: UnknownAction,
-        { getState }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
+        {
+            getState,
+            getOriginalState,
+        }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
     ) => {
         if (!deviceActions.connectDevice.match(action)) {
             throw new Error('This listener only handles connectDevice action');
@@ -154,8 +157,9 @@ deviceConnectionMiddleware.startListening({
         if (isDeviceUsingPassphrase) return;
 
         // If device is authorized already (usually in case of remembered device which has already been authorized)
+        // We need to use the state before we add connected device to the array so we find out whether it was previously remembered
         const isDeviceRemembered =
-            !!device.features && selectSelectedDevice(getState())?.id === device.id;
+            !!device.features && selectDevices(getOriginalState()).some(d => d.id === device.id);
 
         if (isDeviceRemembered) return;
 
