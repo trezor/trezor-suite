@@ -13,7 +13,7 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     StackToTabCompositeScreenProps,
-    useOverrideBackNavigation,
+    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
 import { AccountAlreadyImportedScreen } from '../components/AccountAlreadyImportedScreen';
@@ -28,7 +28,7 @@ export const AccountImportSummaryScreen = ({
 >) => {
     const { accountInfo, networkSymbol } = route.params;
 
-    useOverrideBackNavigation();
+    useInterceptNativeNavigation();
 
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountByDescriptorAndNetworkSymbol(

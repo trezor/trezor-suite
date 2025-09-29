@@ -7,6 +7,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
+    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
@@ -19,6 +20,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const DeviceAuthenticityScreen = ({ navigation }: { navigation: NavigationProp }) => {
     const { checkDeviceAuthenticity } = useDeviceAuthenticityCheck();
+    useInterceptNativeNavigation();
 
     const handleSuccess = useCallback(() => {
         navigation.navigate(DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess);

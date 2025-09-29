@@ -5,7 +5,7 @@ import {
     Screen,
     ScreenHeader,
     ScreenProps,
-    useOverrideBackNavigation,
+    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
 type NonClosableDeviceOnboardingScreenProps = {
@@ -17,7 +17,7 @@ export const NonClosableDeviceOnboardingScreen = ({
     screenHeaderRightIcon,
     ...screenProps
 }: NonClosableDeviceOnboardingScreenProps) => {
-    useOverrideBackNavigation();
+    useInterceptNativeNavigation();
 
     return (
         <Screen

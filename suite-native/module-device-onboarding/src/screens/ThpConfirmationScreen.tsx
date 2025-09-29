@@ -7,6 +7,7 @@ import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     StackProps,
+    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
 import { NonClosableDeviceOnboardingScreen } from '../components/NonClosableDeviceOnboardingScreen';
@@ -15,6 +16,7 @@ export const ThpConfirmationScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.ThpConfirmation>) => {
     const thpStep = useSelector(selectThpStep);
+    useInterceptNativeNavigation();
 
     useEffect(() => {
         if (thpStep === 'BeforeConnectionInfo') {

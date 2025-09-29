@@ -3,7 +3,7 @@ import { ActivityIndicator } from 'react-native';
 import { Box, Text, VStack, resetLetterSpacingOnAndroidStyle } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useOverrideBackNavigation } from '@suite-native/navigation';
+import { useInterceptNativeNavigation } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
@@ -17,7 +17,7 @@ const screenStyle = prepareNativeStyle(() => ({
 
 export const ConnectingDeviceScreen = () => {
     useOnDeviceReadyNavigation();
-    useOverrideBackNavigation();
+    useInterceptNativeNavigation();
 
     const { applyStyle } = useNativeStyles();
 

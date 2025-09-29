@@ -17,7 +17,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackToTabCompositeProps,
-    useHandleHardwareBackNavigation,
+    useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
@@ -79,7 +79,7 @@ export const PassphraseScreenHeader = () => {
         }
     }, [handleClose, navigateToInitialScreen, isCreatingNewWalletInstance, showAlert]);
 
-    useHandleHardwareBackNavigation(handleCancel);
+    useInterceptNativeNavigation({ onPress: handleCancel });
 
     return (
         <ScreenHeaderWrapper>

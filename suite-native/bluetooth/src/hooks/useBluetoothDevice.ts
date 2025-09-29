@@ -52,7 +52,10 @@ export const useBluetoothDevice = () => {
                 dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceBluetoothId }));
                 dispatch(setShouldShowSystemUnpairingAlert(true));
                 onSuccess();
-            } else if (payload.code === 'Failure_ActionCancelled') {
+            } else if (
+                payload.code === 'Failure_ActionCancelled' ||
+                payload.code === 'Method_Interrupted'
+            ) {
                 onCancel();
             }
         },

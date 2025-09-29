@@ -11,6 +11,7 @@ import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     Screen,
+    useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useThpAutoconnectActions } from '@suite-native/thp';
@@ -22,6 +23,7 @@ export const ThpConfirmationScreen = ({
 }: {
     navigation: NativeStackNavigationProp<AuthorizeDeviceStackParamList>;
 }) => {
+    useInterceptNativeNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const { startThpAutoconnect, ignoreThpAutoconnect } = useThpAutoconnectActions();
