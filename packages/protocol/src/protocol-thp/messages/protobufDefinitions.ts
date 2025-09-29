@@ -27,7 +27,10 @@ export const getProtobufDefinitions = () => ({
         },
     },
     ThpPairingRequest: {
-        fields: { host_name: { type: 'string', id: 1 }, app_name: { type: 'string', id: 2 } },
+        fields: {
+            host_name: { rule: 'required', type: 'string', id: 1 },
+            app_name: { rule: 'required', type: 'string', id: 2 },
+        },
     },
     ThpPairingRequestApproved: { fields: {} },
     ThpSelectMethod: {

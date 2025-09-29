@@ -2526,18 +2526,14 @@
                 "TextDetailsMemo": {
                     "fields": {
                         "title": {
+                            "rule": "required",
                             "type": "string",
-                            "id": 1,
-                            "options": {
-                                "default": ""
-                            }
+                            "id": 1
                         },
                         "text": {
+                            "rule": "required",
                             "type": "string",
-                            "id": 2,
-                            "options": {
-                                "default": ""
-                            }
+                            "id": 2
                         }
                     }
                 },
@@ -4565,6 +4561,10 @@
                 "soc": {
                     "type": "uint32",
                     "id": 55
+                },
+                "firmware_corrupted": {
+                    "type": "bool",
+                    "id": 56
                 }
             },
             "nested": {
@@ -4678,6 +4678,10 @@
                 "homescreen_length": {
                     "type": "uint32",
                     "id": 14
+                },
+                "auto_lock_delay_battery_ms": {
+                    "type": "uint32",
+                    "id": 15
                 }
             }
         },
@@ -4824,15 +4828,24 @@
         },
         "AuthenticityProof": {
             "fields": {
-                "certificates": {
+                "optiga_certificates": {
                     "rule": "repeated",
                     "type": "bytes",
                     "id": 1
                 },
-                "signature": {
+                "optiga_signature": {
                     "rule": "required",
                     "type": "bytes",
                     "id": 2
+                },
+                "tropic_certificates": {
+                    "rule": "repeated",
+                    "type": "bytes",
+                    "id": 3
+                },
+                "tropic_signature": {
+                    "type": "bytes",
+                    "id": 4
                 }
             }
         },
@@ -5980,6 +5993,10 @@
                     "rule": "required",
                     "type": "uint32",
                     "id": 14
+                },
+                "payment_req": {
+                    "type": "PaymentRequest",
+                    "id": 15
                 }
             },
             "nested": {
