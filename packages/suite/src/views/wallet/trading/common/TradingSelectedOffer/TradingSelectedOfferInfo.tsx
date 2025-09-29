@@ -1,5 +1,6 @@
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
+import { TradingType } from '@suite-common/trading';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -51,7 +52,9 @@ export const TradingSelectedOfferInfo = ({
             formStep={formStep}
             receiveAddress={
                 // A better solution would be to add type (e.g. `exchange` to `ExchangeTrade`) to each union item in `TradingTradeType` so it's easy to narrow down the type.
-                type === 'exchange' ? (selectedQuote as ExchangeTrade).receiveAddress : undefined
+                (['exchange', 'buy'] satisfies TradingType[]).find(t => t === type)
+                    ? (selectedQuote as ExchangeTrade | BuyTrade).receiveAddress
+                    : undefined
             }
             isReceive
         />,
