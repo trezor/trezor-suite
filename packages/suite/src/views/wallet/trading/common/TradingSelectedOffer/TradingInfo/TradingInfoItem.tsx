@@ -9,19 +9,19 @@ import {
 } from '@suite-common/trading';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Box, Column, InfoItem, Row, Text, Tooltip } from '@trezor/components';
+import { Box, Column, InfoItem, Row, Text } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
+import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
 import { AccountLabel, BaseCurrencyValue, Translation } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
+import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
 import { useTranslation } from 'src/hooks/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
-
-import { StyledReceiveAddress } from './TradingInfoItem.styles';
 
 interface TradingInfoItemProps {
     account?: Account;
@@ -48,10 +48,14 @@ export const TradingInfoItem = ({
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
-    const shouldShowAccountLabel =
-        ((formStep && ['SEND_TRANSACTION', 'SIGN_DATA'].includes(formStep)) || !isReceive) &&
+    const showAccountLabel =
+        (['SEND_TRANSACTION', 'SIGN_DATA'].find(f => f === formStep) || !isReceive) &&
         account &&
         type !== 'sell';
+
+    // `account` is undefined for external addresses
+    const isExternalBuyOrExchange =
+        (type === 'exchange' || type === 'buy') && !account && !!receiveAddress;
 
     return type === 'exchange' || isReceive ? (
         <Column width="100%">
@@ -59,15 +63,18 @@ export const TradingInfoItem = ({
                 <Text variant="tertiary" typographyStyle="hint">
                     <Translation id={label} />
                 </Text>
-                {shouldShowAccountLabel && (
+                {(showAccountLabel || isExternalBuyOrExchange) && (
                     <Text variant="tertiary" typographyStyle="hint" as="div">
                         <Row>
                             {accountLabelPrefix}&nbsp;
-                            {type === 'exchange' && receiveAddress ? (
-                                <Tooltip content={receiveAddress} hasArrow>
-                                    <StyledReceiveAddress>{receiveAddress}</StyledReceiveAddress>
-                                </Tooltip>
-                            ) : (
+                            {isExternalBuyOrExchange && (
+                                <TokenAddressRow
+                                    tokenContractAddress={receiveAddress}
+                                    shouldAllowCopy={true}
+                                    onCopy={() => copyAddressToClipboard(receiveAddress)}
+                                />
+                            )}
+                            {!isExternalBuyOrExchange && account && (
                                 <AccountLabel
                                     account={account}
                                     showAccountTypeBadge
