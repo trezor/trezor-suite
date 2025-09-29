@@ -11,13 +11,14 @@ import { ThpAutoconnectionModal } from './ThpAutoconnectionModal';
 import { ThpConnectionModal } from './ThpConnectionModal';
 import { ThpPairingFailedModal } from './ThpPairingFailedModal';
 
-export const ThpGlobalManager = () => {
+export const ThpGlobalModalManager = () => {
     const device = useSelector(selectSelectedFirstThpDevice);
     const thpStep = useSelector(selectThpStep);
 
     if (device !== undefined && thpStep !== null) {
         switch (thpStep) {
             case 'BeforeConnectionInfo':
+                // this case is not handled here since it's handles via DeviceConfirmationModal
                 return null;
             case 'ConfirmConnectionBeforePairing':
                 return <ThpConnectionModal device={device} />;
