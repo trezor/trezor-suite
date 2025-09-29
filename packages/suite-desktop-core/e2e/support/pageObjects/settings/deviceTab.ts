@@ -13,6 +13,7 @@ export class DeviceTab {
     readonly firmwareConfirmSeedCheckbox: Locator;
     readonly firmwareConfirmSeedButton: Locator;
     readonly firmwareReconnectDevice: Locator;
+    readonly autoconnectSwitch: Locator;
 
     constructor(private readonly page: Page) {
         this.createMultiShareBackupButton = page.getByTestId(
@@ -33,6 +34,7 @@ export class DeviceTab {
         this.firmwareConfirmSeedCheckbox = page.getByTestId('@firmware/confirm-seed-checkbox');
         this.firmwareConfirmSeedButton = page.getByTestId('@firmware/confirm-seed-button');
         this.firmwareReconnectDevice = page.getByTestId('@firmware/reconnect-device');
+        this.autoconnectSwitch = page.getByTestId('@settings/device/thp-autoconnect');
     }
 
     @step()

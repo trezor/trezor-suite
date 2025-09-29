@@ -12,7 +12,6 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         analytics,
         page,
         model,
-        suite,
         analyticsSection,
         onboardingPage,
         dashboardPage,
@@ -45,6 +44,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
             if (model.isModelWithTHP()) {
                 await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
+                await onboardingPage.enableAutoconnect();
             }
 
             await onboardingPage.onboardingContinueButton.click();
@@ -57,7 +57,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
             // app needs time to save initialRun flag into storage to change session id
             await page.getByTestId('@suite/loading').waitFor({ state: 'hidden' });
             await page.discoveryShouldFinish();
-            await suite.reloadApp();
+            await page.reload();
             await settingsPage.navigateTo('application');
             await expect(settingsPage.analyticsSwitchInput).not.toBeChecked();
         });

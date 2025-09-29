@@ -16,9 +16,16 @@ test.describe(
             analyticsSection,
             onboardingPage,
             walletPage,
+            devicePrompt,
         }) => {
             await expect(analyticsSection.heading).toBeVisible({ timeout: 30000 });
             await analyticsSection.continueButton.click();
+
+            if (model.isModelWithTHP()) {
+                await devicePrompt.allowConnectToTrezor();
+                await onboardingPage.enterTHPPairingCode();
+            }
+
             await page.getByTestId('@onboarding/exit-app-button').click();
 
             if (model.isModelWithSecureElement()) {

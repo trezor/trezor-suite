@@ -19,7 +19,6 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
 
     test('persists wallet labels', async ({
         page,
-        suite,
         dashboardPage,
         metadataPage,
         devicePrompt,
@@ -61,7 +60,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
 
         // Reload app
         await page.waitForTimeout(1000); // wait for changes to db
-        await suite.reloadApp();
+        await page.reload();
         await metadataMock.setupWindowStubs();
 
         // Verify wallet labels after reload

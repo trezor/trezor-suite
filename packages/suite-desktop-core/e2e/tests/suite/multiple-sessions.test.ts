@@ -7,6 +7,7 @@ import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DashboardPage } from '../../support/pageObjects/dashboardPage';
 import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
 import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
+import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
@@ -95,12 +96,14 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             await pageTwo.goto('./');
             const analyticsSectionTwo = new AnalyticsSection(pageTwo);
             const devicePromptTwo = new DevicePrompt(pageTwo, model);
+            const settingsPageTwo = new SettingsPage(pageTwo);
             const onboardingPageTwo = new OnboardingPage(
                 pageTwo,
                 model,
                 testInfo,
                 devicePromptTwo,
                 analyticsSectionTwo,
+                settingsPageTwo,
             );
             await onboardingPageTwo.completeOnboarding();
             const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);

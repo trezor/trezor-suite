@@ -26,7 +26,6 @@ test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
 
     test('go to wallet settings page, activate all coins and see that there is equal number of records on dashboard', async ({
         page,
-        suite,
         dashboardPage,
         settingsPage,
         walletPage,
@@ -45,7 +44,7 @@ test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
 
         // trigger reload to simulate interruption. we want to make sure that communication with the device does not
         // end up in some de-synced state. if this test becomes flaky, this reload might be the reason.
-        await suite.reloadApp();
+        await page.reload();
 
         await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible({ timeout: 10_000 });
         // Discovery bar does not have to be shown at all if discovery finished before reload, so we build verification on accounts' visibility

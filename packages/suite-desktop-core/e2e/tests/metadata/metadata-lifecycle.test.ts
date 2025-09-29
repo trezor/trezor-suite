@@ -19,7 +19,6 @@ test.describe(
         //TODO: Update and enable once metadata reimplemented or bug #19740 is resolved
         test.skip('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
             page,
-            suite,
             onboardingPage,
             dashboardPage,
             settingsPage,
@@ -41,13 +40,13 @@ test.describe(
             await trezorUserEnvLink.pressNo();
 
             // Reload app, cancel metadata again, and remember device
-            await suite.reloadApp();
+            await page.reload();
             await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
             await trezorUserEnvLink.pressNo();
 
             await page.discoveryShouldFinish();
 
-            await suite.reloadApp();
+            await page.reload();
 
             // Add another wallet, enable labeling on the new device
             await page.getByTestId('@menu/switch-device').click();
@@ -67,7 +66,7 @@ test.describe(
             await page.getByTestId('@switch-device/eject').click();
             await page.getByTestId('@switch-device/wallet-on-index/0/eject-button').click();
             await page.getByTestId('@switch-device/eject').click();
-            await suite.reloadApp();
+            await page.reload();
 
             // Enable labeling dialogue appears again
             await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
