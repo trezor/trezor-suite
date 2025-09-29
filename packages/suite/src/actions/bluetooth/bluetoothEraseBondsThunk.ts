@@ -6,7 +6,7 @@ import {
     selectIsDeviceConnectedViaBluetooth,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
@@ -17,7 +17,7 @@ import {
 type ForgetBluetoothDeviceThunkParams = {
     // This thunk must relay on `bluetoothId` directly. When this think is called,
     // the device may already be disconnected, and therefore, it cannot be selected from the state.
-    bluetoothId: string;
+    bluetoothId: BluetoothDeviceId;
 };
 
 export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDeviceThunkParams, void>(
@@ -34,7 +34,7 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
 );
 
 type UnpairCurrentBondThunkParams = {
-    bluetoothId: string;
+    bluetoothId: BluetoothDeviceId;
 };
 
 const unpairCurrentBondThunk = createThunk<void, UnpairCurrentBondThunkParams, void>(

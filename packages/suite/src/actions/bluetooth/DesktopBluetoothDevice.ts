@@ -3,10 +3,12 @@ import {
     parseManufacturerData,
     serializeManufacturerData,
 } from '@suite-common/bluetooth';
+import { BluetoothDeviceId, asBluetoothDeviceId } from '@trezor/connect';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
-export type DesktopBluetoothDevice = Omit<BluetoothDevice, 'data'> & {
+export type DesktopBluetoothDevice = Omit<BluetoothDevice, 'data' | 'id'> & {
     manufacturerData: BluetoothManufacturerData;
+    id: BluetoothDeviceId;
 };
 
 export const toBluetoothDevice = (device: DesktopBluetoothDevice): BluetoothDevice => ({
@@ -22,7 +24,7 @@ export const toBluetoothDevice = (device: DesktopBluetoothDevice): BluetoothDevi
 });
 
 export const fromBluetoothDevice = (device: BluetoothDevice): DesktopBluetoothDevice => ({
-    id: device.id,
+    id: asBluetoothDeviceId(device.id),
     name: device.name,
     macAddress: device.macAddress,
     manufacturerData: parseManufacturerData(device.data),

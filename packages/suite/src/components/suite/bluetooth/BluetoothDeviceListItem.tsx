@@ -7,6 +7,7 @@ import {
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { Button, Row } from '@trezor/components';
+import { BluetoothDeviceId } from '@trezor/connect';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
@@ -33,7 +34,7 @@ type GhostDeviceActionButtonProps = {
     device: DesktopBluetoothDevice;
     isConnectingDevice: boolean;
     isLoading: boolean;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onPairAgain?: (deviceId: BluetoothDeviceId) => Promise<void>;
 };
 
 const GhostDeviceActionButton = ({
@@ -61,8 +62,8 @@ const GhostDeviceActionButton = ({
 type ActionButtonProps = {
     isGhostDevice: boolean;
     device: DesktopBluetoothDevice;
-    onConnect: (deviceId: string) => Promise<void>;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
+    onPairAgain?: (deviceId: BluetoothDeviceId) => Promise<void>;
 };
 
 const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionButtonProps) => {
@@ -101,8 +102,8 @@ const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionB
 
 type BluetoothDeviceItemProps = {
     device: DesktopBluetoothDevice;
-    onConnect: (deviceId: string) => Promise<void>;
-    onPairAgain?: (deviceId: string) => Promise<void>;
+    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
+    onPairAgain?: (deviceId: BluetoothDeviceId) => Promise<void>;
 };
 
 export const BluetoothDeviceListItem = ({

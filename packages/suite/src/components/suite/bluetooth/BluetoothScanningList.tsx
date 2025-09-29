@@ -1,4 +1,5 @@
 import { selectScanStatus } from '@suite-common/bluetooth';
+import { BluetoothDeviceId } from '@trezor/connect';
 
 import { BluetoothDeviceList } from './BluetoothDeviceList';
 import { BluetoothTips } from './BluetoothTips';
@@ -8,7 +9,7 @@ import { Translation } from '../Translation';
 
 type BluetoothScanningListProps = {
     devices: DesktopBluetoothDevice[];
-    onConnect: (deviceId: string) => Promise<void>;
+    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
     onReScanClick: () => void;
 };
 

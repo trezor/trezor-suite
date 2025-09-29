@@ -10,6 +10,7 @@ import {
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
+import { BluetoothDeviceId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { borders } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
@@ -181,7 +182,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         }, SCAN_TIMEOUT);
     };
 
-    const handlePairingCancel = async (deviceId: string) => {
+    const handlePairingCancel = async (deviceId: BluetoothDeviceId) => {
         await dispatch(bluetoothDisconnectDeviceThunk({ id: deviceId }));
         setSelectedDeviceId(null);
         onReScanClick();
@@ -193,7 +194,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         toggleBluetoothMode();
     };
 
-    const onConnect = async (deviceId: string) => {
+    const onConnect = async (deviceId: BluetoothDeviceId) => {
         setSelectedDeviceId(deviceId);
         const result = await dispatch(bluetoothConnectDeviceThunk({ deviceId })).unwrap();
 

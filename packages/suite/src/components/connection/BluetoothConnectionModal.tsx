@@ -1,4 +1,5 @@
 import { Modal } from '@trezor/components';
+import { BluetoothDeviceId } from '@trezor/connect';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
@@ -15,9 +16,9 @@ type BluetoothConnectionModalProps = {
     nearbyDevices: DesktopBluetoothDevice[] | null;
     knownDevices: DesktopBluetoothDevice[] | null;
     shouldPairAgain: boolean;
-    onPairingCancel: (deviceId: string) => Promise<void>;
+    onPairingCancel: (deviceId: BluetoothDeviceId) => Promise<void>;
     onRescanClick: () => void;
-    onConnect: (deviceId: string) => Promise<void>;
+    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
     onCancel: () => void;
     onClose: () => void;
 };

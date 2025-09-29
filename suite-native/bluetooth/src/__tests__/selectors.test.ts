@@ -1,4 +1,5 @@
 import { prepareInitialState } from '@suite-common/bluetooth';
+import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { NativeBluetoothState } from '../bluetoothSlice';
@@ -17,7 +18,7 @@ const initialState: NativeBluetoothState = {
 };
 
 const unknownDevice: BluetoothDevice = {
-    id: '4de11222-cef9-43fa-aee2-ffa77c697a29',
+    id: asBluetoothDeviceId('4de11222-cef9-43fa-aee2-ffa77c697a29'),
     name: 'Disconnected TS7',
     connectionStatus: { type: 'disconnected' },
     lastUpdatedTimestamp: Date.now(),
@@ -28,7 +29,7 @@ const unknownDevice: BluetoothDevice = {
 };
 
 const knownDevice: BluetoothDevice = {
-    id: '7a39820f-6387-4251-b066-46ed70d37d3f',
+    id: asBluetoothDeviceId('7a39820f-6387-4251-b066-46ed70d37d3f'),
     name: 'Disconnected TS7',
     connectionStatus: { type: 'disconnected' },
     lastUpdatedTimestamp: Date.now(),
@@ -61,7 +62,7 @@ const knownPairableDevice: BluetoothDevice = {
 };
 
 const pairableDevice: BluetoothDevice = {
-    id: '653ab4bc-d0b5-47d7-ab5d-ad834e4956f5',
+    id: asBluetoothDeviceId('653ab4bc-d0b5-47d7-ab5d-ad834e4956f5'),
     name: 'Pairable TS7',
     connectionStatus: { type: 'disconnected' },
     lastUpdatedTimestamp: Date.now(),

@@ -1,6 +1,7 @@
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 type BluetoothDisconnectDeviceThunkResult = {
@@ -9,7 +10,7 @@ type BluetoothDisconnectDeviceThunkResult = {
 
 export const bluetoothDisconnectDeviceThunk = createThunk<
     BluetoothDisconnectDeviceThunkResult,
-    { id: string },
+    { id: BluetoothDeviceId },
     void
 >(
     `${BLUETOOTH_PREFIX}/bluetoothDisconnectDeviceThunk`,

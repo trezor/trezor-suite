@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { BluetoothManufacturerData, prepareInitialState } from '@suite-common/bluetooth';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
@@ -28,9 +29,9 @@ const initialState: DesktopBluetoothState = {
 };
 
 const disconnectedDeviceB: DesktopBluetoothDevice = {
+    id: asBluetoothDeviceId('B'),
     connected: false,
     macAddress: '',
-    id: 'B',
     manufacturerData,
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,

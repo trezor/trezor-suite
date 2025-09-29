@@ -10,6 +10,7 @@ import {
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
+import { asBluetoothDeviceId } from '@trezor/connect';
 import { isIOs } from '@trezor/env-utils';
 import {
     BluetoothDevice as TransportBluetoothDevice,
@@ -28,6 +29,7 @@ import { useBluetoothPermissions } from './useBluetoothPermissions';
 
 const toBluetoothDevice = (device: TransportBluetoothDevice) => ({
     ...device,
+    id: asBluetoothDeviceId(device.id),
     manufacturerData: parseManufacturerData(device.manufacturerData),
 });
 
@@ -86,7 +88,12 @@ export const useBluetoothAdapter = () => {
                     );
                 }),
                 bluetoothManager.onDeviceConnectionStatusChange(event => {
-                    dispatch(bluetoothActions.updateDeviceConnectionStatus(event));
+                    dispatch(
+                        bluetoothActions.updateDeviceConnectionStatus({
+                            ...event,
+                            deviceId: asBluetoothDeviceId(event.deviceId),
+                        }),
+                    );
                     if (event.connectionStatus.type === 'pairing-canceled') {
                         showToast({
                             message: translate('bluetooth.toasts.pairingCanceled'),

@@ -1,5 +1,6 @@
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
+import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
@@ -62,7 +63,7 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
 const isDeviceConnectedViaBluetooth = [
     {
         description: 'device is connected via bluetooth',
-        device: getSuiteDevice({ bluetoothProps: { id: '21' } }),
+        device: getSuiteDevice({ bluetoothProps: { id: asBluetoothDeviceId('21') } }),
         result: true,
     },
     {

@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { BluetoothDeviceId } from '@trezor/connect';
+
 import {
     BluetoothAdapterStatus,
     BluetoothDeviceCommon,
@@ -38,7 +40,7 @@ const knownDevicesUpdateAction = createAction(
 
 const removeKnownDeviceAction = createAction(
     `${BLUETOOTH_PREFIX}/remove-known-device`,
-    ({ id }: { id: string }) => ({
+    ({ id }: { id: BluetoothDeviceId }) => ({
         payload: { id },
     }),
 );
@@ -56,7 +58,7 @@ const updateDeviceConnectionStatus = createAction(
         deviceId,
         connectionStatus,
     }: {
-        deviceId: string;
+        deviceId: BluetoothDeviceId;
         connectionStatus: DeviceBluetoothConnectionStatus;
     }) => ({
         payload: { deviceId, connectionStatus },

@@ -1,3 +1,4 @@
+import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { BluetoothManufacturerData, prepareInitialState, prepareSelectAllDevices } from '../src';
@@ -11,7 +12,7 @@ const manufacturerData: BluetoothManufacturerData = {
 };
 
 const pairingDeviceStateA: BluetoothDeviceCommon = {
-    id: 'A',
+    id: asBluetoothDeviceId('A'),
     manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
@@ -19,7 +20,7 @@ const pairingDeviceStateA: BluetoothDeviceCommon = {
 };
 
 const disconnectedDeviceB: BluetoothDeviceCommon = {
-    id: 'B',
+    id: asBluetoothDeviceId('B'),
     manufacturerData,
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,
@@ -27,7 +28,7 @@ const disconnectedDeviceB: BluetoothDeviceCommon = {
 };
 
 const pairingDeviceStateC: BluetoothDeviceCommon = {
-    id: 'C',
+    id: asBluetoothDeviceId('C'),
     manufacturerData,
     name: 'Trezor C',
     lastUpdatedTimestamp: 3,
