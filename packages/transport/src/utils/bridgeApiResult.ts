@@ -63,6 +63,8 @@ export function devices(res: UnknownPayload) {
                 vendor: o.vendor,
                 debug: o.debug,
                 debugSession: o.debugSession,
+                id: o.id,
+                apiType: 'usb', // no other option is implemented at this moment
             }),
         ),
     );

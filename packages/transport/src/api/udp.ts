@@ -161,6 +161,7 @@ export class UdpApi extends AbstractApi {
                                   product: 0,
                                   vendor: 0,
                                   id: path,
+                                  apiType: this.type,
                               }
                             : undefined,
                     ),

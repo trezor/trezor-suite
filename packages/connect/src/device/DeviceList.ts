@@ -1,7 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
 import { TRANSPORT, Transport } from '@trezor/transport';
-import type { ApiType as TransportApiType } from '@trezor/transport/src/api/abstract';
+import type { ApiType as TransportApiType } from '@trezor/transport/src/types';
 import { Descriptor } from '@trezor/transport/src/types';
 import {
     TypedEmitter,

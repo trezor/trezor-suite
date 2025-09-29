@@ -62,6 +62,7 @@ export class BluetoothApi extends AbstractApi {
             path: deviceId as PathInternal,
             type: DEVICE_TYPE.TypeBluetooth,
             id: deviceId,
+            apiType: this.type,
         }));
 
         return descriptors;

@@ -152,6 +152,7 @@ export class SessionsBackground
                     ...d,
                     path: this.pathInternalPathPublicMap[d.path],
                     session: null,
+                    apiType: d.apiType,
                 };
             }
         });

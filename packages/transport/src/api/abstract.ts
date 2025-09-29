@@ -4,6 +4,7 @@ import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import type {
     AnyError,
+    ApiType,
     AsyncResultWithTypedError,
     DescriptorApiLevel,
     Logger,
@@ -12,7 +13,6 @@ import type {
 } from '../types';
 import { error, success, unknownError } from '../utils/result';
 
-export type ApiType = 'usb' | 'bluetooth' | 'udp';
 export interface AbstractApiConstructorParams {
     logger?: Logger;
     type: ApiType;

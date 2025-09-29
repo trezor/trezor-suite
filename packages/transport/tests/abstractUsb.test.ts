@@ -118,11 +118,13 @@ describe('Usb', () => {
             );
             transport.deviceEvents.on(PathPublic('1'), e => spy(e));
 
-            transport.handleDescriptorsChange([{ path: PathPublic('1'), session: null, type: 1 }]);
+            transport.handleDescriptorsChange([
+                { path: PathPublic('1'), session: null, type: 1, apiType: transport.apiType },
+            ]);
 
             expect(spy).toHaveBeenCalledWith({
                 type: 'transport-device_connected',
-                descriptor: { path: '1', session: null, type: 1 },
+                descriptor: { path: '1', session: null, type: 1, apiType: 'usb' },
             });
             transport.handleDescriptorsChange([]);
             expect(spy).toHaveBeenCalledWith({ type: 'transport-device_disconnected' });
@@ -140,6 +142,8 @@ describe('Usb', () => {
                         type: 1,
                         product: 21441,
                         vendor: 4617,
+                        apiType: 'usb',
+                        id: '123', // todo: why?
                     },
                     {
                         path: '2',
@@ -147,6 +151,8 @@ describe('Usb', () => {
                         type: 1,
                         product: 21441,
                         vendor: 4617,
+                        apiType: 'usb',
+                        id: null, // todo: why?
                     },
                 ],
             });
