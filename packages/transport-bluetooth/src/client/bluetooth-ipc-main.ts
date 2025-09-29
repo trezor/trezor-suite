@@ -91,7 +91,23 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                     devices: this.state.knownDevices,
                 });
 
-                const { devices: scanResult } = await this.api.send('start_scan');
+                const { devices: scanResult } = await this.api
+                    .send('start_scan')
+                    .then(res => res)
+                    // todo: bluetooth-ipc-main.init is called in inInitBluetoothThunk. If it returns an error there, thunk does not proceed and listeners are not registered.
+                    // This is a hotfix, I believe, that initBluetoothThunks call to bluetoothIpc.init should only check that ipc channel is established, nothing more.
+                    .catch(error => {
+                        console.warn('Initial start_scan error', error);
+                        if (
+                            error.message.includes('Adapter disabled') || // <-- when bluetooth is off
+                            error.message.includes('Adapter missing') // <-- when app permissions removed
+                        ) {
+                            this.emit('adapter-event', 'disabled');
+
+                            return { devices: [] };
+                        }
+                        throw error;
+                    });
                 if (scanResult.length === 0) {
                     // wait. devices may not be returned immediately
                     await resolveAfter(1000);
