@@ -24,12 +24,4 @@ describe('utils/suite/l10n', () => {
         expect(utils.isLocale('en-US')).toBe(true);
         expect(utils.isLocale('xx')).toBe(false);
     });
-
-    describe('ensureLocale', () => {
-        it('ensure if locale is valid or return default', () => {
-            expect(utils.ensureLocale('en-US')).toBe('en-US');
-            expect(utils.ensureLocale('cs-CZ')).toBe('cs-CZ');
-            expect(utils.ensureLocale('xx')).toBe('en-US');
-        });
-    });
 });
