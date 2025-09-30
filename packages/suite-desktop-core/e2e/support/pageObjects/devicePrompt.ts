@@ -1,6 +1,10 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, analyzeObject, step } from '../common';
+import {
+    NormalizedDisplayContent,
+    parseDisplayContent,
+} from '../helpers/displayContentNormalizedParser';
 import { ModelFixture } from '../modelFixture';
 
 export class DevicePrompt {
@@ -162,34 +166,11 @@ export class DevicePrompt {
     }
 
     @step()
-    async getDisplayContent() {
+    async getDisplayContent(): Promise<NormalizedDisplayContent> {
         const debugState = await TrezorUserEnvLinkProxy.getDebugState();
-        const json = JSON.parse(debugState.tokens.join(''));
-        if (!json || !json.header || !json.content) {
-            throw new Error(
-                `Display content invalid, should contain header and content: ${JSON.stringify(json)}`,
-            );
-        }
-        // The structure of the JSON differs between situations.
-        // We will have to add more logic as we start validate more situations.
-        // Header may have optional subtitle
-        // Footer is optional completely
-        const header = {
-            title: json.header.title.text,
-            ...(json.header.subtitle && { subtitle: json.header.subtitle.text }),
-        };
+        const raw = JSON.parse(debugState.tokens.join(''));
 
-        if (json.content.content.paragraphs.length < 1) {
-            throw new Error(
-                `Expected at least one paragraph in display JSON, JSON: ${JSON.stringify(json.content.content.paragraphs)}`,
-            );
-        }
-
-        return {
-            header,
-            body: json.content.content.paragraphs,
-            ...(json.footer && { footer: json.footer.instruction }),
-        };
+        return parseDisplayContent(raw);
     }
 
     @step()
