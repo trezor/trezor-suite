@@ -120,6 +120,18 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
         bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
             const device = fromBluetoothDevice(deviceIpc);
+            const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
+                d => d.id === device.id,
+            );
+
+            if (knownDevice) {
+                // preserve static part of manufacturerData (model, color)
+                // incoming data may be empty on linux (after adapter restart)
+                device.manufacturerData = {
+                    ...knownDevice.manufacturerData,
+                    filterPolicy: device.manufacturerData?.filterPolicy,
+                };
+            }
 
             dispatch(bluetoothActions.deviceUpdateAction({ device }));
             await attemptDeviceConnect({ device });
