@@ -15,7 +15,7 @@
         "@react-navigation/native": "7.1.17",
         "@reduxjs/toolkit": "2.8.2",
         "@sentry/react-native": "6.20.0",
-        "@shopify/react-native-skia": "2.2.3",
+        "@shopify/react-native-skia": "~2.2.21",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
