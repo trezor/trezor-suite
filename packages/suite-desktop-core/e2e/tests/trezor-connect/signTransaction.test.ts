@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect-web';
 
 import { test } from '../../support/fixtures';
+import { pressContinue } from '../../support/helpers/deviceInput';
 
 test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
@@ -23,6 +24,7 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@deskt
         page,
         connectPermissionsModal,
         trezorUserEnvLink,
+        model,
     }) => {
         TrezorConnect.signTransaction({
             coin: 'btc',
@@ -48,20 +50,17 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@deskt
         await connectPermissionsModal.confirmButton.click();
 
         await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
-
-        await trezorUserEnvLink.swipeEmu('up');
+        await pressContinue(model.model);
 
         await page
             .getByTestId('@prompts/confirm-on-device/step/1/active')
             .waitFor({ state: 'visible' });
-
-        await trezorUserEnvLink.swipeEmu('up');
+        await pressContinue(model.model);
 
         await page
             .getByTestId('@prompts/confirm-on-device/step/2/active')
             .waitFor({ state: 'visible' });
-
-        await trezorUserEnvLink.swipeEmu('up');
+        await pressContinue(model.model);
 
         await trezorUserEnvLink.pressYes();
 

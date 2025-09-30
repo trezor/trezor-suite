@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect-web';
 
 import { expect, test } from '../../support/fixtures';
+import { pressContinue } from '../../support/helpers/deviceInput';
 
 test.describe(
     'TrezorConnect.ethereumSignTransaction',
@@ -26,6 +27,7 @@ test.describe(
             connectPermissionsModal,
             trezorUserEnvLink,
             page,
+            model,
         }) => {
             const res = TrezorConnect.ethereumSignTransaction({
                 path: "m/44'/60'/0'/0/0",
@@ -45,7 +47,7 @@ test.describe(
             await page
                 .getByTestId('@prompts/confirm-on-device/step/0/active')
                 .waitFor({ state: 'visible' });
-            await trezorUserEnvLink.swipeEmu('up');
+            await pressContinue(model.model);
 
             await page
                 .getByTestId('@prompts/confirm-on-device/step/1/active')
