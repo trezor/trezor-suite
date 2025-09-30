@@ -1,27 +1,23 @@
-import * as utils from '../l10n';
+import { DEFAULT_LOCALE, getOsLocale } from '../l10n';
 
 describe('utils/suite/l10n', () => {
-    describe('getOsLocale', () => {
+    describe(getOsLocale.name, () => {
         let languagesGetter: any;
         beforeEach(() => {
             languagesGetter = jest.spyOn(window.navigator, 'languages', 'get');
         });
-        it('default lang', () => {
-            expect(utils.getOsLocale()).toBe('en-US');
-            expect(utils.getOsLocale('en-US')).toBe('en-US');
-        });
-        it('browser locales', () => {
-            languagesGetter.mockReturnValue(['es-ES', 'de-AT', 'en']);
-            expect(utils.getOsLocale('cs-CZ')).toBe('es-ES');
-            languagesGetter.mockReturnValue(['xx-XX', 'en-US', 'es']);
-            expect(utils.getOsLocale('cs-CZ')).toBe('en-US');
-            languagesGetter.mockReturnValue(['aa', 'xx-XX']);
-            expect(utils.getOsLocale('cs-CZ')).toBe('cs-CZ');
-        });
-    });
 
-    it('identifying locale', () => {
-        expect(utils.isLocale('en-US')).toBe(true);
-        expect(utils.isLocale('xx')).toBe(false);
+        it('selects the first supported locale', () => {
+            languagesGetter.mockReturnValue(['xx-XX', 'en-US', 'de-AT']);
+            expect(getOsLocale()).toBe('en-US');
+        });
+        it('falls back to a language variant if the exact match is not found', () => {
+            languagesGetter.mockReturnValue(['en-GB', 'es-ES']);
+            expect(getOsLocale()).toBe('en-US');
+        });
+        it('falls back to default locale if no match is found', () => {
+            languagesGetter.mockReturnValue(['aa', 'xx-XX']);
+            expect(getOsLocale()).toBe(DEFAULT_LOCALE);
+        });
     });
 });
