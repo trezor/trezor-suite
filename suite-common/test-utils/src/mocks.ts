@@ -225,7 +225,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
  * @param {Partial<Features>} [feat]
  * @returns {TrezorDevice}
  */
-const getSuiteDevice = (
+export const getSuiteDevice = (
     dev?: Partial<
         Omit<StringPath<TrezorDevice>, 'state'> & {
             state?: `${string}@${string}:${number}`;
