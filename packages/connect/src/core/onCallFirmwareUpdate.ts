@@ -491,7 +491,7 @@ export const onCallFirmwareUpdate = async ({
             'waiting for disconnected event after rebootToBootloader...',
         );
 
-        if (device.bluetoothProps) {
+        if (device.descriptor.apiType === 'bluetooth') {
             // close device
             await device.release();
             // wait for device-change
@@ -553,7 +553,7 @@ export const onCallFirmwareUpdate = async ({
     }
 
     let method: ReconnectParams['method'] = 'wait';
-    if (device.bluetoothProps) {
+    if (device.descriptor.apiType === 'bluetooth') {
         await waitForBluetoothReboot({ device, target: 'normal', postMessage });
         method = 'auto';
     }
