@@ -662,10 +662,6 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT',
         defaultMessage: 'Select {symbol} receive account',
     },
-    TR_EXCHANGE_RECEIVING_ADDRESS_INFO: {
-        defaultMessage: "Your receive address is where you'll receive your {symbol}.",
-        id: 'TR_EXCHANGE_RECEIVING_ADDRESS_INFO',
-    },
     TR_EXCHANGE_RECEIVING_ADDRESS: {
         defaultMessage: 'Receive address',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS',
@@ -693,10 +689,6 @@ export default defineMessages({
     TR_EXCHANGE_EXTRA_FIELD_INVALID: {
         defaultMessage: '{extraFieldName} is invalid',
         id: 'TR_EXCHANGE_EXTRA_FIELD_INVALID',
-    },
-    TR_EXCHANGE_EXTRA_FIELD_QUESTION_TOOLTIP: {
-        defaultMessage: '{extraFieldDescription}',
-        id: 'TR_EXCHANGE_EXTRA_FIELD_QUESTION_TOOLTIP',
     },
     TR_EXCHANGE_CREATE_SUITE_ACCOUNT: {
         defaultMessage: 'Create a new {symbol} account',
@@ -1565,23 +1557,6 @@ export default defineMessages({
         defaultMessage: '{networkCurrencyName} receive address on {networkName} network',
         id: 'TR_ADDRESS_MODAL_TITLE_EXCHANGE',
     },
-    TR_ADDRESS_MODAL_DESCRIPTION: {
-        defaultMessage: 'Receive {displaySymbol}',
-        id: 'TR_ADDRESS_MODAL_DESCRIPTION',
-    },
-    TR_ADDRESS_MODAL_DESCRIPTION_TOKENS: {
-        defaultMessage: 'Receive {displaySymbol} and tokens',
-        id: 'TR_ADDRESS_MODAL_DESCRIPTION_TOKENS',
-    },
-    TR_XPUB_MODAL_TITLE: {
-        defaultMessage: '{networkName} {accountIndex} public key (XPUB)',
-        id: 'TR_XPUB_MODAL_TITLE',
-    },
-    TR_XPUB_MODAL_TITLE_METADATA: {
-        defaultMessage: '{accountLabel} public key (XPUB)',
-        id: 'TR_XPUB_MODAL_TITLE_METADATA',
-        description: 'accountLabel is user defined name of account, might be pretty much anything.',
-    },
     TR_IMPORT_CSV_MODAL_TITLE: {
         defaultMessage: 'Import addresses from CSV',
         id: 'TR_IMPORT_CSV_MODAL_TITLE',
@@ -1985,11 +1960,6 @@ export default defineMessages({
         defaultMessage: 'Permission to access the camera was denied.',
         id: 'TR_CAMERA_PERMISSION_DENIED',
     },
-    TR_CHANGELOG: {
-        defaultMessage: 'Changelog',
-        description: 'Part of the sentence: Learn more about latest version in {TR_CHANGELOG}.',
-        id: 'TR_CHANGELOG',
-    },
     TR_CHECK_FOR_DEVICES: {
         defaultMessage: 'Find Trezor',
         id: 'TR_CHECK_FOR_DEVICES',
@@ -2050,10 +2020,6 @@ export default defineMessages({
     TR_CONFIRM_PASSPHRASE: {
         defaultMessage: 'Confirm passphrase',
         id: 'TR_CONFIRM_PASSPHRASE',
-    },
-    TR_CONFIRM_PASSPHRASE_SOURCE: {
-        defaultMessage: 'Confirm empty Passphrase wallet passphrase source on your {deviceLabel}',
-        id: 'TR_CONFIRM_PASSPHRASE_SOURCE',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
         defaultMessage:
@@ -2488,10 +2454,6 @@ export default defineMessages({
         defaultMessage: 'Download',
         description: 'Download button',
         id: 'TR_DOWNLOAD',
-    },
-    TR_DOWNLOAD_LATEST_BRIDGE: {
-        defaultMessage: 'Download latest Bridge {version}',
-        id: 'TR_DOWNLOAD_LATEST_BRIDGE',
     },
     TR_EAST: {
         defaultMessage: 'East',
@@ -3093,16 +3055,6 @@ export default defineMessages({
         defaultMessage: 'North',
         id: 'TR_NORTH',
     },
-    TR_NUM_ACCOUNTS_FIAT_VALUE: {
-        defaultMessage:
-            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {fiatValue}',
-        description: 'Used as title for a wallet instance in Switch Device modal',
-        id: 'TR_NUM_ACCOUNTS_FIAT_VALUE',
-    },
-    TR_COUNT_WALLETS: {
-        defaultMessage: '{count} {count, plural, one {wallet} other {wallets}}',
-        id: 'TR_COUNT_WALLETS',
-    },
     TR_ACCOUNT_IS_EMPTY_DESCRIPTION: {
         defaultMessage: 'Get started by receiving or buying {network}.',
         id: 'TR_ACCOUNT_IS_EMPTY_DESCRIPTION',
@@ -3300,10 +3252,6 @@ export default defineMessages({
     TR_CONTINUE_SETUP: {
         defaultMessage: 'Continue setup',
         id: 'TR_CONTINUE_SETUP',
-    },
-    TR_SELECT_PASSPHRASE_SOURCE: {
-        defaultMessage: 'Select where to enter passphrase on {deviceLabel}',
-        id: 'TR_SELECT_PASSPHRASE_SOURCE',
     },
     TR_SENT_TO_SELF: {
         defaultMessage: 'Sent to myself',
@@ -3544,10 +3492,6 @@ export default defineMessages({
     TR_UNSUPPORTED_COINS_DESCRIPTION: {
         defaultMessage: 'These coins are supported on Trezor Safe devices and Trezor Model T.',
         id: 'TR_UNSUPPORTED_COINS_DESCRIPTION',
-    },
-    TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
-        defaultMessage: 'Check the <b>{deviceLabel}</b> screen for the keypad layout.',
-        id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
         defaultMessage:
@@ -4402,10 +4346,6 @@ export default defineMessages({
         id: 'TR_N_TRANSACTIONS',
         defaultMessage: '{value} {value, plural, one {transaction} other {transactions}}',
     },
-    TR_TREZOR_BRIDGE_RUNNING_VERSION: {
-        id: 'TR_TREZOR_BRIDGE_RUNNING_VERSION',
-        defaultMessage: 'Trezor Bridge running version {version}',
-    },
     EVENT_DEVICE_CONNECT: {
         id: 'EVENT_DEVICE_CONNECT',
         defaultMessage: 'Device {label} connected',
@@ -4873,10 +4813,6 @@ export default defineMessages({
     TR_PAYMENT_METHOD_UNKNOWN: {
         id: 'TR_PAYMENT_METHOD_UNKNOWN',
         defaultMessage: 'Unknown',
-    },
-    TR_SECURITY_FEATURES_COMPLETED_N: {
-        id: 'TR_SECURITY_FEATURES_COMPLETED_N',
-        defaultMessage: 'Security ({n} of {m})',
     },
     TR_DASHBOARD: {
         id: 'TR_DASHBOARD',
@@ -6117,11 +6053,6 @@ export default defineMessages({
         defaultMessage: 'Use recommended',
         id: 'CUSTOM_FEE_USE_RECOMMENDED',
     },
-    TOKEN_BALANCE: {
-        defaultMessage: 'Balance: {balance}',
-        description: 'Additional label in send form above amount input',
-        id: 'TOKEN_BALANCE',
-    },
     BROADCAST: {
         id: 'BROADCAST',
         defaultMessage: 'Broadcast',
@@ -6360,11 +6291,6 @@ export default defineMessages({
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
         defaultMessage: 'e.g. {url}',
-    },
-    TR_DEFAULT_VALUE: {
-        id: 'TR_DEFAULT_VALUE',
-        defaultMessage: 'Default: {value}',
-        description: 'Used to show default settings value',
     },
     TR_ADD_NEW_BLOCKBOOK_BACKEND: {
         id: 'TR_ADD_NEW_BLOCKBOOK_BACKEND',
@@ -9038,11 +8964,6 @@ export default defineMessages({
         id: 'TR_UNECO_COINJOIN_TITLE',
         defaultMessage: 'Uneconomical coinjoin',
     },
-    TR_UNECO_COINJOIN_WARNING: {
-        id: 'TR_UNECO_COINJOIN_WARNING',
-        defaultMessage:
-            'Coinjoining less than {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} is not recommended',
-    },
     TR_UNECO_COINJOIN_EXPLANATION: {
         id: 'TR_UNECO_COINJOIN_EXPLANATION',
         defaultMessage:
@@ -9246,21 +9167,6 @@ export default defineMessages({
         defaultMessage:
             "The network uses the same address format as Ethereum. You'll need {network} ETH to pay transaction fees on this network.",
     },
-    TR_EVM_EXPLANATION_SEND_DESCRIPTION: {
-        id: 'TR_EVM_EXPLANATION_SEND_DESCRIPTION',
-        defaultMessage:
-            'Send only through the {network} network. The address must be on the {network} network for the sent crypto to be received.',
-    },
-    TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION: {
-        id: 'TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION',
-        defaultMessage:
-            "You selected {coin} on the {network} network, but it seems you don't have any {networkSymbol} coins. Did you mean to choose {coin} on another network?",
-    },
-    TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION: {
-        id: 'TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION',
-        defaultMessage:
-            'You can only send {network} tokens to a <b>receive address on the {network} network</b>, otherwise your tokens <b>may be lost</b>.',
-    },
     TR_TX_DATA_METHOD_NAME: {
         id: 'TR_TX_DATA_METHOD_NAME',
         defaultMessage: 'Method name',
@@ -9430,23 +9336,6 @@ export default defineMessages({
         id: 'TR_STAKE_WAIT_TO_CHECK_REWARDS',
         defaultMessage:
             'Your rewards will appear within {count, plural, one {# day} other {# days}}.',
-    },
-    TR_STAKE_ETH_CARD_TITLE: {
-        id: 'TR_STAKE_ETH_CARD_TITLE',
-        defaultMessage: 'The easiest way to earn {symbol}',
-    },
-    TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC: {
-        id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
-        defaultMessage: 'Earn ~{apyPercent}% <t>APY</t> by staking your {symbol} with Trezor.',
-    },
-    TR_STAKE_EARN_APY_BY_STAKING: {
-        id: 'TR_STAKE_EARN_APY_BY_STAKING',
-        defaultMessage: 'Earn ~{apyPercent}% APY by staking your {symbol}',
-    },
-    TR_STAKE_FULL_BALANCE_AND_EARN: {
-        id: 'TR_STAKE_FULL_BALANCE_AND_EARN',
-        defaultMessage:
-            'Stake your full balance and earn around {amount} {symbol}/year at the current APY. Your {symbol} stay in your account, ready to use anytime—while helping secure the network.',
     },
     TR_STAKE_USE_ANYTIME: {
         id: 'TR_STAKE_USE_ANYTIME',
@@ -9741,10 +9630,6 @@ export default defineMessages({
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
-    },
-    TR_STAKE_EXPECTED_REWARDS: {
-        id: 'TR_STAKE_EXPECTED_REWARDS',
-        defaultMessage: 'Next estimated reward in ~{count, plural, one {# day} other {# days}}',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
@@ -10432,10 +10317,6 @@ export default defineMessages({
     TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN: {
         id: 'TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN',
         defaultMessage: 'Check tips & try again',
-    },
-    TR_BLUETOOTH_X_TREZORS_FOUND: {
-        id: 'TR_BLUETOOTH_X_TREZORS_FOUND',
-        defaultMessage: '{number} Trezors found',
     },
     TR_BLUETOOTH_SCAN_AGAIN: {
         id: 'TR_BLUETOOTH_SCAN_AGAIN',
