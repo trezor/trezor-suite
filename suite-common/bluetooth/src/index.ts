@@ -2,6 +2,7 @@ export type {
     BluetoothManufacturerData,
     BluetoothScanStatus,
     BluetoothFilterPolicy,
+    BluetoothAutoConnectPolicy,
     DeviceBluetoothConnectionStatusType,
 } from './types';
 export type { BluetoothState } from './bluetoothReducer';
@@ -15,6 +16,7 @@ export {
     selectAdapterStatus,
     selectScanStatus,
     selectNearbyDevices,
+    selectAutoConnectPolicy,
 } from './bluetoothSelectors';
 
 export { filterOutOldDuplicatesByName } from './filterOutOldDuplicatesByName';

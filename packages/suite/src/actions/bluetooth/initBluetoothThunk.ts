@@ -3,6 +3,7 @@ import {
     bluetoothActions,
     filterOutOldDuplicatesByName,
     selectAdapterStatus,
+    selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
@@ -70,18 +71,37 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             const connectingDevices = selectConnectingDevices(getState());
             const adapterStatus = selectAdapterStatus(getState());
 
-            if (!knownDevice || adapterStatus === 'power-suspending') {
+            if (adapterStatus === 'power-suspending') {
                 // system is going to sleep
                 return;
             }
 
+            if (!knownDevice || connectingDevices.includes(knownDevice.id)) {
+                return;
+            }
+
             // do not hijack BT connection
+            const autoConnectPolicy = selectAutoConnectPolicy(getState());
+            const devicePolicy = autoConnectPolicy[knownDevice.id];
             const isConnectable =
                 device.connectionStatus.type === 'disconnected' &&
-                !device.manufacturerData.filterPolicy?.user_disconnected &&
+                devicePolicy?.type !== 'autoconnect-disabled' &&
                 !device.manufacturerData.filterPolicy?.pairing;
 
-            if (isConnectable && !connectingDevices.includes(device.id)) {
+            // NOTE
+            // linux is caching manufacturerData
+            // they will be always received as device is in pairing mode even if it not (until adapter reconnection)
+            // manufacturerData are updates are sent properly only if there are 2 apps paired with one trezor and both are enabled (desktop + mobile)
+            // TODO: in case of complains regarding auto reconnection on linux enable timeout based on recent disconnection timestamp
+            // if (
+            //     devicePolicy?.type === 'recently-disconnected' &&
+            //     knownDevice.manufacturerData.filterPolicy?.pairing &&
+            //     Date.now() - devicePolicy.timestamp < 10000
+            // ) {
+            //     isConnectable = false;
+            // }
+
+            if (isConnectable) {
                 await dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
             }
         };
