@@ -240,28 +240,20 @@ export const selectReviewSummaryOutputState = (
     return undefined;
 };
 
-export const selectReviewSummaryOutput = (
-    state: TransactionReviewOutputsState,
-    prefix: FormDraftWithSendKeyPrefix,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-) => {
-    const precomposedTx = selectSendPrecomposedTx(state);
+export const selectReviewSummaryOutput = createSendMemoizedSelector(
+    [selectSendPrecomposedTx, selectReviewSummaryOutputState],
+    (precomposedTx, outputState) => {
+        if (!precomposedTx) {
+            return null;
+        }
 
-    if (!precomposedTx) {
-        return null;
-    }
-
-    const { totalSpent, fee } = precomposedTx;
-
-    const outputState = selectReviewSummaryOutputState(state, prefix, accountKey, tokenContract);
-
-    return {
-        state: outputState as ReviewOutputState,
-        totalSpent,
-        fee,
-    };
-};
+        return {
+            state: outputState as ReviewOutputState,
+            totalSpent: precomposedTx.totalSpent,
+            fee: precomposedTx.fee,
+        };
+    },
+);
 
 export const selectTransactionReviewActiveStepIndex = (
     state: TransactionReviewOutputsState,
