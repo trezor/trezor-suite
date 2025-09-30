@@ -9,7 +9,12 @@ export class NativeBluetoothTransport extends AbstractApiTransport {
     constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
         const { logger, ...rest } = params;
 
-        const api = new BluetoothApi({ logger });
+        const api = new BluetoothApi({
+            logger:
+                process.env.EXPO_PUBLIC_IS_NATIVE_BLUETOOTH_LOGGER_ENABLED === 'true'
+                    ? console
+                    : logger,
+        });
         api.on('trezor-push-notification', event => {
             this.emit('trezor-push-notification', event);
         });

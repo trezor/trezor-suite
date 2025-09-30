@@ -84,6 +84,7 @@ You can override ENV variables locally using `.env.development.local` (or `.env.
 - `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally,
 - `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally and
 - `EXPO_PUBLIC_IS_NATIVE_USB_LOGGER_ENABLED=true` to debug @trezor/transport-native-usb locally.
+- `EXPO_PUBLIC_IS_NATIVE_BLUETOOTH_LOGGER_ENABLED=true` to debug @trezor/transport-native-bluetooth locally.
 - `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../feature-flags/src/featureFlagsSlice.ts) for all available values.
 
 ## Native changes - bumping runtimeVersion
