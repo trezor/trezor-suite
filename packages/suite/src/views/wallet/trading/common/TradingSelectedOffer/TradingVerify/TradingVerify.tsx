@@ -43,6 +43,9 @@ export const TradingVerify = ({
         selectedAccountOption?.type,
     );
 
+    const networkType = selectedAccountOption?.account?.networkType;
+    const isBitcoinOrCardano = networkType === 'bitcoin' || networkType === 'cardano';
+
     const address = form.watch('address');
 
     const extraFieldDescription = exchangeQuote?.extraFieldDescription
@@ -103,27 +106,26 @@ export const TradingVerify = ({
 
             {selectedAccountOption && (
                 <Column gap={spacings.sm}>
-                    {selectedAccountOption?.type === 'SUITE' &&
-                        selectedAccountOption?.account?.networkType === 'bitcoin' && (
-                            <TradingAddressOptions
-                                account={selectedAccountOption?.account}
-                                address={address}
-                                control={form.control}
-                                receiveSymbol={cryptoId}
-                                setValue={form.setValue}
-                                isDisabled={isLoading}
-                                label={
-                                    <Tooltip
-                                        hasIcon
-                                        content={<Translation id={addressTooltipTranslationId} />}
-                                    >
-                                        <Translation id="TR_BUY_RECEIVING_ADDRESS" />
-                                    </Tooltip>
-                                }
-                            />
-                        )}
+                    {selectedAccountOption?.type === 'SUITE' && isBitcoinOrCardano && (
+                        <TradingAddressOptions
+                            account={selectedAccountOption?.account}
+                            address={address}
+                            control={form.control}
+                            receiveSymbol={cryptoId}
+                            setValue={form.setValue}
+                            isDisabled={isLoading}
+                            label={
+                                <Tooltip
+                                    hasIcon
+                                    content={<Translation id={addressTooltipTranslationId} />}
+                                >
+                                    <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                                </Tooltip>
+                            }
+                        />
+                    )}
 
-                    {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
+                    {!isBitcoinOrCardano && (
                         <Input
                             data-testid="@trading/form/verify/address"
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
