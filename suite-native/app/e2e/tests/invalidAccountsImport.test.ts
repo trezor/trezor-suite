@@ -13,18 +13,20 @@ const goToBtcImportXpubScreen = async () => {
     await onAccountImport.selectCoin({ networkSymbol: 'btc' });
 };
 
+const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
+
 describe('Import invalid accounts', () => {
     beforeAll(async () => {
         await openApp({
             newInstance: true,
             args: {
-                preloadedState: preparePreloadedReduxState(onboardingCompletedState),
+                preloadedState,
             },
         });
     });
 
     beforeEach(async () => {
-        await restartApp();
+        await restartApp({ args: { preloadedState } });
         await appIsFullyLoaded();
         await goToBtcImportXpubScreen();
     });
