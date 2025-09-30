@@ -48,7 +48,7 @@ const shareTwoOfThree = [
 
 test.describe(
     'Onboarding - T2T1 in recovery mode',
-    { tag: ['@group=device-management', '@webOnly'] },
+    { tag: ['@group=device-management', '@webOnly', '@specificModel'] },
     () => {
         test.use({
             emulatorStartConf: { wipe: true, model: 'T2T1' },

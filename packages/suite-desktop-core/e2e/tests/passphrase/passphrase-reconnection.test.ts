@@ -1,9 +1,10 @@
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { getModelTag } from '../../support/helpers/modelFromEnv';
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 
-test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
+test.describe('Passphrase reconnection', { tag: ['@group=passphrase', getModelTag()] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();

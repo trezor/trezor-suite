@@ -9,6 +9,7 @@ import {
 } from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { getModelTag } from '../../support/helpers/modelFromEnv';
 
 // Expected values based on our mocked responses
 const fiatAmount = sellQuotesEthereum[0].fiatStringAmount;
@@ -32,78 +33,85 @@ const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalP
 );
 */
 
-test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
-    test.beforeEach(
-        async ({
-            page,
-            tradingMock,
-            tradingPage,
-            onboardingPage,
-            dashboardPage,
-            settingsPage,
-            walletPage,
-        }) => {
-            await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.sellQuotes, async route => {
-                    await route.fulfill({ json: sellQuotesEthereum });
+test.describe(
+    'Trading - Sell Ethereum',
+    { tag: ['@group=trading', '@webOnly', getModelTag()] },
+    () => {
+        test.use({
+            emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+        });
+        test.beforeEach(
+            async ({
+                page,
+                tradingMock,
+                tradingPage,
+                onboardingPage,
+                dashboardPage,
+                settingsPage,
+                walletPage,
+            }) => {
+                await test.step('Mocking responses', async () => {
+                    await page.route(invityEndpoint.sellQuotes, async route => {
+                        await route.fulfill({ json: sellQuotesEthereum });
+                    });
+                    await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereum);
+                    await page.route(invityEndpoint.sellWatch, async route => {
+                        await route.fulfill({ json: sellWatchEthereum });
+                    });
                 });
-                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereum);
-                await page.route(invityEndpoint.sellWatch, async route => {
-                    await route.fulfill({ json: sellWatchEthereum });
+                await onboardingPage.completeOnboarding();
+
+                await test.step('Enable Ethereum and open its token sell trading', async () => {
+                    await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
+                    await dashboardPage.deviceSwitchingOpenButton.click();
+                    await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+                    await walletPage.openTrading({ symbol: 'eth' });
+                    await tradingPage.sellTabButton.click();
                 });
+            },
+        );
+
+        test('Sell Ethereum', async ({ tradingPage, devicePrompt }) => {
+            await test.step('Fill in a sell request', async () => {
+                await tradingPage.fees.setEthereumCustomFees({
+                    gasLimit,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                });
+                await tradingPage.fillSellForm(cryptoAmount, 'ethereum');
+                await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
+                await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
             });
-            await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Ethereum and open its token sell trading', async () => {
-                await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
-                await dashboardPage.deviceSwitchingOpenButton.click();
-                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-                await walletPage.openTrading({ symbol: 'eth' });
-                await tradingPage.sellTabButton.click();
+            await test.step('Confirm sell', async () => {
+                await tradingPage.sellBestOfferButton.click();
+                await tradingPage.termsConfirmButton.click();
             });
-        },
-    );
 
-    test('Sell Ethereum', async ({ tradingPage, devicePrompt }) => {
-        await test.step('Fill in a sell request', async () => {
-            await tradingPage.fees.setEthereumCustomFees({
-                gasLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
+            await tradingPage.waitForRedirectCompletion();
+
+            await test.step('Verify all confirmation values', async () => {
+                await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+                await expect(tradingPage.confirmationCryptoAmount).toHaveText(
+                    formattedCryptoAmount,
+                );
+                await expect(tradingPage.confirmationProvider).toHaveText(provider);
+                await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+                await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
+                await expect(tradingPage.confirmationAccount).toHaveText('Ethereum #1');
             });
-            await tradingPage.fillSellForm(cryptoAmount, 'ethereum');
-            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
-        });
 
-        await test.step('Confirm sell', async () => {
-            await tradingPage.sellBestOfferButton.click();
-            await tradingPage.termsConfirmButton.click();
-        });
+            await test.step('Initiate send', async () => {
+                await tradingPage.openConfirmAndSendModal();
+                await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    formattedCryptoAmount,
+                );
+            });
 
-        await tradingPage.waitForRedirectCompletion();
-
-        await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
-            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
-            await expect(tradingPage.confirmationAccount).toHaveText('Ethereum #1');
-        });
-
-        await test.step('Initiate send', async () => {
-            await tradingPage.openConfirmAndSendModal();
-            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
-            await devicePrompt.waitForPromptAndClick();
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
-            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
-                formattedCryptoAmount,
-            );
-        });
-
-        /*TODO: Uncomment once bug #19186 is resolved
+            /*TODO: Uncomment once bug #19186 is resolved
         const { ethereumMaximumFee, errorMessageMaxCalculation } =
             tradingPage.fees.calculateEthereumMaxFee({
                 gasLimit,
@@ -152,6 +160,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
         });
         */
 
-        // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
-    });
-});
+            // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
+        });
+    },
+);
