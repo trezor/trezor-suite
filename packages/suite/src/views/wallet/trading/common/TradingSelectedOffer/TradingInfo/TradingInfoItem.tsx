@@ -23,6 +23,19 @@ import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
+function isFormStepWithAccountLabel({
+    formStep,
+    isReceive,
+    account,
+    type,
+}: Pick<TradingInfoItemProps, 'formStep' | 'isReceive' | 'account' | 'type'>): boolean {
+    return Boolean(
+        (['SEND_TRANSACTION', 'SIGN_DATA'].includes(formStep!) || !isReceive) &&
+            account &&
+            type !== 'sell',
+    );
+}
+
 interface TradingInfoItemProps {
     account?: Account;
     type: TradingType;
@@ -48,10 +61,7 @@ export const TradingInfoItem = ({
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
-    const showAccountLabel =
-        (['SEND_TRANSACTION', 'SIGN_DATA'].find(f => f === formStep) || !isReceive) &&
-        account &&
-        type !== 'sell';
+    const showAccountLabel = isFormStepWithAccountLabel({ formStep, isReceive, account, type });
 
     // `account` is undefined for external addresses
     const isExternalBuyOrExchange =
