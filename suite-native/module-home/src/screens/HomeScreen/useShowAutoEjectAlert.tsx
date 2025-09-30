@@ -1,5 +1,7 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -37,60 +39,62 @@ export const useShowAutoEjectAlert = () => {
         [],
     );
 
-    useEffect(() => {
-        if (shouldShowSystemUnpairingAlert) {
-            // The alert regarding system unpairing has a higher priority.
-            return;
-        }
-        if (!hasAutoEjectAlertBeenDisplayed && shouldShowAutoEjectAlert) {
-            showAlert({
-                appendix: (
-                    <VStack alignItems="center" spacing="sp24" testID="@home/alert/view-only">
-                        <AutoEjectAnimation />
-                        <CenteredTitleHeader
-                            title={
-                                <Translation id="moduleSettings.viewOnly.autoEject.alert.title" />
-                            }
-                            subtitle={
-                                <Translation id="moduleSettings.viewOnly.autoEject.alert.subtitle" />
-                            }
-                        />
-                    </VStack>
-                ),
-                primaryButtonTitle: (
-                    <Translation id="moduleSettings.viewOnly.autoEject.alert.primaryButtonTitle" />
-                ),
-                onPressPrimaryButton: () => {
-                    reportAutoEjectToAnalytics('skip');
-                    dispatch(setHasAutoEjectAlertBeenDisplayed(true));
-                },
-                secondaryButtonTitle: (
-                    <Translation id="moduleSettings.viewOnly.autoEject.alert.secondaryButtonTitle" />
-                ),
-                onPressSecondaryButton: () => {
-                    dispatch(setHasAutoEjectAlertBeenDisplayed(true));
-                    dispatch(toggleAutoEjectThunk());
-                    reportAutoEjectToAnalytics('enable');
-                    showToast({
-                        message: (
-                            <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />
-                        ),
-                        variant: 'default',
-                    });
-                },
-            });
-        }
-        if (!shouldShowAutoEjectAlert) {
-            hideAlert();
-        }
-    }, [
-        dispatch,
-        hasAutoEjectAlertBeenDisplayed,
-        hideAlert,
-        reportAutoEjectToAnalytics,
-        shouldShowAutoEjectAlert,
-        shouldShowSystemUnpairingAlert,
-        showAlert,
-        showToast,
-    ]);
+    useFocusEffect(
+        useCallback(() => {
+            if (shouldShowSystemUnpairingAlert) {
+                // The alert regarding system unpairing has a higher priority.
+                return;
+            }
+            if (!hasAutoEjectAlertBeenDisplayed && shouldShowAutoEjectAlert) {
+                showAlert({
+                    appendix: (
+                        <VStack alignItems="center" spacing="sp24" testID="@home/alert/view-only">
+                            <AutoEjectAnimation />
+                            <CenteredTitleHeader
+                                title={
+                                    <Translation id="moduleSettings.viewOnly.autoEject.alert.title" />
+                                }
+                                subtitle={
+                                    <Translation id="moduleSettings.viewOnly.autoEject.alert.subtitle" />
+                                }
+                            />
+                        </VStack>
+                    ),
+                    primaryButtonTitle: (
+                        <Translation id="moduleSettings.viewOnly.autoEject.alert.primaryButtonTitle" />
+                    ),
+                    onPressPrimaryButton: () => {
+                        reportAutoEjectToAnalytics('skip');
+                        dispatch(setHasAutoEjectAlertBeenDisplayed(true));
+                    },
+                    secondaryButtonTitle: (
+                        <Translation id="moduleSettings.viewOnly.autoEject.alert.secondaryButtonTitle" />
+                    ),
+                    onPressSecondaryButton: () => {
+                        dispatch(setHasAutoEjectAlertBeenDisplayed(true));
+                        dispatch(toggleAutoEjectThunk());
+                        reportAutoEjectToAnalytics('enable');
+                        showToast({
+                            message: (
+                                <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />
+                            ),
+                            variant: 'default',
+                        });
+                    },
+                });
+            }
+            if (!shouldShowAutoEjectAlert) {
+                hideAlert();
+            }
+        }, [
+            dispatch,
+            hasAutoEjectAlertBeenDisplayed,
+            hideAlert,
+            reportAutoEjectToAnalytics,
+            shouldShowAutoEjectAlert,
+            shouldShowSystemUnpairingAlert,
+            showAlert,
+            showToast,
+        ]),
+    );
 };
