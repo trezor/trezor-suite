@@ -24,6 +24,8 @@ on:
         required: true
       CURRENTS_RECORD_KEY:
         required: true
+      SLACK_MOBILE_E2E_WEBHOOK:
+        required: true
 
 jobs:
   run_android_e2e_tests:
