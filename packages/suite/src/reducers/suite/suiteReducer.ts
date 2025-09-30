@@ -15,7 +15,6 @@ import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
-import { ensureLocale } from 'src/utils/suite/l10n';
 
 import { setLocalFirstStorageRelayAction } from '../../actions/settings/settingsActions';
 
@@ -191,7 +190,7 @@ const initialState: SuiteState = {
         theme: {
             variant: 'light',
         },
-        language: ensureLocale('en-US'),
+        language: 'en-US',
         torOnionLinks: isWeb(),
         isCoinjoinReceiveWarningHidden: false,
         isDesktopSuitePromoHidden: false,

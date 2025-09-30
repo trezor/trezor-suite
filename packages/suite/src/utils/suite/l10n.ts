@@ -21,8 +21,3 @@ export const watchOsLocale = (callback: (loc: Locale) => void) => {
 
     return () => window.removeEventListener('languagechange', onLanguageChange);
 };
-
-/**
- * Ensure locale is valid and return it, otherwise return defaultLocale.
- */
-export const ensureLocale = (loc: string): Locale => (isLocale(loc) ? loc : DEFAULT_LOCALE);
