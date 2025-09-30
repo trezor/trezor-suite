@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsThpInProgress } from '@suite-common/thp';
 import {
     acquireDevice,
     deviceActions,
@@ -70,6 +71,7 @@ export const useDetectDeviceError = () => {
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const shouldShowSystemUnpairingAlert = useSelector(selectShouldShowSystemUnpairingAlert);
+    const isThpInProgress = useSelector(selectIsThpInProgress);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -113,7 +115,7 @@ export const useDetectDeviceError = () => {
                 },
                 testID: '@device/errors/alert/unacquired-device',
             });
-        } else {
+        } else if (!isThpInProgress) {
             hideAlert();
         }
     }, [
@@ -124,6 +126,7 @@ export const useDetectDeviceError = () => {
         dispatch,
         hideAlert,
         showAlert,
+        isThpInProgress,
     ]);
 
     useEffect(() => {
