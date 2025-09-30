@@ -2,6 +2,7 @@ export type LocaleInfo = {
     name: string;
     en: string;
     type: 'official' | 'community';
+    nameInOsStartsWith?: string;
 };
 
 // If you are adding language, add it to suite/package.json translations:download script too
@@ -18,8 +19,18 @@ export const LANGUAGES = {
     'ru-RU': { name: 'Русский', en: 'Russian', type: 'community' },
     'tr-TR': { name: 'Türkçe', en: 'Turkish', type: 'community' },
     'uk-UA': { name: 'Українська', en: 'Ukrainian', type: 'community' },
-    'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified', type: 'community' },
-    'zh-TW': { name: '中文(繁體)', en: 'Chinese Traditional', type: 'community' },
+    'zh-CN': {
+        name: '中文(简体)',
+        en: 'Chinese Simplified',
+        type: 'community',
+        nameInOsStartsWith: 'zh-Hans',
+    },
+    'zh-TW': {
+        name: '中文(繁體)',
+        en: 'Chinese Traditional',
+        type: 'community',
+        nameInOsStartsWith: 'zh-Hant',
+    },
 } as const satisfies Record<string, LocaleInfo>;
 
 export type Locale = keyof typeof LANGUAGES;
