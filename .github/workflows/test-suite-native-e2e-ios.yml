@@ -3,10 +3,9 @@ name: "[Test] suite-native iOS E2E"
 on:
   schedule:
     - cron: "0 0 * * *"
-  # FIXME:Disabled for now, iOS tests are failing
-  # push:
-  #   branches:
-  #     - release-native/*
+  push:
+    branches:
+      - release-native/*
   workflow_dispatch:
     inputs:
       publish_results_to_github:
@@ -64,18 +63,18 @@ jobs:
       - name: Use latest stable Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 16.1.0
+          xcode-version: "26.0.1"
 
       - name: Build a Detox test app
         working-directory: ./suite-native/app
-        run: $DETOX_BINARY_PATH build  --configuration ios.sim.release
+        run: npx detox build --configuration ios.sim.release
 
       - name: Store build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-test-build
           path: |
-            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteLiteDebug.app
+            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
 
   run_ios_e2e_tests:
     runs-on: macos-latest
@@ -131,7 +130,7 @@ jobs:
         with:
           name: ios-test-build
           path: |
-            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteLiteDebug.app
+            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
 
       - name: Prepare iPhone 11 Simulator
         run: xcrun simctl create "iPhone 11"  com.apple.CoreSimulator.SimDeviceType.iPhone-11
@@ -144,7 +143,7 @@ jobs:
           GITHUB_REPORTER_VERBOSE: false
           RELEASE_BUILD: ${{ env.release_build }}
         run: |
-          $DETOX_BINARY_PATH clean-framework-cache && $DETOX_BINARY_PATH build-framework-cache
+          npx detox clean-framework-cache && npx detox build-framework-cache
           yarn test:e2e ios.sim.release --headless --take-screenshots failing --record-videos failing
 
       - name: Upload results to Currents.dev
@@ -168,3 +167,12 @@ jobs:
         with:
           name: failed-ios-tests
           path: suite-native/app/artifacts
+
+  notify_scheduled_failure_to_slack:
+    runs-on: ubuntu-latest
+    if: ${{ failure() && github.event_name == 'schedule' }}
+    needs: run_ios_e2e_tests
+    steps:
+      - name: Notify scheduled job failure to Slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly iOS :ios: E2E tests failed :7952-pepeyikes: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' "${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}"
