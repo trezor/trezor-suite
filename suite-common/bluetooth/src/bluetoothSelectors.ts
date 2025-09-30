@@ -46,3 +46,7 @@ export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
 
 export const selectScanStatus = <T extends BluetoothDeviceCommon>(state: WithBluetoothState<T>) =>
     state.bluetooth.scanStatus;
+
+export const selectAutoConnectPolicy = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+) => state.bluetooth.autoConnectPolicy;

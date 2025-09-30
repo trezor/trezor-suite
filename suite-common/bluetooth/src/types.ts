@@ -18,6 +18,10 @@ export type BluetoothFilterPolicy = {
     user_disconnected: boolean; // manual disconnection do the device
 };
 
+export type BluetoothAutoConnectPolicy =
+    | { type: 'recently-disconnected'; timestamp: number }
+    | { type: 'autoconnect-disabled' };
+
 export type BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal;
     deviceColor: number; // TODO: add proper strict type, plain number is currently used in the codebase

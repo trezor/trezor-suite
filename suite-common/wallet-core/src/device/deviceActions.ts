@@ -7,7 +7,13 @@ import {
     ThpSuiteCredentials,
     TrezorDevice,
 } from '@suite-common/suite-types';
-import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
+import {
+    DEVICE,
+    DecodedTrezorPushNotification,
+    Device,
+    DeviceState,
+    StaticSessionId,
+} from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -32,6 +38,13 @@ const connectUnacquiredDevice = createAction(
 const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device) => ({
     payload,
 }));
+
+const devicePushNotification = createAction(
+    DEVICE.TREZOR_PUSH_NOTIFICATION,
+    (payload: DecodedTrezorPushNotification & { device: Device }) => ({
+        payload,
+    }),
+);
 
 const setDeviceState = createAction(
     `${DEVICE_MODULE_PREFIX}/set-device-state`,
@@ -177,4 +190,5 @@ export const deviceActions = {
     setLocalFirstStorageSecretRetrieving,
     toggleIsDeviceAutoEjectEnabled,
     setDiscovered,
+    devicePushNotification,
 };

@@ -2,10 +2,16 @@ import { AnyAction, Draft } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { DeviceConnectActionPayload, deviceActions } from '@suite-common/wallet-core';
+import { TrezorPushNotificationType } from '@trezor/connect';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
-import { BluetoothAdapterStatus, BluetoothDeviceCommon, BluetoothScanStatus } from './types';
+import {
+    BluetoothAdapterStatus,
+    BluetoothAutoConnectPolicy,
+    BluetoothDeviceCommon,
+    BluetoothScanStatus,
+} from './types';
 
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
     adapterStatus: BluetoothAdapterStatus;
@@ -16,6 +22,7 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     // (because we already successfully paired them in the Suite) in the Operating System
     knownDevices: T[];
     ignoredDeviceIds: string[];
+    autoConnectPolicy: Record<string, BluetoothAutoConnectPolicy | undefined>;
 };
 
 export const prepareInitialState = <T extends BluetoothDeviceCommon>(): BluetoothState<T> => ({
@@ -24,6 +31,7 @@ export const prepareInitialState = <T extends BluetoothDeviceCommon>(): Bluetoot
     nearbyDevices: null,
     knownDevices: [] as T[],
     ignoredDeviceIds: [],
+    autoConnectPolicy: {},
 });
 
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
@@ -104,6 +112,9 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     }
                 }
             })
+            .addCase(bluetoothActions.setAutoConnectPolicyAction, (state, { payload }) => {
+                state.autoConnectPolicy[payload.id] = payload.policy;
+            })
 
             .addMatcher(
                 action =>
@@ -131,6 +142,43 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                         );
                         if (foundKnownDevice === undefined) {
                             state.knownDevices.push(device);
+                        } else {
+                            delete state.autoConnectPolicy[bluetoothProps.id];
+                        }
+                    }
+                },
+            )
+            .addMatcher(
+                action => action.type === deviceActions.deviceDisconnect.type,
+                (state, { payload }: ReturnType<typeof deviceActions.deviceDisconnect>) => {
+                    const id = payload.bluetoothProps?.id;
+                    const affectedDevice = id && state.knownDevices.find(it => it.id === id);
+                    if (
+                        affectedDevice &&
+                        state.autoConnectPolicy[id]?.type !== 'autoconnect-disabled'
+                    ) {
+                        state.autoConnectPolicy[id] = {
+                            type: 'recently-disconnected',
+                            timestamp: Date.now(),
+                        };
+                    }
+                },
+            )
+            .addMatcher(
+                action => action.type === deviceActions.devicePushNotification.type,
+                (
+                    state,
+                    {
+                        payload: { device, type },
+                    }: ReturnType<typeof deviceActions.devicePushNotification>,
+                ) => {
+                    if (type === TrezorPushNotificationType.DISCONNECT) {
+                        const id = device.bluetoothProps?.id;
+                        const affectedDevice = id && state.knownDevices.find(it => it.id === id);
+                        if (affectedDevice) {
+                            state.autoConnectPolicy[id] = {
+                                type: 'autoconnect-disabled',
+                            };
                         }
                     }
                 },

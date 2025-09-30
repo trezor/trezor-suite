@@ -4,6 +4,7 @@ import { BluetoothDeviceId } from '@trezor/connect';
 
 import {
     BluetoothAdapterStatus,
+    BluetoothAutoConnectPolicy,
     BluetoothDeviceCommon,
     BluetoothScanStatus,
     DeviceBluetoothConnectionStatus,
@@ -70,6 +71,13 @@ const scanStatusAction = createAction(
     ({ status }: { status: BluetoothScanStatus }) => ({ payload: { status } }),
 );
 
+const setAutoConnectPolicyAction = createAction(
+    `${BLUETOOTH_PREFIX}/set-autoconnect-policy`,
+    ({ id, policy }: { id: string; policy: BluetoothAutoConnectPolicy }) => ({
+        payload: { id, policy },
+    }),
+);
+
 export const bluetoothActions = {
     adapterEventAction,
     nearbyDevicesUpdateAction,
@@ -78,4 +86,5 @@ export const bluetoothActions = {
     knownDevicesUpdateAction,
     removeKnownDeviceAction,
     updateDeviceConnectionStatus,
+    setAutoConnectPolicyAction,
 };

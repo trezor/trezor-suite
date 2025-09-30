@@ -26,6 +26,7 @@ export const initialAppState: AppState = {
         nearbyDevices: null,
         knownDevices: [],
         ignoredDeviceIds: [],
+        autoConnectPolicy: {},
     },
     thp: {
         step: null,
