@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { selectThpStep } from '@suite-common/thp';
-import { selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import {
     AuthorizeDeviceStackParamList,
@@ -24,24 +23,17 @@ export const ThpConfirmationScreen = ({
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { showThpAutoconnectEnableAlert } = useThpAutoconnectAlerts();
 
-    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
     const thpStep = useSelector(selectThpStep);
 
     useEffect(() => {
-        if (isDeviceThpRequired && thpStep === null) {
-            navigateToInitialScreen();
-        } else if (thpStep === 'CodeEntry') {
+        if (thpStep === 'CodeEntry') {
             navigation.navigate(AuthorizeDeviceStackRoutes.ThpCodeEntry);
         } else if (thpStep === 'AutoconnectInfo') {
             showThpAutoconnectEnableAlert();
+        } else if (thpStep === null) {
+            navigateToInitialScreen();
         }
-    }, [
-        isDeviceThpRequired,
-        thpStep,
-        navigateToInitialScreen,
-        navigation,
-        showThpAutoconnectEnableAlert,
-    ]);
+    }, [thpStep, navigateToInitialScreen, navigation, showThpAutoconnectEnableAlert]);
 
     return (
         <Screen
