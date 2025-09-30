@@ -1,6 +1,6 @@
-import { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { TradingType } from '@suite-common/trading';
+import { TradingTradeType, isBuyTrade, isExchangeTrade } from '@suite-common/trading';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -13,6 +13,14 @@ import { TradingInfoPaymentMethod } from 'src/views/wallet/trading/common/Tradin
 import { TradingInfoProvider } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoProvider';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
 import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
+
+function getReceiveAddress(selectedQuote: TradingTradeType) {
+    if (!isExchangeTrade(selectedQuote) && !isBuyTrade(selectedQuote)) {
+        return undefined;
+    }
+
+    return selectedQuote.receiveAddress;
+}
 
 export const TradingSelectedOfferInfo = ({
     account,
@@ -50,12 +58,7 @@ export const TradingSelectedOfferInfo = ({
             currency={quoteAmounts?.receiveCurrency}
             amount={quoteAmounts?.receiveAmount}
             formStep={formStep}
-            receiveAddress={
-                // A better solution would be to add type (e.g. `exchange` to `ExchangeTrade`) to each union item in `TradingTradeType` so it's easy to narrow down the type.
-                (['exchange', 'buy'] satisfies TradingType[]).find(t => t === type)
-                    ? (selectedQuote as ExchangeTrade | BuyTrade).receiveAddress
-                    : undefined
-            }
+            receiveAddress={getReceiveAddress(selectedQuote)}
             isReceive
         />,
     ];
