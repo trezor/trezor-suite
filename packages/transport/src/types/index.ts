@@ -22,6 +22,8 @@ export type DescriptorApiLevel = {
     /** only reported by old bridge */
     vendor?: number;
     apiType: ApiType;
+    /** api level device id.  */
+    id?: string;
 };
 
 export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
@@ -33,10 +35,6 @@ export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
     debugSession?: null | Session;
     /** only reported by old bridge */
     debug?: boolean;
-    /** api level device id.  */
-    id?: string;
-    // todo: make it required
-    apiType: ApiType;
 };
 
 export interface Logger {
