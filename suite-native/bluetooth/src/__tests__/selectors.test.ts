@@ -13,6 +13,9 @@ import { BluetoothDevice } from '../types';
 
 const initialState: NativeBluetoothState = {
     ...prepareInitialState<BluetoothDevice>(),
+    autoConnectPolicy: {
+        '1ec77690-be29-43c6-8859-dfeca15c7c0f': { type: 'autoconnect-disabled' },
+    },
     permissionStatus: 'granted',
     shouldShowSystemUnpairingAlert: false,
 };
@@ -44,12 +47,18 @@ const knownDevice: BluetoothDevice = {
         },
     },
 };
+const knownAutoConnectDisabledDevice: BluetoothDevice = {
+    ...knownDevice,
+    id: asBluetoothDeviceId('1ec77690-be29-43c6-8859-dfeca15c7c0f'),
+};
 const knownConnectingDevice: BluetoothDevice = {
     ...knownDevice,
+    id: asBluetoothDeviceId('2d000bf2-b8b7-4920-b907-540507c4562e'),
     connectionStatus: { type: 'connecting' },
 };
 const knownPairableDevice: BluetoothDevice = {
     ...knownDevice,
+    id: asBluetoothDeviceId('32ca56ec-9835-4ffd-a191-c11c43199abe'),
     manufacturerData: {
         ...knownDevice.manufacturerData,
         filterPolicy: {
@@ -57,6 +66,19 @@ const knownPairableDevice: BluetoothDevice = {
             connected: false,
             bond_memory_full: false,
             user_disconnected: false,
+        },
+    },
+};
+const knownUserDisconnectedDevice: BluetoothDevice = {
+    ...knownDevice,
+    id: asBluetoothDeviceId('703c0b54-6b17-423a-9221-04353ceec796'),
+    manufacturerData: {
+        ...knownDevice.manufacturerData,
+        filterPolicy: {
+            pairing: false,
+            connected: false,
+            bond_memory_full: false,
+            user_disconnected: true,
         },
     },
 };
@@ -143,9 +165,22 @@ describe('selectKnownConnectableBluetoothDevices', () => {
         ['empty nearby devices', [], [knownDevice], []],
         ['no known devices', [knownDevice], [], []],
         [
-            'one known device',
-            [pairableDevice, knownDevice, knownConnectingDevice, knownPairableDevice],
-            [knownDevice],
+            'some known devices',
+            [
+                pairableDevice,
+                knownDevice,
+                knownAutoConnectDisabledDevice,
+                knownConnectingDevice,
+                knownPairableDevice,
+                knownUserDisconnectedDevice,
+            ],
+            [
+                knownDevice,
+                knownAutoConnectDisabledDevice,
+                knownConnectingDevice,
+                knownPairableDevice,
+                knownUserDisconnectedDevice,
+            ],
             [knownDevice],
         ],
     ])('returns correct value for %s', (_, nearbyDevices, knownDevices, expectedDevices) => {
