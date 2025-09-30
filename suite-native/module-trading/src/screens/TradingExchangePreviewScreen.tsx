@@ -1,20 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
-import { Button, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
-    ScreenHeader,
     StackProps,
     TradingStackParamList,
     TradingStackRoutes,
@@ -22,10 +16,12 @@ import {
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
-import { ExchangeTradePreviewCard } from '../components/exchange/ExchangeTradePreviewCard';
-import { FeePickerCard } from '../components/fees/FeePickerCard';
+import {
+    ExchangePreviewContinueButton,
+    ExchangePreviewScreenHeader,
+    ExchangePreviewView,
+} from '../components/exchange/ExchangePreview';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
-import { useChangeStringsExtractor } from '../hooks/history/useChangeStringsExtractor';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -46,9 +42,7 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
-    const precomposedTransaction = useSelector(selectSendPrecomposedTx);
     const hasRequestedTradeConfirmation = useRef(false);
-    const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 
@@ -56,14 +50,6 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
 
     const [isConfirmationErrorRequested, setIsConfirmationErrorRequested] =
         useState<boolean>(false);
-
-    // clear trading state on unmount
-    useEffect(
-        () => () => {
-            dispatch(clearTradingStateThunk());
-        },
-        [dispatch],
-    );
 
     const handleConfirmTrade = useCallback(async () => {
         const addressText = getReceiveAccountAddressText(toAccount);
@@ -92,6 +78,28 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
             console.error('Failed to confirm trade', e);
         }
     }, [confirmTrade, debounce, fetchFeesAndCompose, quote, toAccount]);
+
+    const onSignTransactionNavigation = useCallback(() => {
+        hasRequestedTradeConfirmation.current = false;
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!hasRequestedTradeConfirmation.current) {
+                hasRequestedTradeConfirmation.current = true;
+
+                handleConfirmTrade();
+            }
+        }, [handleConfirmTrade]),
+    );
+
+    // clear trading state on unmount
+    useEffect(
+        () => () => {
+            dispatch(clearTradingStateThunk());
+        },
+        [dispatch],
+    );
 
     useEffect(() => {
         if (isConfirmationErrorRequested) {
@@ -124,99 +132,14 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
         showAlert,
     ]);
 
-    useFocusEffect(
-        useCallback(() => {
-            if (!hasRequestedTradeConfirmation.current) {
-                hasRequestedTradeConfirmation.current = true;
-
-                handleConfirmTrade();
-            }
-        }, [handleConfirmTrade]),
-    );
-
-    const handleSignTransaction = () => {
-        if (!quote || !fromAccount) {
-            console.warn('quote or fromAccount is not defined', quote, fromAccount);
-
-            return;
-        }
-
-        const tokenContract = quote.send
-            ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
-            : undefined;
-
-        navigation.navigate({
-            name: TradingStackRoutes.TradingOutputsReview,
-            params: {
-                tradingType: 'exchange',
-                accountKey: fromAccount.key,
-                tokenContract,
-                orderId: quote.orderId ?? '',
-            },
-        });
-        hasRequestedTradeConfirmation.current = false;
-    };
-
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    title={<Translation id="moduleTrading.tradingExchangePreviewScreen.title" />}
-                    closeActionType="close"
-                />
-            }
-        >
-            <ScrollView>
-                <VStack spacing="sp20" paddingVertical="sp20">
-                    {txnErrorString && (
-                        <Animated.View>
-                            <InlineAlertBox variant="critical" title={txnErrorString} />
-                        </Animated.View>
-                    )}
-                    {fromAccount && quote?.send && (
-                        <ExchangeTradePreviewCard
-                            account={fromAccount}
-                            cryptoId={quote.send}
-                            amount={
-                                <Text variant="hint" color="textAlertRed">
-                                    -{fromStringValue}
-                                </Text>
-                            }
-                            title={
-                                <Translation id="moduleTrading.tradingExchangePreviewScreen.fromAccount" />
-                            }
-                        />
-                    )}
-                    {toAccount?.account && quote?.receive && (
-                        <ExchangeTradePreviewCard
-                            account={toAccount.account}
-                            cryptoId={quote.receive}
-                            amount={
-                                <Text variant="hint" color="textSecondaryHighlight">
-                                    +{toStringValue}
-                                </Text>
-                            }
-                            title={
-                                <Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />
-                            }
-                        />
-                    )}
-                    {fromAccount && quote?.send && !txnErrorString && (
-                        <FeePickerCard
-                            trade={quote}
-                            symbol={fromAccount.symbol}
-                            accountKey={fromAccount.key}
-                            tradingType="exchange"
-                        />
-                    )}
-                </VStack>
-            </ScrollView>
-
-            {precomposedTransaction?.type === 'final' && (
-                <Button onPress={handleSignTransaction} isDisabled={!!txnErrorString}>
-                    <Translation id="generic.buttons.continue" />
-                </Button>
-            )}
+        <Screen header={<ExchangePreviewScreenHeader />}>
+            <ExchangePreviewView quote={quote} txnErrorString={txnErrorString} />
+            <ExchangePreviewContinueButton
+                quote={quote}
+                isDisabled={!!txnErrorString}
+                onSignTransactionNavigation={onSignTransactionNavigation}
+            />
         </Screen>
     );
 };
