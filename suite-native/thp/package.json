@@ -10,12 +10,14 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@react-navigation/native": "7.1.17",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/thp": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",

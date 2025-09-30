@@ -12,16 +12,21 @@ type StartThpAutoconnectThunkParam = {
 
 export const startThpAutoconnectThunk = createThunk<void, StartThpAutoconnectThunkParam, void>(
     `${THP_PREFIX}/startThpAutoconnectThunk`,
-    async ({ device }, { dispatch }) => {
+    async ({ device }, { dispatch, rejectWithValue }) => {
         const response = await TrezorConnect.thpGetCredentials({ device });
 
         if (response.success) {
             dispatch(thpActions.addCredential({ credential: response.payload }));
+            dispatch(finishThpAutoconnectThunk());
+
+            return;
         } else {
             dispatch(
                 notificationsActions.addToast({ type: 'error', error: response.payload.error }),
             );
+            dispatch(finishThpAutoconnectThunk());
+
+            return rejectWithValue(response.payload.error);
         }
-        dispatch(finishThpAutoconnectThunk());
     },
 );
