@@ -42,7 +42,7 @@ export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
     // I assume you will more likely be trying to pair the more recent device.
 
     const unacquiredThp = state.device.devices.findLast(
-        device => getStatus(device) === 'unacquired-thp-required',
+        device => getStatus(device) === 'device-thp-locked',
     );
 
     // This works on heuristic, if there is unacquired THP device we assume we want to work with that device.
