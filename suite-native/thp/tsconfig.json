@@ -9,6 +9,7 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../intl" },
+        { "path": "../navigation" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" }
