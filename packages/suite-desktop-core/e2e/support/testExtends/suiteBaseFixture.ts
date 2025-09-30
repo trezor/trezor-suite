@@ -2,13 +2,7 @@
 import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
-import {
-    MODELS,
-    Model,
-    SetupEmu,
-    StartEmu,
-    TrezorUserEnvLinkClass,
-} from '@trezor/trezor-user-env-link';
+import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import {
     TrezorUserEnvLinkProxy,
@@ -20,6 +14,7 @@ import {
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
+import { getModelFromEnv } from '../helpers/modelFromEnv';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
@@ -141,12 +136,6 @@ const trezorEnvSetup = async (
         await TrezorUserEnvLinkProxy.setupEmu(emulatorSetupConf);
     }
 };
-
-function getModelFromEnv(): Model {
-    const envValue = process.env.EMULATOR_MODEL as Model;
-
-    return MODELS.includes(envValue) ? envValue : 'T3T1';
-}
 
 // This is the base Suite text fixture containing all the necessary setup and core page object
 // Depending on the project type (desktop or web) it will launch the appropriate environment

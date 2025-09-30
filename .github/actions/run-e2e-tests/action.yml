@@ -36,6 +36,10 @@ inputs:
   currents-record-key:
     description: "Currents record key for reporting"
     required: true
+  currents-ci-build-id:
+    description: "Custom CI build ID for Currents reporting, default is pr-run-RUN_ID-RUN_ATTEMPT"
+    required: false
+    default: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
   currents-tags:
     description: "Additional tags for Currents reporting"
     required: false
@@ -103,7 +107,7 @@ runs:
         GITHUB_ACTION: true
         CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
         CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
-        CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+        CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
         CURRENTS_TAG: ${{ inputs.currents-tags }}
         GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
@@ -138,7 +142,6 @@ runs:
       uses: ./.github/actions/upload-test-logs
       with:
         test-group: ${{ inputs.test-group }}
-        project: ${{ inputs.project }}
 
     - name: Docker Compose Down
       shell: bash

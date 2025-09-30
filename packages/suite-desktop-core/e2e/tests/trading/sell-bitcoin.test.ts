@@ -10,6 +10,7 @@ import {
 } from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { getModelTag } from '../../support/helpers/modelFromEnv';
 import { FeeTypes } from '../../support/pageObjects/trading/fees';
 
 interface FeeSwitchTestCase {
@@ -28,7 +29,7 @@ const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
 const formattedAddress = formatAddress(sellWatchBTC.destinationAddress);
 
-test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly', getModelTag()] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
         await test.step('Mocking responses', async () => {
