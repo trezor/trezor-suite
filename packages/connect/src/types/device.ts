@@ -106,7 +106,7 @@ export const asDeviceUniquePath = (id: string) => id as DeviceUniquePath;
 type BaseDevice = {
     path: DeviceUniquePath;
     name: string;
-    descriptor: Descriptor;
+    descriptor: Pick<Descriptor, 'apiType' | 'id'>;
 };
 
 export type BluetoothDeviceId = string & Branded<'BluetoothDeviceId'>;
