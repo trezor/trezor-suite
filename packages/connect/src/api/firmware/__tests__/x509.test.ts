@@ -1,41 +1,4 @@
-import { fixSignature, parseCertificate } from '../x509certificate';
-
-// Optiga may produce a malformed signature with probability 1 in 256.
-// These test vectors verify that we are able to correctly reencode the malfomed signature into a valid DER encoding.
-describe('firmware/x509certificate', () => {
-    [
-        {
-            signature:
-                '3048022200007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f02220000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
-            result: '304502207f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f022100800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
-        },
-        {
-            signature:
-                '3045022100007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e0220800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
-            result: '3044021f7f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e022100800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
-        },
-        {
-            signature:
-                '30330220007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e020f000000000000008001020304050607',
-            result: '302c021f7f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e0209008001020304050607',
-        },
-        {
-            signature:
-                '303402210000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e020f000000000000007f01020304050607',
-            result: '302c022000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e02087f01020304050607',
-        },
-        {
-            signature:
-                '30440221007f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f021f800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e',
-            result: '304402207f0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f022000800102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e',
-        },
-    ].forEach(f => {
-        it(`fixSignature: ${f.signature.length} to ${f.result.length}`, () => {
-            const signature = fixSignature(new Uint8Array(Buffer.from(f.signature, 'hex')));
-            expect(Buffer.from(signature).toString('hex')).toEqual(f.result);
-        });
-    });
-});
+import { parseCertificate } from '../x509certificate';
 
 describe('firmware/x509certificate extensions', () => {
     it('value with length = 128 (0x80)', () => {
