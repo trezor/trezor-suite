@@ -9,9 +9,10 @@ import { CloseActionType } from '../navigators';
 type GoBackIconProps = {
     closeActionType?: CloseActionType;
     closeAction?: () => void;
+    testID?: string;
 };
 
-export const GoBackIcon = ({ closeActionType = 'back', closeAction }: GoBackIconProps) => {
+export const GoBackIcon = ({ closeActionType = 'back', closeAction, testID }: GoBackIconProps) => {
     const navigation = useNavigation();
 
     const handleGoBack = useCallback(() => {
@@ -24,6 +25,7 @@ export const GoBackIcon = ({ closeActionType = 'back', closeAction }: GoBackIcon
 
     return (
         <IconButton
+            testID={testID}
             iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
             size="medium"
             colorScheme="tertiaryElevation0"

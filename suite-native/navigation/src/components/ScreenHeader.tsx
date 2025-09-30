@@ -56,7 +56,11 @@ export const ScreenHeader = ({
                 {leftIcon !== undefined ? (
                     leftIcon
                 ) : (
-                    <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
+                    <GoBackIcon
+                        closeActionType={closeActionType}
+                        closeAction={closeAction}
+                        testID="@screen/sub-header/go-back-button"
+                    />
                 )}
             </Box>
             <ScreenHeaderContent title={title} customContent={customContent} />

@@ -1,6 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import { scrollUntilVisible } from '../utils';
+import { inputTextToElement, scrollUntilVisible } from '../utils';
 import { onTabBar } from './tabBarActions';
 
 class AccountImportActions {
@@ -34,16 +34,11 @@ class AccountImportActions {
     }
 
     async submitXpub({ xpub, isValid }: { xpub: string; isValid: boolean }) {
-        await element(by.id('@accounts-import/sync-coins/xpub-input')).replaceText(xpub);
+        const xpubInput = element(by.id('@accounts-import/sync-coins/xpub-input'));
+        await inputTextToElement(xpubInput, xpub);
 
         const xpubSubmitButton = element(by.id('@accounts-import/sync-coins/xpub-submit'));
-
-        // Submit button is not visible without scrolling
-        await waitFor(xpubSubmitButton)
-            .toBeVisible()
-            .whileElement(by.id('@screen/mainScrollView'))
-            .scroll(50, 'down');
-
+        await scrollUntilVisible(xpubSubmitButton);
         await xpubSubmitButton.tap();
 
         if (isValid) {
@@ -54,13 +49,15 @@ class AccountImportActions {
     }
 
     async setAccountName({ accountName }: { accountName: string }) {
-        await element(by.id('@account-import/coin-synced/label-input')).replaceText(accountName);
+        const accountNameInput = element(by.id('@account-import/coin-synced/label-input'));
+        await accountNameInput.clearText();
+        await accountNameInput.typeText(accountName);
     }
 
     async confirmAddAccount() {
-        // confirm button is not visible for some coins e.g. eth
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
-        await element(by.id('@account-import/coin-synced/confirm-button')).tap();
+        const confirmButton = element(by.id('@account-import/coin-synced/confirm-button'));
+        await scrollUntilVisible(confirmButton);
+        await confirmButton.tap();
 
         await detoxExpect(element(by.id('@screen/Home')));
     }

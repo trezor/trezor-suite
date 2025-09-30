@@ -63,7 +63,7 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
             size="medium"
             isLoading={hasDeviceDiscovery}
             isDisabled={hasDeviceDiscovery}
-            testID={testID}
+            testID={`${testID}/${isSelectedDevicePortfolioTracker ? 'import' : 'add'}`}
         />
     );
 };

@@ -6,6 +6,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
+import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     appIsFullyLoaded,
@@ -94,6 +95,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
             await prepareTrezorEmulator();
             await restartApp();
             await appIsFullyLoaded();
+            await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
         it('Open empty passphrase wallet', async () => {

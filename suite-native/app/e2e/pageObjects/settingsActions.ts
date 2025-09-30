@@ -1,7 +1,7 @@
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
-import { scrollUntilVisible } from '../utils';
+import { scrollUntilVisible, wait } from '../utils';
 
 class SettingsActions {
     async tapPreferences() {
@@ -45,10 +45,13 @@ class SettingsActions {
         await waitFor(currencySelectorTriggerElement).toBeVisible().withTimeout(10000);
         await currencySelectorTriggerElement.tap();
 
+        await wait(1000); // wait for the currency selector to open
+
         const currencySelectorItemElement = element(by.id(`@select/item/${currencyCode}`));
         await scrollUntilVisible(currencySelectorItemElement, '@bottom-sheet/scroll-view');
 
         await currencySelectorItemElement.tap();
+        await wait(1000); // wait for the currency selector to close
     }
 
     async changeBitcoinUnits(unit: PROTO.AmountUnit) {
@@ -61,6 +64,7 @@ class SettingsActions {
         const currencySelectorItemElement = element(by.id(`@select/item/${unit}/content`));
         await scrollUntilVisible(currencySelectorItemElement, '@bottom-sheet/scroll-view');
         await currencySelectorItemElement.tap();
+        await wait(1000); // wait for the bitcoin units selector to close
     }
 
     async toggleAutoEject() {

@@ -8,6 +8,10 @@ import { mergeDeepObject } from '@trezor/utils';
 
 const platform = device.getPlatform();
 
+// There is inconsistency between platforms. Android needs to have 100% of an element visible to be able to interact with it.
+// On the other hand, if we are trying to scroll to 100% visibility on iOS, it causes scrolling more than height of the screen and it makes Detox crash.
+const SCROLL_VISIBILITY_THRESHOLD = platform === 'android' ? 100 : undefined;
+
 const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
     // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
@@ -25,6 +29,12 @@ const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
 
 export const wait = async (ms: number) => {
     await new Promise(resolve => setTimeout(resolve, ms));
+};
+
+export const appIsFullyLoaded = async () => {
+    await waitFor(element(by.id('@screen/mainScrollView')))
+        .toBeVisible()
+        .withTimeout(35000);
 };
 
 const getExpoDeepLinkUrl = () => {
@@ -92,6 +102,11 @@ export const openApp = async ({
             launchArgs,
         });
     }
+
+    if (launchArgs.preloadedState) {
+        // wait for preloaded state to be applied
+        await appIsFullyLoaded();
+    }
 };
 
 type RestartAppProps = {
@@ -117,26 +132,20 @@ export const scrollUntilVisible = async (
 ) => {
     try {
         // Try to confirm that the element is visible without scrolling.
-        await detoxExpect(target).toBeVisible();
+        await detoxExpect(target).toBeVisible(SCROLL_VISIBILITY_THRESHOLD);
     } catch {
         // If the element is not visible, then use the scroll to find it.
-        await waitFor(target)
-            .toBeVisible(100)
-            .whileElement(by.id(scrollViewTestId))
-            .scroll(300, 'down');
+        const scrollViewElement = element(by.id(scrollViewTestId));
+        await waitFor(scrollViewElement).toBeVisible().withTimeout(5000);
 
-        // add extra scroll in case that the element is still not fully visible.
-        await element(by.id(scrollViewTestId)).scroll(150, 'down');
+        await waitFor(target)
+            .toBeVisible(SCROLL_VISIBILITY_THRESHOLD)
+            .whileElement(by.id(scrollViewTestId))
+            .scroll(300, 'down', 0.5, 0.5);
 
         // wait for scroll animation to finish before performing next action
         await wait(1000);
     }
-};
-
-export const appIsFullyLoaded = async () => {
-    await waitFor(element(by.id('@screen/mainScrollView')))
-        .toBeVisible()
-        .withTimeout(35000);
 };
 
 function getModelFromEnv(): Model {
@@ -199,14 +208,24 @@ export const waitForElementByIdToBeVisible = (testId: string, timeout = 30000) =
         .withTimeout(timeout);
 
 /**
- * Merges multiple preloaded state fragments into a single preloaded state. Be mindful about the
- * order of the fragments, as the later fragments will always override the earlier ones!
+ * Merges multiple preloaded state fragments into a single preloaded state and serializes the result.
+ * Be mindful about the order of the fragments, as the later fragments will always override the earlier ones!
  */
-export const mergeAndSerializePreloadedReduxState = (
-    ...stateFragments: PreloadedState[]
-): string => {
+export const preparePreloadedReduxState = (...stateFragments: PreloadedState[]): string => {
     const definedFragments = stateFragments.filter(fragment => fragment !== undefined);
     const mergedState = mergeDeepObject(...definedFragments);
 
     return JSON.stringify(mergedState);
+};
+
+export const inputTextToElement = async (element: Detox.IndexableNativeElement, text: string) => {
+    // on Android it is very slow to type text symbol by symbol, for performance reasons `replaceText` is used instead.
+    if (platform === 'android') {
+        await element.replaceText(text);
+    } else {
+        // on iOS the replaceText do not trigger input events (focus, blur, etc.) so we need can not paste text there as for Android.
+        // the typeText method is way faster than for Android, so there is not performance drawback.
+        await element.tap();
+        await element.typeText(text);
+    }
 };
