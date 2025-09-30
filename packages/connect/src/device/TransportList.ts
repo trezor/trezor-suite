@@ -48,6 +48,7 @@ const getOrCreateTransport = (
             return tryGetTransport(transports, transportInstance.name) ?? transportInstance;
         }
     } else if (isTransportInstance(transportType)) {
+        // TODO can be improved by calling transportType.setOwner(params.id)
         const existing = tryGetTransport(transports, transportType.name);
         if (existing) {
             return existing;

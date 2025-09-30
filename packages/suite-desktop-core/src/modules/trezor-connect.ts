@@ -82,6 +82,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
         onCreateInstance: () => ({
             onRequest: async (method, params) => {
                 logger.debug(SERVICE_NAME, `call ${method}`);
+                // TODO can be improved e.g. by implementing transport.setOwner()
                 let settingsCache: InitFullSettings<Record<string, any>> | undefined;
                 if (method === 'init') {
                     logger.info(SERVICE_NAME, `Retrieving stored firmwares`);
