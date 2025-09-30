@@ -1,5 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
+import { waitForElementByIdToBeVisible } from '../utils';
+
 const graphHeaderDiscreetTextElement = element(
     by.id('@screen/Home').withDescendant(by.id('discreet-text')),
 );
@@ -9,6 +11,10 @@ class HomeActions {
         await waitFor(element(by.id('@screen/Home')))
             .toBeVisible()
             .withTimeout(10000);
+    }
+
+    async assertIsPortfolioGraphVisible() {
+        await waitForElementByIdToBeVisible('@home/portfolio/graph');
     }
 
     async tapSyncCoinsButton() {

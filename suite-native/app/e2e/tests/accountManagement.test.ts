@@ -7,9 +7,10 @@ import {
 } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';
+import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { appIsFullyLoaded, openApp, preparePreloadedReduxState, wipeAppData } from '../utils';
+import { openApp, preparePreloadedReduxState, wipeAppData } from '../utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -22,7 +23,7 @@ describe('Account management', () => {
             newInstance: true,
             args: { preloadedState },
         });
-        await appIsFullyLoaded();
+        await onHome.assertIsPortfolioGraphVisible();
     });
 
     afterEach(async () => {
