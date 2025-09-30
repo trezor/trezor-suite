@@ -21,6 +21,7 @@ import {
     DeviceConnectionStatusChangeEvent,
     DevicePushNotificationEvent,
 } from './types';
+import { base64ToByteArray, toBluetoothDevice } from './utils';
 
 type DeviceId = string;
 
@@ -66,17 +67,6 @@ const debugLog = (...args: any[]) => {
 const errorLog = (...args: any[]) => {
     console.error('BluetoothManager', ...args);
 };
-
-const base64ToByteArray = (value: string) => Array.from(Buffer.from(value, 'base64'));
-
-const toBluetoothDevice = (device: Device): BluetoothDevice => ({
-    id: device.id,
-    name: device.name ?? 'Unknown',
-    // @suite-common utils expect the Bluetooth company identifier (first two bytes) to be trimmed
-    manufacturerData: base64ToByteArray(device.manufacturerData ?? '').slice(2),
-    lastUpdatedTimestamp: Date.now(),
-    connectionStatus: { type: 'disconnected' },
-});
 
 class BluetoothManager {
     private bleManager: BleManager | null = null;
