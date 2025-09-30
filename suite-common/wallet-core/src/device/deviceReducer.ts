@@ -131,6 +131,21 @@ const connectDevice = (draft: DeviceReducerState, device: Device) => {
     };
     // connected device is unacquired/unreadable
     if (!device.features) {
+        const knownDevices = draft.devices.filter(
+            ({ bluetoothProps }) =>
+                bluetoothProps && bluetoothProps?.id === device.bluetoothProps?.id,
+        );
+        if (knownDevices.length > 0) {
+            knownDevices.forEach(dd => {
+                dd.connected = true;
+                dd.path = device.path;
+                dd.status = device.status;
+                dd.thp = device.thp;
+            });
+
+            return;
+        }
+
         // check if device already exists in reducer
         const unacquiredDevices = draft.devices.filter(d => d.path === device.path);
         if (unacquiredDevices.length > 0) {
