@@ -40,7 +40,6 @@ import {
     UiResponseWord,
 } from '../events';
 import {
-    BluetoothDeviceId,
     DeviceBusyStatus,
     DeviceFirmwareStatus,
     DeviceState,
@@ -147,12 +146,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
      */
     private unreadableError?: string;
 
-    private _bluetoothProps?: {
-        channels: Record<OpenDeviceChannel, boolean> | undefined;
-        id: BluetoothDeviceId;
+    private channels: Record<Exclude<OpenDeviceChannel, 'read'>, boolean> = {
+        'battery-level': false,
+        'trezor-push-notification': false,
     };
+
     public get bluetoothProps() {
-        return this._bluetoothProps;
+        if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
+            return {
+                id: asBluetoothDeviceId(this.descriptor.id),
+                channels: this.channels,
+            };
+        }
+
+        return undefined;
     }
 
     // @ts-expect-error: strictPropertyInitialization
@@ -240,13 +247,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.uniquePath = id;
         this.transport = transport;
         this.descriptor = descriptor;
-
-        if (descriptor.id) {
-            this._bluetoothProps = {
-                id: asBluetoothDeviceId(descriptor.id),
-                channels: undefined,
-            };
-        }
 
         this.sessionAcquired = null;
 
@@ -337,31 +337,27 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     subscribe() {
-        if (this._bluetoothProps?.id) {
+        if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
             this.transport
                 .subscribe({
-                    path: this._bluetoothProps.id,
+                    path: this.descriptor.id,
                     channels: ['battery-level', 'trezor-push-notification'],
                 })
                 .then(result => {
-                    if (result.success && this._bluetoothProps) {
-                        const channels = result.payload;
-                        this._bluetoothProps = {
-                            ...this._bluetoothProps,
-                            channels,
-                        };
+                    if (result.success) {
+                        this.channels = result.payload;
                         this.lifecycle.emit(DEVICE.CHANGED);
                     }
 
-                    if (this._bluetoothProps?.channels?.['battery-level']) {
+                    if (this.channels['battery-level']) {
                         this.transport.on('battery-level', event => {
                             this._updateFeature('soc', event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
-                    if (this._bluetoothProps?.channels?.['trezor-push-notification']) {
+                    if (this.channels['trezor-push-notification']) {
                         this.transport.on('trezor-push-notification', ({ id, data }) => {
-                            if (id === this._bluetoothProps?.id) {
+                            if (id === this.descriptor.id) {
                                 trezorPushNotificationHandler({ device: this, message: data });
                             }
                         });
