@@ -218,7 +218,6 @@ suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/devi
 suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk.ts
 suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/finishThpAutoconnectThunk.ts
 suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/removeThpAutoconnectThunk.ts
-suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/startThpAutoconnectThunk.ts
 suite-common/wallet-core/src/settings/walletSettingsReducer.ts > suite-common/wallet-core/src/settings/walletSettingsActions.ts
 suite-common/wallet-core/src/stake/stakeThunks.ts > suite-common/wallet-core/src/stake/stakeSelectors.ts > suite-common/wallet-core/src/stake/stakeReducer.ts
 suite-common/wallet-core/src/transactions/transactionsSelectors.ts > suite-common/wallet-core/src/transactions/transactionsReducer.ts > suite-common/wallet-core/src/transactions/transactionsThunks.ts

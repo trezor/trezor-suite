@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { removeThpAutoconnectThunk, startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
-import { selectDeviceAutoconnectCredentials } from '@suite-common/wallet-core';
+import {
+    selectDeviceAutoconnectCredentials,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -15,10 +18,13 @@ export const useThpAutoconnectAlerts = () => {
     const { showToast } = useToast();
 
     const autoconnectCredentials = useSelector(selectDeviceAutoconnectCredentials);
+    const device = useSelector(selectSelectedDevice);
 
     const turnOnAutoconnect = useCallback(() => {
-        dispatch(startThpAutoconnectThunk());
-    }, [dispatch]);
+        if (device !== undefined) {
+            dispatch(startThpAutoconnectThunk({ device }));
+        }
+    }, [dispatch, device]);
 
     const turnOffAutoconnect = useCallback(async () => {
         const result = await dispatch(

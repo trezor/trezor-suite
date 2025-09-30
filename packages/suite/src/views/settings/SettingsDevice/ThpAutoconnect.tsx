@@ -16,6 +16,7 @@ interface PinProtectionProps {
 
 export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
     const dispatch = useDispatch();
+
     const { device } = useDevice();
 
     if (device?.thp?.credentials === undefined) {
@@ -40,7 +41,7 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
                 );
             }
         } else {
-            dispatch(startThpAutoconnectThunk());
+            dispatch(startThpAutoconnectThunk({ device }));
         }
 
         analytics.report({
