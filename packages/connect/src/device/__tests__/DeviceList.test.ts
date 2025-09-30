@@ -2,7 +2,7 @@ import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
 import { DeviceList } from '../DeviceList';
 
-const { createTestTransport } = global.JestMocks;
+const { createTestTransport, createTestTransportClass } = global.JestMocks;
 
 const waitForNthEventOfType = (
     emitter: { on: (...args: any[]) => any },
@@ -80,8 +80,7 @@ describe('DeviceList', () => {
     });
 
     it('.init() accepts transports in form of transport class', async () => {
-        const transport = createTestTransport();
-        const classConstructor = transport.constructor as unknown as typeof transport;
+        const classConstructor = createTestTransportClass();
         await expect(list.init({ transports: [classConstructor] })).resolves.not.toThrow();
     });
 
@@ -199,10 +198,8 @@ describe('DeviceList', () => {
                 path === '2'
                     ? Promise.resolve({ success: false, error: 'device not found' })
                     : Promise.resolve({ success: true, payload: [{ path }] }),
+            type: 'usb2',
         });
-
-        // @ts-expect-error
-        transportB.apiType = 'usb2';
 
         list.init({ transports: [transportA, transportB], pendingTransportEvent: true });
 
