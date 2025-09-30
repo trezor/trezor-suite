@@ -11181,7 +11181,6 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
     expo-constants: "npm:17.1.7"

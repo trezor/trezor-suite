@@ -19,6 +19,6 @@ export {
     selectAutoConnectPolicy,
 } from './bluetoothSelectors';
 
-export { filterOutOldDuplicatesByName } from './filterOutOldDuplicatesByName';
+export { filterOutOldDuplicates } from './filterOutOldDuplicates';
 
 export { parseManufacturerData, serializeManufacturerData } from './manufacturerDataUtils';
