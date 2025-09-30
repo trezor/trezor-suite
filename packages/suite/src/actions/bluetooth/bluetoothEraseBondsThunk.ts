@@ -15,7 +15,7 @@ import {
 } from './desktopBluetoothReducer';
 
 type ForgetBluetoothDeviceThunkParams = {
-    // This thunk must relay on `bluetoothId` directly. When this think is called,
+    // This thunk must rely on `bluetoothId` directly. When this thunk is called,
     // the device may already be disconnected, and therefore, it cannot be selected from the state.
     bluetoothId: BluetoothDeviceId;
 };
