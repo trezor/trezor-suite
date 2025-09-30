@@ -5,10 +5,6 @@ import { AbstractApiTransport, UsbApi } from '@trezor/transport';
 
 import { type Features } from './src/types';
 
-class TestTransport extends AbstractApiTransport {
-    name = 'TestTransport' as any;
-}
-
 // mock of navigator.usb
 const createTransportApi = (override = {}) =>
     ({
@@ -32,12 +28,17 @@ const createTransportApi = (override = {}) =>
         ...override,
     }) as unknown as UsbApi;
 
-export const createTestTransport = (apiMethods = {}) =>
-    new TestTransport({
-        api: createTransportApi(apiMethods),
-        id: 'foo-bar-id',
-        messages: {},
-    });
+export const createTestTransportClass = (apiMethods = {}): any =>
+    class TestTransport extends AbstractApiTransport {
+        name = 'TestTransport' as any;
+
+        constructor(params: ConstructorParameters<typeof AbstractApiTransport>[0]) {
+            super({ ...params, api: createTransportApi(apiMethods) });
+        }
+    };
+
+export const createTestTransport = (apiMethods = {}): any =>
+    new (createTestTransportClass(apiMethods))({ id: 'foo-bar-id', messages: {} });
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     vendor: 'trezor.io',
@@ -113,6 +114,7 @@ declare global {
     var JestMocks: {
         getDeviceFeatures: typeof getDeviceFeatures;
         createTestTransport: typeof createTestTransport;
+        createTestTransportClass: typeof createTestTransportClass;
         getReleaseData: typeof getReleaseData;
     };
 
@@ -126,5 +128,6 @@ declare global {
 global.JestMocks = {
     getDeviceFeatures,
     createTestTransport,
+    createTestTransportClass,
     getReleaseData,
 };
