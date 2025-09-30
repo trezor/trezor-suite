@@ -468,6 +468,68 @@ export const forgetAllDevicesPersistentDataThunk = createThunk(
     },
 );
 
+/**
+ * Handles the necessary cleanup after a device has been wiped.
+ * This includes forgetting old/new device instances, clearing persistent data,
+ * showing a success toast, and requesting a reconnect.
+ */
+const handlePostWipeCleanupThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/handlePostWipeCleanup`,
+    (
+        {
+            initialDevice,
+            deviceInstances,
+        }: {
+            initialDevice: TrezorDevice;
+            deviceInstances: AcquiredDevice[];
+        },
+        { dispatch, getState },
+    ) => {
+        // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
+        // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
+        // we need to retrieve device objects BEFORE and AFTER the wipe process.
+        // And call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
+        const newDevice = selectSelectedDevice(getState());
+        const newDevices = selectDevices(getState());
+
+        deviceInstances.push(...getDeviceInstances(newDevice!, newDevices));
+        deviceInstances.forEach(d => {
+            dispatch(deviceActions.forgetDevice({ device: d }));
+        });
+
+        if (initialDevice.id !== undefined) {
+            // Wiping a device changes bluetoothId and THP static key, so wipe BT known device & THP credentials
+            // (and persistent device data as well, because device.id changed).
+            dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: initialDevice.id }));
+        }
+
+        dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
+
+        // Special case with webusb: Device after wipe changes device_id. With webusb transport, device_id is used as a path
+        // and thus as a descriptor for webusb. So, after the device is wiped, in the transport layer, the device is still paired
+        // through the old descriptor, but suite already works with a new one. It kinda works, but only until we try a new call,
+        // typically resetDevice when in onboarding - we get a device-disconnected error.
+        //
+        // Edit 1: disconnecting the device wiped from bootloader mode is also necessary.
+        // Edit 2: encountered libusb error with bridge 2.0.27. So let's enforce disconnecting for all devices.
+        dispatch(deviceActions.requestDeviceReconnect());
+    },
+);
+
+export const deviceWipedFromDeviceThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/deviceWipedFromDeviceThunk`,
+    (_, { dispatch, getState }) => {
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+        const devices = selectDevices(getState());
+        // collect devices with old "device.id" to be removed (see description below)
+        const deviceInstances = getDeviceInstances(device, devices);
+
+        // Successful wipe happened on the device itself, so we just run the cleanup.
+        dispatch(handlePostWipeCleanupThunk({ initialDevice: device, deviceInstances }));
+    },
+);
+
 export const wipeDeviceThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/wipeDevice`,
     async (_, { dispatch, getState, rejectWithValue }) => {
@@ -492,34 +554,9 @@ export const wipeDeviceThunk = createThunk(
             // This is an expected success for Bluetooth-connected devices
             (device.bluetoothProps !== undefined && result.payload.code === 'Device_Disconnected')
         ) {
-            // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
-            // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
-            // we need to retrieve device objects BEFORE and AFTER the wipe process.
-            // And call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
-            const newDevice = selectSelectedDevice(getState());
-            const newDevices = selectDevices(getState());
-
-            deviceInstances.push(...getDeviceInstances(newDevice!, newDevices));
-            deviceInstances.forEach(d => {
-                dispatch(deviceActions.forgetDevice({ device: d }));
-            });
-
-            if (device.id !== undefined) {
-                // Wiping a device changes bluetoothId and THP static key, so wipe BT known device & THP credentials
-                // (and persistent device data as well, because device.id changed).
-                dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: device.id }));
-            }
-
-            dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
-
-            // Special case with webusb: Device after wipe changes device_id. With webusb transport, device_id is used as a path
-            // and thus as a descriptor for webusb. So, after the device is wiped, in the transport layer, the device is still paired
-            // through the old descriptor, but suite already works with a new one. It kinda works, but only until we try a new call,
-            // typically resetDevice when in onboarding - we get a device-disconnected error.
-            //
-            // Edit 1: disconnecting the device wiped from bootloader mode is also necessary.
-            // Edit 2: encountered libusb error with bridge 2.0.27. So let's enforce disconnecting for all devices.
-            dispatch(deviceActions.requestDeviceReconnect());
+            // The wipe was successful, now run the shared cleanup logic.
+            // We pass the original `device` object to the cleanup thunk.
+            dispatch(handlePostWipeCleanupThunk({ initialDevice: device, deviceInstances }));
         } else {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
 
