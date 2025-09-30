@@ -37,7 +37,6 @@
         "@reduxjs/toolkit": "2.8.2",
         "@sentry/react-native": "6.20.0",
         "@shopify/flash-list": "1.7.6",
-        "@shopify/react-native-skia": "2.2.3",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",

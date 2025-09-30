@@ -27,7 +27,9 @@ module.exports = {
         'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@shopify/react-native-skia|@noble|@evolu|nanoid|msgpackr)',
     ],
     setupFiles: [
-        '<rootDir>/../../node_modules/@shopify/react-native-skia/jestSetup.js',
+        // Mock @shopify/react-native-skia to avoid JSI binding errors in Jest.
+        // The official jestSetup.js from Skia has a bug with undefined references.
+        '<rootDir>/../../suite-native/test-utils/src/skiaMock.js',
         '<rootDir>/../../node_modules/@shopify/flash-list/jestSetup.js',
         '<rootDir>/../../node_modules/react-native-gesture-handler/jestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/everstakeJestSetup.js',
