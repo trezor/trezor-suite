@@ -5,7 +5,8 @@ import {
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
@@ -30,15 +31,25 @@ const createTradingWithFeatureFlagsMemoizedSelector =
 
 export const selectTradingExchange = (state: TradingRootState) => state.wallet.trading.exchange;
 
+const findAccountByKey = (accounts: Account[], accountKey: string | undefined) => {
+    if (!accountKey) return undefined;
+
+    return accounts.find(a => a.key === accountKey);
+};
+
 export const selectExchangeSelectedSendAccount = createMemoizedSelectorWithAccounts(
-    [state => state, selectTradingExchange],
-    (state, { tradingAccountKey }) => selectAccountByKey(state, tradingAccountKey) || undefined,
+    [selectAccounts, state => selectTradingExchange(state).tradingAccountKey],
+    findAccountByKey,
 );
 
 export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAccounts(
-    [state => state, selectTradingExchange],
-    (state, { receiveAddress, receiveAccountKey }) => {
-        const account = selectAccountByKey(state, receiveAccountKey);
+    [
+        selectAccounts,
+        state => selectTradingExchange(state).receiveAccountKey,
+        state => selectTradingExchange(state).receiveAddress,
+    ],
+    (accounts, accountKey, receiveAddress) => {
+        const account = findAccountByKey(accounts, accountKey);
 
         return account
             ? getReceiveAccountFromAccountAndAddressString(account, receiveAddress)

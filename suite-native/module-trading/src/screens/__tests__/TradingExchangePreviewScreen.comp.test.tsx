@@ -124,16 +124,9 @@ describe('TradingExchangePreviewScreen', () => {
         expect(getByText('Fee')).toBeOnTheScreen();
     });
 
-    it('should render FeePickerCard when no error and fromAccount and quote are available', async () => {
-        const { getByText } = await renderTradingExchangePreviewScreen();
-
-        // Should render the fee picker section
-        expect(getByText('Transaction details')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
-    });
-
     describe('Error Alert Functionality', () => {
         it('should show error alert when trade confirmation fails', async () => {
+            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
             // Mock confirmTrade to throw an error
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
 
@@ -143,6 +136,10 @@ describe('TradingExchangePreviewScreen', () => {
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalledTimes(1);
             });
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                'Failed to confirm trade',
+                new Error('Trade confirmation failed'),
+            );
         });
 
         it('should retry trade confirmation when retry button is pressed', async () => {

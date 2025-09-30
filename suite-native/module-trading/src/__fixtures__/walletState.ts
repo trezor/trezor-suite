@@ -1,5 +1,5 @@
 import { TradingType } from '@suite-common/trading';
-import { FiatRatesState } from '@suite-common/wallet-core';
+import { FiatRatesState, SendState } from '@suite-common/wallet-core';
 import { Account, RatesByKey, type WalletSettings } from '@suite-common/wallet-types';
 import { PROTO, StaticSessionId } from '@trezor/connect';
 
@@ -53,6 +53,6 @@ export const getWalletState = ({
             precomposedTx: undefined,
             serializedTx: undefined,
             signedTx: undefined,
-        },
+        } as SendState,
     };
 };
