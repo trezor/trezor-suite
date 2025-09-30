@@ -16,8 +16,9 @@ import { getTradeStatusStep } from '../../../../utils/general/utils';
 import { TradeDetailAlert } from '../TradeDetailAlert';
 
 const TEST_PROVIDER = 'mercuryo';
-const TEST_SUPPORT_URL = 'https://mercuryo.io/#support';
-const TEST_SELL_SUPPORT_URL = 'https://mercuryo.io/sell-crypto/#support';
+const TEST_BUY_STATUS_URL = 'https://checkout.mercuryo.io/status/{{originalPaymentId}}';
+const TEST_EXCHANGE_STATUS_URL = 'https://checkout.mercuryo.io/status/{{orderId}}';
+const TEST_SELL_STATUS_URL = 'https://checkout.mercuryo.io/sell/status/{{orderId}}';
 
 const mockOpenLink = jest.fn();
 const mockOnOpenedWebview = jest.fn();
@@ -104,14 +105,14 @@ describe('TradeDetailAlert', () => {
 
     describe('Error Alert', () => {
         it('should render error alert with support button for buy trades', async () => {
-            const { getByText } = await renderAlert('ERROR', 'buy', TEST_SUPPORT_URL);
+            const { getByText } = await renderAlert('ERROR', 'buy', TEST_BUY_STATUS_URL);
 
             expect(getByText('Transaction failed')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
         });
 
         it('should render error alert with support button for sell trades', async () => {
-            const { getByText } = await renderAlert('ERROR', 'sell', TEST_SELL_SUPPORT_URL);
+            const { getByText } = await renderAlert('ERROR', 'sell', TEST_SELL_STATUS_URL);
 
             expect(getByText('Transaction failed')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
@@ -161,7 +162,11 @@ describe('TradeDetailAlert', () => {
 
     describe('Converting Alert', () => {
         it('should render converting alert with support button', async () => {
-            const { getByText } = await renderAlert('CONVERTING', 'exchange', TEST_SUPPORT_URL);
+            const { getByText } = await renderAlert(
+                'CONVERTING',
+                'exchange',
+                TEST_EXCHANGE_STATUS_URL,
+            );
 
             expect(getByText('Converting your crypto...')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
@@ -170,7 +175,11 @@ describe('TradeDetailAlert', () => {
 
     describe('Sending Alert', () => {
         it('should render sending alert with support button', async () => {
-            const { getByText } = await renderAlert('SENDING', 'exchange', TEST_SUPPORT_URL);
+            const { getByText } = await renderAlert(
+                'SENDING',
+                'exchange',
+                TEST_EXCHANGE_STATUS_URL,
+            );
 
             expect(getByText('Sending your crypto...')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
@@ -202,12 +211,36 @@ describe('TradeDetailAlert', () => {
 
     describe('Support Button Functionality', () => {
         it.each([
-            ['ERROR', 'buy', TEST_SUPPORT_URL],
-            ['ERROR', 'exchange', TEST_SUPPORT_URL],
-            ['ERROR', 'sell', TEST_SELL_SUPPORT_URL],
-            ['KYC', 'exchange', TEST_SUPPORT_URL],
-            ['CONVERTING', 'exchange', TEST_SUPPORT_URL],
-            ['SENDING', 'exchange', TEST_SUPPORT_URL],
+            [
+                'ERROR',
+                'buy',
+                'https://checkout.mercuryo.io/#status/7546b3a9-ba27-4c9c-b3ae-45524fe63a97',
+            ],
+            [
+                'ERROR',
+                'exchange',
+                'https://checkout.mercuryo.io/#status/12ffba9e-7370-4a6e-87dc-aefd3851c735',
+            ],
+            [
+                'ERROR',
+                'sell',
+                'https://checkout.mercuryo.io/sell/status/d369ba9e-7370-4a6e-87dc-aefd3851c735',
+            ],
+            [
+                'KYC',
+                'exchange',
+                'https://checkout.mercuryo.io/#status/12ffba9e-7370-4a6e-87dc-aefd3851c735',
+            ],
+            [
+                'CONVERTING',
+                'exchange',
+                'https://checkout.mercuryo.io/#status/12ffba9e-7370-4a6e-87dc-aefd3851c735',
+            ],
+            [
+                'SENDING',
+                'exchange',
+                'https://checkout.mercuryo.io/#status/12ffba9e-7370-4a6e-87dc-aefd3851c735',
+            ],
         ])(
             'should call openLink with support URL when support button is pressed for %s %s trades',
             async (status, tradeType, expectedUrl) => {
@@ -288,14 +321,14 @@ describe('TradeDetailAlert', () => {
                     orderId={undefined}
                     onOpenedWebview={mockOnOpenedWebview}
                 />,
-                { preloadedState: createPreloadedState([], TEST_SUPPORT_URL) },
+                { preloadedState: createPreloadedState([], TEST_BUY_STATUS_URL) },
             );
 
             act(() => {
                 fireEvent.press(getByText('Proceed to pay'));
             });
 
-            expect(mockOpenLink).toHaveBeenCalledWith(TEST_SUPPORT_URL);
+            expect(mockOpenLink).toHaveBeenCalledWith('https://checkout.mercuryo.io/#status/');
         });
 
         it('should render button but not navigate when partnerData is missing for buy trades', async () => {
@@ -335,7 +368,7 @@ describe('TradeDetailAlert', () => {
                     orderId={exchangeTrade.data.orderId!}
                     onOpenedWebview={mockOnOpenedWebview}
                 />,
-                { preloadedState: createPreloadedState([exchangeTrade], TEST_SUPPORT_URL) },
+                { preloadedState: createPreloadedState([exchangeTrade], TEST_EXCHANGE_STATUS_URL) },
             );
 
             act(() => {
@@ -343,7 +376,9 @@ describe('TradeDetailAlert', () => {
             });
 
             // Should fall back to support URL for exchange trades
-            expect(mockOpenLink).toHaveBeenCalledWith(TEST_SUPPORT_URL);
+            expect(mockOpenLink).toHaveBeenCalledWith(
+                'https://checkout.mercuryo.io/#status/12ffba9e-7370-4a6e-87dc-aefd3851c735',
+            );
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
         });
 
@@ -394,7 +429,7 @@ describe('TradeDetailAlert', () => {
                     orderId={sellTrade.data.orderId!}
                     onOpenedWebview={mockOnOpenedWebview}
                 />,
-                { preloadedState: createPreloadedState([sellTrade], TEST_SELL_SUPPORT_URL) },
+                { preloadedState: createPreloadedState([sellTrade], TEST_SELL_STATUS_URL) },
             );
 
             act(() => {
@@ -402,7 +437,9 @@ describe('TradeDetailAlert', () => {
             });
 
             // Should call support URL for sell trades (not webview navigation)
-            expect(mockOpenLink).toHaveBeenCalledWith(TEST_SELL_SUPPORT_URL);
+            expect(mockOpenLink).toHaveBeenCalledWith(
+                'https://checkout.mercuryo.io/sell/status/d369ba9e-7370-4a6e-87dc-aefd3851c735',
+            );
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
         });
     });
