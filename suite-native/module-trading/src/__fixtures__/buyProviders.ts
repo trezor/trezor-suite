@@ -10,7 +10,7 @@ export const buyInvity = {
     supportedCountries: ['CZ', 'DK'],
     paymentMethods: ['creditCard', 'googlePay', 'applePay'],
     brandName: 'Invity Finance',
-    statusUrl: 'https://checkout.invity.io/#status/{{paymentId}}',
+    statusUrl: 'https://checkout.invity.io/#status/{{originalPaymentId}}',
     supportUrl: 'https://invity.io/invest-crypto/#support',
 } as BuyProviderInfo;
 
@@ -24,7 +24,7 @@ export const buyMercuryo = {
     supportedCountries: ['CZ', 'DK'],
     paymentMethods: ['creditCard', 'googlePay', 'applePay'],
     brandName: 'Mercuryo',
-    statusUrl: 'https://checkout.mercuryo.io/#status/{{paymentId}}',
+    statusUrl: 'https://checkout.mercuryo.io/#status/{{originalPaymentId}}',
     supportUrl: 'https://mercuryo.io/#support',
 } as BuyProviderInfo;
 
@@ -38,6 +38,6 @@ export const buyCexdirect = {
     supportedCountries: ['CZ', 'DK'],
     paymentMethods: ['creditCard', 'googlePay', 'applePay'],
     brandName: 'Cexdirect',
-    statusUrl: 'https://checkout.cexdirect.io/#status/{{paymentId}}',
+    statusUrl: 'https://checkout.cexdirect.io/#status/{{originalPaymentId}}',
     supportUrl: 'https://cexdirect.io/#support',
 } as BuyProviderInfo;

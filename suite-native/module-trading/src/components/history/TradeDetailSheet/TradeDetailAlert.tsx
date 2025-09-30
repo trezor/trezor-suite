@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { BuyTrade } from 'invity-api';
 
 import {
     TradingRootState,
@@ -126,7 +127,17 @@ export const TradeDetailAlert = ({
     }
 
     const { iconName, variant, titleKey, descriptionKey, buttonKey } = alertConfig;
-    const supportUrl = providerInfo?.supportUrl;
+
+    const supportUrlTemplate = providerInfo?.statusUrl || providerInfo?.supportUrl;
+    let supportUrl: string | undefined;
+    if (tradeType === 'buy') {
+        supportUrl = supportUrlTemplate?.replace(
+            '{{originalPaymentId}}',
+            (trade?.data as BuyTrade)?.paymentId || '',
+        );
+    } else {
+        supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
+    }
 
     const navigateToWebView = () => {
         if (trade && isBuyOrSell(trade) && trade.data.partnerData) {
