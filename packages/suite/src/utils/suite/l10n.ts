@@ -5,9 +5,6 @@ const DEFAULT_LOCALE = 'en-US';
 
 export const isLocale = (lang: string): lang is Locale => lang in LANGUAGES;
 
-export const isCompletedLocale = (lang: string): lang is Locale =>
-    isLocale(lang) && !!LANGUAGES[lang].type;
-
 /**
  * Finds and returns first of languages preferred by user's environment
  * which is implemented and completed in Suite, or defaultLocale.
@@ -15,7 +12,7 @@ export const isCompletedLocale = (lang: string): lang is Locale =>
 export const getOsLocale = (defaultLocale: Locale = DEFAULT_LOCALE): Locale => {
     const languages = getPlatformLanguages() || [];
 
-    return languages.find(isCompletedLocale) || defaultLocale;
+    return languages.find(isLocale) || defaultLocale;
 };
 
 export const watchOsLocale = (callback: (loc: Locale) => void) => {

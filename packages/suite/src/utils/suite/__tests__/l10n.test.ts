@@ -23,8 +23,6 @@ describe('utils/suite/l10n', () => {
     it('identifying locale', () => {
         expect(utils.isLocale('en-US')).toBe(true);
         expect(utils.isLocale('xx')).toBe(false);
-        expect(utils.isCompletedLocale('en-US')).toBe(true);
-        expect(utils.isCompletedLocale('xx')).toBe(false);
     });
 
     describe('ensureLocale', () => {

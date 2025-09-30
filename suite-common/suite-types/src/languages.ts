@@ -1,7 +1,7 @@
 export type LocaleInfo = {
     name: string;
     en: string;
-    type?: 'official' | 'community';
+    type: 'official' | 'community';
 };
 
 // If you are adding language, add it to suite/package.json translations:download script too
