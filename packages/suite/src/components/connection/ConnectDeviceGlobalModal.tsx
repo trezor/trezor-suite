@@ -139,11 +139,13 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     // starts to scan for devices when connection mode is bluetooth
     useEffect(() => {
-        if (isBluetoothMode) dispatch(bluetoothStartScanningThunk());
+        if (isBluetoothMode) {
+            dispatch(bluetoothStartScanningThunk());
 
-        return () => {
-            dispatch(bluetoothStopScanningThunk());
-        };
+            return () => {
+                dispatch(bluetoothStopScanningThunk());
+            };
+        }
     }, [dispatch, isBluetoothMode]);
 
     const clearScanTimer = useCallback(() => {
