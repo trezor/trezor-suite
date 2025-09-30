@@ -155,7 +155,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
             return {
                 id: asBluetoothDeviceId(this.descriptor.id),
-                channels: this.channels,
             };
         }
 
