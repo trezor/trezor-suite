@@ -126,7 +126,7 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     private thp: protocolThp.ThpState | undefined;
-    private readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path'>;
+    public readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path'>;
     private sessionAcquired: Session | null;
 
     // protocol related
@@ -150,16 +150,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         'battery-level': false,
         'trezor-push-notification': false,
     };
-
-    public get bluetoothProps() {
-        if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
-            return {
-                id: asBluetoothDeviceId(this.descriptor.id),
-            };
-        }
-
-        return undefined;
-    }
 
     // @ts-expect-error: strictPropertyInitialization
     private _firmwareStatus: DeviceFirmwareStatus;
@@ -1121,6 +1111,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const { apiType, id } = descriptor;
         const base = { path, name, descriptor: { apiType, id } };
 
+        const bluetoothProps =
+            this.descriptor.id && this.descriptor.apiType === 'bluetooth'
+                ? {
+                      id: asBluetoothDeviceId(this.descriptor.id),
+                  }
+                : undefined;
+
         if (this.unreadableError) {
             return {
                 ...base,
@@ -1139,7 +1136,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 label: 'Unacquired device',
                 name: this.name,
                 transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
-                bluetoothProps: this.bluetoothProps,
+                bluetoothProps,
                 thp: this.thp?.serialize(),
                 status: this.busy ? this.busy : undefined,
             };
@@ -1165,7 +1162,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             unavailableCapabilities: this.unavailableCapabilities,
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
-            bluetoothProps: this.bluetoothProps,
+            bluetoothProps,
             thp: this.thp?.serialize(),
         };
     }

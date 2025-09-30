@@ -141,6 +141,7 @@ export type KnownDevice = BaseDevice & {
     };
     transportSessionOwner?: undefined;
     hid?: undefined;
+    /** @deprecated  use descriptor.id in combination with descriptor.apiType */
     bluetoothProps?: BluetoothDeviceProps;
 };
 
@@ -164,6 +165,7 @@ export type UnknownDevice = BaseDevice & {
     availableTranslations?: typeof undefined;
     transportSessionOwner?: string;
     hid?: undefined;
+    /** @deprecated  use descriptor.id in combination with descriptor.apiType */
     bluetoothProps?: BluetoothDeviceProps;
 };
 
@@ -187,6 +189,7 @@ export type UnreadableDevice = BaseDevice & {
     availableTranslations?: typeof undefined;
     transportSessionOwner?: undefined;
     hid: boolean;
+    /** @deprecated  use descriptor.id in combination with descriptor.apiType */
     bluetoothProps?: typeof undefined;
 };
 

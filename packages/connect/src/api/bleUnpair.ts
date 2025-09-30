@@ -33,7 +33,7 @@ export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpa
             // or fails here with transport read/write error
             // in both cases Device_Disconnected error should be handled as "expected success"
             if (
-                this.device.bluetoothProps &&
+                this.device.descriptor.apiType === 'bluetooth' &&
                 error.message === TRANSPORT_ERROR.INTERFACE_DATA_TRANSFER
             ) {
                 // typed error is considered as "method failed successfully"
