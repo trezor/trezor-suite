@@ -6,6 +6,7 @@ import { TrezorPushNotificationType } from '@trezor/connect';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
+import { filterOutOldDuplicates } from './filterOutOldDuplicates';
 import {
     BluetoothAdapterStatus,
     BluetoothAutoConnectPolicy,
@@ -47,15 +48,17 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(
                 bluetoothActions.nearbyDevicesUpdateAction,
                 (state, { payload: { nearbyDevices } }) => {
-                    state.nearbyDevices = nearbyDevices
-                        // Devices with 'pairing-error' status should NOT be displayed in the list, as it
-                        // won't be possible to connect to them ever again. User has to start pairing again,
-                        // which would produce a device with new id.
-                        .filter(
-                            nearbyDevice =>
-                                nearbyDevice.connectionStatus?.type !== 'pairing-error' &&
-                                !state.ignoredDeviceIds.includes(nearbyDevice.id),
-                        ) as Draft<T>[];
+                    state.nearbyDevices = filterOutOldDuplicates(
+                        nearbyDevices
+                            // Devices with 'pairing-error' status should NOT be displayed in the list, as it
+                            // won't be possible to connect to them ever again. User has to start pairing again,
+                            // which would produce a device with new id.
+                            .filter(
+                                nearbyDevice =>
+                                    nearbyDevice.connectionStatus?.type !== 'pairing-error' &&
+                                    !state.ignoredDeviceIds.includes(nearbyDevice.id),
+                            ) as Draft<T>[],
+                    ) as Draft<T>[];
                 },
             )
             .addCase(

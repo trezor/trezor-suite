@@ -1,14 +1,12 @@
 import {
     BLUETOOTH_PREFIX,
     bluetoothActions,
-    filterOutOldDuplicatesByName,
     selectAdapterStatus,
     selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isMacOs } from '@trezor/env-utils';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
@@ -124,16 +122,12 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
             dispatch(
                 bluetoothActions.knownDevicesUpdateAction({
-                    knownDevices: isMacOs()
-                        ? filterOutOldDuplicatesByName(remappedKnownDevices)
-                        : remappedKnownDevices,
+                    knownDevices: remappedKnownDevices,
                 }),
             );
             dispatch(
                 bluetoothActions.nearbyDevicesUpdateAction({
-                    nearbyDevices: isMacOs()
-                        ? filterOutOldDuplicatesByName(nearbyDevices)
-                        : nearbyDevices,
+                    nearbyDevices,
                 }),
             );
         });

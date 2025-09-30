@@ -19,7 +19,6 @@
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         {
             "path": "../../packages/transport-native-bluetooth"
