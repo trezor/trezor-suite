@@ -1,32 +1,44 @@
 import { useState } from 'react';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import { finishThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import { Translation } from '../../suite/Translation';
 
-export const ThpAutoconnectInfoModal = () => {
+type ThpAutoconnectInfoModalParams = {
+    device: TrezorDevice;
+};
+
+export const ThpAutoconnectInfoModal = ({ device }: ThpAutoconnectInfoModalParams) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { isLocked } = useDevice();
+
+    const { isLocked, device: selectedDevice } = useDevice();
     const dispatch = useDispatch();
-    const isDeviceLocked = isLocked();
 
     const onTurnOn = () => {
         setIsLoading(true);
-        dispatch(startThpAutoconnectThunk());
+        dispatch(startThpAutoconnectThunk({ device }));
     };
 
     const onCancel = () => {
         dispatch(finishThpAutoconnectThunk());
     };
 
+    // Do not use selected device directly. It may be different from the THP device
+    // we are handling this for.
+    const isSelectedDeviceAndLocked = selectedDevice?.id === device.id && isLocked();
+
     return (
         <Modal
             data-testid="@modal/thp-autoconnect-info"
             bottomContent={
                 <>
-                    <Modal.Button onClick={onTurnOn} isLoading={isLoading || isDeviceLocked}>
+                    <Modal.Button
+                        onClick={onTurnOn}
+                        isLoading={isLoading || isSelectedDeviceAndLocked}
+                    >
                         <Translation id="TR_THP_TURN_ON_AUTO_CONNECT" />
                     </Modal.Button>
                     <Modal.Button onClick={onCancel} variant="tertiary" isDisabled={isLoading}>

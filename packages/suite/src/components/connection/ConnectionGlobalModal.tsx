@@ -1,5 +1,5 @@
 import { selectThpStep } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
@@ -21,7 +21,7 @@ type ConnectionGlobalModalProps = {
 export const ConnectionGlobalModal = ({ showThpModals = true }: ConnectionGlobalModalProps) => {
     const dispatch = useDispatch();
     const isConnectDeviceModalOpen = useSelector(selectIsConnectionModalOpen);
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectSelectedFirstThpDevice);
     const thpStep = useSelector(selectThpStep);
 
     const closeConnectionModal = () => {
@@ -42,7 +42,7 @@ export const ConnectionGlobalModal = ({ showThpModals = true }: ConnectionGlobal
             case 'CodeInvalid':
                 return <ThpPairingFailedModal />;
             case 'AutoconnectInfo':
-                return <ThpAutoconnectInfoModal />;
+                return <ThpAutoconnectInfoModal device={device} />;
             case 'Autoconnect':
                 return <ThpAutoconnectionModal device={device} />;
             default:
