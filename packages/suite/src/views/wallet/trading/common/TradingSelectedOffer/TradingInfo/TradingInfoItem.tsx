@@ -30,7 +30,7 @@ function isFormStepWithAccountLabel({
     type,
 }: Pick<TradingInfoItemProps, 'formStep' | 'isReceive' | 'account' | 'type'>): boolean {
     return Boolean(
-        (['SEND_TRANSACTION', 'SIGN_DATA'].includes(formStep!) || !isReceive) &&
+        (['SEND_TRANSACTION', 'SIGN_DATA'].some(f => f === formStep) || !isReceive) &&
             account &&
             type !== 'sell',
     );
