@@ -10579,7 +10579,6 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
     core-js: "npm:^3.45.1"
     fake-indexeddb: "npm:^6.2.2"

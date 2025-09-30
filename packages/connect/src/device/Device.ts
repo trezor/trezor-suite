@@ -126,7 +126,7 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     private thp: protocolThp.ThpState | undefined;
-    private readonly descriptor: Descriptor;
+    private readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path'>;
     private sessionAcquired: Session | null;
 
     // protocol related
@@ -245,7 +245,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // === immutable properties
         this.uniquePath = id;
         this.transport = transport;
-        this.descriptor = descriptor;
+        this.descriptor = {
+            id: descriptor.id,
+            apiType: descriptor.apiType,
+            type: descriptor.type,
+            path: descriptor.path,
+            // session, sessionOwner are handled separately
+            // debug, debugSession are not relevant here
+        };
 
         this.sessionAcquired = null;
 
@@ -1111,7 +1118,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
         const { name, uniquePath: path, descriptor } = this;
-        const base = { path, name, descriptor };
+        const { apiType, id } = descriptor;
+        const base = { path, name, descriptor: { apiType, id } };
 
         if (this.unreadableError) {
             return {
