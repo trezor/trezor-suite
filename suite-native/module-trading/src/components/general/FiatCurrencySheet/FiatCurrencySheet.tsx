@@ -37,6 +37,7 @@ export const FiatCurrencySheet = memo(
                     searchInputPlaceholder={translate(
                         'moduleTrading.fiatCurrencySheet.searchInputPlaceholder',
                     )}
+                    searchInputTestId="@trading/buy/fiat-search-input"
                 />
             ),
             [onClose, setFilterValue, translate],

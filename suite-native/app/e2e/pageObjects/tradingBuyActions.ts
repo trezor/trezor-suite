@@ -1,28 +1,17 @@
 import { expect as detoxExpect } from 'detox';
 
-import { wait, waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../utils';
+import {
+    scrollUntilVisible,
+    wait,
+    waitForElementByIdToBeVisible,
+    waitForElementByTextToBeVisible,
+} from '../utils';
 
 const LONG_TIMEOUT = 30000;
 const SHORT_TIMEOUT = 5000;
-const SEARCH_AND_ANIMATION_TIMEOUT = 1000;
+const ANIMATION_TIMEOUT = 1000;
 
 class TradingBuyActions {
-    getSearchCrytoElement() {
-        return element(by.label('Search tokens or address'));
-    }
-
-    getSearchFiatElement() {
-        return element(by.label('Search country or ticker'));
-    }
-
-    getSearchCountryElement() {
-        return element(by.label('Search country'));
-    }
-
-    getFiatAmountElement() {
-        return element(by.id('@trading/buy/fiat-amount-input'));
-    }
-
     getAmountEditingDoneButton() {
         return element(by.id('@trading/buy/amount-editing-done-button'));
     }
@@ -38,7 +27,7 @@ class TradingBuyActions {
     }
 
     async scrollScreenToBottom() {
-        await element(by.id('@screen/Trading')).swipe('up');
+        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
     }
 
     async waitForQuotesToLoad() {
@@ -49,34 +38,41 @@ class TradingBuyActions {
     async selectAsset(asset: string) {
         await element(by.id('@trading/buy/asset-button')).tap();
         await this.expectSheetHeaderTitle('Assets');
-        await this.getSearchCrytoElement().tap();
-        await this.getSearchCrytoElement().replaceText(asset.slice(0, -1));
-        await wait(SEARCH_AND_ANIMATION_TIMEOUT);
-        await element(by.text(asset)).tap();
+        await wait(ANIMATION_TIMEOUT); // wait for bottom sheet to open
 
-        await detoxExpect(element(by.id('@trading/buy/asset-button/symbol'))).toHaveText(asset);
+        const searchCryptoElement = element(by.id('@trading/buy/assets-search-input'));
+
+        await searchCryptoElement.replaceText(asset.slice(0, -1));
+        await wait(ANIMATION_TIMEOUT); // wait for filtering to take place
+        await element(by.text(asset)).tap();
+        await wait(ANIMATION_TIMEOUT); //wait for bottom sheet to close
+
+        await waitFor(element(by.id(`@trading/buy/asset-button/symbol`))).toHaveText(asset);
     }
 
     async selectFiatCurrency(fiatCurrency: string) {
         await element(by.id('@trading/buy/fiat-button')).tap();
         await this.expectSheetHeaderTitle('Currency');
-        await this.getSearchFiatElement().tap();
-        await this.getSearchFiatElement().replaceText(fiatCurrency.slice(0, -1));
-        await wait(SEARCH_AND_ANIMATION_TIMEOUT);
-        await element(by.label(fiatCurrency)).tap();
+        const searchFiatElement = element(by.id('@trading/buy/fiat-search-input'));
 
-        await detoxExpect(element(by.id('@trading/buy/fiat-button/ticker'))).toHaveText(
-            fiatCurrency,
-        );
+        await searchFiatElement.replaceText(fiatCurrency.slice(0, -1));
+
+        await wait(ANIMATION_TIMEOUT); // wait for filtering to take place
+        await element(by.text(fiatCurrency)).tap();
+        await wait(ANIMATION_TIMEOUT); //wait for bottom sheet to close
+
+        await waitFor(element(by.id(`@trading/buy/fiat-button/ticker`))).toHaveText(fiatCurrency);
     }
 
     async selectCountry(countrySearch: string, country: string) {
         await element(by.id('@trading/buy/country')).tap();
         await this.expectSheetHeaderTitle('Country of residence');
-        await this.getSearchCountryElement().tap();
-        await this.getSearchCountryElement().replaceText(countrySearch);
-        await wait(SEARCH_AND_ANIMATION_TIMEOUT);
+
+        const searchCountryElement = element(by.id('@trading/buy/country-search-input'));
+        await searchCountryElement.replaceText(countrySearch);
+        await wait(ANIMATION_TIMEOUT); // wait for filtering to take place
         await element(by.text(country)).tap();
+        await wait(ANIMATION_TIMEOUT); //wait for bottom sheet to close
 
         await detoxExpect(element(by.id('@trading/buy/country/value'))).toHaveText(country);
     }
@@ -96,25 +92,30 @@ class TradingBuyActions {
     }
 
     async viewPaymentMethods() {
-        await element(by.id('@trading/buy/payment-method-picker')).tap();
+        const paymentMethodPickerId = '@trading/buy/payment-method-picker';
+
+        await element(by.id(paymentMethodPickerId)).tap();
         await this.expectSheetHeaderTitle('Payment method');
         await element(by.label('Close')).tap();
-        await waitForElementByIdToBeVisible('@trading/buy/payment-method-picker', SHORT_TIMEOUT);
+        await waitForElementByIdToBeVisible(paymentMethodPickerId, SHORT_TIMEOUT);
+        await wait(ANIMATION_TIMEOUT); // wait for bottom sheet to close
     }
 
     async viewProviders() {
-        await element(by.id('@trading/buy/provider-picker')).tap();
+        const providerPickerId = '@trading/buy/provider-picker';
+
+        await element(by.id(providerPickerId)).tap();
         await this.expectSheetHeaderTitle('Providers');
         await element(by.label('Close')).tap();
-        await waitForElementByIdToBeVisible('@trading/buy/provider-picker', SHORT_TIMEOUT);
+        await waitForElementByIdToBeVisible(providerPickerId, SHORT_TIMEOUT);
+        await wait(ANIMATION_TIMEOUT); // wait for bottom sheet to close
     }
 
     async setFiatAmount(amount: string) {
-        await this.getFiatAmountElement().tap();
-        await this.getFiatAmountElement().replaceText(amount);
-        await this.getFiatAmountElement().typeText('\n'); // Simulate pressing 'Enter' to submit the input
+        const fiatAmountElement = element(by.id('@trading/buy/fiat-amount-input'));
+        await fiatAmountElement.replaceText(amount);
+        await fiatAmountElement.tapReturnKey();
         await this.waitForQuotesToLoad();
-        await this.scrollScreenToBottom();
     }
 
     async expectReceiveAccountBalance(expectedValue: string) {
@@ -132,9 +133,9 @@ class TradingBuyActions {
     async confirmBuyForm() {
         await element(by.id('@trading/buy/continue-button')).tap();
         const confirmButton = element(by.id('@trading/buy/confirm-button'));
-        const bottomSheetScrollView = element(by.id('@bottom-sheet/scroll-view'));
-        await bottomSheetScrollView.scrollTo('bottom');
+        await scrollUntilVisible(confirmButton, '@bottom-sheet/scroll-view');
         await confirmButton.tap();
+        await wait(ANIMATION_TIMEOUT); // wait for bottom sheet to close
     }
 
     async closePaymentWebview() {

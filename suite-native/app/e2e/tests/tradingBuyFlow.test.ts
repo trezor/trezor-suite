@@ -25,7 +25,7 @@ describe('Trade Buy', () => {
     });
 
     beforeEach(async () => {
-        await restartApp();
+        await restartApp({ args: { preloadedState } });
         await appIsFullyLoaded();
         await onTabBar.navigateToTrade();
         await tradingBuyActions.waitForTradeDataToLoad();
