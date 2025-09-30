@@ -47,6 +47,9 @@ export type ThpHandshakeCompletionRequest = {
     encryptedPayload: Buffer;
 };
 
+// 0 - not paired
+// 1 - paired but will require connection confirmation (thp_connection_request)
+// 2 - paired with autoconnect. no further interaction needed
 export type ThpHandshakeCompletionResponse = {
     state: 0 | 1 | 2;
 };
