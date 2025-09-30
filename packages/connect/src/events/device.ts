@@ -9,7 +9,11 @@ import type {
 import type { Device } from '../types/device';
 import type { MessageFactoryFn } from '../types/utils';
 
-export { type DecodedTrezorPushNotification } from '@trezor/protocol';
+export {
+    type DecodedTrezorPushNotification,
+    TrezorPushNotificationMode,
+    TrezorPushNotificationType,
+} from '@trezor/protocol/src/protocol-tpn';
 
 export const DEVICE_EVENT = 'DEVICE_EVENT';
 export const DEVICE = {
