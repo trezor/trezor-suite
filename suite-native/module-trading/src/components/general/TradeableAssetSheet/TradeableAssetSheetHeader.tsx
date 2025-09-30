@@ -39,6 +39,7 @@ export const TradeableAssetSheetHeader = ({
             onFilterFocusChange={setIsFilterActive}
             onFilterChange={onFilterChange}
             style={applyStyle(wrapperStyle)}
+            searchInputTestId="@trading/buy/assets-search-input"
             searchInputPlaceholder={translate(
                 'moduleTrading.tradeableAssetsSheet.searchInputPlaceholder',
             )}

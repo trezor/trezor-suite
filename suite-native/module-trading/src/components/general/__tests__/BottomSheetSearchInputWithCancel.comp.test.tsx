@@ -1,9 +1,7 @@
+import { BottomSheetSearchInputProps } from '@suite-native/atoms';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import {
-    BottomSheetSearchInputProps,
-    BottomSheetSearchInputWithCancel,
-} from '../BottomSheetSearchInputWithCancel';
+import { BottomSheetSearchInputWithCancel } from '../BottomSheetSearchInputWithCancel';
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');

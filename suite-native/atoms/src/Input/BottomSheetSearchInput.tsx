@@ -16,6 +16,7 @@ import { useSearchInputCallbacks } from './useSearchInputCallbacks';
 export type BottomSheetSearchInputProps = {
     onChange: (value: string) => void;
     placeholder?: string;
+    testId?: string;
     isDisabled?: boolean;
     maxLength?: number;
     elevation?: SurfaceElevation;
@@ -44,6 +45,7 @@ export const BottomSheetSearchInput = forwardRef<
             onBlur = noOp,
             value,
             autoCorrect,
+            testId,
         },
         ref,
     ) => {
@@ -85,6 +87,7 @@ export const BottomSheetSearchInput = forwardRef<
                         maxLength={maxLength}
                         value={value}
                         autoCorrect={autoCorrect}
+                        testID={testId}
                     />
                     <SearchInputClearButton
                         onPress={handleClear}

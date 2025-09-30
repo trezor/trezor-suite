@@ -2,13 +2,12 @@ import { useRef } from 'react';
 
 import {
     BottomSheetSearchInput,
+    BottomSheetSearchInputProps,
     BottomSheetSearchInputRef,
     SearchInputWithCancel,
 } from '@suite-native/atoms';
 
 const noOp = () => {};
-
-export type BottomSheetSearchInputProps = React.ComponentProps<typeof BottomSheetSearchInput>;
 
 export const BottomSheetSearchInputWithCancel = ({
     onFocus = noOp,

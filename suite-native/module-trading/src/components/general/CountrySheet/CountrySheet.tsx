@@ -31,6 +31,7 @@ export const CountrySheet = memo(
                     onClose={onClose}
                     title={<Translation id="moduleTrading.countrySheet.title" />}
                     onFilterChange={setFilterValue}
+                    searchInputTestId="@trading/buy/country-search-input"
                     searchInputPlaceholder={translate(
                         'moduleTrading.countrySheet.searchInputPlaceholder',
                     )}
