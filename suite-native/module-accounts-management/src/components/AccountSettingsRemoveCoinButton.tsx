@@ -48,7 +48,7 @@ export const AccountSettingsRemoveCoinButton = ({
             onPressPrimaryButton: handleRemoveAccount,
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
             secondaryButtonVariant: 'redElevation0',
-            onPressSecondaryButton: () => hideAlert(),
+            onPressSecondaryButton: hideAlert,
         });
     };
 
