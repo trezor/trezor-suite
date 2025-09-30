@@ -11,6 +11,7 @@ import redirect from './redirectMiddleware';
 import router from './routerMiddleware';
 import sentry from './sentryMiddleware';
 import { prepareSuiteMiddleware } from './suiteMiddleware';
+import trezorPushNotification from './trezorPushNotificationMiddleware';
 import { extraDependencies } from '../../support/extraDependencies';
 
 export const suiteMiddlewares = [
@@ -21,6 +22,7 @@ export const suiteMiddlewares = [
     analytics,
     buttonRequest,
     events,
+    trezorPushNotification,
     metadata,
     messageSystem,
     protocol,
