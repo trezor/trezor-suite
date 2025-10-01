@@ -1268,6 +1268,7 @@ export const prepareNewAccountPayload = async ({
             instance: device.instance,
             state: device.state,
         },
+        details: 'txs',
     });
 
     if (!res.success) return new Error(res.payload.error);
