@@ -291,6 +291,7 @@ export type SelectProps = KeyPressScrollProps &
         isScrollToSelectedEnabled?: boolean;
         onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
         'data-testid'?: string;
+        openMenuOnFocus?: boolean;
     };
 
 export const Select = ({
@@ -308,6 +309,7 @@ export const Select = ({
     isLoading = false,
     isRenderedInModal = false,
     isScrollToSelectedEnabled = true,
+    openMenuOnFocus = true,
     'data-testid': dataTest,
     ...rest
 }: SelectProps) => {
@@ -390,7 +392,7 @@ export const Select = ({
                     ref={selectRef}
                     onKeyDown={onKeyDown}
                     classNamePrefix={reactSelectClassNamePrefix}
-                    openMenuOnFocus
+                    openMenuOnFocus={openMenuOnFocus}
                     closeMenuOnScroll={closeMenuOnScroll}
                     menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                     menuPortalTarget={menuPortalTarget}
