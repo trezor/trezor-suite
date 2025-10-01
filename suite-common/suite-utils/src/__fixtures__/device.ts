@@ -60,7 +60,7 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
     },
 ];
 
-const isDeviceConnectedViaBluetooth = [
+const getIsDeviceConnectedViaBluetooth = [
     {
         description: 'device is connected via bluetooth',
         device: getSuiteDevice({ bluetoothProps: { id: asBluetoothDeviceId('21') } }),
@@ -568,7 +568,7 @@ const getFirmwareDowngradeUrl = [
 
 export default {
     getStatus,
-    isDeviceConnectedViaBluetooth,
+    getIsDeviceConnectedViaBluetooth,
     isSelectedDevice,
     isSelectedInstance,
     getNewInstanceNumber,
