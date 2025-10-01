@@ -1,4 +1,4 @@
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import type { TradingTransaction, TradingType } from '@suite-common/trading';
 import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
@@ -14,17 +14,8 @@ import {
     getTradeOperationData,
     getTradeStatusStep,
     getTradeTitle,
+    toCaseAwareCryptoId,
 } from '../utils';
-
-jest.mock('@suite-common/trading', () => {
-    const actual = jest.requireActual('@suite-common/trading');
-
-    return {
-        ...actual,
-        cryptoIdToNetworkAndContractAddress: jest.fn(),
-        isCryptoIdForNativeToken: jest.fn(),
-    };
-});
 
 describe('utils', () => {
     describe('getTradeOperationData', () => {
@@ -189,6 +180,27 @@ describe('utils', () => {
             ['exchange', 'trading-exchange'],
         ])('should return correct prefix for %s', (tradingType, expectedPrefix) => {
             expect(getFormDraftKeyPrefixFromTradingType(tradingType)).toBe(expectedPrefix);
+        });
+    });
+
+    describe('toCaseAwareCryptoId', () => {
+        it.each<[string, CryptoId]>([
+            ['bitcoin', 'bitcoin' as CryptoId],
+            ['ethereum', 'ethereum' as CryptoId],
+            [
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                'ethereum--0XA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48' as CryptoId,
+            ],
+            [
+                'base--0x0000000000000000000000000000000000000000',
+                'base--0x0000000000000000000000000000000000000000' as CryptoId,
+            ],
+            [
+                'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+                'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId,
+            ],
+        ])('should return %s for %s', (expectedValue, cryptoId) => {
+            expect(toCaseAwareCryptoId(cryptoId)).toBe(expectedValue);
         });
     });
 });
