@@ -6,8 +6,16 @@ import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-nat
 import { IconName } from '@suite-native/icons';
 import { NativeSpacing } from '@trezor/theme';
 
+export type AlertType =
+    | 'autoEject'
+    | 'bluetoothPairing'
+    | 'bluetoothPermissions'
+    | 'connectDevice'
+    | 'deviceError';
+
 export type Alert = {
     title?: ReactNode;
+    type?: AlertType;
     textAlign?: 'left' | 'center';
     description?: ReactNode;
     icon?: IconName;
@@ -27,4 +35,14 @@ export type Alert = {
 export const alertAtom = atom<Alert | null>(null);
 
 export const showAlertAtom = atom(null, (_, set, alert: Alert) => set(alertAtom, alert));
-export const hideAlertAtom = atom(null, (_, set) => set(alertAtom, null));
+export const hideAlertAtom = atom(null, (get, set, type?: AlertType) => {
+    const current = get(alertAtom);
+
+    if (!current) return;
+
+    const shouldHide = !type || current?.type === type;
+
+    if (shouldHide) {
+        set(alertAtom, null);
+    }
+});

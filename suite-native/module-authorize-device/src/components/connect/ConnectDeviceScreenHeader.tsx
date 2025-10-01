@@ -52,6 +52,7 @@ export const ConnectDeviceScreenHeader = ({
             if (hasDeviceRequestedPin) {
                 // Do not allow to cancel PIN entry while discovery is in progress
                 showAlert({
+                    type: 'connectDevice',
                     title: (
                         <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.title" />
                     ),
@@ -97,7 +98,7 @@ export const ConnectDeviceScreenHeader = ({
     // eslint-disable-next-line arrow-body-style
     useEffect(() => {
         return () => {
-            hideAlert();
+            hideAlert('connectDevice');
         };
     }, [hideAlert]);
 

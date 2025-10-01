@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsThpInProgress } from '@suite-common/thp';
 import {
     acquireDevice,
     deviceActions,
@@ -71,7 +70,6 @@ export const useDetectDeviceError = () => {
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const shouldShowSystemUnpairingAlert = useSelector(selectShouldShowSystemUnpairingAlert);
-    const isThpInProgress = useSelector(selectIsThpInProgress);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -102,6 +100,7 @@ export const useDetectDeviceError = () => {
         ) {
             showAlert({
                 title: <Translation id="moduleDevice.unacquiredDeviceModal.title" />,
+                type: 'deviceError',
                 description: <Translation id="moduleDevice.unacquiredDeviceModal.description" />,
                 pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
@@ -115,8 +114,8 @@ export const useDetectDeviceError = () => {
                 },
                 testID: '@device/errors/alert/unacquired-device',
             });
-        } else if (!isThpInProgress) {
-            hideAlert();
+        } else {
+            hideAlert('deviceError');
         }
     }, [
         isOnboardingFinished,
@@ -126,7 +125,6 @@ export const useDetectDeviceError = () => {
         dispatch,
         hideAlert,
         showAlert,
-        isThpInProgress,
     ]);
 
     useEffect(() => {
@@ -140,6 +138,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
                 description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
+                type: 'deviceError',
                 pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 primaryButtonVariant: 'tertiaryElevation1',
@@ -180,6 +179,7 @@ export const useDetectDeviceError = () => {
                 showAlert({
                     title: <Translation id="moduleDevice.noSeedWithFWModal.title" />,
                     pictogramVariant: 'success',
+                    type: 'deviceError',
                     description: <Translation id="moduleDevice.noSeedWithFWModal.description" />,
                     primaryButtonTitle: (
                         <Translation id="moduleDevice.noSeedWithFWModal.primaryButton" />
@@ -198,6 +198,7 @@ export const useDetectDeviceError = () => {
             } else {
                 showAlert({
                     title: <Translation id="moduleDevice.noSeedModal.title" />,
+                    type: 'deviceError',
                     textAlign: 'left',
                     description: <Translation id="moduleDevice.noSeedModal.description" />,
                     primaryButtonTitle: <Translation id="moduleDevice.noSeedModal.primaryButton" />,
@@ -259,6 +260,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.genericErrorModal.title" />,
                 description: <Translation id="moduleDevice.genericErrorModal.description" />,
+                type: 'deviceError',
                 pictogramVariant: 'critical',
                 primaryButtonVariant: 'redBold',
                 primaryButtonTitle: (
@@ -298,7 +300,7 @@ export const useDetectDeviceError = () => {
             !shouldShowAutoEjectAlert &&
             !shouldShowSystemUnpairingAlert
         ) {
-            hideAlert();
+            hideAlert('deviceError');
         }
     }, [
         isNoPhysicalDeviceConnected,
