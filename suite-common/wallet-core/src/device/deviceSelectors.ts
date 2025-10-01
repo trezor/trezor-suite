@@ -183,7 +183,7 @@ export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSel
     (isDeviceConnectedViaBluetooth, features) =>
         isDeviceConnectedViaBluetooth &&
         typeof features?.soc === 'number' &&
-        features.soc <= DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
+        features.soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
 );
 
 export const selectDeviceBluetoothId = createMemoizedSelector(
