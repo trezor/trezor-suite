@@ -6,7 +6,7 @@ import { TREZOR_SUPPORT_MULTIPLE_ACCOUNTS } from '@trezor/urls';
 export const useAddCoinAccountAlerts = () => {
     const { translate } = useTranslate();
     const openLink = useOpenLink();
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
 
     const showTooManyAccountsAlert = () =>
         showAlert({
@@ -14,7 +14,6 @@ export const useAddCoinAccountAlerts = () => {
             description: translate('moduleAddAccounts.alerts.tooManyAccounts.description'),
             pictogramVariant: 'critical',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.tooManyAccounts.actionPrimary'),
-            onPressPrimaryButton: hideAlert,
         });
 
     const showAnotherEmptyAccountAlert = () =>
@@ -25,13 +24,11 @@ export const useAddCoinAccountAlerts = () => {
             primaryButtonTitle: translate(
                 'moduleAddAccounts.alerts.anotherEmptyAccount.actionPrimary',
             ),
-            onPressPrimaryButton: hideAlert,
             secondaryButtonTitle: translate(
                 'moduleAddAccounts.alerts.anotherEmptyAccount.actionSecondary',
             ),
             onPressSecondaryButton: () => {
                 openLink(TREZOR_SUPPORT_MULTIPLE_ACCOUNTS);
-                hideAlert();
             },
         });
 
@@ -41,7 +38,6 @@ export const useAddCoinAccountAlerts = () => {
             description: translate('moduleAddAccounts.alerts.generalError.description'),
             pictogramVariant: 'critical',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.generalError.actionPrimary'),
-            onPressPrimaryButton: hideAlert,
         });
     const showPassphraseAuthAlert = () =>
         showAlert({

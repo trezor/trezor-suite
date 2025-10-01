@@ -47,7 +47,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const device = useSelector(selectSelectedDevice);
     const navigation = useNavigation();
     const { showToast } = useToast();
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
 
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {
@@ -70,12 +70,11 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
                 secondaryButtonVariant: 'redElevation0',
                 onPressPrimaryButton: tryAgainAction,
                 onPressSecondaryButton: () => {
-                    hideAlert();
                     navigation.goBack();
                 },
             });
         },
-        [showAlert, hideAlert, navigation],
+        [showAlert, navigation],
     );
 
     const handleError = onError ?? showErrorFallback;

@@ -23,7 +23,7 @@ export * from './BottomSheetListItem';
 export * from './OrderedListIcon';
 export * from './Sheet/BottomSheetFlashList';
 export * from './Sheet/BottomSheetGrabber';
-export * from './Sheet/useBottomSheetAnimation';
+export * from './Sheet/useAlertAnimation';
 export * from './Button/Button';
 export * from './Button/IconButton';
 export * from './Button/TextButton';

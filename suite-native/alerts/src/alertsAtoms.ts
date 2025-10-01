@@ -8,8 +8,8 @@ import { NativeSpacing } from '@trezor/theme';
 
 export type AlertType =
     | 'autoEject'
+    | 'bluetoothAdapter'
     | 'bluetoothPairing'
-    | 'bluetoothPermissions'
     | 'connectDevice'
     | 'deviceError';
 
