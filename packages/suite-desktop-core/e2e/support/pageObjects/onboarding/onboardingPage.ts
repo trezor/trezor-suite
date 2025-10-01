@@ -32,11 +32,14 @@ export class OnboardingPage {
     readonly continueCoinsButton: Locator;
     readonly finalTitle: Locator;
     readonly createWalletButton: Locator;
+    readonly selectSeedTypeCheckbox = (seedType: SeedType): Locator =>
+        this.page.getByTestId(`@onboarding/select-seed-type-${seedType}`);
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
     readonly continueAtYourOwnRiskButton: Locator;
     readonly pairingInputAtIndex = (index: number) =>
         this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
+    readonly setPinButton: Locator;
 
     constructor(
         public page: Page,
@@ -75,6 +78,7 @@ export class OnboardingPage {
             '@onboarding/select-seed-type-confirm',
         );
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
+        this.setPinButton = this.page.getByTestId('@onboarding/set-pin-button');
     }
 
     @step()
@@ -251,7 +255,7 @@ export class OnboardingPage {
     @step()
     async selectSeedType(seedType: SeedType) {
         await this.selectSeedTypeOpenButton.click();
-        await this.page.getByTestId(`@onboarding/select-seed-type-${seedType}`).click();
+        await this.selectSeedTypeCheckbox(seedType).click();
         await this.selectSeedConfirmButton.click();
     }
 }
