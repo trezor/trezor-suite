@@ -1,5 +1,3 @@
-import { FieldValues } from 'react-hook-form';
-
 import { MetadataState } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils/';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -37,14 +35,14 @@ import { DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
 
-export const saveExplorer = async ({
+export const saveExplorer = ({
     symbol,
     explorer,
 }: {
     symbol: NetworkSymbol;
     explorer?: Explorer;
 }) => {
-    if (!(await db.isAccessible())) return;
+    if (!db.isAccessible()) return;
 
     db.removeItemByPK('explorer', symbol);
 
@@ -53,20 +51,20 @@ export const saveExplorer = async ({
     }
 };
 
-export const saveDraft = async (formState: FormState, accountKey: string) => {
-    if (!(await db.isAccessible())) return;
+export const saveDraft = (formState: FormState, accountKey: string) => {
+    if (!db.isAccessible()) return;
 
     return db.addItem('sendFormDrafts', formState, accountKey, true);
 };
 
-export const removeDraft = async (accountKey: string) => {
-    if (!(await db.isAccessible())) return;
+export const removeDraft = (accountKey: string) => {
+    if (!db.isAccessible()) return;
 
     return db.removeItemByPK('sendFormDrafts', accountKey);
 };
 
-export const saveAccountDraft = (account: Account) => async (_: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveAccountDraft = (account: Account) => (_: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     const { drafts } = getState().wallet.send;
     const draft = drafts[account.key];
     if (draft) {
@@ -74,20 +72,19 @@ export const saveAccountDraft = (account: Account) => async (_: Dispatch, getSta
     }
 };
 
-const removeAccountDraft = async (account: Account) => {
-    if (!(await db.isAccessible())) return Promise.resolve();
+const removeAccountDraft = (account: Account) => {
+    if (!db.isAccessible()) return Promise.resolve();
 
     return db.removeItemByPK('sendFormDrafts', account.key);
 };
 
-export const saveCoinjoinAccount =
-    (accountKey: string) => async (_: Dispatch, getState: GetState) => {
-        const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
-        if (!coinjoinAccount || !(await db.isAccessible())) return;
-        const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
+export const saveCoinjoinAccount = (accountKey: string) => (_: Dispatch, getState: GetState) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
+    if (!coinjoinAccount || !db.isAccessible()) return;
+    const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
 
-        return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
-    };
+    return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
+};
 
 const removeCoinjoinRelatedSetting = (state: AppState) => {
     const settings = { ...state.suite.settings };
@@ -111,7 +108,7 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
 };
 
 export const removeCoinjoinAccount = async (accountKey: string, state: AppState) => {
-    if (!(await db.isAccessible())) return;
+    if (!db.isAccessible()) return;
 
     await db.removeItemByPK('coinjoinAccounts', accountKey);
 
@@ -121,20 +118,20 @@ export const removeCoinjoinAccount = async (accountKey: string, state: AppState)
     }
 };
 
-export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveCoinjoinDebugSettings = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     const { debug } = getState().wallet.coinjoin;
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
 };
 
-export const saveThpCredentials = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveThpCredentials = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     const { credentials, staticKey } = getState().thp;
     db.addItem('thp', { credentials, staticKey }, 'value', true);
 };
 
-export const saveKnownDevices = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveKnownDevices = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     const { knownDevices } = getState().bluetooth;
 
     db.addItem(
@@ -161,21 +158,9 @@ export const saveKnownDevices = () => async (_dispatch: Dispatch, getState: GetS
     );
 };
 
-export const saveFormDraft = async (key: string, draft: FieldValues) => {
-    if (!(await db.isAccessible())) return;
-
-    return db.addItem('formDrafts', draft, key, true);
-};
-
-export const removeFormDraft = async (key: string) => {
-    if (!(await db.isAccessible())) return;
-
-    return db.removeItemByPK('formDrafts', key);
-};
-
 export const saveAccountFormDraft =
-    (prefix: FormDraftKeyPrefix, accountKey: string) => async (_: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return;
+    (prefix: FormDraftKeyPrefix, accountKey: string) => (_: Dispatch, getState: GetState) => {
+        if (!db.isAccessible()) return;
 
         const { formDrafts } = getState().wallet;
 
@@ -185,14 +170,14 @@ export const saveAccountFormDraft =
         return formDraft ? db.addItem('formDrafts', formDraft, formDraftKey, true) : undefined;
     };
 
-const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: string) => {
-    if (!(await db.isAccessible())) return;
+const removeAccountFormDraft = (prefix: FormDraftKeyPrefix, accountKey: string) => {
+    if (!db.isAccessible()) return;
 
     return db.removeItemByPK('formDrafts', getFormDraftKey(prefix, accountKey));
 };
 
-export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
-    if (!(await db.isAccessible())) return;
+export const saveDevice = (device: TrezorDevice, forceRemember?: true) => {
+    if (!db.isAccessible()) return;
     if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
 
     return db.addItem(
@@ -203,14 +188,14 @@ export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => 
     );
 };
 
-const removeAccount = async (account: Account) => {
-    if (!(await db.isAccessible())) return;
+const removeAccount = (account: Account) => {
+    if (!db.isAccessible()) return;
 
     return db.removeItemByPK('accounts', [account.descriptor, account.symbol, account.deviceState]);
 };
 
 export const removeAccountTransactions = async (account: Account) => {
-    if (!(await db.isAccessible())) return;
+    if (!db.isAccessible()) return;
     await db.removeItemByIndex('txs', 'accountKey', [
         account.descriptor,
         account.symbol,
@@ -218,8 +203,8 @@ export const removeAccountTransactions = async (account: Account) => {
     ]);
 };
 
-const removeAccountGraph = async (account: Account) => {
-    if (!(await db.isAccessible())) return;
+const removeAccountGraph = (account: Account) => {
+    if (!db.isAccessible()) return;
 
     return db.removeItemByIndex('graph', 'accountKey', [
         account.descriptor,
@@ -228,8 +213,8 @@ const removeAccountGraph = async (account: Account) => {
     ]);
 };
 
-export const removeAccountHistoricRates = async (accountKey: string) => {
-    if (!(await db.isAccessible())) return;
+export const removeAccountHistoricRates = (accountKey: string) => {
+    if (!db.isAccessible()) return;
 
     return db.removeItemByPK('historicRates', accountKey);
 };
@@ -245,8 +230,8 @@ export const removeAccountWithDependencies = (getState: GetState) => (account: A
         removeAccountHistoricRates(account.key),
     ]);
 
-export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     if (!device.state?.staticSessionId) return;
     const { staticSessionId } = device.state;
 
@@ -271,28 +256,28 @@ export const forgetAllDevicesThunk = createThunk(
     },
 );
 
-export const saveAccounts = async (accounts: SuccessfulAccount[]) => {
-    if (!(await db.isAccessible())) return;
+export const saveAccounts = (accounts: SuccessfulAccount[]) => {
+    if (!db.isAccessible()) return;
 
     return db.addItems('accounts', accounts, true);
 };
 
-export const saveTradingTrade = async (trade: TradingTransaction) => {
-    if (!(await db.isAccessible())) return;
+export const saveTradingTrade = (trade: TradingTransaction) => {
+    if (!db.isAccessible()) return;
 
     return db.addItem('tradingTrades', trade, undefined, true);
 };
 
-export const saveGraph = async (graphData: GraphData[]) => {
-    if (!(await db.isAccessible())) return;
+export const saveGraph = (graphData: GraphData[]) => {
+    if (!db.isAccessible()) return;
 
     return db.addItems('graph', graphData, true);
 };
 
 export const saveAccountHistoricRates =
     (accountKey: string, historicRates: RatesByTimestamps) =>
-    async (_dispatch: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return Promise.resolve();
+    (_dispatch: Dispatch, getState: GetState) => {
+        if (!db.isAccessible()) return Promise.resolve();
         const allTxs = getState().wallet.transactions.transactions;
         const accTxs = (allTxs[accountKey] || []).filter(tx => !!tx);
 
@@ -302,8 +287,8 @@ export const saveAccountHistoricRates =
     };
 
 export const saveAccountTransactions =
-    (account: Account) => async (_dispatch: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return Promise.resolve();
+    (account: Account) => (_dispatch: Dispatch, getState: GetState) => {
+        if (!db.isAccessible()) return Promise.resolve();
         const allTxs = getState().wallet.transactions.transactions;
         const accTxs = allTxs[account.key] || [];
 
@@ -316,7 +301,7 @@ export const saveAccountTransactions =
 export const rememberDevice =
     (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return;
+        if (!db.isAccessible()) return;
         if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
         if (!remember) {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -335,7 +320,7 @@ export const rememberDevice =
         );
         const historicRates = wallet.fiat.historic;
 
-        const accountPromises = accounts.reduce(
+        const accountPromises = accounts.reduce<Array<unknown | Promise<unknown>>>(
             (promises, account) =>
                 promises.concat(
                     [
@@ -348,7 +333,7 @@ export const rememberDevice =
                         dispatch(saveAccountFormDraft(prefix, account.key)),
                     ),
                 ),
-            [] as Promise<void | string | undefined | IDBValidKey>[],
+            [],
         );
 
         try {
@@ -359,14 +344,14 @@ export const rememberDevice =
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
                 dispatch(saveDeviceMetadataError(device)),
                 ...accountPromises,
-            ] as Promise<void | string | undefined>[]);
+            ]);
         } catch (error) {
             console.error('Remember device:', error);
         }
     };
 
 export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+    if (!db.isAccessible()) return;
     await db.addItem(
         'walletSettings',
         {
@@ -379,7 +364,7 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
 
 export const saveBackend =
     (symbol: NetworkSymbol) => async (_dispatch: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return;
+        if (!db.isAccessible()) return;
         await db.addItem(
             'backendSettings',
             getState().wallet.blockchain[symbol].backends,
@@ -388,8 +373,8 @@ export const saveBackend =
         );
     };
 
-export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     const { suite } = getState();
     db.addItem(
         'suiteSettings',
@@ -411,7 +396,7 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
 };
 
 export const saveBioAuth = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+    if (!db.isAccessible()) return;
     const { bioAuth } = getState();
 
     // Store a minimal BioAuthState with only bioAuthEnabled set
@@ -429,7 +414,7 @@ export const saveBioAuth = () => async (_dispatch: Dispatch, getState: GetState)
 export const saveTokenManagement =
     (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
     async (_dispatch: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return;
+        if (!db.isAccessible()) return;
         const { tokenDefinitions } = getState();
         const tokenDefinitionsType = tokenDefinitions[symbol]?.[type];
         const data = tokenDefinitionsType?.[status];
@@ -441,8 +426,8 @@ export const saveTokenManagement =
         return data ? db.addItem('tokenManagement', data, key, true) : undefined;
     };
 
-export const saveAnalytics = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
 
     const { analytics } = getState();
     db.addItem(
@@ -460,7 +445,7 @@ export const saveAnalytics = () => async (_dispatch: Dispatch, getState: GetStat
 type MetadataPersistentKeys = 'providers' | 'enabled' | 'selectedProvider' | 'error';
 
 const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersistentKeys>>) => {
-    if (!(await db.isAccessible())) return;
+    if (!db.isAccessible()) return;
 
     // remove undefined in metadata arg
     (Object.keys as unknown as (args: any) => MetadataPersistentKeys[])(metadata).forEach(
@@ -483,11 +468,12 @@ const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersis
  * save general metadata settings
  */
 export const saveMetadataSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
+    // for some strage race-condition reason it has to be awaited, so that the getState runs async
     if (!(await db.isAccessible())) return;
 
     const { metadata } = getState();
 
-    saveMetadata({
+    await saveMetadata({
         providers: metadata.providers,
         enabled: metadata.enabled,
         selectedProvider: metadata.selectedProvider,
@@ -496,7 +482,7 @@ export const saveMetadataSettings = () => async (_dispatch: Dispatch, getState: 
 
 export const saveDeviceMetadataError =
     (device: TrezorDevice) => async (_dispatch: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return;
+        if (!db.isAccessible()) return;
 
         const { metadata } = getState();
         if (device.state?.staticSessionId && metadata?.error?.[device.state.staticSessionId]) {
@@ -506,8 +492,8 @@ export const saveDeviceMetadataError =
     };
 
 export const forgetDeviceMetadataError =
-    (device: TrezorDevice) => async (_dispatch: Dispatch, getState: GetState) => {
-        if (!(await db.isAccessible())) return;
+    (device: TrezorDevice) => (_dispatch: Dispatch, getState: GetState) => {
+        if (!db.isAccessible()) return;
 
         const { metadata } = getState();
         if (device.state?.staticSessionId && metadata?.error) {
@@ -517,8 +503,8 @@ export const forgetDeviceMetadataError =
         }
     };
 
-export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveMessageSystem = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
 
     const {
         dismissedMessages,
@@ -546,16 +532,16 @@ export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: Get
 
 export const savePersistentDeviceData = createThunk(
     `${STORAGE.MODULE_PREFIX}/savePersistentDeviceData`,
-    async (_, { getState }) => {
-        if (!(await db.isAccessible())) return;
+    (_, { getState }) => {
+        if (!db.isAccessible()) return;
         const data = selectPersistentDeviceData(getState());
 
         db.addItem('persistentDeviceData', data, 'persistentDeviceData', true);
     },
 );
 
-export const saveConnectSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveConnectSettings = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     const { connectPopup, walletConnect } = getState();
 
     db.addItem(
@@ -569,8 +555,8 @@ export const saveConnectSettings = () => async (_dispatch: Dispatch, getState: G
     );
 };
 
-export const saveFirmwareSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+export const saveFirmwareSettings = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
     const { firmware } = getState();
 
     db.addItem(
@@ -584,7 +570,7 @@ export const saveFirmwareSettings = () => async (_dispatch: Dispatch, getState: 
 };
 
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
+    if (!db.isAccessible()) return;
 
     const devices = selectDevices(getState());
 
