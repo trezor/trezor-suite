@@ -17,6 +17,10 @@ export enum EventType {
     AppUriHandler = 'app/uri-handler',
 
     DashboardActions = 'dashboard/actions',
+    DashboardSendModal = 'dashboard/send-modal',
+    DashboardSendModalOptions = 'dashboard/send-modal/options',
+    DashboardReceiveModal = 'dashboard/receive-modal',
+    DashboardReceiveModalOptions = 'dashboard/receive-modal/options',
 
     DeviceConnect = 'device-connect',
     DeviceDisconnect = 'device-disconnect',

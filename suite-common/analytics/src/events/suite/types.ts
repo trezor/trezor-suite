@@ -88,6 +88,26 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.DashboardSendModal;
+      }
+    | {
+          type: EventType.DashboardSendModalOptions;
+          payload: {
+              option: 'account' | 'close';
+              filledSearch: boolean;
+          };
+      }
+    | {
+          type: EventType.DashboardReceiveModal;
+      }
+    | {
+          type: EventType.DashboardReceiveModalOptions;
+          payload: {
+              option: 'account' | 'close' | 'addAccount';
+              filledSearch: boolean;
+          };
+      }
+    | {
           type: EventType.DeviceConnect;
           payload: {
               mode: 'normal' | 'bootloader' | 'initialize' | 'seedless';
