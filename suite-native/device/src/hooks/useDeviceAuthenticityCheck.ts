@@ -17,6 +17,11 @@ import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
+type CheckDeviceAuthenticityParams = {
+    handleSuccess: () => void;
+    handleFailure: () => void;
+};
+
 export const useDeviceAuthenticityCheck = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
@@ -140,7 +145,7 @@ export const useDeviceAuthenticityCheck = () => {
     );
 
     const checkDeviceAuthenticity = useCallback(
-        async (handleSuccess: () => void) => {
+        async ({ handleSuccess, handleFailure }: CheckDeviceAuthenticityParams) => {
             if (!device) {
                 handleDeviceAccessError('Device is not connected');
 
@@ -180,6 +185,7 @@ export const useDeviceAuthenticityCheck = () => {
             dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
 
             if (storedResult?.valid === false) {
+                handleFailure();
                 reportCheckResult('compromised', storedResult.error, storedResult);
             } else if (result.success) {
                 handleSuccess();

@@ -39,15 +39,25 @@ export const DeviceAuthenticityStackNavigator = () => {
         });
     }, [navigation]);
 
+    const handleFailure = useCallback(() => {
+        navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+    }, [navigation]);
+
     const { checkDeviceAuthenticity } = useDeviceAuthenticityCheck();
     const { isDeviceConnected } = useDeviceConnectionGuard();
 
     useEffect(() => {
         if (isDeviceConnected && !isAuthenticityCheckStarted) {
             setIsAuthenticityCheckStarted(true);
-            checkDeviceAuthenticity(handleSuccess);
+            checkDeviceAuthenticity({ handleSuccess, handleFailure });
         }
-    }, [checkDeviceAuthenticity, handleSuccess, isAuthenticityCheckStarted, isDeviceConnected]);
+    }, [
+        checkDeviceAuthenticity,
+        handleSuccess,
+        handleFailure,
+        isAuthenticityCheckStarted,
+        isDeviceConnected,
+    ]);
 
     if (!isDeviceConnected) return;
 
