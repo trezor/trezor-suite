@@ -1,3 +1,5 @@
+import { MouseEventHandler } from 'react';
+
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
 import { Row, Tooltip } from '@trezor/components';
 import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
@@ -13,6 +15,7 @@ type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;
     deviceNeedsRefresh?: boolean;
     device?: TrezorDevice;
+    handleRefreshClick?: MouseEventHandler;
     forceConnectionInfo?: boolean;
     isDeviceDetailVisible?: boolean;
 };
@@ -21,6 +24,7 @@ export const DeviceStatus = ({
     deviceModel,
     deviceNeedsRefresh = false,
     device,
+    handleRefreshClick,
     forceConnectionInfo = false,
     isDeviceDetailVisible = true,
 }: DeviceStatusProps) => {
@@ -40,7 +44,11 @@ export const DeviceStatus = ({
 
     const content = device && (
         <DeviceDetail label={deviceLabel}>
-            <DeviceStatusText device={device} forceConnectionInfo={forceConnectionInfo} />
+            <DeviceStatusText
+                onRefreshClick={handleRefreshClick}
+                device={device}
+                forceConnectionInfo={forceConnectionInfo}
+            />
         </DeviceDetail>
     );
 
