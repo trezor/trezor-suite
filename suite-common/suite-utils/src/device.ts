@@ -37,6 +37,10 @@ export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
 };
 
 export const getStatus = (device: TrezorDevice) => {
+    if (device.status === 'busy') {
+        return 'device-busy';
+    }
+
     if (device.type === 'acquired') {
         if (!device.connected) {
             return 'disconnected';
@@ -67,10 +71,6 @@ export const getStatus = (device: TrezorDevice) => {
         }
 
         return 'connected';
-    }
-
-    if (device.status === 'busy') {
-        return 'device-busy';
     }
 
     if (device.status === 'rebooting') {
