@@ -1,29 +1,18 @@
 import { useState } from 'react';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import {
-    Badge,
-    Button,
-    Card,
-    CollapsibleBox,
-    Column,
-    DotIndicator,
-    Input,
-    List,
-    Modal,
-    Row,
-    Text,
-} from '@trezor/components';
+import { Badge, Card, CollapsibleBox, Column, Modal, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useBackendsForm, useDefaultUrls } from 'src/hooks/settings/backends';
+import { useBackendsForm } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
+import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
 import ConnectionInfo from './CustomBackends/ConnectionInfo';
 import { TorModal, TorResult } from './CustomBackends/TorModal';
@@ -37,7 +26,6 @@ type AdvancedCoinSettingsModalProps = {
 export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSettingsModalProps) => {
     const network = getNetwork(symbol);
     const { isTorEnabled } = useSelector(selectTorState);
-    const blockchain = useSelector(state => state.wallet.blockchain);
     const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
     const [torModalOpen, setTorModalOpen] = useState(false);
@@ -77,17 +65,15 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
         }
     };
 
-    const { defaultUrls } = useDefaultUrls(symbol);
-    const { ref: inputRef, ...inputField } = backendsForm.input.register(backendsForm.input.name, {
-        validate: backendsForm.input.validate,
-    });
     const isEditable = backendsForm.type !== 'default';
     const isSubmitButtonDisabled =
         (isEditable && !!backendsForm.input.error) || !explorerForm.isValid;
 
-    return torModalOpen ? (
-        <TorModal onResult={onTorResult} />
-    ) : (
+    if (torModalOpen) {
+        return <TorModal onResult={onTorResult} />;
+    }
+
+    return (
         <Modal
             onCancel={onCancel}
             heading={
@@ -122,77 +108,14 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                         />
                     }
                 >
-                    <Column gap={spacings.xxl}>
-                        {(backendsForm.urls.length || (!isEditable && defaultUrls.length)) && (
-                            <List bulletComponent={<DotIndicator />} gap={spacings.sm}>
-                                {(isEditable ? backendsForm.urls : defaultUrls).map(url => (
-                                    <List.Item
-                                        data-testid="@settings/advance/url"
-                                        key={url}
-                                        bulletComponent={
-                                            url === blockchain[symbol]?.url ? (
-                                                <DotIndicator isActive />
-                                            ) : undefined
-                                        }
-                                    >
-                                        <Row gap={spacings.sm}>
-                                            <Text
-                                                breakAll={true}
-                                                variant={
-                                                    url === blockchain[symbol]?.url
-                                                        ? 'default'
-                                                        : 'tertiary'
-                                                }
-                                            >
-                                                {url}
-                                            </Text>
-                                            {isEditable && (
-                                                <Button
-                                                    variant="tertiary"
-                                                    size="tiny"
-                                                    icon="trash"
-                                                    onClick={() => backendsForm.removeUrl(url)}
-                                                >
-                                                    <Translation id="TR_REMOVE" />
-                                                </Button>
-                                            )}
-                                        </Row>
-                                    </List.Item>
-                                ))}
-                            </List>
-                        )}
-                        {isEditable && (
-                            <Column gap={spacings.sm}>
-                                <Input
-                                    data-testid="@settings/advance/url"
-                                    placeholder={backendsForm.input.placeholder}
-                                    inputState={backendsForm.input.error ? 'error' : undefined}
-                                    bottomText={backendsForm.input.error?.message || null}
-                                    innerRef={inputRef}
-                                    maxLength={backendsForm.maxUrlLength}
-                                    innerAddon={
-                                        <Button
-                                            variant="primary"
-                                            size="tiny"
-                                            icon="plus"
-                                            data-testid="@settings/advance/button/add"
-                                            onClick={() => {
-                                                backendsForm.addUrl(backendsForm.input.value);
-                                                backendsForm.input.reset();
-                                            }}
-                                            isDisabled={
-                                                !!backendsForm.input.error ||
-                                                backendsForm.input.value === ''
-                                            }
-                                        >
-                                            <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
-                                        </Button>
-                                    }
-                                    {...inputField}
-                                />
-                            </Column>
-                        )}
-                    </Column>
+                    <BackendUrls
+                        symbol={symbol}
+                        isEditable={isEditable}
+                        input={backendsForm.input}
+                        urls={backendsForm.urls}
+                        addUrl={backendsForm.addUrl}
+                        removeUrl={backendsForm.removeUrl}
+                    />
                 </Card>
 
                 <CollapsibleBox

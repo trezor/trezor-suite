@@ -1,0 +1,98 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite/Translation';
+import { useDefaultUrls } from 'src/hooks/settings/backends';
+import { BackendsForm } from 'src/hooks/settings/backends/useBackendsForm';
+import { useSelector } from 'src/hooks/suite';
+
+type BackendUrlsProps = {
+    symbol: NetworkSymbol;
+    isEditable: boolean;
+} & Pick<BackendsForm, 'input' | 'urls' | 'addUrl' | 'removeUrl'>;
+
+export function BackendUrls({
+    symbol,
+    isEditable,
+    input,
+    urls,
+    addUrl,
+    removeUrl,
+}: BackendUrlsProps) {
+    const blockchain = useSelector(state => state.wallet.blockchain);
+    const { defaultUrls } = useDefaultUrls(symbol);
+
+    const { ref: inputRef, ...inputField } = input.register(input.name, {
+        validate: input.validate,
+    });
+
+    return (
+        <Column gap={spacings.xxl}>
+            {(urls.length || (!isEditable && defaultUrls.length)) && (
+                <List bulletComponent={<DotIndicator />} gap={spacings.sm}>
+                    {(isEditable ? urls : defaultUrls).map(url => (
+                        <List.Item
+                            data-testid="@settings/advance/url"
+                            key={url}
+                            bulletComponent={
+                                url === blockchain[symbol]?.url ? (
+                                    <DotIndicator isActive />
+                                ) : undefined
+                            }
+                        >
+                            <Row gap={spacings.sm}>
+                                <Text
+                                    breakAll={true}
+                                    variant={
+                                        url === blockchain[symbol]?.url ? 'default' : 'tertiary'
+                                    }
+                                >
+                                    {url}
+                                </Text>
+                                {isEditable && (
+                                    <Button
+                                        variant="tertiary"
+                                        size="tiny"
+                                        icon="trash"
+                                        onClick={() => removeUrl(url)}
+                                    >
+                                        <Translation id="TR_REMOVE" />
+                                    </Button>
+                                )}
+                            </Row>
+                        </List.Item>
+                    ))}
+                </List>
+            )}
+            {isEditable && (
+                <Column gap={spacings.sm}>
+                    <Input
+                        data-testid="@settings/advance/url"
+                        placeholder={input.placeholder}
+                        inputState={input.error ? 'error' : undefined}
+                        bottomText={input.error?.message || null}
+                        innerRef={inputRef}
+                        maxLength={2048}
+                        innerAddon={
+                            <Button
+                                variant="primary"
+                                size="tiny"
+                                icon="plus"
+                                data-testid="@settings/advance/button/add"
+                                onClick={() => {
+                                    addUrl(input.value);
+                                    input.reset();
+                                }}
+                                isDisabled={!!input.error || input.value === ''}
+                            >
+                                <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
+                            </Button>
+                        }
+                        {...inputField}
+                    />
+                </Column>
+            )}
+        </Column>
+    );
+}
