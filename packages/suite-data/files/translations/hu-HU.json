@@ -1095,7 +1095,6 @@
   "TR_GRANT_PERMISSIONS_DESCRIPTION": "Ez az alkalmazás csatlakozni szeretne a Trezor Suite-hoz és a következő engedélyekre van szüksége.",
   "TR_GRAPH_LINEAR": "Lineáris",
   "TR_GRAPH_LOGARITHMIC": "Logaritmikus",
-  "TR_GRAPH_MISSING_DATA": "Az egyenleg tartalmazza az XRP és az ERC20 token tranzackiókat is, de ezek jelenleg nem támogatottak a grafikon nézetben",
   "TR_GRAPH_VIEW": "Diagram nézet",
   "TR_GUIDE_ARTICLES": "Cikkek",
   "TR_GUIDE_BUG_LABEL": "Valami hibásan működik?",
