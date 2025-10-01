@@ -41,7 +41,7 @@ export const CreatePinScreen = () => {
     const deviceModel = useSelector(selectDeviceModel);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
     const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
     const handlePinCreated = useCallback(() => {
@@ -84,12 +84,11 @@ export const CreatePinScreen = () => {
                 secondaryButtonVariant: 'redElevation0',
                 onPressSecondaryButton: tryAgainAction,
                 onPressPrimaryButton: () => {
-                    hideAlert();
                     handlePinCreated();
                 },
             });
         },
-        [showAlert, hideAlert, handlePinCreated],
+        [showAlert, handlePinCreated],
     );
 
     usePinAction({

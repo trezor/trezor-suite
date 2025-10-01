@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { openSettings } from 'react-native-permissions';
 import { useSelector } from 'react-redux';
 
@@ -25,45 +25,37 @@ export const useBluetoothAlerts = () => {
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
-    const [isBluetoothAlertShown, setIsBluetoothAlertShown] = useState(false);
 
     const showOrHideBluetoothAlert = useCallback(() => {
         if (bluetoothPermissionStatus === 'denied') {
             showAlert({
-                type: 'bluetoothPermissions',
                 title: translate('bluetooth.alerts.permissionDenied.title'),
+                type: 'bluetoothAdapter',
                 description: translate('bluetooth.alerts.permissionDenied.description'),
                 primaryButtonTitle: translate('bluetooth.alerts.permissionDenied.primaryButton'),
                 onPressPrimaryButton: requestBluetoothPermission,
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
                 onPressSecondaryButton: navigation.goBack,
             });
-            setIsBluetoothAlertShown(true);
         } else if (bluetoothPermissionStatus === 'blocked') {
             showAlert({
-                type: 'bluetoothPermissions',
                 title: translate('bluetooth.alerts.permissionBlocked.title'),
+                type: 'bluetoothAdapter',
                 description: translate('bluetooth.alerts.permissionBlocked.description'),
                 primaryButtonTitle: translate('bluetooth.alerts.permissionBlocked.primaryButton'),
                 onPressPrimaryButton: openSettings,
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
                 onPressSecondaryButton: navigation.goBack,
             });
-            setIsBluetoothAlertShown(true);
         } else if (bluetoothAdapterStatus === 'disabled') {
             showBluetoothAdapterDisabledAlert();
-            setIsBluetoothAlertShown(true);
         } else if (bluetoothAdapterStatus === 'enabled') {
-            if (isBluetoothAlertShown) {
-                hideAlert('bluetoothPermissions');
-                setIsBluetoothAlertShown(false);
-            }
+            hideAlert('bluetoothAdapter');
         }
     }, [
         bluetoothPermissionStatus,
         requestBluetoothPermission,
         bluetoothAdapterStatus,
-        isBluetoothAlertShown,
         navigation,
         translate,
         showAlert,

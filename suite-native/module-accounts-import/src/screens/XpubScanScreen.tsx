@@ -66,7 +66,7 @@ export const XpubScanScreen = ({
         closeModal: closeScanner,
     } = useBottomSheetModal();
 
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
 
     const { networkSymbol } = route.params;
     const networkType = getNetworkType(networkSymbol);
@@ -132,7 +132,6 @@ export const XpubScanScreen = ({
                     <Translation id="moduleAccountImport.xpubScanScreen.alert.address.hintButton" />
                 ),
                 onPressSecondaryButton: () => {
-                    hideAlert();
                     openXpubHint();
                 },
             });

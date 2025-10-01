@@ -9,7 +9,7 @@ import {
     Pictogram,
     TitleHeader,
     VStack,
-    useBottomSheetAnimation,
+    useAlertAnimation,
 } from '@suite-native/atoms';
 import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -64,7 +64,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         openSheetAnimated,
-    } = useBottomSheetAnimation({ onClose: hideAlert, isVisible: true });
+    } = useAlertAnimation({ onClose: hideAlert });
 
     useEffect(() => {
         openSheetAnimated();

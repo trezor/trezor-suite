@@ -22,6 +22,7 @@ export const useBluetoothPlatformSpecificAlerts = () => {
     const showBluetoothAdapterDisabledAlert = useCallback(() => {
         showAlert({
             title: translate('bluetooth.alerts.adapterDisabled.title'),
+            type: 'bluetoothAdapter',
             description: translate('bluetooth.alerts.adapterDisabled.description.android'),
             primaryButtonTitle: translate('bluetooth.alerts.adapterDisabled.primaryButton'),
             onPressPrimaryButton: openBluetoothSettings,
