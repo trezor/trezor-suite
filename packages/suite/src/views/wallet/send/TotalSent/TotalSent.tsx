@@ -12,6 +12,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
+import { CardanoSentTokenInfo } from './CardanoSentTokenInfo';
 import { ReviewButton } from './ReviewButton';
 
 type ChildOrSkeletonProps = PropsWithChildren<{ isLoading?: boolean }>;
@@ -59,28 +60,32 @@ export const TotalSent = () => {
                     <InfoItem
                         label={<Translation id="TOTAL_SENT" />}
                         direction="row"
+                        verticalAlignment="start"
                         variant="default"
                         typographyStyle="body"
                     >
                         <ChildOrSkeleton isLoading={areFeesLoading}>
-                            {hasTransactionInfo && (
-                                <FormattedCryptoAmount
-                                    disableHiddenPlaceholder
-                                    value={
-                                        tokenInfo
-                                            ? convertAmountSubunitsToUnits(
-                                                  transactionInfo.totalSpent,
-                                                  tokenInfo.decimals,
-                                              )
-                                            : formatNetworkAmount(
-                                                  transactionInfo.totalSpent,
-                                                  symbol,
-                                              )
-                                    }
-                                    symbol={tokenInfo?.symbol ?? symbol}
-                                    contractAddress={tokenInfo?.contract}
-                                />
-                            )}
+                            <Column alignItems="flex-end">
+                                <CardanoSentTokenInfo />
+                                {hasTransactionInfo && (
+                                    <FormattedCryptoAmount
+                                        disableHiddenPlaceholder
+                                        value={
+                                            tokenInfo
+                                                ? convertAmountSubunitsToUnits(
+                                                      transactionInfo.totalSpent,
+                                                      tokenInfo.decimals,
+                                                  )
+                                                : formatNetworkAmount(
+                                                      transactionInfo.totalSpent,
+                                                      symbol,
+                                                  )
+                                        }
+                                        symbol={tokenInfo?.symbol ?? symbol}
+                                        contractAddress={tokenInfo?.contract}
+                                    />
+                                )}
+                            </Column>
                         </ChildOrSkeleton>
                     </InfoItem>
 
