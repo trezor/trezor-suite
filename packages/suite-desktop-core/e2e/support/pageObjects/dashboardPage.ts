@@ -8,6 +8,7 @@ import { DevicePrompt } from './devicePrompt';
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 
 export class DashboardPage {
+    readonly suiteLayout: Locator;
     readonly dashboardMenuButton: Locator;
     readonly dashboardHeader: Locator;
     readonly graph: Locator;
@@ -46,6 +47,7 @@ export class DashboardPage {
         private readonly page: Page,
         private readonly devicePrompt: DevicePrompt,
     ) {
+        this.suiteLayout = this.page.getByTestId('@suite-layout/body');
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.dashboardHeader = this.page.getByRole('heading', { name: 'Dashboard' });
         this.graph = this.page.getByTestId('@dashboard/graph');

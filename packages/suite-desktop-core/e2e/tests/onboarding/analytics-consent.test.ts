@@ -11,12 +11,12 @@ test.describe(
         });
 
         test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
-            page,
             model,
             analyticsSection,
             onboardingPage,
             walletPage,
             devicePrompt,
+            dashboardPage,
         }) => {
             await expect(analyticsSection.heading).toBeVisible({ timeout: 30000 });
             await analyticsSection.continueButton.click();
@@ -26,15 +26,15 @@ test.describe(
                 await onboardingPage.enterTHPPairingCode();
             }
 
-            await page.getByTestId('@onboarding/exit-app-button').click();
+            await onboardingPage.onboardingContinueButton.click();
 
             if (model.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
             }
 
-            await expect(page.getByTestId('@suite-layout/body')).toBeVisible();
+            await expect(dashboardPage.suiteLayout).toBeVisible();
             await walletPage.openAccount();
-            await expect(page.getByTestId('@wallet/menu/wallet-send')).toBeVisible();
+            await expect(walletPage.openSendFormButton).toBeVisible();
         });
     },
 );
