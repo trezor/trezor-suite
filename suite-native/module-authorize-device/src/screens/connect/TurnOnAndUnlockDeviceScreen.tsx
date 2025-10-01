@@ -46,6 +46,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
         timeoutIdRef.current = setTimeout(
             () =>
                 showAlert({
+                    type: 'bluetoothPairing',
                     title: <Translation id="moduleConnectDevice.helpModal.pairing.altTitle" />,
                     primaryButtonTitle: (
                         <Translation id="moduleConnectDevice.helpModal.pairing.scanAgainButton" />
@@ -87,7 +88,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
 
     useEffect(() => {
         if (nearbyPairableBluetoothDevices.length > 0) {
-            hideAlert();
+            hideAlert('bluetoothPairing');
             navigation.navigate(AuthorizeDeviceStackRoutes.ConnectBluetoothDevice);
         }
     }, [nearbyPairableBluetoothDevices, hideAlert, navigation]);

@@ -47,6 +47,7 @@ export const useShowAutoEjectAlert = () => {
             }
             if (!hasAutoEjectAlertBeenDisplayed && shouldShowAutoEjectAlert) {
                 showAlert({
+                    type: 'autoEject',
                     appendix: (
                         <VStack alignItems="center" spacing="sp24" testID="@home/alert/view-only">
                             <AutoEjectAnimation />
@@ -84,7 +85,7 @@ export const useShowAutoEjectAlert = () => {
                 });
             }
             if (!shouldShowAutoEjectAlert) {
-                hideAlert();
+                hideAlert('autoEject');
             }
         }, [
             dispatch,
