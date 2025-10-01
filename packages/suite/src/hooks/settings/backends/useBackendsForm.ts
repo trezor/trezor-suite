@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
@@ -103,8 +103,14 @@ const getStoredState = (
 export const useBackendsForm = (symbol: NetworkSymbol) => {
     const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
     const dispatch = useDispatch();
-    const initial = getStoredState(symbol, backends.selected, backends.urls);
-    const [currentValues, setCurrentValues] = useState(initial);
+    const [currentValues, setCurrentValues] = useState(() =>
+        getStoredState(symbol, backends.selected, backends.urls),
+    );
+
+    useEffect(() => {
+        setCurrentValues(getStoredState(symbol, backends.selected, backends.urls));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [symbol]);
 
     const changeType = (type: BackendOption) => {
         setCurrentValues(getStoredState(symbol, type, backends.urls));
@@ -156,7 +162,6 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
     };
 
     return {
-        maxUrlLength: 2048,
         type: currentValues.type,
         urls: currentValues.urls,
         input,
@@ -165,5 +170,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         removeUrl,
         changeType,
         save,
-    };
+    } as const;
 };
+
+export type BackendsForm = ReturnType<typeof useBackendsForm>;
