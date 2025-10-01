@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { ButtonGroup, ButtonVariant } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { ExperimentalFeatureFlag } from 'src/support/suite/ExperimentalFeatureFlag';
 
@@ -28,6 +29,8 @@ export const GlobalSendReceiveButtons = ({
                     icon="arrowUp"
                     onClick={() => {
                         setIsSendModalOpen(true);
+
+                        analytics.report({ type: EventType.DashboardSendModal });
                     }}
                     data-testid="@wallet/menu/wallet-global-send"
                     variant={variant}
@@ -40,6 +43,8 @@ export const GlobalSendReceiveButtons = ({
                     icon="arrowDown"
                     onClick={() => {
                         setIsReceiveModalOpen(true);
+
+                        analytics.report({ type: EventType.DashboardReceiveModal });
                     }}
                     data-testid="@wallet/menu/wallet-global-receive"
                     variant={variant}

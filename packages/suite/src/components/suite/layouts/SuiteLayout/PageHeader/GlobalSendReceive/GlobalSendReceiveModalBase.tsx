@@ -8,8 +8,8 @@ import { AccountItemType } from '../../../../../../types/wallet';
 
 type GlobalSendReceiveModalBaseProps = {
     heading?: React.ReactNode;
-    onCancel: () => void;
-    onSubmit: (account: Account, type: AccountItemType) => void;
+    onCancel: (filledSearch: boolean) => void;
+    onSubmit: (account: Account, type: AccountItemType, filledSearch: boolean) => void;
     additionalAction?: React.ReactNode;
 };
 
@@ -23,21 +23,24 @@ export const GlobalSendReceiveModalBase = ({
     const { translationString } = useTranslation();
 
     return (
-        <Modal heading={heading} onCancel={onCancel} size="small">
+        <Modal heading={heading} onCancel={() => onCancel(!!searchString)} size="small">
             <Column height={500} gap={spacings.sm}>
                 <Row gap={spacings.xs}>
                     <Box flex="1">
                         <Input
                             placeholder={translationString('TR_SEARCH')}
                             size="small"
-                            value={searchString}
+                            value={searchString ?? ''}
                             onChange={event => setSearchString(event.target.value)}
                         />
                     </Box>
                     {additionalAction}
                 </Row>
                 <ElevationContext baseElevation={-1}>
-                    <AccountList hideStaking onSubmit={onSubmit} />
+                    <AccountList
+                        hideStaking
+                        onSubmit={(account, type) => onSubmit(account, type, !!searchString)}
+                    />
                 </ElevationContext>
             </Column>
         </Modal>
