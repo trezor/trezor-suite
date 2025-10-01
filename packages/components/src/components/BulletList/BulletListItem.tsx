@@ -1,24 +1,49 @@
 import styled, { css, useTheme } from 'styled-components';
 
-import { SpacingValues, borders, typography } from '@trezor/theme';
+import { SpacingValuesNew, typography } from '@trezor/theme';
 
 import { useBulletList } from './BulletList';
-import { BulletListItemState, BulletSize } from './types';
+import { BulletLineWidth, BulletListDirection, BulletListItemState, BulletSize } from './types';
 import { mapSizeToDimension, mapStateToColor } from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';
 
-const Item = styled.li<{ $bulletGap: SpacingValues; $size: BulletSize }>`
+const Item = styled.li<{
+    $bulletGap: SpacingValuesNew;
+    $titleGap: SpacingValuesNew;
+    $size: BulletSize;
+    $direction: BulletListDirection;
+}>`
     display: grid;
-    columns: 2;
     grid-template-columns: ${mapSizeToDimension}px 1fr;
-    column-gap: ${({ $bulletGap }) => `${$bulletGap}px`};
+
+    ${({ $direction, $bulletGap, $titleGap }) =>
+        $direction === 'vertical'
+            ? css`
+                  column-gap: ${$bulletGap}px;
+              `
+            : css`
+                  flex: 1;
+                  row-gap: ${$titleGap}px;
+
+                  &:last-child {
+                      flex: 0;
+                  }
+              `}
 `;
 
-const BulletWrapper = styled.div`
+const BulletWrapper = styled.div<{ $direction: BulletListDirection }>`
     align-self: center;
     counter-increment: item-counter;
     position: relative;
+
+    ${({ $direction }) =>
+        $direction === 'horizontal' &&
+        css`
+            grid-column: 1;
+            grid-row: 1;
+            place-self: center;
+        `}
 `;
 
 const Bullet = styled.div<{
@@ -37,6 +62,14 @@ const Bullet = styled.div<{
         theme[$isDarkTheme ? 'textDefaultInverted' : 'backgroundNeutralDisabled']};
     color: ${mapStateToColor};
     ${({ $size }) => ($size === 'small' ? typography.label : typography.hint)}
+
+    ${({ $state, $isOrdered, theme }) =>
+        $state === 'default' &&
+        $isOrdered &&
+        css`
+            background-color: ${theme.textDefaultInverted};
+            box-shadow: ${theme.boxShadowBase};
+        `}
 
     &::before {
         ${({ $isOrdered, $isDarkTheme }) =>
@@ -59,22 +92,52 @@ const Bullet = styled.div<{
     }
 `;
 
-const Title = styled.div`
+const Title = styled.div<{ $direction: BulletListDirection }>`
     align-self: center;
     overflow: hidden;
+
+    ${({ $direction }) =>
+        $direction === 'horizontal' &&
+        css`
+            grid-column: 1;
+            grid-row: 2;
+            text-align: center;
+            place-self: center;
+            overflow: visible;
+        `}
 `;
 
-const Line = styled.div<{ $size: BulletSize }>`
-    place-self: stretch center;
-    border-left: ${borders.widths.large} dashed ${({ theme }) => theme.borderDashed};
-    margin: calc(${mapSizeToDimension}px * -0.5) 0;
+const Line = styled.div<{
+    $size: BulletSize;
+    $direction: BulletListDirection;
+    $bulletGap: SpacingValuesNew;
+    $lineWidth: BulletLineWidth;
+}>`
+    ${({ $direction, $bulletGap, $size, $lineWidth }) =>
+        $direction === 'horizontal'
+            ? css`
+                  grid-column: 2;
+                  grid-row: 1;
+                  margin: 0 ${$bulletGap}px;
+                  border-top: ${$lineWidth}px dashed ${({ theme }) => theme.borderDashed};
+                  place-self: center stretch;
 
-    ${Item}:last-child & {
-        opacity: 0;
-    }
+                  ${Item}:last-child & {
+                      display: none;
+                  }
+              `
+            : css`
+                  place-self: stretch center;
+                  border-left: ${$lineWidth}px dashed ${({ theme }) => theme.borderDashed};
+                  margin: calc(${mapSizeToDimension({ $size })}px * -0.5) 0;
+
+                  ${Item}:last-child & {
+                      opacity: 0;
+                  }
+              `}
 `;
 
-const Content = styled.div<{ $itemGap: SpacingValues; $titleGap: SpacingValues }>`
+const Content = styled.div<{ $itemGap: SpacingValuesNew; $titleGap: SpacingValuesNew }>`
     padding-bottom: ${({ $itemGap }) => `${$itemGap}px`};
 
     &:not(:empty) {
@@ -99,13 +162,20 @@ export const BulletListItem = ({
     'data-testid': dataTestId,
     children,
 }: BulletListItemProps) => {
-    const { itemGap, bulletGap, titleGap, bulletSize, isOrdered } = useBulletList();
+    const { itemGap, bulletGap, titleGap, bulletSize, isOrdered, direction, lineWidth } =
+        useBulletList();
     const theme = useTheme();
     const isDarkTheme = theme.variant === 'dark';
 
     return (
-        <Item $bulletGap={bulletGap} $size={bulletSize} data-testid={dataTestId}>
-            <BulletWrapper>
+        <Item
+            $bulletGap={bulletGap}
+            $titleGap={titleGap}
+            $size={bulletSize}
+            $direction={direction}
+            data-testid={dataTestId}
+        >
+            <BulletWrapper $direction={direction}>
                 {state === 'done' ? (
                     <IconCircle
                         name="check"
@@ -122,24 +192,31 @@ export const BulletListItem = ({
                     />
                 )}
             </BulletWrapper>
-            <Title>
+            <Title $direction={direction}>
                 <Text
                     as="div"
-                    typographyStyle="body"
+                    typographyStyle={direction === 'vertical' ? 'body' : 'hint'}
                     color={mapStateToColor({ $state: state, theme })}
-                    ellipsisLineCount={2}
+                    ellipsisLineCount={direction === 'vertical' ? 2 : undefined}
                 >
                     {title}
                 </Text>
             </Title>
-            <Line $size={bulletSize} />
-            <Content $itemGap={itemGap} $titleGap={titleGap}>
-                {children && (
-                    <Text as="div" typographyStyle="hint">
-                        {children}
-                    </Text>
-                )}
-            </Content>
+            <Line
+                $size={bulletSize}
+                $direction={direction}
+                $bulletGap={bulletGap}
+                $lineWidth={lineWidth}
+            />
+            {direction === 'vertical' && (
+                <Content $itemGap={itemGap} $titleGap={titleGap}>
+                    {children && (
+                        <Text as="div" typographyStyle="hint">
+                            {children}
+                        </Text>
+                    )}
+                </Content>
+            )}
         </Item>
     );
 };

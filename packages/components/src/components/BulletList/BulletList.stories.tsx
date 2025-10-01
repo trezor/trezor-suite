@@ -2,10 +2,10 @@ import React from 'react';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { spacings } from '@trezor/theme';
+import { spacingsNew } from '@trezor/theme';
 
 import { BulletList as BulletListComponent, allowedBulletListFrameProps } from './BulletList';
-import { bulletSizes } from './types';
+import { bulletLineWidths, bulletListDirections, bulletSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
@@ -34,13 +34,15 @@ export const BulletList: StoryObj<typeof BulletListComponent> = {
     ),
     args: {
         ...getFramePropsStory(allowedBulletListFrameProps).args,
-        gap: spacings.xxl,
-        titleGap: spacings.xs,
-        bulletGap: spacings.xl,
+        gap: 32,
+        titleGap: 8,
+        bulletGap: 24,
         isOrdered: true,
         bulletSize: 'large',
-        width: 400,
-        margin: { vertical: spacings.lg, horizontal: 'auto' },
+        lineWidth: 2,
+        direction: 'vertical',
+        width: 600,
+        margin: { vertical: 12, horizontal: 'auto' },
     },
     argTypes: {
         isOrdered: {
@@ -49,25 +51,37 @@ export const BulletList: StoryObj<typeof BulletListComponent> = {
             },
         },
         gap: {
-            options: Object.values(spacings),
+            options: spacingsNew,
             control: {
                 type: 'select',
             },
         },
         titleGap: {
-            options: Object.values(spacings),
+            options: spacingsNew,
             control: {
                 type: 'select',
             },
         },
         bulletGap: {
-            options: Object.values(spacings),
+            options: spacingsNew,
             control: {
                 type: 'select',
             },
         },
         bulletSize: {
             options: bulletSizes,
+            control: {
+                type: 'select',
+            },
+        },
+        lineWidth: {
+            options: bulletLineWidths,
+            control: {
+                type: 'select',
+            },
+        },
+        direction: {
+            options: bulletListDirections,
             control: {
                 type: 'select',
             },

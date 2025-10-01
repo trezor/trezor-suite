@@ -2,10 +2,10 @@ import { createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import { SpacingValuesNew } from '@trezor/theme';
 
 import { BulletListItem } from './BulletListItem';
-import { BulletSize } from './types';
+import { BulletLineWidth, BulletListDirection, BulletSize } from './types';
 import {
     FrameProps,
     FramePropsKeys,
@@ -24,10 +24,12 @@ export const allowedBulletListFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBulletListFrameProps)[number]>;
 
-const Container = styled.ul<TransientProps<AllowedFrameProps>>`
+const Container = styled.ul<
+    TransientProps<AllowedFrameProps> & { $direction: BulletListDirection }
+>`
     display: flex;
     list-style-type: none;
-    flex-direction: column;
+    flex-direction: ${({ $direction }) => ($direction === 'vertical' ? 'column' : 'row')};
     align-items: stretch;
     counter-reset: item-counter;
 
@@ -35,37 +37,45 @@ const Container = styled.ul<TransientProps<AllowedFrameProps>>`
 `;
 
 export type BulletListProps = AllowedFrameProps & {
-    gap?: SpacingValues;
-    bulletGap?: SpacingValues;
-    titleGap?: SpacingValues;
+    gap?: SpacingValuesNew;
+    bulletGap?: SpacingValuesNew;
+    titleGap?: SpacingValuesNew;
     isOrdered?: boolean;
     bulletSize?: BulletSize;
+    lineWidth?: BulletLineWidth;
+    direction?: BulletListDirection;
     children: React.ReactNode;
     'data-testid'?: string;
 };
 
 type BulletListContextValue = {
-    itemGap: SpacingValues;
-    titleGap: SpacingValues;
-    bulletGap: SpacingValues;
+    itemGap: SpacingValuesNew;
+    titleGap: SpacingValuesNew;
+    bulletGap: SpacingValuesNew;
     bulletSize: BulletSize;
+    lineWidth: BulletLineWidth;
     isOrdered: boolean;
+    direction: BulletListDirection;
 };
 
 const BulletListContext = createContext<BulletListContextValue>({
-    itemGap: spacings.xxl,
-    titleGap: spacings.xs,
-    bulletGap: spacings.xl,
+    itemGap: 32,
+    titleGap: 8,
+    bulletGap: 24,
     bulletSize: 'large',
     isOrdered: false,
+    lineWidth: 2,
+    direction: 'vertical',
 });
 
 export const BulletList = ({
-    gap = spacings.xxl,
-    bulletGap = spacings.xl,
-    titleGap = spacings.xs,
+    gap = 32,
+    bulletGap = 24,
+    titleGap = 8,
     isOrdered = false,
     bulletSize = 'large',
+    lineWidth = 2,
+    direction = 'vertical',
     'data-testid': dataTestId,
     children,
     ...rest
@@ -74,9 +84,17 @@ export const BulletList = ({
 
     return (
         <BulletListContext.Provider
-            value={{ itemGap: gap, bulletGap, titleGap, isOrdered, bulletSize }}
+            value={{
+                itemGap: gap,
+                bulletGap,
+                titleGap,
+                isOrdered,
+                bulletSize,
+                lineWidth,
+                direction,
+            }}
         >
-            <Container data-testid={dataTestId} {...frameProps}>
+            <Container data-testid={dataTestId} {...frameProps} $direction={direction}>
                 {children}
             </Container>
         </BulletListContext.Provider>
