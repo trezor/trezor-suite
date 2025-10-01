@@ -51,6 +51,19 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeOperation?.type; // ethereum or solana staking tx
     const isStakeTypeTxNoAmount = isStakeType && amount.eq(0);
 
+    const getCardanoStakingSignValue = () => {
+        const subtype = tx.cardanoSpecific?.subtype;
+
+        switch (subtype) {
+            case 'stake_registration':
+                return 'negative';
+            case 'stake_deregistration':
+                return 'positive';
+        }
+
+        return 'positive';
+    };
+
     const getAmountSignValue = () => {
         const txOp = getTxOperation(tx.type, true);
 
@@ -288,7 +301,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <FormattedCryptoAmount
                                     value={cardanoDeposit}
                                     symbol={tx.symbol}
-                                    signValue="positive"
+                                    signValue={getCardanoStakingSignValue()}
                                 />
                             </Text>
                         </Table.Cell>
