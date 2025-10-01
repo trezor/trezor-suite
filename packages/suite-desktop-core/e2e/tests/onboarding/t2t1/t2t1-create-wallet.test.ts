@@ -15,7 +15,6 @@ test.describe(
         });
 
         test('Success (Shamir backup)', async ({
-            page,
             analyticsSection,
             onboardingPage,
             devicePrompt,
@@ -30,12 +29,12 @@ test.describe(
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
 
-            await page.getByTestId('@onboarding/create-backup-button').click();
+            await onboardingPage.createBackupButton.click();
 
             const shares = 3;
             const threshold = 2;
             await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
-            await page.getByTestId('@onboarding/set-pin-button').click();
+            await onboardingPage.setPinButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
 
             await trezorUserEnvLink.pressYes();
@@ -43,7 +42,7 @@ test.describe(
             await trezorUserEnvLink.inputEmu('12');
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
-            await expect(page.getByTestId('@onboarding/coins/continue-button')).toBeVisible();
+            await expect(onboardingPage.continueCoinsButton).toBeVisible();
         });
     },
 );
