@@ -103,17 +103,17 @@ const GetAppCard = ({ isLightTheme }: GetAppCardProps) => (
     <Card>
         <Row gap={spacings.lg} alignItems="stretch">
             <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
-                <Image image="TRADING_DCA_INVITY_APP_QR" width={100} height={100} />
+                <Image isFilterActive image="TRADING_DCA_INVITY_APP_QR" width={100} height={100} />
             </TrezorLink>
             <Column justifyContent="center" gap={spacings.xxs}>
                 <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
                     <StoreBadge $isLight={isLightTheme}>
-                        <Image image="PLAY_STORE_BADGE" height={32} />
+                        <Image isFilterActive image="PLAY_STORE_BADGE" height={32} />
                     </StoreBadge>
                 </TrezorLink>
                 <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
                     <StoreBadge $isLight={isLightTheme}>
-                        <Image image="APP_STORE_BADGE" height={32} />
+                        <Image isFilterActive image="APP_STORE_BADGE" height={32} />
                     </StoreBadge>
                 </TrezorLink>
             </Column>
@@ -234,7 +234,6 @@ const DCALanding = () => {
                                     ? 'TRADING_DCA_INVITY_APP'
                                     : 'TRADING_DCA_INVITY_APP_DARK'
                             }
-                            isFilterActive={false}
                         />
                     </Column>
                 </ColumnsWrapper>

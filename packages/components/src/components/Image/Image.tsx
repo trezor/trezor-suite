@@ -94,7 +94,7 @@ const getImageHTMLProps = (
         {},
     );
 
-export const Image = ({ image, imageSrc, isFilterActive = true, ...rest }: ImageProps) => {
+export const Image = ({ image, imageSrc, isFilterActive = false, ...rest }: ImageProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedImageFrameProps);
     const imageHTMLProps = getImageHTMLProps(rest);
     const sourceProps = image ? getSourceProps(image) : { src: imageSrc };
