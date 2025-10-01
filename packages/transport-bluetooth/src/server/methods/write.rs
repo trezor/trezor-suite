@@ -2,6 +2,7 @@ use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
     device::CHARACTERISTIC_RX,
     types::{MethodError, MethodResult, WriteParams, WsResponsePayload},
+    utils,
 };
 use btleplug::api::{CharPropFlags, Peripheral as _, WriteType};
 use log::info;
@@ -21,12 +22,6 @@ pub async fn write(manager: AdapterManager, params: WriteParams) -> MethodResult
         return Err(MethodError::Adapter(AdapterError::PeripheralNotConnected));
     }
 
-    if peripheral.services().is_empty() {
-        // services() always empty on linux macos
-        // discover_services() slows down the process on windows
-        peripheral.discover_services().await?;
-    }
-
     // windows WithResponse takes too long. ~3000ms
     let (write_type, write_flag) = if with_response {
         (WriteType::WithResponse, CharPropFlags::WRITE)
@@ -36,6 +31,8 @@ pub async fn write(manager: AdapterManager, params: WriteParams) -> MethodResult
             CharPropFlags::WRITE_WITHOUT_RESPONSE,
         )
     };
+
+    utils::wait_for_characteristics(&peripheral).await?;
 
     let characteristics = peripheral.characteristics();
     let Some(rx) = characteristics

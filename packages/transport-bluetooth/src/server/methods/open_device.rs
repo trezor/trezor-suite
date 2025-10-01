@@ -10,7 +10,7 @@ use crate::server::{
         AbortProcess, ChannelMessage, MethodError, MethodResult, NotificationCharacteristic,
         NotificationEvent, OpenDeviceParams, WsResponsePayload,
     },
-    ConnectionBroadcast,
+    utils, ConnectionBroadcast,
 };
 
 pub async fn open_device(
@@ -43,11 +43,7 @@ pub async fn open_device(
     )));
     sleep(Duration::from_millis(5)).await;
 
-    if peripheral.services().is_empty() {
-        // services() always empty on linux macos
-        // discover_services() slows down the process on windows
-        peripheral.discover_services().await?;
-    }
+    utils::wait_for_characteristics(&peripheral).await?;
 
     let Some(tx) = peripheral
         .characteristics()
