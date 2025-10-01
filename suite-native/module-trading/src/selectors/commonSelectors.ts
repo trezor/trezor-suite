@@ -32,6 +32,7 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
+    selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
 import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
@@ -319,3 +320,13 @@ export const selectTradesToWatchByAccount = createTradingWithDeviceAndAccountsMe
         };
     },
 );
+
+export const selectVisibleDeviceAccountsByNetworkSymbolSorted =
+    createTradingWithDeviceAndAccountsMemoizedSelector(
+        [selectVisibleDeviceAccountsByNetworkSymbol],
+        accounts => {
+            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+
+            return returnStableArrayIfEmpty(sortedAccounts);
+        },
+    );

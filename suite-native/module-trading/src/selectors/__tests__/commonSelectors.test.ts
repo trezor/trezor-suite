@@ -3,7 +3,11 @@ import {
     InvityServerEnvironment,
     TradingRootStateWithDeviceAndAccounts,
 } from '@suite-common/trading';
-import { AccountsRootState, deviceInitialState } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    DeviceReducerState,
+    deviceInitialState,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { BigNumber } from '@trezor/utils';
@@ -29,6 +33,7 @@ import {
     selectTradeToBeOpened,
     selectTradesToWatchByAccount,
     selectTradingEnvironment,
+    selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from '../commonSelectors';
 
 const actionId = 'ActionId_1';
@@ -979,6 +984,60 @@ describe('commonSelectors', () => {
 
             // Trades without account keys should not be grouped
             expect(result.tradesByAccount).toHaveLength(0);
+        });
+    });
+
+    describe('selectVisibleDeviceAccountsByNetworkSymbolSorted', () => {
+        const getStateWithAccounts = () => ({
+            wallet: {
+                ...getWalletState({ tradeType: 'exchange' }),
+                accounts: [
+                    getEthAccount('eth1'),
+                    getBtcAccount('btc0', { deviceState: 'other-device@test:123' }),
+                    getBtcAccount('btc1', { accountType: 'ledger' }),
+                    getBtcAccount('btc2', { accountType: 'normal' }),
+                    getBtcAccount('btc3', { accountType: 'segwit' }),
+                ],
+            },
+            device: {
+                ...deviceInitialState,
+                selectedDevice: {
+                    state: {
+                        staticSessionId:
+                            'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
+                    },
+                },
+            } as unknown as DeviceReducerState,
+        });
+
+        it('should sort accounts by type', () => {
+            const result = selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                getStateWithAccounts(),
+                'btc',
+            );
+
+            expect(result).toEqual([
+                expect.objectContaining({ key: 'btc2' }), // normal
+                expect.objectContaining({ key: 'btc3' }), // segwit
+                expect.objectContaining({ key: 'btc1' }), // ledger
+            ]);
+        });
+
+        it('should be stable', () => {
+            const preloadedState = getStateWithAccounts();
+
+            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            );
+        });
+
+        it('should be stable even for empty result', () => {
+            const preloadedState = getStateWithAccounts();
+            preloadedState.wallet.accounts = [];
+
+            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            );
         });
     });
 });

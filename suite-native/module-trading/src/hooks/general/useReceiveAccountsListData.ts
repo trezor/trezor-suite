@@ -2,15 +2,12 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectVisibleDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 
 import { SectionListData } from './useSectionList';
+import { selectVisibleDeviceAccountsByNetworkSymbolSorted } from '../../selectors/commonSelectors';
 import { ReceiveAccount } from '../../types/general';
 
 export type ReceiveAccountsListMode = 'account' | 'address';
@@ -29,7 +26,7 @@ export const useReceiveAccountsListData = ({
     const { translate } = useTranslate();
 
     const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectVisibleDeviceAccountsByNetworkSymbol(state, symbol),
+        selectVisibleDeviceAccountsByNetworkSymbolSorted(state, symbol),
     );
 
     return useMemo<SectionListData<ReceiveAccount>>(() => {
