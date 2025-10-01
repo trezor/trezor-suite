@@ -1,8 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 
 import { selectWalletLabel } from '@suite-common/local-first-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { acquireDevice } from '@suite-common/wallet-core';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -11,10 +12,11 @@ import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
+import { useDispatch } from '../../../../hooks/suite';
 import { getDeviceResolveStatusCTAMessage } from '../getDeviceResolveStatusCTAMessage';
 
 type DeviceStatusTextProps = {
-    onRefreshClick?: MouseEventHandler;
+    onRefreshClick?: (e: React.MouseEvent) => void;
     device: TrezorDevice;
     forceConnectionInfo: boolean;
 };
@@ -61,24 +63,30 @@ const DeviceStatusVisible = ({ device, connected, forceConnectionInfo }: DeviceS
     );
 };
 
-export const DeviceStatusText = ({
-    onRefreshClick,
-    device,
-    forceConnectionInfo,
-}: DeviceStatusTextProps) => {
+export const DeviceStatusText = ({ device, forceConnectionInfo }: DeviceStatusTextProps) => {
     const { connected } = device;
     const deviceStatus = deviceUtils.getStatus(device);
-    const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
-
-    if (connected && needsAttention && onRefreshClick !== undefined) {
+    const dispatch = useDispatch();
+    if (
+        connected &&
+        ['was-used-in-other-window', 'used-in-other-window', 'unavailable'].includes(deviceStatus)
+    ) {
         return (
             <DeviceConnectionText
                 variant="warning"
                 icon="repeat"
-                data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
+                data-testid="@deviceStatus-connected"
                 data-testid-alt="@deviceStatus"
                 isAction
-                onClick={onRefreshClick}
+                onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+
+                    dispatch(
+                        acquireDevice({
+                            requestedDevice: device,
+                        }),
+                    );
+                }}
             >
                 <Translation id={getDeviceResolveStatusCTAMessage(deviceStatus)} />
             </DeviceConnectionText>
