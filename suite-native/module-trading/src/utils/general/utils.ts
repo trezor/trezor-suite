@@ -4,12 +4,16 @@ import {
     TradingTradeType,
     TradingTransaction,
     TradingType,
+    cryptoIdToNetworkSymbolAndContractAddress,
     isBuyTrade,
+    isCryptoIdForNativeToken,
     isExchangeTrade,
     isSellFiatTrade,
+    toTokenCryptoId,
     tradeFinalStatuses,
 } from '@suite-common/trading';
 import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils/';
 import type { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
@@ -208,3 +212,18 @@ export const getTradeTitle = (trade: TradingTransaction, translate: Translate) =
 
 export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =>
     `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;
+
+export const toCaseAwareCryptoId = (cryptoId: CryptoId): CryptoId => {
+    if (isCryptoIdForNativeToken(cryptoId)) {
+        return cryptoId;
+    }
+
+    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    if (!contractAddress) {
+        return cryptoId;
+    }
+
+    const adjustedContractAddress = getContractAddressForNetworkSymbol(symbol, contractAddress);
+
+    return toTokenCryptoId(symbol, adjustedContractAddress);
+};

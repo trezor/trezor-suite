@@ -2,6 +2,7 @@ import { invariant } from '@suite-common/suite-utils';
 import { MinimalExchangeFormProps } from '@suite-common/trading';
 
 import { ExchangeFormType } from '../../types/exchange';
+import { toCaseAwareCryptoId } from '../general/utils';
 
 export const tradingExchangeFormToTradingExchangeFormProps = (
     getValues: ExchangeFormType['getValues'],
@@ -17,8 +18,8 @@ export const tradingExchangeFormToTradingExchangeFormProps = (
     invariant(sendCryptoAmount, 'sendCryptoAmount is required');
 
     return {
-        sendCryptoSelect: { value: sendAsset.cryptoId },
-        receiveCryptoSelect: { value: receiveAsset.cryptoId },
+        sendCryptoSelect: { value: toCaseAwareCryptoId(sendAsset.cryptoId) },
+        receiveCryptoSelect: { value: toCaseAwareCryptoId(receiveAsset.cryptoId) },
         outputs: [{ amount: sendCryptoAmount }],
     };
 };

@@ -1,8 +1,17 @@
 import { act } from 'react';
 
+import { CryptoId } from 'invity-api';
+
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { btcAsset, ethAsset } from '../../../__fixtures__/tradeableAssets';
+import {
+    btcAsset,
+    ethAsset,
+    jitoOnSolanaAsset,
+    jupOnSolanaAsset,
+    usdcAsset,
+} from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeFormType } from '../../../types/exchange';
@@ -59,6 +68,44 @@ describe('quotesUtils', () => {
             expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
                 sendCryptoSelect: { value: 'bitcoin' },
                 receiveCryptoSelect: { value: 'ethereum' },
+                outputs: [{ amount: '1' }],
+            });
+        });
+
+        it('should make address lower case for eth based assets', () => {
+            const alteredUsdcAsset = {
+                ...usdcAsset,
+                cryptoId: 'ethereum--0XA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48' as CryptoId,
+                contractAddress: usdcAsset.contractAddress!.toUpperCase() as TokenAddress,
+            };
+
+            act(() => {
+                form.setValue('sendAsset', alteredUsdcAsset);
+                form.setValue('receiveAsset', alteredUsdcAsset);
+                form.setValue('sendCryptoAmount', '1');
+            });
+
+            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+                sendCryptoSelect: { value: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+                receiveCryptoSelect: {
+                    value: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                },
+                outputs: [{ amount: '1' }],
+            });
+        });
+
+        it('should not make address lower case for SOL based assets', () => {
+            act(() => {
+                form.setValue('sendAsset', jupOnSolanaAsset);
+                form.setValue('receiveAsset', jitoOnSolanaAsset);
+                form.setValue('sendCryptoAmount', '1');
+            });
+
+            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+                sendCryptoSelect: { value: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' },
+                receiveCryptoSelect: {
+                    value: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
+                },
                 outputs: [{ amount: '1' }],
             });
         });
