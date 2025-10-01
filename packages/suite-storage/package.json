@@ -14,9 +14,8 @@
         "type-check:watch": "yarn type-check -- --watch",
         "depcheck": "yarn g:depcheck"
     },
-    "main": "./src/web/index.ts",
-    "react-native": "./src/native/index.ts",
-    "browser": "./src/web/index.ts",
+    "main": "./src/index.ts",
+    "browser": "./src/index.ts",
     "dependencies": {
         "@trezor/eslint": "workspace:*",
         "@trezor/utils": "workspace:*",
