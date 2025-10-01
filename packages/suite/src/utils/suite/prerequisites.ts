@@ -13,26 +13,28 @@ type GetPrerequisiteNameParams = {
     transport?: TransportState;
 };
 
-export type PrerequisiteType =
-    | 'no-transport'
-    | 'device-disconnected'
-    | 'device-disconnect-required'
-    | 'device-used-elsewhere'
-    | 'device-thp-locked'
-    | 'device-unacquired'
-    | 'device-unreadable'
-    | 'device-unknown'
-    | 'device-seedless'
-    | 'device-recovery-mode'
-    | 'multi-share-backup-in-progress'
-    | 'device-initialize'
-    | 'device-bootloader'
-    | 'firmware-missing'
-    | 'firmware-required'
-    | 'device-busy'
-    | 'device-rebooting'
-    | 'device-bootloader-locked'
-    | 'device-hard-locked';
+export const prerequisiteTypes = [
+    'no-transport',
+    'device-disconnected',
+    'device-disconnect-required',
+    'device-used-elsewhere',
+    'device-thp-locked',
+    'device-unacquired',
+    'device-unreadable',
+    'device-unknown',
+    'device-seedless',
+    'device-recovery-mode',
+    'multi-share-backup-in-progress',
+    'device-initialize',
+    'device-bootloader',
+    'firmware-missing',
+    'firmware-required',
+    'device-busy',
+    'device-rebooting',
+    'device-bootloader-locked',
+    'device-hard-locked',
+] as const;
+type PrerequisiteType = (typeof prerequisiteTypes)[number];
 
 export const getPrerequisiteName = ({
     router,

@@ -36,11 +36,34 @@ export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
     return 'ok';
 };
 
-export const getStatus = (device: TrezorDevice) => {
+export const deviceStatuses = [
+    'acquired',
+    'unacquired',
+    'unreadable',
+    'disconnected',
+    'unavailable',
+    'bootloader',
+    'initialize',
+    'seedless',
+    'firmware-required',
+    'used-in-other-window',
+    'was-used-in-other-window',
+    'firmware-recommended',
+    'connected',
+    'device-busy',
+    'device-rebooting',
+    'device-bootloader-locked',
+    'device-hard-locked',
+    'device-pin-locked',
+    'device-thp-locked',
+    'unknown',
+] as const;
+type DeviceStatus = (typeof deviceStatuses)[number];
+
+export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (device.status === 'busy') {
         return 'device-busy';
     }
-
     if (device.type === 'acquired') {
         if (!device.connected) {
             return 'disconnected';

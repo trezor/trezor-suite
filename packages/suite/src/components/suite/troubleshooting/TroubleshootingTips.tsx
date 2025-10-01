@@ -19,6 +19,7 @@ import { spacings } from '@trezor/theme';
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
 import { TroubleshootingTipsToggle } from './TroubleshootingTipsToggle';
+import { useLayoutSize } from '../../../hooks/suite';
 
 export type TroubleshootingTipsItem = {
     key: string;
@@ -94,11 +95,15 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
             </Row>
         ) : null;
 
-    const ActionBanner = () => (
-        <Banner rightContent={cta} variant={variant} minWidth={400}>
-            {ctaLabel ?? label}
-        </Banner>
-    );
+    const ActionBanner = () => {
+        const { isBelowMobile } = useLayoutSize();
+
+        return (
+            <Banner rightContent={cta} variant={variant} minWidth={isBelowMobile ? undefined : 400}>
+                {ctaLabel ?? label}
+            </Banner>
+        );
+    };
 
     const CollapsibleTroubleshooting = () => (
         <Collapsible
