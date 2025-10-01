@@ -33,7 +33,7 @@ import { Metadata } from './Metadata';
 import { HomescreenGallery } from './HomescreenGallery';
 import { DeviceMatrixExplanation } from './DeviceMatrixExplanation';
 import { TroubleshootingTips } from './troubleshooting/TroubleshootingTips';
-import { ConnectDevicePrompt } from './ConnectDevicePrompt';
+import { getMessageId } from './getMessageId';
 import { CoinGroup } from './CoinGroup/CoinGroup';
 import { CoinList } from './CoinList/CoinList';
 import { CloseButton } from './CloseButton';
@@ -86,7 +86,6 @@ export {
     HomescreenGallery,
     DeviceMatrixExplanation,
     TroubleshootingTips,
-    ConnectDevicePrompt,
     CoinGroup,
     CoinList,
     CloseButton,
@@ -105,6 +104,7 @@ export {
     StakeAmountWrapper,
     MarkdownWithComponents,
     AppRouter,
+    getMessageId,
 };
 export * from './graph';
 export * from './notifications';

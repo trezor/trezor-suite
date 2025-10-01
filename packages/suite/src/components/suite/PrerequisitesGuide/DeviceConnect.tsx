@@ -1,4 +1,4 @@
-import { Button } from '@trezor/components';
+import { Column, Button } from '@trezor/components';
 
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { WebUsbButton } from 'src/components/suite';
@@ -12,17 +12,21 @@ export const DeviceConnect = () => {
 
     if (isWebUsbTransport) {
         return (
-            <WebUsbButton
-                size="medium"
-                data-testid="@webusb-button"
-                translationId="TR_CHECK_FOR_DEVICES"
-            />
+            <Column alignItems="center" margin={{ bottom: 40 }}>
+                <WebUsbButton
+                    size="medium"
+                    data-testid="@webusb-button"
+                    translationId="TR_CHECK_FOR_DEVICES"
+                />
+            </Column>
         );
     }
 
     return (
-        <Button minWidth={240} size="large" onClick={() => dispatch(toggleConnectionModal())}>
-            <Translation id="TR_CONNECT" />
-        </Button>
+        <Column alignItems="center" margin={{ bottom: 40 }}>
+            <Button minWidth={240} size="large" onClick={() => dispatch(toggleConnectionModal())}>
+                <Translation id="TR_CONNECT" />
+            </Button>
+        </Column>
     );
 };

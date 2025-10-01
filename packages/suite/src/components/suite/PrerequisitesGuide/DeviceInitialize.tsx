@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 
-import { Button } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import {
     enableOnboardingReducer,
@@ -30,10 +30,11 @@ export const DeviceInitialize = () => {
     return (
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_NOT_INITIALIZED" />}
+            variant="primary"
             cta={
-                <Button data-testid="@button/go-to-onboarding" onClick={handleCtaClick}>
+                <Banner.Button data-testid="@button/go-to-onboarding" onClick={handleCtaClick}>
                     <Translation id="TR_GO_TO_ONBOARDING" />
-                </Button>
+                </Banner.Button>
             }
             items={[
                 {

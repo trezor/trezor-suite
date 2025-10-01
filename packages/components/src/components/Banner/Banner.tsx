@@ -31,7 +31,12 @@ import { Column, FlexAlignItems, Row } from '../Flex/Flex';
 import { Icon, IconName, IconSize } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
 
-export const allowedBannerFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
+export const allowedBannerFrameProps = [
+    'margin',
+    'width',
+    'minWidth',
+    'maxWidth',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
 
 export const iconVerticalAlignments = uiAlignments;

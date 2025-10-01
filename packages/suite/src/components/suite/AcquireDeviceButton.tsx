@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 
 import { acquireDevice } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
@@ -24,13 +24,13 @@ export const AcquireDeviceButton = ({ className, onClick }: AcquireButtonProps) 
     };
 
     return (
-        <Button
+        <Banner.Button
             isLoading={isDeviceLocked}
             textWrap={false}
             onClick={handleClick}
             className={className}
         >
             <Translation id="TR_ACQUIRE_DEVICE" />
-        </Button>
+        </Banner.Button>
     );
 };

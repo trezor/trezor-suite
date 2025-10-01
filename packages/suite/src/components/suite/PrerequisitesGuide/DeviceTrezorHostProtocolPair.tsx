@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 
 import { acquireDevice } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { TroubleshootingTips } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -22,13 +22,13 @@ export const DeviceTrezorHostProtocolPair = () => {
     };
 
     const ctaButton = (
-        <Button
+        <Banner.Button
             data-testid="@device-acquire"
             isLoading={isDeviceLocked}
             onClick={handleStartPairing}
         >
             <Translation id="TR_CONTINUE" />
-        </Button>
+        </Banner.Button>
     );
 
     const tips = [TROUBLESHOOTING_TIP_CLOSE_ALL_TABS, TROUBLESHOOTING_TIP_RECONNECT];
@@ -37,6 +37,7 @@ export const DeviceTrezorHostProtocolPair = () => {
         <TroubleshootingTips
             label={<Translation id="TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION" />}
             cta={ctaButton}
+            variant="info"
             items={tips}
         />
     );

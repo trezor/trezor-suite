@@ -5,6 +5,7 @@ export const DeviceDisconnectRequired = () => (
     <TroubleshootingTips
         initiallyIsOpen={true}
         label={<Translation id="TR_DISCONNECT_YOUR_DEVICE" />}
+        variant="warning"
         items={[
             {
                 key: 'disconnect-your-device',
