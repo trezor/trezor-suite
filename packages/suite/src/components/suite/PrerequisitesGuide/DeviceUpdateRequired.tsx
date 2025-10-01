@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react';
 
-import { Button } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { TroubleshootingTips } from 'src/components/suite';
@@ -19,10 +19,11 @@ export const DeviceUpdateRequired = () => {
         <TroubleshootingTips
             label={<Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />}
             cta={
-                <Button onClick={handleClick}>
+                <Banner.Button onClick={handleClick}>
                     <Translation id="TR_SEE_DETAILS" />
-                </Button>
+                </Banner.Button>
             }
+            variant="warning"
             items={[
                 {
                     key: 'device-firmware-required',

@@ -15,9 +15,8 @@ export const TroubleshootingTipsFooter = () => {
             justifyContent="space-between"
             gap={spacings.xs}
             alignItems="center"
-            margin={{ horizontal: spacings.sm }}
         >
-            <Text typographyStyle="body">
+            <Text typographyStyle="hint">
                 <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
             </Text>
 

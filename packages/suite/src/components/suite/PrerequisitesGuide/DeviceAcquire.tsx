@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 
 import { acquireDevice } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { TroubleshootingTips } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -23,14 +23,14 @@ export const DeviceAcquire = () => {
     };
 
     const ctaButton = (
-        <Button
+        <Banner.Button
             data-testid="@device-acquire"
             isLoading={isDeviceLocked}
             onClick={handleClick}
             size="small"
         >
             <Translation id="TR_TRY_AGAIN" />
-        </Button>
+        </Banner.Button>
     );
 
     const tips = [TROUBLESHOOTING_TIP_CLOSE_ALL_TABS, TROUBLESHOOTING_TIP_RECONNECT];

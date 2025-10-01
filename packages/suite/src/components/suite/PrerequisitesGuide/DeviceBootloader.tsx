@@ -31,6 +31,7 @@ export const DeviceBootloader = () => {
             label={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
             items={tips}
             initiallyIsOpen
+            variant="warning"
         />
     );
 };

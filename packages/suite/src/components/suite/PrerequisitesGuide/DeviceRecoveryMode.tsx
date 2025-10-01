@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react';
 
-import { Button } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { rerun } from 'src/actions/recovery/recoveryActions';
 import { TroubleshootingTips } from 'src/components/suite';
@@ -26,10 +26,11 @@ export const DeviceRecoveryMode = () => {
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_IN_RECOVERY_MODE" />}
             cta={
-                <Button isDisabled={isLocked()} onClick={handleClick}>
+                <Banner.Button isDisabled={isLocked()} onClick={handleClick}>
                     <Translation id="TR_CONTINUE" />
-                </Button>
+                </Banner.Button>
             }
+            variant="warning"
             items={[
                 {
                     key: 'recovery-mode',

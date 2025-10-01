@@ -45,6 +45,7 @@ export const DeviceUsedElsewhere = () => {
             label={<Translation id="TR_ACQUIRE_DEVICE_TITLE" />}
             cta={<AcquireDeviceButton onClick={handleClick} />}
             items={tips}
+            variant="info"
             toggleText={
                 isBluetoothExpected ? <Translation id="TR_TROUBLE_SHOOTING_BLUETOOTH" /> : undefined
             }
