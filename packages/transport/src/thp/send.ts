@@ -102,6 +102,21 @@ export const sendThpMessage = async ({
         if (decodedResult?.type === 'ThpError') {
             const { code, message } = decodedResult.message;
 
+            if (code === 'ThpTransportBusy') {
+                // TODO: max 3 attempts + wait 1 sec between attempts
+                // setTimeout 1000ms
+                return sendThpMessage({
+                    thpState,
+                    skipAck,
+                    chunks,
+                    apiWrite,
+                    apiRead,
+                    signal,
+                    graceful,
+                    logger,
+                });
+            }
+
             return error({ error: code, message });
         }
 
