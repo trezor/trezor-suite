@@ -9,6 +9,7 @@ import {
 import TrezorConnect, { BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
+import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 import {
     setBluetoothDeviceNeedsManualOsRemoval,
     setIsUnpairingDevice,
@@ -24,6 +25,7 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
     `${BLUETOOTH_PREFIX}/forgetBluetoothDevice`,
     async ({ bluetoothId }, { dispatch }) => {
         dispatch(setIsUnpairingDevice({ isUnpairing: true }));
+        await dispatch(bluetoothDisconnectDeviceThunk({ id: bluetoothId }));
         const resultForget = await bluetoothIpc.forgetDevice(bluetoothId);
         dispatch(setIsUnpairingDevice({ isUnpairing: false }));
         if (!resultForget.success) {
