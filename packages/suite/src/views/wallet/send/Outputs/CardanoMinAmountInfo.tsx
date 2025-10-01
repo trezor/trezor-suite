@@ -7,6 +7,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { Banner, InfoItem, Text, Tooltip } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
