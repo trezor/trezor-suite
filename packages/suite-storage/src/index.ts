@@ -79,11 +79,11 @@ class CommonDB<TDBStructure> {
         return this.supported;
     };
 
-    isAccessible = (): Promise<boolean> => {
+    isAccessible = (): boolean => {
         const isSupported = this.isSupported();
 
         // if the instance is blocking db upgrade, db connection will be closed
-        return Promise.resolve(isSupported && !this.blocking && !this.blocked);
+        return isSupported && !this.blocking && !this.blocked;
     };
 
     closeAfterTimeout = (timeout = 1000) => {
