@@ -1,11 +1,13 @@
+import { MouseEventHandler } from 'react';
+
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { acquireDevice, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { TrezorDevice } from 'src/types/suite';
 
 import { DeviceStatus } from './DeviceStatus';
-import { useSelector } from '../../../../../hooks/suite';
+import { useDispatch, useSelector } from '../../../../../hooks/suite';
 import { useIsSidebarCollapsed } from '../Sidebar/utils';
 
 const needsRefresh = (device?: TrezorDevice) => {
@@ -23,9 +25,22 @@ const needsRefresh = (device?: TrezorDevice) => {
 export const SidebarDeviceStatus = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
+    const dispatch = useDispatch();
     const isSidebarCollapsed = useIsSidebarCollapsed();
 
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
+
+    const handleRefreshClick: MouseEventHandler = e => {
+        e.stopPropagation();
+
+        if (deviceNeedsRefresh) {
+            dispatch(
+                acquireDevice({
+                    requestedDevice: selectedDevice,
+                }),
+            );
+        }
+    };
 
     const selectedDeviceModelInternal = getDeviceInternalModel(selectedDevice);
 
@@ -43,6 +58,7 @@ export const SidebarDeviceStatus = () => {
             deviceModel={selectedDeviceModelInternal}
             deviceNeedsRefresh={deviceNeedsRefresh}
             device={selectedDevice}
+            handleRefreshClick={handleRefreshClick}
             forceConnectionInfo={isConnectionShown}
             isDeviceDetailVisible={!isSidebarCollapsed}
         />
