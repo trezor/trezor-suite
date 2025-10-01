@@ -54,6 +54,17 @@ pub async fn dispatch_status(
         .await
 }
 
+pub async fn wait_for_characteristics(peripheral: &Peripheral) -> Result<(), PlatformError> {
+    let mut retries = 10;
+    while retries > 0 && peripheral.characteristics().is_empty() {
+        peripheral.discover_services().await?;
+        tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
+        info!("wait_for_characteristics {retries}");
+        retries -= 1;
+    }
+    Ok(())
+}
+
 /// Common btleplug flow after successful pairing
 /// process is separated into parts:
 /// discover_services + (macos: try_to_subscribe) + verify_connection
