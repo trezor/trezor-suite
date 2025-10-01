@@ -57,15 +57,20 @@ type BackendTypeSelectProps = {
 export const BackendTypeSelect = ({ network, value, onChange }: BackendTypeSelectProps) => {
     const backendOptions = useBackendOptions(network);
 
-    const changeType = (option: { value: BackendOption }) => onChange(option.value);
+    if (!backendOptions.length) {
+        return null;
+    }
 
-    return backendOptions.length ? (
+    return (
         <Select
             value={backendOptions.find(option => option.value === value)}
-            onChange={changeType}
+            openMenuOnFocus={false}
+            onChange={option => {
+                onChange(option.value);
+            }}
             options={backendOptions}
             data-testid="@settings/advance/select-type"
             size="small"
         />
-    ) : null;
+    );
 };
