@@ -84,7 +84,7 @@ export const ConfirmEvmExplanationModal = ({
         <Modal
             bottomContent={
                 <Modal.Button onClick={close}>
-                    <Translation id="TR_CONFIRM" />
+                    <Translation id="TR_GOT_IT_BUTTON" />
                 </Modal.Button>
             }
             size="small"
