@@ -45,11 +45,13 @@ export const useBluetoothScanning = ({
 
     // starts to scan for devices when connection mode is bluetooth
     useEffect(() => {
-        if (bluetoothMode) dispatch(bluetoothStartScanningThunk());
+        if (bluetoothMode) {
+            dispatch(bluetoothStartScanningThunk());
 
-        return () => {
-            dispatch(bluetoothStopScanningThunk());
-        };
+            return () => {
+                dispatch(bluetoothStopScanningThunk());
+            };
+        }
     }, [dispatch, bluetoothMode]);
 
     // stop scanning after 15s
