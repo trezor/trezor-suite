@@ -1886,7 +1886,7 @@ export const messages = {
                 warning: 'Sending to a wrong network might result in loss of funds.',
             },
             recipients: {
-                title: 'Amount & recipients',
+                title: 'Recipient & amount',
                 addressLabel: 'Recipient address',
                 checksum: {
                     label: 'We’ve adjusted the casing of your address to match checksum format. <link>Learn more</link>',
