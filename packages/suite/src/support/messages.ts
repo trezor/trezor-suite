@@ -6800,6 +6800,10 @@ export default defineMessages({
         id: 'TR_PIN_HEADING_INITIAL',
         defaultMessage: 'Set a PIN',
     },
+    TR_COMPLETE: {
+        id: 'TR_COMPLETE',
+        defaultMessage: 'Complete',
+    },
     TR_COMPLETE_SETUP: {
         id: 'TR_COMPLETE_SETUP',
         defaultMessage: 'Complete setup',
