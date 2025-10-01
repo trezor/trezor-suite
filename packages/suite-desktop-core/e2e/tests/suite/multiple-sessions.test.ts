@@ -38,9 +38,9 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             await onboardingPage.completeOnboarding();
             await test.step('Bridge session taken by another suite session', async () => {
                 await stealBridgeSession();
-                await expect(dashboardPage.deviceStatus).toHaveText('Connected');
+                await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
                 await dashboardPage.deviceSwitchingOpenButton.click();
-                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Connected');
+                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Refresh');
                 await expect(dashboardPage.walletAtIndex(0)).toBeHidden();
             });
 
@@ -54,7 +54,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
 
             await test.step('Reload inactive suite session', async () => {
                 await stealBridgeSession();
-                await expect(dashboardPage.deviceStatus).toHaveText('Connected');
+                await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
                 // In this case we don't use suiteApp.reloadApp() because this reload doesn't lose the THP session
                 // It was kept active by the stolen session
                 await page.reload();
@@ -108,7 +108,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             await onboardingPageTwo.completeOnboarding();
             const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);
             await expect(dashboardPageTwo.deviceStatus).toHaveText('Connected');
-            await expect(dashboardPage.deviceStatus).toHaveText('Connected');
+            await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
 
             await pageTwo.close();
         },
