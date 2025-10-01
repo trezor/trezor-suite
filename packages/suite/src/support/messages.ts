@@ -47,11 +47,11 @@ export default defineMessages({
         id: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
-        defaultMessage: 'All coins are disabled in Settings.',
+        defaultMessage: 'No assets are active',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
-        defaultMessage: 'All coins are currently disabled. Enable in Settings.',
+        defaultMessage: 'Go to Settings to activate assets.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR: {
@@ -63,7 +63,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION',
     },
     TR_ACCOUNT_EXCEPTION_NOT_ENABLED: {
-        defaultMessage: '{networkName} not enabled in Settings.',
+        defaultMessage: '{networkName} not activated in Settings.',
         id: 'TR_ACCOUNT_EXCEPTION_NOT_ENABLED',
     },
     TR_ACCOUNT_EXCEPTION_NOT_EXIST: {
@@ -378,10 +378,6 @@ export default defineMessages({
         defaultMessage: 'Invalid response from the server',
         id: 'TR_TRADING_INVALID_RESPONSE',
     },
-    TR_CONFIRM_ADDRESS: {
-        defaultMessage: 'Confirm address',
-        id: 'TR_CONFIRM_ADDRESS',
-    },
     TR_CHECKED_BALANCES_ON: {
         defaultMessage: 'Checked balances on',
         id: 'TR_CHECKED_BALANCES_ON',
@@ -508,14 +504,6 @@ export default defineMessages({
     TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT: {
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
-    },
-    TR_EXCHANGE_VERIFY_ADDRESS_STEP: {
-        defaultMessage: 'Receive address',
-        id: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
-    },
-    TR_EXCHANGE_CONFIRM_SEND_STEP: {
-        defaultMessage: 'Confirm & Send',
-        id: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
     },
     TR_EXCHANGE_SEND_FROM: {
         defaultMessage: 'Sending account',
@@ -1119,10 +1107,6 @@ export default defineMessages({
         defaultMessage: 'No transactions',
         id: 'TR_BUY_NOT_TRANSACTIONS',
     },
-    TR_BUY_GO_TO_PAYMENT: {
-        defaultMessage: 'Continue',
-        id: 'TR_BUY_GO_TO_PAYMENT',
-    },
     TR_BUY_RECEIVING_ACCOUNT: {
         defaultMessage: 'Receive account',
         id: 'TR_BUY_RECEIVING_ACCOUNT',
@@ -1169,7 +1153,7 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_SUBMITTED_TITLE',
     },
     TR_BUY_DETAIL_SUBMITTED_TEXT: {
-        defaultMessage: "Click to complete your details on the provider's site.",
+        defaultMessage: "Click to complete your details on the provider's website.",
         id: 'TR_BUY_DETAIL_SUBMITTED_TEXT',
     },
     TR_BUY_DETAIL_SUBMITTED_GATE: {
@@ -1186,11 +1170,11 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TEXT',
     },
     TR_BUY_DETAIL_WAITING_FOR_USER_GATE: {
-        defaultMessage: "Go to provider's site",
+        defaultMessage: "Go to the provider's website",
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
     TR_TRADING_OFFERS_EMPTY: {
-        defaultMessage: 'Select your from/to assets and amount to search for your best offer.',
+        defaultMessage: 'No offers available for your request. Change country or amount.',
         id: 'TR_TRADING_OFFERS_EMPTY',
     },
     TR_TRADING_UNKNOWN_PROVIDER: {
@@ -1228,7 +1212,7 @@ export default defineMessages({
         id: 'TR_TRADING_PAYMENT_METHOD',
     },
     TR_TRADING_RECEIVE_METHOD: {
-        defaultMessage: 'Receive method',
+        defaultMessage: 'Payout method',
         id: 'TR_TRADING_RECEIVE_METHOD',
     },
     TR_TRADING_YOU_BUY: {
@@ -1376,7 +1360,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
-        defaultMessage: 'Receive method:',
+        defaultMessage: 'Payout method:',
         id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
         dynamic: true,
     },
@@ -1705,7 +1689,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH_FAILED',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_MAC: {
-        defaultMessage: 'verify your identity.',
+        defaultMessage: 'verify your identity',
         id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC',
     },
     TR_BIO_AUTH_SYSTEM_MESSAGE_WIN: {
@@ -2250,7 +2234,7 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW',
     },
     TR_NEEDS_ATTENTION_UNACQUIRED: {
-        defaultMessage: 'Trezor is already in use.',
+        defaultMessage: 'Trezor is already in use in another window.',
         id: 'TR_NEEDS_ATTENTION_UNACQUIRED',
     },
     TR_USE_HERE: {
@@ -2270,7 +2254,7 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_UNREADABLE',
     },
     TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED: {
-        defaultMessage: "Secure connection isn't set up",
+        defaultMessage: 'Secure connection not set up',
         id: 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED',
     },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {
@@ -2453,11 +2437,11 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_DESC: {
-        defaultMessage: 'Enable brightness customization for display on device.',
+        defaultMessage: 'Adjust your Trezor’s screen brightness.',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_DESC',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE: {
-        defaultMessage: 'Display brightness',
+        defaultMessage: 'Screen brightness',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON: {
@@ -2478,7 +2462,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK',
     },
     TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING: {
-        defaultMessage: 'Set the time before your device locks automatically.',
+        defaultMessage: 'Set the time when your device locks automatically.',
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING',
     },
     TR_DEVICE_SETTINGS_AFTER_DELAY: {
@@ -2591,7 +2575,7 @@ export default defineMessages({
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
-        defaultMessage: 'Setup complete!',
+        defaultMessage: 'Setup complete',
         id: 'TR_FINAL_HEADING',
     },
     TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
@@ -3218,7 +3202,7 @@ export default defineMessages({
         id: 'TR_BASE_CURRENCY_FIAT',
     },
     TR_BASE_CURRENCY_VALUABLES: {
-        defaultMessage: 'Valuables',
+        defaultMessage: 'Commodities',
         id: 'TR_BASE_CURRENCY_VALUABLES',
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
@@ -3378,7 +3362,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
-        defaultMessage: 'To access more coins, install <button>{regular}</button> firmware.',
+        defaultMessage: 'To access more assets, install <button>{regular}</button> firmware.',
         id: 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION',
     },
     TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION: {
@@ -3503,12 +3487,12 @@ export default defineMessages({
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
-        defaultMessage: 'Connect to your Trezor faster with Auto-connect',
+        defaultMessage: 'Save time with auto-connect',
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION',
         defaultMessage:
-            'Allow Trezor Suite to connect automatically to this Trezor so you don’t have to confirm the connection each time.',
+            'Use this computer regularly with your Trezor? Let Trezor Suite connect automatically—no need to approve it each time.',
     },
     TR_THP_TURN_ON_AUTO_CONNECT: {
         id: 'TR_THP_TURN_ON_AUTO_CONNECT',
@@ -3749,7 +3733,7 @@ export default defineMessages({
     },
     TR_WIPE_DEVICE_DESCRIPTION: {
         defaultMessage:
-            'Wiping the device will permanently erase all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
+            'Wiping the device permanently erases all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
         id: 'TR_WIPE_DEVICE_DESCRIPTION',
     },
     TR_WORDS: {
@@ -4093,15 +4077,15 @@ export default defineMessages({
     },
     TOAST_TX_REVOKED: {
         id: 'TOAST_TX_REVOKED',
-        defaultMessage: 'Revoke transaction of {tokenSymbol} was broadcasted',
+        defaultMessage: 'Revoke transaction of {tokenSymbol} was broadcast',
     },
     TOAST_TX_APPROVED: {
         id: 'TOAST_TX_APPROVED',
-        defaultMessage: 'Approve transaction of {amount} {tokenSymbol} was broadcasted',
+        defaultMessage: 'Approve transaction of {amount} {tokenSymbol} was broadcast',
     },
     TOAST_TX_APPROVED_MAX: {
         id: 'TOAST_TX_APPROVED_MAX',
-        defaultMessage: 'Approve transaction of unlimited {tokenSymbol} was broadcasted',
+        defaultMessage: 'Approve transaction of unlimited {tokenSymbol} was broadcast',
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
@@ -4525,7 +4509,7 @@ export default defineMessages({
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
-        defaultMessage: 'Enter all words in the correct order.',
+        defaultMessage: 'Enter all words of your wallet backup in the correct order.',
     },
     TR_SEED_WORDS_ENTER_COMPUTER: {
         id: 'TR_SEED_WORDS_ENTER_COMPUTER',
@@ -4597,11 +4581,11 @@ export default defineMessages({
     },
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
-        defaultMessage: 'Coin settings',
+        defaultMessage: 'Activate assets',
     },
     TR_SELECT_COIN_FOR_SETTINGS: {
         id: 'TR_SELECT_COIN_FOR_SETTINGS',
-        defaultMessage: 'Select active coin to change settings',
+        defaultMessage: 'Select active asset to change settings',
     },
     FW_CAPABILITY_UPDATE_REQUIRED: {
         id: 'FW_CAPABILITY_UPDATE_REQUIRED',
@@ -5139,7 +5123,7 @@ export default defineMessages({
     },
     TR_I_HAVE_ENOUGH_TIME_TO_DO: {
         id: 'TR_I_HAVE_ENOUGH_TIME_TO_DO',
-        defaultMessage: 'You have enough time to back up your wallet',
+        defaultMessage: 'I have enough time to back up my wallet.',
     },
     TR_ONCE_YOU_BEGIN_THIS_PROCESS: {
         id: 'TR_ONCE_YOU_BEGIN_THIS_PROCESS',
@@ -5148,7 +5132,7 @@ export default defineMessages({
     },
     TR_I_AM_IN_SAFE_PRIVATE_OR: {
         id: 'TR_I_AM_IN_SAFE_PRIVATE_OR',
-        defaultMessage: 'You are in a safe, private space or in a public space away from cameras',
+        defaultMessage: "I'm in a safe, private space.",
     },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
@@ -5157,7 +5141,8 @@ export default defineMessages({
     },
     TR_I_UNDERSTAND_SEED_IS_IMPORTANT: {
         id: 'TR_I_UNDERSTAND_SEED_IS_IMPORTANT',
-        defaultMessage: 'You are responsible for keeping your backup safe',
+        defaultMessage:
+            'I accept that keeping my wallet backup safe and secure is my sole responsibility.',
     },
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
@@ -5562,7 +5547,7 @@ export default defineMessages({
     BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION: {
         id: 'BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION',
         defaultMessage:
-            'A previous attempt to back up this device failed. Wallet backup may be done only once.',
+            'The last wallet backup attempt on this device failed. You can only back up your wallet once.',
     },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
@@ -5575,10 +5560,6 @@ export default defineMessages({
     TR_CHANGE_HOMESCREEN: {
         id: 'TR_CHANGE_HOMESCREEN',
         defaultMessage: 'Change homescreen',
-    },
-    TR_DROP_IMAGE: {
-        id: 'TR_DROP_IMAGE',
-        defaultMessage: 'Drop image',
     },
     TR_CUSTOM_HOMESCREEN: {
         id: 'TR_CUSTOM_HOMESCREEN',
@@ -5598,7 +5579,7 @@ export default defineMessages({
     },
     IMAGE_VALIDATION_ERROR_INVALID_SIZE_JPG: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_SIZE_JPG',
-        defaultMessage: 'Invalid size (Image must be less than {maxImageSize} KB)',
+        defaultMessage: 'Invalid size (Image must be less than 16KB)',
     },
     IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG: {
         id: 'IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG',
@@ -5618,7 +5599,7 @@ export default defineMessages({
     },
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
-        defaultMessage: 'Assets',
+        defaultMessage: 'My assets',
     },
     TR_ON: {
         id: 'TR_ON',
@@ -5751,10 +5732,6 @@ export default defineMessages({
     RECIPIENT_ADDRESS: {
         defaultMessage: 'Address',
         id: 'RECIPIENT_ADDRESS',
-    },
-    RECIPIENT_SCAN: {
-        defaultMessage: 'Scan',
-        id: 'RECIPIENT_SCAN',
     },
     RECIPIENT_ADD: {
         id: 'RECIPIENT_ADD',
@@ -6471,7 +6448,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Unable to connect to the backend. Reconnect your device and check your internet connection or custom backend URL. Also, make sure the selected network is enabled in Settings.',
+            'Unable to connect to the backend. Reconnect your device and check your internet connection or custom backend URL. Also, make sure the selected asset is activated in Settings.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -6545,12 +6522,12 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA_NETWORKS: {
         id: 'TR_GRAPH_MISSING_DATA_NETWORKS',
         defaultMessage:
-            "{networks} are included in the portfolio balance, but aren't currently supported in graph view.",
+            "{networks} are included in your portfolio balance, but aren't currently supported in graph view.",
     },
     TR_GRAPH_MISSING_DATA_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_TOKENS',
         defaultMessage:
-            "All token amounts are included in the portfolio balance, but aren't currently supported in graph view.",
+            "All token amounts are included in your portfolio balance, but aren't currently supported in graph view.",
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
@@ -6581,7 +6558,7 @@ export default defineMessages({
     TR_BACKUP_RECOVERY_SEED_FAILED_DESC: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
         defaultMessage:
-            "Wallet backup has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
+            "Your wallet backup has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
     },
     TR_BACKUP_FAILED: {
         id: 'TR_BACKUP_FAILED',
@@ -6804,7 +6781,7 @@ export default defineMessages({
     TR_BACKUP_CHECKBOX_1_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_1_TITLE',
         defaultMessage:
-            'Your wallet backup lets you recover your funds in case of Trezor loss or damage.',
+            'I understand that I can use my wallet backup to recover my assets if I lose or damage my Trezor.',
     },
     TR_BACKUP_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_1_DESCRIPTION',
@@ -6813,7 +6790,8 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_2_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_2_TITLE',
-        defaultMessage: 'Never take a picture of your backup or store it anywhere digital.',
+        defaultMessage:
+            "I'll never take a picture of my wallet backup or store it anywhere digital.",
     },
     TR_BACKUP_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_2_DESCRIPTION',
@@ -6822,7 +6800,7 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_3_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_3_TITLE',
-        defaultMessage: 'Store your wallet backup securely and never share it with anyone.',
+        defaultMessage: "I'll store my wallet backup securely and never share it with anyone.",
     },
     TR_BACKUP_CHECKBOX_3_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_3_DESCRIPTION',
@@ -7417,7 +7395,7 @@ export default defineMessages({
     },
     TR_NEEDS_ATTENTION_INITIALIZE: {
         id: 'TR_NEEDS_ATTENTION_INITIALIZE',
-        defaultMessage: 'Trezor is not set up',
+        defaultMessage: 'Trezor has not been set up.',
     },
     TR_DEVICE_CONNECTED_NEW_DEVICE_STATE: {
         id: 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE',
@@ -7462,7 +7440,7 @@ export default defineMessages({
     },
     TR_WIPE_OR_UPDATE_DESCRIPTION: {
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
-        defaultMessage: 'Go to <a/>device settings</a>.',
+        defaultMessage: 'Go to <a>device settings</a>.',
     },
     TR_YOU_HAVE_CONNECTED: {
         id: 'TR_YOU_HAVE_CONNECTED',
@@ -7788,11 +7766,11 @@ export default defineMessages({
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
-        defaultMessage: 'Activate coins',
+        defaultMessage: 'Activate assets',
     },
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
-        defaultMessage: 'Select which coins to show in Trezor Suite. You can update this anytime.',
+        defaultMessage: 'Select which assets to show in Trezor Suite. You can change this anytime.',
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
@@ -7810,7 +7788,7 @@ export default defineMessages({
     },
     TR_STILL_NOT_WORKING: {
         id: 'TR_STILL_NOT_WORKING',
-        defaultMessage: 'It’s still not working',
+        defaultMessage: 'Still not working',
     },
     TR_TROUBLE_SHOOTING_TIPS: {
         id: 'TR_TROUBLE_SHOOTING_TIPS',
@@ -8714,7 +8692,7 @@ export default defineMessages({
     TR_LOADING_FACT_3: {
         id: 'TR_LOADING_FACT_3',
         defaultMessage:
-            'Suite will not remember your coinjoin account in order to protect your privacy, unless you explicitly choose to remember the wallet.',
+            "Trezor Suite won't remember your coinjoin account in order to protect your privacy, unless you explicitly choose to remember the wallet.",
     },
     TR_LOADING_FACT_4: {
         id: 'TR_LOADING_FACT_4',
@@ -8857,12 +8835,12 @@ export default defineMessages({
     TR_BIO_AUTH_LOCKED_TEXT_MAC: {
         id: 'TR_BIO_AUTH_LOCKED_TEXT_MAC',
         description: 'Heading of the modal saying that bio auth is not available',
-        defaultMessage: 'Use Touch ID to unlock',
+        defaultMessage: 'Use Touch ID to unlock.',
     },
     TR_BIO_AUTH_LOCKED_TEXT_WIN: {
         id: 'TR_BIO_AUTH_LOCKED_TEXT_WIN',
         description: 'Text of the modal saying that bio auth is not available',
-        defaultMessage: 'Use Windows Hello to unlock',
+        defaultMessage: 'Use Windows Hello to unlock.',
     },
     TR_BIO_AUTH_UNLOCK: {
         id: 'TR_BIO_AUTH_UNLOCK',
@@ -9252,7 +9230,7 @@ export default defineMessages({
     },
     TR_DISCOVERY_NEW_COINS_TEXT: {
         id: 'TR_DISCOVERY_NEW_COINS_TEXT',
-        defaultMessage: "Don't see an account after activating a coin?",
+        defaultMessage: "Don't see an account after activating an asset?",
     },
     TR_EVM_EXPLANATION_TITLE: {
         id: 'TR_EVM_EXPLANATION_TITLE',
@@ -9662,7 +9640,7 @@ export default defineMessages({
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
         defaultMessage:
-            "The fee you're willing to pay network miners to process transaction. A higher fee may speed up confirmation times.",
+            "The fee you're willing to pay network miners to process the transaction. A higher fee may speed up confirmation times.",
     },
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
@@ -9819,10 +9797,6 @@ export default defineMessages({
         id: 'TR_STAKE_CLAIM_AFTER_UNSTAKING',
         defaultMessage: 'You can claim once the unstaking period is complete.',
     },
-    TR_STAKE_UNSTAKING_PERIOD: {
-        id: 'TR_STAKE_UNSTAKING_PERIOD',
-        defaultMessage: 'Unstaking period',
-    },
     TR_STAKE_UNSTAKING_APPROXIMATE: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE',
         defaultMessage: 'Approximate amount of {symbol} available instantly',
@@ -9886,7 +9860,7 @@ export default defineMessages({
     },
     TOAST_ESTIMATED_FEE_ERROR: {
         id: 'TOAST_ESTIMATED_FEE_ERROR',
-        defaultMessage: 'Fee estimation from network failed. Using backup value.',
+        defaultMessage: 'Network fee estimate unavailable. Using backup value instead.',
     },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
@@ -9921,8 +9895,7 @@ export default defineMessages({
     },
     TR_STAKE_YOUR_FUNDS_MAINTAINED: {
         id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
-        defaultMessage:
-            'Your {networkDisplaySymbol} stay in your wallet. Everstake handles the stake.',
+        defaultMessage: 'Your staked funds are maintained by Everstake.',
     },
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
@@ -10051,7 +10024,8 @@ export default defineMessages({
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION',
-        defaultMessage: "This wallet is empty and hasn't been used before. Do you want to open it?",
+        defaultMessage:
+            "This Passphrase wallet is empty and hasn't been used before. Do you want to open it?",
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON',
@@ -10195,7 +10169,7 @@ export default defineMessages({
     },
     TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION',
-        defaultMessage: 'Connect your Trezor to send coins.',
+        defaultMessage: 'Connect your Trezor to send assets.',
     },
     TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE',
@@ -10212,7 +10186,7 @@ export default defineMessages({
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION',
-        defaultMessage: 'Enable the passphrase entry dialog to open when you start Trezor Suite.',
+        defaultMessage: 'Enable the passphrase entry box to open when you start Trezor Suite.',
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON',
@@ -10414,7 +10388,7 @@ export default defineMessages({
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING: {
         id: 'TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING',
-        defaultMessage: 'Manually pair your Trezor',
+        defaultMessage: 'Manually pair your Trezor:',
         description: 'Displayed as hints of bluetooth connection in connect modal',
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_DESCRIPTION: {
@@ -10612,13 +10586,12 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED: {
         id: 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED',
-        defaultMessage:
-            'Some required networks are inactive. Activate them to use all app features.',
+        defaultMessage: 'Some required assets are inactive. Activate them to use all app features.',
     },
     TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
         id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
         defaultMessage:
-            'To connect to the app, activate at least one supported network in Trezor Suite.',
+            'To connect to the app, activate at least one supported asset in Trezor Suite.',
     },
     TR_REQUESTED_NETWORKS: {
         id: 'TR_REQUESTED_NETWORKS',
