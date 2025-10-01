@@ -29,7 +29,9 @@ export const negativeSpacings = {
     xxxxxl: -60,
 } as const;
 
-export type SpacingValuesNew = 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 20 | 24 | 32 | 40 | 48 | 60;
+export const spacingsNew = [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 32, 40, 48, 60] as const;
+
+export type SpacingValuesNew = (typeof spacingsNew)[number];
 export type SpacingValuesPxNew = `${SpacingValuesNew}px`;
 
 export type Spacings = typeof spacings;
