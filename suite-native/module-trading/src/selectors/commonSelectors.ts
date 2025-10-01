@@ -49,6 +49,7 @@ import { SectionListData } from '../hooks/general/useSectionList';
 import { TradingRootState } from '../reducers';
 import { MyAsset, TradeableAsset } from '../types/general';
 import { getSymbolFromTradeableAsset } from '../utils/general/tradeableAssetUtils';
+import { toCaseAwareCryptoId } from '../utils/general/utils';
 
 export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
     TokenDefinitionsRootState &
@@ -223,7 +224,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
 
                             const tokenSymbol =
                                 (token.symbol?.toUpperCase() as TokenSymbol) ?? null;
-                            const cryptoId = toTokenCryptoId(account.symbol, token.contract);
+                            const cryptoId = toCaseAwareCryptoId(
+                                toTokenCryptoId(account.symbol, token.contract),
+                            );
 
                             return {
                                 symbol: account.symbol,
@@ -233,9 +236,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                                 tokenSymbol,
                                 contract: token.contract as TokenAddress,
                                 cryptoId,
-                                isEnabled:
-                                    sellCryptoIdsSet.has(cryptoId) ||
-                                    sellCryptoIdsSet.has(cryptoId.toLowerCase() as CryptoId),
+                                isEnabled: sellCryptoIdsSet.has(cryptoId),
                                 fiatRateKey,
                                 rate,
                             };
@@ -253,7 +254,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                             return bFiatBalance - aFiatBalance;
                         });
 
-                    const cryptoId = getNetwork(account.symbol).tradeCryptoId as CryptoId;
+                    const cryptoId = toCaseAwareCryptoId(
+                        getNetwork(account.symbol).tradeCryptoId as CryptoId,
+                    );
 
                     const accountAsset = {
                         symbol: account.symbol,
@@ -267,9 +270,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                             shouldIncludeTokens: false,
                         }),
                         cryptoId,
-                        isEnabled:
-                            sellCryptoIdsSet.has(cryptoId) ||
-                            sellCryptoIdsSet.has(cryptoId.toLowerCase() as CryptoId),
+                        isEnabled: sellCryptoIdsSet.has(cryptoId),
                     };
 
                     const assets: MyAsset[] = [
