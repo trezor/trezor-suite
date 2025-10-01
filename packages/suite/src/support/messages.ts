@@ -1414,24 +1414,24 @@ export default defineMessages({
         id: 'TR_TRADING_DCA_HEADING',
     },
     TR_TRADING_DCA_FEATURE_1_SUBHEADING: {
-        defaultMessage: 'Build your bitcoin portfolio',
+        defaultMessage: 'Build your bitcoin portfolio with the Invity app',
         id: 'TR_TRADING_DCA_FEATURE_1_SUBHEADING',
         dynamic: true,
     },
     TR_TRADING_DCA_FEATURE_1_DESCRIPTION: {
         defaultMessage:
-            'Invest automatically with the Invity app and grow your bitcoin savings over time.',
+            'Set it & forget it with Auto Buy or let Auto Buy Plus optimize your timing for smarter stacking.',
         id: 'TR_TRADING_DCA_FEATURE_1_DESCRIPTION',
         dynamic: true,
     },
     TR_TRADING_DCA_FEATURE_2_SUBHEADING: {
-        defaultMessage: 'Secure & reliable—built in partnership with Trezor',
+        defaultMessage: 'Boost your growth with Turbo Buy',
         id: 'TR_TRADING_DCA_FEATURE_2_SUBHEADING',
         dynamic: true,
     },
     TR_TRADING_DCA_FEATURE_2_DESCRIPTION: {
         defaultMessage:
-            'Built for long-term bitcoin investors who value security and self-custody.',
+            'Add up to 60% more capital on top of your regular plan to accelerate returns.',
         id: 'TR_TRADING_DCA_FEATURE_2_DESCRIPTION',
         dynamic: true,
     },
@@ -1442,7 +1442,7 @@ export default defineMessages({
     },
     TR_TRADING_DCA_FEATURE_3_DESCRIPTION: {
         defaultMessage:
-            'Smart Send automatically moves your bitcoin to your Trezor at no extra cost, keeping your investments secure and always in your control.',
+            'Auto Send automatically moves your bitcoin to your Trezor at no extra cost, keeping your investments secure and always under your control.',
         id: 'TR_TRADING_DCA_FEATURE_3_DESCRIPTION',
         dynamic: true,
     },
@@ -1457,12 +1457,12 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_STEP_CARD_2_SUBHEADING: {
-        defaultMessage: 'Set up a hassle-free automatic plan.',
+        defaultMessage: 'Set up your preferred automatic plan',
         id: 'TR_TRADING_DCA_STEP_CARD_2_SUBHEADING',
         dynamic: true,
     },
     TR_TRADING_DCA_STEP_CARD_2_DESCRIPTION: {
-        defaultMessage: "It's up to you—weekly, every two weeks, or monthly.",
+        defaultMessage: 'Choose Auto Buy, Auto Buy Plus, or Turbo Buy.',
         id: 'TR_TRADING_DCA_STEP_CARD_2_DESCRIPTION',
         dynamic: true,
     },
@@ -1472,7 +1472,8 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION: {
-        defaultMessage: 'Use Smart Send to automatically move your bitcoin to your Trezor.',
+        defaultMessage:
+            'Use Auto Send to automatically move your bitcoin to your Trezor (not valid for active Turbo Buy).',
         id: 'TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION',
         dynamic: true,
     },
