@@ -196,7 +196,7 @@ export const AccountsList = ({
             <>
                 <ExpandedSidebarOnly>
                     <AccountGroup
-                        key={`${device.state}-${type}`}
+                        key={type}
                         type={type}
                         hideLabel={hideLabel}
                         hasBalance={groupHasBalance}

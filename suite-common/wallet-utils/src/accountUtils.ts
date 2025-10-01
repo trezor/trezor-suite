@@ -1255,7 +1255,9 @@ export const prepareNewAccountPayload = async ({
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
 
-    const newPath = networkAccount?.bip43Path.replace('i', String(index));
+    const accountIndex = index + (accountType === 'ledger' ? 1 : 0);
+
+    const newPath = networkAccount?.bip43Path.replace('i', String(accountIndex));
 
     if (!newPath || !device.state?.staticSessionId) return new Error('Missing path');
 
