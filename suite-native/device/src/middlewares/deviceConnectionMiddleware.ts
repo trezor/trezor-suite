@@ -7,8 +7,8 @@ import {
 
 import {
     getDeviceInternalModel,
+    getIsDeviceConnectedViaBluetooth,
     getIsDeviceInitialized,
-    isDeviceConnectedViaBluetooth,
 } from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
 import {
@@ -186,7 +186,7 @@ deviceConnectionMiddleware.startListening({
         const isDeviceRemembered = selectIsDeviceRemembered(getState());
         const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(getState());
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
-        const wasDeviceConnectedViaBluetooth = isDeviceConnectedViaBluetooth(action.payload);
+        const wasDeviceConnectedViaBluetooth = getIsDeviceConnectedViaBluetooth(action.payload);
 
         if (
             checkIsActiveRouteAnyOf(

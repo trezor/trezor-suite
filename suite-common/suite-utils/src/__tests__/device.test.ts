@@ -13,10 +13,10 @@ describe('getStatus', () => {
     });
 });
 
-describe('isDeviceConnectedViaBluetooth', () => {
-    fixtures.isDeviceConnectedViaBluetooth.forEach(f => {
+describe('getIsDeviceConnectedViaBluetooth', () => {
+    fixtures.getIsDeviceConnectedViaBluetooth.forEach(f => {
         it(f.description, () => {
-            expect(utils.isDeviceConnectedViaBluetooth(f.device)).toEqual(f.result);
+            expect(utils.getIsDeviceConnectedViaBluetooth(f.device)).toEqual(f.result);
         });
     });
 });

@@ -8,9 +8,9 @@ import {
     getDeviceInternalModel,
     getFwUpdateVersion,
     getIsDeviceConnectedAndAuthorized,
+    getIsDeviceConnectedViaBluetooth,
     getIsDeviceInitialized,
     getStatus,
-    isDeviceConnectedViaBluetooth,
 } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { Device, DeviceState, StaticSessionId } from '@trezor/connect';
@@ -175,13 +175,13 @@ export const selectIsDeviceConnected = createMemoizedSelector(
 
 export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
     [selectSelectedDevice],
-    device => isDeviceConnectedViaBluetooth(device),
+    device => getIsDeviceConnectedViaBluetooth(device),
 );
 
 export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSelector(
     [selectIsDeviceConnectedViaBluetooth, selectDeviceFeatures],
-    (isDeviceConnectedViaBt, features) =>
-        isDeviceConnectedViaBt &&
+    (isDeviceConnectedViaBluetooth, features) =>
+        isDeviceConnectedViaBluetooth &&
         typeof features?.soc === 'number' &&
         features.soc <= DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
 );
