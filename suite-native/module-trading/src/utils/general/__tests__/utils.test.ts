@@ -9,6 +9,7 @@ import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures
 import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from '../formUtils';
 import {
     doesUrlContainCloseCallbackUrl,
+    getErrorStrFromThunkRejectedValue,
     getFormDraftKeyPrefixFromTradingType,
     getRandomAccountDescriptor,
     getTradeOperationData,
@@ -180,6 +181,25 @@ describe('utils', () => {
             ['exchange', 'trading-exchange'],
         ])('should return correct prefix for %s', (tradingType, expectedPrefix) => {
             expect(getFormDraftKeyPrefixFromTradingType(tradingType)).toBe(expectedPrefix);
+        });
+    });
+
+    describe('getErrorStrFromThunkRejectedValue', () => {
+        it.each([
+            [
+                '[error]: message',
+                {
+                    error: { message: 'Error message' },
+                    payload: { error: 'error', message: 'message' },
+                },
+            ],
+            ['Error message', { error: { message: 'Error message' } }],
+            ['Error message', new Error('Error message')],
+            ['Just a string error', 'Just a string error'],
+            ['[Unknown error]: No description', { payload: {} }],
+            ['Unknown error', 42],
+        ])('should return %s when called with %o', (expected, input) => {
+            expect(getErrorStrFromThunkRejectedValue(input)).toBe(expected);
         });
     });
 

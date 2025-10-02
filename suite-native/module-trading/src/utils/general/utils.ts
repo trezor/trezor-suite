@@ -213,6 +213,27 @@ export const getTradeTitle = (trade: TradingTransaction, translate: Translate) =
 export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =>
     `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;
 
+export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown) => {
+    const asAny = rejectedValue as any;
+    if (asAny?.payload) {
+        return `[${asAny.payload.error ?? 'Unknown error'}]: ${asAny.payload.message ?? 'No description'}`;
+    }
+
+    if (asAny?.error?.message) {
+        return asAny.error.message;
+    }
+
+    if (rejectedValue instanceof Error) {
+        return rejectedValue.message;
+    }
+
+    if (typeof rejectedValue === 'string') {
+        return rejectedValue;
+    }
+
+    return 'Unknown error';
+};
+
 export const toCaseAwareCryptoId = (cryptoId: CryptoId): CryptoId => {
     if (isCryptoIdForNativeToken(cryptoId)) {
         return cryptoId;
