@@ -45,26 +45,34 @@ import { TradingCoinLogo } from '../../TradingCoinLogo';
 
 const getNetworkCount = (options: SelectAssetOptionProps[]) => {
     const networkNetworkGroups = options
-        .filter(item => item.type === 'group' && item.networkName)
+        .filter(item => item.type === 'group' && item.networkName && item.coingeckoId)
         .map(networkGroup => ({
             ...networkGroup,
-            tradeCryptoId: networkGroup.coingeckoId
-                ? getNetworkByCoingeckoId(networkGroup.coingeckoId)?.tradeCryptoId
-                : undefined,
-        }));
+            tradeCryptoId: getNetworkByCoingeckoId(networkGroup.coingeckoId!)?.tradeCryptoId,
+        }))
+        .filter(group => group.tradeCryptoId !== undefined)
+        .reduce(
+            (result, group) => {
+                result.coingeckoIds.add(group.coingeckoId);
+                result.tradeCryptoIds.add(group.tradeCryptoId);
+
+                return result;
+            },
+            {
+                coingeckoIds: new Set(),
+                tradeCryptoIds: new Set(),
+            },
+        );
 
     const networkCurrencies = options.filter(
         item =>
             item.type === 'currency' &&
             !item.contractAddress &&
-            !networkNetworkGroups.find(
-                group =>
-                    group.coingeckoId === item.coingeckoId ||
-                    group.tradeCryptoId === item.coingeckoId,
-            ),
+            !networkNetworkGroups.coingeckoIds.has(item.coingeckoId) &&
+            !networkNetworkGroups.tradeCryptoIds.has(item.coingeckoId),
     );
 
-    return networkNetworkGroups.length + networkCurrencies.length;
+    return networkNetworkGroups.coingeckoIds.size + networkCurrencies.length;
 };
 
 const getData = (options: SelectAssetOptionProps[]): AssetProps[] =>
@@ -170,29 +178,38 @@ export const TradingFormInputCryptoSelect = <
         dispatch(tradingActions.setModalCryptoCurrency(findOption.value));
     };
 
-    const data = useMemo(() => getData(modalOptions), [modalOptions]);
+    const { data, networkCount } = useMemo(() => {
+        const data = getData(modalOptions);
+        const networkCount = getNetworkCount(modalOptions);
 
-    const filteredData = data.filter(item => {
-        if (
-            activeTab &&
-            item.coingeckoId !== activeTab.coingeckoId &&
-            item.symbol !== activeTab.symbol
-        ) {
-            return false;
-        }
+        return { data, networkCount };
+    }, [modalOptions]);
 
-        const contractAddress = item.contractAddress || undefined;
-        const searchFor = (property?: string) =>
-            property?.toLocaleLowerCase().includes(search.toLocaleLowerCase());
+    const filteredData = useMemo(
+        () =>
+            data.filter(item => {
+                if (
+                    activeTab &&
+                    item.coingeckoId !== activeTab.coingeckoId &&
+                    item.symbol !== activeTab.symbol
+                ) {
+                    return false;
+                }
 
-        return (
-            searchFor(item.cryptoName) ||
-            (typeof item.badge === 'string' && searchFor(item.badge)) ||
-            searchFor(item.ticker) ||
-            searchFor(contractAddress) ||
-            searchFor(item.symbol)
-        );
-    });
+                const contractAddress = item.contractAddress || undefined;
+                const searchFor = (property?: string) =>
+                    property?.toLocaleLowerCase().includes(search.toLocaleLowerCase());
+
+                return (
+                    searchFor(item.cryptoName) ||
+                    (typeof item.badge === 'string' && searchFor(item.badge)) ||
+                    searchFor(item.ticker) ||
+                    searchFor(contractAddress) ||
+                    searchFor(item.symbol)
+                );
+            }),
+        [activeTab, data, search],
+    );
 
     useEffect(() => {
         if (context.network.symbol) {
@@ -235,7 +252,7 @@ export const TradingFormInputCryptoSelect = <
                         <NetworkTabs
                             data-testid="@trading/form/select-crypto/network-tab"
                             tabs={TOKEN_SELECT_SELECTABLE_NETWORKS}
-                            networkCount={getNetworkCount(modalOptions)}
+                            networkCount={networkCount}
                             activeTab={activeTab}
                             setActiveTab={setActiveTab}
                         />
