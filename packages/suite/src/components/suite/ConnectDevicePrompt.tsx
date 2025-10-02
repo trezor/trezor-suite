@@ -148,7 +148,6 @@ const getMessageId = ({
         'device-rebooting': defaultKey, // TODO: device is booting to normal mode
         'device-bootloader-locked': defaultKey, // TODO: device is  a) rebooting or b) its was rebooted to bootloader
         'device-hard-locked': defaultKey, // TODO: device is hard locked and will not respond to messages, unlock it
-        'device-pin-locked': defaultKey, // TODO: unlock PIN on your device
         'device-disconnect-required': defaultKey,
         'device-disconnected': defaultKey,
         'device-initialize': defaultKey,
