@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ComponentProps, ReactElement, ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     Screen,
+    ScreenHeader,
     ScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
@@ -12,45 +13,47 @@ import {
 import { useExitAlert } from '../hooks/useExitAlert';
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {
+    screenHeaderTitle?: ReactElement<ComponentProps<typeof Translation>> | string;
+    screenHeaderSubtitle?: ReactElement<ComponentProps<typeof Translation>> | string;
     screenHeaderRightIcon?: ReactNode;
     onAlertContinueButtonPress?: () => void;
-};
-
-export const DeviceOnboardingExitButtonScreenHeader = ({
-    screenHeaderRightIcon,
-    onAlertContinueButtonPress,
-}: DeviceOnboardingExitButtonScreenHeaderProps) => {
-    const { handleExitButtonPress } = useExitAlert(onAlertContinueButtonPress);
-    useInterceptNativeNavigation({ onPress: handleExitButtonPress });
-
-    return (
-        <DynamicScreenHeader
-            title={<Translation id="firmware.firmwareUpdateScreen.title" />}
-            subtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
-            closeActionType="close"
-            closeAction={handleExitButtonPress}
-            rightIcon={screenHeaderRightIcon}
-        />
-    );
 };
 
 export const DeviceOnboardingScreenWithExitButton = ({
     children,
     screenHeaderRightIcon,
     onAlertContinueButtonPress,
+    screenHeaderTitle,
+    screenHeaderSubtitle,
     ...screenProps
-}: ScreenProps & DeviceOnboardingExitButtonScreenHeaderProps) => (
-    <Screen
-        header={
-            <DeviceOnboardingExitButtonScreenHeader
-                onAlertContinueButtonPress={onAlertContinueButtonPress}
-                screenHeaderRightIcon={screenHeaderRightIcon}
-            />
-        }
-        {...screenProps}
-    >
-        <Box flex={1} marginTop="sp16">
-            {children}
-        </Box>
-    </Screen>
-);
+}: ScreenProps & DeviceOnboardingExitButtonScreenHeaderProps) => {
+    const { handleExitButtonPress } = useExitAlert(onAlertContinueButtonPress);
+    useInterceptNativeNavigation({ onPress: handleExitButtonPress });
+
+    return (
+        <Screen
+            header={
+                screenHeaderTitle ? (
+                    <DynamicScreenHeader
+                        title={screenHeaderTitle}
+                        subtitle={screenHeaderSubtitle}
+                        closeActionType="close"
+                        closeAction={handleExitButtonPress}
+                        rightIcon={screenHeaderRightIcon}
+                    />
+                ) : (
+                    <ScreenHeader
+                        closeActionType="close"
+                        closeAction={handleExitButtonPress}
+                        rightIcon={screenHeaderRightIcon}
+                    />
+                )
+            }
+            {...screenProps}
+        >
+            <Box flex={1} marginTop="sp16">
+                {children}
+            </Box>
+        </Screen>
+    );
+};

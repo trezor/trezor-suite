@@ -10,7 +10,7 @@ import {
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, Button, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
+import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -36,17 +36,7 @@ const UninitializedDeviceLandingScreenContent = () => {
 
     return (
         <VStack spacing="sp32">
-            {hasDeviceFirmwareInstalled ? (
-                <TitleHeader
-                    title={
-                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.title" />
-                    }
-                    titleVariant="titleMedium"
-                    subtitle={
-                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.subtitle" />
-                    }
-                />
-            ) : (
+            {!hasDeviceFirmwareInstalled && (
                 <Box alignItems="center">
                     <Text variant="titleMedium" textAlign="center" style={{ letterSpacing: -0.5 }}>
                         <Translation
@@ -139,8 +129,19 @@ export const UninitializedDeviceLandingScreen = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const screenHeaderProps = hasDeviceFirmwareInstalled
+        ? {
+              screenHeaderTitle: (
+                  <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.title" />
+              ),
+              screenHeaderSubtitle: (
+                  <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.subtitle" />
+              ),
+          }
+        : {};
+
     return (
-        <DeviceOnboardingScreenWithExitButton>
+        <DeviceOnboardingScreenWithExitButton {...screenHeaderProps}>
             <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp32">
                     <UninitializedDeviceLandingScreenContent />

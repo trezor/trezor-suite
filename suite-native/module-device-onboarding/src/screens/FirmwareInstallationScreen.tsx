@@ -1,9 +1,15 @@
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
-import { useOverrideBackNavigation } from '@suite-native/navigation';
+import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
 
-import { DeviceOnboardingExitButtonScreenHeader } from '../components/DeviceOnboardingScreenWithExitButton';
 import { useExitAlert } from '../hooks/useExitAlert';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
+
+const FirmwareInstallationScreenHeader = () => {
+    const { handleExitButtonPress } = useExitAlert();
+    useOverrideBackNavigation({ onNavigateBack: handleExitButtonPress });
+
+    return <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
+};
 
 export const FirmwareInstallationScreen = () => {
     const { handleExitButtonPress } = useExitAlert();
@@ -13,7 +19,7 @@ export const FirmwareInstallationScreen = () => {
 
     return (
         <FirmwareInstallationScreenContent
-            customHeader={<DeviceOnboardingExitButtonScreenHeader />}
+            customHeader={<FirmwareInstallationScreenHeader />}
             onCancelAction={handleExitButtonPress}
             onFirmwareInstallationSuccess={navigateToNextScreenAfterFirmwareInstallation}
             isTemporaryRememeberAllowed={false}
