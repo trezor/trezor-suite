@@ -51,11 +51,17 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
 
             // check dashboard with all coins disabled
             await dashboardPage.navigateTo();
-            await expect(page.getByTestId('@exception/discovery-empty')).toContainText(
-                'All coins are disabled in Settings.',
+            await expect(page.getByTestId('@exception/discovery-empty/header')).toHaveTranslation(
+                'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
             );
+            await expect(
+                page.getByTestId('@exception/discovery-empty/description'),
+            ).toHaveTranslation('TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC');
+            await expect(
+                page.getByTestId('@exception/discovery-empty/primary-button'),
+            ).toHaveTranslation('TR_COIN_SETTINGS');
 
-            await settingsPage.navigateTo('coins');
+            await page.getByTestId('@exception/discovery-empty/primary-button').click();
             // just do some clicking on switches and check result
             for (const network of ['btc', ...defaultUnchecked] as NetworkSymbol[]) {
                 await settingsPage.coins.enableNetwork(network);
