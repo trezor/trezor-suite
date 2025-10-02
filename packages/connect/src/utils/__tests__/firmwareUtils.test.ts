@@ -17,7 +17,7 @@ describe('firmwareUtils', () => {
             it('should return undefined for an empty data object', () => {
                 expect(
                     findBestCompatibleRelease(
-                        {},
+                        [],
                         { bootloaderVersion: null, firmwareVersion: [1, 0, 0] },
                         'min_firmware_version',
                     ),
@@ -28,7 +28,7 @@ describe('firmwareUtils', () => {
         describe('with checkProperty = "min_firmware_version"', () => {
             it('should return the newest compatible release', () => {
                 const compatibleRelease = findBestCompatibleRelease(
-                    firmwareAssets.t2t1.universal,
+                    Object.values(firmwareAssets.t2t1.universal),
                     { bootloaderVersion: null, firmwareVersion: [2, 0, 7] },
                     'min_firmware_version',
                 );
@@ -38,7 +38,7 @@ describe('firmwareUtils', () => {
             it('should return undefined if no release meets the min firmware version', () => {
                 expect(
                     findBestCompatibleRelease(
-                        firmwareAssets.t1b1.universal,
+                        Object.values(firmwareAssets.t1b1.universal),
                         { bootloaderVersion: null, firmwareVersion: [0, 8, 5] },
                         'min_firmware_version',
                     ),
@@ -50,7 +50,7 @@ describe('firmwareUtils', () => {
             it('should return undefined for an empty data object', () => {
                 expect(
                     findBestCompatibleRelease(
-                        {},
+                        [],
                         { bootloaderVersion: null, firmwareVersion: [1, 0, 0] },
                         'min_bootloader_version',
                     ),
@@ -58,7 +58,7 @@ describe('firmwareUtils', () => {
             });
             it('should return the correct release based on bootloader version', () => {
                 const compatibleRelease = findBestCompatibleRelease(
-                    firmwareAssets.t1b1.universal,
+                    Object.values(firmwareAssets.t1b1.universal),
                     { bootloaderVersion: null, firmwareVersion: [1, 6, 3] },
                     'min_bootloader_version',
                 );
@@ -68,7 +68,7 @@ describe('firmwareUtils', () => {
             it('should return undefined if no release meets the min bootloader version', () => {
                 expect(
                     findBestCompatibleRelease(
-                        firmwareAssets.t1b1.universal,
+                        Object.values(firmwareAssets.t1b1.universal),
                         { bootloaderVersion: null, firmwareVersion: [0, 8, 5] },
                         'min_bootloader_version',
                     ),
@@ -94,7 +94,7 @@ describe('firmwareUtils', () => {
                         ),
                 );
                 const comptabibleRelease = findBestCompatibleRelease(
-                    firmwareAssets.t3t1.universal,
+                    Object.values(firmwareAssets.t3t1.universal),
                     {
                         bootloaderVersion:
                             firstReleaseWithBootloaderCompatibleWithLatest.bootloader_version,

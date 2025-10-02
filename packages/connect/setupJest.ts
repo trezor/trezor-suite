@@ -1,7 +1,9 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import { firmwareAssets } from '@trezor/connect-common';
 import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import { AbstractApiTransport, UsbApi } from '@trezor/transport';
+import { versionUtils } from '@trezor/utils';
 
 import { type Features } from './src/types';
 
@@ -82,40 +84,13 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     ...feat,
 });
 
-const commonReleaseData: FirmwareRelease = {
-    required: false,
-    url: '/some/path/to/firmware.bin',
-    version: [2, 8, 9],
-    min_bootloader_version: [2, 1, 6],
-    min_firmware_version: [2, 7, 2],
-    bootloader_version: [2, 1, 8],
-    translations: {
-        'cs-CZ': 'firmware/translations/t2t1/translation-T2T1-cs-CZ-2.8.9.bin',
-        'de-DE': 'firmware/translations/t2t1/translation-T2T1-de-DE-2.8.9.bin',
-        'es-ES': 'firmware/translations/t2t1/translation-T2T1-es-ES-2.8.9.bin',
-        'fr-FR': 'firmware/translations/t2t1/translation-T2T1-fr-FR-2.8.9.bin',
-        'it-IT': 'firmware/translations/t2t1/translation-T2T1-it-IT-2.8.9.bin',
-        'pt-BR': 'firmware/translations/t2t1/translation-T2T1-pt-BR-2.8.9.bin',
-    },
-    firmware_revision: 'fad9682201cf9289bba2adb66e6e07ed1cf78936',
-    fingerprint: 'ac995c394f7a7b3ea4cbd9c04977621d6d2fbef30bba856f707f585f34866ac4',
-    changelog:
-        '* Ability to cancel recovery flow on word count selection screen.\n' +
-        '* New UI for confirming long messages.\n' +
-        '* Changed "swipe to continue" to "tap to continue". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen.',
-};
-
-const getReleaseData = (releaseInfo: Partial<FirmwareRelease> = {}): FirmwareRelease => ({
-    ...commonReleaseData,
-    ...releaseInfo,
-});
-
 declare global {
     var JestMocks: {
         getDeviceFeatures: typeof getDeviceFeatures;
         createTestTransport: typeof createTestTransport;
         createTestTransportClass: typeof createTestTransportClass;
-        getReleaseData: typeof getReleaseData;
+        releasesT1B1: FirmwareRelease[];
+        releasesT2T1: FirmwareRelease[];
     };
 
     type TestFixtures<TestedMethod extends (...args: any) => any> = {
@@ -125,9 +100,20 @@ declare global {
     }[];
 }
 
+// T1B1
+const releasesT1B1 = Object.values(firmwareAssets.t1b1.universal).sort((a, b) =>
+    versionUtils.isNewer(b.version, a.version) ? 1 : -1,
+);
+
+// T2T1
+const releasesT2T1 = Object.values(firmwareAssets.t2t1.universal).sort((a, b) =>
+    versionUtils.isNewer(b.version, a.version) ? 1 : -1,
+);
+
 global.JestMocks = {
     getDeviceFeatures,
     createTestTransport,
     createTestTransportClass,
-    getReleaseData,
+    releasesT1B1,
+    releasesT2T1,
 };
