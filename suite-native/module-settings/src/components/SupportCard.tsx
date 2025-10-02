@@ -1,8 +1,7 @@
 import { Button, Card, HStack, PictogramTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
+import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { HELP_CENTER_WHAT_IS_TREZOR_SUITE_URL } from '@trezor/urls';
 
 const supportCardStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp32,
@@ -12,7 +11,7 @@ export const SupportCard = () => {
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
 
-    const handleOpenSupportLink = () => openLink(HELP_CENTER_WHAT_IS_TREZOR_SUITE_URL);
+    const handleOpenSupportLink = () => openLink(SUITE_MOBILE_SUPPORT_URL);
 
     return (
         <Card style={applyStyle(supportCardStyle)}>
