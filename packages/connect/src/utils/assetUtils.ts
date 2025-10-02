@@ -5,6 +5,7 @@ import {
     FirmwareType,
     VersionArray,
 } from '@trezor/device-utils';
+import { versionUtils } from '@trezor/utils';
 
 export class HttpRequestError extends Error {
     response: Response;
@@ -27,11 +28,18 @@ type FirmwareAssetMap = {
 export const getReleasesAssetByDeviceModelAndFirmwareType = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
-) => {
+): FirmwareRelease[] => {
     const firmwareTypeInFileName =
         firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
 
-    return (firmwareAssets as FirmwareAssetMap)[deviceModel.toLowerCase()][firmwareTypeInFileName];
+    const availableRelesesRecord = (firmwareAssets as FirmwareAssetMap)[deviceModel.toLowerCase()][
+        firmwareTypeInFileName
+    ];
+    const availableFirmwaresReleases = Object.values(availableRelesesRecord);
+
+    return availableFirmwaresReleases.sort((a, b) =>
+        versionUtils.isNewer(b.version, a.version) ? 1 : -1,
+    );
 };
 
 export const getReleaseAsset = (
