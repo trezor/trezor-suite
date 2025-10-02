@@ -36,6 +36,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 import { createFormStateForSendForm } from './utils';
+import { getErrorStrFromThunkRejectedValue } from './utils/general/utils';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
 
@@ -209,18 +210,14 @@ export const composeTradingTransactionThunk = createThunk(
                 return fulfillWithValue(response.payload);
             }
 
-            const errStr =
-                (response as any)?.error?.message ??
-                (typeof (response as any)?.error === 'string'
-                    ? (response as any).error
-                    : 'Unknown error');
+            const errStr = getErrorStrFromThunkRejectedValue(response);
             console.error('Failed to compose transaction:', errStr);
 
             return rejectWithValue(`Failed to compose transaction: ${errStr}`);
         } catch (error) {
             console.error('Compose trading transaction error:', error);
 
-            return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
+            return rejectWithValue(getErrorStrFromThunkRejectedValue(error));
         }
     },
 );
