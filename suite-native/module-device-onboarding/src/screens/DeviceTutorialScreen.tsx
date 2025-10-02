@@ -26,7 +26,7 @@ export const DeviceTutorialScreen = ({
                 await requestPrioritizedDeviceAccess({
                     deviceCallback: () => TrezorConnect.showDeviceTutorial({ device }),
                 });
-                navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
+                navigation.replace(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
             };
             showTutorial();
 

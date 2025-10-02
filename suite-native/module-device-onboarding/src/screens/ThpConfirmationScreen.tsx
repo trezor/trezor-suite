@@ -18,11 +18,11 @@ export const ThpConfirmationScreen = ({
 
     useEffect(() => {
         if (thpStep === 'BeforeConnectionInfo') {
-            navigation.navigate(DeviceOnboardingStackRoutes.ThpPairingInfo);
+            navigation.replace(DeviceOnboardingStackRoutes.ThpPairingInfo);
         } else if (thpStep === 'CodeEntry') {
-            navigation.navigate(DeviceOnboardingStackRoutes.ThpCodeEntry);
+            navigation.replace(DeviceOnboardingStackRoutes.ThpCodeEntry);
         } else if (thpStep === null) {
-            navigation.navigate(DeviceOnboardingStackRoutes.ThpPairingSuccess);
+            navigation.replace(DeviceOnboardingStackRoutes.ThpPairingSuccess);
         }
     }, [thpStep, navigation]);
 

@@ -104,7 +104,7 @@ export const CreatePinScreen = () => {
 
     return (
         <Screen
-            header={<ScreenHeader closeAction={onCancel} />}
+            header={<ScreenHeader closeActionType="close" closeAction={onCancel} />}
             isScrollable={false}
             noBottomPadding={true}
             hasBottomInset={false}

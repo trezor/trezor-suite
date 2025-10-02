@@ -83,7 +83,7 @@ export const UninitializedDeviceLandingScreen = ({
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
             if (shouldOfferUpdateFirmware) {
-                navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
+                navigation.replace(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
             } else {
                 // If user already has the latest firmware installed, skip this update screen and navigate to device auth-check directly.
                 updateOnboardingAnalytics({
@@ -94,7 +94,7 @@ export const UninitializedDeviceLandingScreen = ({
             }
         } else {
             // Security check is relevant for brand new devices without FW only.
-            navigation.navigate(DeviceOnboardingStackRoutes.SecurityCheck);
+            navigation.replace(DeviceOnboardingStackRoutes.SecurityCheck);
         }
     };
 
