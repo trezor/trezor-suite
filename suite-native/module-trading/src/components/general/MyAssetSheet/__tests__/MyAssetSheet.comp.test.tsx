@@ -7,14 +7,14 @@ import { BigNumber } from '@trezor/utils';
 
 import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
 import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
-import { selectAccountsWithTokensToSellSectionListByTradingType } from '../../../../selectors/commonSelectors';
-import { MyAsset } from '../../../../types/general';
+import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '../../../../selectors/commonSelectors';
+import { MyAssetTradeable } from '../../../../types/general';
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
 import { MyAssetSheet, MyAssetSheetProps } from '../MyAssetSheet';
 
 jest.mock('../../../../selectors/commonSelectors');
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
-    selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType as unknown as jest.Mock;
 
 // Mock the selectFormattedAccountType selector
 jest.mock('@suite-common/wallet-core', () => ({
@@ -28,7 +28,7 @@ describe('MyAssetSheet', () => {
     const btcAccount = getBtcAccount();
     const ethAccount = getEthAccount();
 
-    const defaultAssets: MyAsset[] = [
+    const defaultAssets: MyAssetTradeable[] = [
         {
             name: 'Bitcoin',
             symbol: 'btc',

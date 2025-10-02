@@ -14,17 +14,17 @@ import { BigNumber } from '@trezor/utils';
 import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
 import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { selectAccountsWithTokensToSellSectionListByTradingType } from '../../../../selectors/commonSelectors';
+import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '../../../../selectors/commonSelectors';
 import { ExchangeFormType } from '../../../../types/exchange';
-import { MyAsset } from '../../../../types/general';
+import { MyAssetTradeable } from '../../../../types/general';
 import { ExchangeSendAssetPicker } from '../ExchangeSendAssetPicker';
 
 jest.mock('../../../../selectors/commonSelectors', () => ({
     ...jest.requireActual('../../../../selectors/commonSelectors'),
-    selectAccountsWithTokensToSellSectionListByTradingType: jest.fn(),
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType: jest.fn(),
 }));
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
-    selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType as unknown as jest.Mock;
 
 describe('ExchangeSendAssetPicker', () => {
     let form: ExchangeFormType;
@@ -33,7 +33,7 @@ describe('ExchangeSendAssetPicker', () => {
     const btcAccount = getBtcAccount();
     const ethAccount = getEthAccount();
 
-    const defaultAssets: MyAsset[] = [
+    const defaultAssets: MyAssetTradeable[] = [
         {
             name: 'Bitcoin',
             symbol: 'btc',

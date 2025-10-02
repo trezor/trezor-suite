@@ -2486,6 +2486,7 @@ export const messages = {
                 note: 'No pair',
                 toast: 'There is no pair for this asset',
             },
+            nonTradeable: '+ {count} non-tradeable {count, plural, one{token} other{tokens}}',
         },
         advancedSettings: {
             slippage: {
