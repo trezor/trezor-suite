@@ -5,6 +5,7 @@ import { CryptoId } from 'invity-api';
 import {
     TradingRootState,
     cryptoIdToNetworkAndContractAddress,
+    isCryptoIdForNativeToken,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
 import { NetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -25,22 +26,15 @@ type CryptoIdIconProps = { cryptoId: CryptoId | undefined };
 const TRADE_DETAIL_TEST_ID = '@trading/history/detail';
 
 const CryptoIdIcon = ({ cryptoId }: CryptoIdIconProps) => {
-    if (!cryptoId) {
-        return null;
-    }
-
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
-
-    if (!network) {
+    if (!network || !cryptoId) {
         return null;
     }
 
-    return (
-        <CryptoIcon
-            symbol={network.displaySymbol as NetworkDisplaySymbol}
-            contractAddress={contractAddress}
-            size="tiny"
-        />
+    return isCryptoIdForNativeToken(cryptoId) ? (
+        <CryptoIcon symbol={network.displaySymbol as NetworkDisplaySymbol} size="tiny" />
+    ) : (
+        <CryptoIcon symbol={network.symbol} contractAddress={contractAddress} size="tiny" />
     );
 };
 
