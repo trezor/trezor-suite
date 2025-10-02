@@ -92,15 +92,17 @@ export const TradingFeesForm = ({ accountKey, tokenContract }: TradingFeesFormPr
                             />
                         </VStack>
                     </VStack>
-                    <FeesFooter
-                        accountKey={accountKey}
-                        isSubmittable={isSubmittable}
-                        totalAmount={totalAmount}
-                        fee={fee}
-                        symbol={symbol}
-                        tokenContract={tokenContract}
-                        withSubmitButton={false}
-                    />
+                    {!!totalAmount && !!fee && (
+                        <FeesFooter
+                            accountKey={accountKey}
+                            isSubmittable={isSubmittable}
+                            totalAmount={totalAmount}
+                            fee={fee}
+                            symbol={symbol}
+                            tokenContract={tokenContract}
+                            withSubmitButton={false}
+                        />
+                    )}
                 </VStack>
             </BottomSheetModalProvider>
         </Form>

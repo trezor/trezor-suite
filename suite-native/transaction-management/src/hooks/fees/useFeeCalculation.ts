@@ -12,6 +12,7 @@ import {
     AccountKey,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
+    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -46,38 +47,46 @@ export const useFeeCalculation = ({
     });
 
     const selectedFeeLevel = useWatch({ control: form.control, name: 'feeLevel' });
-    const selectedFeeLevelTransaction = feeLevels[
-        selectedFeeLevel
-    ] as GeneralPrecomposedTransactionFinal;
+    const selectedFeeLevelTransaction = isFinalPrecomposedTransaction(feeLevels[selectedFeeLevel])
+        ? (feeLevels[selectedFeeLevel] as GeneralPrecomposedTransactionFinal)
+        : null;
 
     const feePerUnit = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, selectedFeeLevel),
     );
 
-    const normalFee = feeLevels.normal as PrecomposedTransactionFinal;
+    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
+        ? (feeLevels.normal as PrecomposedTransactionFinal)
+        : null;
 
     const { areFeesLoading } = useFeesFetching({
         networkSymbol: symbol,
         isRefetchDisabled: selectedFeeLevel === 'custom' || selectedSetMaxOutputId !== undefined,
     });
 
-    const transactionBytes = normalFee.bytes as number;
+    const transactionBytes = normalFee?.bytes as number;
 
     // If trezor-connect was not able to compose the fee level, we have calculate total amount locally.
     const mockedFee = useMemo(
         () =>
-            BigNumber(transactionBytes)
-                .times(feePerUnit ?? normalFee.feePerByte)
-                .toString(),
-        [transactionBytes, feePerUnit, normalFee.feePerByte],
+            normalFee
+                ? BigNumber(transactionBytes)
+                      .times(feePerUnit ?? normalFee.feePerByte)
+                      .toString()
+                : null,
+
+        [transactionBytes, feePerUnit, normalFee],
     );
 
     const mockedTotalAmount = useMemo(
-        () => BigNumber(normalFee.totalSpent).minus(normalFee.fee).plus(mockedFee).toString(),
+        () =>
+            normalFee && !!mockedFee
+                ? BigNumber(normalFee.totalSpent).minus(normalFee.fee).plus(mockedFee).toString()
+                : null,
         [normalFee, mockedFee],
     );
 
-    const isSubmittable = selectedFeeLevelTransaction?.type === 'final';
+    const isSubmittable = isFinalPrecomposedTransaction(selectedFeeLevelTransaction ?? undefined);
 
     // Use actual values if available, otherwise fall back to mocked values
     const totalAmount = selectedFeeLevelTransaction?.totalSpent ?? mockedTotalAmount;
