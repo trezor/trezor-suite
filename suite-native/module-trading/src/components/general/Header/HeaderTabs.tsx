@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { TradingType } from '@suite-common/trading';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -14,6 +15,7 @@ import {
     selectActiveTradingType,
     selectIsTradingSellEnabled,
 } from '../../../selectors/commonSelectors';
+import { TradingWithFeatureFlagsRootState } from '../../../selectors/exchangeSelectors';
 import { AdvancedSettingsSheet } from '../../settings/AdvancedSettingsSheet';
 
 const useSelectedTab = () => {
@@ -68,6 +70,9 @@ export const HeaderTabs = () => {
     const data = useTabsData();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
+        selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
+    );
 
     return (
         <>
@@ -89,13 +94,15 @@ export const HeaderTabs = () => {
                     data={data}
                     extraData={activeTab}
                 />
-                <IconButton
-                    iconName="gear"
-                    size="small"
-                    colorScheme="tertiaryElevation0"
-                    accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
-                    onPress={() => openModal()}
-                />
+                {areTradingExchangeDexesEnabled && (
+                    <IconButton
+                        iconName="gear"
+                        size="small"
+                        colorScheme="tertiaryElevation0"
+                        accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
+                        onPress={() => openModal()}
+                    />
+                )}
             </HStack>
             <AdvancedSettingsSheet ref={bottomSheetRef} closeModal={closeModal} />
         </>
