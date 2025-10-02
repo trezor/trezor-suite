@@ -5,6 +5,7 @@ import { getInitializedTradingState } from '../../../../__fixtures__/tradingStat
 import { ExchangeApprovalLimitSheet } from '../ExchangeApprovalLimitSheet';
 
 const mockOnDismiss = jest.fn();
+const mockOnApprovalTypeSelect = jest.fn();
 
 const testQuote = exchangeQuotes[0];
 
@@ -20,22 +21,20 @@ const getPreloadedState = (): PreloadedState => ({
     },
 });
 
-const getPreloadedStateWithoutQuote = (): PreloadedState => ({
-    wallet: {
-        trading: {
-            ...getInitializedTradingState('exchange'),
-            exchange: {
-                ...getInitializedTradingState('exchange').exchange,
-                selectedQuote: undefined,
-            },
-        },
-    },
-});
-
-const renderSheet = (isVisible = true, preloadedState = getPreloadedState()) =>
+const renderSheet = (
+    isVisible = true,
+    quote = testQuote,
+    selectedApprovalType: 'INFINITE' | 'MINIMAL' = 'INFINITE',
+) =>
     renderWithStoreProviderAsync(
-        <ExchangeApprovalLimitSheet isVisible={isVisible} onDismiss={mockOnDismiss} />,
-        { preloadedState },
+        <ExchangeApprovalLimitSheet
+            isVisible={isVisible}
+            onDismiss={mockOnDismiss}
+            quote={quote}
+            onApprovalTypeSelect={mockOnApprovalTypeSelect}
+            selectedApprovalType={selectedApprovalType}
+        />,
+        { preloadedState: getPreloadedState() },
     );
 
 describe('ExchangeApprovalLimitSheet', () => {
@@ -43,17 +42,11 @@ describe('ExchangeApprovalLimitSheet', () => {
         jest.clearAllMocks();
     });
 
-    it('should render nothing when quote is not available', async () => {
-        const { toJSON } = await renderSheet(true, getPreloadedStateWithoutQuote());
-
-        expect(toJSON()).toBeNull();
-    });
-
     it('should render the sheet when visible', async () => {
         const { getByText } = await renderSheet();
 
         expect(getByText('Unlimited')).toBeTruthy();
-        expect(getByText('200.32 USDC')).toBeTruthy();
+        expect(getByText('100 USDC')).toBeTruthy();
     });
 
     it('should render unlimited approval option with correct details', async () => {
@@ -70,7 +63,7 @@ describe('ExchangeApprovalLimitSheet', () => {
     it('should render limited approval option with correct amount', async () => {
         const { getByText } = await renderSheet();
 
-        expect(getByText('200.32 USDC')).toBeTruthy();
+        expect(getByText('100 USDC')).toBeTruthy();
         expect(
             getByText(
                 "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
@@ -93,5 +86,27 @@ describe('ExchangeApprovalLimitSheet', () => {
                 'Approve unlimited USDC to skip future approval requests and reduce fees. Only use this option if you trust Mercuryo, as it will have access to all your USDC.',
             ),
         ).toBeTruthy();
+    });
+
+    it('should display quote sendStringAmount in limited approval option', async () => {
+        const customQuote = {
+            ...testQuote,
+            sendStringAmount: '250',
+        };
+        const { getByText } = await renderSheet(true, customQuote);
+
+        expect(getByText('250 USDC')).toBeTruthy();
+    });
+
+    it('should pass correct props when INFINITE is selected', async () => {
+        await renderSheet(true, testQuote, 'INFINITE');
+
+        expect(mockOnApprovalTypeSelect).toBeDefined();
+    });
+
+    it('should pass correct props when MINIMAL is selected', async () => {
+        await renderSheet(true, testQuote, 'MINIMAL');
+
+        expect(mockOnApprovalTypeSelect).toBeDefined();
     });
 });

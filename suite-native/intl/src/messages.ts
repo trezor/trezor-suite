@@ -2422,6 +2422,7 @@ export const messages = {
             providerNamePlaceholder: 'Provider',
             providerReceiveAddressLabel: "{providerName}'s receive address",
             confirmationAlertTitle: 'Failed to confirm offer.',
+            approvalSuccessAlert: 'Spending approval confirmed.',
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',

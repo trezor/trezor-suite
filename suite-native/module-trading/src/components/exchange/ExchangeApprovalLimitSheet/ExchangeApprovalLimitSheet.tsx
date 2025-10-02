@@ -1,34 +1,45 @@
 import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import { DexApprovalType, ExchangeTrade } from 'invity-api';
+
 import {
     TradingRootState,
     cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { TokenSymbol } from '@suite-common/wallet-types';
 import { BottomSheetModal, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 import { ExchangeApprovalLimitCard } from './ExchangeApprovalLimitCard';
 
-type ExchangeApprovalLimitSheetProps = {
+export type ExchangeApprovalLimitSheetProps = {
     isVisible: boolean;
     onDismiss: () => void;
+    onApprovalTypeSelect: (type: DexApprovalType) => void;
+    selectedApprovalType: DexApprovalType;
+    quote: ExchangeTrade;
 };
 
 export const ExchangeApprovalLimitSheet = memo(
-    ({ isVisible, onDismiss }: ExchangeApprovalLimitSheetProps) => {
-        const { bottomSheetRef, openModal } = useBottomSheetModal();
+    ({
+        isVisible,
+        onDismiss,
+        onApprovalTypeSelect,
+        selectedApprovalType,
+        quote,
+    }: ExchangeApprovalLimitSheetProps) => {
+        const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-        useEffect(() => {
-            if (isVisible) {
-                openModal();
-            }
-        }, [isVisible, openModal]);
+        useEffect(
+            () => (isVisible ? openModal() : closeModal()),
+            [isVisible, openModal, closeModal],
+        );
 
-        const quote = useSelector(selectTradingExchangeSelectedQuote);
         const providerInfo = useSelector((state: TradingRootState) =>
             selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'exchange'),
         );
@@ -36,10 +47,6 @@ export const ExchangeApprovalLimitSheet = memo(
         const coinSymbol = useSelector((state: TradingRootState) =>
             selectTradingCoinSymbolByCryptoId(state, quote?.send),
         );
-
-        if (!quote) {
-            return null;
-        }
 
         const { symbol, contractAddress } = quote.send
             ? cryptoIdToNetworkSymbolAndContractAddress(quote.send)
@@ -49,7 +56,22 @@ export const ExchangeApprovalLimitSheet = memo(
             return null;
         }
 
-        const limitAmount = `200.32 ${coinSymbol}`; //TODO
+        const formattedLimitAmount =
+            !!coinSymbol &&
+            (isNetworkSymbol(coinSymbol) ? (
+                <CryptoAmountFormatter
+                    value={quote.sendStringAmount ?? '0'}
+                    symbol={coinSymbol}
+                    isBalance={false}
+                    variant="callout"
+                />
+            ) : (
+                <TokenAmountFormatter
+                    value={quote.sendStringAmount ?? '0'}
+                    tokenSymbol={coinSymbol as TokenSymbol}
+                    variant="callout"
+                />
+            ));
 
         return (
             <BottomSheetModal
@@ -74,14 +96,12 @@ export const ExchangeApprovalLimitSheet = memo(
                         }
                         symbol={symbol}
                         contractAddress={contractAddress}
-                        isChecked={true}
-                        onChange={() => {
-                            // TODO
-                        }}
+                        isChecked={selectedApprovalType === 'INFINITE'}
+                        onChange={() => onApprovalTypeSelect('INFINITE')}
                     />
 
                     <ExchangeApprovalLimitCard
-                        title={limitAmount}
+                        title={formattedLimitAmount}
                         description={
                             <Translation
                                 id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.description"
@@ -90,10 +110,8 @@ export const ExchangeApprovalLimitSheet = memo(
                         }
                         symbol={symbol}
                         contractAddress={contractAddress}
-                        isChecked={false}
-                        onChange={() => {
-                            // TODO
-                        }}
+                        isChecked={selectedApprovalType === 'MINIMAL'}
+                        onChange={() => onApprovalTypeSelect('MINIMAL')}
                     />
                 </VStack>
             </BottomSheetModal>

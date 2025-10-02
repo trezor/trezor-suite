@@ -1,22 +1,36 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { BigNumber } from '@trezor/utils';
-
-export type ApprovalStatus = 'approved' | 'needs_approval' | 'not_needed' | null;
+export type ApprovalStatus = 'approved' | 'needs_approval' | 'needs_increase' | 'not_needed' | null;
 
 export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
     }
 
-    const preapproved = new BigNumber(candidateQuote.preapprovedStringAmount ?? '0');
-    if (preapproved.gt(0)) {
+    if (!candidateQuote.isDex) {
+        return 'not_needed';
+    }
+
+    const isApprovalTxPreApproved =
+        candidateQuote.preapprovedStringAmount && candidateQuote.preapprovedStringAmount !== '0';
+
+    if (isApprovalTxPreApproved && candidateQuote.status === 'APPROVAL_REQ') {
+        return 'needs_increase';
+    }
+
+    if (isApprovalTxPreApproved) {
         return 'approved';
     }
 
-    if (candidateQuote.isDex) {
-        return 'needs_approval';
+    return 'needs_approval';
+};
+
+export const tokenSupportsIncreasingAllowance = (contractAddress?: string): boolean => {
+    const ethereumUsdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+
+    if (!contractAddress) {
+        return false;
     }
 
-    return 'not_needed';
+    return contractAddress.trim().toLowerCase() !== ethereumUsdtContractAddress.toLowerCase();
 };

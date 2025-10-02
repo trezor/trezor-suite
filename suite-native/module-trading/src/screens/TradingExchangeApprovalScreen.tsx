@@ -1,12 +1,14 @@
-import { Pressable } from 'react-native';
+import { useState } from 'react';
+import { Pressable } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 
-import { invariant } from '@suite-common/suite-utils';
+import { useNavigation } from '@react-navigation/native';
+import { DexApprovalType } from 'invity-api';
+
 import {
     TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
@@ -14,22 +16,42 @@ import { Box, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import {
+    DynamicScreenHeader,
+    RootStackParamList,
+    Screen,
+    StackNavigationProps,
+    StackToStackCompositeScreenProps,
+    TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
 import { TradeInfoHeader } from '../components/TradeInfo/TradeInfoHeader';
 import { TradeInfoRow } from '../components/TradeInfo/TradeInfoRow';
 import { ExchangeApprovalLimitSheet } from '../components/exchange/ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
 import { ProviderLogo } from '../components/general/ProviderLogo';
+import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { useBottomSheetControls } from '../hooks/general/useBottomSheetControls';
 import { selectExchangeSelectedSendAccount } from '../selectors/exchangeSelectors';
 
-export const TradingExchangeApprovalScreen = () => {
-    const quote = useSelector(selectTradingExchangeSelectedQuote);
+type TradingExchangeApprovalScreenProps = StackToStackCompositeScreenProps<
+    TradingStackParamList,
+    TradingStackRoutes.TradingExchangeApproval,
+    RootStackParamList
+>;
 
-    invariant(quote, 'quote must be defined');
+export const TradingExchangeApprovalScreen = ({
+    route: { params },
+}: TradingExchangeApprovalScreenProps) => {
+    const { quote, shouldIncreaseLimit, isRevoked } = params;
+    const navigation =
+        useNavigation<
+            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
+        >();
 
     const account = useSelector(selectExchangeSelectedSendAccount);
+    const [selectedApprovalType, setSelectedApprovalType] = useState<DexApprovalType>('INFINITE');
 
     const { network, contractAddress } = quote.send
         ? cryptoIdToNetworkAndContractAddress(quote.send)
@@ -45,7 +67,33 @@ export const TradingExchangeApprovalScreen = () => {
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
 
+    const { confirmTrade } = useExchangeFlow();
+
     const fee = '4.76'; // TODO
+
+    const handleContinue = async () => {
+        const updatedQuote = {
+            ...quote,
+            approvalType: selectedApprovalType,
+        };
+
+        const success = await confirmTrade({
+            receiveAddress: quote.receiveAddress ?? '',
+            trade: updatedQuote,
+            approvalFlow: true,
+            nextStep: () => {},
+        });
+
+        if (success) {
+            // TODO
+            navigation.navigate(TradingStackRoutes.TradingExchangePreview, { isApproved: true });
+        }
+    };
+
+    const handleApprovalTypeChange = (newType: DexApprovalType) => {
+        setSelectedApprovalType(newType);
+        hideSheet();
+    };
 
     return (
         <Screen
@@ -63,23 +111,28 @@ export const TradingExchangeApprovalScreen = () => {
                             values={{ symbol: coinSymbol, companyName: providerInfo?.companyName }}
                         />
                     }
-                    closeActionType="close"
+                    closeActionType="back"
                 />
             }
         >
             <VStack spacing="sp16">
-                <InlineAlertBox
-                    title={
-                        <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
-                    }
-                    variant="success"
-                />
-                <InlineAlertBox
-                    title={
-                        <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
-                    }
-                    variant="info"
-                />
+                {!!shouldIncreaseLimit && (
+                    <InlineAlertBox
+                        title={
+                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
+                        }
+                        variant="warning"
+                    />
+                )}
+
+                {!!isRevoked && (
+                    <InlineAlertBox
+                        variant="success"
+                        title={
+                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
+                        }
+                    />
+                )}
 
                 <Card noPadding>
                     <TradeInfoHeader
@@ -140,7 +193,11 @@ export const TradingExchangeApprovalScreen = () => {
                                             />
                                         )}
                                         <Text variant="hint" color="textSubdued">
-                                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
+                                            {selectedApprovalType === 'INFINITE' ? (
+                                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
+                                            ) : (
+                                                `${quote.sendStringAmount} ${coinSymbol}`
+                                            )}
                                         </Text>
                                         <Icon name="caretDown" size="medium" />
                                     </HStack>
@@ -177,15 +234,17 @@ export const TradingExchangeApprovalScreen = () => {
             </VStack>
 
             <Box paddingTop="sp20">
-                <Button
-                    onPress={() => {
-                        // TODO
-                    }}
-                >
+                <Button onPress={handleContinue}>
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </Box>
-            <ExchangeApprovalLimitSheet isVisible={isSheetVisible} onDismiss={hideSheet} />
+            <ExchangeApprovalLimitSheet
+                isVisible={isSheetVisible}
+                onDismiss={hideSheet}
+                onApprovalTypeSelect={handleApprovalTypeChange}
+                selectedApprovalType={selectedApprovalType}
+                quote={quote}
+            />
         </Screen>
     );
 };

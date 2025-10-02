@@ -12355,6 +12355,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/invity-api": "npm:^1.1.11"
     expo-linear-gradient: "npm:~14.1.5"
     expo-system-ui: "npm:5.0.10"
     react: "npm:19.0.0"

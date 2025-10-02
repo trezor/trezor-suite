@@ -1,11 +1,12 @@
+import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { invariant } from '@suite-common/suite-utils';
+import { useNavigation } from '@react-navigation/native';
+
 import {
     TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
@@ -19,7 +20,15 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import {
+    DynamicScreenHeader,
+    RootStackParamList,
+    Screen,
+    StackToStackCompositeNavigationProps,
+    StackToStackCompositeScreenProps,
+    TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
 import { TradeInfoHeader } from '../components/TradeInfo/TradeInfoHeader';
@@ -27,12 +36,38 @@ import { TradeInfoRow } from '../components/TradeInfo/TradeInfoRow';
 import { ProviderLogo } from '../components/general/ProviderLogo';
 import { selectExchangeSelectedSendAccount } from '../selectors/exchangeSelectors';
 
-export const TradingExchangeRevokeScreen = () => {
-    const quote = useSelector(selectTradingExchangeSelectedQuote);
+type TradingExchangeRevokeScreenProps = StackToStackCompositeScreenProps<
+    TradingStackParamList,
+    TradingStackRoutes.TradingExchangeRevoke,
+    RootStackParamList
+>;
 
-    invariant(quote, 'quote must be defined');
+type NavigationProps = StackToStackCompositeNavigationProps<
+    TradingStackParamList,
+    TradingStackRoutes.TradingExchangeRevoke,
+    RootStackParamList
+>;
+
+export const TradingExchangeRevokeScreen = ({
+    route: { params },
+}: TradingExchangeRevokeScreenProps) => {
+    const { quote, shouldIncreaseLimit } = params;
+
+    const navigation = useNavigation<NavigationProps>();
 
     const account = useSelector(selectExchangeSelectedSendAccount);
+
+    const handleContinue = () => {
+        // TODO
+        if (shouldIncreaseLimit) {
+            return navigation.replace(TradingStackRoutes.TradingExchangeApproval, {
+                quote,
+                isRevoked: true,
+            });
+        }
+
+        return navigation.goBack();
+    };
 
     const { network, contractAddress } = quote.send
         ? cryptoIdToNetworkAndContractAddress(quote.send)
@@ -69,11 +104,16 @@ export const TradingExchangeRevokeScreen = () => {
             }
         >
             <VStack spacing="sp16">
-                <InlineAlertBox
-                    title={<Translation id="moduleTrading.tradingExchangeRevokeScreen.infoAlert" />}
-                    variant="warning"
-                />
-
+                {!!shouldIncreaseLimit && (
+                    <Animated.View>
+                        <InlineAlertBox
+                            title={
+                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.infoAlert" />
+                            }
+                            variant="warning"
+                        />
+                    </Animated.View>
+                )}
                 <Card noPadding>
                     <TradeInfoHeader
                         title={<Translation id="moduleTrading.tradingExchangeRevokeScreen.from" />}
@@ -130,7 +170,23 @@ export const TradingExchangeRevokeScreen = () => {
                                 />
                             )}
                             <Text variant="hint" color="textSubdued">
-                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.unlimited" />
+                                {!!coinSymbol &&
+                                    (isNetworkSymbol(coinSymbol) ? (
+                                        <CryptoAmountFormatter
+                                            value={quote.preapprovedStringAmount || '0'}
+                                            symbol={coinSymbol}
+                                            isBalance={false}
+                                            variant="hint"
+                                            color="textSubdued"
+                                        />
+                                    ) : (
+                                        <TokenAmountFormatter
+                                            value={quote.preapprovedStringAmount || '0'}
+                                            tokenSymbol={coinSymbol as TokenSymbol}
+                                            variant="hint"
+                                            color="textSubdued"
+                                        />
+                                    ))}
                             </Text>
                         </HStack>
                     </TradeInfoRow>
@@ -185,11 +241,7 @@ export const TradingExchangeRevokeScreen = () => {
             </VStack>
 
             <Box paddingTop="sp20">
-                <Button
-                    onPress={() => {
-                        // TODO
-                    }}
-                >
+                <Button onPress={handleContinue}>
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </Box>

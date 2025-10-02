@@ -32,6 +32,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@types/invity-api": "^1.1.11",
         "expo-linear-gradient": "~14.1.5",
         "expo-system-ui": "5.0.10",
         "react": "19.0.0",

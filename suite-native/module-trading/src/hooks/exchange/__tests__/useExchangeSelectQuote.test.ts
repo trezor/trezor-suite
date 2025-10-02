@@ -13,6 +13,7 @@ import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { ExchangeFormType } from '../../../types/exchange';
+import * as approvalStatusUtils from '../../../utils/general/approvalStatusUtils';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
@@ -275,7 +276,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview');
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
         });
 
         it('should call cancelConsent when quote provider changes', async () => {
@@ -305,6 +306,149 @@ describe('useExchangeSelectQuote', () => {
 
             // consent should not be requested anymore
             expect(result.current.isConsentRequested).toBe(false);
+        });
+    });
+
+    describe('navigation based on approval status', () => {
+        beforeEach(async () => {
+            store = await getInitializedStore({ isLoading: false });
+
+            const { result } = await renderExchangeForm();
+            exchangeForm = result.current;
+        });
+
+        it('should navigate to TradingExchangePreview when approval status is "approved"', async () => {
+            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('approved');
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { nextStep } = (dispatchCall as any).payload;
+
+            act(() => {
+                nextStep();
+            });
+
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
+        });
+
+        it('should navigate to TradingExchangePreview when approval status is "not_needed"', async () => {
+            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('not_needed');
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { nextStep } = (dispatchCall as any).payload;
+
+            act(() => {
+                nextStep();
+            });
+
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
+        });
+
+        it('should navigate to TradingExchangeApproval when approval status is "needs_approval"', async () => {
+            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_approval');
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { nextStep } = (dispatchCall as any).payload;
+
+            act(() => {
+                nextStep();
+            });
+
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeApproval', {
+                quote: exchangeQuotes[1],
+            });
+        });
+
+        it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', async () => {
+            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
+            jest.spyOn(approvalStatusUtils, 'tokenSupportsIncreasingAllowance').mockReturnValue(
+                true,
+            );
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { nextStep } = (dispatchCall as any).payload;
+
+            act(() => {
+                nextStep();
+            });
+
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeApproval', {
+                quote: exchangeQuotes[1],
+                shouldIncreaseLimit: true,
+            });
+        });
+
+        it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', async () => {
+            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
+            jest.spyOn(approvalStatusUtils, 'tokenSupportsIncreasingAllowance').mockReturnValue(
+                false,
+            );
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { nextStep } = (dispatchCall as any).payload;
+
+            act(() => {
+                nextStep();
+            });
+
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeRevoke', {
+                quote: exchangeQuotes[1],
+                shouldIncreaseLimit: true,
+            });
         });
     });
 });

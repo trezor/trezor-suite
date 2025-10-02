@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
 import { ExchangeTrade } from 'invity-api';
 
 import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
 import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
@@ -14,15 +14,24 @@ import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStrin
 export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
     txnErrorString: string | null;
+    isApproved?: boolean;
 };
 
-export const ExchangePreviewView = memo(({ quote, txnErrorString }: ExchangePreviewViewProps) => {
-    const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
-    const isTxnError = !!txnErrorString;
+export const ExchangePreviewView = memo(
+    ({ quote, txnErrorString, isApproved }: ExchangePreviewViewProps) => {
+        const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
+        const isTxnError = !!txnErrorString;
 
-    return (
-        <ScrollView>
+        return (
             <VStack spacing="sp20" paddingVertical="sp20">
+                {!!isApproved && (
+                    <InlineAlertBox
+                        variant="success"
+                        title={
+                            <Translation id="moduleTrading.tradingExchangePreviewScreen.approvalSuccessAlert" />
+                        }
+                    />
+                )}
                 {isTxnError && (
                     <Animated.View>
                         <InlineAlertBox variant="critical" title={txnErrorString} />
@@ -35,6 +44,6 @@ export const ExchangePreviewView = memo(({ quote, txnErrorString }: ExchangePrev
                 <ExchangeToAccountTradePreviewCard quote={quote} toStringValue={toStringValue} />
                 <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
             </VStack>
-        </ScrollView>
-    );
-});
+        );
+    },
+);
