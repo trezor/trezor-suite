@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
+import { getExplorerUrl } from '@suite-common/wallet-config';
 import {
-    BlockchainRootState,
+    ExplorerState,
     TransactionsRootState,
-    selectBlockchainExplorerBySymbol,
+    selectExplorer,
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
@@ -40,8 +41,8 @@ export const TransactionDetailScreen = ({
     const transaction = useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
     ) as WalletAccountTransaction;
-    const blockchainExplorer = useSelector((state: BlockchainRootState) =>
-        selectBlockchainExplorerBySymbol(state, transaction?.symbol),
+    const blockchainExplorer = useSelector((state: ExplorerState) =>
+        selectExplorer(state, transaction?.symbol),
     );
     const isPending = useSelector((state: TransactionsRootState) =>
         selectIsTransactionPending(state, txid, accountKey),
@@ -72,7 +73,8 @@ export const TransactionDetailScreen = ({
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
         analytics.report({ type: EventType.TransactionDetailExploreInBlockchain });
-        openLink(`${blockchainExplorer.tx}${transaction.txid}`);
+        const explorerUrl = getExplorerUrl(blockchainExplorer, 'tx');
+        openLink(`${explorerUrl}${transaction.txid}`);
     };
 
     return (

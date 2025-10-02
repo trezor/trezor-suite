@@ -253,11 +253,6 @@ export const selectBlockchainHeightBySymbol = createMemoizedSelector(
     blockchain => blockchain?.blockHeight ?? null,
 );
 
-export const selectBlockchainExplorerBySymbol = createMemoizedSelector(
-    [selectNetworkBlockchainInfo],
-    blockchain => blockchain?.explorer ?? null,
-);
-
 export const selectBlockchainBlockInfoBySymbol = createMemoizedSelector(
     [selectNetworkBlockchainInfo],
     blockchain => ({
