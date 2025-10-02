@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
+import { FirmwareInfoScreen } from '../screens/FirmwareInfoScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';
 
@@ -20,6 +21,10 @@ export const FirmwareUpdateStackNavigator = () => (
         <FirmwareUpdateStack.Screen
             name={FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate}
             component={ConfirmFirmwareUpdateScreen}
+        />
+        <FirmwareUpdateStack.Screen
+            name={FirmwareUpdateStackRoutes.FirmwareInfo}
+            component={FirmwareInfoScreen}
         />
         <FirmwareUpdateStack.Screen
             name={FirmwareUpdateStackRoutes.FirmwareInstallation}
