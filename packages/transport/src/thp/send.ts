@@ -1,10 +1,11 @@
 import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
-import { scheduleAction } from '@trezor/utils';
+import { resolveAfter, scheduleAction } from '@trezor/utils';
 
 import type { ReceiveThpMessageProps } from './receive';
 import { readWithExpectedHeaders } from '../utils/readWithExpectedHeaders';
 import { error, success } from '../utils/result';
 import { sendChunks } from '../utils/send';
+import { AsyncResultWithTypedError } from '../types';
 
 export type SendThpMessageProps = Omit<ReceiveThpMessageProps, 'apiChunkSize'> & {
     chunks: Buffer[];
@@ -12,6 +13,24 @@ export type SendThpMessageProps = Omit<ReceiveThpMessageProps, 'apiChunkSize'> &
 
 const ATTEMPTS_LIMIT = 10;
 const THP_ACK_DEADLINE = 30_000;
+
+// todo:
+type SendReturnType = AsyncResultWithTypedError<
+    undefined,
+    | 'device not found'
+    | 'Unable to open device'
+    | 'A transfer error has occurred.'
+    | 'device disconnected during action'
+    | 'Aborted by timeout'
+    | 'Aborted by signal'
+    | 'unexpected error'
+    | 'ThpStateMissing'
+    | 'ThpTransportBusy'
+    | 'ThpUnallocatedChannel'
+    | 'ThpDecryptionFailed'
+    | 'ThpDeviceLocked'
+    | 'ThpUnknownError'
+>;
 
 export const sendThpMessage = async ({
     thpState,
@@ -22,7 +41,7 @@ export const sendThpMessage = async ({
     signal,
     graceful,
     logger,
-}: SendThpMessageProps) => {
+}: SendThpMessageProps): SendReturnType => {
     if (!thpState) {
         return error({ error: 'ThpStateMissing' });
     }
@@ -105,6 +124,7 @@ export const sendThpMessage = async ({
             if (code === 'ThpTransportBusy') {
                 // TODO: max 3 attempts + wait 1 sec between attempts
                 // setTimeout 1000ms
+                await resolveAfter(1000, signal);
                 return sendThpMessage({
                     thpState,
                     skipAck,
