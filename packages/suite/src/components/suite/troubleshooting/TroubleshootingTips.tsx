@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 import {
     Banner,
     BannerVariant,
+    Box,
     Card,
     Collapsible,
     Column,
@@ -110,11 +111,9 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
             defaultIsOpen={initiallyIsOpen === true}
             data-testid={dataTest || '@onboarding/expand-troubleshooting-tips'}
         >
-            <Column gap={spacings.sm} margin={{ top: 40 }}>
+            <Column gap={20} alignItems="center">
                 <Collapsible.Toggle>
-                    <Row justifyContent="center" flex="1" margin={{ bottom: spacings.xs }}>
-                        <TroubleshootingTipsToggle>{toggleText}</TroubleshootingTipsToggle>
-                    </Row>
+                    <TroubleshootingTipsToggle>{toggleText}</TroubleshootingTipsToggle>
                 </Collapsible.Toggle>
                 <Collapsible.Content>
                     <ElevationContext baseElevation={-1}>
@@ -140,11 +139,15 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
         </Collapsible>
     );
 
-    return (
-        <Column gap={spacings.xxxxl} alignItems="center">
-            {cta && <ActionBanner />}
+    return cta ? (
+        <Column gap={80} alignItems="center">
+            <ActionBanner />
             <CollapsibleTroubleshooting />
         </Column>
+    ) : (
+        <Box margin={{ top: 80 }}>
+            <CollapsibleTroubleshooting />
+        </Box>
     );
 };
 

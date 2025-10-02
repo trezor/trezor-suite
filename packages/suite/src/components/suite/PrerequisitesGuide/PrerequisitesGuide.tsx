@@ -11,7 +11,7 @@ import {
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Box, Column, Text, motionEasing } from '@trezor/components';
+import { Box, Column, Paragraph, Text, motionEasing } from '@trezor/components';
 import { DeviceWithScene } from '@trezor/product-components';
 
 import { getMessageId } from 'src/components/suite';
@@ -63,18 +63,6 @@ const DeviceImage = ({ selectedDevice }: { selectedDevice: TrezorDevice | undefi
     );
 };
 
-const Heading = ({ children }: { children: React.ReactNode }) => (
-    <Text typographyStyle="titleMedium" textWrap="balance" align="center">
-        {children}
-    </Text>
-);
-
-const Description = ({ children }: { children: React.ReactNode }) => (
-    <Text variant="tertiary" align="center" margin={{ top: 12 }}>
-        {children}
-    </Text>
-);
-
 export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuideProps) => {
     const device = useSelector(selectSelectedDevice);
     const [prerequisite, setPrerequisite] = useState<ReturnType<typeof selectPrerequisite>>(
@@ -102,10 +90,14 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
             <TopAnimation>
                 <Column alignItems="center">
                     {showDeviceImage && <DeviceImage selectedDevice={selectedDevice} />}
-                    <Heading>
+                    <Text typographyStyle="titleMedium" textWrap="balance" align="center">
                         <Translation id={texts.heading} />
-                    </Heading>
-                    {texts.description && <Description>{texts.description}</Description>}
+                    </Text>
+                    {texts.description && (
+                        <Paragraph variant="tertiary" align="center" margin={{ top: 12 }}>
+                            <Translation id={texts.description} />
+                        </Paragraph>
+                    )}
                 </Column>
             </TopAnimation>
             <BottomAnimation>

@@ -11,6 +11,7 @@ export const spacings = {
     xxxl: 40,
     xxxxl: 48,
     xxxxxl: 60,
+    xxxxxxl: 80,
 } as const;
 
 // TypeScript is lame and doesn't allow us to use `as const` with `Object.keys` so we have to cast it to `Spacing` manually
@@ -27,9 +28,10 @@ export const negativeSpacings = {
     xxxl: -40,
     xxxxl: -48,
     xxxxxl: -60,
+    xxxxxxl: -80,
 } as const;
 
-export const spacingsNew = [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 32, 40, 48, 60] as const;
+export const spacingsNew = [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 32, 40, 48, 60, 80] as const;
 
 export type SpacingValuesNew = (typeof spacingsNew)[number];
 export type SpacingValuesPxNew = `${SpacingValuesNew}px`;
