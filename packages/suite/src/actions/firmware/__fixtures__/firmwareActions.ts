@@ -16,8 +16,6 @@ const bootloaderDeviceNeedsIntermediary = {
                 intermediary: {
                     min_firmware_version: [1, 6, 2],
                     min_bootloader_version: [1, 6, 2],
-                    firmware_revision: '592590cf66a9b62dfeee7e4d2afb6e01005e5b2c',
-                    url: '/some/path.bin',
                     version: 1,
                 },
             },
